@@ -27,10 +27,9 @@ class DiagnosticDataUseCaseTest {
     var rule = InstantTaskExecutorRule()
 
     private val tradeInRepository: TradeInRepository = mockk(relaxed = true)
-    val context: Context = mockk()
     private val resources: Resources = mockk()
 
-    var diagnosticDataUseCase = spyk(DiagnosticDataUseCase(context, tradeInRepository))
+    var diagnosticDataUseCase = spyk(DiagnosticDataUseCase(tradeInRepository))
 
     private val tradeInParams = mockk<TradeInParams>(relaxed = true)
     private val tradeInType = 1
@@ -90,9 +89,8 @@ class DiagnosticDataUseCaseTest {
         every { tradeInParams.isUseKyc } returns 1
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        every { context.resources } returns resources
 
-        val queries = diagnosticDataUseCase.getQueries(tradeInParams)
+        val queries = diagnosticDataUseCase.getQueries(resources, tradeInParams)
 
         assertEquals(queries.size, 2)
     }
@@ -102,9 +100,8 @@ class DiagnosticDataUseCaseTest {
         every { tradeInParams.isUseKyc } returns 0
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-        every { context.resources } returns resources
 
-        val queries = diagnosticDataUseCase.getQueries(tradeInParams)
+        val queries = diagnosticDataUseCase.getQueries(resources, tradeInParams)
 
         assertEquals(queries.size, 1)
     }
@@ -119,11 +116,10 @@ class DiagnosticDataUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             coEvery { graphqlResponse.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java) } returns null
             coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
 
-            diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
+            diagnosticDataUseCase.getDiagnosticData(resources, tradeInParams, tradeInType)
         }
     }
 
@@ -134,13 +130,12 @@ class DiagnosticDataUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             every { tradeInParams.isUseKyc } returns 0
             coEvery { graphqlResponse.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java) } returns deviceDiagGQL
             coEvery { graphqlResponse.getData<KYCDetailGQL>(KYCDetailGQL::class.java) } returns null
             coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
 
-            val variable = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
+            val variable = diagnosticDataUseCase.getDiagnosticData(resources, tradeInParams, tradeInType)
 
             assertEquals(variable, deviceDiagGQL.diagResponse)
         }
@@ -155,14 +150,13 @@ class DiagnosticDataUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             coEvery { tradeInParams.isUseKyc } returns 1
             coEvery { deviceDiagGQL.diagResponse } returns deviceDataResponse
             coEvery { graphqlResponse.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java) } returns deviceDiagGQL
             coEvery { graphqlResponse.getData<KYCDetailGQL>(KYCDetailGQL::class.java) } returns kycDetailGQL
             coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
 
-            val variable = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
+            val variable = diagnosticDataUseCase.getDiagnosticData(resources, tradeInParams, tradeInType)
 
             assertEquals(variable?.kycDetails, kycDetailGQL.kycDetails)
         }

@@ -15,6 +15,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -62,6 +63,11 @@ abstract class ShopPageProductListViewModelTestFixture {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
+        mockkObject(GetMembershipUseCaseNew)
+        mockkObject(GQLGetShopInfoUseCase)
+        mockkObject(GqlGetShopProductUseCase)
+        mockkObject(GetShopFeaturedProductUseCase)
 
         viewModelShopPageProductListViewModel = ShopPageProductListViewModel(
                 claimBenefitMembershipUseCase,

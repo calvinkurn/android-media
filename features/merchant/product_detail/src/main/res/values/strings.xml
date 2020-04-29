@@ -207,6 +207,15 @@
     <string name="notify_me_active">Pengingat Aktif</string>
     <string name="notify_me_inactive">Ingatkan Saya</string>
     <string name="notify_me_subtitle">Dimulai dalam %1$s</string>
+    <string name="notify_me_subtitle_main">Dimulai dalam</string>
     <string name="notify_me_title">Kejar Diskon</string>
+    <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
+    <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
+
+    <!-- OVO -->
+    <string name="product_detail_price__goods">Harga Barang</string>
+    <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
+    <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
+    <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 
 </resources>

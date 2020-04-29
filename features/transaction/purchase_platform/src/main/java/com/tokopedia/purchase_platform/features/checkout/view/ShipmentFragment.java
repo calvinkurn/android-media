@@ -42,6 +42,7 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.iris.util.IrisSession;
@@ -108,6 +109,7 @@ import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionLis
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
@@ -119,6 +121,8 @@ import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAd
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
+import com.tokopedia.purchase_platform.features.checkout.view.dialog.ExpiredTimeDialog;
+import com.tokopedia.utils.time.TimeHelper;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -136,6 +140,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.valid
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -252,6 +257,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private Subscription delayScrollToFirstShopSubscription;
 
+    // count down component
+    private View cdLayout;
+    private CountDownView cdView;
+    private Typography cdText;
+
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
                                                boolean isOneClickShipment,
@@ -345,6 +355,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvShipment = view.findViewById(R.id.rv_shipment);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        cdLayout = view.findViewById(R.id.partial_countdown);
+        cdView = view.findViewById(R.id.count_down);
+        cdText = view.findViewById(R.id.tv_count_down);
 
         snackbarError = Snackbar.make(view, "", Snackbar.LENGTH_SHORT);
 
@@ -355,6 +368,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkCampaignTimer();
     }
 
     @Override
@@ -480,10 +499,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
         }
 
-        if (!lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
-            PromoRevampAnalytics.INSTANCE.eventCartViewPromoChanged(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
+        if (shipmentCartItemModelList.size() > 0) {
+            // Don't show promo section if all shop is error
+            int errorShopCount = 0;
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (shipmentCartItemModel.isError()) {
+                    errorShopCount++;
+                }
+            }
+            if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size()) {
+                if (lastApplyUiModel != null && !lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
+                    PromoRevampAnalytics.INSTANCE.eventCartViewPromoMessage(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
+                }
+                shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel);
+            }
         }
-        shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel);
 
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
@@ -700,6 +730,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             recipientAddressModel.setDisableMultipleAddress(true);
         }
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding());
+        setCampaignTimer();
         initRecyclerViewData(
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 recipientAddressModel,
@@ -1312,6 +1343,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 doUpdateButtonPromoCheckout(promoUiModel);
+                shipmentPresenter.setValidateUsePromoRevampUiModel(null);
                 shipmentAdapter.checkHasSelectAllCourier(false);
             }
         }
@@ -1658,6 +1690,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId) {
         checkoutAnalyticsCourierSelection.eventViewInformationAndWarningTickerInCheckout(tickerId);
+    }
+
+    @Override
+    public void sendAnalyticsViewPromoAfterAdjustItem(String msg) {
+        checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg);
     }
 
     @Override
@@ -2393,8 +2430,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCourierPromoCanceled(String shipperName, String promoCode) {
         if (shipmentAdapter.isCourierPromoStillExist()) {
-//            shipmentAdapter.cancelAutoApplyCoupon("");
-//            onRemovePromoCode(promoCode);
             showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
         }
     }
@@ -2475,6 +2510,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    void releaseBookingIfAny() {
+        if (cdLayout.getVisibility() == View.VISIBLE) {
+            shipmentPresenter.releaseBooking();
+        }
+    }
+
     @Override
     public void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList) {
         if (shippingCourierBottomsheet != null) {
@@ -2525,6 +2566,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
             this.bboPromoCodes = bboPromoCodes;
+            if (isOneClickShipment()) {
+                validateUsePromoRequest.setCartType("ocs");
+            } else {
+                validateUsePromoRequest.setCartType("default");
+            }
             return validateUsePromoRequest;
         } else {
             // First param data generation / initialization
@@ -2604,6 +2650,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
             this.bboPromoCodes = bboPromoCodes;
+            if (isOneClickShipment()) {
+                validateUsePromoRequest.setCartType("ocs");
+            } else {
+                validateUsePromoRequest.setCartType("default");
+            }
             return validateUsePromoRequest;
         }
     }
@@ -2653,7 +2704,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         promoRequest.setOrders(listOrderItem);
         promoRequest.setState(PARAM_CHECKOUT);
-        promoRequest.setCartType(PARAM_DEFAULT);
+        if (isOneClickShipment()) {
+            promoRequest.setCartType("ocs");
+        } else {
+            promoRequest.setCartType(PARAM_DEFAULT);
+        }
 
         if (isTradeIn()) {
             promoRequest.setTradeIn(1);
@@ -2881,6 +2936,43 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
     }
 
+    /*
+    * This method is to solve expired dialog not shown up after time expired in background
+    * Little caveat: what if device's time is tempered and not synchronized with server?
+    * Later: consider serverTimeOffset, need more time
+    * */
+    private void checkCampaignTimer() {
+        if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
+            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
+
+            long diff = TimeHelper.timeSinceNow(timer.getTimerExpired());
+
+            if (diff <= 0 && getFragmentManager() != null) {
+                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection);
+                dialog.show(getFragmentManager(), "expired dialog");
+            }
+        }
+    }
+
+    private void setCampaignTimer() {
+        if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
+            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
+
+            long diff = TimeHelper.timeBetweenRFC3339(timer.getTimerServer(), timer.getTimerExpired());
+
+            cdLayout.setVisibility(View.VISIBLE);
+            cdText.setText(timer.getTimerDescription());
+            cdView.setupTimerFromRemianingMillis(diff, () -> {
+                // need to check with resumed to avoid crash when time is expired in background
+                // time needs to be running in background
+                if (getFragmentManager() != null && isResumed()) {
+                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection);
+                    dialog.show(getFragmentManager(), "expired dialog");
+                }
+            });
+        }
+    }
+
     private void onResultFromSetTradeInPinpoint(Intent data) {
         if (data != null) {
             LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
@@ -2915,6 +3007,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel) {
+        if (lastApplyUiModel == null) return;
+
         ArrayList<com.tokopedia.purchase_platform.features.promo.data.request.Order> listOrder = new ArrayList<>();
         com.tokopedia.purchase_platform.features.promo.data.request.Order order = new com.tokopedia.purchase_platform.features.promo.data.request.Order();
         for (int i = 0; i < shipmentAdapter.getShipmentCartItemModelList().size(); i++) {

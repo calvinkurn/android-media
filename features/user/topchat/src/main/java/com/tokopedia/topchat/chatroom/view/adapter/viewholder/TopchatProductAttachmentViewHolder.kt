@@ -124,7 +124,7 @@ open class TopchatProductAttachmentViewHolder(
             }
 
             if (product.hasSizeVariant()) {
-                ll_variant_color?.show()
+                ll_variant_size?.show()
                 tv_variant_size?.text = product.sizeVariant
             } else {
                 ll_variant_size?.hide()

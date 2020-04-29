@@ -96,7 +96,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 Fail(MessageErrorException(getProductResp.errors))
             else
                 Success(isHasNextPage(page, perPage, getProductResp.totalData)
-                        to getProductResp.data.map { it.toProductViewModel(isMyShop(shopId)) })
+                        to getProductResp.data.map {
+                    ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), filterInput.etalaseMenu)
+                })
         }){
             productResponse.value = Fail(it)
         }
@@ -128,27 +130,4 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 
-    private fun ShopProduct.toProductViewModel(isMyOwnProduct: Boolean): ShopProductViewModel = ShopProductViewModel().also {
-        it.id = productId
-        it.name = name
-        it.displayedPrice = price.textIdr
-        it.originalPrice = campaign.originalPriceFmt
-        it.discountPercentage = campaign.discountedPercentage
-        it.imageUrl = primaryImage.original
-        it.imageUrl300 = primaryImage.resize300
-        it.totalReview = stats.reviewCount.toString()
-        it.rating = stats.rating.toDouble()
-        if (cashback.cashbackPercent > 0) {
-            it.cashback = cashback.cashbackPercent.toDouble()
-        }
-        it.isWholesale = flags.isWholesale
-        it.isPo = flags.isPreorder
-        it.isFreeReturn = flags.isFreereturn
-        it.isWishList = flags.isWishlist
-        it.productUrl = productUrl
-        it.isSoldOut = flags.isSold
-        it.isShowWishList = !isMyOwnProduct
-        it.isShowFreeOngkir = freeOngkir.isActive
-        it.freeOngkirPromoIcon = freeOngkir.imgUrl
-    }
 }

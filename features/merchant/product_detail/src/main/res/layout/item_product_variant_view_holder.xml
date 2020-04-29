@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingTop="@dimen/dp_16">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvContainerVariant"

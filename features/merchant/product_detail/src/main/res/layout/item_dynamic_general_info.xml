@@ -7,7 +7,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
+    android:paddingBottom="@dimen/dp_16"
     tools:ignore="RtlSymmetry">
+
+    <View
+        android:id="@+id/info_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/grey_separator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_general_info" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -67,7 +76,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/info_separator"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
         app:layout_constraintStart_toStartOf="@+id/pdp_icon"
         app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
@@ -104,12 +113,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/info_separator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/grey_separator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_general_info" />
 </LinearLayout>

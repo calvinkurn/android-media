@@ -14,6 +14,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.audio.AudioManager
@@ -298,4 +299,10 @@ open class GiftBoxBaseFragment : Fragment() {
         imageSound.animate().alpha(1f).setDuration(300L).start()
     }
 
+    fun isConnectedToInternet(): Boolean {
+        context?.let {
+            return DeviceConnectionInfo.isConnectCellular(it) || DeviceConnectionInfo.isConnectWifi(it)
+        }
+        return false
+    }
 }

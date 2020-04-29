@@ -355,6 +355,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_mainapp_enable_event_revamp</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_mainapp_enable_slice_recharge</key>
         <value>true</value>
     </entry>
@@ -396,7 +400,7 @@
     </entry>
     <entry>
         <key>android_async_onboarding_create</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_async_openhome_event</key>
@@ -425,5 +429,9 @@
     <entry>
         <key>android_async_checkappsignature</key>
         <value>true</value>
+    </entry>
+    <entry>
+        <key>excluded_amp</key>
+        <value>stories</value>
     </entry>
 </defaultsMap>

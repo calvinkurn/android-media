@@ -51,7 +51,9 @@ data class BannerSlidesModel(
         @SerializedName("topads_view_url")
         val topadsViewUrl: String = "",
         @SerializedName("type")
-        var type: String = ""
+        var type: String = "",
+        @SerializedName("campaignCode")
+        val campaignCode: String = ""
 ): ImpressHolder() {
 
     var isImpressed = false

@@ -45,6 +45,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private TickerData tickerData;
     private AddressesData addressesData;
     private DisabledFeaturesDetailData disabledFeaturesDetailData;
+    private CampaignTimerUi campaignTimerUi;
     private LastApplyUiModel lastApplyData;
     private PotentialGainedPointsData potentialGainedPointsData;
     private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
@@ -249,6 +250,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.disabledFeaturesDetailData = disabledFeaturesDetailData;
     }
 
+    public CampaignTimerUi getCampaignTimerUi() {
+        return campaignTimerUi;
+    }
+
+    public void setCampaignTimerUi(CampaignTimerUi campaignTimerUi) {
+        this.campaignTimerUi = campaignTimerUi;
+    }
+
     public LastApplyUiModel getLastApplyData() { return lastApplyData; }
 
     public void setLastApplyData(LastApplyUiModel lastApplyUIModel) { this.lastApplyData = lastApplyUIModel; }
@@ -293,6 +302,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         tickerData = in.readParcelable(TickerData.class.getClassLoader());
         addressesData = in.readParcelable(AddressesData.class.getClassLoader());
         disabledFeaturesDetailData = in.readParcelable(DisabledFeaturesDetailData.class.getClassLoader());
+        campaignTimerUi = in.readParcelable(CampaignTimerUi.class.getClassLoader());
         lastApplyData = in.readParcelable(LastApplyUiModel.class.getClassLoader());
         potentialGainedPointsData = in.readParcelable(PotentialGainedPointsData.class.getClassLoader());
         promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
@@ -322,6 +332,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(tickerData, flags);
         dest.writeParcelable(addressesData, flags);
         dest.writeParcelable(disabledFeaturesDetailData, flags);
+        dest.writeParcelable(campaignTimerUi, flags);
         dest.writeParcelable(lastApplyData, flags);
         dest.writeParcelable(potentialGainedPointsData, flags);
         dest.writeParcelable(promoCheckoutErrorDefault, flags);

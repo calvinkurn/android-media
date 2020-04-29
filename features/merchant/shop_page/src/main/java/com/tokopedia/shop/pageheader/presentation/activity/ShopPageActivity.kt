@@ -7,9 +7,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HEADER_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_WEB_VIEW_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
@@ -29,7 +34,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
                 }
     }
 
+    private var performanceMonitoringShopHeader: PerformanceMonitoring? = null
+    private var performanceMonitoringShopProductTab: PerformanceMonitoring? = null
+    private var performanceMonitoringShopHomeTab: PerformanceMonitoring? = null
+    private var performanceMonitoringShopHomeWebViewTab: PerformanceMonitoring? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         super.onCreate(savedInstanceState)
     }
@@ -47,6 +59,29 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
     override fun onBackPressed() {
         super.onBackPressed()
         (fragment as? ShopPageFragment)?.onBackPressed()
+    }
+
+    fun stopShopHeaderPerformanceMonitoring() {
+        performanceMonitoringShopHeader?.stopTrace()
+    }
+
+    fun stopShopProductTabPerformanceMonitoring() {
+        performanceMonitoringShopProductTab?.stopTrace()
+    }
+
+    fun stopShopHomeTabPerformanceMonitoring() {
+        performanceMonitoringShopHomeTab?.stopTrace()
+    }
+
+    fun stopShopHomeWebViewTabPerformanceMonitoring() {
+        performanceMonitoringShopHomeWebViewTab?.stopTrace()
+    }
+
+    private fun initPerformanceMonitoring() {
+        performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
+        performanceMonitoringShopProductTab= PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
+        performanceMonitoringShopHomeTab= PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
+        performanceMonitoringShopHomeWebViewTab= PerformanceMonitoring.start(SHOP_HOME_WEB_VIEW_TRACE)
     }
 
     private fun checkIfAppLinkToShopInfo() {

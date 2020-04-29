@@ -242,7 +242,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
             coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
             Handler().postDelayed({
                 if (coachMark.isAdded && coachMark.isVisible) {
-                    coachMark.dismiss()
+                    coachMark.dismissAllowingStateLoss()
                 }
                 coachMarkCache.setSearchCoachMarkIsShowed()
             }, DELAY_THREE_SECONDS)

@@ -33,15 +33,17 @@ class DeviceInfoCache(context: Context) {
         }
     }
 
-    fun setImei(imei: String) {
+    fun setImei(imei: String):String {
+        val hashImei = if (imei.isEmpty()) {
+            ""
+        } else {
+            getMD5Hash(imei)
+        }
         sp.edit()
-            .putString(KEY_IMEI, if (imei.isEmpty()) {
-                ""
-            } else {
-                getMD5Hash(imei)
-            })
+            .putString(KEY_IMEI, hashImei)
             .putLong(KEY_IMEI_TIMESTAMP, System.currentTimeMillis())
             .apply()
+        return hashImei
     }
 
     fun clearImei() {

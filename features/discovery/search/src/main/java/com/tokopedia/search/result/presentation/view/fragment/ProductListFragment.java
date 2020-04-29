@@ -65,6 +65,7 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
@@ -580,6 +581,7 @@ public class ProductListFragment
                     @Override
                     public void onGlobalLayout() {
                         if (searchPerformanceMonitoringListener != null) {
+                            searchPerformanceMonitoringListener.stopRenderPerformanceMonitoring();
                             searchPerformanceMonitoringListener.stopPerformanceMonitoring();
                         }
 
@@ -734,16 +736,43 @@ public class ProductListFragment
 
     @Override
     public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
-        if (item.isTopAds()) {
-            new ImpresionTask().execute(item.getTopadsImpressionUrl());
-            Product product = new Product();
-            product.setId(item.getProductID());
-            product.setName(item.getProductName());
-            product.setPriceFormat(item.getPrice());
-            product.setCategory(new Category(item.getCategoryID()));
-            product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
-            TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
+        if (presenter == null) return;
+
+        presenter.onProductImpressed(item, adapterPosition);
+    }
+
+    @Override
+    public void sendTopAdsTrackingUrl(String topAdsTrackingUrl) {
+        new ImpresionTask().execute(topAdsTrackingUrl);
+    }
+
+    @Override
+    public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition) {
+        Product product = createTopAdsProductForTracking(item);
+
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
+    }
+
+    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
+        Product product = new Product();
+        product.setId(item.getProductID());
+        product.setName(item.getProductName());
+        product.setPriceFormat(item.getPrice());
+        product.setCategory(new Category(item.getCategoryID()));
+        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
+
+        return product;
+    }
+
+    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
+        if (item != null && item.getFreeOngkirViewModel() != null) {
+            return new FreeOngkir(
+                    item.getFreeOngkirViewModel().isActive(),
+                    item.getFreeOngkirViewModel().getImageUrl()
+            );
         }
+
+        return null;
     }
 
     @Override
@@ -774,61 +803,52 @@ public class ProductListFragment
 
     @Override
     public void onItemClicked(ProductItemViewModel item, int adapterPosition) {
+        if (presenter == null) return;
+
+        presenter.onProductClick(item, adapterPosition);
+    }
+
+    @Override
+    public void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition) {
+        Product product = createTopAdsProductForTracking(item);
+
+        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, adapterPosition, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
+    }
+
+    @Override
+    public void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId) {
+        String filterSortParams
+                = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+        String searchRef = getSearchRef();
+        SearchTracking.trackEventClickSearchResultProduct(
+                item,
+                item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
+                item.getPageNumber(),
+                getQueryKey(),
+                filterSortParams
+        );
+    }
+
+    @Override
+    public void routeToProductDetail(ProductItemViewModel item, int adapterPosition) {
         Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
-            sendItemClickTrackingEvent(item, adapterPosition);
             startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
         }
     }
 
-    private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
-        String userId = getUserId();
-        if (item.isTopAds()) {
-            sendItemClickTrackingEventForTopAdsItem(item, pos);
+    private Intent getProductIntent(String productId, String warehouseId) {
+        if (getContext() == null) {
+            return null;
+        }
+
+        if (!TextUtils.isEmpty(warehouseId)) {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId);
         } else {
-            String filterSortParams
-                    = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
-            String searchRef = getSearchRef();
-            SearchTracking.trackEventClickSearchResultProduct(
-                    item,
-                    item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
-                    item.getPageNumber(),
-                    getQueryKey(),
-                    filterSortParams
-            );
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
-    }
-
-    private void sendItemClickTrackingEventForTopAdsItem(ProductItemViewModel item, int pos) {
-        new ImpresionTask().execute(item.getTopadsClickUrl());
-
-        Product product = createTopAdsProductForTracking(item);
-
-        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, pos, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
-    }
-
-    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
-        Product product = new Product();
-        product.setId(item.getProductID());
-        product.setName(item.getProductName());
-        product.setPriceFormat(item.getPrice());
-        product.setCategory(new Category(item.getCategoryID()));
-        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
-
-        return product;
-    }
-
-    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
-        if (item != null && item.getFreeOngkirViewModel() != null) {
-            return new FreeOngkir(
-                    item.getFreeOngkirViewModel().isActive(),
-                    item.getFreeOngkirViewModel().getImageUrl()
-            );
-        }
-
-        return null;
     }
 
     @Override
@@ -878,18 +898,6 @@ public class ProductListFragment
         productCardOptionsModel.setRecommendation(true);
 
         return productCardOptionsModel;
-    }
-
-    private Intent getProductIntent(String productId, String warehouseId) {
-        if (getContext() == null) {
-            return null;
-        }
-
-        if (!TextUtils.isEmpty(warehouseId)) {
-            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId);
-        } else {
-            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        }
     }
 
     @Override
@@ -976,8 +984,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void onSuggestionClicked(String queryParams) {
-        performNewProductSearch(queryParams);
+    public void onSuggestionClicked(SuggestionViewModel suggestionViewModel) {
+        SearchTracking.eventClickSuggestedSearch(getQueryKey(), suggestionViewModel.getSuggestion());
+        performNewProductSearch(suggestionViewModel.getSuggestedQuery());
     }
 
     @Override
@@ -1148,13 +1157,26 @@ public class ProductListFragment
         if (filterController == null || searchParameter == null
                 || getFilters() == null || getSort() == null) return;
 
-        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
-        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+        initFilters();
         initSelectedSort();
+
+        refreshAdapterForQuickFilter();
 
         if (isListEmpty) {
             refreshAdapterForEmptySearch();
         }
+    }
+
+    private void initFilters() {
+        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
+        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+        quickFilterController.appendFilterList(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+    }
+
+    private void refreshAdapterForQuickFilter() {
+        if (adapter == null) return;
+
+        adapter.refreshQuickFilter();
     }
 
     private void setFilterData(List<Filter> filters) {
@@ -1636,5 +1658,33 @@ public class ProductListFragment
         }
 
         return "";
+    }
+
+    @Override
+    public void stopPreparePagePerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.stopPreparePagePerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void startNetworkRequestPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.startNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void stopNetworkRequestPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.stopNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void startRenderPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.startRenderPerformanceMonitoring();
+        }
     }
 }

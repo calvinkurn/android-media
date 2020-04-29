@@ -55,7 +55,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -462,7 +462,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             rv_insurance_list.adapter = flightInsuranceAdapter
             flightInsuranceAdapter.listener = object : FlightInsuranceAdapter.ViewHolder.ActionListener {
                 override fun onClickInsuranceTnc(tncUrl: String, tncTitle: String) {
-                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(activity, tncUrl, tncTitle))
+                    RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, tncTitle, tncUrl)
                 }
 
                 override fun onInsuranceChecked(insurance: FlightCart.Insurance, checked: Boolean) {
@@ -717,7 +717,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                         intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
-                        requestCode = REQUST_CODE_PROMO_LIST
+                        requestCode = REQUEST_CODE_PROMO_LIST
                     } else {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_IS_USE, true)

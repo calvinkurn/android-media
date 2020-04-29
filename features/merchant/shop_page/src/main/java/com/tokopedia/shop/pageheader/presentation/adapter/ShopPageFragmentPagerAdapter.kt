@@ -16,6 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.lang.ref.WeakReference
 
@@ -86,5 +87,17 @@ internal class ShopPageFragmentPagerAdapter(
     fun setTabData(tabData: Pair<List<Int>, List<Fragment>>) {
         listTitleIcon = tabData.first
         listFragment = tabData.second
+    }
+
+    fun getFragmentPosition(classType: Class<*>): Int {
+        return listFragment.filterIsInstance(classType).firstOrNull()?.let {
+            return listFragment.indexOf(it).takeIf { index ->
+                index >= 0
+            } ?: 0
+        } ?: 0
+    }
+
+    fun isFragmentObjectExists(classType: Class<*>): Boolean {
+        return listFragment.filterIsInstance(classType).firstOrNull() != null
     }
 }
