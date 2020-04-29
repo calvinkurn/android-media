@@ -23,8 +23,11 @@ class GetWishlistUseCase @Inject constructor(private val context: Context) : Use
     companion object {
         private val PAGE = "page"
         private val COUNT = "count"
+        private val FILTER = "filter"
+        private val SOURCE = "source"
         private val DEFAULT_PAGE = 1
         private val DEFAULT_COUNT = 10
+        private val SOURCE_CART = "cart"
     }
 
     override fun createObservable(p0: RequestParams?): Observable<GetWishlistResponse> {
@@ -32,6 +35,7 @@ class GetWishlistUseCase @Inject constructor(private val context: Context) : Use
 
         variables[PAGE] = DEFAULT_PAGE
         variables[COUNT] = DEFAULT_COUNT
+        variables[FILTER] = mapOf(SOURCE to SOURCE_CART)
 
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.query_get_wishlist),
