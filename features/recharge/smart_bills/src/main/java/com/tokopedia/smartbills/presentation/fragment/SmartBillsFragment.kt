@@ -87,12 +87,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
         viewModel.statementMonths.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.isNotEmpty()) {
-
-                    } else {
-                        view_smart_bills_shimmering.hide()
-                        adapter.showGetListError(MessageErrorException("Terjadi kesalahan pada pengambilan data"))
-                    }
+                    // TODO: Run statement bills query with info from statement months
                 }
                 is Fail -> {
                     view_smart_bills_shimmering.hide()
@@ -139,14 +134,16 @@ class SmartBillsFragment : BaseDaggerFragment(),
                         NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.smart_bills_checkout_error))
 
                         for (errorItem in it.data.attributes.errors) {
-                            val bill = adapter.data[errorItem.index]
-                            bill.errorMessage = if (errorItem.errorMessage.isNotEmpty()) {
-                                errorItem.errorMessage
-                            } else {
-                                getString(R.string.smart_bills_item_default_error)
+                            if (errorItem.index >= 0) {
+                                val bill = adapter.data[errorItem.index]
+                                bill.errorMessage = if (errorItem.errorMessage.isNotEmpty()) {
+                                    errorItem.errorMessage
+                                } else {
+                                    getString(R.string.smart_bills_item_default_error)
+                                }
+                                adapter.data[errorItem.index] = bill
+                                adapter.notifyItemChanged(errorItem.index)
                             }
-                            adapter.data[errorItem.index] = bill
-                            adapter.notifyItemChanged(errorItem.index)
                         }
                     }
                 }

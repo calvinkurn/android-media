@@ -4,17 +4,19 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common.payment.model.TopPayBaseModel
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
+import com.tokopedia.common_digital.cart.data.entity.response.Parameter
 
-class RechargeMultiCheckoutResponse: TopPayBaseModel {
+class RechargeMultiCheckoutResponse(
     @SerializedName("type")
     @Expose
-    val type: String = ""
+    val type: String = "",
     @SerializedName("id")
     @Expose
-    val id: String = ""
+    val id: String = "",
     @SerializedName("attributes")
     @Expose
-    val attributes: MultiCheckoutReponseAttributes = MultiCheckoutReponseAttributes()
+    val attributes: MultiCheckoutResponseAttributes = MultiCheckoutResponseAttributes()
+): TopPayBaseModel {
 
     override fun getRedirectUrlToPass(): String {
         return attributes.redirectUrl ?: ""
@@ -36,13 +38,13 @@ class RechargeMultiCheckoutResponse: TopPayBaseModel {
         return id
     }
 
-    class MultiCheckoutReponseAttributes: AttributesCheckout() {
+    class MultiCheckoutResponseAttributes: AttributesCheckout() {
             @SerializedName("all_success")
             @Expose
-            val allSuccess: Boolean = false
+            var allSuccess: Boolean = false
             @SerializedName("errors")
             @Expose
-            val errors: List<Error> = listOf()
+            var errors: List<Error> = listOf()
     }
 
     class Error(

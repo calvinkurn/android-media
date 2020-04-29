@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.smartbills.util.SmartBillsDispatchersProvider
@@ -47,7 +48,13 @@ class SmartBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
 
-            mutableStatementMonths.postValue(Success(data.response))
+            if (data.response.isNotEmpty()) {
+                mutableStatementMonths.postValue(Success(data.response))
+            } else {
+                mutableStatementMonths.postValue(
+                    Fail(MessageErrorException("Terdapat kesalahan pada pengambilan data"))
+                )
+            }
         }) {
             mutableStatementMonths.postValue(Fail(it))
         }
@@ -69,15 +76,21 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun runMultiCheckout(request: MultiCheckoutRequest, userId: String) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.IO) {
-                smartBillsRepository.postMultiCheckout(request, userId.generateRechargeCheckoutToken())
-            }
+    fun runMultiCheckout(request: MultiCheckoutRequest?, userId: String) {
+        if (request != null) {
+            launchCatchError(block = {
+                val data = withContext(dispatcher.IO) {
+                    smartBillsRepository.postMultiCheckout(request, userId.generateRechargeCheckoutToken())
+                }
 
-            mutableMultiCheckout.postValue(Success(data))
-        }) {
-            mutableMultiCheckout.postValue(Fail(it))
+                mutableMultiCheckout.postValue(Success(data))
+            }) {
+                mutableMultiCheckout.postValue(Fail(it))
+            }
+        } else {
+            mutableMultiCheckout.postValue(
+                    Fail(MessageErrorException("Terjadi kesalahan pada pemrosesan data"))
+            )
         }
     }
 
@@ -89,11 +102,14 @@ class SmartBillsViewModel @Inject constructor(
         return mapOf(PARAM_MONTH to month, PARAM_YEAR to year)
     }
 
-    fun createMultiCheckoutParams(items: List<RechargeBills>): MultiCheckoutRequest {
-        val requestData = items.mapIndexed { index, item ->
-            return@mapIndexed MultiCheckoutRequest.MultiCheckoutRequestItem(index, item.productID, item.checkoutFields, "")
-        }
-        return MultiCheckoutRequest(MultiCheckoutRequest.MultiCheckoutRequestAttributes(requestData))
+    fun createMultiCheckoutParams(bills: List<RechargeBills>): MultiCheckoutRequest? {
+        val validBills = bills.filter { it.index >= 0 }
+        return if (validBills.isNotEmpty()) {
+            val requestData = validBills.map {
+                MultiCheckoutRequest.MultiCheckoutRequestItem(it.index, it.productID, it.checkoutFields, "")
+            }
+            MultiCheckoutRequest(MultiCheckoutRequest.MultiCheckoutRequestAttributes(requestData))
+        } else null
     }
 
     companion object {
