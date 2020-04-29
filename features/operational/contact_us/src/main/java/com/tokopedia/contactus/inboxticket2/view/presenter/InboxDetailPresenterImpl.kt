@@ -3,7 +3,6 @@ package com.tokopedia.contactus.inboxticket2.view.presenter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
@@ -24,6 +23,9 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.In
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
+import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
+import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
+import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.contactus.orderquery.data.CreateTicketResult
 import com.tokopedia.contactus.orderquery.data.ImageUpload
@@ -31,10 +33,7 @@ import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Co
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.SELECTED_ITEM
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.*
-import org.json.JSONException
-import org.json.JSONObject
 import rx.Subscriber
-import java.io.File
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
@@ -46,16 +45,18 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                                private val inboxOptionUseCase: InboxOptionUseCase,
                                private val submitRatingUseCase: SubmitRatingUseCase,
                                private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
-                               private val uploadImageUseCase: UploadImageUseCase) : InboxDetailPresenter, CustomEditText.Listener, CoroutineScope {
+                               private val uploadImageUseCase: UploadImageUseCase,
+                               private val defaultDispatcher: CoroutineDispatcher) : InboxDetailPresenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxDetailView? = null
-    private var mTicketDetail: Tickets? = null
-    private var fileUploaded: String? = null
-    private val searchIndices: ArrayList<Int> by lazy { ArrayList<Int>() }
+    var mTicketDetail: Tickets? = null
+        get() = field
+        private set
+    val searchIndices: ArrayList<Int> by lazy { ArrayList<Int>() }
     private val no = "NO"
-    private var error: String? = null
     private val rateCommentID: String? = null
-    private var next = 0
-    private var utils: Utils? = null
+    var next = 0
+        get() = field
+        private set
     private var userData: CreatedBy? = null
     private val reasonList: ArrayList<String> by lazy { ArrayList<String>() }
     private var isIssueClosed = false
@@ -67,7 +68,6 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     override fun attachView(view: InboxBaseView?) {
         mView = view as InboxDetailView
         reasonList.addAll(Arrays.asList(*mView?.getActivity()?.resources?.getStringArray(R.array.bad_reason_array)))
-        ticketDetails
     }
 
 
@@ -96,13 +96,15 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
                     if (chipGetInboxDetail?.messageError?.size ?: 0 > 0) {
                         mView?.showErrorMessage(chipGetInboxDetail?.messageError?.get(0))
+                        mView?.hideProgressBar()
                     } else {
+                        mView?.hideProgressBar()
                         mView?.showMessage(mView?.getActivity()?.getString(R.string.cu_terima_kasih_atas_masukannya)
                                 ?: "")
                         mView?.showIssueClosed()
                         isIssueClosed = true
                         delay(DELAY_FOUR_MILLIS.toLong())
-                        ticketDetails
+                        getTicketDetails(getTicketId())
                     }
 
                 },
@@ -130,7 +132,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                 mView?.toggleSearch(View.GONE)
                 if (mTicketDetail?.isShowRating == true) {
                     mView?.toggleTextToolbar(View.GONE)
-                } else if (mTicketDetail?.status.equals(getUtils()?.CLOSED, ignoreCase = true)
+                } else if (mTicketDetail?.status.equals(CLOSED, ignoreCase = true)
                         && mTicketDetail?.isShowRating != true) {
                     mView?.showIssueClosed()
                 } else {
@@ -150,7 +152,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     override fun reAttachView() {}
     override fun clickCloseSearch() {}
     override fun refreshLayout() {
-        ticketDetails
+        getTicketDetails(getTicketId())
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -164,57 +166,54 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     }
 
     override fun onSearchTextChanged(text: String) {
-        var mText = text
-        mText = mText.trim()
-        if (mText.isNotEmpty()) {
-            search(mText)
-        } else {
-            searchIndices.clear()
-        }
+        onSearchSubmitted(text)
     }
 
-    private val ticketDetails: Unit
-        get() {
-            mView?.showProgressBar()
-            var tId = mView?.getActivity()?.intent?.getStringExtra(InboxDetailActivity.PARAM_TICKET_T_ID)
-            if (tId == null) {
-                tId = mView?.getActivity()?.intent?.getStringExtra(InboxDetailActivity.PARAM_TICKET_ID)
-            }
-            launchCatchError(
-                    block = {
-                        val requestParams = inboxOptionUseCase.createRequestParams(tId)
-                        val chipGetInboxDetail = inboxOptionUseCase.getChipInboxDetail(requestParams)
-                        if (chipGetInboxDetail?.data?.isSuccess == 1) {
-                            mTicketDetail = chipGetInboxDetail.data?.tickets
-                            val commentsItems =
-                                    getCommentsWithTopItem(mTicketDetail?.comments, getTopItem(mTicketDetail))
-                            for (item in commentsItems) {
-                                if (userData == null) {
-                                    if (item.createdBy?.role == "customer") {
-                                        userData = item.createdBy
-                                    }
+    override fun getTicketDetails(ticketId: String?) {
+
+        mView?.showProgressBar()
+        launchCatchError(
+                block = {
+                    val requestParams = inboxOptionUseCase.createRequestParams(ticketId)
+                    val chipGetInboxDetail = inboxOptionUseCase.getChipInboxDetail(requestParams)
+                    if (chipGetInboxDetail?.data?.isSuccess == 1) {
+                        mTicketDetail = chipGetInboxDetail.data?.tickets
+                        val commentsItems =
+                                getCommentsWithTopItem(mTicketDetail?.comments, getTopItem(mTicketDetail))
+                        for (item in commentsItems) {
+                            if (userData == null) {
+                                if (item.createdBy?.role == "customer") {
+                                    userData = item.createdBy
                                 }
-                                val createTime = getUtils()?.getDateTime(item.createTime)
-                                item.createTime = createTime
-                                item.shortTime = getShortTime(createTime)
                             }
-                            if (isIssueClosed) {
-                                mTicketDetail?.isShowRating = false
-                                isIssueClosed = false
-                            }
-                            mTicketDetail?.let { mView?.renderMessageList(it) }
-                            mView?.hideProgressBar()
-                        } else if (chipGetInboxDetail?.data?.isSuccess == 0) {
-                            mView?.showNoTicketView(chipGetInboxDetail.messageError)
+                            val createTime = getUtils().getDateTime(item.createTime)
+                            item.createTime = createTime
+                            item.shortTime = getShortTime(createTime)
                         }
-
-
-                    },
-                    onError = {
-                        it.printStackTrace()
+                        if (isIssueClosed) {
+                            mTicketDetail?.isShowRating = false
+                            isIssueClosed = false
+                        }
+                        mTicketDetail?.let { mView?.renderMessageList(it) }
+                        mView?.hideProgressBar()
+                    } else if (chipGetInboxDetail?.data?.isSuccess == 0) {
+                        mView?.showNoTicketView(chipGetInboxDetail.messageError)
                     }
-            )
+
+                },
+                onError = {
+                    it.printStackTrace()
+                }
+        )
+    }
+
+    override fun getTicketId(): String? {
+        var tId = mView?.getActivity()?.intent?.getStringExtra(InboxDetailActivity.PARAM_TICKET_T_ID)
+        if (tId == null) {
+            tId = mView?.getActivity()?.intent?.getStringExtra(InboxDetailActivity.PARAM_TICKET_ID)
         }
+        return tId
+    }
 
     private fun getShortTime(createTime: String?): String? {
         var count = 0
@@ -252,41 +251,14 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         return topItem
     }
 
-    private fun getFileUploaded(attachment: List<ImageUpload>): String {
-        val reviewPhotos = JSONObject()
-        try {
-            for (image in attachment) {
-                reviewPhotos.put(image.imageId, image.picObj)
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return reviewPhotos.toString()
-    }
-
-    private fun fileSizeValid(fileLoc: String): Boolean {
-        val file = File(fileLoc)
-        val size = file.length()
-        return size / 1024 < 10240
-    }
-
-    private fun isBitmapDimenValid(fileLoc: String): Boolean {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(File(fileLoc).absolutePath, options)
-        val imageHeight = options.outHeight
-        val imageWidth = options.outWidth
-        return !(imageHeight < 300 && imageWidth < 300)
-    }
-
     override fun onImageSelect(image: ImageUpload) {
-        if (!fileSizeValid(image.fileLoc)) {
+        if (!getUtils().fileSizeValid(image.fileLoc)) {
             showErrorMessage(MESSAGE_WRONG_FILE_SIZE)
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError1)
-        } else if (!isBitmapDimenValid(image.fileLoc)) {
+        } else if (!getUtils().isBitmapDimenValid(image.fileLoc)) {
             showErrorMessage(MESSAGE_WRONG_DIMENSION)
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
@@ -326,100 +298,99 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         mView?.showSendProgress()
         val isValid = isUploadImageValid
         when {
-            isValid >= 1 -> {
-                mView?.getActivity()?.let {
-                    launchCatchError(
-                            block = {
-                                val networkCalculator = uploadImageUseCase.getNetworkCalculator()
-                                val networkCalculatorList =
-                                        uploadImageUseCase.getNetworkCalculatorList(
-                                                mView?.imageList)
-                                val files = uploadImageUseCase.getFile(mView?.imageList)
-                                val list = uploadImageUseCase.uploadFile(
-                                        mView?.imageList,
-                                        networkCalculatorList,
-                                        files)
-                                var attachmentString = StringBuilder()
-                                list.forEach {
-                                    attachmentString.append("~").append(it.imageId)
-                                }
-                                attachmentString = StringBuilder(attachmentString.toString().replace("~~", "~"))
-                                if (attachmentString.isNotEmpty()) attachmentString = StringBuilder(attachmentString.substring(1))
-                                val queryMap = postMessageUseCase.setQueryMap(
-                                        mTicketDetail?.id ?: "",
-                                        mView?.userMessage ?: "",
-                                        1,
-                                        attachmentString.toString())
-                                fileUploaded = getFileUploaded(list)
+            isValid >= 1 -> sendMessageWithImages()
+            isValid == 0 -> sendTextMessage()
+            isValid == -1 -> mView?.setSnackBarErrorMessage(mView?.getActivity()?.resources?.getString(R.string.invalid_images)
+                    ?: "", true)
 
-                                val createTicketListResponse = postMessageUseCase.getCreateTicketResult(queryMap)
-                                val createTicket = createTicketListResponse?.data as CreateTicketResult
-
-                                if (createTicket.isSuccess > 0) {
-                                    if (createTicket.postKey.isNotEmpty()) {
-                                        val queryMap2 = postMessageUseCase2.setQueryMap(
-                                                fileUploaded ?: "",
-                                                createTicket.postKey)
-                                        sendImages(queryMap2)
-                                    } else {
-                                        error = createTicketListResponse.errorMessage?.get(0) ?: ""
-                                    }
-                                } else {
-                                    error = createTicketListResponse.errorMessage?.get(0) ?: ""
-                                }
-
-                            },
-                            onError = {
-                                it.printStackTrace()
-                            }
-                    )
-
-                }
-            }
-            isValid == 0 -> {
-                launchCatchError(
-                        block = {
-                            mView?.hideSendProgress()
-                            val queryMap = postMessageUseCase.setQueryMap(mTicketDetail?.id
-                                    ?: "", mView?.userMessage ?: "", 0, "")
-                            val ticketListResponse = postMessageUseCase.getCreateTicketResult(queryMap)
-                            val response = ticketListResponse?.data as CreateTicketResult
-                            if (response.isSuccess > 0) {
-                                addNewLocalComment()
-                            } else {
-                                mView?.setSnackBarErrorMessage(ticketListResponse.errorMessage?.get(0)
-                                        ?: "", true)
-                            }
-
-                        },
-                        onError = {
-                            mView?.hideSendProgress()
-                            it.printStackTrace()
-                        }
-                )
-            }
-            isValid == -1 -> {
-                mView?.setSnackBarErrorMessage(mView?.getActivity()?.resources?.getString(R.string.invalid_images)
-                        ?: "", true)
-            }
         }
     }
 
+    private fun sendTextMessage() {
+        launchCatchError(
+                block = {
+                    mView?.hideSendProgress()
+                    val queryMap = postMessageUseCase.setQueryMap(mTicketDetail?.id
+                            ?: "", mView?.userMessage ?: "", 0, "")
+                    val ticketListResponse = postMessageUseCase.getCreateTicketResult(queryMap)
+                    val response = ticketListResponse?.data as CreateTicketResult
+                    if (response.isSuccess > 0) {
+                        addNewLocalComment()
+                    } else {
+                        mView?.setSnackBarErrorMessage(ticketListResponse.errorMessage?.get(0)
+                                ?: "", true)
+                    }
+
+                },
+                onError = {
+                    mView?.hideSendProgress()
+                    it.printStackTrace()
+                }
+        )
+    }
+
+    private fun sendMessageWithImages() {
+        launchCatchError(
+                block = {
+                    val networkCalculatorList =
+                            uploadImageUseCase.getNetworkCalculatorList(
+                                    mView?.imageList)
+                    val files = uploadImageUseCase.getFile(mView?.imageList)
+                    val list = uploadImageUseCase.uploadFile(
+                            mView?.imageList,
+                            networkCalculatorList,
+                            files)
+                    val queryMap = postMessageUseCase.setQueryMap(
+                            mTicketDetail?.id ?: "",
+                            mView?.userMessage ?: "",
+                            1,
+                            getUtils().getAttachmentAsString(list))
+
+                    val createTicketListResponse = postMessageUseCase.getCreateTicketResult(queryMap)
+                    val createTicket = createTicketListResponse?.data as CreateTicketResult
+
+                    if (createTicket.isSuccess > 0) {
+                        if (createTicket.postKey.isNotEmpty()) {
+                            val queryMap2 = postMessageUseCase2.setQueryMap(
+                                    getUtils().getFileUploaded(list),
+                                    createTicket.postKey)
+                            sendImages(queryMap2)
+                        } else {
+                            mView?.hideSendProgress()
+                            mView?.setSnackBarErrorMessage(createTicketListResponse.errorMessage?.get(0)
+                                    ?: "", true)
+                        }
+                    } else {
+                        mView?.hideSendProgress()
+                        mView?.setSnackBarErrorMessage(createTicketListResponse.errorMessage?.get(0)
+                                ?: "", true)
+                    }
+
+                },
+                onError = {
+                    mView?.hideSendProgress()
+                    mView?.setSnackBarErrorMessage(it.message.toString(), true)
+                    it.printStackTrace()
+                }
+        )
+    }
+
     private fun sendImages(queryMap: MutableMap<String, Any>) {
-        mView?.hideSendProgress()
         launchCatchError(
                 block = {
                     val response = postMessageUseCase2.getInboxDataResponse(queryMap)
                     val stepTwoResponse = response?.data as StepTwoResponse
                     if (stepTwoResponse.isSuccess > 0) {
+                        mView?.hideSendProgress()
                         addNewLocalComment()
                     } else {
+                        mView?.hideSendProgress()
                         mView?.setSnackBarErrorMessage(response.errorMessage?.get(0) ?: "", true)
                     }
                 },
                 onError = {
                     mView?.hideSendProgress()
-                    mView?.setSnackBarErrorMessage(error ?: "", true)
+                    mView?.setSnackBarErrorMessage(it.message.toString(), true)
                     it.printStackTrace()
                 })
 
@@ -451,7 +422,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     override fun getNextResult(): Int {
         return if (searchIndices.size > 0) {
             if (next >= -1 && next < searchIndices.size.minus(1)) {
-                mView?.setCurrentRes(++next + 1)
+                next += 1
+                mView?.setCurrentRes(next + 1)
                 searchIndices[next]
             } else {
                 mView?.showMessage(mView?.getActivity()?.resources?.getString(R.string.cu_no_more_results)
@@ -482,29 +454,16 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         }
     }
 
-    private val isUploadImageValid: Int
+    val isUploadImageValid: Int
         get() {
             val uploadImageList = mView?.imageList
             if (mTicketDetail?.isNeedAttachment == true && (uploadImageList == null || uploadImageList.isEmpty())) {
-                mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.attachment_required)
-                        ?: "", true)
-                mView?.hideSendProgress()
-                ContactUsTracking.sendGTMInboxTicket("",
-                        InboxTicketTracking.Category.EventInboxTicket,
-                        InboxTicketTracking.Action.EventNotAttachImageRequired,
-                        "")
+                showMessageAndSendEvent()
                 return -2
             }
             val numOfImages = uploadImageList?.size ?: 0
             if (numOfImages > 0) {
-                var count = 0
-                for (item in 0 until numOfImages) {
-                    val image = uploadImageList?.get(item)
-                    if (fileSizeValid(image?.fileLoc ?: "") && isBitmapDimenValid(image?.fileLoc
-                                    ?: "")) {
-                        count++
-                    }
-                }
+                val count = getUtils().verifyAllImages(uploadImageList ?: listOf())
                 return if (numOfImages == count) {
                     numOfImages
                 } else {
@@ -515,6 +474,17 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
             }
             return -1
         }
+
+    private fun showMessageAndSendEvent() {
+        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.attachment_required)
+                ?: "", true)
+        mView?.hideSendProgress()
+        ContactUsTracking.sendGTMInboxTicket("",
+                InboxTicketTracking.Category.EventInboxTicket,
+                InboxTicketTracking.Action.EventNotAttachImageRequired,
+                "")
+    }
+
 
     private fun sendRating() {
         postRatingUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
@@ -533,7 +503,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                 if (ratingResponse.isSuccess > 0) {
                     mView?.hideBottomFragment()
                     mView?.showMessage(mView?.getActivity()?.getString(R.string.thanks_input) ?: "")
-                    if (mTicketDetail?.status == getUtils()?.OPEN || mTicketDetail?.status == getUtils()?.SOLVED) {
+                    if (mTicketDetail?.status == OPEN || mTicketDetail?.status == SOLVED) {
                         mView?.toggleTextToolbar(View.VISIBLE)
                     } else {
                         mView?.showIssueClosed()
@@ -552,7 +522,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         mView?.showProgressBar()
         launchCatchError(
                 block = {
-                    withContext(Dispatchers.Default) {
+                    withContext(defaultDispatcher) {
                         initializeIndicesList(searchText)
                         next = 0
                         withContext(Dispatchers.Main) {
@@ -578,8 +548,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                 },
                 onError = {
                     mView?.hideProgressBar()
-                    mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_search_error)
-                            ?: "", false)
+                    mView?.setSnackBarErrorMessage("", false)
                     it.printStackTrace()
                 }
         )
@@ -589,8 +558,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         searchIndices.clear()
         var count = -1
         mTicketDetail?.comments?.forEach {
-            if (utils?.containsIgnoreCase(it.messagePlaintext
-                            ?: "", searchText) == true) {
+            if (getUtils().containsIgnoreCase(it.messagePlaintext
+                            ?: "", searchText)) {
                 count++
                 searchIndices.add(count)
             }
@@ -598,12 +567,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
     }
 
-    override fun getUtils(): Utils? {
-        if (utils == null) {
-            utils = mView?.getActivity()?.applicationContext?.let { Utils(it) }
-        }
-        return utils
-    }
+    override fun getUtils() = Utils()
 
     override fun showImagePreview(position: Int, imagesURL: List<AttachmentItem>) {
         ContactUsTracking.sendGTMInboxTicket("",
@@ -612,8 +576,9 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                 InboxTicketTracking.Label.ImageAttached)
         val imagesUrl = ArrayList<String>()
         for (item in imagesURL) {
-            if (item.url?.isNotEmpty() == true) imagesUrl.add(item.url
-                    ?: "") else imagesUrl.add(item.thumbnail ?: "")
+            if (item.url?.isNotEmpty() == true)
+                imagesUrl.add(item.url ?: "")
+            else imagesUrl.add(item.thumbnail ?: "")
         }
         mView?.showImagePreview(position, imagesUrl)
     }
@@ -634,8 +599,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         launchCatchError(
                 block = {
                     val requestParams = submitRatingUseCase.createRequestParams(commentId, rating, "-")
-                    mView?.hideProgressBar()
                     val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
+                    mView?.hideProgressBar()
                     if (chipGetInboxDetail?.messageError?.size ?: 0 > 0) {
                         mView?.showErrorMessage(chipGetInboxDetail?.messageError?.get(0))
                     } else {
@@ -674,13 +639,10 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
     }
 
     private fun addNewLocalComment() {
-        val newItem = CommentsItem()
-        newItem.createdBy = userData
-        newItem.message = mView?.userMessage
-        newItem.createTime = getUtils()?.dateTimeCurrent
+        val newItem = getNewComment()
         val uploadImageList = mView?.imageList
         val attachmentItems: MutableList<AttachmentItem> = ArrayList()
-        if (uploadImageList != null && !uploadImageList.isEmpty()) {
+        if (uploadImageList != null && uploadImageList.isNotEmpty()) {
             for (upload in uploadImageList) {
                 val attachment = AttachmentItem()
                 attachment.thumbnail = upload.fileLoc
@@ -691,6 +653,14 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         mTicketDetail?.comments?.add(newItem)
         mTicketDetail?.isNeedAttachment = false
         mView?.updateAddComment()
+    }
+
+    private fun getNewComment(): CommentsItem {
+        val newItem = CommentsItem()
+        newItem.createdBy = userData
+        newItem.message = mView?.userMessage
+        newItem.createTime = getUtils().dateTimeCurrent
+        return newItem
     }
 
     private fun sendGTMEventView() {

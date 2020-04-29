@@ -1,6 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.utils
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
@@ -8,19 +9,21 @@ import android.text.format.DateUtils
 import android.text.format.Time
 import android.text.style.BackgroundColorSpan
 import android.util.TypedValue
+import com.tokopedia.contactus.orderquery.data.ImageUpload
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-class Utils(private val mContext: Context) {
-    private var mLocale: Locale? = null
-    @JvmField
-    var CLOSED = "closed"
-    @JvmField
-    var OPEN = "open"
-    @JvmField
-    var SOLVED = "solved"
+const val CLOSED = "closed"
+const val OPEN = "open"
+const val SOLVED = "solved"
+
+class Utils {
+
     fun containsIgnoreCase(src: String, what: String): Boolean {
         val length = what.length
         if (length == 0) return true // Empty string is contained
@@ -57,11 +60,11 @@ class Utils(private val mContext: Context) {
         return spannableString
     }
 
-    fun getStatusTitle(src: String, background: Int, textColor: Int, textSizeSp: Int): SpannableString {
+    fun getStatusTitle(src: String, background: Int, textColor: Int, textSizeSp: Int, mContext:Context): SpannableString {
         val spannableString = SpannableString(src)
         val start = src.lastIndexOf(".") + 4
-        val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, convertSpToPx(textSizeSp),
-                convertDpToPx(8), convertDpToPx(4), convertDpToPx(2), convertDpToPx(2))
+        val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, convertSpToPx(textSizeSp,mContext),
+                convertDpToPx(8,mContext), convertDpToPx(4,mContext), convertDpToPx(2,mContext), convertDpToPx(2,mContext))
         spannableString.setSpan(roundedBackgroundSpan, start, src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         return spannableString
     }
@@ -105,19 +108,69 @@ class Utils(private val mContext: Context) {
         }
     }
 
-    private fun convertDpToPx(dp: Int): Float {
+    fun fileSizeValid(fileLoc: String): Boolean {
+        val file = File(fileLoc)
+        val size = file.length()
+        return size / 1024 < 10240
+    }
+
+    fun isBitmapDimenValid(fileLoc: String): Boolean {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(File(fileLoc).absolutePath, options)
+        val imageHeight = options.outHeight
+        val imageWidth = options.outWidth
+        return !(imageHeight < 300 && imageWidth < 300)
+    }
+
+    fun verifyAllImages(uploadImageList: List<ImageUpload>): Int {
+        var count = 0
+        val size = uploadImageList.size
+        for (item in 0 until size) {
+            val image = uploadImageList.get(item)
+            if (fileSizeValid(image.fileLoc ?: "") &&
+                    isBitmapDimenValid(image.fileLoc ?: "")) {
+                count++
+            }
+        }
+        return count
+    }
+
+    fun getAttachmentAsString(list: List<ImageUpload>): String {
+        var attachmentString = StringBuilder()
+        list.forEach {
+            attachmentString.append("~").append(it.imageId)
+        }
+        attachmentString = StringBuilder(attachmentString.toString().replace("~~", "~"))
+        if (attachmentString.isNotEmpty()) attachmentString = StringBuilder(attachmentString.substring(1))
+
+        return attachmentString.toString()
+
+    }
+
+    fun getFileUploaded(attachment: List<ImageUpload>): String {
+        val reviewPhotos = JSONObject()
+        try {
+            for (image in attachment) {
+                reviewPhotos.put(image.imageId, image.picObj)
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return reviewPhotos.toString()
+    }
+
+    private fun convertDpToPx(dp: Int, mContext:Context): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), mContext.resources.displayMetrics)
     }
 
-    private fun convertSpToPx(dp: Int): Float {
+    private fun convertSpToPx(dp: Int, mContext:Context): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, dp.toFloat(), mContext.resources.displayMetrics)
     }
 
     private val locale: Locale
-         get() {
-            if (mLocale == null) mLocale = Locale("in", "ID", "")
-            return mLocale!!
-        }
+         get() = Locale("in", "ID", "")
+
 
     private fun isYesterday(time: Long): Boolean {
         val mTime = Time()

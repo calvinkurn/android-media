@@ -54,7 +54,7 @@ class CloseTicketByUserUseCaseTest {
 
 
     @Test
-    fun `check function invokation of getData`() {
+    fun `check function invocation of getData`() {
         runBlockingTest {
             coEvery {
                 contactUsRepository.getGQLData("",

@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.inboxticket2.data.UploadImageContactUs
+import com.tokopedia.contactus.orderquery.data.Data
 import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.contactus.orderquery.data.ImageUploadResult
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator
@@ -57,33 +58,30 @@ class UploadImageUseCaseTest {
     }
 
     @Test
-    fun `check picsrc is not null on invokation of upload file  when upload result data is not null`() {
+    fun `check picSrc and pocObj value on invocation of upload file  when upload result data is not null`() {
 
         list.add(ImageUpload("", "", "", ""))
         val imageUploadResult = mockk<ImageUploadResult>()
         val listnetcal = mockk<List<NetworkCalculator>>()
         val listfile = mockk<List<File>>()
+        val data = mockk<Data>()
         runBlockingTest {
 
-            coEvery {
-                listnetcal[any()]
-            } returns mockk()
+            every { listnetcal[any()] } returns mockk()
 
-            coEvery {
-                listfile[any()]
-            } returns mockk()
+            every { listfile[any()] } returns mockk()
 
-            coEvery {
-                uploadImageUseCase.getImageUploadresult(any(), any())
-            } returns imageUploadResult
+            coEvery { uploadImageUseCase.getImageUploadresult(any(), any()) } returns imageUploadResult
 
-            coEvery {
-                imageUploadResult.data
-            } returns mockk()
+            every { imageUploadResult.data } returns data
+
+            every { data.picSrc } returns "picSrc"
+            every { data.picObj } returns "picObj"
 
             uploadImageUseCase.uploadFile(list, listnetcal, listfile)
 
-            assertNotNull(list[0].picSrc)
+            assertEquals(list[0].picSrc, "picSrc")
+            assertEquals(list[0].picObj, "picObj")
         }
 
     }
@@ -188,19 +186,19 @@ class UploadImageUseCaseTest {
             mockkStatic(ImageUploadHandler::class)
             coEvery {
                 ImageUploadHandler.writeImageToTkpdPath(byteArrayOf())
-            } throws  IOException("nbXHJ")
+            } throws IOException("nbXHJ")
 
             coEvery {
                 ImageUploadHandler.compressImage(any())
             } returns compressedImage
 
-            coEvery{
+            coEvery {
                 context.getString(any())
             } returns ""
 
             uploadImageUseCase.getFile(list)
 
-            assertEquals(list.size,0)
+            assertEquals(list.size, 0)
 
 
         }
@@ -343,6 +341,8 @@ class UploadImageUseCaseTest {
     @Test
     fun `check list size on invocation of getNetworkCalculator`() {
         list.add(ImageUpload("", "", "", ""))
+
+        every { uploadImageUseCase.getNetworkCalculator() } returns mockk(relaxed = true)
 
         uploadImageUseCase.getNetworkCalculatorList(list)
 

@@ -45,11 +45,14 @@ interface InboxDetailContract {
         fun sendCustomReason(customReason: String)
         fun getNextResult(): Int
         fun getPreviousResult(): Int
-        fun getUtils(): Utils?
+        fun getUtils(): Utils
         fun showImagePreview(position: Int, imagesURL: List<AttachmentItem>)
         fun onClickEmoji(number: Int)
         fun onClick(agreed: Boolean, commentPosition: Int, commentId: String)
         fun closeTicket()
         fun getTicketStatus(): String
+        fun getTicketDetails(ticketId: String?)
+        fun getTicketId(): String?
+
     }
 }

@@ -36,6 +36,21 @@ open class BaseRepository {
             val restRequest = RestRequest.Builder(url, typeOf)
                     .setRequestType(requestType)
                     .setQueryParams(queryMap)
+                    .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
+                    .build()
+            return restRepository.getResponse(restRequest).getData()
+        } catch (t: Throwable) {
+            throw t
+        }
+    }
+
+    suspend fun <T : Any> postRestData(url: String,
+                                      typeOf: Type,
+                                      queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters,
+                                      cacheType: com.tokopedia.common.network.data.model.CacheType = com.tokopedia.common.network.data.model.CacheType.ALWAYS_CLOUD): T {
+        try {
+            val restRequest = RestRequest.Builder(url, typeOf)
+                    .setRequestType(RequestType.POST)
                     .setBody(queryMap)
                     .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
                     .build()

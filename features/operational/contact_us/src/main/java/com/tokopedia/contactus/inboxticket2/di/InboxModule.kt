@@ -12,6 +12,8 @@ import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterI
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImpl
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module
@@ -43,10 +45,16 @@ class InboxModule(private val context: Context) {
                                   inboxOptionUseCase: InboxOptionUseCase,
                                   submitRatingUseCase: SubmitRatingUseCase,
                                   closeTicketByUserUseCase: CloseTicketByUserUseCase,
-                                  uploadImgeUseCase: UploadImageUseCase): InboxDetailPresenter {
-        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase,uploadImgeUseCase)
+                                  uploadImageUseCase: UploadImageUseCase,
+                                  dispatcher: CoroutineDispatcher): InboxDetailPresenter {
+        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, uploadImageUseCase,dispatcher)
     }
 
+
+    @Provides
+    fun getDefaultDispatcher():CoroutineDispatcher{
+        return Dispatchers.Default
+    }
 
     @Named("close_ticket_by_user")
     @Provides

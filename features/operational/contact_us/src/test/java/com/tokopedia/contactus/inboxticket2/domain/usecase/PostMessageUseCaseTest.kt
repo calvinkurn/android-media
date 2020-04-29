@@ -87,7 +87,7 @@ class PostMessageUseCaseTest {
     fun `check function invocation getCreateTicketResult`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.getRestData(any(),
+                contactUsRepository.postRestData(any(),
                         object : TypeToken<InboxDataResponse<CreateTicketResult>>() {}.type,
                         any(),
                         any()) as InboxDataResponse<CreateTicketResult>
@@ -96,7 +96,7 @@ class PostMessageUseCaseTest {
             postMessageUseCase.getCreateTicketResult(mockk())
 
             coVerify(exactly = 1) {
-                contactUsRepository.getRestData(any(),
+                contactUsRepository.postRestData(any(),
                         object : TypeToken<InboxDataResponse<CreateTicketResult>>() {}.type,
                         any(),
                         any()) as InboxDataResponse<CreateTicketResult>

@@ -21,6 +21,7 @@ import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter.DetailViewHolder
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,7 +37,7 @@ class InboxDetailAdapter(private val mContext: Context,
     private val indexExpanded: Int = -1
     private var searchMode = false
     private var searchText: String? = null
-    private val utils: Utils = Utils(mContext)
+    private val utils: Utils = Utils()
     private val hintAttachmentString: SpannableString
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val inflater = LayoutInflater.from(
@@ -130,13 +131,13 @@ class InboxDetailAdapter(private val mContext: Context,
                 tvDateRecent?.text = item.createTime
                 tvCollapsedTime?.text = ""
                 tvCollapsedTime?.hide()
-                if (!utils.CLOSED.equals(mPresenter.getTicketStatus(), ignoreCase = true) && isRoleAgent(item)
+                if (!CLOSED.equals(mPresenter.getTicketStatus(), ignoreCase = true) && isRoleAgent(item)
                         && (item.rating == null || item.rating?.isEmpty() == true)) {
                     settingRatingButtonsVisibility(View.VISIBLE)
                     ratingThumbsUp.clearColorFilter()
                     ratingThumbsDown.clearColorFilter()
                 }
-                if (utils.CLOSED.equals(mPresenter.getTicketStatus(), ignoreCase = true) && item.rating != null && item.rating != KEY_LIKED && item.rating != KEY_DIS_LIKED
+                if (CLOSED.equals(mPresenter.getTicketStatus(), ignoreCase = true) && item.rating != null && item.rating != KEY_LIKED && item.rating != KEY_DIS_LIKED
                         || !isRoleAgent(item) || item.id == null) {
                     settingRatingButtonsVisibility(View.GONE)
                 }

@@ -19,10 +19,9 @@ const val IMAGE_AS_STRING = "p_photo_all"
 class PostMessageUseCase @Inject constructor(private val repository: ContactUsRepository){
 
     suspend fun getCreateTicketResult(queryMap: MutableMap<String, Any>): InboxDataResponse<*>? {
-        return (repository.getRestData(
+        return (repository.postRestData(
                 url,
                 object : TypeToken<InboxDataResponse<CreateTicketResult>>() {}.type,
-                RequestType.POST,
                 queryMap) as InboxDataResponse<CreateTicketResult>)
 
     }

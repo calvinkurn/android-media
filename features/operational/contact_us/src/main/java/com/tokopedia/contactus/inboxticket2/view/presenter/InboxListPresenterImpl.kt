@@ -43,7 +43,6 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     private val originalList: ArrayList<TicketsItem> by lazy { ArrayList<TicketsItem>() }
     var isLoading = false
     var isLastPage = false
-    private var filterAdapter: InboxFilterAdapter? = null
     var fromFilter: Boolean = false
     private var nextUrl: String? = null
     private lateinit var queryMap: MutableMap<String, Any>
@@ -111,7 +110,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
                 queryMap = mUseCase.setQueryMap(0, 0, 0)
                 ticketList
                 selectedFilter = getFilterList(filterList, ALL)
-                filterAdapter?.setSelected(ALL)
+                getFilterAdapter().setSelected(ALL)
             }
             UNREAD -> {
                 queryMap = mUseCase.setQueryMap(0, 1, 0)
@@ -188,8 +187,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     override fun onDestroy() {}
 
     private fun getFilterAdapter(): InboxFilterAdapter {
-        if (filterAdapter == null) filterAdapter = InboxFilterAdapter(filterList, this)
-        return filterAdapter as InboxFilterAdapter
+        return InboxFilterAdapter(filterList, this)
     }
 
     override fun getBottomFragment(resID: Int): BottomSheetDialogFragment {

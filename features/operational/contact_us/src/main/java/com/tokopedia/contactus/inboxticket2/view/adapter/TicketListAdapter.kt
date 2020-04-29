@@ -146,7 +146,7 @@ class TicketListAdapter(private val itemList: MutableList<TicketsItem>,
 
         fun bindViewHolder(item: TicketsItem) {
             val mContext = itemView.context
-            val utils = Utils(mContext)
+            val utils = Utils()
             if (item.readStatusId == 2) {
                 tvTicketDesc?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_38))
                 tvTicketTitle?.setTypeface(null, Typeface.NORMAL)

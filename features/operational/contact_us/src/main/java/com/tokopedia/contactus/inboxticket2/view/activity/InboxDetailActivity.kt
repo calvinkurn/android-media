@@ -37,6 +37,9 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment
 import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment.Companion.newInstance
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
+import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
+import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
+import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter.OnSelectImageClick
@@ -119,11 +122,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         viewHelpRate.hide()
         textToolbar.show()
         val textSizeLabel = 11
-        if (ticketDetail.status.equals(utils?.SOLVED, ignoreCase = true)
-                || ticketDetail.status.equals(utils?.OPEN, ignoreCase = true)) {
+        if (ticketDetail.status.equals(SOLVED, ignoreCase = true)
+                || ticketDetail.status.equals(OPEN, ignoreCase = true)) {
             tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.on_going),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.y_200),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_500), textSizeLabel)
+                    ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_500), textSizeLabel, this)
             rvMessageList.setPadding(0, 0, 0,
                     resources.getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed))
             if (commentsItems[commentsItems.size - 1].createdBy?.role.equals(ROLE_TYPE_AGENT, ignoreCase = true) && commentsItems[commentsItems.size - 1].rating.equals("", ignoreCase = true)) {
@@ -134,16 +137,16 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
                 toggleTextToolbar(View.GONE)
                 mCommentID = commentsItems[commentsItems.size - 1].id
             }
-        } else if (ticketDetail.status.equals(utils?.CLOSED, ignoreCase = true)
+        } else if (ticketDetail.status.equals(CLOSED, ignoreCase = true)
                 && !ticketDetail.isShowRating) {
             tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.closed),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel)
+                    ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
             showIssueClosed()
         } else if (ticketDetail.isShowRating) {
             tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.need_rating),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.r_100),
-                    ContextCompat.getColor(this, com.tokopedia.design.R.color.r_400), textSizeLabel)
+                    ContextCompat.getColor(this, com.tokopedia.design.R.color.r_400), textSizeLabel, this)
             toggleTextToolbar(View.GONE)
             mCommentID = commentsItems[commentsItems.size - 1].id
         }
@@ -203,6 +206,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     override fun initView() {
         layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         findingViewsId()
+        (mPresenter as InboxDetailPresenter).getTicketDetails((mPresenter as InboxDetailPresenter).getTicketId())
         rvMessageList.layoutManager = layoutManager
         editText.setListener((mPresenter as InboxDetailPresenter).getSearchListener())
         settingClickListner()
@@ -496,7 +500,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         val utils = (mPresenter as InboxDetailPresenter).getUtils()
         tvTicketTitle.text = utils?.getStatusTitle(subject + ".   " + getString(R.string.closed),
                 ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
-                ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel)
+                ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
     }
 
     override fun isSearchMode(): Boolean {
