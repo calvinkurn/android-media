@@ -12,9 +12,7 @@ import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
-import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
-import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.track.TrackApp
@@ -457,9 +455,7 @@ class TrackingHotelUtil(context: Context) {
     private fun convertDate(date: String): String =
             TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
 
-    private fun positionTracker(index: Int): Int {
-        return index + 1
-    }
+    private fun positionTracker(index: Int): Int { return index + 1 }
 
     private fun getTrackingMapWithHeader(screenName: String): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
