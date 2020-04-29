@@ -15,7 +15,6 @@ import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
@@ -33,10 +32,6 @@ public class ProductViewModelMapper {
             productViewModel.setGlobalNavViewModel(convertToViewModel(searchProductModel.getGlobalNavModel()));
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
-        if (searchProduct.getRelated() != null &&
-                !textIsEmpty(searchProduct.getRelated().getRelatedKeyword())) {
-            productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
-        }
         if (searchProduct.getRelated() != null) {
             productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProduct.getRelated()));
         }
@@ -73,10 +68,6 @@ public class ProductViewModelMapper {
         productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
-    }
-
-    private boolean textIsEmpty(String str) {
-        return str == null || str.length() == 0;
     }
 
     private QuickFilterViewModel convertToQuickFilterViewModel(DataValue dynamicFilterModel, String formattedResultCount) {
@@ -141,22 +132,6 @@ public class ProductViewModelMapper {
         }
 
         return itemList;
-    }
-
-    private RelatedSearchViewModel convertToRelatedSearchModel(SearchProductModel.Related related) {
-        RelatedSearchViewModel relatedSearchModel = new RelatedSearchViewModel();
-        relatedSearchModel.setRelatedKeyword(related.getRelatedKeyword());
-
-        List<RelatedSearchViewModel.OtherRelated> otherRelatedList = new ArrayList<>();
-        for (SearchProductModel.OtherRelated otherRelatedResponse : related.getOtherRelated()) {
-            RelatedSearchViewModel.OtherRelated otherRelatedViewModel = new RelatedSearchViewModel.OtherRelated();
-            otherRelatedViewModel.setKeyword(otherRelatedResponse.getKeyword());
-            otherRelatedViewModel.setUrl(otherRelatedResponse.getUrl());
-            otherRelatedList.add(otherRelatedViewModel);
-        }
-        relatedSearchModel.setOtherRelated(otherRelatedList);
-
-        return relatedSearchModel;
     }
 
     private RelatedViewModel convertToRelatedViewModel(SearchProductModel.Related related) {

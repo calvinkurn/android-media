@@ -79,7 +79,6 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
-import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -125,7 +124,6 @@ public class ProductListFragment
         ProductListener,
         TickerListener,
         SuggestionListener,
-        RelatedSearchListener,
         QuickFilterListener,
         GlobalNavListener,
         BannerAdsListener,
@@ -309,8 +307,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this, this,
-                this, this,
-                this, topAdsConfig);
+                this, this, topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
     }
@@ -991,12 +988,6 @@ public class ProductListFragment
     public void onSuggestionClicked(SuggestionViewModel suggestionViewModel) {
         SearchTracking.eventClickSuggestedSearch(getQueryKey(), suggestionViewModel.getSuggestion());
         performNewProductSearch(suggestionViewModel.getSuggestedQuery());
-    }
-
-    @Override
-    public void onRelatedSearchClicked(String queryParams, String keyword) {
-        SearchTracking.eventClickRelatedSearch(getContext(), getQueryKey(), keyword);
-        performNewProductSearch(queryParams);
     }
 
     private void performNewProductSearch(String queryParams) {

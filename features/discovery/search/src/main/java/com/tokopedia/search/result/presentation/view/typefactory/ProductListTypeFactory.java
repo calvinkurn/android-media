@@ -14,7 +14,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 
@@ -28,8 +27,6 @@ public interface ProductListTypeFactory {
     int type(SuggestionViewModel suggestionViewModel);
 
     int type(QuickFilterViewModel quickFilterViewModel);
-
-    int type(RelatedSearchViewModel relatedSearchModel);
 
     int type(GlobalNavViewModel globalNavViewModel);
 

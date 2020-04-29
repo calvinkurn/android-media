@@ -688,14 +688,14 @@ final class ProductListPresenter
 
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
+        setResponseCode(productViewModel.getResponseCode());
+        setSuggestionViewModel(productViewModel.getSuggestionModel());
+        setRelatedViewModel(productViewModel.getRelatedViewModel());
+
         sendTrackingNoSearchResult(productViewModel);
 
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
-
-        setResponseCode(productViewModel.getResponseCode());
-        setSuggestionViewModel(productViewModel.getSuggestionModel());
-        setRelatedViewModel(productViewModel.getRelatedViewModel());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
@@ -723,8 +723,8 @@ final class ProductListPresenter
     private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
         try {
             String alternativeKeyword = "";
-            if (productViewModel.getRelatedSearchModel() != null) {
-                alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+            if (relatedViewModel != null) {
+                alternativeKeyword = relatedViewModel.getRelatedKeyword();
             }
             int resultCode = Integer.parseInt(productViewModel.getResponseCode());
             if (searchNoResultCodeList.contains(resultCode)) {
@@ -896,9 +896,6 @@ final class ProductListPresenter
 
         productList = convertToListOfVisitable(productViewModel);
         list.addAll(productList);
-        if (productViewModel.getRelatedSearchModel() != null) {
-            list.add(productViewModel.getRelatedSearchModel());
-        }
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
             additionalParams = productViewModel.getAdditionalParams();
@@ -1076,7 +1073,7 @@ final class ProductListPresenter
         String alternativeKeyword = SearchEventTracking.NONE;
 
         if (isAlternativeKeywordFromRelated(productViewModel)) {
-            alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+            alternativeKeyword = productViewModel.getRelatedViewModel().getRelatedKeyword();
         }
         else if (isAlternativeKeywordFromSuggestion(productViewModel)) {
             alternativeKeyword = productViewModel.getSuggestionModel().getSuggestion();
@@ -1090,8 +1087,8 @@ final class ProductListPresenter
 
         boolean isResponseCodeForRelatedKeyword = responseCode.equals("3") || responseCode.equals("6");
         boolean relatedKeywordIsNotEmpty =
-                productViewModel.getRelatedSearchModel() != null
-                && !productViewModel.getRelatedSearchModel().getRelatedKeyword().isEmpty();
+                productViewModel.getRelatedViewModel() != null
+                && !productViewModel.getRelatedViewModel().getRelatedKeyword().isEmpty();
 
         return isResponseCodeForRelatedKeyword && relatedKeywordIsNotEmpty;
     }

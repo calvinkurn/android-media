@@ -18,7 +18,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
-import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
@@ -34,7 +33,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.QuickFilterViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder;
@@ -46,7 +44,6 @@ import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
-import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.topads.sdk.base.Config;
@@ -56,7 +53,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final ProductListener productListener;
     private final TickerListener tickerListener;
     private final SuggestionListener suggestionListener;
-    private final RelatedSearchListener relatedSearchListener;
     private final QuickFilterListener quickFilterListener;
     private final GlobalNavListener globalNavListener;
     private final BannerAdsListener bannerAdsListener;
@@ -71,7 +67,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     public ProductListTypeFactoryImpl(ProductListener productListener,
                                       TickerListener tickerListener,
                                       SuggestionListener suggestionListener,
-                                      RelatedSearchListener relatedSearchListener,
                                       QuickFilterListener quickFilterListener,
                                       GlobalNavListener globalNavListener,
                                       BannerAdsListener bannerAdsListener,
@@ -85,7 +80,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.productListener = productListener;
         this.tickerListener = tickerListener;
         this.suggestionListener = suggestionListener;
-        this.relatedSearchListener = relatedSearchListener;
         this.quickFilterListener = quickFilterListener;
         this.globalNavListener = globalNavListener;
         this.bannerAdsListener = bannerAdsListener;
@@ -143,11 +137,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     @Override
     public int type(EmptySearchProductViewModel emptySearchModel) {
         return ProductEmptySearchViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(RelatedSearchViewModel relatedSearchModel) {
-        return RelatedSearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -210,8 +199,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new QuickFilterViewHolder(view, quickFilterListener);
         } else if (type == ProductEmptySearchViewHolder.LAYOUT) {
             viewHolder = new ProductEmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
-        } else if (type == RelatedSearchViewHolder.LAYOUT) {
-            viewHolder = new RelatedSearchViewHolder(view, relatedSearchListener);
         } else if (type == GlobalNavViewHolder.LAYOUT) {
             viewHolder = new GlobalNavViewHolder(view, globalNavListener);
         } else if (type == InspirationCarouselViewHolder.LAYOUT) {
