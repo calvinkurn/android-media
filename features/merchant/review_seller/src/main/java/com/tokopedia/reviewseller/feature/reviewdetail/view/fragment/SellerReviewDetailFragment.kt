@@ -354,9 +354,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun initBottomSheetFilterPeriod(title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         bottomSheetPeriodDetail?.apply {
-            setOnDismissListener {
-                view.review_period_filter_button_detail.toggle()
-            }
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {

@@ -46,43 +46,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/emptyState_reviewDetail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rvRatingDetail">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/noReviewsYetDetail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/no_reviews_yet"
-                    android:gravity="center"
-                    android:textColor="@color/clr_f531353b"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="heading_2"
-                    app:typographyWeight="bold" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/noReviewsYetContentDetail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:gravity="center"
-                    android:text="@string/no_reviews_yet_content_detail"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/noReviewsYetDetail"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
