@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel;
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder;
+import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel;
 
 /**
  * Created by alvarisi on 12/19/17.
@@ -22,12 +24,18 @@ public class FlightAirportAdapterTypeFactory extends BaseAdapterTypeFactory {
         return FlightAirportViewHolder.LAYOUT;
     }
 
+    public int type(EmptyResultModel emptyResultModel) {
+        return EmptyResultViewHolder.Companion.getLAYOUT();
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == FlightCountryViewHolder.LAYOUT) {
             return new FlightCountryViewHolder(parent);
         } else if (type == FlightAirportViewHolder.LAYOUT) {
             return new FlightAirportViewHolder(parent, flightAirportClickListener);
+        } else if (type == EmptyResultViewHolder.Companion.getLAYOUT()) {
+            return new EmptyResultViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }

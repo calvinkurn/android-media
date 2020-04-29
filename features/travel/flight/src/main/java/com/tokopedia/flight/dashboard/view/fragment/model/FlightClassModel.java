@@ -28,6 +28,11 @@ public class FlightClassModel implements Visitable<FlightClassesAdapterTypeFacto
     public FlightClassModel() {
     }
 
+    public FlightClassModel(int id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     protected FlightClassModel(Parcel in) {
         title = in.readString();
         id = in.readInt();

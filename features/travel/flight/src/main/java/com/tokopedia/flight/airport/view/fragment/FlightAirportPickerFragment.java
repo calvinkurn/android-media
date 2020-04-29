@@ -45,7 +45,6 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     @Inject
     FlightAirportPickerPresenterImpl flightAirportPickerPresenter;
     private boolean isFirstTime = true;
-    String searchHint;
 
     public static FlightAirportPickerFragment getInstance(String searchHint) {
         FlightAirportPickerFragment fragment = new FlightAirportPickerFragment();
@@ -67,9 +66,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        searchHint = getArguments().getString(EXTRA_TOOLBAR_TITLE);
-        searchInputView.setSearchHint(String.format(
-                getString(com.tokopedia.common.travel.R.string.flight_label_search_hint_airport), searchHint));
+        searchInputView.setSearchHint(getString(com.tokopedia.common.travel.R.string.flight_label_search_hint_airport));
     }
 
     @Override

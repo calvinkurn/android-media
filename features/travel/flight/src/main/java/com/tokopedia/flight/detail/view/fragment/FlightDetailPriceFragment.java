@@ -1,15 +1,16 @@
 package com.tokopedia.flight.detail.view.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 
 /**
@@ -77,7 +78,7 @@ public class FlightDetailPriceFragment extends Fragment {
             double infantPriceTotal = flightDetailViewModel.getInfantNumericPrice() * flightDetailViewModel.getCountInfant();
             infantPrice.setText(getString(com.tokopedia.flight.R.string.flight_label_currency, CurrencyFormatUtil.getThousandSeparatorString(infantPriceTotal, false, 0).getFormattedString()));
         }
-        totalPrice.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(calculateTotal(flightDetailViewModel)));
+        totalPrice.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(calculateTotal(flightDetailViewModel), true));
     }
 
     private int calculateTotal(FlightDetailModel flightDetailViewModel) {

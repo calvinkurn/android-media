@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
+import com.tokopedia.flight.search.util.FlightSearchCache;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -27,6 +28,8 @@ import com.tokopedia.unifyprinciples.Typography;
 public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRouteModel> {
     @LayoutRes
     public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_detail;
+
+    private FlightSearchCache flightSearchCache;
 
     private ImageView imageAirline;
     private TextView airlineName;
@@ -82,6 +85,8 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         stopOverTextView = itemView.findViewById(R.id.tv_flight_stop_over);
         this.onFlightDetailListener = onFlightDetailListener;
         this.isShowRefundableTag = isShowRefundableTag;
+
+        flightSearchCache = new FlightSearchCache(itemView.getContext());
     }
 
     @Override
@@ -156,15 +161,21 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
     }
 
     private void setArrivalInfo(FlightDetailRouteModel route) {
+        String transitTag = "";
+        if (!TextUtils.isEmpty(flightSearchCache.getInternationalTransitTag())) {
+            transitTag = "\n" + flightSearchCache.getInternationalTransitTag();
+        }
+
         if (!TextUtils.isEmpty(route.getArrivalAirportCity())) {
             arrivalAirportDesc.setText(route.getArrivalAirportName());
             arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
-            transitInfo.setTextDescription(itemView.getContext().getString(
-                    R.string.flight_label_transit, route.getArrivalAirportCity(), route.getLayover()));
+            transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit,
+                    route.getArrivalAirportCity(), route.getLayover(), transitTag));
         } else {
             arrivalAirportName.setText(route.getArrivalAirportCode());
             arrivalAirportDesc.setText("");
-            transitInfo.setTextDescription(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_transit, route.getArrivalAirportCode(), route.getLayover()));
+            transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit,
+                    route.getArrivalAirportCode(), route.getLayover(), transitTag));
         }
     }
 

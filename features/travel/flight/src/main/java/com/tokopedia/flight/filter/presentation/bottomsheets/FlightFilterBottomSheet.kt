@@ -116,6 +116,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         isHideable = true
         setTitle(getString(R.string.flight_filter_label))
         setAction(getString(R.string.flight_reset_label)) {
+            btnFlightFilterSave.isLoading = true
             flightFilterViewModel.resetFilter()
             resetAllView()
         }
@@ -144,7 +145,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
                 }
                 listener?.onSaveFilter(getFlightSelectedSort(),
                         filterModel,
-                        Pair(getStatisticModel()?.minPrice ?: 0, getStatisticModel()?.maxPrice ?: Int.MAX_VALUE))
+                        Pair(getStatisticModel()?.minPrice ?: 0, getStatisticModel()?.maxPrice
+                                ?: Int.MAX_VALUE))
                 dismiss()
             }
         }
@@ -152,6 +154,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     private fun renderFlightCount(flightCount: Int) {
         with(mChildView) {
+            btnFlightFilterSave.isLoading = false
             btnFlightFilterSave.visibility = View.VISIBLE
             btnFlightFilterSave.text = getString(R.string.flight_there_has_x_flights, flightCount)
         }

@@ -97,14 +97,18 @@ class FlightHomepageViewModel @Inject constructor(
             dashboardCache.putArrivalAirport(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP])
             dashboardCache.putArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP])
             dashboardCache.putRoundTrip(false)
-            dashboardCache.putDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP])
+            if (extrasTripDeparture[INDEX_DATE_TRIP].isNotEmpty()) {
+                dashboardCache.putDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP])
+            }
             dashboardCache.putReturnDate("")
 
             // if applink params is roundtrip
             if (tempExtras.size > 1) {
                 val extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_")
                 dashboardCache.putRoundTrip(true)
-                dashboardCache.putReturnDate(extrasTripReturn[INDEX_DATE_TRIP])
+                if (extrasTripReturn[INDEX_DATE_TRIP].isNotEmpty()) {
+                    dashboardCache.putReturnDate(extrasTripReturn[INDEX_DATE_TRIP])
+                }
             }
 
             // transform passenger
@@ -207,12 +211,13 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun validateDepartureDate(departureDate: Date): Int {
         var resultStringResourceId = -1
-        val oneYears = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.addTimeToCurrentDate(
-                Calendar.YEAR, MAX_YEAR_FOR_FLIGHT), Calendar.DATE, MINUS_ONE_DAY)
+        val oneYears = FlightDateUtil.removeTime(FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
+                Calendar.DATE, MINUS_ONE_DAY))
 
         if (departureDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_departure_max_one_years_from_today_error
-        } else if (departureDate.before(FlightDateUtil.getCurrentDate())) {
+        } else if (departureDate.before(FlightDateUtil.removeTime(FlightDateUtil.getCurrentDate()))) {
             resultStringResourceId = R.string.flight_dashboard_departure_should_atleast_today_error
         }
 
@@ -222,13 +227,13 @@ class FlightHomepageViewModel @Inject constructor(
     fun validateReturnDate(departureDate: Date, returnDate: Date): Int {
         var resultStringResourceId = -1
 
-        var oneYears = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE, MINUS_ONE_DAY)
+        val oneYears = FlightDateUtil.removeTime(FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
+                Calendar.DATE, MINUS_ONE_DAY))
 
         if (returnDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_return_max_one_years_from_today_error
-        } else if (returnDate.before(departureDate)) {
+        } else if (returnDate.before(FlightDateUtil.removeTime(departureDate))) {
             resultStringResourceId = R.string.flight_dashboard_return_should_greater_equal_error
         }
 

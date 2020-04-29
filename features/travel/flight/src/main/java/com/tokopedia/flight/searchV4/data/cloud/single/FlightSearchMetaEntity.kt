@@ -27,7 +27,13 @@ class FlightSearchMetaEntity(
         val infant: Int = 0,
         @SerializedName("requestID")
         @Expose
-        val requestId: String = ""
+        val requestId: String = "",
+        @SerializedName("internationalTransitTag")
+        @Expose
+        val internationalTag: String = "",
+        @SerializedName("backgroundRefreshTime")
+        @Expose
+        val backgroundRefreshTime: Int = 0
 ) {
     var airlineList: List<String> = arrayListOf()
 }

@@ -2,14 +2,15 @@ package com.tokopedia.flight.searchV4.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
@@ -42,6 +43,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     protected var dateString = ""
     protected var passengerString = ""
     protected var classString = ""
+    var isSearchFromWidget = false
 
     private lateinit var wrapper: LinearLayout
 
@@ -78,7 +80,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                     when (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
                         FlightFlowConstant.PRICE_CHANGE -> {
                             if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).resetDateAndReload()
+                                (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
                         FlightFlowConstant.EXPIRED_JOURNEY -> {
@@ -88,7 +90,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                         FlightFlowConstant.CHANGE_SEARCH_PARAM -> {
                             if (fragment is FlightSearchFragment) {
                                 (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
-                                (fragment as FlightSearchFragment).resetDateAndReload()
+                                (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
                     }
@@ -107,14 +109,16 @@ open class FlightSearchActivity : BaseFlightActivity(),
         flightSearchPassDataModel.flightClass = flightSearchParams.flightClass
         flightSearchPassDataModel.searchRequestId = ""
 
-        if (isReturnPage()) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_PASS_DATA, flightSearchPassDataModel)
-            FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
-        } else {
-            if (fragment is FlightSearchFragment) {
-                (fragment as FlightSearchFragment).setSearchPassData(flightSearchPassDataModel)
-                (fragment as FlightSearchFragment).resetDateAndReload()
+        if (validateSearchPassData(flightSearchParams)) {
+            if (isReturnPage()) {
+                val intent = Intent()
+                intent.putExtra(EXTRA_PASS_DATA, flightSearchPassDataModel)
+                FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
+            } else {
+                if (fragment is FlightSearchFragment) {
+                    (fragment as FlightSearchFragment).setSearchPassData(flightSearchPassDataModel)
+                    (fragment as FlightSearchFragment).resetDateAndReload(true)
+                }
             }
         }
     }
@@ -172,6 +176,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private fun initializeDataFromExtras() {
         flightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_DATA)
+        isSearchFromWidget = intent.getBooleanExtra(EXTRA_SEARCH_FROM_WIDGET, false)
         initializeToolbarData()
     }
 
@@ -179,9 +184,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
         wrapper = LinearLayout(this)
         wrapper.apply {
             val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            setBackgroundColor(Color.WHITE)
+            background = resources.getDrawable(R.drawable.bg_white_rounded_no_stroke)
             layoutParams = param
         }
+        wrapper.setPadding(DIMEN_4_IN_PX, DIMEN_4_IN_PX, DIMEN_4_IN_PX, DIMEN_4_IN_PX)
 
         val imageView = ImageView(this)
         val param = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
@@ -219,6 +225,32 @@ open class FlightSearchActivity : BaseFlightActivity(),
         flightChangeSearchBottomSheet.show(supportFragmentManager, FlightSearchUniversalBottomSheet.TAG_SEARCH_FORM)
     }
 
+    fun setupAndShowCoachMarkSearchFromWidget() {
+        if (::wrapper.isInitialized && isSearchFromWidget) {
+            val coachMarkItems = arrayListOf<CoachMarkItem>()
+            coachMarkItems.add(CoachMarkItem(
+                    wrapper,
+                    "",
+                    getString(R.string.flight_search_coach_mark_from_widget)
+            ))
+
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
+            Handler().postDelayed({
+                if (coachMark.isAdded && coachMark.isVisible) {
+                    coachMark.dismissAllowingStateLoss()
+                }
+                isSearchFromWidget = false
+            }, DELAY_THREE_SECONDS)
+            coachMark.onFinishListener = {
+                isSearchFromWidget = false
+            }
+            coachMark.overlayOnClickListener = ({
+                isSearchFromWidget = false
+            })
+        }
+    }
+
     fun setupAndShowCoachMark() {
         if (::wrapper.isInitialized) {
             val coachMarkItems = arrayListOf<CoachMarkItem>()
@@ -245,19 +277,58 @@ open class FlightSearchActivity : BaseFlightActivity(),
         }
     }
 
+    private fun validateSearchPassData(flightSearchData: FlightSearchPassDataModel): Boolean {
+        var isValid = true
+
+        if (flightSearchData.departureAirport.cityCode.isNotEmpty() && flightSearchData.arrivalAirport.cityCode.isNotEmpty() &&
+                flightSearchData.departureAirport.cityCode == flightSearchData.arrivalAirport.cityCode) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.cityAirports != null &&
+                flightSearchData.departureAirport.cityAirports.isNotEmpty() &&
+                flightSearchData.departureAirport.cityAirports.contains(flightSearchData.arrivalAirport.airportCode)) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.arrivalAirport.cityAirports != null &&
+                flightSearchData.arrivalAirport.cityAirports.isNotEmpty() &&
+                flightSearchData.arrivalAirport.cityAirports.contains(flightSearchData.departureAirport.airportCode)) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.cityName.isNotEmpty() &&
+                flightSearchData.arrivalAirport.cityName.isNotEmpty() &&
+                flightSearchData.departureAirport.cityName == flightSearchData.arrivalAirport.cityName) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        }
+
+        return isValid
+    }
+
+    private fun showMessageErrorInSnackbar(@StringRes stringResourceId: Int) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, getString(stringResourceId))
+    }
+
     companion object {
         const val TAG_CHANGE_COACH_MARK = "TagChangeSearchCoachMark"
         const val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
+        const val EXTRA_SEARCH_FROM_WIDGET = "EXTRA_SEARCH_FROM_WIDGET"
 
         private const val REQUEST_CODE_BOOKING = 10
         private const val REQUEST_CODE_RETURN = 11
         private const val DELAY_THREE_SECONDS: Long = 3000
         private val DIMEN_24_IN_PX = 24.toPx()
+        private val DIMEN_4_IN_PX = 4.toPx()
         private const val CORNER_RADIUS = 8f
 
-        fun getCallingIntent(context: Context, passDataModel: FlightSearchPassDataModel): Intent =
+        fun getCallingIntent(context: Context,
+                             passDataModel: FlightSearchPassDataModel,
+                             isSearchFromWidget: Boolean): Intent =
                 Intent(context, FlightSearchActivity::class.java)
                         .putExtra(EXTRA_PASS_DATA, passDataModel)
+                        .putExtra(EXTRA_SEARCH_FROM_WIDGET, isSearchFromWidget)
 
     }
 }

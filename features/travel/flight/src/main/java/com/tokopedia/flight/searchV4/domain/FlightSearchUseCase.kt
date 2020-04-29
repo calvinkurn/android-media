@@ -14,16 +14,14 @@ class FlightSearchUseCase @Inject constructor(private val flightSearchRepository
     suspend fun execute(searchParams: FlightSearchRequestModel,
                         isRoundTrip: Boolean,
                         isReturnTrip: Boolean,
-                        onwardJourneyId: String = ""): FlightSearchMetaModel {
-
-        return return if (isRoundTrip && !isReturnTrip) {
-            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingleCombined(searchParams, isReturnTrip), searchParams)
-        } else if (isRoundTrip && isReturnTrip) {
-            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchCombinedReturn(searchParams, onwardJourneyId, isReturnTrip), searchParams)
-        } else {
-            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingle(searchParams, isReturnTrip), searchParams)
-        }
-    }
+                        onwardJourneyId: String = ""): FlightSearchMetaModel =
+            if (isRoundTrip && !isReturnTrip) {
+                mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingleCombined(searchParams, isReturnTrip), searchParams)
+            } else if (isRoundTrip && isReturnTrip) {
+                mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchCombinedReturn(searchParams, onwardJourneyId, isReturnTrip), searchParams)
+            } else {
+                mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingle(searchParams, isReturnTrip), searchParams)
+            }
 
     private fun mapToFlightSearchMetaViewModel(meta: FlightSearchMetaEntity,
                                                flightSearchApiRequestModel: FlightSearchRequestModel):
@@ -39,7 +37,9 @@ class FlightSearchUseCase @Inject constructor(private val flightSearchRepository
                     0,
                     0,
                     airlineList,
-                    requestId
+                    requestId,
+                    internationalTag,
+                    backgroundRefreshTime
             )
         }
     }

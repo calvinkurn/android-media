@@ -10,7 +10,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -23,6 +25,7 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnAct
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSeeAllResultModel
 import com.tokopedia.flight.searchV4.presentation.model.SearchErrorEnum
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_flight_search_return.*
 
 /**
@@ -98,6 +101,10 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     override fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
 
+    override fun getFlightSearchTicker(): Ticker = flight_search_ticker
+
+    override fun getSearchHorizontalProgress(): HorizontalProgressBar = horizontal_progress_bar
+
     override fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel {
         filterModel.isBestPairing = flightSearchReturnViewModel.isViewOnlyBestPairing
         filterModel.journeyId = flightSearchReturnViewModel.selectedFlightDepartureId
@@ -107,7 +114,10 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     }
 
     override fun renderSearchList(list: List<FlightJourneyModel>) {
-        if (flightSearchReturnViewModel.isBestPairing && !flightSearchReturnViewModel.isViewOnlyBestPairing) {
+        clearAllData()
+        if (flightSearchReturnViewModel.isBestPairing &&
+                !flightSearchReturnViewModel.isViewOnlyBestPairing &&
+                list.isNotEmpty()) {
             showSeeBestPairingResultView()
         }
 
@@ -164,14 +174,14 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     }
 
     private fun showSeeAllResultView() {
-        adapter.addElement(FlightSearchSeeAllResultModel(flightSearchReturnViewModel
-                .priceModel.departurePrice.adult, false))
+        adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
+                flightSearchReturnViewModel.priceModel.departurePrice.adultNumeric, false), false))
         flightSearchReturnViewModel.isViewOnlyBestPairing = true
     }
 
     private fun showSeeBestPairingResultView() {
-        adapter.addElement(FlightSearchSeeAllResultModel(flightSearchReturnViewModel
-                .priceModel.departurePrice.adultCombo, true))
+        adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
+                flightSearchReturnViewModel.priceModel.departurePrice.adultNumericCombo, false), true))
         flightSearchReturnViewModel.isViewOnlyBestPairing = false
     }
 
@@ -186,7 +196,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             flightSearchViewModel.filterModel.isBestPairing = false
             flightSearchReturnViewModel.isViewOnlyBestPairing = false
             clearAllData()
-            flightSearchViewModel.fetchSortAndFilter()
+            fetchSortAndFilterData()
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
@@ -206,7 +216,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             flightSearchViewModel.filterModel.isBestPairing = true
             flightSearchReturnViewModel.isViewOnlyBestPairing = true
             clearAllData()
-            flightSearchViewModel.fetchSortAndFilter()
+            fetchSortAndFilterData()
             resetDepartureLabelPrice()
             dialog.dismiss()
         }

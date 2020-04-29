@@ -24,6 +24,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
@@ -45,15 +46,15 @@ import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResult
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
 import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_flight_search.*
-import kotlinx.android.synthetic.main.fragment_search_flight.horizontal_progress_bar
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
 import kotlinx.android.synthetic.main.include_flight_search_title_route.*
 import javax.inject.Inject
@@ -72,7 +73,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     protected var onFlightSearchFragmentListener: OnFlightSearchFragmentListener? = null
     private lateinit var flightSearchComponent: FlightSearchComponent
 
-    private lateinit var coachMarkCache: FlightSearchCache
+    private lateinit var flightSearchCache: FlightSearchCache
     private lateinit var performanceMonitoringP1: PerformanceMonitoring
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
     private var isTraceStop = false
@@ -83,13 +84,20 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         super.onCreate(savedInstanceState)
 
         initViewModels()
-        coachMarkCache = FlightSearchCache(requireContext())
+        flightSearchCache = FlightSearchCache(requireContext())
         performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(getLayout(), container, false)
+
+    override fun onResume() {
+        super.onResume()
+        if (::flightSearchCache.isInitialized && flightSearchCache.isBackgroundCacheExpired()) {
+            resetDateAndReload(true)
+        }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -98,6 +106,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             stopTrace()
             when (it) {
                 is Success -> {
+                    clearAllData()
                     renderSearchList(it.data)
                 }
                 is Fail -> {
@@ -149,15 +158,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         setupSwipeRefresh()
         setupQuickFilter()
         showLoading()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (::flightSearchViewModel.isInitialized) {
-            clearAllData()
-            flightSearchViewModel.fetchSortAndFilter()
-        }
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -214,8 +214,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         if (flightSearchViewModel.isDoneLoadData()) {
             performanceMonitoringP2.stopTrace()
-            if (!coachMarkCache.isSearchCoachMarkShowed()) {
+            if (!flightSearchCache.isSearchCoachMarkShowed()) {
                 (activity as FlightSearchActivity).setupAndShowCoachMark()
+            } else if ((activity as FlightSearchActivity).isSearchFromWidget) {
+                (activity as FlightSearchActivity).setupAndShowCoachMarkSearchFromWidget()
             }
         }
     }
@@ -284,7 +286,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
-        adapter.clearAllElements()
+        clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
     }
@@ -331,16 +333,20 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightSearchViewModel.flightSearchPassData = flightSearchPassDataModel
     }
 
-    fun resetDateAndReload() {
+    fun resetDateAndReload(shouldResetCombine: Boolean = false) {
         flightSearchViewModel.flush()
         onFlightSearchFragmentListener?.changeDate(flightSearchViewModel.flightSearchPassData)
 
-        horizontal_progress_bar.visibility = View.VISIBLE
+        getSearchHorizontalProgress().visibility = View.VISIBLE
         flightSearchViewModel.setProgress(0)
         flight_sort_filter.visibility = View.GONE
 
         clearAllData()
         showLoading()
+
+        if (shouldResetCombine) {
+            flightSearchViewModel.isCombineDone = false
+        }
 
         flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
                 getDepartureAirport(), getArrivalAirport())
@@ -363,6 +369,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
             flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
                     getDepartureAirport(), getArrivalAirport())
+            flightSearchViewModel.generateSearchStatistics()
             flightSearchViewModel.initialize(true, isReturnTrip())
             flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
         }
@@ -374,6 +381,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
 
     open fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.arrivalAirport
+
+    open fun getFlightSearchTicker(): Ticker = flight_search_ticker
+
+    open fun getSearchHorizontalProgress(): HorizontalProgressBar = horizontal_progress_bar
 
     open fun renderSearchList(list: List<FlightJourneyModel>) {
         if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {
@@ -390,10 +401,28 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
     }
 
+    protected fun fetchSortAndFilterData() {
+        if (adapter.itemCount == 0) {
+            showLoading()
+        }
+
+        flightSearchViewModel.fetchSortAndFilter()
+    }
+
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flight_search_ticker)
+        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, getFlightSearchTicker())
+        getFlightSearchTicker().setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl.isNotEmpty()) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+            }
+
+            override fun onDismiss() {}
+
+        })
         if (travelTickerModel.url.isNotEmpty()) {
-            flight_search_ticker.setOnClickListener {
+            getFlightSearchTicker().setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)
             }
         }
@@ -409,21 +438,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flight_search_ticker.visibility = View.GONE
     }
 
-    private fun fetchSortAndFilterData() {
-        if (adapter.itemCount == 0) {
-            showLoading()
-        }
-
-        flightSearchViewModel.fetchSortAndFilter()
-    }
-
     private fun setUpProgress(progress: Int) {
-        if (horizontal_progress_bar.visibility == View.VISIBLE) {
-            horizontal_progress_bar.setProgress(progress)
+        if (getSearchHorizontalProgress().visibility == View.VISIBLE) {
+            getSearchHorizontalProgress().setProgress(progress)
             if (flightSearchViewModel.isDoneLoadData()) {
                 Handler().postDelayed({
                     try {
-                        horizontal_progress_bar.hide()
+                        getSearchHorizontalProgress().visibility = View.GONE
                     } catch (t: Throwable) {
                         t.printStackTrace()
                     }
@@ -434,7 +455,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private fun onResetFilterClicked() {
         flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
-        adapter.clearAllElements()
+        clearAllData()
         showLoading()
         setupQuickFilter()
         fetchSortAndFilterData()
@@ -490,8 +511,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     flightSearchViewModel.filterModel.transitTypeList.add(TransitEnum.DIRECT)
                     quickDirectFilter.select()
                 }
-
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_DIRECT)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }
@@ -507,6 +528,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickBaggageFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_BAGGAGE)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }
@@ -522,6 +544,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickMealFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_MEAL)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }
@@ -537,6 +560,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickTransitFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_TRANSIT)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }

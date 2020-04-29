@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.flight">
 
-    <application>
+    <application android:supportsRtl="true">
         <activity
             android:name=".homepage.presentation.activity.FlightHomepageActivity"
             android:label="@string/flight_dashboard_toolbar_title"
