@@ -35,12 +35,33 @@
         android:layout_below="@id/search"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/review_list"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scrollbars="vertical"/>
+            android:layout_height="match_parent" >
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ovoPointsTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:titleText="@string/review_ovo_ticker_title"
+                app:descriptionText="@string/review_ovo_ticker_description"
+                app:tickerType="announcement"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_list"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl0"
+                android:layout_gravity="center"
+                android:scrollbars="vertical"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                app:layout_constraintTop_toBottomOf="@id/ovoPointsTicker"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
