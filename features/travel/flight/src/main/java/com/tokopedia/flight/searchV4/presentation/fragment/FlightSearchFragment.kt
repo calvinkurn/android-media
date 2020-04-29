@@ -73,7 +73,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     protected var onFlightSearchFragmentListener: OnFlightSearchFragmentListener? = null
     private lateinit var flightSearchComponent: FlightSearchComponent
 
-    private lateinit var coachMarkCache: FlightSearchCache
+    private lateinit var flightSearchCache: FlightSearchCache
     private lateinit var performanceMonitoringP1: PerformanceMonitoring
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
     private var isTraceStop = false
@@ -84,7 +84,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         super.onCreate(savedInstanceState)
 
         initViewModels()
-        coachMarkCache = FlightSearchCache(requireContext())
+        flightSearchCache = FlightSearchCache(requireContext())
         performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
@@ -207,7 +207,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         if (flightSearchViewModel.isDoneLoadData()) {
             performanceMonitoringP2.stopTrace()
-            if (!coachMarkCache.isSearchCoachMarkShowed()) {
+            if (!flightSearchCache.isSearchCoachMarkShowed()) {
                 (activity as FlightSearchActivity).setupAndShowCoachMark()
             } else if ((activity as FlightSearchActivity).isSearchFromWidget) {
                 (activity as FlightSearchActivity).setupAndShowCoachMarkSearchFromWidget()
@@ -240,6 +240,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onDetailClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
         journeyModel?.let {
             flightSearchViewModel.sendDetailClickTrack(it, adapterPosition)
+            flightSearchCache.setInternationalTransitTag(flightSearchViewModel.internationalTransitTag)
             val flightDetailModel = FlightDetailModel()
             flightDetailModel.build(it)
             flightDetailModel.build(flightSearchViewModel.flightSearchPassData)

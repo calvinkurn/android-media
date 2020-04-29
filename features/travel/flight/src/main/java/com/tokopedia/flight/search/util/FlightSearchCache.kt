@@ -18,9 +18,18 @@ class FlightSearchCache(context: Context) {
 
     fun isSearchCoachMarkShowed(): Boolean = sharedPrefs.getBoolean(SEARCH_COACH_MARK, DEFAULT_COACH_MARK)
 
+    fun setInternationalTransitTag(transitTag: String) {
+        editor.putString(INTERNATIONAL_TRANSIT_TAG, transitTag)
+                .apply()
+    }
+
+    fun getInternationalTransitTag(): String = sharedPrefs.getString(INTERNATIONAL_TRANSIT_TAG, "")
+            ?: ""
+
     companion object {
         private const val CACHE_NAME = "FlightSearchCache"
         private const val SEARCH_COACH_MARK = "SEARCH_COACH_MARK"
+        private const val INTERNATIONAL_TRANSIT_TAG = "INTERNATIONAL_TRANSIT_TAG"
         private const val DEFAULT_COACH_MARK = false
     }
 }

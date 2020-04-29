@@ -53,15 +53,6 @@ query Searching($data: SearchSingleArgs) {
         infantNumeric
       }
     }
-    meta {
-      needRefresh
-      refreshTime
-      maxRetry
-      adult
-      child
-      infant
-      requestID
-    }
     error {
       id
       status
@@ -76,6 +67,17 @@ query Searching($data: SearchSingleArgs) {
         logo
         city
       }
+    }
+    meta {
+      needRefresh
+      refreshTime
+      maxRetry
+      adult
+      child
+      infant
+      requestID
+      internationalTransitTag
+      backgroundRefreshTime
     }
   }
 }

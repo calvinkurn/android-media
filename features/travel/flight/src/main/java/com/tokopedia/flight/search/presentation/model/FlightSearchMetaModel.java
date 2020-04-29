@@ -17,10 +17,13 @@ public class FlightSearchMetaModel {
     private long last_pulled;
     private List<String> airlines;
     private String searchRequestId;
+    private String internationalTag;
+    private int backgroundRefreshTime;
 
     public FlightSearchMetaModel(String departureAirport, String arrivalAirport, String date,
                                  boolean needRefresh, int refreshTime, int maxRetry, int retryNo,
-                                 long last_pulled, List<String> airlines, String searchRequestId) {
+                                 long last_pulled, List<String> airlines, String searchRequestId,
+                                 String internationalTag, int backgroundRefreshTime) {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.date = date;
@@ -31,6 +34,8 @@ public class FlightSearchMetaModel {
         this.last_pulled = last_pulled;
         this.airlines = airlines;
         this.searchRequestId = searchRequestId;
+        this.internationalTag = internationalTag;
+        this.backgroundRefreshTime = backgroundRefreshTime;
     }
 
     public String getDepartureAirport() {
@@ -71,5 +76,13 @@ public class FlightSearchMetaModel {
 
     public String getSearchRequestId() {
         return searchRequestId;
+    }
+
+    public String getInternationalTag() {
+        return internationalTag;
+    }
+
+    public int getBackgroundRefreshTime() {
+        return backgroundRefreshTime;
     }
 }

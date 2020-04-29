@@ -52,6 +52,7 @@ class FlightSearchViewModel @Inject constructor(
     var isCombineDone: Boolean = false
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
     var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
+    var internationalTransitTag: String = ""
     private var searchStatisticModel: FlightSearchStatisticModel? = null
     val isInFilterMode: Boolean
         get() {
@@ -310,6 +311,10 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     private fun onGetSearchMeta(flightSearchMeta: FlightSearchMetaModel, returnTrip: Boolean) {
+        if (flightSearchMeta.internationalTag != null) {
+            internationalTransitTag = flightSearchMeta.internationalTag
+        }
+
         if (!returnTrip) {
             flightSearchPassData.searchRequestId = flightSearchMeta.searchRequestId
         }
