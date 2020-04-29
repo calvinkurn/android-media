@@ -296,7 +296,6 @@ public class FragmentFavorite extends BaseDaggerFragment
         NetworkErrorHelper.createSnackbarWithAction(
                 getActivity(),
                 () -> {
-                    favoriteAdapter.showLoading();
                     favoritePresenter.loadMoreFavoriteShop();
                 }).showRetrySnackbar();
         favoriteAdapter.hideLoading();
