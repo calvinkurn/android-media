@@ -46,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <FrameLayout
+    <com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
         android:id="@+id/fl_youtube"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"

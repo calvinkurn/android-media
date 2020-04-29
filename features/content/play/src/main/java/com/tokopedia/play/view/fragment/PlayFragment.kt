@@ -36,6 +36,7 @@ import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
+import com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.ScreenOrientation
@@ -101,7 +102,7 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
     private lateinit var flBottomSheet: FrameLayout
-    private lateinit var flYouTube: FrameLayout
+    private lateinit var flYouTube: ScaleFriendlyFrameLayout
     private lateinit var flGlobalError: FrameLayout
 
     private lateinit var layoutManager: PlayParentLayoutManager
@@ -333,6 +334,13 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         }
         flVideo.setOnClickListener {
             //TODO("Figure out a better way")
+            if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+            else hideAllInsets()
+        }
+
+        flYouTube.setOnClickListener {
+            if (!flYouTube.isScaling) return@setOnClickListener
+
             if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
             else hideAllInsets()
         }
