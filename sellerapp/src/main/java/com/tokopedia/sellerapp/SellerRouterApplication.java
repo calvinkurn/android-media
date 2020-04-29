@@ -63,7 +63,6 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
@@ -133,7 +132,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, TkpdInboxRouter, TransactionRouter,
+        TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter,
         ShopModuleRouter,
@@ -299,57 +298,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isSupportedDelegateDeepLink(String appLinks) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLinks);
-    }
-
-    @Override
-    public String getBaseUrlDomainPayment() {
-        return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
-    }
-
-    @Override
-    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
-        Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-            );
-        }
-        return uriBuilder.build().toString().trim();
-    }
-
-    @Override
-    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
-        String urlQuery = Uri.parse(originUrl).getQuery();
-        return AuthUtil.generateWebviewHeaders(
-                Uri.parse(originUrl).getPath(),
-                urlQuery != null ? urlQuery : "",
-                "GET",
-                AuthUtil.KEY.KEY_WSV4);
-    }
-
-    @Override
-    public boolean getEnableFingerprintPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_SELLERAPP);
     }
 
     @Override

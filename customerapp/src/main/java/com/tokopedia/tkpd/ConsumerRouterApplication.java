@@ -113,7 +113,6 @@ import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.promogamification.common.GamificationRouter;
@@ -193,7 +192,6 @@ import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.C
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
         SellerModuleRouter,
-        IPaymentModuleRouter,
         TransactionRouter,
         ReactApplication,
         TkpdInboxRouter,
@@ -349,11 +347,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getIntentDeepLinkHandlerActivity() {
         return new Intent(this, DeeplinkHandlerActivity.class);
-    }
-
-    @Override
-    public String getBaseUrlDomainPayment() {
-        return TokopediaUrl.getInstance().getPAY();
     }
 
     @Override

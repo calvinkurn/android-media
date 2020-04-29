@@ -112,7 +112,9 @@ public abstract class MainApplication extends MainRouterApplication{
         locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
         createAndCallBgWork();
     }
 
@@ -131,8 +133,10 @@ public abstract class MainApplication extends MainRouterApplication{
     @NotNull
     private Boolean executeInBackground(){
         TooLargeTool.startLogging(MainApplication.this);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
         init();
-        upgradeSecurityProvider();
         return true;
     }
 

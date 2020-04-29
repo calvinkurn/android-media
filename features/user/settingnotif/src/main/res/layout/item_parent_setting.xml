@@ -20,12 +20,10 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Activity" />
 
-    <Switch
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/sw_setting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:thumb="@drawable/bg_switch_thumb_selector"
-        android:track="@drawable/bg_switch_track_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,6 +38,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tv_sw_title"
         app:layout_constraintStart_toStartOf="@+id/tv_sw_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_sw_title"
+        android:textColor="@color/grey_600"
         tools:text="Reminder, Feeds, dan Aktivitas akun kamu. This is really long text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

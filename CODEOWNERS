@@ -9,6 +9,7 @@
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-darth
 /features/category/       				                @tokopedia/minion-darth
+/features/discovery2/       				            @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeper-analytic
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -104,6 +105,8 @@
 
 /features/entertainment/event                 			@tokopedia/minion-mark
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
+/features/entertainment/event_home                 		@tokopedia/minion-mark
+/features/entertainment/event_search        			@tokopedia/minion-mark
 
 /features/travel/flight_orderlist                       @tokopedia/minion-mark
 /features/travel/flight/                                @tokopedia/minion-mark
