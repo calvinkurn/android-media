@@ -99,6 +99,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             stopTrace()
             when (it) {
                 is Success -> {
+                    clearAllData()
                     renderSearchList(it.data)
                 }
                 is Fail -> {
@@ -278,7 +279,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
-        adapter.clearAllElements()
+        clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
     }
@@ -393,6 +394,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
     }
 
+    protected fun fetchSortAndFilterData() {
+        if (adapter.itemCount == 0) {
+            showLoading()
+        }
+
+        flightSearchViewModel.fetchSortAndFilter()
+    }
+
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, getFlightSearchTicker())
         getFlightSearchTicker().setDescriptionClickEvent(object : TickerCallback {
@@ -422,14 +431,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flight_search_ticker.visibility = View.GONE
     }
 
-    private fun fetchSortAndFilterData() {
-        if (adapter.itemCount == 0) {
-            showLoading()
-        }
-
-        flightSearchViewModel.fetchSortAndFilter()
-    }
-
     private fun setUpProgress(progress: Int) {
         if (getSearchHorizontalProgress().visibility == View.VISIBLE) {
             getSearchHorizontalProgress().setProgress(progress)
@@ -447,7 +448,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private fun onResetFilterClicked() {
         flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
-        adapter.clearAllElements()
+        clearAllData()
         showLoading()
         setupQuickFilter()
         fetchSortAndFilterData()
