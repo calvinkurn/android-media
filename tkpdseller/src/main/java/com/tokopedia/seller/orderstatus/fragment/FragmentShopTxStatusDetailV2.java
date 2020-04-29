@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -60,6 +61,8 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 /**
  * Created by kris on 2/14/17. Tokopedia
@@ -352,10 +355,14 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppUtils.InvoiceDialog(getActivity(),
-                        presenter.getInvoiceData().getInvoiceUrl(),
-                        presenter.getInvoiceData().getInvoicePdf(),
-                        holder.Invoice.getText().toString());
+//                AppUtils.InvoiceDialog(getActivity(),
+//                        presenter.getInvoiceData().getInvoiceUrl(),
+//                        presenter.getInvoiceData().getInvoicePdf(),
+//                        holder.Invoice.getText().toString());
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
+                intent.putExtra(KEY_URL, presenter.getInvoiceData().getInvoiceUrl());
+                intent.putExtra(KEY_TITLE, "Invoice");
+                startActivity(intent);
             }
         };
     }

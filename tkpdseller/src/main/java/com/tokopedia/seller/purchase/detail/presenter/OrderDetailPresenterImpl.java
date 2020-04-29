@@ -11,6 +11,8 @@ import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.AppUtils;
@@ -33,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Subscriber;
+
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 /**
  * Created by kris on 11/10/17. Tokopedia
@@ -78,10 +83,14 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processInvoice(Activity context, OrderDetailData data, boolean seller) {
-        AppUtils.InvoiceDialog(
-                context, data.getInvoiceUrl(),
-                data.getInvoiceNumber(), seller
-        );
+//        AppUtils.InvoiceDialog(
+//                context, data.getInvoiceUrl(),
+//                data.getInvoiceNumber(), seller
+//        );
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INVOICE);
+        intent.putExtra(KEY_URL, data.getInvoiceUrl());
+        intent.putExtra(KEY_TITLE, "Invoice");
+        context.startActivity(intent);
     }
 
     @Override

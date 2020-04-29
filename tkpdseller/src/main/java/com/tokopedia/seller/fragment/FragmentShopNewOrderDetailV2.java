@@ -32,6 +32,7 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -69,6 +70,9 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 /**
  * Created by Tkpd_Eka on 2/12/2015.
@@ -536,7 +540,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppUtils.InvoiceDialog(activity, invoiceUri, invoicePdf, holder.Invoice.getText().toString());
+//                AppUtils.InvoiceDialog(activity, invoiceUri, invoicePdf, holder.Invoice.getText().toString());
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
+                intent.putExtra(KEY_URL, invoiceUri);
+                intent.putExtra(KEY_TITLE, "Invoice");
+                startActivity(intent);
             }
         };
     }
