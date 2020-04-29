@@ -11,7 +11,6 @@ import com.tokopedia.wishlist.common.response.GetWishlistResponse
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -21,26 +20,20 @@ import javax.inject.Inject
 class GetWishlistUseCase @Inject constructor(private val context: Context) : UseCase<GetWishlistResponse>() {
 
     companion object {
-        private val PAGE = "page"
-        private val COUNT = "count"
-        private val FILTER = "filter"
-        private val SOURCE = "source"
-        private val DEFAULT_PAGE = 1
-        private val DEFAULT_COUNT = 10
-        private val SOURCE_CART = "cart"
+        const val PAGE = "page"
+        const val COUNT = "count"
+        const val FILTER = "filter"
+        const val SOURCE = "source"
+        const val DEFAULT_PAGE = 1
+        const val DEFAULT_COUNT = 10
+        const val SOURCE_CART = "cart"
     }
 
-    override fun createObservable(p0: RequestParams?): Observable<GetWishlistResponse> {
-        val variables = HashMap<String, Any>()
-
-        variables[PAGE] = DEFAULT_PAGE
-        variables[COUNT] = DEFAULT_COUNT
-        variables[FILTER] = mapOf(SOURCE to SOURCE_CART)
-
+    override fun createObservable(requestParams: RequestParams): Observable<GetWishlistResponse> {
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.query_get_wishlist),
                 GetWishlistResponse::class.java,
-                variables
+                requestParams.parameters
         )
 
         val graphqlUseCase = GraphqlUseCase()
