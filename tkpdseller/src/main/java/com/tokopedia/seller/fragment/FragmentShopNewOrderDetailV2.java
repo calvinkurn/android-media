@@ -39,7 +39,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
@@ -537,15 +536,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private View.OnClickListener onInvoiceListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                AppUtils.InvoiceDialog(activity, invoiceUri, invoicePdf, holder.Invoice.getText().toString());
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
-                intent.putExtra(KEY_URL, invoiceUri);
-                intent.putExtra(KEY_TITLE, "Invoice");
-                startActivity(intent);
-            }
+        return v -> {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
+            intent.putExtra(KEY_URL, invoiceUri);
+            intent.putExtra(KEY_TITLE, "Invoice");
+            startActivity(intent);
         };
     }
 

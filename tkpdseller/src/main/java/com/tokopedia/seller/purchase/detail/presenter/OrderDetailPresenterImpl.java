@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -83,10 +82,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processInvoice(Activity context, OrderDetailData data, boolean seller) {
-//        AppUtils.InvoiceDialog(
-//                context, data.getInvoiceUrl(),
-//                data.getInvoiceNumber(), seller
-//        );
         Intent intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INVOICE);
         intent.putExtra(KEY_URL, data.getInvoiceUrl());
         intent.putExtra(KEY_TITLE, "Invoice");

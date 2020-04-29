@@ -34,7 +34,6 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.invoice.model.InvoiceRenderParam;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -42,7 +41,6 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
@@ -236,7 +234,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case DeepLinkChecker.INVOICE:
-                    openInvoice(linkSegment, uriData);
+                    openInvoice(uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
@@ -528,13 +526,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return data;
     }
 
-    private void openInvoice(List<String> linkSegment, Uri uriData) {
-//        AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
-//        AppUtils.downloadInvoiceWSV4(context,
-//                InvoiceRenderParam.instanceFromUrl(uriData.toString(), null, null),
-//                true,
-//                false
-//        );
+    private void openInvoice(Uri uriData) {
         Intent intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INVOICE);
         intent.putExtra(KEY_URL, uriData.toString());
         intent.putExtra(KEY_TITLE, "Invoice");
@@ -638,6 +630,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             RouteManager.route(context,
                                     bundle,
                                     ApplinkConst.SHOP_INFO,
+                                    shopId);
                                     shopId);
                         } else if (isShopHome(linkSegment)) {
                             RouteManager.route(context,

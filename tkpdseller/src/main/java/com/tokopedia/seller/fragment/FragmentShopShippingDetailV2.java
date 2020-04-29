@@ -43,7 +43,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.R;
@@ -488,7 +487,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onInvoiceClick() {
-//        AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, invoice.getText().toString());
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
         intent.putExtra(KEY_URL, invoiceUrl);
         intent.putExtra(KEY_TITLE, "Invoice");

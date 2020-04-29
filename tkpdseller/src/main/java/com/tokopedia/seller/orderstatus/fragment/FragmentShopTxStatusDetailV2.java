@@ -39,7 +39,6 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.OrderHistoryView;
@@ -352,18 +351,11 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
     }
 
     private View.OnClickListener onInvoiceClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                AppUtils.InvoiceDialog(getActivity(),
-//                        presenter.getInvoiceData().getInvoiceUrl(),
-//                        presenter.getInvoiceData().getInvoicePdf(),
-//                        holder.Invoice.getText().toString());
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
-                intent.putExtra(KEY_URL, presenter.getInvoiceData().getInvoiceUrl());
-                intent.putExtra(KEY_TITLE, "Invoice");
-                startActivity(intent);
-            }
+        return v -> {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
+            intent.putExtra(KEY_URL, presenter.getInvoiceData().getInvoiceUrl());
+            intent.putExtra(KEY_TITLE, "Invoice");
+            startActivity(intent);
         };
     }
 

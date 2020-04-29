@@ -24,7 +24,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core2.R;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
@@ -320,7 +319,6 @@ ShippingConfirmationDetail extends TActivity {
     }
 
     public void invoiceClick() {
-//        AppUtils.InvoiceDialog(ShippingConfirmationDetail.this, invoice_uri, invoice_pdf, Invoice.getText().toString());
         Intent intent = RouteManager.getIntent(this, ApplinkConstInternalOrder.INVOICE);
         intent.putExtra(KEY_URL, invoice_uri);
         intent.putExtra(KEY_TITLE, "Invoice");
