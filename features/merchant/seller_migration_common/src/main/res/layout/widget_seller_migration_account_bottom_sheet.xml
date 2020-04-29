@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/accountSellerMigrationBottomsheetImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/account_seller_migration_bottomsheet_title"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:text="@string/account_seller_migration_bottomsheet_title"
+        android:gravity="center"
+        android:maxLines="2"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/accountSellerMigrationBottomsheetImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+
+    <ImageView
+        android:id="@+id/account_seller_migration_set_stock_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_below="@id/account_seller_migration_bottomsheet_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        app:srcCompat="@drawable/ic_account_seller_migration_set_stock" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/account_seller_migration_bottomsheet_set_stock_description"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_alignTop="@id/account_seller_migration_set_stock_image"
+        android:layout_alignBottom="@id/account_seller_migration_set_stock_image"
+        android:layout_toRightOf="@id/account_seller_migration_set_stock_image"
+        android:layout_toEndOf="@id/account_seller_migration_set_stock_image"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"/>
+
+    <ImageView
+        android:id="@+id/account_seller_migration_chat_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_below="@id/account_seller_migration_set_stock_image"
+        android:layout_alignStart="@id/account_seller_migration_set_stock_image"
+        android:layout_alignLeft="@id/account_seller_migration_set_stock_image"
+        app:srcCompat="@drawable/ic_account_seller_migration_chat" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/account_seller_migration_bottomsheet_reply_chat_description"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/account_seller_migration_chat_image"
+        android:layout_alignBottom="@id/account_seller_migration_chat_image"
+        android:layout_toRightOf="@id/account_seller_migration_chat_image"
+        android:layout_toEndOf="@id/account_seller_migration_chat_image"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <ImageView
+        android:id="@+id/account_seller_migration_promo_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_below="@id/account_seller_migration_chat_image"
+        android:layout_alignStart="@id/account_seller_migration_chat_image"
+        android:layout_alignLeft="@id/account_seller_migration_chat_image"
+        app:srcCompat="@drawable/ic_account_seller_migration_promo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/account_seller_migration_bottomsheet_promotion_and_ads_description"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_alignTop="@id/account_seller_migration_promo_image"
+        android:layout_alignBottom="@id/account_seller_migration_promo_image"
+        android:layout_toRightOf="@id/account_seller_migration_promo_image"
+        android:layout_toEndOf="@id/account_seller_migration_promo_image"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"/>
+
+    <include layout="@layout/partial_seller_migration_warning_card"
+        android:id="@+id/account_seller_warning_card"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/account_seller_migration_promo_image"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/accountSellerMigrationBottomSheetButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:text="@string/account_seller_migration_bottomsheet_button"
+        android:layout_below="@id/account_seller_warning_card" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/accountSellerMigrationBottomSheetFooter"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:layout_below="@id/accountSellerMigrationBottomSheetButton"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
