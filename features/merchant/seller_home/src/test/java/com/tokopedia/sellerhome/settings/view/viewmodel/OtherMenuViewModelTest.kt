@@ -1,0 +1,112 @@
+package com.tokopedia.sellerhome.settings.view.viewmodel
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.sellerhome.utils.observeOnce
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.spyk
+import junit.framework.Assert.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+@ExperimentalCoroutinesApi
+class OtherMenuViewModelTest {
+
+    @RelaxedMockK
+    lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+    }
+
+    private val mViewModel: OtherMenuViewModel by lazy {
+        OtherMenuViewModel(Dispatchers.Unconfined, getAllShopInfoUseCase)
+    }
+
+    @Test
+    fun `success get all setting shop info data`() {
+        val settingShopInfoSuccess = SettingShopInfoUiModel()
+
+        coEvery {
+            getAllShopInfoUseCase.executeOnBackground()
+        } returns settingShopInfoSuccess
+
+        mViewModel.getAllSettingShopInfo()
+
+        coVerify {
+            getAllShopInfoUseCase.executeOnBackground()
+        }
+
+        assert(mViewModel.settingShopInfoLiveData.value == Success(settingShopInfoSuccess))
+    }
+
+    @Test
+    fun `error get setting shop info data`() {
+        val throwable = ResponseErrorException()
+
+        coEvery {
+            getAllShopInfoUseCase.executeOnBackground()
+        } throws throwable
+
+        mViewModel.getAllSettingShopInfo()
+
+        coVerify {
+            getAllShopInfoUseCase.executeOnBackground()
+        }
+
+        assert(mViewModel.settingShopInfoLiveData.value == Fail(throwable))
+
+    }
+
+    @Test
+    fun `Check delay will alter isToasterAlreadyShown between true and false`() = runBlocking {
+
+        val mockViewModel = spyk(mViewModel, recordPrivateCalls = true)
+
+        mockViewModel.getAllSettingShopInfo(true)
+
+        coVerify {
+            mockViewModel["checkDelayErrorResponseTrigger"]()
+        }
+
+        mockViewModel.isToasterAlreadyShown.observeOnce {
+            assertTrue(it)
+        }
+
+        delay(5000L)
+
+        mockViewModel.isToasterAlreadyShown.observeOnce {
+            assertFalse(it)
+        }
+    }
+
+    @Test
+    fun `Setting status bar initial state should change the live data value`() {
+
+        mViewModel.setIsStatusBarInitialState(isInitialState = true)
+
+        val isStatusBarInitialState = mViewModel.isStatusBarInitialState.value
+
+        assertNotNull(isStatusBarInitialState)
+        isStatusBarInitialState?.let {
+            assert(it)
+        }
+
+    }
+}

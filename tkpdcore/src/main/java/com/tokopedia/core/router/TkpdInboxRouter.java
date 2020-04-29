@@ -14,10 +14,8 @@ public interface TkpdInboxRouter {
     String TX_ASK_SELLER = "tx_ask_seller";
     String TX_ASK_BUYER = "tx_ask_buyer";
     String SHOP = "shop";
-    String PRODUCT = "product";
 
     String IS_CHAT_BOT = "is_chat_bot";
-    String INDICATOR_VISIBILITY = "indicator_groupchat";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,
@@ -30,13 +28,7 @@ public interface TkpdInboxRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getLoginIntent(Context context);
-
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
-
-    Intent getTopProfileIntent(Context context, String userId);
 
     boolean isSupportedDelegateDeepLink(String url);
 }

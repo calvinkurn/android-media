@@ -12,7 +12,6 @@ import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -23,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -374,8 +374,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         int SEGMENT_GROUPCHAT = 2;
         Intent intent;
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
-            intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
-                    context, linkSegment.get(1));
+            intent = RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, linkSegment.get(1));
             intent.putExtras(bundle);
             context.startActivity(intent);
         }
@@ -632,7 +631,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     ApplinkConst.SHOP_HOME,
                                     shopId);
                         } else {
-                            Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
+                            Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }

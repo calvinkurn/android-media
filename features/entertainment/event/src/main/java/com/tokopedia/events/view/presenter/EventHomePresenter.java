@@ -8,8 +8,8 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetProductRatingUseCase;
@@ -188,8 +188,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
                 RouteManager.route(mView.getActivity(), ApplinkConst.EVENTS_ORDER);
             else {
                 showOMS = true;
-                Intent intent = ((EventModuleRouter) mView.getActivity().getApplication()).
-                        getLoginIntent(mView.getActivity());
+                Intent intent = RouteManager.getIntent(mView.getActivity(), ApplinkConst.LOGIN);
                 mView.navigateToActivityRequest(intent, 1099);
             }
             eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_DAFTAR_TRANSAKSI, "");
@@ -381,10 +380,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     }
 
     private void startGeneralWebView(String url) {
-        if (mView.getActivity().getApplication() instanceof EventModuleRouter) {
-            ((EventModuleRouter) mView.getActivity().getApplication())
-                    .actionOpenGeneralWebView(mView.getActivity(), url);
-        }
+        RouteManager.route(mView.getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
 

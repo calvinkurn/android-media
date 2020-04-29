@@ -23,10 +23,6 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.weaver.WeaveInterface;
-import com.tokopedia.weaver.Weaver;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,9 +40,6 @@ import timber.log.Timber;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 public class GTMAnalytics extends ContextAnalytics {
-    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 150; // 150 minutes (2.5 hours)
-    private static final String KEY_GTM_EXPIRED_TIME = "android_gtm_expired_time";
-
     private static final String EMPTY_DEFAULT_VALUE = "none / other";
 
     private static final String KEY_DIMENSION_40 = "dimension40";
@@ -885,10 +878,6 @@ public class GTMAnalytics extends ContextAnalytics {
     @Override
     public void sendEvent(String eventName, Map<String, Object> eventValue) {
         //no op, only for appsfyler and moengage
-    }
-
-    public void eventAuthenticate() {
-        eventAuthenticate(null);
     }
 
     public void eventAuthenticate(Map<String, String> customDimension) {
