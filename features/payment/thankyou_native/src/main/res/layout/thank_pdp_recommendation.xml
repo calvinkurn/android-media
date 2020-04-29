@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="Kamu sempat lihat-lihat ini" />
 
     <androidx.recyclerview.widget.RecyclerView

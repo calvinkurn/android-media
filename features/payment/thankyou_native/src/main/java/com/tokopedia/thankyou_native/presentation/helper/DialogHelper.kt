@@ -13,7 +13,7 @@ object OriginOnBackPress : DialogOrigin()
 
 class DialogHelper(val context: Context, val listener: OnDialogRedirectListener) {
 
-    var dialogUnify: DialogUnify? = null
+    private var dialogUnify: DialogUnify? = null
 
     internal fun showPaymentStatusDialog(dialogOrigin: DialogOrigin, paymentStatus: PaymentStatus?) {
         cancelDialog()

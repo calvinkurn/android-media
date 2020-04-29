@@ -7,6 +7,7 @@ import com.tokopedia.thankyou_native.di.module.GqlQueryModule
 import com.tokopedia.thankyou_native.di.module.ThankYouPageModule
 import com.tokopedia.thankyou_native.di.scope.ThankYouPageScope
 import com.tokopedia.thankyou_native.di.module.ViewModelModule
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import dagger.Component
 
@@ -20,6 +21,7 @@ interface ThankYouPageComponent {
     @ApplicationContext
     fun context(): Context
 
+    fun inject(activity: ThankYouPageActivity)
     fun inject(loaderFragment: LoaderFragment)
     fun inject(instantPaymentFragment: InstantPaymentFragment)
     fun inject(deferredPaymentFragment: DeferredPaymentFragment)

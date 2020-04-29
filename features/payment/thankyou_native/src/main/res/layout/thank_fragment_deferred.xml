@@ -263,44 +263,37 @@
                 app:typographyType="body_3" />
 
 
-            <com.tokopedia.unifyprinciples.Typography
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnCheckPaymentStatus"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:background="@drawable/bg_button_green_enabled"
-                android:gravity="center"
-                android:padding="@dimen/dp_11"
-                android:text="@string/thank_check_payment_status"
-                android:textColor="@color/Neutral_N0"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvCheckPaymentStatusTitle"
-                app:typographyType="heading_5"
-                app:typographyWeight="bold"
-                tools:visibility="visible" />
+                android:text="@string/thank_check_payment_status"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
 
 
-            <com.tokopedia.unifyprinciples.Typography
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnShopAgain"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:background="@drawable/bg_button_green_enabled_border"
-                android:gravity="center"
-                android:padding="@dimen/dp_11"
-                android:text="@string/thank_shop_again"
-                android:textColor="@color/green_500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btnCheckPaymentStatus"
-                app:typographyType="heading_5"
-                app:typographyWeight="bold"
-                tools:visibility="visible" />
+                android:text="@string/thank_shop_again"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="ghost" />
 
 
             <View

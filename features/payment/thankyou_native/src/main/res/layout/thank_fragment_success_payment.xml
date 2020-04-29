@@ -164,25 +164,22 @@
                 app:typographyType="small"
                 tools:text="Saldo" />
 
-            <com.tokopedia.unifyprinciples.Typography
+
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_see_transaction_list"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:background="@drawable/bg_button_green_enabled"
-                android:gravity="center"
-                android:padding="@dimen/dp_11"
                 android:text="@string/thank_see_transaction_list"
-                android:textColor="@color/Neutral_N0"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_payment"
-                app:typographyType="heading_5"
-                app:typographyWeight="bold"
-                tools:visibility="visible" />
-
+                app:layout_constraintTop_toBottomOf="@+id/iv_payment" />
             <View
                 android:id="@+id/view_divider_2"
                 android:layout_width="match_parent"

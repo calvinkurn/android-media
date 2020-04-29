@@ -57,9 +57,11 @@ class ThankYouPageTimerView @JvmOverloads constructor(
     fun startTimer() {
         currentDuration = getCurrentDuration()
         if (timerRunning || currentDuration <= 0) {
+            updateText(0L)
             return
         }
         timerRunning = true
+
         timer = object : CountDownTimer(currentDuration, 1000) {
             override fun onTick(millis: Long) {
                 currentDuration = millis
@@ -67,7 +69,7 @@ class ThankYouPageTimerView @JvmOverloads constructor(
             }
 
             override fun onFinish() {
-                notifyListener()
+                updateText(0L)
                 stopTimer()
             }
         }
