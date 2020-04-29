@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.hotlistRevamp.viewmodel
+package com.tokopedia.hotlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common_category.usecase.SendTopAdsUseCase
