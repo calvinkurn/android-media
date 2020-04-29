@@ -39,8 +39,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.unifyDependencies.dialog
-//    kapt rootProject.ext.miscDependencies.daggerCompiler
-//    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation fileTree(dir: 'libs', include: ['*.jar'])

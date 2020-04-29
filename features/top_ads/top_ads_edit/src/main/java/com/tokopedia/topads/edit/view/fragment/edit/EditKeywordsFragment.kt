@@ -225,10 +225,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.productId.observe(requireActivity(), Observer {
+        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
             productIds = it.toString()
         })
-        sharedViewModel.groupId.observe(requireActivity(), Observer {
+        sharedViewModel.groupId.observe(viewLifecycleOwner, Observer {
             groupId = it
         })
         add_keyword.setOnClickListener {

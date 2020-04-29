@@ -208,7 +208,7 @@ private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any
     group?.scheduleStart = ""
     group?.scheduleEnd = ""
     if (isBudgetLimited) {
-        group?.dailyBudget = 40 * priceBidGroup!!
+        group?.dailyBudget = 0
     } else
         group?.dailyBudget = dailyBudgetGroup
     group?.priceBid = priceBidGroup

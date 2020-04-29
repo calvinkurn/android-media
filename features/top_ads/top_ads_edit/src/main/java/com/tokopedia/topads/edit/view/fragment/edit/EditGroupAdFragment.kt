@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -14,6 +15,7 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.param.DataSuggestions
+import com.tokopedia.topads.edit.data.response.GroupInfoResponse
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -26,12 +28,9 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import java.lang.NumberFormatException
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
-import androidx.lifecycle.Observer
-import com.tokopedia.topads.edit.data.response.GroupInfoResponse
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -108,21 +107,23 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
-        progressBar.visibility = View.GONE
         group_name.textFieldInput.setText(arguments?.getString(GROUPKEY))
         budget.textFieldInput.setText(data.priceBid!!.toString())
         priceDaily = data.priceDaily!!
-        if (priceDaily != 0)
+        if (priceDaily != 0) {
             daily_budget.textFieldInput.setText(data.priceDaily.toString())
-        else
-            daily_budget.textFieldInput.setText((MULTIPLIER * data.priceBid).toString())
-
-        if (priceDaily > data.priceBid * MULTIPLIER) {
             radio2.isChecked = true
+        } else {
+            daily_budget.textFieldInput.setText((MULTIPLIER * data.priceBid).toString())
         }
+        progressbar.visibility = View.GONE
+
     }
 
-    private fun onError(it: Throwable) {}
+    private fun onError(it: Throwable) {
+        it.printStackTrace()
+    }
+
     private fun onBidSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
@@ -199,10 +200,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         groupId = arguments?.getString("groupId")!!.toInt()
-        sharedViewModel.productId.observe(requireActivity(), Observer {
-            productId = it
-            getLatestBid()
-        })
         sharedViewModel.setGroupName(arguments?.getString(GROUPKEY)!!)
         sharedViewModel.setGroupId(arguments?.getString("groupId")!!.toInt())
         if (radio1.isChecked) {
@@ -291,6 +288,14 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun actionEnable() {
         btnState = validation1 == true && validation2 == true && validation3 == true
         buttonStateCallback?.setButtonState()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
+            productId = it
+            getLatestBid()
+        })
     }
 
     override fun onAttach(context: Context) {

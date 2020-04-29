@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -124,7 +125,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedViewModel.negKeyword.observe(this, androidx.lifecycle.Observer {
+        sharedViewModel.negKeyword.observe(viewLifecycleOwner, Observer {
             adapter.items.clear()
             it.forEach { item ->
                 adapter.items.add(EditNegKeywordItemViewModel(item))
