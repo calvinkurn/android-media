@@ -4,6 +4,8 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
@@ -120,35 +122,35 @@ object HomePageTrackingV2 : BaseTracking() {
                 },
                 channelId = channel.id
         )
-        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionChannelClick(
+        fun getLegoBannerFourImageClick(channel: ChannelModel, grid: ChannelGrid, position: Int) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME),
                 eventLabel = grid.attribution,
                 channelId = channel.id,
-                categoryId = channel.categoryPersona,
-                affinity = channel.persona,
-                attribution = channel.galaxyAttribution,
-                shopId = channel.brandId,
-                campaignCode = channel.campaignCode,
-                promotions = channel.grids.map {
-                    Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
-                            creative = it.attribution,
-                            creativeUrl = it.imageUrl,
-                            name = channel.promoName,
-                            position = position.toString()
-                    )
-                }
+                categoryId = channel.trackingAttributionModel.categoryPersona,
+                affinity = channel.trackingAttributionModel.persona,
+                attribution = channel.trackingAttributionModel.galaxyAttribution,
+                shopId = channel.trackingAttributionModel.brandId,
+                campaignCode = channel.trackingAttributionModel.campaignCode,
+                promotions = listOf(
+                        Promotion(
+                                id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId),
+                                creative = grid.attribution,
+                                creativeUrl = grid.imageUrl,
+                                name = channel.trackingAttributionModel.promoName,
+                                position = position.toString()
+                        )
+                )
         )
 
-        fun getLegoBannerFourImageSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+        fun getLegoBannerFourImageSeeAllClick(channelModel: ChannelModel): HashMap<String, Any>{
             return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME) + " view all",
-                Label.KEY, channel.header.name,
-                Label.CHANNEL_LABEL, channel.id
+                Label.KEY, channelModel.channelHeader.name,
+                Label.CHANNEL_LABEL, channelModel.id
             ) as HashMap<String, Any>
         }
     }

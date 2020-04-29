@@ -27,6 +27,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.listener.DynamicLegoBannerListener
+import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
 import java.util.*
 
 /**
@@ -40,7 +45,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
                          private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
-                         private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener,
+                         private val homeComponentListener: HomeComponentListener,
+                         private val legoListener: DynamicLegoBannerListener) :
+        BaseAdapterTypeFactory(),
+        HomeTypeFactory, HomeComponentTypeFactory{
 
     private val productLayout = HashSet(
             listOf(
@@ -168,13 +177,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
         return when (layout) {
             /**
-             * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
-             */
-            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
-
-            /**
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
              * used by deals widget to show 1 product item
              */
@@ -219,12 +221,21 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         }
     }
 
+    override fun type(dynamicLegoBannerViewModel: DynamicLegoBannerViewModel): Int {
+        return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
             ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
-            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)
+            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
+                    DynamicLegoBannerViewHolder(
+                            view,
+                            legoListener,
+                            homeComponentListener,
+                            parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)

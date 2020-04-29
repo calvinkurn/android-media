@@ -13,6 +13,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
+import com.tokopedia.home_component.model.ChannelGrid;
+import com.tokopedia.home_component.model.ChannelModel;
+import com.tokopedia.home_component.model.TrackingAttributionModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -313,26 +316,27 @@ public class HomePageTracking {
         }
     }
 
-    public static Map<String, Object> getEnhanceClickLegoBannerHomePage(DynamicHomeChannel.Grid grid,
-                                                                 DynamicHomeChannel.Channels channel,
-                                                                 int position) {
+    public static Map<String, Object> getEnhanceClickLegoBannerHomePage(ChannelGrid grid,
+                                                                        ChannelModel channel,
+                                                                        int position) {
+        TrackingAttributionModel trackingAttributionModel = channel.getTrackingAttributionModel();
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_CLICK,
                 EVENT_LABEL, grid.getAttribution(),
                 CHANNEL_ID, channel.getId(),
-                ATTRIBUTION, channel.getGalaxyAttribution(),
-                AFFINITY_LABEL, channel.getPersona(),
-                GALAXY_CATEGORY_ID, channel.getCategoryPersona(),
-                SHOP_ID, channel.getBrandId(),
-                CAMPAIGN_CODE, channel.getCampaignCode(),
+                ATTRIBUTION, trackingAttributionModel.getGalaxyAttribution(),
+                AFFINITY_LABEL, trackingAttributionModel.getPersona(),
+                GALAXY_CATEGORY_ID, trackingAttributionModel.getCategoryPersona(),
+                SHOP_ID, trackingAttributionModel.getBrandId(),
+                CAMPAIGN_CODE, trackingAttributionModel.getCampaignCode(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
-                                                FIELD_NAME, channel.getPromoName(),
+                                                FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + trackingAttributionModel.getPersoType()+ "_" + trackingAttributionModel.getCategoryId(),
+                                                FIELD_NAME, trackingAttributionModel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)
@@ -343,20 +347,20 @@ public class HomePageTracking {
         );
     }
 
-    public static Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(DynamicHomeChannel.Grid grid,
-                                                                      DynamicHomeChannel.Channels channel,
-                                                                      int position) {
+    public static Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(ChannelModel channel,
+                                                                             ChannelGrid grid,
+                                                                             int position) {
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, LEGO_BANNER_3_IMAGE_CLICK,
                 EVENT_LABEL, grid.getAttribution(),
                 CHANNEL_ID, channel.getId(),
-                ATTRIBUTION, channel.getGalaxyAttribution(),
-                AFFINITY_LABEL, channel.getPersona(),
-                GALAXY_CATEGORY_ID, channel.getCategoryPersona(),
-                SHOP_ID, channel.getBrandId(),
-                CAMPAIGN_CODE, channel.getCampaignCode(),
+                ATTRIBUTION, channel.getTrackingAttributionModel().getGalaxyAttribution(),
+                AFFINITY_LABEL, channel.getTrackingAttributionModel().getPersona(),
+                GALAXY_CATEGORY_ID, channel.getTrackingAttributionModel().getCategoryPersona(),
+                SHOP_ID, channel.getTrackingAttributionModel().getBrandId(),
+                CAMPAIGN_CODE, channel.getTrackingAttributionModel().getCampaignCode(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
@@ -365,9 +369,9 @@ public class HomePageTracking {
                                                         FORMAT_4_VALUE_UNDERSCORE,
                                                         channel.getId(),
                                                         grid.getId(),
-                                                        channel.getPersoType(),
-                                                        channel.getCategoryID()),
-                                                FIELD_NAME, channel.getPromoName(),
+                                                        channel.getTrackingAttributionModel().getPersoType(),
+                                                        channel.getTrackingAttributionModel().getCategoryId()),
+                                                FIELD_NAME, channel.getTrackingAttributionModel().getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)

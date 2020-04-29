@@ -34,6 +34,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -739,6 +741,29 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
+        launchCatchError(coroutineContext, block = {
+            getDynamicChannelsUseCase.setParams(channelModel.groupId ?: "")
+            val data = getDynamicChannelsUseCase.executeOnBackground()
+            if(data.isEmpty()){
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
+            } else {
+                var lastIndex = position
+                val dynamicData = _homeLiveData.value?.list?.getOrNull(lastIndex)
+                if(dynamicData !is DynamicChannelDataModel && dynamicData != visitable){
+                    lastIndex = _homeLiveData.value?.list?.indexOf(visitable) ?: -1
+                }
+                updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, lastIndex))
+                data.reversed().forEach {
+                    updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
+                }
+                _trackingLiveData.postValue(Event(data))
+            }
+        }){
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
+        }
+    }
+
     private fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
@@ -984,7 +1009,8 @@ open class HomeViewModel @Inject constructor(
                                 if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
                                     newList[data.position] = homeVisitable
                                 } else {
-                                    newList.withIndex().find { it::class.java == homeVisitable::class.java && (it as HomeVisitable).visitableId() == homeVisitable.visitableId() }?.let {
+                                    newList.withIndex().find {
+                                        it::class.java == Visitable::class.java }?.let {
                                         newList[it.index] = homeVisitable
                                     }
                                 }

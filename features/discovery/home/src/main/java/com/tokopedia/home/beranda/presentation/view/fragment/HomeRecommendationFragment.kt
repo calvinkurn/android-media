@@ -42,6 +42,8 @@ import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
@@ -116,6 +118,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                     handleWishlistAction(productCardOptionsModel)
                 }
             })
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

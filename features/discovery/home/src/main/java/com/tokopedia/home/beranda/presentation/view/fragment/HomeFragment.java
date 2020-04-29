@@ -80,7 +80,9 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
+import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback;
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface;
+import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback;
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -887,7 +889,9 @@ public class HomeFragment extends BaseDaggerFragment implements
                 this,
                 homeRecyclerView.getRecycledViewPool(),
                 this,
-                this
+                this,
+                new HomeComponentCallback(viewModel),
+                new DynamicLegoBannerComponentCallback(getActivity())
         );
         AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
                 new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())

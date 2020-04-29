@@ -7,18 +7,24 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dev.home_component.R
+import com.tokopedia.home_component.R
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.customview.ShimmeringImageView
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
+import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
-import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 
+/**
+ * Created by Devara on 2020-04-28
+ */
 class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener,
                                   val homeComponentListener: HomeComponentListener,
@@ -30,19 +36,18 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     override fun bind(element: DynamicLegoBannerViewModel) {
         setHeaderComponent(element)
+        setGrids(element)
+    }
 
+    private fun setGrids(element: DynamicLegoBannerViewModel) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
-
-        val defaultSpanCount = when(element.channelModel.channelConfig.layout){
-            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> 2
-            else -> 3
-        }
-
-        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(defaultSpanCount, 0, true))
+        val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
+        setViewportImpression(element)
 
         parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView.setHasFixedSize(true)
+        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                GridSpacingItemDecoration(defaultSpanCount, 0, true))
 
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
@@ -50,21 +55,32 @@ class DynamicLegoBannerViewHolder(itemView: View,
                 GridLayoutManager.VERTICAL, false)
 
         recyclerView.adapter = LegoItemAdapter(
-                itemView.context,
                 legoListener,
                 element.channelModel,
                 adapterPosition)
     }
 
-    class LegoItemAdapter(private val context: Context,
-                          private val listener: DynamicLegoBannerListener,
+    private fun setViewportImpression(element: DynamicLegoBannerViewModel) {
+        itemView.addOnImpressionListener(element.channelModel, onView = {
+            homeComponentListener.onChannelImpressed(element.channelModel, adapterPosition)
+        })
+    }
+
+    private fun getRecyclerViewDefaultSpanCount(element: DynamicLegoBannerViewModel): Int {
+        return when (element.channelModel.channelConfig.layout) {
+            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> 2
+            else -> 3
+        }
+    }
+
+    class LegoItemAdapter(private val listener: DynamicLegoBannerListener,
                           private val channel: ChannelModel,
                           private val parentPosition: Int) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout
         companion object{
-            private val LEGO_SQUARE = R.layout.layout_lego_item
-            private val LEGO_LANDSCAPE = R.layout.layout_lego_landscape
+            private val LEGO_SQUARE = R.layout.layout_dynamic_lego_item
+            private val LEGO_LANDSCAPE = R.layout.layout_dynamic_lego_landscape
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -79,23 +95,23 @@ class DynamicLegoBannerViewHolder(itemView: View,
             try {
                 val grid = grids[position]
                 if(layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE){
-//                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
                 } else {
-//                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
                 }
-//                holder.imageView.setOnClickListener {
-//                    when(layout) {
-//                        DynamicChannelLayout.LAYOUT_6_IMAGE -> {
-//                            listener.onClickGridSixImage(channel, position, parentPosition)
-//                        }
-//                        DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
-//                            listener.onClickGridThreeImage(channel, position, parentPosition)
-//                        }
-//                        DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
-//                            listener.onClickGridFourImage(channel, position, parentPosition)
-//                        }
-//                    }
-//                }
+                holder.imageView.setOnClickListener {
+                    when(layout) {
+                        DynamicChannelLayout.LAYOUT_6_IMAGE -> {
+                            listener.onClickGridSixImage(channel, grid, position, parentPosition)
+                        }
+                        DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
+                            listener.onClickGridThreeImage(channel, grid, position, parentPosition)
+                        }
+                        DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
+                            listener.onClickGridFourImage(channel, grid, position, parentPosition)
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -108,7 +124,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
     }
 
     class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-//        val imageView: ShimmeringImageView = view.findViewById(R.id.image)
+        val imageView: ShimmeringImageView = view.findViewById(R.id.image)
         val context: Context
             get() = itemView.context
     }
@@ -124,7 +140,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener.onChannelExpired(channelModel)
+                homeComponentListener.onChannelExpired(channelModel, adapterPosition, element)
             }
         })
     }

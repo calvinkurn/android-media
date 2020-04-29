@@ -49,6 +49,11 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation project(rootProject.ext.libraries.traceroute)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.networkDependencies.glide
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
