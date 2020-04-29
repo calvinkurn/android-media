@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
@@ -30,12 +29,12 @@ object SellerReviewProductDetailMapper {
 
     fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData, oldData: List<RatingBarUiModel>): ProductReviewFilterUiModel {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
-        val totalAggregatRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
+        val totalAggregateRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
 
         productFeedbackDataPerProduct.aggregatedRating.mapIndexed { index, it ->
             ratingBarListUiModel.add(
                     RatingBarUiModel(
-                            ratingProgressBar = if (totalAggregatRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregatRating.toFloat()) * 100,
+                            ratingProgressBar = if (totalAggregateRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregateRating.toFloat()) * 100,
                             ratingLabel = it.rating,
                             ratingCount = it.ratingCount,
                             ratingIsChecked = oldData.getOrNull(index)?.ratingIsChecked ?: false
