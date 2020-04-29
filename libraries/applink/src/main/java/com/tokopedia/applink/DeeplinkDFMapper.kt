@@ -48,7 +48,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ORDER_TRACKING
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
