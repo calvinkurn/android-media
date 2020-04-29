@@ -91,6 +91,7 @@ open class HomeViewModel @Inject constructor(
         const val ATC = "atc"
         const val CHANNEL = "channel"
         const val GRID = "grid"
+        const val QUANTITIY = "quantity"
         const val POSITION = "position"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
@@ -146,6 +147,14 @@ open class HomeViewModel @Inject constructor(
             get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
+    val isViewModelInitalized: LiveData<Event<Boolean>>
+        get() = _isViewModelInitalized
+    private val _isViewModelInitalized = MutableLiveData<Event<Boolean>>(null)
+
+    val isRequestNetworkLiveData: LiveData<Event<Boolean>>
+        get() = _isRequestNetworkLiveData
+    private val _isRequestNetworkLiveData = MutableLiveData<Event<Boolean>>(null)
+
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
 // ================================= PLEASE SORT BY NAME A-Z ==================================
@@ -181,6 +190,7 @@ open class HomeViewModel @Inject constructor(
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     init {
+        _isViewModelInitalized.value = Event(true)
         initChannel()
         initFlow()
     }
@@ -579,7 +589,7 @@ open class HomeViewModel @Inject constructor(
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
                 }
-                return homeDataModel.copy(
+                homeDataModel.copy(
                         list = visitableMutableList)
             }
         }
@@ -613,8 +623,10 @@ open class HomeViewModel @Inject constructor(
 // ===========================================================================================
 
     private fun initFlow() {
+        _isRequestNetworkLiveData.value = Event(true)
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
+                _isRequestNetworkLiveData.postValue(Event(false))
                 if (homeDataModel?.isCache == false) {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
@@ -774,11 +786,6 @@ open class HomeViewModel @Inject constructor(
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
-            val findLoadingModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeLoadingMoreModel
-            }
-
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
@@ -859,9 +866,10 @@ open class HomeViewModel @Inject constructor(
 
     fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
         val requestParams = RequestParams()
+        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
         requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
                 productId = grid.id,
-                quantity = "1",
+                quantity = quantity,
                 shopId = grid.shop.shopId,
                 warehouseId = grid.warehouseId
         ))
@@ -876,6 +884,7 @@ open class HomeViewModel @Inject constructor(
                                                 ATC to it,
                                                 CHANNEL to channel,
                                                 GRID to grid,
+                                                QUANTITIY to quantity,
                                                 POSITION to position
 
                                         )

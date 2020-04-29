@@ -22,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.atc_common)
