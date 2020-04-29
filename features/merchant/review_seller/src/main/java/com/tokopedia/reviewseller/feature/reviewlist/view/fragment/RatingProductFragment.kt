@@ -468,6 +468,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     override fun onItemProductReviewClicked(productId: Int) {
         startActivity(Intent(context, SellerReviewDetailActivity::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
+            putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
         })
     }
 

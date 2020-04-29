@@ -55,6 +55,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
+        const val CHIP_FILTER = "EXTRA_CHIPS_FILTER"
         private const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
     }
 
@@ -71,10 +72,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         SellerReviewDetailAdapterTypeFactory(this, this, this, this)
     }
 
+    private var chipFilterBundle = ""
+
     var productID: Int = 0
     var sortBy: String = ""
     var filterBy: String = "time=all"
-
     var toolbarTitle = ""
 
     private var filterPeriodDetailUnify: ListUnify? = null
@@ -101,6 +103,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         context?.let {
             activity?.intent?.run {
                 productID = getIntExtra(PRODUCT_ID, 0)
+                chipFilterBundle = getStringExtra(CHIP_FILTER)
             }
         }
         super.onCreate(savedInstanceState)
@@ -120,6 +123,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
@@ -278,6 +282,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     review_detail_toolbar.title = it.data.second
 
                     renderList(it.data.first, it.data.third)
+                    coachMarkShow()
                 }
                 is Fail -> {
                     onErrorGetReviewDetailData(it.throwable)
@@ -342,10 +347,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
         val filterDetailItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterDetailList)
         filterPeriodDetailUnify?.setData(filterDetailItemUnify)
-        initBottomSheetFilterPeriod(view, title, filterDetailItemUnify)
+        initBottomSheetFilterPeriod(title, filterDetailItemUnify)
     }
 
-    private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
+    private fun initBottomSheetFilterPeriod(title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         bottomSheetPeriodDetail?.apply {
             setOnDismissListener {
                 view.review_period_filter_button_detail.toggle()
