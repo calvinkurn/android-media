@@ -40,6 +40,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
+import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity.Companion.ROOM_LIST_SCREEN_NAME
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
@@ -118,7 +119,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     if (firstTime) {
-                        trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId, hotelRoomListPageModel, it.data)
+                        trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId, hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
                     }
                     firstTime = false
                     if (!roomListViewModel.isFilter) {
@@ -283,7 +284,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onItemClicked(room: HotelRoom) {
         val position = roomList.indexOf(room)
-        trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position)
+        trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position, ROOM_LIST_SCREEN_NAME)
         if (room.available) {
             val objectId = System.currentTimeMillis().toString()
             context?.run {
@@ -396,7 +397,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onClickBookListener(room: HotelRoom) {
         progressDialog.show()
         val hotelAddCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
-        trackingHotelUtil.hotelChooseRoom(room, hotelAddCartParam)
+        trackingHotelUtil.hotelChooseRoom(room, hotelAddCartParam, ROOM_LIST_SCREEN_NAME)
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     hotelAddCartParam)
@@ -406,7 +407,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onPhotoClickListener(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
+        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId,
+                room.roomPrice.priceAmount.roundToLong().toString(), ROOM_LIST_SCREEN_NAME)
     }
 
     private fun navigateToLoginPage() {

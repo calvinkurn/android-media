@@ -61,6 +61,7 @@ val STEP_LABEL = "step"
 val OPTION_LABEL = "option"
 
 val HOTEL_LABEL = "hotel"
+val TRAVELENTERTAINMENT_LABEL = "travel & entertainment"
 val ECOMMERCE_LABEL = "ecommerce"
 val PRODUCTS_LABEL = "products"
 val PROMOTIONS_LABEL = "promotions"

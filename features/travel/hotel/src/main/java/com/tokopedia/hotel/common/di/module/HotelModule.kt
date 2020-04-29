@@ -42,7 +42,7 @@ class HotelModule {
 
     @HotelScope
     @Provides
-    fun provideHotelTracking(): TrackingHotelUtil = TrackingHotelUtil()
+    fun provideHotelTracking(@ApplicationContext context: Context): TrackingHotelUtil = TrackingHotelUtil(context)
 
     @HotelScope
     @Provides

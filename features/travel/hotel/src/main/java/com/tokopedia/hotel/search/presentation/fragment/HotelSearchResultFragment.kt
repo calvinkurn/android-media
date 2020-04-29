@@ -34,6 +34,7 @@ import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.CHANGE_SEARCH_REQ_CODE
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
@@ -162,7 +163,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
                         ?: ParamFilter()
 
-                trackingHotelUtil.hotelUserClickFilter(paramFilter, searchResultviewModel.filter)
+                trackingHotelUtil.hotelUserClickFilter(SEARCH_SCREEN_NAME)
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
@@ -185,7 +186,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 searchDestinationType,
                 searchParam,
                 data.properties,
-                adapter.dataSize)
+                adapter.dataSize, SEARCH_SCREEN_NAME)
 
         val searchProperties = data.properties
 
@@ -224,7 +225,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
             override fun onSelect(sort: Sort) {
-                trackingHotelUtil.hotelUserClickSort(sort.displayName)
+                trackingHotelUtil.hotelUserClickSort(sort.displayName, SEARCH_SCREEN_NAME)
 
                 searchResultviewModel.addSort(sort)
                 if (sortMenu.isAdded) {
@@ -248,7 +249,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     searchDestinationType,
                     this,
                     property,
-                    position)
+                    position,
+            SEARCH_SCREEN_NAME)
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
