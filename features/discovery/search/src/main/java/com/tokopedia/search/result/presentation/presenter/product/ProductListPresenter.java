@@ -133,7 +133,7 @@ final class ProductListPresenter
         this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
         this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
         this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
-        this.enableTrackingViewPort = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true);
+//        this.enableTrackingViewPort = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true);
     }
 
     @Override
