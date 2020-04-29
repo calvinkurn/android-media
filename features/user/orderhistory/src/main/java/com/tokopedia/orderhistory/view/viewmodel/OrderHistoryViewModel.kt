@@ -29,16 +29,16 @@ class OrderHistoryViewModel @Inject constructor(
         )
     }
 
+    fun addToWishList(productId: String, userId: String?, wishListActionListener: WishListActionListener) {
+        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
     private fun onSuccessGetHistoryProduct(orderHistory: ChatHistoryProductResponse) {
         _product.value = Success(orderHistory)
     }
 
     private fun onErrorGetHistoryProduct(throwable: Throwable) {
         _product.value = Fail(throwable)
-    }
-
-    fun addToWishList(productId: String, userId: String?, wishListActionListener: WishListActionListener) {
-        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
 }
