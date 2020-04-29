@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/actionBarSize"
+                app:elevation="@dimen/layout_lvl0"
+                android:elevation="@dimen/layout_lvl0"
+                app:contentInsetLeft="@dimen/layout_lvl0"
+                app:contentInsetStart="@dimen/layout_lvl0"
+                app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+<!--            <com.tokopedia.unifyprinciples.Typography-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintStart_toEndOf="@id/toolbar"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                android:text="@string/ent_pdp_title_form"-->
+<!--                android:textColor="@color/black"-->
+<!--                app:typographyType="heading_2"-->
+<!--                app:typographyWeight="bold"/>-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/parent_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
