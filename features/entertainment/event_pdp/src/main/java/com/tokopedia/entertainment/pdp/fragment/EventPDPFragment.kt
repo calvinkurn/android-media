@@ -50,6 +50,7 @@ import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
@@ -396,8 +397,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         val latitude = getLatitude(outlet)
         val longitude = getLongitude(outlet)
         context?.let {
-//            startActivity(MapViewerActivity.getCallingIntent(it, outlet.name, latitude, longitude
-//                    , outlet.gmapAddress, DEFAULT_PIN))
+            startActivity(MapViewerActivity.getCallingIntent(it, outlet.name, latitude, longitude
+                    , outlet.gmapAddress, DEFAULT_PIN))
         }
     }
 

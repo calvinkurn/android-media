@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.hoteldetail.presentation.fragment
+package com.tokopedia.mapviewer.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -7,12 +7,12 @@ import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,15 +21,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.hotel.R
-import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
-import kotlinx.android.synthetic.main.fragment_hotel_detail_map.*
+import com.tokopedia.mapviewer.R
+import com.tokopedia.mapviewer.activity.MapViewerActivity
+import kotlinx.android.synthetic.main.fragment_map_viewer.*
 
-
-/**
- * @author by furqan on 29/04/19
- */
-class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
+class MapViewerFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
 
@@ -37,32 +33,36 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var address: String
+    private lateinit var pin: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            propertyName = it.getString(HotelDetailMapActivity.EXTRA_NAME, "")
-            latitude = it.getDouble(HotelDetailMapActivity.EXTRA_LATITUDE)
-            longitude = it.getDouble(HotelDetailMapActivity.EXTRA_LONGITUDE)
-            address = it.getString(HotelDetailMapActivity.EXTRA_ADDRESS, "")
+            propertyName = it.getString(MapViewerActivity.EXTRA_NAME, "")
+            latitude = it.getDouble(MapViewerActivity.EXTRA_LATITUDE)
+            longitude = it.getDouble(MapViewerActivity.EXTRA_LONGITUDE)
+            address = it.getString(MapViewerActivity.EXTRA_ADDRESS, "")
+            pin = it.getString(MapViewerActivity.EXTRA_PIN,"")
         }
     }
 
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        this.googleMap = map
+        setGoogleMap()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_detail_map, container, false)
+            inflater.inflate(R.layout.fragment_map_viewer, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initHotelLocationMap()
     }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
-        setGoogleMap()
-    }
-
-    override fun getScreenName(): String = ""
 
     private fun initHotelLocationMap() {
         if (map_view != null) {
@@ -87,9 +87,9 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
             context?.run {
-                googleMap.addMarker(MarkerOptions().position(latLng).icon(bitmapDescriptorFromVector(this, R.drawable.ic_hotel_pin_location))
-                        .title(getString(R.string.hotel_detail_map_marker_title, propertyName))
-                        .snippet(getString(R.string.hotel_detail_map_marker_snippet, address))
+                googleMap.addMarker(MarkerOptions().position(latLng).icon(bitmapDescriptorFromVector(this, getPin(pin)))
+                        .title(getString(R.string.mapviewer_detail_map_marker_title, propertyName))
+                        .snippet(getString(R.string.mapviewer_detail_map_marker_snippet, address))
                         .draggable(false))
             }
 
@@ -104,7 +104,7 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
 
         iv_go_to_gmap.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(getString(R.string.hotel_google_map_intent_link, latitude, longitude, latitude, longitude, propertyName))
+                data = Uri.parse(getString(R.string.mapviewer_google_map_intent_link, latitude, longitude, latitude, longitude, propertyName))
             })
         }
     }
@@ -126,14 +126,27 @@ class HotelDetailMapFragment : TkpdBaseV4Fragment(), OnMapReadyCallback {
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
+    private fun getPin(pin : String ): Int{
+        return if(pin.equals(HOTEL_PIN)){
+            R.drawable.ic_hotel_pin
+        }
+        else {
+            R.drawable.ic_event_pin
+        }
+    }
+
     companion object {
-        fun getInstance(propertyName: String, latitude: Double, longitude: Double, address: String): HotelDetailMapFragment =
-                HotelDetailMapFragment().also {
+        const val HOTEL_PIN = "HOTEL_PIN"
+        const val DEFAULT_PIN = "DEFAULT_PIN"
+
+        fun getInstance(propertyName: String, latitude: Double, longitude: Double, address: String, pin: String): MapViewerFragment =
+                MapViewerFragment().also {
                     it.arguments = Bundle().apply {
-                        putString(HotelDetailMapActivity.EXTRA_NAME, propertyName)
-                        putDouble(HotelDetailMapActivity.EXTRA_LATITUDE, latitude)
-                        putDouble(HotelDetailMapActivity.EXTRA_LONGITUDE, longitude)
-                        putString(HotelDetailMapActivity.EXTRA_ADDRESS, address)
+                        putString(MapViewerActivity.EXTRA_NAME, propertyName)
+                        putDouble(MapViewerActivity.EXTRA_LATITUDE, latitude)
+                        putDouble(MapViewerActivity.EXTRA_LONGITUDE, longitude)
+                        putString(MapViewerActivity.EXTRA_ADDRESS, address)
+                        putString(MapViewerActivity.EXTRA_PIN, pin)
                     }
                 }
     }
