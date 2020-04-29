@@ -75,10 +75,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
     }
 
-    init {
-        initCompositeSubscriber()
-    }
-
     override fun getScreenName(): String {
         return EditGroupAdFragment::class.java.name
     }
@@ -199,6 +195,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initCompositeSubscriber()
         groupId = arguments?.getString("groupId")!!.toInt()
         sharedViewModel.setGroupName(arguments?.getString(GROUPKEY)!!)
         sharedViewModel.setGroupId(arguments?.getString("groupId")!!.toInt())

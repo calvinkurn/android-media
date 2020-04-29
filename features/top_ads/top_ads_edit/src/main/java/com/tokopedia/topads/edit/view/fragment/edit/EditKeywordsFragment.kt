@@ -100,11 +100,18 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
+            productIds = it.toString()
+        })
+        sharedViewModel.groupId.observe(viewLifecycleOwner, Observer {
+            groupId = it
+            viewmodel.getAdKeyword(groupId, this::onSuccessKeyword, this::onErrorKeyword, this::onEmptyKeyword)
+        })
         val suggestions = java.util.ArrayList<DataSuggestions>()
         val dummyId: MutableList<Int> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
         viewmodel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onErrorSuggestion)
-        viewmodel.getAdKeyword(groupId, this::onSuccessKeyword, this::onErrorKeyword, this::onEmptyKeyword)
+
     }
 
     private fun getMinMax(): MutableMap<String, Int> {
@@ -225,12 +232,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
-            productIds = it.toString()
-        })
-        sharedViewModel.groupId.observe(viewLifecycleOwner, Observer {
-            groupId = it
-        })
+
         add_keyword.setOnClickListener {
             onAddKeyword()
         }
