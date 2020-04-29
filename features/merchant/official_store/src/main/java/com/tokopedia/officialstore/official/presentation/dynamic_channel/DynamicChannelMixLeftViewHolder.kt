@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
@@ -10,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.officialstore.R
@@ -32,7 +32,6 @@ class DynamicChannelMixLeftViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dynamic_channel_mix_left_layout
-        const val OPACITY_MAX_THRESHOLD = 0.2f
     }
 
     private val masterJob = SupervisorJob()
@@ -52,7 +51,6 @@ class DynamicChannelMixLeftViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
-            dcEventHandler.flashSaleImpression(dynamicChannelData)
             setupHeader(dynamicChannelData)
             setupContent(dynamicChannelData)
         }
@@ -83,7 +81,6 @@ class DynamicChannelMixLeftViewHolder(
                         setOnClickListener {
                             dcEventHandler.onMixFlashSaleSeeAllClicked(channel, header.applink)
                         }
-                        setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
                     }
                 } else {
                     headerActionText.visibility = View.GONE
@@ -119,7 +116,10 @@ class DynamicChannelMixLeftViewHolder(
         recyclerViewProductList.addOnScrollListener(getParallaxEffect())
         launch {
             try {
-                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+                val imageLayoutParams = image.layoutParams
+                val recyclerViewLayoutParams = recyclerViewProductList.layoutParams as ViewGroup.MarginLayoutParams
+                imageLayoutParams.height = recyclerViewLayoutParams.height + recyclerViewLayoutParams.topMargin + recyclerViewLayoutParams.bottomMargin
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -127,7 +127,7 @@ class DynamicChannelMixLeftViewHolder(
         }
     }
 
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+    private suspend fun View.setHeightBasedOnProductCardMaxHeight(
             productCardModelList: List<ProductCardModel>
     ) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
@@ -153,9 +153,10 @@ class DynamicChannelMixLeftViewHolder(
                         val translateX = (recyclerViewProductList.paddingLeft - distanceFromLeft) * -0.1f
                         image.translationX = translateX
                         val alpha = distanceFromLeft.toFloat() / recyclerViewProductList.paddingLeft.toFloat()
-                        image.alpha = alpha.takeIf { alphaValue -> alphaValue > OPACITY_MAX_THRESHOLD }
-                                ?: OPACITY_MAX_THRESHOLD
+                        image.alpha = alpha
                     }
+                }else{
+                    image.alpha = 0f
                 }
             }
         }

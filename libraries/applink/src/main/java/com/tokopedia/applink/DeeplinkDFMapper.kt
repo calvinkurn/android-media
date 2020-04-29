@@ -71,9 +71,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECT
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_COMPLETE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_NAME
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
 import com.tokopedia.config.GlobalConfig
@@ -216,6 +221,11 @@ object DeeplinkDFMapper {
                     || it.startsWith(ADD_BOD)
                     || it.startsWith(CHANGE_NAME)
                     || it.startsWith(CHANGE_GENDER)
+                    || it.startsWith(ADD_NAME_REGISTER)
+                    || it.startsWith(CHANGE_PIN)
+                    || it.startsWith(ADD_PIN_ONBOARDING)
+                    || it.startsWith(ADD_PIN)
+                    || it.startsWith(ADD_PIN_COMPLETE)
                     )}, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title, ::getDefaultFallbackUrl))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
