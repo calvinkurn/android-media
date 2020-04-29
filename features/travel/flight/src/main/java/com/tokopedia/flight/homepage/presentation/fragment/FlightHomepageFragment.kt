@@ -28,12 +28,12 @@ import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
+import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -240,8 +240,15 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     override fun onClassClicked(flightClassId: Int) {
-        startActivityForResult(FlightClassesActivity.getCallingIntent(requireContext(), flightClassId),
-                REQUEST_CODE_SELECT_CLASSES)
+        val flightSelectClassBottomSheet = FlightSelectClassBottomSheet()
+        flightSelectClassBottomSheet.listener = object : FlightSelectClassBottomSheet.Listener {
+            override fun onClassSelected(classEntity: FlightClassModel) {
+                flightHomepageViewModel.onClassChanged(classEntity)
+            }
+        }
+        flightSelectClassBottomSheet.setSelectedClass(flightClassId)
+        flightSelectClassBottomSheet.setShowListener { flightSelectClassBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        flightSelectClassBottomSheet.show(requireFragmentManager(), FlightSelectClassBottomSheet.TAG_SELECT_CLASS)
     }
 
     override fun onSaveSearch(flightSearchData: FlightSearchPassDataModel) {
@@ -271,12 +278,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                     val destinationAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
                     destinationAirport?.let {
                         flightHomepageViewModel.onArrivalAirportChanged(it)
-                    }
-                }
-                REQUEST_CODE_SELECT_CLASSES -> {
-                    val classModel = data?.getParcelableExtra<FlightClassModel>(FlightClassesActivity.EXTRA_FLIGHT_CLASS)
-                    classModel?.let {
-                        flightHomepageViewModel.onClassChanged(it)
                     }
                 }
             }
@@ -488,7 +489,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
         private const val REQUEST_CODE_AIRPORT_DEPARTURE = 1
         private const val REQUEST_CODE_AIRPORT_DESTINATION = 2
-        private const val REQUEST_CODE_SELECT_CLASSES = 4
         private const val REQUEST_CODE_SEARCH = 5
 
         private const val FLIGHT_HOMEPAGE_TRACE = "tr_flight_homepage"
