@@ -9,6 +9,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 data class StateHelperUiModel(
         val shouldShowPinned: Boolean,
         val channelType: PlayChannelType,
+        val videoPlayer: VideoPlayerUiModel,
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         val screenOrientation: ScreenOrientation,
         val videoOrientation: VideoOrientation,

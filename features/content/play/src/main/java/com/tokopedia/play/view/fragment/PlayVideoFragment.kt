@@ -19,6 +19,7 @@ import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
+import com.tokopedia.play.ui.youtube.YouTubeComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
@@ -75,8 +76,6 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
 
     private lateinit var layoutManager: PlayVideoLayoutManager
 
-    private var channelId: String = ""
-
     private lateinit var containerVideo: RoundedConstraintLayout
 
     override fun getScreenName(): String = "Play Video"
@@ -96,7 +95,6 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
-        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,7 +109,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeVOD()
+        observeVideoPlayer()
         observeVideoProperty()
         observeOneTapOnboarding()
         observeBottomInsetsState()
@@ -126,8 +124,8 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
     }
 
     //region observe
-    private fun observeVOD() {
-        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
+    private fun observeVideoPlayer() {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(

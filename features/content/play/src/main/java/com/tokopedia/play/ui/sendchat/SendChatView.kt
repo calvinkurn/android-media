@@ -10,10 +10,10 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
@@ -37,7 +37,7 @@ class SendChatView(container: ViewGroup, val listener: Listener) : UIView(contai
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
-            if (s.isNotEmpty()) ivSend.visible() else ivSend.gone()
+            if (s.isNotEmpty()) ivSend.show() else ivSend.hide()
 
             if (s.length > MAX_CHARS) {
                 if (prevText.length < MAX_CHARS) prevText = s.substring(0, MAX_CHARS)

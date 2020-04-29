@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.*
-import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
@@ -45,15 +44,14 @@ class PlayViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider
 ) : PlayBaseViewModel(dispatchers.main) {
 
-    val observableVOD: LiveData<out ExoPlayer>
-        get() = playVideoManager.getObservableVideoPlayer()
-
     /**
      * Not Used for Event to component
      */
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
+    val observableVideoPlayer: LiveData<VideoPlayerUiModel>
+        get() = _observableVideoPlayer
     val observableSocketInfo: LiveData<PlaySocketInfo>
         get() = _observableSocketInfo
     val observableVideoStream: LiveData<VideoStreamUiModel>
@@ -89,40 +87,33 @@ class PlayViewModel @Inject constructor(
         private set
     val videoOrientation: VideoOrientation
         get() {
-            val videoOrientation = _observableVideoStream.value
-            return videoOrientation?.orientation ?: VideoOrientation.Unknown
+            val videoStream = _observableCompleteInfo.value?.videoStream
+            return videoStream?.orientation ?: VideoOrientation.Unknown
         }
     val channelType: PlayChannelType
         get() {
-            val videoStream = _observableVideoStream.value
+            val videoStream = _observableCompleteInfo.value?.videoStream
             return videoStream?.channelType ?: PlayChannelType.Unknown
+        }
+    val videoPlayer: VideoPlayerUiModel
+        get() {
+            val videoPlayer = _observableCompleteInfo.value?.videoPlayer
+            return videoPlayer ?: Unknown
         }
     val contentId: Int
         get() {
-            val channelInfo = _observableGetChannelInfo.value
-            return if (channelInfo != null && channelInfo is Success) {
-                channelInfo.data.contentId
-            } else {
-                0
-            }
+            val channelInfo = _observableCompleteInfo.value?.channelInfo
+            return channelInfo?.contentId ?: 0
         }
     val contentType: Int
         get() {
-            val channelInfo = _observableGetChannelInfo.value
-            return if (channelInfo != null && channelInfo is Success) {
-                channelInfo.data.contentType
-            } else {
-                0
-            }
+            val channelInfo = _observableCompleteInfo.value?.channelInfo
+            return channelInfo?.contentType ?: 0
         }
     val likeType: Int
         get() {
-            val channelInfo = _observableGetChannelInfo.value
-            return if (channelInfo != null && channelInfo is Success) {
-                channelInfo.data.likeType
-            } else {
-                0
-            }
+            val channelInfo = _observableCompleteInfo.value?.channelInfo
+            return channelInfo?.likeType ?: 0
         }
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
         get() {
@@ -141,6 +132,7 @@ class PlayViewModel @Inject constructor(
             return StateHelperUiModel(
                     shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
                     channelType = channelType,
+                    videoPlayer = videoPlayer,
                     bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
                     screenOrientation = screenOrientation,
                     videoOrientation = videoOrientation,
@@ -151,6 +143,7 @@ class PlayViewModel @Inject constructor(
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
+    private val _observableCompleteInfo = MutableLiveData<PlayCompleteInfoUiModel>()
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
@@ -172,6 +165,11 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
+    private val _observableVideoPlayer = MediatorLiveData<VideoPlayerUiModel>().apply {
+        addSource(playVideoManager.getObservableVideoPlayer()) {
+            if (!videoPlayer.isYouTube) value = General(it)
+        }
+    }
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playVideoManager.getObservablePlayVideoState()) {
@@ -371,17 +369,17 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun initiateVideo(channel: Channel) {
-        startVideoWithUrlString(
-                channel.videoStream.config.streamUrl,
-                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
-                        ?: PlayBufferControl()
-        )
 //        startVideoWithUrlString(
-//                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-////                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
+//                channel.videoStream.config.streamUrl,
 //                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
 //                        ?: PlayBufferControl()
 //        )
+        startVideoWithUrlString(
+                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+//                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
+                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
+                        ?: PlayBufferControl()
+        )
         playVideoManager.setRepeatMode(false)
     }
 
@@ -391,7 +389,7 @@ class PlayViewModel @Inject constructor(
         } catch (e: Exception) {}
     }
 
-    private fun playVideoStream(channel: Channel) {
+    private fun playGeneralVideoStream(channel: Channel) {
         if (channel.isActive) initiateVideo(channel)
     }
 
@@ -417,21 +415,25 @@ class PlayViewModel @Inject constructor(
 
             startWebSocket(channelId, channel.gcToken, channel.settings)
 
-            playVideoStream(channel)
-
             val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                     channel = channel,
                     partnerName = _observablePartnerInfo.value?.name.orEmpty(),
-                    isBanned = _observableEvent.value?.isBanned ?: false
+                    isBanned = _observableEvent.value?.isBanned ?: false,
+                    exoPlayer = playVideoManager.videoPlayer
             )
+            _observableCompleteInfo.value = completeInfoUiModel
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
             _observableTotalViews.value = completeInfoUiModel.totalView
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
             _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
             _observableQuickReply.value = completeInfoUiModel.quickReply
+            _observableVideoPlayer.value = completeInfoUiModel.videoPlayer
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = completeInfoUiModel.event
+
+            if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
+
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
             if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)

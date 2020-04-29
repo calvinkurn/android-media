@@ -8,10 +8,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.util.changeConstraint
@@ -61,9 +61,9 @@ class VideoView(container: ViewGroup) : UIView(container) {
     internal fun showThumbnail(bitmap: Bitmap?) {
         if (bitmap != null) {
             ivThumbnail.setImageBitmap(bitmap)
-            ivThumbnail.visible()
+            ivThumbnail.show()
         } else {
-            ivThumbnail.gone()
+            ivThumbnail.hide()
         }
     }
 

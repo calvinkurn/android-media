@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -33,11 +34,18 @@ open class VideoSettingsComponent(
                             is ScreenStateEvent.Init -> {
                                 uiView.setFullscreen(it.screenOrientation.isLandscape)
                                 if (!it.stateHelper.videoOrientation.isHorizontal) uiView.hide()
-                                else uiView.show()
+                                else if (it.stateHelper.videoPlayer.isGeneral) uiView.show()
                             }
-                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.orientation.isHorizontal) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> {
+                                if (
+                                        it.videoStream.orientation.isHorizontal &&
+                                        it.stateHelper.videoPlayer.isGeneral &&
+                                        !it.stateHelper.bottomInsets.isAnyShown
+                                ) uiView.show() else uiView.hide()
+                            }
                             is ScreenStateEvent.ImmersiveStateChanged -> if (it.shouldImmersive) uiView.fadeOut() else uiView.fadeIn()
-                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && it.stateHelper.videoOrientation.isHorizontal) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.BottomInsetsChanged ->
+                                if (!it.isAnyShown && it.stateHelper.videoOrientation.isHorizontal && it.stateHelper.videoPlayer.isGeneral) uiView.show() else uiView.hide()
                         }
                     }
         }
@@ -53,13 +61,13 @@ open class VideoSettingsComponent(
 
     override fun onEnterFullscreen(view: VideoSettingsView) {
         scope.launch {
-            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.EnterFullScreenClicked)
+            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.EnterFullscreenClicked)
         }
     }
 
     override fun onExitFullscreen(view: VideoSettingsView) {
         scope.launch {
-            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.ExitFullScreenClicked)
+            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.ExitFullscreenClicked)
         }
     }
 

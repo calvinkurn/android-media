@@ -47,9 +47,19 @@
         />
 
     <FrameLayout
+        android:id="@+id/fl_youtube"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <FrameLayout
         android:id="@+id/fl_global_error"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
