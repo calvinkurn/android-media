@@ -161,16 +161,21 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
     }
 
     private void setArrivalInfo(FlightDetailRouteModel route) {
+        String transitTag = "";
+        if (!TextUtils.isEmpty(flightSearchCache.getInternationalTransitTag())) {
+            transitTag = "\n" + flightSearchCache.getInternationalTransitTag();
+        }
+
         if (!TextUtils.isEmpty(route.getArrivalAirportCity())) {
             arrivalAirportDesc.setText(route.getArrivalAirportName());
             arrivalAirportName.setText(String.format("%s (%s)", route.getArrivalAirportCity(), route.getArrivalAirportCode()));
             transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit,
-                    route.getArrivalAirportCity(), route.getLayover(), flightSearchCache.getInternationalTransitTag()));
+                    route.getArrivalAirportCity(), route.getLayover(), transitTag));
         } else {
             arrivalAirportName.setText(route.getArrivalAirportCode());
             arrivalAirportDesc.setText("");
             transitInfo.setTextDescription(itemView.getContext().getString(R.string.flight_label_transit,
-                    route.getArrivalAirportCode(), route.getLayover(), flightSearchCache.getInternationalTransitTag()));
+                    route.getArrivalAirportCode(), route.getLayover(), transitTag));
         }
     }
 
