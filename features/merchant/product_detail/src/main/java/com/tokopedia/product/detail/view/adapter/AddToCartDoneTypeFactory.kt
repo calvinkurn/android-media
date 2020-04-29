@@ -40,7 +40,8 @@ class AddToCartDoneTypeFactory(
             )
             AddToCartDoneRecommendationCarouselViewHolder.LAYOUT_RES -> AddToCartDoneRecommendationCarouselViewHolder(
                     parent,
-                    recommendationListener
+                    recommendationListener,
+                    addToCartDoneAddedProductListener
             )
             else -> return super.createViewHolder(parent, type)
         }

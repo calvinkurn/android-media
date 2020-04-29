@@ -30,7 +30,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class AddToCartDoneRecommendationCarouselViewHolder(
         itemView: View,
-        private val recommendationListener: RecommendationListener
+        private val recommendationListener: RecommendationListener,
+        private val addToCartDoneAddedProductListener: AddToCartDoneAddedProductViewHolder.AddToCartDoneAddedProductListener
 ) : AbstractViewHolder<AddToCartDoneRecommendationCarouselDataModel>(itemView) {
 
     private val viewPager = itemView.findViewById<ViewPager2>(R.id.view_pager_image)
@@ -100,7 +101,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                 if(!addToCartButton.hasOnClickListeners()){
                     addToCartButton.setOnClickListener {
                         if(element.recommendationWidget.recommendationItemList.isNotEmpty() && element.recommendationWidget.recommendationItemList.size > currentPosition){
-                            recommendationListener.onProductAddToCart(element.recommendationWidget.recommendationItemList[currentPosition], currentPosition)
+                            addToCartDoneAddedProductListener.onProductAddToCart(element.recommendationWidget.recommendationItemList[currentPosition], currentPosition)
                         }
                     }
                 }

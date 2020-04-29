@@ -10,5 +10,4 @@ interface RecommendationListener {
     fun onProductImpression(item: RecommendationItem)
     fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: ((Boolean, Throwable?) -> Unit))
     fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {}
-    fun onProductAddToCart(item: RecommendationItem, position: Int){}
 }
