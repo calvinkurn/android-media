@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -33,6 +32,8 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -40,7 +41,6 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
@@ -147,8 +147,16 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     @Override
-    public void showError(Throwable e) {
-        showError(ErrorHandler.getErrorMessage(getContext(), e));
+    public void showError(Throwable e, String errorCode) {
+        String message = String.format("%s (%s)", ErrorHandler.getErrorMessage(getActivity(), e), errorCode);
+        showError(message);
+
+        AccountHomeErrorHandler.logExceptionToCrashlytics(
+                e,
+                userSession.getUserId(),
+                userSession.getEmail(),
+                errorCode
+        );
     }
 
     @Override

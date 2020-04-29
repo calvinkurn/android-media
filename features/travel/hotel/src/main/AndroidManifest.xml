@@ -127,6 +127,9 @@
         <activity android:name=".globalsearch.presentation.activity.HotelGlobalSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity android:name=".globalsearch.presentation.activity.HotelChangeSearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

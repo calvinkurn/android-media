@@ -3,13 +3,12 @@ package com.tokopedia.autocomplete.initialstate.popularsearch
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.autocomplete.initialstate.InitialStateData
-import com.tokopedia.autocomplete.initialstate.InitialStateItem
 import com.tokopedia.autocomplete.initialstate.InitialStateRepository
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import java.util.HashMap
+import java.util.*
 
 class RefreshPopularSearchUseCase(
         private val initialStateRepository: InitialStateRepository

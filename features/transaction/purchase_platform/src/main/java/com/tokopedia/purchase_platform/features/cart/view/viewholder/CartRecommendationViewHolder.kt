@@ -2,7 +2,8 @@ package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
@@ -20,7 +21,7 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
     }
 
     fun bind(element: CartRecommendationItemHolderData) {
-        itemView.productCardView.apply {
+        itemView.productCardView?.apply {
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.recommendationItem.slashedPrice,
@@ -32,35 +33,52 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                             reviewCount = element.recommendationItem.countReview,
                             ratingCount = element.recommendationItem.rating,
                             shopLocation = element.recommendationItem.location,
-                            isWishlistVisible = true,
-                            isWishlisted = element.recommendationItem.isWishlist,
                             shopBadgeList = element.recommendationItem.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.recommendationItem.isFreeOngkirActive,
                                     imageUrl = element.recommendationItem.freeOngkirImageUrl
-                            )
+                            ),
+                            labelGroupList = element.recommendationItem.labelGroupList.map { recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        position = recommendationLabel.position,
+                                        title = recommendationLabel.title,
+                                        type = recommendationLabel.type
+                                )
+                            },
+                            hasAddToCartButton = true
                     )
             )
-            setAddToCartVisible(true)
+            setOnClickListener(
+                    {
+                        actionListener?.onRecommendationProductClicked(
+                                element.recommendationItem.productId.toString(),
+                                element.recommendationItem.isTopAds,
+                                element.recommendationItem.clickUrl
+                        )
+                    }
+            )
             setAddToCartOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
             }
-            setButtonWishlistOnClickListener {
-                if (element.recommendationItem.isWishlist) {
-                    actionListener?.onRemoveRecommendationFromWishlist(element.recommendationItem.productId.toString())
-                } else {
-                    actionListener?.onAddRecommendationToWishlist(element.recommendationItem.productId.toString())
-                }
-            }
-        }
-        itemView.setOnClickListener {
-            actionListener?.onRecommendationProductClicked(element.recommendationItem.productId.toString())
+
+            setImageProductViewHintListener(
+                    element.recommendationItem,
+                    object : ViewHintListener {
+                        override fun onViewHint() {
+                            actionListener?.onRecommendationProductImpression(
+                                    element.recommendationItem.isTopAds,
+                                    element.recommendationItem.trackerImageUrl
+                            )
+                        }
+                    }
+            )
         }
     }
 
     fun clearImage() {
-        itemView.productCardView.setImageProductVisible(false)
+        itemView.productCardView?.recycle()
     }
 }

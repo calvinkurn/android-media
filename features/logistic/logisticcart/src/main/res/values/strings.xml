@@ -18,5 +18,6 @@
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="cod_brand_tag">Bayar di Tempat</string>
     <string name="duration_header_ticker">Perkiraan tiba dihitung sejak pesanan dikirim</string>
-
+    <string name="label_hardcoded_courier_ticker_logistic">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
+    <string name="title_shipment_courier_bottomsheet_occ">Pilih Kurir</string>
 </resources>

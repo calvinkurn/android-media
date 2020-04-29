@@ -1,0 +1,15 @@
+query kycStatus($projectID:Int){
+  kycStatus(projectID:$projectID){
+    Message
+    Detail{
+      IsSuccess
+      UserId
+      ProjectId
+      Status
+      StatusName
+      CreateTime
+      CreateBy
+      UpdateTime
+    }
+  }
+}

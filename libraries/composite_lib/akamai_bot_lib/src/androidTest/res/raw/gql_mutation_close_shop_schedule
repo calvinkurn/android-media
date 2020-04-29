@@ -1,0 +1,12 @@
+mutation closeShopSchedule($action:Int!, $closeStart:String, $closeEnd:String, $closeNow:Boolean, $closeNote:String){
+  closeShopSchedule(input: {
+      action: $action,
+      closeStart: $closeStart,
+      closeEnd: $closeEnd,
+      closeNow: $closeNow,
+      closeNote: $closeNote
+    }) {
+      success
+      message
+    }
+}

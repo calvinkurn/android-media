@@ -182,7 +182,9 @@ class StockReminderFragment: BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        ImageHandler.loadGif(ivLoadingStockReminder, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
+        ImageHandler.loadGif(ivLoadingStockReminder,
+                com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate,
+                com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate)
         loadingStockReminder.visibility = View.VISIBLE
         cardSaveBtn.visibility = View.GONE
     }

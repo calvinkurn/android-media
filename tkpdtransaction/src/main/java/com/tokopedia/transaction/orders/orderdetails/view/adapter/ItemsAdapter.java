@@ -53,7 +53,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int DEALS_CATEGORY_ID = 35;
     private static final int EVENTS_CATEGORY_ID_1 = 32;
     private static final int EVENTS_CATEGORY_ID_2 = 23;
-    private static final int EVENTS_CATEGORY_INSURANCE = 61;
+    private static final int EVENTS_CATEGORY_INSURANCE = 1301;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;

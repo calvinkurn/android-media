@@ -4,8 +4,13 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
+
+typealias ItemAdapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>
 
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         private val notificationType: String,
@@ -40,7 +45,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     private fun notifyRangedPosition(positions: List<Int>) {
         val sortedPosition = positions.sorted()
         val endArrayIndex = sortedPosition.size - 1
-        val startPosition = sortedPosition[0]
+        val startPosition = sortedPosition.first()
         val endPosition = sortedPosition[endArrayIndex]
         notifyItemRangeChanged(startPosition, endPosition, SettingViewHolder.PAYLOAD_SWITCH)
     }
@@ -62,4 +67,10 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
     }
+
+    fun removeNotificationPermission() {
+        visitables.removeFirst { it is NotificationActivation }
+        notifyDataSetChanged()
+    }
+
 }

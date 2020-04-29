@@ -7,6 +7,7 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
+include "features:category:common_tradein"
 
 include "features:home:navigation-common"
 
@@ -37,7 +38,6 @@ include "features:discovery:wishlist_common"
 include "features:discovery:carousel_productcard"
 
 include "features:fintech:home_credit"
-include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
 include "features:fintech:instant_loan"
@@ -92,7 +92,7 @@ include "features:payment:withdraw"
 include "features:payment:payment_setting"
 //include "features:payment:payment_setting_no_op"
 
-include "features:product:gallery"
+include "features:merchant:gallery"
 
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"

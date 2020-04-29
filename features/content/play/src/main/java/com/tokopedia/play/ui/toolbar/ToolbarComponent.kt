@@ -10,7 +10,6 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -34,17 +33,13 @@ open class ToolbarComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.show()
-                            is ScreenStateEvent.VideoPropertyChanged -> uiView.setLiveBadgeVisibility(it.videoProp.type.isLive)
-                            is ScreenStateEvent.SetChannelTitle ->
-                                uiView.setTitle(it.title)
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
-                            is ScreenStateEvent.VideoStreamChanged ->
-                                uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
-                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (it.isAnyShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.show()
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
+                            is ScreenStateEvent.SetTotalCart -> uiView.setCartInfo(it.cartUiModel)
                         }
                     }
         }
@@ -79,6 +74,12 @@ open class ToolbarComponent(
     override fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType) {
         launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.PartnerNameClicked(partnerId, type))
+        }
+    }
+
+    override fun onCartButtonClicked(view: ToolbarView) {
+        launch {
+            bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.CartButtonClicked)
         }
     }
 

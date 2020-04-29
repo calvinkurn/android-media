@@ -19,6 +19,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_TOP_NAV = "clickTopNav";
     public static final String SELLER_ADDED_TO_FAVORITE = "Seller_Added_To_Favorite";
     public static final String SELLER_REMOVED_FROM_FAVORITE = "Seller_Removed_From_Favorite";
+    public static final String ADD_TO_CART = "addToCart";
 
     public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
 
@@ -35,11 +36,13 @@ public class ShopPageTrackingConstant {
     public static final String TOP_SECTION = "top section";
     public static final String INFO = "info";
     public static final String MERCHANT_VOUCHER_CODE = "merchant voucher code";
+    public static final String CLICK_DETAIL = "click detail";
     public static final String MERCHANT_VOUCHER = "merchant voucher";
     public static final String PROMO_BANNER = "promo banner";
     public static final String MANAGE_SHOP = "manage shop";
     public static final String MANAGE_PRODUCT = "manage product";
     public static final String CLICK = "click";
+    public static final String CLICK_SEE_ALL = "click see all";
     public static final String CLICK_CHAT_SELLER = "click chat seller";
     public static final String FOLLOW = "follow";
     public static final String UNFOLLOW = "unfollow";
@@ -71,6 +74,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SET_SHIPPING_SERVICE = "click set shipping service";
     public static final String CLICK_SHOP_PROFILE = "click shop profile";
     public static final String CLICK_ADD_ETALASE_BUTTON = "click add etalase button";
+    public static final String CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -87,7 +91,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower";
     public static final String IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower";
     public static final String CLICK_MENU_FROM_MORE_MENU = "click menu from more menu";
-    public static final String CLICK_WISHLIST = "click wishlist";
+    public static final String CLICK_WISHLIST = "clickWishlist";
     public static final String ADD = "add";
     public static final String REMOVE = "remove";
     public static final String CLICK_SORT = "click sort";
@@ -121,12 +125,16 @@ public class ShopPageTrackingConstant {
     public static final String SEARCH_PRODUCT = "search product";
     public static final String SEARCH_PRODUCT_RESULT = "search result";
     public static final String SEARCH_PRODUCT_NO_RESULT = "no search result";
+    public static final String DISPLAY_WIDGET = "display widget";
+    public static final String HOME_DISPLAY_WIDGET = "home display widget";
     public static final String SUCCESS = "success";
     public static final String LOGIN = "login";
     public static final String NON_LOGIN = "non login";
     public static final String SELECTED_ETALASE_CHIP = "etalase chip %1s";
     public static final String ETALASE_SECTION = "etalase %1s";
     public static final String WISHLIST = "wishlist";
+    public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
+    public static final String CLICK_ADD_TO_CART = "click add to cart";
 
 
 
@@ -181,6 +189,14 @@ public class ShopPageTrackingConstant {
     public static final String DIMENSION_79 = "dimension79";
 
     public static final String SHOP_REF = "dimension90";
+    public static final String QUANTITY = "quantity";
+    public static final String DIMENSION_80 = "dimension80";
+    public static final String DIMENSION_82 = "dimension82";
+    public static final String DIMENSION_45 = "dimension45";
+    public static final String DIMENSION_38 = "dimension38";
+    public static final String DIMENSION_40 = "dimension40";
+
+
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
@@ -192,6 +208,14 @@ public class ShopPageTrackingConstant {
     //page_url
     public static final String ETALASE_SHOPNAME = "etalase-%s";
     public static final String SRP_SHOPNAME = "srp-%s";
+
+    public static final String VERTICAL_POSITION = "p%1d";
+    public static final String HOME_TAB = "home";
+    public static final String HOME_FEATURED_PRODUCT = "featured product";
+    public static final String ALL_PRODUCT = "all product";
+    public static final String WITH_CART = "with cart";
+    public static final String WITHOUT_CART = "without cart";
+    public static final String GENERAL = "general";
 
 
 

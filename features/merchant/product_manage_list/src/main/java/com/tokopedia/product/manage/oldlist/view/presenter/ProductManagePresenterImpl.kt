@@ -25,6 +25,7 @@ import com.tokopedia.product.manage.oldlist.view.mapper.ProductListMapperView
 import com.tokopedia.product.manage.oldlist.view.model.ProductManageViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.oldproductlist.ProductListResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.PRODUCT_MANAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
@@ -57,7 +58,7 @@ class ProductManagePresenterImpl @Inject constructor(
         val getProductListJob: Job = SupervisorJob()
         CoroutineScope(Dispatchers.Main + getProductListJob).launchCatchError(block = {
             val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
-            gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
+            gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId, source = PRODUCT_MANAGE_SOURCE)
             val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
             val isGoldMerchant: Boolean? = shopInfo.goldOS.isGold == 1
             val isOfficialStore: Boolean? = shopInfo.goldOS.isOfficial == 1

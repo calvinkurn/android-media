@@ -24,6 +24,7 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
         return listProducts.size
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.setOnClickListener { actionListener?.onClickProduct(listProducts[position].id) }
@@ -34,7 +35,7 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
         if (listProducts[position].note.isNotEmpty()) {
             holder.itemView.divider_product.visibility = View.VISIBLE
             holder.itemView.tv_product_notes.visibility = View.VISIBLE
-            holder.itemView.tv_product_notes.text = listProducts[position].note
+            holder.itemView.tv_product_notes.text = listProducts[position].note.replace("\\n", System.getProperty("line.separator"))
         } else {
             holder.itemView.divider_product.visibility = View.GONE
             holder.itemView.tv_product_notes.visibility = View.GONE

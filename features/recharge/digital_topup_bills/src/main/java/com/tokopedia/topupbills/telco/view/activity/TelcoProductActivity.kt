@@ -4,10 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
+import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
+import timber.log.Timber
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -18,7 +22,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
  * RouteManager.route(this, ApplinkConsInternalDigital.TELCO_DIGITAL)
  */
 
-class TelcoProductActivity : BaseTelcoActivity() {
+class TelcoProductActivity : BaseTelcoActivity(), HasComponent<DigitalTopupComponent> {
 
     override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
@@ -30,9 +34,14 @@ class TelcoProductActivity : BaseTelcoActivity() {
         return DigitalTelcoFragment.newInstance(digitalTelcoExtraParam)
     }
 
+    override fun getComponent(): DigitalTopupComponent {
+        return DigitalTopupInstance.getComponent(application)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.digital_title_telco_page))
+        intent?.handleExtra()
     }
 
     companion object {
@@ -41,6 +50,9 @@ class TelcoProductActivity : BaseTelcoActivity() {
         val PARAM_PRODUCT_ID = "product_id"
         val PARAM_CLIENT_NUMBER = "client_number"
         val PARAM_CATEGORY_ID = "category_id"
+
+        const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
+
 
         fun newInstance(context: Context, menuId: String, categoryId: String, productId: String = "", clientNumber: String = ""): Intent {
             val intent = Intent(context, TelcoProductActivity::class.java)
@@ -55,5 +67,17 @@ class TelcoProductActivity : BaseTelcoActivity() {
     override fun onBackPressed() {
         (fragment as DigitalTelcoFragment).onBackPressed()
         super.onBackPressed()
+    }
+
+    /* This Method is use to tracking Action click when user click TelcoProduct
+    */
+
+    private fun Intent.handleExtra(){
+        if(intent.data != null) {
+            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
+            if (trackingClick!=null){
+            Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
+            }
+        }
     }
 }
