@@ -120,6 +120,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
+
+                        // decrement wholesale min order by one because of > symbol
+                        val initialWholeSaleList =  productInputModel.detailInputModel.wholesaleList
+                        val actualWholeSaleList = decrementWholeSaleMinOrder(initialWholeSaleList)
+
+                        // reassign wholesale information with the actual wholesale values
+                        productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
+
                         getVariantList(productInputModel.detailInputModel.categoryId)
                         hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
@@ -305,11 +313,21 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return validateProductInput(detailInputModel)
     }
 
-    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+    fun incrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
         wholesaleList.forEach { wholesaleInputModel ->
             // recalculate wholesale min order because of > symbol
             val oldValue = wholesaleInputModel.quantity.toBigInteger()
             val newValue = oldValue + 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
+    }
+
+    private fun decrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue - 1.toBigInteger()
             wholesaleInputModel.quantity = newValue.toString()
         }
         return wholesaleList

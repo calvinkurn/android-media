@@ -303,16 +303,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsPreOrderDurationInputError.value = false
     }
 
-    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
-        wholesaleList.forEach { wholesaleInputModel ->
-            // recalculate wholesale min order because of > symbol
-            val oldValue = wholesaleInputModel.quantity.toBigInteger()
-            val newValue = oldValue - 1.toBigInteger()
-            wholesaleInputModel.quantity = newValue.toString()
-        }
-        return wholesaleList
-    }
-
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)
