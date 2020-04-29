@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +67,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private val offsetPx = itemView.resources.getDimensionPixelOffset(R.dimen.dp_80)
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_carousel_layout
+        const val ATC_LOADING = "atc_loading"
     }
 
     init {
@@ -90,10 +92,17 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                 if(viewPager2PageChangeCallback == null){
                     viewPager2PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
                         override fun onPageSelected(position: Int) {
-                            setItemDetail(position)
+                            configDetailRecommendation(position)
                         }
                     }
                     viewPager.registerOnPageChangeCallback(viewPager2PageChangeCallback as ViewPager2.OnPageChangeCallback)
+                }
+                if(!addToCartButton.hasOnClickListeners()){
+                    addToCartButton.setOnClickListener {
+                        if(element.recommendationWidget.recommendationItemList.isNotEmpty() && element.recommendationWidget.recommendationItemList.size > currentPosition){
+                            recommendationListener.onProductAddToCart(element.recommendationWidget.recommendationItemList[currentPosition], currentPosition)
+                        }
+                    }
                 }
                 viewPager.setPageTransformer(ViewPager2PageTransformation())
                 visible()
@@ -103,7 +112,14 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         }
     }
 
-    private fun setItemDetail(position: Int){
+    override fun bind(element: AddToCartDoneRecommendationCarouselDataModel?, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && payloads.first() is Bundle && (payloads.first() as Bundle).containsKey(ATC_LOADING)){
+            val isAtcLoading = (payloads.first() as Bundle).get(ATC_LOADING) as Boolean
+            addToCartButton.isLoading = isAtcLoading
+        }
+    }
+
+    private fun configDetailRecommendation(position: Int){
         model?.let { model ->
             currentPosition = position
             val recommendation = model.recommendationWidget.recommendationItemList[position]
@@ -116,11 +132,16 @@ class AddToCartDoneRecommendationCarouselViewHolder(
             ticker.visibility = if (model.shopId != -1) View.VISIBLE else View.GONE
             price.show()
 
-
-            if(previousPosition > position && previousPosition != -1){
-                reversedAnimatorSet.start()
-            } else{
-                animatorSet.start()
+            when {
+                previousPosition == -1 -> {
+                    setRecommendationItemToView(recommendation)
+                }
+                previousPosition > position -> {
+                    reversedAnimatorSet.start()
+                }
+                else -> {
+                    animatorSet.start()
+                }
             }
             previousPosition = position
         }
@@ -153,15 +174,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
             override fun onAnimationEnd(animation: Animator?) {
                 val recommendation = model?.recommendationWidget?.recommendationItemList?.get(currentPosition)
                 recommendation?.let {
-                    productName.text = recommendation.name
-                    shopLocation.text = recommendation.location
-                    reviewCount.text = "(${recommendation.countReview})"
-                    ratingCount.text = recommendation.rating.toString()
-                    shopBadges.loadImage(recommendation.badgesUrl.firstOrNull() ?: "")
-                    freeOngkirImage.loadImage(recommendation.freeOngkirImageUrl)
-                    price.text = recommendation.price
-                    ticker.tickerType = if(recommendation.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
-                    ticker.setTextDescription(getString(if(recommendation.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
+                    setRecommendationItemToView(it)
                 }
             }
 
@@ -174,6 +187,18 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
         slideLeftOut.addListener(animationListener)
         slideRightOut.addListener(animationListener)
+    }
+
+    private fun setRecommendationItemToView(recommendation: RecommendationItem){
+        productName.text = recommendation.name
+        shopLocation.text = recommendation.location
+        reviewCount.text = "(${recommendation.countReview})"
+        ratingCount.text = recommendation.rating.toString()
+        shopBadges.loadImage(recommendation.badgesUrl.firstOrNull() ?: "")
+        freeOngkirImage.loadImage(recommendation.freeOngkirImageUrl)
+        price.text = recommendation.price
+        ticker.tickerType = if(recommendation.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
+        ticker.setTextDescription(getString(if(recommendation.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
     }
 
     inner class RecommendationCarouselAdapter : RecyclerView.Adapter<RecommendationCarouselImageViewHolder>(){

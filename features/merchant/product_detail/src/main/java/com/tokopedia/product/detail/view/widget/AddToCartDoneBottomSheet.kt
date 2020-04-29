@@ -30,7 +30,9 @@ import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
+import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationCarouselViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -39,6 +41,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.videoplayer.utils.showToast
 import javax.inject.Inject
 
 class AddToCartDoneBottomSheet :
@@ -101,6 +104,7 @@ class AddToCartDoneBottomSheet :
         }
         initAdapter()
         observeRecommendationProduct()
+        observeAtcStatus()
         getRecommendationProduct()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -117,6 +121,27 @@ class AddToCartDoneBottomSheet :
         atcDoneAdapter = AddToCartDoneAdapter(factory)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = atcDoneAdapter
+    }
+
+    private fun observeAtcStatus(){
+        addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
+            val bundle = Bundle()
+            bundle.putBoolean(AddToCartDoneRecommendationCarouselViewHolder.ATC_LOADING, false)
+            atcDoneAdapter.notifyItemChanged(atcDoneAdapter.itemCount - 1, bundle)
+            if(result is Success){
+                showToast(getString(R.string.atc_done_add_product_success))
+            } else if(result is Fail){
+                recyclerView?.let {view ->
+                    context?.let { ctx ->
+                        Toaster.make(view,
+                                ProductDetailErrorHandler.getErrorMessage(ctx, result.throwable),
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_ERROR
+                        )
+                    }
+                }
+            }
+        })
     }
 
     private fun observeRecommendationProduct() {
@@ -241,6 +266,13 @@ class AddToCartDoneBottomSheet :
             addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
         productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
+    }
+
+    override fun onProductAddToCart(item: RecommendationItem, position: Int) {
+        val bundle = Bundle()
+        bundle.putBoolean(AddToCartDoneRecommendationCarouselViewHolder.ATC_LOADING, true)
+        atcDoneAdapter.notifyItemChanged(atcDoneAdapter.itemCount - 1, bundle)
+        addToCartDoneViewModel.addToCart(item)
     }
 
     override fun onButtonGoToCartClicked() {
