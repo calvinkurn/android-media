@@ -9,6 +9,7 @@ import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import io.mockk.*
 import org.junit.Before
@@ -28,6 +29,8 @@ class OrderHistoryViewModelTest {
 
     object Dummy {
         const val shopId = "123123"
+        const val productId = "123432"
+        const val userId = "45675"
         val successGetProductResponse: ChatHistoryProductResponse = FileUtil.parse(
                 "/success_get_chat_history_product_response.json", ChatHistoryProductResponse::class.java
         )
@@ -81,6 +84,12 @@ class OrderHistoryViewModelTest {
 
     @Test
     fun addToWishList() {
+        val mockListener: WishListActionListener = mockk(relaxed = true)
+        every { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, any()) } just Runs
+
+        viewModel.addToWishList(Dummy.productId, Dummy.userId, mockListener)
+
+        verify { addWishListUseCase.createObservable(Dummy.productId, Dummy.userId, mockListener) }
     }
 
 }
