@@ -7,6 +7,7 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.encryption.security.AESEncryptorECB
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
@@ -14,9 +15,10 @@ import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
-import com.tokopedia.logger.utils.*
+import com.tokopedia.logger.utils.Constants
+import com.tokopedia.logger.utils.TimberReportingTree
+import com.tokopedia.logger.utils.globalScopeLaunch
 import kotlinx.coroutines.*
-import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -49,8 +51,7 @@ class LogManager(val application: Application) : CoroutineScope {
             } else {
                 message
             }
-            val encryptedMessage = encrypt(truncatedMessage, secretKey)
-            val log = Logger(timeStamp, serverChannel, priority, encryptedMessage)
+            val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
             logger.insert(log)
         }
     }
@@ -69,7 +70,6 @@ class LogManager(val application: Application) : CoroutineScope {
         private lateinit var pi: PendingIntent
         private lateinit var jobScheduler: JobScheduler
         private lateinit var jobInfo: JobInfo
-        private var secretKey = generateKey(Constants.ENCRYPTION_KEY)
 
         @JvmStatic
         fun getLogger(): LoggerRepository? {
@@ -79,7 +79,9 @@ class LogManager(val application: Application) : CoroutineScope {
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
                 val server = LoggerCloudDatasource()
                 val scalyrLogger = LoggerCloudScalyrDataSource(context)
-                loggerRepository = LoggerRepository(logsDao, server, scalyrLogger)
+                val encryptor = AESEncryptorECB()
+                val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
+                loggerRepository = LoggerRepository(logsDao, server, scalyrLogger, encryptor, secretKey)
             }
             return loggerRepository
         }
@@ -143,7 +145,7 @@ class LogManager(val application: Application) : CoroutineScope {
                 var scalyrSuccessCode = Constants.LOG_DEFAULT_ERROR_CODE
                 if (scalyrEnabled) {
                     try {
-                        scalyrSuccessCode = logger.sendScalyrLogToServer(logs, secretKey)
+                        scalyrSuccessCode = logger.sendScalyrLogToServer(logs)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -154,7 +156,7 @@ class LogManager(val application: Application) : CoroutineScope {
                         val ts = log.timeStamp
                         val severity = getSeverity(log.serverChannel)
                         if (severity != Constants.SEVERITY_NONE) {
-                            val errorCode = logger.sendLogToServer(severity, TOKEN, log, secretKey)
+                            val errorCode = logger.sendLogToServer(severity, TOKEN, log)
                             if (isPrimaryLogentries) {
                                 if (errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
                                     logger.deleteEntry(ts)

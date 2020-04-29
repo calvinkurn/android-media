@@ -50,6 +50,7 @@ android {
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
+        exclude('META-INF/androidx.*.version')
     }
 }
 
@@ -85,6 +86,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.robust
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'

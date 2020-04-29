@@ -19,8 +19,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -58,23 +61,15 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         }
     }
 
-    var shopId: String? = null
-    var shopDomain: String? = null
-    var isShareFunctionReady = false
-    var shopInfo: ShopInfo? = null
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var shopPageSettingViewModel: ShopPageSettingViewModel
-
-    lateinit var shopPageSettingTracking: ShopPageTrackingShopPageSetting
-    lateinit var remoteConfig: RemoteConfig
 
     private lateinit var errorView: View
     private lateinit var dashboardView: View
     private lateinit var shopPageSettingView: RecyclerView
     private lateinit var retryMessageView: TextView
-    private lateinit var retryButton: Button
+    private lateinit var retryButton: View
     private val isOfficial: Boolean
         get() = shopInfo?.goldOS?.isOfficial == 1
     private val isGold: Boolean
@@ -82,6 +77,14 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficial, isGold)
     }
+
+    private var shopPageSettingTracking: ShopPageTrackingShopPageSetting? = null
+    private var remoteConfig: RemoteConfig? = null
+
+    private var shopId: String? = null
+    private var shopDomain: String? = null
+    private var isShareFunctionReady = false
+    private var shopInfo: ShopInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,7 +184,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     fun onBackPressed() {
-        shopPageSettingTracking.clickBackArrow(true, customDimensionShopPage)
+        shopPageSettingTracking?.clickBackArrow(true, customDimensionShopPage)
     }
 
     override fun getScreenName(): String? {
@@ -236,79 +239,92 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     private fun clickShareButton() {
-        (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {
-            shopPageSettingTracking.clickShareButton(customDimensionShopPage)
-            var shopShareMsg: String = remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
+        (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {shopInfo ->
+            shopPageSettingTracking?.clickShareButton(customDimensionShopPage)
+            var shopShareMsg: String = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG) ?: ""
             shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
                 FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
-                        SHOP_LOCATION_PLACEHOLDER, it.location)
+                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(shopInfo.shopCore.name).toString(),
+                        SHOP_LOCATION_PLACEHOLDER, shopInfo.location)
             } else {
                 getString(R.string.shop_label_share_formatted,
-                        MethodChecker.fromHtml(it.shopCore.name).toString(), it.location)
+                        MethodChecker.fromHtml(shopInfo.shopCore.name).toString(), shopInfo.location)
             }
-            (activity?.application as ShopModuleRouter).goToShareShop(activity,
-                    shopId, it.shopCore.url, shopShareMsg)
+            activity?.let {
+                val shareData = LinkerData.Builder.getLinkerBuilder()
+                        .setType(LinkerData.SHOP_TYPE)
+                        .setName(getString(R.string.message_share_shop))
+                        .setTextContent(shopShareMsg)
+                        .setCustMsg(shopShareMsg)
+                        .setUri(shopInfo.shopCore.url)
+                        .setId(shopId)
+                        .build()
+                DefaultShare(it, shareData).show()
+            }
         }
     }
 
     // Dashboard Toko
     private fun onDashboardClick() {
-        shopPageSettingTracking.clickShopDashboard(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConst.HOME_ACCOUNT_SELLER)
+        shopPageSettingTracking?.clickShopDashboard(customDimensionShopPage)
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(activity, ApplinkConst.SellerApp.SELLER_APP_HOME)
+        } else {
+            RouteManager.route(activity, ApplinkConst.HOME_ACCOUNT_SELLER)
+        }
     }
 
     // Ubah profil toko
     override fun onChangeProfileClicked() {
-        shopPageSettingTracking.clickChangeShopProfile(customDimensionShopPage)
+        shopPageSettingTracking?.clickChangeShopProfile(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
     }
 
     // Ubah catatan toko
     override fun onChangeShopNoteClicked() {
-        shopPageSettingTracking.clickChangeShopNote(customDimensionShopPage)
+        shopPageSettingTracking?.clickChangeShopNote(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
     }
 
     // Atur jam buka toko
     override fun onEditShopScheduleClicked() {
-        shopPageSettingTracking.clickSetOpenShopTime(customDimensionShopPage)
+        shopPageSettingTracking?.clickSetOpenShopTime(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
     }
 
     // Lihat daftar produk
     override fun onDisplayProductsClicked() {
-        shopPageSettingTracking.clickSeeProduct(customDimensionShopPage)
+        shopPageSettingTracking?.clickSeeProduct(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConst.PRODUCT_MANAGE)
     }
 
     // Tambah dan ubah etalase
     override fun onEditEtalaseClicked() {
-        shopPageSettingTracking.clickAddAndEditEtalase(customDimensionShopPage)
+        shopPageSettingTracking?.clickAddAndEditEtalase(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
     }
 
     // Pusat bantuan
     override fun onGetSupportClicked() {
-        shopPageSettingTracking.clickPusatBantuan(customDimensionShopPage)
+        shopPageSettingTracking?.clickPusatBantuan(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConst.CONTACT_US_NATIVE)
     }
 
     // Pusat Seller
     override fun onGetTipsClicked() {
-        shopPageSettingTracking.clickPusatSeller(customDimensionShopPage)
+        shopPageSettingTracking?.clickPusatSeller(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConst.SELLER_CENTER)
     }
 
     // Tambah dan ubah lokasi toko
     override fun onEditLocationClicked() {
-        shopPageSettingTracking.clickAddAndEditShopLocation(customDimensionShopPage)
+        shopPageSettingTracking?.clickAddAndEditShopLocation(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
     }
 
     // Atur layanan pengiriman
     override fun onManageShippingServiceClicked() {
-        shopPageSettingTracking.clickSetShippingService(customDimensionShopPage)
+        shopPageSettingTracking?.clickSetShippingService(customDimensionShopPage)
         RouteManager.route(activity, ApplinkConst.SELLER_SHIPPING_EDITOR)
     }
 }

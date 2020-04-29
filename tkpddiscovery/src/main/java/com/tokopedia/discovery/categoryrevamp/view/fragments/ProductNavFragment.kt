@@ -15,28 +15,32 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
-import com.tkpd.library.utils.URLParser
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.adapter.ProductNavListAdapter
+import com.tokopedia.common_category.adapter.QuickFilterAdapter
+import com.tokopedia.common_category.factory.ProductTypeFactory
+import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
+import com.tokopedia.common_category.interfaces.ProductCardListener
+import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.utils.CategoryApiParamBuilder.Companion.categoryApiParamBuilder
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SelectedFilterListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
@@ -193,8 +197,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                 .build()
         selectedFilterRecyclerView.layoutManager = layoutManager
         selectedFilterRecyclerView.addItemDecoration(SpacingItemDecoration(
-                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10)
+                resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8),
+                resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10)
         ))
     }
 
@@ -338,7 +342,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
         productNavViewModel.mProductCount.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.countText != null)
-                    setTotalSearchResultCount(it.countText)
+                    setTotalSearchResultCount(it.countText.toString())
                 setTotalSearchResultCountInteger(it.totalData)
                 if (!TextUtils.isEmpty(it.countText)) {
                     setQuickFilterAdapter(getString(R.string.result_count_template_text, it.countText))
@@ -454,7 +458,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     override fun OnDefaultItemClicked() {
-        val intent = RouteManager.getIntent(activity, ApplinkConst.CATEGORY_BELANJA)
+        val intent = RouteManager.getIntent(activity, INTERNAL_BELANJA_CATEGORY)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
@@ -479,7 +483,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             startActivityForResult(intent, 1002)
         }
         if (item.isTopAds) {
-            ImpresionTask().execute(item.productClickTrackingUrl)
+            productNavViewModel.sendTopAds(item.productClickTrackingUrl)
         }
         catAnalyticsInstance.eventClickProductList(item.id.toString(),
                 mDepartmentId,
@@ -671,7 +675,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
-        ImpresionTask().execute(url)
+        productNavViewModel.sendTopAds(url)
     }
 
     override fun onPause() {

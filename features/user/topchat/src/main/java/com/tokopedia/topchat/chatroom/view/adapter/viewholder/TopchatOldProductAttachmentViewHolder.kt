@@ -9,8 +9,8 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 
 class TopchatOldProductAttachmentViewHolder(
         itemView: View?,
-        viewListener: ProductAttachmentListener?
-) : ProductAttachmentViewHolder(itemView, viewListener) {
+        private val listener: ProductAttachmentListener
+) : ProductAttachmentViewHolder(itemView, listener) {
 
     private var thumbnail: ImageView? = null
 
@@ -23,6 +23,7 @@ class TopchatOldProductAttachmentViewHolder(
 
     private fun bindImageClick(product: ProductAttachmentViewModel) {
         thumbnail?.setOnClickListener {
+            listener.trackClickProductThumbnail(product)
             it.context.startActivity(
                     ImagePreviewActivity.getCallingIntent(
                             it.context,

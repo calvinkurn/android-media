@@ -32,7 +32,7 @@
             android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintTop_toTopOf="@id/image"
             app:layout_constraintBottom_toBottomOf="@id/image"
-            android:background="@color/Neutral_N700_32"/>
+            android:background="@drawable/travel_destination_section_overlay"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"

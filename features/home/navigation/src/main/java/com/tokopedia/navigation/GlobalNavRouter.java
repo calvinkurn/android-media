@@ -21,19 +21,11 @@ public interface GlobalNavRouter {
 
     Fragment getOfficialStoreFragment(Bundle bundle);
 
-    Intent getInboxTalkCallingIntent(Context context);
-
-    Intent getInboxTicketCallingIntent(Context context);
-
     ApplicationUpdate getAppUpdate(Context context);
 
     int getCartCount(Context context);
 
     void setCartCount(Context context, int count);
-
-    void sendAnalyticsFirstTime();
-
-    Intent getShopPageIntent(Context context, String shopID);
 
     Intent getHomeIntent(Context context);
 

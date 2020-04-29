@@ -234,6 +234,18 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_block_canary_delay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="Minimum Block Delay to Captured in ms (default = 500)"
+            app:backgroundTint="@color/Green_G500" />
+
         <CheckBox
             android:id="@+id/toggle_ui_block_debugger"
             android:layout_width="match_parent"
@@ -429,6 +441,17 @@
                 android:layout_weight="2"/>
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_fake_response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Fake response Activity"
+            android:textColor="@color/white" />
 <!--
         <com.tokopedia.translator.ui.TranslatorSettingView
             android:layout_width="match_parent"

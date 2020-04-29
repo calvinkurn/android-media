@@ -122,6 +122,17 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyNotifyMe(notifyMeData: ProductNotifyMeDataModel?, payload: Int?) {
+        notifyMeData?.let{
+            val indexOfNotifyMe = list.indexOf(notifyMeData)
+            if (payload != null) {
+                notifyItemChanged(indexOfNotifyMe, payload)
+            } else {
+                notifyItemChanged(indexOfNotifyMe)
+            }
+        }
+    }
+
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
         if (holder is ProductRecommendationViewHolder) {

@@ -47,10 +47,10 @@ private fun ProductCardFlashSaleModel.getContentHeight(context: Context): Int {
 
 private fun ProductCardFlashSaleModel.getPdpViewCountSectionHeight(context: Context): Int {
     return if (pdpViewCount.isNotEmpty()) {
-        val pdpViewCountMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_pdpcount_margintop)
         val pdpViewCountHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_pdpcount_height)
+        val pdpViewCountMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_pdpcount_marginbottom)
 
-        return pdpViewCountMarginTop + pdpViewCountHeight
+        return pdpViewCountMarginBottom + pdpViewCountHeight
     }
     else 0
 }
@@ -58,71 +58,63 @@ private fun ProductCardFlashSaleModel.getPdpViewCountSectionHeight(context: Cont
 
 private fun ProductCardFlashSaleModel.getProductNameSectionHeight(context: Context): Int {
     return if (productName.isNotEmpty()) {
-        val productNameMarginTop = getProductNameMarginTop(context)
+        val productNameMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_text_view_product_name_margin_bottom)
         val productNameHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_product_name_height)
 
-        return productNameMarginTop + productNameHeight
+        return productNameMarginBottom + productNameHeight
     }
     else 0
-}
-
-private fun ProductCardFlashSaleModel.getProductNameMarginTop(context: Context): Int {
-    val labelGimmick = getLabelGimmick()
-
-    return if (labelGimmick != null && labelGimmick.title.isNotEmpty()) {
-        context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_product_name_margin_top)
-    } else {
-        context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_product_name_gone_margin_top)
-    }
 }
 
 private fun ProductCardFlashSaleModel.getPromoSectionHeight(context: Context): Int {
     val labelPrice = getLabelPrice()
 
-    var labelDiscountMarginTop = 0
+    var labelDiscountMarginBottom = 0
     var labelDiscountHeight = 0
-    var labelPriceMarginTop = 0
+    var labelPriceMarginBottom = 0
     var labelPriceHeight = 0
 
-    if (discountPercentage.isNotEmpty()) {
-        labelDiscountMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_label_discount_margin_top)
+    if (discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()) {
+        labelDiscountMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_discount_margin_bottom)
         labelDiscountHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_discount_height)
     }
 
     if (labelPrice != null && labelPrice.title.isNotEmpty()) {
-        labelPriceMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_margin_top)
+        labelPriceMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_text_view_slashed_price_margin_bottom)
         labelPriceHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_price_height)
     }
 
-    return max(labelDiscountMarginTop + labelDiscountHeight, labelPriceMarginTop + labelPriceHeight)
+    return max(labelDiscountMarginBottom + labelDiscountHeight, labelPriceMarginBottom + labelPriceHeight)
 }
 
 private fun ProductCardFlashSaleModel.getPriceSectionHeight(context: Context): Int {
     return if (priceRange.isNotEmpty() || formattedPrice.isNotEmpty()) {
-        val priceMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_price_margin_top)
+        var priceMarginBottom = 0
+        if (stockBarLabel.isNotEmpty()) {
+            priceMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_text_view_price_margin_bottom)
+        }
         val priceHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_price_height)
 
-        return priceMarginTop + priceHeight
+        return priceMarginBottom + priceHeight
     }
     else 0
 }
 
 private fun ProductCardFlashSaleModel.getStockBarSectionHeight(context: Context): Int {
-    return if (stockBarPercentage != 0) {
-        val stockBarMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_margintop)
+    return if (stockBarLabel.isNotEmpty()) {
+        val stockBarMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_marginbottom)
         val stockBarHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_height)
 
-        return stockBarMarginTop + stockBarHeight
+        return stockBarMarginBottom + stockBarHeight
     }
     else 0
 }
 
 private fun ProductCardFlashSaleModel.getStockLabelHeight(context: Context): Int {
-    return if (stockBarPercentage != 0) {
-        val labelMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_margintop)
+    return if (stockBarLabel.isNotEmpty()) {
         val labelHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_height)
 
-        return labelMarginTop + labelHeight
+        return labelHeight
     }
     else 0
 }

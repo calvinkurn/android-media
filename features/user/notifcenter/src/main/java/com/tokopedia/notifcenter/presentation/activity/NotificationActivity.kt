@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -53,6 +54,18 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationTabItem>()
+
+    /*
+    * notification id for buyer info consume
+    * the id comes from tokopedia://notif-center/{id}
+    * notification id will be consuming on updateFragment
+    * */
+    var notificationId = ""
+
+    /*
+     * track mark all as read counter
+     * counting notification item to as read
+     * */
     private var updateCounter = 0L
 
     private val notificationLayout by lazy {
@@ -68,7 +81,19 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         super.onCreate(savedInstanceState)
         notificationComponent.inject(this)
         presenter.attachView(this)
-        initView(savedInstanceState)
+        setWindowBackground()
+
+        intent?.data?.path?.let {
+            when {
+                it.contains(PATH_BUYER_INFO) -> {
+                    initViewTabLayout(INDEX_NOTIFICATION_UPDATE)
+                    getNotificationId()
+                }
+                else -> {
+                    initView(savedInstanceState)
+                }
+            }
+        }?: initView(savedInstanceState)
 
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
@@ -77,6 +102,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
             if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
                 cacheManager.isDisplayedGimmick = true
                 presenter.sendNotif(onSuccessSendNotification(), onErrorSendNotification())
+            }
+        }
+    }
+
+    private fun getNotificationId() {
+        intent?.data?.lastPathSegment?.let {
+            if (it != PATH_BUYER_INFO) {
+                notificationId = it
             }
         }
     }
@@ -116,7 +149,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
                     savedInstanceState,
                     INDEX_NOTIFICATION_ACTIVITY)
         }
-        initTabLayout(initialIndexPage)
+        initViewTabLayout(initialIndexPage)
+    }
+
+    private fun initViewTabLayout(page: Int) {
+        initTabLayout(page)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         presenter.getIsTabUpdate(this)
     }
@@ -251,6 +288,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         return true
     }
 
+    private fun setWindowBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
@@ -275,6 +316,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     companion object {
         private const val KEY_TAB_POSITION = "tab_position"
+        private const val PATH_BUYER_INFO = "notif-center"
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1

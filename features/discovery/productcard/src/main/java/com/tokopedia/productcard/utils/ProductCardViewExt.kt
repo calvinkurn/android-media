@@ -3,8 +3,7 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
+import android.graphics.drawable.Drawable
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
@@ -15,9 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.productcard.ProductCardFlashSaleModel
@@ -101,8 +104,49 @@ internal fun ImageView.loadImage(url: String?) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_loading_toped_new)
-                .error(R.drawable.ic_loading_toped_new)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
+                .into(this)
+    }
+}
+internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        state.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        state.invoke(true)
+                        return false
+                    }
+                })
+                .into(this)
+    }
+}
+internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolean) -> Unit)) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .error(R.drawable.placeholder_grey)
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        state.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        state.invoke(true)
+                        return false
+                    }
+                })
                 .into(this)
     }
 }
@@ -113,8 +157,8 @@ internal fun ImageView.loadImageRounded(url: String?) {
                 .load(url)
                 .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_loading_toped_new)
-                .error(R.drawable.error_drawable)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -133,16 +177,16 @@ internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     else showLabel(labelGroup)
 }
 
+internal fun Label.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showLabel(labelGroup)
+}
+
 private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
         it.determineLabelType(labelGroup.type)
     }
-}
-
-internal fun Label.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showLabel(labelGroup)
 }
 
 private fun Label.showLabel(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
@@ -153,9 +197,9 @@ private fun Label.showLabel(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
 }
 
 private fun Label.determineLabelType(labelGroupType: String) {
-    val labelType = labelGroupType.toUnifyLabelType()
+    val unifyLabelType = labelGroupType.toUnifyLabelType()
 
-    if (labelType != -1) setLabelType(labelType)
+    if (unifyLabelType != -1) setLabelType(unifyLabelType)
     else setCustomLabelType(labelGroupType)
 }
 
@@ -176,23 +220,20 @@ private fun String?.toUnifyLabelType(): Int {
 }
 
 private fun Label.setCustomLabelType(labelGroupType: String) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        val drawable = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.label_bg)
-        setBackgroundDrawable(drawable)
-
-        val gradientDrawable = background as? GradientDrawable
-        gradientDrawable?.setColor(safeContextGetColor(context, labelGroupType.toUnifyLabelColor()))
+    try {
+        trySetCustomLabelType(labelGroupType)
+    } catch (throwable: Throwable) {
+        throwable.printStackTrace()
     }
 }
 
-private fun safeContextGetColor(context: Context, @ColorRes colorRes: Int): Int {
-    return try {
-        ContextCompat.getColor(context, colorRes)
-    }
-    catch (throwable: Throwable) {
-        throwable.printStackTrace()
-        0
-    }
+private fun Label.trySetCustomLabelType(labelGroupType: String) {
+    unlockFeature = true
+
+    val colorRes = labelGroupType.toUnifyLabelColor()
+    val colorHexInt = ContextCompat.getColor(context, colorRes)
+    val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+    setLabelType(colorHexString)
 }
 
 @ColorRes

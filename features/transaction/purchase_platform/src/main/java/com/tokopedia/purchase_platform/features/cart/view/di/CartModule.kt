@@ -18,7 +18,6 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
@@ -32,6 +31,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -158,17 +158,14 @@ class CartModule {
     @CartScope
     @Named("UpdateReloadUseCase")
     fun provideGetCartListSimplifiedUseCase(@Named("shopGroupSimplifiedQuery") queryString: String,
-                                            graphqlUseCase: GraphqlUseCase,
                                             cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(queryString, graphqlUseCase, cartSimplifiedMapper, IOSchedulers)
+            GetCartListSimplifiedUseCase(queryString, GraphqlUseCase(), cartSimplifiedMapper, IOSchedulers)
 
     @Provides
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartUseCase: DeleteCartUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
-                                  checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                                  checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                   compositeSubscription: CompositeSubscription,
                                   addWishListUseCase: AddWishListUseCase,
                                   removeWishListUseCase: RemoveWishListUseCase,
@@ -184,15 +181,18 @@ class CartModule {
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
                                   updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                  updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
+                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
-                updateCartUseCase, checkPromoStackingCodeUseCase, compositeSubscription,
+                updateCartUseCase, compositeSubscription,
                 addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,
                 updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                updateCartCounterUseCase, schedulers
+                updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+                validateUsePromoRevampUseCase, schedulers
         )
     }
 

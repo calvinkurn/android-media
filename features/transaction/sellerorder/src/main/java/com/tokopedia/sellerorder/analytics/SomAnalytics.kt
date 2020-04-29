@@ -103,8 +103,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST, orderCode)
     }
 
-    fun eventClickViewInvoice() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_VIEW_INVOICE)
+    fun eventClickViewInvoice(statusOrder: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_VIEW_INVOICE, statusOrder)
     }
 
     fun eventViewEmptyState(statusOrderName: String) {

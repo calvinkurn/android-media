@@ -3,14 +3,15 @@ package com.tokopedia.home.analytics.v2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 object ProductHighlightTracking : BaseTracking() {
-    val PRODUCT_DYNAMIC_CHANNEL_HERO = "product dynamic channel hero"
-    val PRODUCT_DYNAMIC_CHANNEL_HERO_IMPRESSION = Action.IMPRESSION_ON.format(PRODUCT_DYNAMIC_CHANNEL_HERO)
-    val PRODUCT_DYNAMIC_CHANNEL_HERO_CLICK = Action.CLICK_ON.format(PRODUCT_DYNAMIC_CHANNEL_HERO)
+    private const val EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO = "impression on product dynamic channel hero"
+    private const val EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO = "click on product dynamic channel hero"
+
+    private const val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero"
 
     fun getProductHighlightImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
             event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
-            eventAction = PRODUCT_DYNAMIC_CHANNEL_HERO_IMPRESSION,
+            eventAction = EVENT_ACTION_IMPRESSION_PRODUCT_DYNAMIC_CHANNEL_HERO,
             eventLabel = Label.NONE,
             products = channel.grids.mapIndexed { index, grid ->
                 Product(
@@ -36,14 +37,15 @@ object ProductHighlightTracking : BaseTracking() {
     private fun getProductHighlightClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
-            eventAction = PRODUCT_DYNAMIC_CHANNEL_HERO_CLICK,
-            eventLabel = grid.attribution,
+            eventAction = EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO,
+            eventLabel = channel.header.name,
             channelId = channel.id,
+            campaignCode = channel.campaignCode,
             products = listOf(
                     Product(
                             name = grid.name,
                             id = grid.id,
-                            productPrice = grid.price,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,

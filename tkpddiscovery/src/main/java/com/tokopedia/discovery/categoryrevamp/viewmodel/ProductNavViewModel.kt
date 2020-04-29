@@ -2,9 +2,13 @@ package com.tokopedia.discovery.categoryrevamp.viewmodel
 
 import androidx.lifecycle.*
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.productModel.SearchProduct
+import com.tokopedia.common_category.model.productModel.ProductListResponse
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.SearchProduct
+import com.tokopedia.common_category.usecase.DynamicFilterUseCase
+import com.tokopedia.common_category.usecase.GetProductListUseCase
+import com.tokopedia.common_category.usecase.QuickFilterUseCase
+import com.tokopedia.common_category.usecase.SendTopAdsUseCase
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -19,7 +23,8 @@ import javax.inject.Inject
 class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCategoryV3UseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
-                                              var getProductListUseCase: GetProductListUseCase) : ViewModel() {
+                                              var getProductListUseCase: GetProductListUseCase,
+                                              var sendTopAdsUseCase: SendTopAdsUseCase) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -114,6 +119,10 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
 
     fun getDynamicFilterData(): MutableLiveData<Result<DynamicFilterModel>> {
         return mDynamicFilterModel
+    }
+
+    fun sendTopAds(url: String) {
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     override fun onCleared() {

@@ -1,8 +1,9 @@
 package com.tokopedia.notifcenter.analytics
 
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
+import kotlin.collections.mapOf
+import com.tokopedia.analyticconstant.DataLayer.mapOf as layerMapOf
 
 class StockHandlerAnalytics {
 
@@ -12,33 +13,30 @@ class StockHandlerAnalytics {
         val eventAction = "impression on restock handler product card"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val impressions = DataLayer.mapOf(
-                "name", element.getAtcProduct()?.name,
-                "id", element.getAtcProduct()?.productId,
-                "price", element.getAtcProduct()?.price,
-                "brand", "",
-                "category", "",
-                "variant", element.getAtcProduct()?.variant,
-                "list", "/notifcenter",
-                "position", "0",
-                "dimension79", element.userInfo.shopId
+        val impressions = mapOf(
+                "name" to element.getAtcProduct()?.name,
+                "id" to element.getAtcProduct()?.productId,
+                "price" to element.getAtcProduct()?.price,
+                "brand" to "",
+                "category" to "",
+                "variant" to "",
+                "list" to "/notifcenter",
+                "position" to "0",
+                "dimension79" to element.getAtcProduct()?.shop?.id
         )
-
-        val ecommerce = DataLayer.mapOf(
-                KEY_CURRENCY_CODE, VALUE_CURRENCY_CODE,
-                KEY_IMPRESSIONS, arrayOf(impressions)
+        val ecommerce = mapOf(
+                KEY_CURRENCY_CODE to VALUE_CURRENCY_CODE,
+                KEY_IMPRESSIONS to listOf(impressions)
         )
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        KEY_EVENT_NAME, eventName,
-                        KEY_EVENT_CATEGORY, eventCategory,
-                        KEY_EVENT_ACTION, eventAction,
-                        KEY_EVENT_LABEL, eventLabel,
-                        KEY_USER_ID, userId,
-                        KEY_ECOMMERCE, ecommerce
-                )
+        val dataTracker = layerMapOf(
+                KEY_EVENT_NAME, eventName,
+                KEY_EVENT_CATEGORY, eventCategory,
+                KEY_EVENT_ACTION, eventAction,
+                KEY_EVENT_LABEL, eventLabel,
+                KEY_USER_ID, userId,
+                KEY_ECOMMERCE, ecommerce
         )
+        send(dataTracker)
     }
 
     fun productCardClicked(element: NotificationItemViewBean, userId: String) {
@@ -47,37 +45,32 @@ class StockHandlerAnalytics {
         val eventAction = "click on restock product card"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val product = DataLayer.mapOf(
+        val product = layerMapOf(
                 "name", element.getAtcProduct()?.name,
                 "id", element.getAtcProduct()?.productId,
                 "price", element.getAtcProduct()?.price,
                 "brand", "",
                 "category", "",
-                "variant", element.getAtcProduct()?.variant,
+                "variant", "",
                 "list", "/notifcenter",
                 "position", "0",
-                "dimension79", element.userInfo.shopId
+                "dimension79", element.getAtcProduct()?.shop?.id?: ""
         )
-
-        val click = DataLayer.mapOf(
-                KEY_ACTION_FIELD, DataLayer.mapOf(KEY_LIST, "/notifcenter"),
-                KEY_PRODUCTS, listOf(product)
+        val click = mapOf(
+                KEY_ACTION_FIELD to mapOf(
+                        KEY_LIST to "/notifcenter"
+                ),
+                KEY_PRODUCTS to listOf(product)
         )
-
-        val ecommerce = DataLayer.mapOf(
-                KEY_CLICK, click
+        val dataTracker = layerMapOf(
+                KEY_EVENT_NAME, eventName,
+                KEY_EVENT_CATEGORY, eventCategory,
+                KEY_EVENT_ACTION, eventAction,
+                KEY_EVENT_LABEL, eventLabel,
+                KEY_USER_ID, userId,
+                KEY_ECOMMERCE, mapOf(KEY_CLICK to click)
         )
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        KEY_EVENT_NAME, eventName,
-                        KEY_EVENT_CATEGORY, eventCategory,
-                        KEY_EVENT_ACTION, eventAction,
-                        KEY_EVENT_LABEL, eventLabel,
-                        KEY_USER_ID, userId,
-                        KEY_ECOMMERCE, ecommerce
-                )
-        )
+        send(dataTracker)
     }
 
     fun stockReminderClicked(element: NotificationItemViewBean, userId: String) {
@@ -86,16 +79,19 @@ class StockHandlerAnalytics {
         val eventAction = "click on reminder button"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        KEY_EVENT_NAME, eventName,
-                        KEY_EVENT_CATEGORY, eventCategory,
-                        KEY_EVENT_ACTION, eventAction,
-                        KEY_EVENT_LABEL, eventLabel,
-                        KEY_USER_ID, userId,
-                        KEY_SHOP_ID, element.userInfo.shopId
-                )
+        val dataTracker = layerMapOf(
+                KEY_EVENT_NAME, eventName,
+                KEY_EVENT_CATEGORY, eventCategory,
+                KEY_EVENT_ACTION, eventAction,
+                KEY_EVENT_LABEL, eventLabel,
+                KEY_USER_ID, userId,
+                KEY_SHOP_ID, element.getAtcProduct()?.shop?.id?: ""
         )
+        send(dataTracker)
+    }
+
+    private fun send(data: Map<String, Any>) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
     companion object {

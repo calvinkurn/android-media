@@ -2,9 +2,9 @@ package com.tokopedia.discovery.categoryrevamp.di
 
 import android.content.Context
 import android.content.res.Resources
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.common_category.usecase.*
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -152,5 +152,9 @@ class CategoryNavUseCaseModule {
     fun provideBaseRepository(): BaseRepository {
         return BaseRepository()
     }
+
+    @CategoryNavScope
+    @Provides
+    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
 
 }

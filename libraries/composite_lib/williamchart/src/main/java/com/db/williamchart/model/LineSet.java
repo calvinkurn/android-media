@@ -169,6 +169,17 @@ public class LineSet extends ChartSet {
 		this.addPoint(new Point(label, value));
 	}
 
+	/**
+	 * Add new {@link Point} from a string and a float.
+	 *
+	 * @param label new {@link Point}'s label
+	 * @param value new {@link Point}'s value
+	 */
+	public void addPoint(String label, float value, String customValue) {
+
+		this.addPoint(new Point(label, value, customValue));
+	}
+
 
 	/**
 	 * Add new {@link Point}.

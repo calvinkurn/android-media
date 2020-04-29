@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
 
 
 /**
@@ -975,6 +977,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventViewPromoAfterAdjustItem(String msg) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_MESSAGE,
+                msg
+        );
+    }
+
     public void eventViewPromoLogisticTickerDisable(String promoCode){
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER_IRIS,
@@ -998,5 +1009,27 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_DONATION,
                 check ? "check" : "uncheck"
         );
+    }
+
+    public void eventViewCampaignDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_MESSAGE_TIMER,
+                String.valueOf(productId)
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventClickBelanjaLagiOnDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BELANJA_LAGI_ON_POP_UP,
+                String.valueOf(productId)
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
     }
 }

@@ -8,15 +8,17 @@ ext {
             qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
-            commonTradein                   : ":features:common:common_tradein",
 
+            commonTradein                   : ":features:category:common_tradein",
+            commonCategory                  : ":features:category:common_category",
+            kategori                        : ":features:category:kategori",
+            hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
 
             broadcastMessage                : ":features:communication:broadcast_message",
-//            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
             broadcastMessageCommon          : ":features:communication:broadcast_message_common",
 
             feed                            : ":features:content:feed",
@@ -41,6 +43,7 @@ ext {
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
+            rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             voucherGame                     : ":features:recharge:voucher_game",
 
             commonTravel                    : ":features:travel:common_travel",
@@ -53,7 +56,8 @@ ext {
 
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-
+            eventHome                       : ":features:entertainment:event_home",
+            eventSearch                       : ":features:entertainment:event_search",
             digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
@@ -62,14 +66,11 @@ ext {
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
             flashsaleManagement             : ":features:discovery:flashsale_management",
-//            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
-//            home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",
-            //recentview                    : ":features:discovery:recentview_no_op",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
@@ -86,11 +87,11 @@ ext {
             homecredit                      : ":features:fintech:home_credit",
             instantLoan                     : ":features:fintech:instant_loan",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
-            mitraToppers                    : ":features:fintech:mitra_toppers",
             saldodetails                    : ":features:fintech:saldo_details",
             commonWallet                    : ":features:fintech:common_wallet",
             wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
+            layanan                         : ":features:fintech:layanan_finansial",
 
             accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
@@ -124,35 +125,31 @@ ext {
 
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
+            sellerHome                      : ":features:merchant:seller_home",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
-//            shopEtalasePicker               : ":features:merchant:shop_etalase_picker_no_op",
             shopOpen                        : ":features:merchant:shop_open",
             shopPage                        : ":features:merchant:shop_page",
-//            shopPage                        : ":features:merchant:shop_page_no_op",
             shopSettings                    : ":features:merchant:shop_settings",
             officialStore                  : ":features:merchant:official_store",
             brandlist                       : ":features:merchant:brandlist",
+            favorite                        : ":features:merchant:favorite",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
             csat_rating                       : ":features:operational:csat_rating",
 
             commonPayment                   : ":features:payment:common_payment",
             payment                         : ":features:payment:payment",
-//            payment                         : ":features:payment:payment_no_op",
             paymentSetting                  : ":features:payment:payment_setting",
-//            paymentSetting                  : ":features:payment:payment_setting_no_op",
             pms                             : ":features:payment:pms",
-//            pms                             : ":features:payment:pms_no_op",
             withdraw                        : ":features:payment:withdraw",
 
-            gallery                         : ":features:product:gallery",
+            gallery                         : ":features:merchant:gallery",
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
             seamlesslogin                   : ":features:user:seamless_login",
             tokopoints                      : ":features:promo:tokopoints",
-//            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
             promoCheckout                   : ":features:promo:promo_checkout",
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
@@ -160,11 +157,11 @@ ext {
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
+            topAdsCreate                 : ":features:top_ads:top_ads_create",
             topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
             topAdsWidget                    : ":features:top_ads:top_ads_widget",
             topAdsManagement                : ":features:top_ads:top_ads_management",
-//            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
 
@@ -183,7 +180,6 @@ ext {
             attachvoucher                   : ":features:user:attachvoucher",
             attachcommon                   : ":features:user:attachcommon",
             changepassword                  : ":features:user:changepassword",
-//            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             chatcommon                      : ":features:user:chat_common",
@@ -194,7 +190,6 @@ ext {
             loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
             notifCenter                     : ":features:user:notifcenter",
-//            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
@@ -203,10 +198,8 @@ ext {
             settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
-//            topchat                         : ":features:user:topchat_no_op",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
-//            userIdentification              : ":features:user:user_identification_no_op",
             seamlesslogin                   : ":features:user:seamless_login",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
@@ -222,6 +215,6 @@ ext {
             tkpdtransaction                 : ":tkpdtransaction",
             tkpdtransactioncommon           : ":tkpdtransaction-common",
 
-            recharge_slice                  : ":features:recharge_slice"
+            recharge_slice                  : ":features:recharge:recharge_slice"
     ]
 }

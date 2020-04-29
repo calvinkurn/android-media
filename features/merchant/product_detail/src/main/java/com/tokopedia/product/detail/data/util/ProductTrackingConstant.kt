@@ -28,6 +28,8 @@ object ProductTrackingConstant {
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
 
+        const val KEY_USER_ID_VARIANT = "userId"
+
         const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
 
         const val ID = "id"
@@ -100,11 +102,11 @@ object ProductTrackingConstant {
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
-        const val CLICK_CATEGORY = "click - category"
+        const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
-        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - lihat semua metode on simulasi cicilan widget"
+        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BELI = "click - beli"
         const val CLICK_ADD_TO_CART = "click - tambah ke keranjang"
@@ -127,8 +129,22 @@ object ProductTrackingConstant {
         const val CLICK_CHOOSE_PRODUCT_VARIANT = "click - choose product variant"
         const val CLICK_VARIANT_GUIDELINE = "click - lihat panduan on size chart"
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
-        const val CLICK_EDIT_PRODUCT = "click - edit product"
+        const val CLICK_EDIT_PRODUCT = "click - edit product button"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+        const val CLICK_WHOLESALE = "click - info harga grosir"
+
+        const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
+        const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
+        const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on popup"
+        const val CLICK_PERMISSION_LATER = "click - nanti saja on popup"
+        const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
+        const val CLICK_DISKUSI_PRODUCT_TAB = "click - diskusi produk tab"
+
+        const val CLICK_BUY_ACTIVATION_OVO = "click - beli then go to bottomsheet ovo activation"
+        const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
+        const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
+
+        const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
     }
 
     object Label {
@@ -159,6 +175,11 @@ object ProductTrackingConstant {
 
     object ProductTalk {
         const val TALK = "Talk"
+    }
+
+    object ImeiChecker {
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS = "butuh akses ke hp mu"
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO = "aktifkan akses telepon yuk"
     }
 
     object ProductReview {

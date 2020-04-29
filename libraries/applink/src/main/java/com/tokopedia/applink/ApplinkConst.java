@@ -17,7 +17,7 @@ public interface ApplinkConst {
     String FIND = "tokopedia://find";
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
-    String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
+    String FEED_DETAILS = "tokopedia://feedcommunicationdetail";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOTLIST = "tokopedia://hot";
     String HOST_CATEGORY_P = "p";
@@ -81,8 +81,6 @@ public interface ApplinkConst {
     String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
-    String TOPPICKS = "tokopedia://toppicks";
-    String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
@@ -127,7 +125,8 @@ public interface ApplinkConst {
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
-    String OPEN_SHOP = "tokopedia://buka-toko-online-gratis";
+    String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
+    String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
@@ -175,6 +174,7 @@ public interface ApplinkConst {
 
     String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String PRODUCT_EDIT = "tokopedia://product/edit/{product_id}";
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
@@ -220,6 +220,7 @@ public interface ApplinkConst {
     String SELLER_ORDER_DETAIL = "tokopedia://seller/order";
 
     String SALDO = "tokopedia://saldo";
+    String LAYANAN_FINANSIAL = "tokopedia://layanan-finansial";
     String SALDO_INTRO = "tokopedia://saldo-intro";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/instan";
@@ -277,7 +278,6 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
 
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
@@ -303,6 +303,8 @@ public interface ApplinkConst {
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
+    String DFFALLBACKURL_KEY = "dffallbackurl";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -310,6 +312,7 @@ public interface ApplinkConst {
     interface Gamification {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
+        String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
     }
 
     interface Digital {
@@ -437,6 +440,11 @@ public interface ApplinkConst {
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
         String HOST = "groupchat";
+    }
+
+    interface Notification {
+        String BUYER_HOST = "notif-center";
+        String GENERAL_HOST = "notification";
     }
 
     interface Profile {

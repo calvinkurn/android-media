@@ -6,44 +6,67 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_12"
-    android:background="@drawable/bg_variant_img_unselected">
+    android:background="@color/white"
+    android:layout_marginRight="@dimen/dp_12">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_4"
+        android:paddingTop="@dimen/dp_4"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <com.tokopedia.variant_common.view.customview.ProductRoundedImageView
-            android:id="@+id/variantImg"
-            android:layout_width="@dimen/pdp_variant_image"
-            android:layout_height="@dimen/pdp_variant_image"
-            app:borderRadius="@dimen/dp_6"
-            tools:src="@tools:sample/avatars" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/overlayVariantImgContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/bg_round_corner_variant_overlay"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.tokopedia.unifyprinciples.Typography
+        <FrameLayout
+            android:id="@+id/imgContainerVariant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/variant_empty"
-            android:textColor="@color/white"
-            app:typographyType="body_3" />
-    </FrameLayout>
+            android:padding="@dimen/dp_4"
+            android:background="@drawable/bg_variant_img_unselected"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
+            <com.tokopedia.variant_common.view.customview.ProductRoundedImageView
+                android:id="@+id/variantImg"
+                android:layout_width="@dimen/pdp_variant_image"
+                android:layout_height="@dimen/pdp_variant_image"
+                app:borderRadius="@dimen/dp_6"
+                tools:src="@tools:sample/avatars" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/overlayVariantImgContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_round_corner_variant_overlay"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/variant_empty"
+                android:textColor="@color/white"
+                app:typographyType="body_3" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/promoVariantImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:notificationTitle="@string/variant_promo"
+        app:notificationType="text_type"
+        app:notificationColor="color_text_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

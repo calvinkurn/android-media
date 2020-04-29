@@ -153,7 +153,7 @@
                 app:layout_constraintStart_toEndOf="@+id/deals_product_image"
                 app:layout_constraintTop_toBottomOf="@+id/deals_product_view_count_image"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:typographyType="body_1"
+                app:typographyType="body_3"
                 tools:visibility="visible"
                 tools:text="Nama" />
 
@@ -225,7 +225,7 @@
                 android:layout_marginStart="@dimen/dp_8"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                app:typographyType="heading_6"
+                app:typographyType="small"
                 android:id="@+id/deals_stockbar_label"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"

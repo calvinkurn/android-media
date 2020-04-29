@@ -17,7 +17,7 @@
         android:id="@+id/iv_image"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
-        tools:src="@mipmap/ic_launcher" />
+        tools:src="@tools:sample/avatars" />
 
     <LinearLayout
         android:id="@+id/info_container"

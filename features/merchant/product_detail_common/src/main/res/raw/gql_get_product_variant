@@ -46,11 +46,16 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         campaignTypeName
         startDate
         endDate
+        endDateUnix
         stock
         appLinks
         isAppsOnly
+        stockSoldPercentage
+        isCheckImei
+        isUsingOvo
       }
       stock {
+        stock
         isLimitedStock
         stockWording
         stockWordingHTML
@@ -60,9 +65,24 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         isBuyable
         alwaysAvailable
       }
+      warehouseInfo{
+        warehouseID
+        isFulfillment
+        districtID
+        postalCode
+        geoLocation
+      }
       picture {
         url
         url200
+      }
+      upcomingCampaignInfo {
+        campaignID
+        campaignType
+        campaignTypeName
+        startDate
+        endDate
+        notifyMe
       }
     }
   }

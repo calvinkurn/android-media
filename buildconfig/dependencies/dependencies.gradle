@@ -6,7 +6,7 @@ ext {
     buildToolsVersion = "28.0.3"
 
     jacocoVersion = "0.8.4"
-    kotlinVersion = "1.3.61"
+    kotlinVersion = "1.3.70"
 
     lifeCycleVersion = "2.1.0"
     workManagerVersion = "1.0.1"
@@ -48,12 +48,12 @@ ext {
     playServiceAppIndexing = '17.1.0'
     playServiceAnalytics = '16.0.6'
     playServiceFirebaseMessaging = '17.3.4'
-    playServiceLocation = '16.0.0'
-    playServiceMaps = '16.0.0'
-    playServiceAuth = '16.0.1'
-    playServicePlace = '16.0.0'
+    playServiceLocation = '17.0.0'
+    playServiceMaps = '17.0.0'
+    playServiceAuth = '17.0.0'
+    playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
-    playServiceMapsUtil = '0.4'
+    playServiceMapsUtil = '1.0.2'
     playServiceFirebaseRemoteConfig = '16.1.3'
     playServiceFirebasePerfMon = '16.2.3'
     playServiceAds = '17.0.0'
@@ -66,7 +66,7 @@ ext {
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
     MockkVersion = '1.9.1'
-    kotlinTestVersion = '1.3.61'
+    kotlinTestVersion = '1.3.70'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
     crashlyticsGradleVersion = '1.28.0'
@@ -74,6 +74,8 @@ ext {
     coroutineTestVersion = '1.3.2'
     chuckerVersion = '3.0.1'
     sliceVersion = '1.0.0-alpha6'
+
+    debugToolsEnabled = true
 
     debugToolsEnabled = true
 
@@ -85,18 +87,19 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.1'
-    unifyComponentsVersion = '1.1.26'
+    unifyComponentsVersion = '1.1.33'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
     unifyDatePickerVersion = '1.0.3'
+    unifyPinVersion = '1.0.1'
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.8'
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
-    unifyCarouselVersion = '1.0.0'
+    unifyCarouselVersion = '1.0.2'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -179,7 +182,7 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:5.1.1@aar",
             installRef : "com.android.installreferrer:installreferrer:1.1",
-            moengage   : "com.moengage:moe-android-sdk:9.7.02",
+            moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",
     ]
@@ -191,7 +194,7 @@ ext {
 
     miscDependencies = [
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
-            facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
+            facebook              : "com.facebook.android:facebook-android-sdk:6.2.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
@@ -211,7 +214,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:2.0.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
@@ -243,8 +246,8 @@ ext {
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
+            robust                : "com.meituan.robust:robust:0.4.95",
             javaxInject           :  "javax.inject:javax.inject:1",
-
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
     ]
 
@@ -254,6 +257,7 @@ ext {
             junitJupiterApi       : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
             junitJupiterEngine    : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
             mockk                 : "io.mockk:mockk:$MockkVersion",
+            mockkAndroid          : "io.mockk:mockk-android:$MockkVersion",
             mockitorCore          : "org.mockito:mockito-core:1.10.19",
             uiautomator           : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon                 : 'com.squareup.spoon:spoon-client:1.6.4',
@@ -289,13 +293,15 @@ ext {
     ]
 
     debugToolsDependencies = [
-            stetho      : "com.facebook.stetho:stetho:1.4.2",
-            stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
-            chuck       : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion",
-            toolargetool: "com.gu.android:toolargetool:0.1.3@aar",
-            timber      : "com.jakewharton.timber:timber:4.7.1",
-            blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
-            leakCanary  : "com.squareup.leakcanary:leakcanary-android:2.1"
+            stetho          : "com.facebook.stetho:stetho:1.4.2",
+            stethoOkHttp    : "com.facebook.stetho:stetho-okhttp3:1.4.2",
+            chuck           : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion",
+            toolargetool    : "com.gu.android:toolargetool:0.1.3@aar",
+            timber          : "com.jakewharton.timber:timber:4.7.1",
+            //blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
+            blockCanary     : ":libraries:blockcanary",
+            blockCanaryNoOp : "com.github.markzhai:blockcanary-no-op:1.5.0",
+            leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.2"
     ]
 
     tkpdLibDependencies = [
@@ -318,6 +324,7 @@ ext {
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+            pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
             header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",

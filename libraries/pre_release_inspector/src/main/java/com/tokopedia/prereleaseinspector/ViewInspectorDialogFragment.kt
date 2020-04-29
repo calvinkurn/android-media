@@ -474,7 +474,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
 private fun getIdNameFromView(view: View) : String {
     try {
-        return view.resources.getResourceEntryName(view.getId())
+        return view.context?.resources?.getResourceEntryName(view.getId()) ?: ""
     } catch (e: Resources.NotFoundException) {
         return ""
     }

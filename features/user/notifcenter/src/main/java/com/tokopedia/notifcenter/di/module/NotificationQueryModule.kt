@@ -59,4 +59,10 @@ import javax.inject.Named
     fun provideProductStockReminder(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_product_stock_reminder)
 
+    @Provides
+    @NotificationScope
+    @Named(NotificationQueriesConstant.SINGLE_NOTIFICATION_UPDATE)
+    fun provideSingleNotificationUpdate(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center_single)
+
 }

@@ -50,7 +50,7 @@ import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
 import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
 
-class NotificationUpdateFragment : BaseNotificationFragment(),
+open class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
         NotificationLongerTextDialog.LongerContentListener {
 
@@ -63,7 +63,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     private val notificationUpdateListener by lazy { context as NotificationUpdateListener }
     private val _adapter by lazy { adapter as NotificationUpdateAdapter }
 
-    private val filterAdapter by lazy {
+    val filterAdapter by lazy {
         NotificationUpdateFilterAdapter(
                 NotificationUpdateFilterSectionTypeFactoryImpl(),
                 this,
@@ -92,6 +92,14 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
                 container,
                 false
         )
+    }
+
+    /*
+    * notification id for buyer info consume
+    * the id comes from tokopedia://notif-center/{id}
+    * */
+    private val notificationId by lazy {
+        (activity as NotificationActivity).notificationId
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,6 +138,9 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             showToastMessageError(it)
         })
+        viewModel.singleNotification.observe(viewLifecycleOwner, Observer {
+            onSuccessInitiateData(it)
+        })
     }
 
     private fun initLoadPresenter() {
@@ -145,7 +156,18 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun loadData(page: Int) {
-        presenter.loadData(cursor, ::onSuccessInitiateData, onErrorInitiateData())
+        notificationId.let {
+            if (it.isNotEmpty()) {
+                lstFilter?.hide()
+                viewModel.getSingleNotification(it)
+            } else {
+                presenter.loadData(
+                        cursor,
+                        ::onSuccessInitiateData,
+                        onErrorInitiateData()
+                )
+            }
+        }
     }
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
@@ -193,7 +215,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
-    private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
+    open fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             filterAdapter.updateData(it)
         }
@@ -221,7 +243,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
-    override fun itemContainerClicked(notification: NotificationItemViewBean) {
+    override fun onItemStockHandlerClick(notification: NotificationItemViewBean) {
         //if product data only one, check product stock
         if (notification.products.isSingleItem()) {
             viewModel.isProductStockHandler(notification.notificationId)

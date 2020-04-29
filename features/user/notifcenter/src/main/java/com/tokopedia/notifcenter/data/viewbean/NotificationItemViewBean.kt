@@ -9,31 +9,31 @@ import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
-open class NotificationItemViewBean(
-        var notificationId: String = "",
-        var isRead: Boolean = false,
-        var iconUrl: String? = "",
-        var contentUrl: String = "",
-        var time: String = "",
-        var label: Int = 1,
-        var title: String = "",
-        var sectionTitle: String = "",
-        var body: String = "",
-        var bodyHtml: String = "",
-        var templateKey: String = "",
-        var appLink: String = "",
-        var hasShop: Boolean = false,
-        var typeLink: Int = 0,
-        var totalProduct: Int = 0,
-        var btnText: String = "",
-        var dataNotification: DataNotification = DataNotification(),
-        var products: List<ProductData> = emptyList(),
-        var isLongerContent: Boolean = false,
-        var isShowBottomSheet: Boolean = false,
-        var typeBottomSheet: Int = 0,
-        var options: NotificationOptions = NotificationOptions(),
-        var userInfo: UserInfo = UserInfo()
-) : Parcelable, Visitable<BaseNotificationTypeFactory> {
+class NotificationItemViewBean(
+        override var notificationId: String = "",
+        override var isRead: Boolean = false,
+        override var iconUrl: String? = "",
+        override var contentUrl: String = "",
+        override var time: String = "",
+        override var label: Int = 1,
+        override var title: String = "",
+        override var sectionTitle: String = "",
+        override var body: String = "",
+        override var bodyHtml: String = "",
+        override var templateKey: String = "",
+        override var appLink: String = "",
+        override var hasShop: Boolean = false,
+        override var typeLink: Int = 0,
+        override var totalProduct: Int = 0,
+        override var btnText: String = "",
+        override var dataNotification: DataNotification = DataNotification(),
+        override var products: List<ProductData> = emptyList(),
+        override var isLongerContent: Boolean = false,
+        override var isShowBottomSheet: Boolean = false,
+        override var typeBottomSheet: Int = 0,
+        override var options: NotificationOptions = NotificationOptions(),
+        override var userInfo: UserInfo = UserInfo()
+) : BaseNotificationItemViewBean(), Parcelable, Visitable<BaseNotificationTypeFactory> {
 
     override fun type(typeFactory: BaseNotificationTypeFactory): Int {
         return typeFactory.type(this)

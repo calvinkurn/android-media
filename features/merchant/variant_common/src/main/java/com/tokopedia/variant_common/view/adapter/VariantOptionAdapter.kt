@@ -90,7 +90,7 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].currentState == newList[newItemPosition].currentState
+            return oldList[oldItemPosition].currentState == newList[newItemPosition].currentState && oldList[oldItemPosition].flashSale == newList[newItemPosition].flashSale
         }
     }
 }

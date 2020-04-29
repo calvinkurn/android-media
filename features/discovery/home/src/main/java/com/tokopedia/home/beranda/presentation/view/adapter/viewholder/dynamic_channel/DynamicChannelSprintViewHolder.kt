@@ -14,14 +14,11 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.glide.loadImage
-import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.ProductCardFlashSaleView
@@ -34,10 +31,9 @@ import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelSprintViewHolder(sprintView: View,
                                      private val homeCategoryListener: HomeCategoryListener,
-                                     countDownListener: CountDownView.CountDownListener,
                                      private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
-                sprintView, homeCategoryListener, countDownListener
+                sprintView, homeCategoryListener
         ) {
 
     private var adapter: SprintAdapter? = null
@@ -76,12 +72,10 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         mappingGrid(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
-        val channel = element?.channel
-
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
-                if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
+                if (payload == DynamicChannelDataModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
                     channel?.let {
                         backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
                     }
@@ -89,7 +83,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             }
         }
 
-        channel?.let {
+        channel.let {
             mappingHeader(it)
             mappingGrid(it)
         }
@@ -191,7 +185,15 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                     discountPercentage = element.discount,
                     pdpViewCount = element.productViewCountFormatted,
                     stockBarLabel = element.label,
-                    stockBarPercentage = element.soldPercentage
+                    stockBarPercentage = element.soldPercentage,
+                    labelGroupList = element.labelGroup.map {
+                        ProductCardFlashSaleModel.LabelGroup(
+                                position = it.position,
+                                title = it.title,
+                                type = it.type
+                        )
+                    },
+                    isOutOfStock = element.isOutOfStock
             )
         }
     }

@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.EmptyDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.EmptyCardViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.SeeMorePdpViewHolder
@@ -16,8 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
  * @author by yoasfs on 2020-03-07
  */
 
-class FlashSaleCardViewTypeFactoryImpl(private val listener: FlashSaleCardListener,
-                                       private val channels: DynamicHomeChannel.Channels) :
+class FlashSaleCardViewTypeFactoryImpl(private val channels: DynamicHomeChannel.Channels) :
         BaseAdapterTypeFactory(),FlashSaleCardTypeFactory {
 
     override fun type(dataModel: EmptyDataModel): Int {
@@ -33,17 +31,20 @@ class FlashSaleCardViewTypeFactoryImpl(private val listener: FlashSaleCardListen
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        val viewHolder: AbstractViewHolder<*>
-        if (type == FlashSaleViewHolder.LAYOUT) {
-            viewHolder = FlashSaleViewHolder(parent, listener, channels)
-        } else if (type == SeeMorePdpViewHolder.LAYOUT) {
-            viewHolder = SeeMorePdpViewHolder(parent, listener, channels)
-        } else if (type == EmptyCardViewHolder.LAYOUT) {
-            viewHolder = EmptyCardViewHolder(parent, listener)
-        } else {
-            viewHolder = super.createViewHolder(parent, type)
+        return when (type) {
+            FlashSaleViewHolder.LAYOUT -> {
+                FlashSaleViewHolder(parent, channels)
+            }
+            SeeMorePdpViewHolder.LAYOUT -> {
+                SeeMorePdpViewHolder(parent, channels)
+            }
+            EmptyCardViewHolder.LAYOUT -> {
+                EmptyCardViewHolder(parent)
+            }
+            else -> {
+                super.createViewHolder(parent, type)
+            }
         }
-        return viewHolder
     }
 
 }

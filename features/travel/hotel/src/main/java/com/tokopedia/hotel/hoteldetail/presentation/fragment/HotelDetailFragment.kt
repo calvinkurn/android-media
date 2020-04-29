@@ -107,7 +107,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         HotelHomepageActivity.TYPE_PROPERTY)
                 isDirectPayment = it.getBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, true)
             }
-            isButtonEnabled = hotelHomepageModel.checkInDate.isNotEmpty()
+            isButtonEnabled = it.getBoolean(EXTRA_SHOW_ROOM, true)
         }
     }
 
@@ -554,6 +554,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         } else {
             widget_hotel_global_search.hide()
         }
+        if (!isButtonEnabled) widget_hotel_global_search.hide()
     }
 
     private fun openImagePreview(imageList: MutableList<String>, index: Int, imageViewTransitionFrom: ImageView?) {
@@ -607,11 +608,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val SAVED_SEARCH_PARAMETER = "SAVED_SEARCH_PARAMETER"
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
 
+        const val EXTRA_SHOW_ROOM = "EXTRA_SHOW_ROOM"
+
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
-                        adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean): HotelDetailFragment =
+                        adultCount: Int, destinationType: String, destinationName: String,
+                        isDirectPayment: Boolean, isShowRoom: Boolean): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -622,6 +626,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         putString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, destinationType)
                         putString(HotelDetailActivity.EXTRA_DESTINATION_NAME, destinationName)
                         putBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, isDirectPayment)
+                        putBoolean(EXTRA_SHOW_ROOM, isShowRoom)
                     }
                 }
 

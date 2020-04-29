@@ -37,6 +37,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         checkout_url
       }
       product_data {
+        stock
         product_id
         name
         url

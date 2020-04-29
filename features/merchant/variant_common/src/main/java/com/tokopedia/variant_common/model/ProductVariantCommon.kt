@@ -44,8 +44,22 @@ data class ProductVariantCommon(
         @Expose
         var children: List<VariantChildCommon> = listOf()
 ) {
+
+    fun isSelectedChildHasFlashSale(optionId: Int): Boolean {
+        var isFlashSale = false
+        for (child: VariantChildCommon in children) {
+            if (optionId == child.optionIds.firstOrNull()) {
+                if (child.isFlashSale && child.isBuyable) {
+                    isFlashSale = true
+                    break
+                }
+            }
+        }
+        return isFlashSale
+    }
+
     val hasChildren: Boolean
-        get() = with(children) {this.isNotEmpty() }
+        get() = with(children) { this.isNotEmpty() }
 
     val hasVariant: Boolean
         get() = with(variant) { this.isNotEmpty() }
@@ -56,6 +70,19 @@ data class ProductVariantCommon(
         } else {
             null
         }
+
+    fun autoSelectedOptionIds(): List<Int> {
+        val listOfOptionAutoSelectedId = children.filter {
+            it.isBuyable
+        }
+
+        //If there is only 1 child is available , then auto selected
+        return if (listOfOptionAutoSelectedId.size == 1) {
+            listOfOptionAutoSelectedId.firstOrNull()?.optionIds ?: listOf()
+        } else {
+            listOf()
+        }
+    }
 
     fun getVariant(selectedVariantId: String?): VariantChildCommon? {
         if (selectedVariantId.isNullOrEmpty()) {

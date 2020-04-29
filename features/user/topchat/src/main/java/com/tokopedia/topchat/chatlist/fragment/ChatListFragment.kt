@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -128,8 +129,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 true
             }
             R.id.menu_chat_setting -> {
-                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
-                startActivity(intent)
+                if (GlobalConfig.isSellerApp()) {
+                    context?.let {
+                        RouteManager.route(it, ApplinkConstInternalGlobal.MANAGE_NOTIFICATION)
+                    }
+                } else {
+                    val intent = ChatSettingActivity.getIntent(context, isTabSeller())
+                    startActivity(intent)
+                }
                 true
             }
             R.id.menu_chat_search -> {
@@ -210,7 +217,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> adapter?.deleteItem(itemPositionLongClicked)
+                is Success -> {
+                    adapter?.deleteItem(itemPositionLongClicked)
+                    decreaseNotificationCounter()
+                }
                 is Fail -> view?.let {
                     Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
@@ -226,15 +236,11 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 return
             } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
                 return
-            } else if (chatItemListViewModel.hasBeenUpdated(newChat)) {
-                return
             }
 
-            val existingThread = adapter.list.find {
-                it is ItemChatListPojo && it.msgId == newChat.messageId
+            val index = adapter.list.indexOfFirst { chat ->
+                return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
             }
-
-            val index = adapter.list.indexOf(existingThread)
 
             updateItemOnIndex(index, newChat)
         }
@@ -246,7 +252,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD
     ) {
         adapter?.let { adapter ->
-            chatItemListViewModel.updateLastReply(newChat)
             when {
                 //not found on list
                 index == -1 -> {
@@ -257,6 +262,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     val item = ItemChatListPojo(newChat.messageId, attributes, "")
                     adapter.list.add(0, item)
                     adapter.notifyItemInserted(0)
+                    increaseNotificationCounter()
                     animateWhenOnTop()
                 }
                 //found on list, not the first
@@ -285,8 +291,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             if (index >= adapter.list.size) return
             adapter.list[index].apply {
                 if (this is ItemChatListPojo) {
+                    if (
+                            attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
+                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                    ) {
+                        increaseNotificationCounter()
+                    }
                     attributes?.lastReplyMessage = newChat.message
                     attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
+                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
                     attributes?.readStatus = readStatus
                     attributes?.lastReplyTimeStr = newChat.time
                 }

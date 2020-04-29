@@ -13,19 +13,26 @@
 
     <dimen name="product_card_text_view_product_name_margin_top">2dp</dimen>
     <dimen name="product_card_text_view_product_name_gone_margin_top">0dp</dimen>
+    <dimen name="product_card_text_view_product_name_gone_margin_bottom">0dp</dimen>
     <dimen name="product_card_text_view_product_name_height">36dp</dimen>
+    <dimen name="product_card_flashsale_text_view_product_name_margin_bottom">4dp</dimen>
 
     <dimen name="product_card_label_discount_margin_top">4dp</dimen>
     <dimen name="product_card_label_discount_height">20dp</dimen>
+    <dimen name="product_card_flashsale_label_discount_margin_bottom">4dp</dimen>
+    <dimen name="product_card_flashsale_label_discount_gone_margin_top">0dp</dimen>
 
     <dimen name="product_card_text_view_slashed_price_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_slashed_price_height">20dp</dimen>
+    <dimen name="product_card_flashsale_text_view_slashed_price_margin_bottom">4dp</dimen>
 
     <dimen name="product_card_label_price_margin_top">4dp</dimen>
     <dimen name="product_card_label_price_height">20dp</dimen>
 
     <dimen name="product_card_text_view_price_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_price_height">20dp</dimen>
+    <dimen name="product_card_flashsale_text_view_price_margin_bottom">8dp</dimen>
+    <dimen name="product_card_flashsale_text_view_price_gone_margin_bottom">0dp</dimen>
 
     <dimen name="product_card_shop_badge_margin_top">5dp</dimen>
     <dimen name="product_card_shop_badge_size">16dp</dimen>
@@ -62,11 +69,11 @@
 
     <dimen name="product_card_flashsale_pdpcount_height">16dp</dimen>
     <dimen name="product_card_flashsale_pdpcount_margintop">8dp</dimen>
+    <dimen name="product_card_flashsale_pdpcount_marginbottom">2dp</dimen>
 
     <dimen name="product_card_flashsale_progressbar_height">4dp</dimen>
-    <dimen name="product_card_flashsale_progressbar_margintop">8dp</dimen>
+    <dimen name="product_card_flashsale_progressbar_marginbottom">2dp</dimen>
 
     <dimen name="product_card_flashsale_label_height">16dp</dimen>
-    <dimen name="product_card_flashsale_label_margintop">2dp</dimen>
 
 </resources>

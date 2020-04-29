@@ -33,10 +33,17 @@ dependencies {
     } else {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(project.ext.debugToolsDependencies.blockCanary)
+    } else {
+        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+    }
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -63,7 +70,7 @@ dependencies {
 project.ext {
     artifactId = 'developer-options'
     groupId = 'com.tokopedia.common'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="developer_options-release"
 }
 

@@ -9,5 +9,6 @@
     <string name="product_card_module_text_pre_order">PO</string>
     <string name="product_card_module_text_wholesale">Grosir</string>
     <string name="product_card_out_of_stock">Stok Habis</string>
+    <string name="home_flashsale_card_ad">Ad</string>
 
 </resources>

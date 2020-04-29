@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -17,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -45,13 +45,15 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
-import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -118,10 +120,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
-
-    private val shopHomeAdapter by lazy {
-        adapter as ShopHomeAdapter
-    }
+    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private val shopHomeAdapter: ShopHomeAdapter
+        get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
         ShopHomeAdapterTypeFactory(this, this, this)
@@ -132,6 +133,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -140,10 +142,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecyclerView(view)?.apply {
-            layoutManager = recyclerViewLayoutManager
-        }
         getRecyclerView(view)?.let {
+            it.clearOnScrollListeners()
+            it.layoutManager = staggeredGridLayoutManager
+            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
+            it.addOnScrollListener(endlessRecyclerViewScrollListener)
             val animator = it.itemAnimator
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
@@ -195,6 +198,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
+                    stopPerformanceMonitor()
                 }
             }
         })
@@ -206,6 +210,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     onSuccessGetProductListData(it.data.first, it.data.second)
                 }
             }
+            stopPerformanceMonitor()
         })
 
         viewModel?.checkWishlistData?.observe(this, Observer {
@@ -240,16 +245,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         view?.let { view ->
             NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
         }
+        trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
+    }
+
+    private fun trackClickAddToCart(
+            dataModelAtc: DataModel?,
+            shopHomeProductViewModel: ShopHomeProductViewModel?,
+            parentPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
         shopPageHomeTracking.addToCart(
                 isOwner,
-                dataModelAtc.cartId.toString(),
+                dataModelAtc?.cartId ?: "",
                 shopAttribution,
                 isLogin,
                 shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 shopHomeProductViewModel?.name ?: "",
                 shopHomeProductViewModel?.id ?: "",
                 shopHomeProductViewModel?.displayedPrice ?: "",
-                dataModelAtc.quantity,
+                dataModelAtc?.quantity ?: 1,
                 shopName,
                 parentPosition + 1,
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
@@ -308,14 +322,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun getAdapterTypeFactory() = shopHomeAdapterTypeFactory
 
-    private val gridLayoutManager: StaggeredGridLayoutManager by lazy {
-        StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-    }
-
-    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return gridLayoutManager
-    }
-
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
@@ -331,7 +337,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : DataEndlessScrollListener(recyclerViewLayoutManager, shopHomeAdapter) {
+        return object : DataEndlessScrollListener(staggeredGridLayoutManager, shopHomeAdapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 shopHomeAdapter.showLoading()
                 loadNextData(page)
@@ -623,7 +629,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
         shopPageHomeTracking.clickCta(
                 layoutId = shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                widgetName = shopHomeCarouselProductUiModel?.name.toString(),
+                widgetName = shopHomeCarouselProductUiModel?.header?.title.toString(),
                 widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
                 appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
                 shopId = shopId,
@@ -673,6 +679,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
             )
         } else {
+            trackClickAddToCart(
+                    null,
+                    shopHomeProductViewModel,
+                    parentPosition,
+                    shopHomeCarousellProductUiModel
+            )
             redirectToLoginPage()
         }
     }
@@ -696,6 +708,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            threeDotsClickShopProductViewModel?.let {
+                trackClickWishlist(threeDotsClickShopCarouselProductUiModel, it, true)
+            }
             redirectToLoginPage()
         } else {
             handleWishlistActionForLoggedInUser(productCardOptionsModel)
@@ -736,6 +751,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         }
     }
+
+    private fun stopPerformanceMonitor() {
+        (activity as? ShopPageActivity)?.stopShopHomeTabPerformanceMonitoring()
+    }
+
 
     fun clearCache() {
         viewModel?.clearCache()

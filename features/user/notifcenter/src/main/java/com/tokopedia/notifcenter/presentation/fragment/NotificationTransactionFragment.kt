@@ -89,6 +89,11 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getInfoStatusNotification()
+    }
+
     override fun updateFilter(filter: HashMap<String, Int>) {
         fetchUpdateFilter(filter)
     }
@@ -102,9 +107,6 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         viewModel.errorMessage.observe(viewLifecycleOwner, onViewError())
 
         viewModel.infoNotification.observe(viewLifecycleOwner, Observer {
-            if (NotificationMapper.isHasShop(it)) {
-                _adapter.addElement(sellerMenu())
-            }
             _adapter.updateValue(it.notifications)
         })
 
@@ -138,12 +140,6 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        fetchUpdateFilter(hashMapOf())
-        loadInitialData()
-    }
-
     private fun getNotification(position: String) {
         viewModel.setLastNotificationId(position)
     }
@@ -162,8 +158,17 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
 
     override fun loadData(page: Int) {
         swipeRefresh?.isRefreshing = false
+
+        // adding a static buyer notification
         renderList(buyerMenu(), false)
+
+        // adding a static seller notification if user has shop
+        if (userSession.hasShop()) {
+            _adapter.addElement(sellerMenu())
+        }
+
         viewModel.getInfoStatusNotification()
+        viewModel.getNotificationFilter()
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -236,7 +241,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     override fun bottomFilterView(): BottomActionView? = view?.findViewById(R.id.btnFilter)
-    override fun itemContainerClicked(notification: NotificationItemViewBean) {}
+    override fun onItemStockHandlerClick(notification: NotificationItemViewBean) {}
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit
