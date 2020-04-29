@@ -178,7 +178,6 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 }
 
                 // Setup ticker
-                ticker_smart_bills.tickerTitle = "test"
                 ticker_smart_bills.setHtmlDescription(getString(R.string.smart_bills_ticker))
                 ticker_smart_bills.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -279,8 +278,9 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 }
             }
 
-            viewModel.runMultiCheckout(viewModel.createMultiCheckoutParams(adapter.checkedDataList),
-                    userSession.userId)
+            viewModel.runMultiCheckout(
+                    viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
+            )
         }
     }
 

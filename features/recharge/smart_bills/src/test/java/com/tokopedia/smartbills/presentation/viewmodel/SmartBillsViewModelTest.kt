@@ -11,6 +11,7 @@ import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -35,6 +36,9 @@ class SmartBillsViewModelTest {
     @MockK
     lateinit var smartBillsRepository: SmartBillsRepository
 
+    @MockK
+    lateinit var userSession: UserSessionInterface
+
     lateinit var smartBillsViewModel: SmartBillsViewModel
 
     @Before
@@ -47,6 +51,9 @@ class SmartBillsViewModelTest {
 
         smartBillsViewModel =
                 SmartBillsViewModel(graphqlRepository, smartBillsRepository, SmartBillsTestDispatchersProvider())
+
+        coEvery { userSession.userId } returns "0123456"
+        coEvery { userSession.deviceId } returns "android-3.70"
     }
 
     @Test
@@ -154,9 +161,9 @@ class SmartBillsViewModelTest {
         successResponseAttributes.redirectUrl = "https://www.tokopedia.com"
         successResponseAttributes.queryString = "test_query_string"
         val mockMultiCheckoutResponse = RechargeMultiCheckoutResponse("test", "0123456789", successResponseAttributes)
-        coEvery { smartBillsRepository.postMultiCheckout(any(), any()) } returns mockMultiCheckoutResponse
+        coEvery { smartBillsRepository.postMultiCheckout(any()) } returns mockMultiCheckoutResponse
 
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), "0123456")
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
         val actualData = smartBillsViewModel.multiCheckout.value
         assert(actualData is Success)
         val multiCheckoutResponse = (actualData as Success).data
@@ -174,9 +181,9 @@ class SmartBillsViewModelTest {
         errorResponseAttributes.allSuccess = false
         errorResponseAttributes.errors = listOf(RechargeMultiCheckoutResponse.Error(0, 1, "error"))
         val mockMultiCheckoutResponse = RechargeMultiCheckoutResponse("test", "0123456789", errorResponseAttributes)
-        coEvery { smartBillsRepository.postMultiCheckout(any(), any()) } returns mockMultiCheckoutResponse
+        coEvery { smartBillsRepository.postMultiCheckout(any()) } returns mockMultiCheckoutResponse
 
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), "0123456")
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
         val actualData = smartBillsViewModel.multiCheckout.value
         assert(actualData is Success)
         val multiCheckoutResponse = (actualData as Success).data
@@ -194,9 +201,9 @@ class SmartBillsViewModelTest {
 
     @Test
     fun runMultiCheckout_Fail() {
-        coEvery { smartBillsRepository.postMultiCheckout(any(), any()) } throws MessageErrorException("error")
+        coEvery { smartBillsRepository.postMultiCheckout(any()) } throws MessageErrorException("error")
 
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), "0123456")
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
         val actualData = smartBillsViewModel.multiCheckout.value
         assert(actualData is Fail)
         assertEquals((actualData as Fail).throwable.message, "error")
@@ -204,7 +211,7 @@ class SmartBillsViewModelTest {
 
     @Test
     fun runMultiCheckout_Fail_NullRequest() {
-        smartBillsViewModel.runMultiCheckout(null, "0123456")
+        smartBillsViewModel.runMultiCheckout(null)
         val actualData = smartBillsViewModel.multiCheckout.value
         assert(actualData is Fail)
     }
@@ -230,7 +237,7 @@ class SmartBillsViewModelTest {
     @Test
     fun createMultiCheckoutParams_Success() {
         val bills = listOf(RechargeBills(0, 1, checkoutFields = listOf(checkoutField)))
-        val actual = smartBillsViewModel.createMultiCheckoutParams(bills)
+        val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         assertNotNull(actual)
         actual?.run {
             val items = actual.attributes.items
@@ -247,7 +254,7 @@ class SmartBillsViewModelTest {
     @Test
     fun createMultiCheckoutParams_Fail() {
         val bills = listOf(RechargeBills(productID = 1, checkoutFields = listOf(checkoutField)))
-        val actual = smartBillsViewModel.createMultiCheckoutParams(bills)
+        val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         assertNull(actual)
     }
 }

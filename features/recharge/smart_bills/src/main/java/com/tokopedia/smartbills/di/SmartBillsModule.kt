@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common_digital.common.constant.DigitalUrl
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -105,7 +106,7 @@ class SmartBillsModule {
     }
 
     companion object {
-//        const val BASE_URL = "https://pulsa-api.tokopedia.com/"
-        const val BASE_URL = "https://pulsa-api-staging.tokopedia.com/"
+        var BASE_URL = "https://pulsa-api-staging.tokopedia.com/"
+//        var BASE_URL = DigitalUrl.BASE_URL
     }
 }

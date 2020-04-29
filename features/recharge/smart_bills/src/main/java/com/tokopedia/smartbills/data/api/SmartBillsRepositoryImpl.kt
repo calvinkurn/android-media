@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 class SmartBillsRepositoryImpl @Inject constructor(private val smartBillsApi: SmartBillsApi): SmartBillsRepository {
 
-    override suspend fun postMultiCheckout(request: MultiCheckoutRequest,
-                                           idempotencyKey: String): RechargeMultiCheckoutResponse {
+    override suspend fun postMultiCheckout(request: MultiCheckoutRequest): RechargeMultiCheckoutResponse {
+        val idempotencyKey = request.attributes.identifier.userId?.generateRechargeCheckoutToken() ?: ""
         val response = smartBillsApi.postMultiCheckout(DataRequest(request), idempotencyKey)
         if (response.isSuccessful) {
             return response.body()!!.data
@@ -21,6 +21,6 @@ class SmartBillsRepositoryImpl @Inject constructor(private val smartBillsApi: Sm
     }
 
     companion object {
-        const val ERROR_DEFAULT = "Terjadi Kesalahan, silakan ulang beberapa saat lagi"
+        const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulang beberapa saat lagi"
     }
 }

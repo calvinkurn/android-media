@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -17,6 +18,7 @@ import com.tokopedia.smartbills.util.SmartBillsDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -76,11 +78,11 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun runMultiCheckout(request: MultiCheckoutRequest?, userId: String) {
+    fun runMultiCheckout(request: MultiCheckoutRequest?) {
         if (request != null) {
             launchCatchError(block = {
                 val data = withContext(dispatcher.IO) {
-                    smartBillsRepository.postMultiCheckout(request, userId.generateRechargeCheckoutToken())
+                    smartBillsRepository.postMultiCheckout(request)
                 }
 
                 mutableMultiCheckout.postValue(Success(data))
@@ -89,7 +91,7 @@ class SmartBillsViewModel @Inject constructor(
             }
         } else {
             mutableMultiCheckout.postValue(
-                    Fail(MessageErrorException("Terjadi kesalahan pada pemrosesan data"))
+                Fail(MessageErrorException("Terjadi kesalahan pada pemrosesan data"))
             )
         }
     }
@@ -102,13 +104,21 @@ class SmartBillsViewModel @Inject constructor(
         return mapOf(PARAM_MONTH to month, PARAM_YEAR to year)
     }
 
-    fun createMultiCheckoutParams(bills: List<RechargeBills>): MultiCheckoutRequest? {
+    fun createMultiCheckoutParams(bills: List<RechargeBills>, userSession: UserSessionInterface): MultiCheckoutRequest? {
         val validBills = bills.filter { it.index >= 0 }
         return if (validBills.isNotEmpty()) {
             val requestData = validBills.map {
                 MultiCheckoutRequest.MultiCheckoutRequestItem(it.index, it.productID, it.checkoutFields, "")
             }
-            MultiCheckoutRequest(MultiCheckoutRequest.MultiCheckoutRequestAttributes(requestData))
+
+            val requestBodyIdentifier = RequestBodyIdentifier()
+            requestBodyIdentifier.deviceToken = userSession.deviceId
+            requestBodyIdentifier.userId = userSession.userId
+            requestBodyIdentifier.osType = DEFAULT_OS_TYPE
+
+            MultiCheckoutRequest(
+                    MultiCheckoutRequest.MultiCheckoutRequestAttributes(requestBodyIdentifier, requestData)
+            )
         } else null
     }
 
@@ -116,5 +126,7 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_LIMIT = "limit"
         const val PARAM_MONTH = "month"
         const val PARAM_YEAR = "year"
+
+        const val DEFAULT_OS_TYPE = "1"
     }
 }
