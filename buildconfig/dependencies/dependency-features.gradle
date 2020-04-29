@@ -126,6 +126,7 @@ ext {
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
             sellerHome                      : ":features:merchant:seller_home",
+            sellerMigrationCommon           : ":features:merchant:seller_migration_common",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
             shopOpen                        : ":features:merchant:shop_open",

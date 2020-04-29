@@ -3,8 +3,10 @@ package com.tokopedia.seller_migration_common.presentation.widget
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
 class SellerMigrationBottomsheet(private val sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : BottomSheetUnify() {
 
