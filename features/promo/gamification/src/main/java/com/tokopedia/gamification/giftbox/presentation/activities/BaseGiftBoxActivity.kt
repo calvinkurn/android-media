@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxActivityComponent
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -26,10 +26,9 @@ abstract class BaseGiftBoxActivity : AppCompatActivity() {
         setContentView(getLayout())
 
         val component = DaggerGiftBoxActivityComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .activityContextModule(ActivityContextModule(this))
                 .build()
         component.inject(this)
-
 
         if (savedInstanceState == null) {
             checkLoggedIn()

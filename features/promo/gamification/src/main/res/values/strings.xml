@@ -43,11 +43,6 @@
     <string name="gf_crack_token_response_error">Terjadi kendala pada server,  \nsilakan coba lagi ya</string>
     <string name="gf_placeholder_text">+%s</string>
 
-    <string name="path_gamification">/gamification</string>
-    <string name="path_gamification2">/gamification2</string>
-    <string name="path_daily_gift">/gamification_gift_daily</string>
-    <string name="path_tap_tap_gift">/taptapgift</string>
-
     <string name="gami_palai_kupon_ovo_points"><![CDATA[Palai Kupon & Ovo Points]]></string>
     <string name="gami_gift_box_toolbar_title">Kotak Kejutan</string>
 

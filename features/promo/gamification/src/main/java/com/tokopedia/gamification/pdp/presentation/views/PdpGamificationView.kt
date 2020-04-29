@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.cracktoken.fragment.CrackTokenFragment
+import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
@@ -61,7 +62,7 @@ class PdpGamificationView : FrameLayout {
     lateinit var viewModel: PdpDialogViewModel
     var listener: GamiPdpRecommendationListener? = null
 
-    fun getLayout() = R.layout.dialog_pdp_gamification
+    fun getLayout() = com.tokopedia.gamification.R.layout.dialog_pdp_gamification
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         setupUi()
@@ -132,6 +133,7 @@ class PdpGamificationView : FrameLayout {
     private fun injectComponents() {
         val component = DaggerPdpComponent.builder()
                 .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+                .activityContextModule(ActivityContextModule(context))
                 .build()
         component.inject(this)
 
