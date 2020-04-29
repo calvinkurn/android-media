@@ -449,7 +449,10 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     private fun validateSearchPassData(flightSearchData: FlightSearchPassDataModel): Boolean {
         var isValid = true
 
-        if (flightSearchData.departureAirport.cityCode.isNotEmpty() && flightSearchData.arrivalAirport.cityCode.isNotEmpty() &&
+        if (flightSearchData.departureAirport.cityCode != null &&
+                flightSearchData.departureAirport.cityCode.isNotEmpty() &&
+                flightSearchData.arrivalAirport.cityCode != null &&
+                flightSearchData.arrivalAirport.cityCode.isNotEmpty() &&
                 flightSearchData.departureAirport.cityCode == flightSearchData.arrivalAirport.cityCode) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
@@ -463,10 +466,16 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 flightSearchData.arrivalAirport.cityAirports.contains(flightSearchData.departureAirport.airportCode)) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
-        } else if (flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode) {
+        } else if (flightSearchData.departureAirport.airportCode != null &&
+                flightSearchData.departureAirport.airportCode.isNotEmpty() &&
+                flightSearchData.arrivalAirport.airportCode != null &&
+                flightSearchData.arrivalAirport.airportCode.isNotEmpty() &&
+                flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
-        } else if (flightSearchData.departureAirport.cityName.isNotEmpty() &&
+        } else if (flightSearchData.departureAirport.cityName != null &&
+                flightSearchData.departureAirport.cityName.isNotEmpty() &&
+                flightSearchData.arrivalAirport.cityName != null &&
                 flightSearchData.arrivalAirport.cityName.isNotEmpty() &&
                 flightSearchData.departureAirport.cityName == flightSearchData.arrivalAirport.cityName) {
             isValid = false

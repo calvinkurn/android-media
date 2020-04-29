@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
@@ -173,14 +174,14 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     }
 
     private fun showSeeAllResultView() {
-        adapter.addElement(FlightSearchSeeAllResultModel(flightSearchReturnViewModel
-                .priceModel.departurePrice.adult, false))
+        adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
+                flightSearchReturnViewModel.priceModel.departurePrice.adultNumeric, false), false))
         flightSearchReturnViewModel.isViewOnlyBestPairing = true
     }
 
     private fun showSeeBestPairingResultView() {
-        adapter.addElement(FlightSearchSeeAllResultModel(flightSearchReturnViewModel
-                .priceModel.departurePrice.adultCombo, true))
+        adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
+                flightSearchReturnViewModel.priceModel.departurePrice.adultNumericCombo, false), true))
         flightSearchReturnViewModel.isViewOnlyBestPairing = false
     }
 
