@@ -10,7 +10,7 @@ mutation WebHookPushNotification(
     notifier_sendWebhookPushNotification(
         trans_id: $trans_id,
         user_trans_id: $user_trans_id,
-        recipient_id: $$recipient_id,
+        recipient_id: $recipient_id,
         status: $status,
         shop_id: $shop_id,
         blast_id: $blast_id,
