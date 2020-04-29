@@ -26,6 +26,7 @@ import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by jegul on 02/03/20
@@ -45,6 +46,9 @@ class ProductSheetView(
     private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
 
     private val globalError: GlobalError = view.findViewById(R.id.global_error_product)
+
+    private val clProductEmpty: ConstraintLayout = view.findViewById(R.id.cl_product_empty)
+    private val btnProductEmpty: UnifyButton = view.findViewById(R.id.btn_action_product_empty)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: ProductLineUiModel) {
@@ -160,12 +164,10 @@ class ProductSheetView(
 
     internal fun showEmpty(partnerId: Long) {
         showContent(false)
+        globalError.gone()
+        clProductEmpty.visible()
 
-        globalError.setType(GlobalError.PAGE_NOT_FOUND)
-        globalError.errorTitle.text = view.context.getString(R.string.play_product_empty_title)
-        globalError.errorDescription.text = view.context.getString(R.string.play_product_empty_desc)
-        globalError.errorAction.text = view.context.getString(R.string.play_product_empty_action)
-        globalError.setActionClickListener {
+        btnProductEmpty.setOnClickListener {
             listener.onEmptyButtonClicked(partnerId)
         }
     }
@@ -183,6 +185,7 @@ class ProductSheetView(
             rvVoucherList.visible()
 
             globalError.gone()
+            clProductEmpty.gone()
         } else {
             rvProductList.gone()
             rvVoucherList.gone()
