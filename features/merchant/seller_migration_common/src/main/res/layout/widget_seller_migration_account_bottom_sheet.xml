@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -50,7 +50,6 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_alignTop="@id/account_seller_migration_set_stock_image"
-        android:layout_alignBottom="@id/account_seller_migration_set_stock_image"
         android:layout_toRightOf="@id/account_seller_migration_set_stock_image"
         android:layout_toEndOf="@id/account_seller_migration_set_stock_image"
         android:layout_alignParentEnd="true"
@@ -77,7 +76,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/account_seller_migration_chat_image"
-        android:layout_alignBottom="@id/account_seller_migration_chat_image"
         android:layout_toRightOf="@id/account_seller_migration_chat_image"
         android:layout_toEndOf="@id/account_seller_migration_chat_image"
         app:typographyType="body_2"
@@ -102,7 +100,6 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_alignTop="@id/account_seller_migration_promo_image"
-        android:layout_alignBottom="@id/account_seller_migration_promo_image"
         android:layout_toRightOf="@id/account_seller_migration_promo_image"
         android:layout_toEndOf="@id/account_seller_migration_promo_image"
         app:typographyType="body_2"
@@ -122,22 +119,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/accountSellerMigrationBottomSheetButton"
+    <include layout="@layout/partial_seller_migration_footer"
+        android:layout_below="@id/account_seller_warning_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:text="@string/account_seller_migration_bottomsheet_button"
-        android:layout_below="@id/account_seller_warning_card" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/accountSellerMigrationBottomSheetFooter"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl3"
-        android:layout_below="@id/accountSellerMigrationBottomSheetButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

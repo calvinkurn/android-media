@@ -1,12 +1,15 @@
 package com.tokopedia.seller_migration_common.presentation.widget
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_seller_migration_account_bottom_sheet.*
 
-class SellerMigrationAccountBottomSheet(private val sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : SellerMigrationBottomSheet() {
+class SellerMigrationAccountBottomSheet(sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : SellerMigrationBottomSheet(sellerMigrationBottomSheetListener) {
 
     companion object {
         const val ACCOUNT_SELLER_MIGRATION_IMAGE_LINK = "https://ecs7.tokopedia.net/other/seller_migration_account.png"
@@ -18,14 +21,13 @@ class SellerMigrationAccountBottomSheet(private val sellerMigrationBottomSheetLi
         }
     }
 
-    override fun initView() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
+
+    private fun initView() {
         accountSellerMigrationBottomsheetImage.loadImage(ACCOUNT_SELLER_MIGRATION_IMAGE_LINK)
-        accountSellerMigrationBottomSheetButton.setOnClickListener {
-            sellerMigrationBottomSheetListener.onClickGoToSellerApp()
-        }
-        accountSellerMigrationBottomSheetFooter.setOnClickListener {
-            sellerMigrationBottomSheetListener.onClickBottomSheetFooter()
-        }
     }
 
 }
