@@ -643,12 +643,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         activity?.finish()
                         return
                     }
-                    val shipmentInputModel =
-                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
-                    val descriptionInputModel =
-                            data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
-                    val variantInputModel =
-                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
+                    val descriptionInputModel = data.getParcelableExtra(EXTRA_DESCRIPTION_INPUT) ?: DescriptionInputModel()
+                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
                     submitInput(shipmentInputModel, descriptionInputModel, variantInputModel)
                 }
             }
