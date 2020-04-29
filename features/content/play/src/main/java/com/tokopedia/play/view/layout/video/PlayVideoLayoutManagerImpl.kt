@@ -16,12 +16,12 @@ class PlayVideoLayoutManagerImpl(
         viewInitializer: PlayVideoViewInitializer
 ) : PlayVideoLayoutManager {
 
-    private val manager = if (orientation.isLandscape) PlayVideoPortraitManager(
+    private val manager = if (orientation.isLandscape) PlayVideoLandscapeManager(
+            container = container,
+            viewInitializer = viewInitializer
+    ) else PlayVideoPortraitManager(
             container = container,
             videoOrientation = videoOrientation,
-            viewInitializer = viewInitializer
-    ) else PlayVideoLandscapeManager(
-            container = container,
             viewInitializer = viewInitializer
     )
 
