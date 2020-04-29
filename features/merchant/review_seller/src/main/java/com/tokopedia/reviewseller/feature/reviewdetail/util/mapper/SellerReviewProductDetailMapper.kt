@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
+import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.sortfilter.SortFilterItem
@@ -21,33 +22,35 @@ object SellerReviewProductDetailMapper {
                                           userSession: UserSessionInterface): ProductFeedbackDetailUiModel {
         return ProductFeedbackDetailUiModel().apply {
             productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct, userSession)
-            topicList = mapToTopicUiModel(productFeedbackDataPerProduct)
+            page = productFeedbackDataPerProduct.page ?: 0
+            hasNext = productFeedbackDataPerProduct.hasNext
         }
     }
 
-    fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ProductReviewFilterUiModel {
+    fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData, oldData: List<RatingBarUiModel>): ProductReviewFilterUiModel {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
         val totalAggregatRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
 
-        productFeedbackDataPerProduct.aggregatedRating.map {
+        productFeedbackDataPerProduct.aggregatedRating.mapIndexed { index, it ->
             ratingBarListUiModel.add(
                     RatingBarUiModel(
                             ratingProgressBar = if (totalAggregatRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregatRating.toFloat()) * 100,
                             ratingLabel = it.rating,
-                            ratingCount = it.ratingCount
+                            ratingCount = it.ratingCount,
+                            ratingIsChecked = oldData.getOrNull(index)?.ratingIsChecked ?: false
                     )
             )
         }
         return ProductReviewFilterUiModel(ratingBarListUiModel)
     }
 
-    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): TopicUiModel {
-        val topicListUiModel = TopicUiModel(countFeedback = productFeedbackDataPerProduct.list.size)
+    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData): TopicUiModel {
+        val topicListUiModel = TopicUiModel(countFeedback = productFeedbackDataPerProduct.reviewCount)
 
         productFeedbackDataPerProduct.topics.map {
             topicListUiModel.apply {
-                sortFilterItemList = mapToItemSortFilter(productFeedbackDataPerProduct)
-                countFeedback = productFeedbackDataPerProduct.list.size
+                sortFilterItemList = mapToItemSortFilter(productFeedbackDataPerProduct.topics)
+                countFeedback = productFeedbackDataPerProduct.reviewCount
             }
         }
         return topicListUiModel
@@ -56,7 +59,6 @@ object SellerReviewProductDetailMapper {
     fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
                              userSession: UserSessionInterface): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
-
         productFeedbackDataPerProduct.list.map {
             val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
             it.attachments.map { attachment ->
@@ -148,15 +150,16 @@ object SellerReviewProductDetailMapper {
     }
 
 
-    private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<Pair<SortFilterItem, Boolean>> {
-        val itemSortFilterList = ArrayList<Pair<SortFilterItem, Boolean>>()
-        val maxData = data.topics.take(4)
+    private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>): ArrayList<Triple<SortFilterItem, Boolean, Int>> {
+        val itemSortFilterList = ArrayList<Triple<SortFilterItem, Boolean, Int>>()
+        val maxData = data.take(4)
         maxData.map {
             val sortFilter = SortFilterItem(
                     title = it.formatted,
                     type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL) to ReviewSellerConstant.TOPIC_POPULAR_UNSELECTED
-            itemSortFilterList.add(sortFilter)
+                    size = ChipsUnify.SIZE_SMALL)
+
+            itemSortFilterList.add(Triple(sortFilter, ReviewSellerConstant.TOPIC_POPULAR_UNSELECTED, it.count))
         }
         return itemSortFilterList
     }

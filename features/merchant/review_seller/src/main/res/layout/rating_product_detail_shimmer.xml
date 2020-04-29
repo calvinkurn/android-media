@@ -142,29 +142,24 @@
         app:layout_constraintStart_toEndOf="@id/rectangleTopic2"
         app:layout_constraintTop_toBottomOf="@id/rectangle_topic_title" />
 
-    <LinearLayout
-        android:id="@+id/partialFeedbackDetail"
+    <include
+        android:id="@+id/partial_feedback_detail_shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        layout="@layout/partial_feedback_detail_shimmer"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rectangleTopic1"
-        android:orientation="vertical">
+        app:layout_constraintTop_toBottomOf="@+id/rectangleTopic1"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <include
-            layout="@layout/partial_feedback_detail_shimmer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/partial_feedback_detail_shimmer" />
-
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/partial_feedback_detail_shimmer" />
-
-    </LinearLayout>
+    <include
+        android:id="@+id/partial_feedback_detail_shimmer2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        layout="@layout/partial_feedback_detail_shimmer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/partial_feedback_detail_shimmer"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

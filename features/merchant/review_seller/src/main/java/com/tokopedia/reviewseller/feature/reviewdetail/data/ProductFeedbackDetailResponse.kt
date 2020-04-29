@@ -22,7 +22,9 @@ data class ProductFeedbackDetailResponse(
             @SerializedName("sortBy")
             val sortBy: String? = "",
             @SerializedName("topics")
-            val topics: List<Topic> = listOf()
+            val topics: List<Topic> = listOf(),
+            @SerializedName("reviewCount")
+            val reviewCount: Int = 0
     ) {
         data class FeedbackList(
                 @SerializedName("attachments")

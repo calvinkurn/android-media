@@ -43,4 +43,12 @@ class ReviewProductDetailModule {
     fun getProductFeedbackListDetail(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_feedback_list_detail)
     }
+
+    @ReviewDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(GQL_GET_PRODUCT_FEEDBACK_FILTER)
+    fun getProductFeedbackFilter(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_feedback_filter)
+    }
 }

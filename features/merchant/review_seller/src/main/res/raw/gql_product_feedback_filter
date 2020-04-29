@@ -1,21 +1,6 @@
 query get_product_feedback_detail($productID: Int!, $sortBy: String!, $filterBy:String!, $limit: Int!, $page: Int!) {
   productrevFeedbackDataPerProduct(productID: $productID, sortBy: $sortBy,
     filterBy: $filterBy, limit: $limit, page: $page) {
-      list {
-          feedbackID
-          rating
-          reviewText
-          reviewTime
-          autoReply
-          replyText
-          replyTime
-          attachments {
-            thumbnailURL
-            fullsizeURL
-          }
-          variantName
-          reviewerName
-      }
       topics {
           title
           count
@@ -25,11 +10,6 @@ query get_product_feedback_detail($productID: Int!, $sortBy: String!, $filterBy:
           rating
           ratingCount
       }
-      sortBy
-      filterBy
-      limit
-      page
-      hasNext
       reviewCount
     }
 }

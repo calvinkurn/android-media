@@ -7,9 +7,6 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReview
 data class ProductFeedbackDetailUiModel(
         var ratingBarList: List<RatingBarUiModel> = listOf(),
         var productFeedbackDetailList: List<FeedbackUiModel> = listOf(),
-        var topicList: TopicUiModel = TopicUiModel()
-): BaseSellerReviewDetail {
-    override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory?): Int {
-        TODO("Not yet implemented")
-    }
-}
+        var page: Int = 0,
+        var hasNext: Boolean = false
+)

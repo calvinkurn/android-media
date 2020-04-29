@@ -29,6 +29,7 @@
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:contentDescription="@string/rating_star_icon_content_description"
+        android:visibility="visible"
         app:layout_constraintDimensionRatio="H, 13:12"
         app:layout_constraintStart_toEndOf="@id/rating_checkbox"
         app:layout_constraintTop_toTopOf="parent"

@@ -48,40 +48,35 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
         return strReviewSpan
     }
 
-    private fun dataStaticItemSortFilter(sortFilterItemList: ArrayList<Pair<SortFilterItem, Boolean>>): ArrayList<SortFilterItem> {
+    private fun dataStaticItemSortFilter(sortFilterItemList: ArrayList<Triple<SortFilterItem, Boolean, Int>>): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()
 
-        itemSortFilterList.addAll(sortFilterItemList.map { SortFilterItem(title = it.first.title, type = sortFilterMapper(it.second), size = ChipsUnify.SIZE_SMALL) {
-            it.first.toggle()
-            fragmentListener.onChildTopicFilterClicked(it.first)
-        } })
+        itemSortFilterList.addAll(sortFilterItemList.map { SortFilterItem(title = it.first.title, type = sortFilterMapper(it.second, it.third), size = ChipsUnify.SIZE_SMALL) })
 
-//        itemSortFilterList.apply {
-//            add(SortFilterItem(
-//                    title = "Kategori (99)",
-//                    type = ChipsUnify.TYPE_NORMAL,
-//                    size = ChipsUnify.SIZE_SMALL)
-//            )
-//            add(SortFilterItem(
-//                    title = "Kemasan (105)",
-//                    type = ChipsUnify.TYPE_NORMAL,
-//                    size = ChipsUnify.SIZE_SMALL)
-//            )
-//            add(SortFilterItem(
-//                    title = "Harga (900)",
-//                    type = ChipsUnify.TYPE_NORMAL,
-//                    size = ChipsUnify.SIZE_SMALL)
-//            )
-//            add(SortFilterItem(
-//                    title = "Shipping (205)",
-//                    type = ChipsUnify.TYPE_NORMAL,
-//                    size = ChipsUnify.SIZE_SMALL)
-//            )
-//        }
+        itemSortFilterList.forEach {
+            it.listener = {
+                if (it.type != ChipsUnify.TYPE_DISABLE) {
+                    it.toggle()
+                    fragmentListener.onChildTopicFilterClicked(it)
+                }
+            }
+        }
 
         return itemSortFilterList
     }
 
-    private fun sortFilterMapper(isSelected: Boolean): String = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+    private fun sortFilterMapper(isSelected: Boolean, count: Int): String {
+        return when {
+            isSelected -> {
+                ChipsUnify.TYPE_SELECTED
+            }
+            count == 0 -> {
+                ChipsUnify.TYPE_DISABLE
+            }
+            else -> {
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+    }
 
 }
