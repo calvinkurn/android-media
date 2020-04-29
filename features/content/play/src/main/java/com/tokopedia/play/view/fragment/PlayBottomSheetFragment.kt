@@ -241,32 +241,39 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun observeBuyEvent() {
-        viewModel.observableAddToCart.observe(viewLifecycleOwner, EventObserver {
-            hideLoadingView()
-            if (it.isSuccess) {
-                playViewModel.updateBadgeCart()
-                when (it.action) {
-                    ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                    ProductAction.AddToCart -> sendVariantToaster(
-                            toasterType = Toaster.TYPE_NORMAL,
-                            message = getString(R.string.play_add_to_cart_message_success),
-                            actionText = getString(R.string.play_action_view),
-                            actionClickListener = View.OnClickListener {
-                                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                                PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
-                            }
-                    )
+        viewModel.observableAddToCart.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is PlayResult.Loading -> showLoadingView()
+                is PlayResult.Success -> {
+                    hideLoadingView()
+                    val data = it.data.getContentIfNotHandled() ?: return@Observer
+
+                    if (data.isSuccess) {
+                        playViewModel.updateBadgeCart()
+                        when (data.action) {
+                            ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                            ProductAction.AddToCart -> sendVariantToaster(
+                                    toasterType = Toaster.TYPE_NORMAL,
+                                    message = getString(R.string.play_add_to_cart_message_success),
+                                    actionText = getString(R.string.play_action_view),
+                                    actionClickListener = View.OnClickListener {
+                                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                                        PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
+                                    }
+                            )
+                        }
+                        if (data.bottomInsetsType == BottomInsetsType.VariantSheet) {
+                            closeVariantSheet()
+                        }
+                        PlayAnalytics.clickProductAction(trackingQueue, channelId, data.product, data.cartId, playViewModel.channelType, data.action, data.bottomInsetsType)
+                    }
+                    else {
+                        sendVariantToaster(
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = if (data.errorMessage.isNotEmpty() && data.errorMessage.isNotBlank()) data.errorMessage else generalErrorMessage
+                        )
+                    }
                 }
-                if (it.bottomInsetsType == BottomInsetsType.VariantSheet) {
-                    closeVariantSheet()
-                }
-                PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action, it.bottomInsetsType)
-            }
-            else {
-                sendVariantToaster(
-                        toasterType = Toaster.TYPE_ERROR,
-                        message = if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage
-                )
             }
         })
     }
@@ -413,7 +420,6 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun doActionProduct(product: ProductLineUiModel, productAction: ProductAction, type: BottomInsetsType) {
-        showLoadingView()
         viewModel.addToCart(product, action = productAction, type = type)
     }
 
