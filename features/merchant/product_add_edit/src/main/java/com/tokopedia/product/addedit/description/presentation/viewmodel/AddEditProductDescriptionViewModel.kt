@@ -11,13 +11,13 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
 import com.tokopedia.product.addedit.description.presentation.model.*
-import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,7 +28,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     var variantCountList: ArrayList<Int> = arrayListOf(0, 0)
@@ -62,8 +62,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoModel>>>()
-    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoModel>>> = MediatorLiveData()
+    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
+    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
 
     init {
         videoYoutube.addSource(_videoYoutubeNew) { pair ->
@@ -101,8 +101,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         })
     }
 
-    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoModel {
-        return typeRestResponseMap[YoutubeVideoModel::class.java]?.getData() as YoutubeVideoModel
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
     }
 
     private fun getIdYoutubeUrl(videoUrl: String): String? {
