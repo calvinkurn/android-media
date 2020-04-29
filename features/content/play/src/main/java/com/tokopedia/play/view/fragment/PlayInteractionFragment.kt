@@ -2,7 +2,6 @@ package com.tokopedia.play.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -60,6 +59,8 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
+import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
@@ -68,6 +69,7 @@ import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -89,7 +91,9 @@ import kotlin.coroutines.CoroutineContext
 class PlayInteractionFragment :
         BaseDaggerFragment(),
         PlayInteractionViewInitializer,
-        PlayMoreActionBottomSheet.Listener {
+        PlayMoreActionBottomSheet.Listener,
+        PlayFragmentContract
+{
 
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
@@ -148,16 +152,13 @@ class PlayInteractionFragment :
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
+    private val orientationListener: PlayOrientationListener
+        get() = requireParentFragment() as PlayOrientationListener
+
     private var systemUiVisibility: Int
         get() = requireActivity().window.decorView.systemUiVisibility
         set(value) {
             requireActivity().window.decorView.systemUiVisibility = value
-        }
-
-    private var requestedOrientation: Int
-        get() = requireActivity().requestedOrientation
-        set(value) {
-            requireActivity().requestedOrientation = value
         }
 
     /**
@@ -251,6 +252,10 @@ class PlayInteractionFragment :
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         }
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -831,11 +836,11 @@ class PlayInteractionFragment :
     }
 
     private fun enterFullscreen() {
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
     }
 
     private fun doLeaveRoom() {

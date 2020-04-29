@@ -30,10 +30,12 @@ import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -54,7 +56,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 06/03/20
  */
-class PlayBottomSheetFragment : BaseDaggerFragment() {
+class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -164,6 +166,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
         job.cancel()
     }
 
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return ::loadingDialog.isInitialized && loadingDialog.isVisible
+    }
+
     private fun observeProductSheetContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
             scope.launch {
@@ -235,32 +241,39 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
     }
 
     private fun observeBuyEvent() {
-        viewModel.observableAddToCart.observe(viewLifecycleOwner, EventObserver {
-            hideLoadingView()
-            if (it.isSuccess) {
-                playViewModel.updateBadgeCart()
-                when (it.action) {
-                    ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                    ProductAction.AddToCart -> sendVariantToaster(
-                            toasterType = Toaster.TYPE_NORMAL,
-                            message = getString(R.string.play_add_to_cart_message_success),
-                            actionText = getString(R.string.play_action_view),
-                            actionClickListener = View.OnClickListener {
-                                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                                PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
-                            }
-                    )
+        viewModel.observableAddToCart.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is PlayResult.Loading -> showLoadingView()
+                is PlayResult.Success -> {
+                    hideLoadingView()
+                    val data = it.data.getContentIfNotHandled() ?: return@Observer
+
+                    if (data.isSuccess) {
+                        playViewModel.updateBadgeCart()
+                        when (data.action) {
+                            ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                            ProductAction.AddToCart -> sendVariantToaster(
+                                    toasterType = Toaster.TYPE_NORMAL,
+                                    message = getString(R.string.play_add_to_cart_message_success),
+                                    actionText = getString(R.string.play_action_view),
+                                    actionClickListener = View.OnClickListener {
+                                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                                        PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
+                                    }
+                            )
+                        }
+                        if (data.bottomInsetsType == BottomInsetsType.VariantSheet) {
+                            closeVariantSheet()
+                        }
+                        PlayAnalytics.clickProductAction(trackingQueue, channelId, data.product, data.cartId, playViewModel.channelType, data.action, data.bottomInsetsType)
+                    }
+                    else {
+                        sendVariantToaster(
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = if (data.errorMessage.isNotEmpty() && data.errorMessage.isNotBlank()) data.errorMessage else generalErrorMessage
+                        )
+                    }
                 }
-                if (it.bottomInsetsType == BottomInsetsType.VariantSheet) {
-                    closeVariantSheet()
-                }
-                PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action, it.bottomInsetsType)
-            }
-            else {
-                sendVariantToaster(
-                        toasterType = Toaster.TYPE_ERROR,
-                        message = if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage
-                )
             }
         })
     }
@@ -407,7 +420,6 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
     }
 
     private fun doActionProduct(product: ProductLineUiModel, productAction: ProductAction, type: BottomInsetsType) {
-        showLoadingView()
         viewModel.addToCart(product, action = productAction, type = type)
     }
 

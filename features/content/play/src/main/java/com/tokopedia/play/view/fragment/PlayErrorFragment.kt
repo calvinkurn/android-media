@@ -22,6 +22,8 @@ import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +33,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-01-10.
  */
-class PlayErrorFragment: BaseDaggerFragment() {
+class PlayErrorFragment: BaseDaggerFragment(), PlayFragmentContract {
 
     companion object {
         fun newInstance(channelId: String?): PlayErrorFragment {
@@ -83,6 +85,10 @@ class PlayErrorFragment: BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeErrorChannel()
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return false
     }
 
     private fun initComponent(view: View) {

@@ -22,12 +22,14 @@ import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.ui.youtube.YouTubeComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManager
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManagerImpl
 import com.tokopedia.play.view.layout.video.PlayVideoViewInitializer
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
@@ -44,7 +46,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
+class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFragmentContract {
 
     companion object {
 
@@ -121,6 +123,10 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
         super.onDestroyView()
         layoutManager.onDestroy()
         job.cancel()
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return false
     }
 
     //region observe

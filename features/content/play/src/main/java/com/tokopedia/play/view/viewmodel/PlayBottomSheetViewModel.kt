@@ -33,13 +33,13 @@ class PlayBottomSheetViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider
 ) : PlayBaseViewModel(dispatchers.main) {
 
-    private val _observableAddToCart = MutableLiveData<Event<CartFeedbackUiModel>>()
+    private val _observableAddToCart = MutableLiveData<PlayResult<Event<CartFeedbackUiModel>>>()
     private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
-    val observableAddToCart: LiveData<Event<CartFeedbackUiModel>> = _observableAddToCart
+    val observableAddToCart: LiveData<PlayResult<Event<CartFeedbackUiModel>>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
 
     fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
@@ -76,6 +76,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     }
 
     fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
+        _observableAddToCart.value = PlayResult.Loading(showPlaceholder = false)
         scope.launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
                 postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(
@@ -87,9 +88,9 @@ class PlayBottomSheetViewModel @Inject constructor(
                 postAddToCartUseCase.executeOnBackground()
             }
 
-            _observableAddToCart.value = Event(mappingResponseCart(responseCart, product, action, type))
+            _observableAddToCart.value = PlayResult.Success(Event(mappingResponseCart(responseCart, product, action, type)))
         }) {
-            _observableAddToCart.value = Event(
+            _observableAddToCart.value = PlayResult.Success(Event(
                     CartFeedbackUiModel(
                             isSuccess = false,
                             errorMessage = it.localizedMessage.orEmpty(),
@@ -98,7 +99,7 @@ class PlayBottomSheetViewModel @Inject constructor(
                             action = action,
                             bottomInsetsType = type
                     )
-            )
+            ))
         }
     }
 
