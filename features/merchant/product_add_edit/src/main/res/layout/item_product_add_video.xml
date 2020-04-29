@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifycomponents.TextAreaUnify
         android:id="@+id/textFieldUrl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text_field_label="@string/label_video_url_placeholder"
-        app:text_field_append_drawable_icon_2="@drawable/unify_clear_ic"
-        app:text_field_input_type="text"/>
+        app:text_area_clearable="true" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardThumbnail"

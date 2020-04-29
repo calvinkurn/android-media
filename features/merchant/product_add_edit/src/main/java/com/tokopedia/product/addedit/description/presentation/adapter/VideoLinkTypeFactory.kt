@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.util.placeCursorToEnd
+import com.tokopedia.product.addedit.common.util.replaceTextAndRestoreCursorPosition
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import kotlinx.android.synthetic.main.item_product_add_video.view.*
@@ -44,27 +44,39 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
         }
 
         override fun bind(element: VideoLinkModel) {
+            itemView.textFieldUrl.textAreaInput.apply {
+                maxLines = 1
+                setSingleLine(true)
+            }
+            itemView.textFieldUrl.apply {
+                isLabelStatic = false
+                textAreaLabel = getString(R.string.label_video_url_placeholder)
+                textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
+                textAreaIconClose.layoutParams.apply {
+                    width = context.resources.getDimension(R.dimen.video_clear_icon_size).toInt()
+                    height = context.resources.getDimension(R.dimen.video_clear_icon_size).toInt()
+                }
+            }
             // Remove listener and set the text so it will not trigger textWatcher
             if (isFirstLoaded) {
                 itemView.textFieldUrl.apply {
-                    textFieldInput.addTextChangedListener(textWatcher)
+                    textAreaInput.addTextChangedListener(textWatcher)
                     if (element.inputUrl.isNotEmpty()) setText(element.inputUrl)
                 }
                 isFirstLoaded = false
             } else {
                 itemView.textFieldUrl.apply {
-                    textFieldInput.removeTextChangedListener(textWatcher)
-                    setText(element.inputUrl)
-                    textFieldInput.addTextChangedListener(textWatcher)
+                    textAreaInput.removeTextChangedListener(textWatcher)
+                    replaceTextAndRestoreCursorPosition(element.inputUrl)
+                    textAreaInput.addTextChangedListener(textWatcher)
                     requestFocus()
-                    placeCursorToEnd()
                 }
             }
 
             loadLayout(element.inputUrl, element.inputImage, element.inputTitle,
                     element.inputDescription, element.errorMessage)
 
-            itemView.textFieldUrl.getSecondIcon().setOnClickListener {
+            itemView.textFieldUrl.textAreaIconClose.setOnClickListener {
                 itemView.textFieldUrl.clearFocus()
                 listener?.onDeleteClicked(element, adapterPosition)
             }
@@ -78,16 +90,16 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                                errorMessage: String) {
             itemView.apply {
                 cardThumbnail.visibility = if (inputTitle.isEmpty()) View.GONE else View.VISIBLE
-                textFieldUrl.textFieldIcon2.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
+                itemView.textFieldUrl.textAreaIconClose.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
                 imgThumbnail.urlSrc = imageUrl
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription
-                if (errorMessage.isNotEmpty() && !textFieldUrl.textFieldInput.text.isBlank()) {
-                    textFieldUrl.setError(true)
-                    textFieldUrl.setMessage(errorMessage)
+                if (errorMessage.isNotEmpty() && !textFieldUrl.textAreaInput.text.isBlank()) {
+                    textFieldUrl.isError = true
+                    textFieldUrl.textAreaMessage = errorMessage
                 } else {
-                    textFieldUrl.setError(false)
-                    textFieldUrl.setMessage("")
+                    textFieldUrl.isError = false
+                    textFieldUrl.textAreaMessage = ""
                 }
             }
         }
