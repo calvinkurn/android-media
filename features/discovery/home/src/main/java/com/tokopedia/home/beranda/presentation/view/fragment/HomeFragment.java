@@ -34,6 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.AsyncDifferConfig;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -765,7 +766,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }));
     }
 
-    private void setData(List<HomeVisitable> data, boolean isCache){
+    private void setData(List<Visitable> data, boolean isCache){
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache);
@@ -780,7 +781,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
     }
 
-    private boolean isDataValid(List<HomeVisitable> visitables) {
+    private boolean isDataValid(List<Visitable> visitables) {
         return containsInstance(visitables, HomepageBannerDataModel.class);
     }
 
@@ -893,8 +894,28 @@ public class HomeFragment extends BaseDaggerFragment implements
                 new HomeComponentCallback(viewModel),
                 new DynamicLegoBannerComponentCallback(getActivity())
         );
-        AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
-                new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
+        AsyncDifferConfig<Visitable<?>> asyncDifferConfig =
+                new AsyncDifferConfig.Builder<Visitable<?>>(new DiffUtil.ItemCallback<Visitable<?>>() {
+                    @Override
+                    public boolean areItemsTheSame(@NonNull Visitable<?> oldItem, @NonNull Visitable<?> newItem) {
+                        return oldItem.equals(newItem);
+                    }
+
+                    @Override
+                    public boolean areContentsTheSame(@NonNull Visitable<?> oldItem, @NonNull Visitable<?> newItem) {
+                        if (oldItem instanceof HomeVisitable && newItem instanceof HomeVisitable) {
+                            return ((HomeVisitable) oldItem).equalsWith(newItem);
+                        } else return false;
+                    }
+
+                    @Nullable
+                    @Override
+                    public Object getChangePayload(@NonNull Visitable<?> oldItem, @NonNull Visitable<?> newItem) {
+                        if (oldItem instanceof HomeVisitable && newItem instanceof HomeVisitable) {
+                            return ((HomeVisitable) oldItem).getChangePayloadFrom(newItem);
+                        } else return false;
+                    }
+                })
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build();
         adapter = new HomeRecycleAdapter(asyncDifferConfig, adapterFactory, new ArrayList<HomeVisitable>());

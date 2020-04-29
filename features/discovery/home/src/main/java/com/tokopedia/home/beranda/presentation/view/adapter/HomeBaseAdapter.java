@@ -28,12 +28,12 @@ import java.util.List;
  */
 
 public class HomeBaseAdapter<F extends AdapterTypeFactory> extends
-        ListAdapter<HomeVisitable, AbstractViewHolder> {
+        ListAdapter<Visitable, AbstractViewHolder> {
 
     protected List<Visitable> visitables;
     private F adapterTypeFactory;
 
-    protected HomeBaseAdapter(AsyncDifferConfig<HomeVisitable> asyncDifferConfig,
+    protected HomeBaseAdapter(AsyncDifferConfig<Visitable> asyncDifferConfig,
                               F adapterTypeFactory, List<Visitable> visitables) {
         super(asyncDifferConfig);
         this.adapterTypeFactory = adapterTypeFactory;
