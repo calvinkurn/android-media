@@ -10,9 +10,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
-import io.mockk.every
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
@@ -22,6 +20,8 @@ private const val broadMatchResponseCode4 = "searchproduct/broadmatch/broad-matc
 private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/broad-match-response-code-4-but-no-broadmatch.json"
 private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/broad-match-response-code-4-no-suggestion.json"
 private const val broadMatchResponseCode5 = "searchproduct/broadmatch/broad-match-response-code-5.json"
+private const val broadMatchResponseCode5Page1 = "searchproduct/broadmatch/broad-match-response-code-5-page-1.json"
+private const val broadMatchResponseCode5Page2 = "searchproduct/broadmatch/broad-match-response-code-5-page-2.json"
 
 internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
@@ -192,6 +192,53 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Test broad match with product list on page 2 and above`() {
+        val visitableList = mutableListOf<Visitable<*>>()
+        val searchProductModelPage1 = broadMatchResponseCode5Page1.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode5Page2.jsonToObject<SearchProductModel>()
 
+        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
+        `Given Product List Presenter already load data`(visitableList)
+
+        `When Load More Data`()
+
+        `Then assert view will add product list`(visitableList)
+        `Then assert SuggestionViewModel is after the last product item view model`(visitableList)
+    }
+
+    private fun `Given Search Product Load More API will return SearchProductModel`(searchProductModel: SearchProductModel) {
+        every { searchProductLoadMoreUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
+        }
+    }
+
+    private fun `Given Product List Presenter already load data`(visitableList: MutableList<Visitable<*>>) {
+        every {
+            productListView.setProductList(capture(visitableListSlot))
+        } just runs
+
+        productListPresenter.loadData(mapOf())
+
+        visitableList.addAll(visitableListSlot.captured)
+        visitableListSlot.clear()
+    }
+
+    private fun `When Load More Data`() {
+        productListPresenter.loadMoreData(mapOf())
+    }
+
+    private fun `Then assert view will add product list`(visitableList: MutableList<Visitable<*>>) {
+        verify {
+            productListView.addProductList(capture(visitableListSlot))
+        }
+
+        visitableList.addAll(visitableListSlot.captured)
+    }
+
+    private fun `Then assert SuggestionViewModel is after the last product item view model`(visitableList: List<Visitable<*>>) {
+        val expectedSuggestionViewModelIndex = visitableList.indexOfLast { it is ProductItemViewModel } + 1
+        val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionViewModel }
+        
+        actualSuggestionViewModelIndex shouldBe expectedSuggestionViewModelIndex
     }
 }

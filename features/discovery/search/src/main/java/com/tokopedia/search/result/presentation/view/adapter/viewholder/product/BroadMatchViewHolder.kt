@@ -5,12 +5,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import kotlinx.android.synthetic.main.search_result_product_broad_match.view.*
+import kotlinx.android.synthetic.main.search_result_product_broad_match_layout.view.*
 
 class BroadMatchViewHolder(
         itemView: View,
@@ -20,13 +19,12 @@ class BroadMatchViewHolder(
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.search_result_product_broad_match
+        val LAYOUT = R.layout.search_result_product_broad_match_layout
     }
 
     override fun bind(element: BroadMatchViewModel) {
         bindTitle(element)
         bindSeeMore(element)
-        bindListener(element)
         setupRecyclerView(element)
     }
 
@@ -36,11 +34,9 @@ class BroadMatchViewHolder(
 
     private fun bindSeeMore(broadMatchViewModel: BroadMatchViewModel) {
         itemView.searchBroadMatchSeeMore?.showWithCondition(broadMatchViewModel.applink.isNotEmpty())
-    }
 
-    private fun bindListener(broadMatchViewModel: BroadMatchViewModel) {
         itemView.searchBroadMatchSeeMore?.setOnClickListener {
-            broadMatchListener.onBroadMatchSeeMoreClicked(broadMatchViewModel);
+            broadMatchListener.onBroadMatchSeeMoreClicked(broadMatchViewModel)
         }
     }
 
@@ -59,18 +55,9 @@ class BroadMatchViewHolder(
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val product = products.getOrNull(carouselProductCardPosition) ?: return
-                        product?.let {
+                        product.let {
                             broadMatchListener.onBroadMatchItemClicked(product)
                         }
-                    }
-                },
-                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        TODO("Not yet implemented")
-                    }
-
-                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-                        TODO("Not yet implemented")
                     }
                 }
         )

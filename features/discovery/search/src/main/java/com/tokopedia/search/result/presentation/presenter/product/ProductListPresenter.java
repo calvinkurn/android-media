@@ -34,6 +34,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
+import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -49,6 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -104,6 +107,9 @@ final class ProductListPresenter
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
+    private String responseCode = "";
+    @Nullable private SuggestionViewModel suggestionViewModel = null;
+    @Nullable private RelatedViewModel relatedViewModel = null;
 
     @Inject
     ProductListPresenter(
@@ -467,6 +473,10 @@ final class ProductListPresenter
 
         processInspirationCarouselPosition(searchParameter, list);
 
+        if (productViewModel.getTotalData() <= productList.size() && isShowBroadMatch()) {
+            processSuggestionAndBroadMatch(list);
+        }
+
         getView().removeLoading();
         getView().addProductList(list);
         getView().addLoading();
@@ -679,8 +689,13 @@ final class ProductListPresenter
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
+
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
+
+        setResponseCode(productViewModel.getResponseCode());
+        setSuggestionViewModel(productViewModel.getSuggestionModel());
+        setRelatedViewModel(productViewModel.getRelatedViewModel());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
@@ -732,8 +747,20 @@ final class ProductListPresenter
         return productViewModel;
     }
 
+    private void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    private void setSuggestionViewModel(SuggestionViewModel suggestionViewModel) {
+        this.suggestionViewModel = suggestionViewModel;
+    }
+
+    private void setRelatedViewModel(RelatedViewModel relatedViewModel) {
+        this.relatedViewModel = relatedViewModel;
+    }
+
     private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
-        if (isShowBroadMatch(productViewModel)) {
+        if (isShowBroadMatch()) {
             getViewToShowBroadMatchToReplaceEmptySearch(productViewModel);
         } else {
             if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
@@ -746,26 +773,29 @@ final class ProductListPresenter
         }
     }
 
-    private boolean isShowBroadMatch(ProductViewModel productViewModel) {
-        return showBroadMatchResponseCodeList.contains(productViewModel.getResponseCode())
-                && !productViewModel.getRelatedViewModel().getBroadMatchViewModelList().isEmpty();
+    private boolean isShowBroadMatch() {
+        return showBroadMatchResponseCodeList.contains(responseCode)
+                && relatedViewModel != null
+                && !relatedViewModel.getBroadMatchViewModelList().isEmpty();
     }
 
     private void getViewToShowBroadMatchToReplaceEmptySearch(ProductViewModel productViewModel) {
         List<Visitable> visitableList = new ArrayList<>();
 
-        processSuggestionAndBroadMatch(productViewModel, visitableList);
+        processSuggestionAndBroadMatch(visitableList);
 
         getView().removeLoading();
         getView().setProductList(visitableList);
     }
 
-    private void processSuggestionAndBroadMatch(ProductViewModel productViewModel, List<Visitable> visitableList) {
-        if (!textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
-            visitableList.add(productViewModel.getSuggestionModel());
+    private void processSuggestionAndBroadMatch(List<Visitable> visitableList) {
+        if (suggestionViewModel != null && !textIsEmpty(suggestionViewModel.getSuggestionText())) {
+            visitableList.add(suggestionViewModel);
         }
 
-        visitableList.addAll(productViewModel.getRelatedViewModel().getBroadMatchViewModelList());
+        if (relatedViewModel != null) {
+            visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
+        }
     }
 
     private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
@@ -842,7 +872,7 @@ final class ProductListPresenter
             getView().trackEventImpressionSortPriceMinTicker();
         }
 
-        if (!isShowBroadMatch(productViewModel)
+        if (!isShowBroadMatch()
             && !textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
             list.add(productViewModel.getSuggestionModel());
         }
@@ -877,8 +907,8 @@ final class ProductListPresenter
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
 
-        if (isShowBroadMatch(productViewModel)) {
-            processSuggestionAndBroadMatch(productViewModel, list);
+        if (productViewModel.getTotalData() <= productList.size() && isShowBroadMatch()) {
+            processSuggestionAndBroadMatch(list);
         }
 
         getView().removeLoading();

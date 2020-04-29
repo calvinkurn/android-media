@@ -1694,11 +1694,13 @@ public class ProductListFragment
 
     @Override
     public void onBroadMatchItemClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
-        redirectionStartActivity(broadMatchItemViewModel.getApplink(), broadMatchItemViewModel.getUrl());
+        String applink = modifyApplinkToSearchResult(broadMatchItemViewModel.getApplink());
+        redirectionStartActivity(applink, broadMatchItemViewModel.getUrl());
     }
 
     @Override
     public void onBroadMatchSeeMoreClicked(@NotNull BroadMatchViewModel broadMatchViewModel) {
-        redirectionStartActivity(broadMatchViewModel.getApplink(), broadMatchViewModel.getUrl());
+        String applink = modifyApplinkToSearchResult(broadMatchViewModel.getApplink());
+        redirectionStartActivity(applink, broadMatchViewModel.getUrl());
     }
 }
