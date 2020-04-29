@@ -12,15 +12,27 @@ class SellerReviewDetailAdapter(
     companion object {
         const val PAYLOAD_RATING_FILTER = 101
         const val PAYLOAD_TOPIC_FILTER = 102
+        const val PAYLOAD_TOPIC_FILTER_REVIEW_COUNT = 103
     }
 
     private var productReviewDetailFeedback: MutableList<FeedbackUiModel> = mutableListOf()
 
-    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>) {
+    fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Int) {
         val lastIndex = visitables.size
+        updateReviewCount(reviewCount)
         productReviewDetailFeedback.addAll(feedbackListUiModel)
         visitables.addAll(feedbackListUiModel)
-        notifyItemRangeInserted(lastIndex + 1, feedbackListUiModel.size)
+        notifyItemRangeInserted(lastIndex, feedbackListUiModel.size)
+    }
+
+    private fun updateReviewCount(reviewCount: Int) {
+        val topicIndex = visitables.indexOfFirst { it is TopicUiModel }
+        visitables.find { it is TopicUiModel }?.also {
+            (it as TopicUiModel).countFeedback = reviewCount
+        }
+        if (topicIndex != -1) {
+            notifyItemChanged(topicIndex, PAYLOAD_TOPIC_FILTER_REVIEW_COUNT)
+        }
     }
 
     fun updateFilterRating(position: Int, updatedState: Boolean, filterRatingInstance: ProductReviewFilterUiModel?) {

@@ -277,8 +277,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             when (it) {
                 is Success -> {
                     swipeToRefreshReviewDetail?.isRefreshing = false
-                    viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList ?: listOf())
-                    viewModelProductReviewDetail?.updateTopicsFilterData(it.data.first.filterIsInstance<TopicUiModel>().firstOrNull()?.sortFilterItemList ?: arrayListOf())
+                    viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
+                            ?: listOf())
+                    viewModelProductReviewDetail?.updateTopicsFilterData(it.data.first.filterIsInstance<TopicUiModel>().firstOrNull()?.sortFilterItemList
+                            ?: arrayListOf())
                     review_detail_toolbar.title = it.data.second
 
                     renderList(it.data.first, it.data.third)
@@ -309,7 +311,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             reviewSellerDetailAdapter.addReviewNotFound()
         } else {
             reviewSellerDetailAdapter.removeReviewNotFound()
-            reviewSellerDetailAdapter.setFeedbackListData(data.productFeedbackDetailList)
+            reviewSellerDetailAdapter.setFeedbackListData(data.productFeedbackDetailList, data.reviewCount)
         }
         updateScrollListenerState(data.hasNext)
     }
