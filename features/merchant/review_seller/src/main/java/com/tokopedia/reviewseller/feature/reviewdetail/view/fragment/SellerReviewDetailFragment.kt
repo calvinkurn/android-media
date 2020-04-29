@@ -13,6 +13,11 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
@@ -50,6 +55,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
+        const val CHIP_FILTER = "EXTRA_CHIPS_FILTER"
+        private const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
     }
 
     @Inject
@@ -65,10 +72,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         SellerReviewDetailAdapterTypeFactory(this, this, this, this)
     }
 
+    private var chipFilterBundle = ""
+
     var productID: Int = 0
     var sortBy: String = ""
     var filterBy: String = "time=all"
-
     var toolbarTitle = ""
 
     private var filterPeriodDetailUnify: ListUnify? = null
@@ -79,12 +87,23 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var bottomSheetOptionFeedback: BottomSheetUnify? = null
     private var bottomSheetMenuDetail: BottomSheetUnify? = null
 
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkMenuOption: CoachMarkItem by lazy {
+        CoachMarkItem(view?.findViewById(R.id.menu_option_product_detail),
+                getString(R.string.change_product_label),
+                getString(R.string.change_product_desc))
+    }
+
     override fun getScreenName(): String = "SellerReviewDetail"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
                 productID = getIntExtra(PRODUCT_ID, 0)
+                chipFilterBundle = getStringExtra(CHIP_FILTER)
             }
         }
         super.onCreate(savedInstanceState)
@@ -104,6 +123,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
@@ -196,6 +216,15 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
+    private fun coachMarkShow() {
+        activity?.let {
+            if (!coachMark.hasShown(it, TAG_COACH_MARK_REVIEW_DETAIL)) {
+                coachMark.enableSkip = true
+                coachMark.show(it, TAG_COACH_MARK_REVIEW_DETAIL, arrayListOf(coachMarkMenuOption))
+            }
+        }
+    }
+
     private fun clickOptionFeedbackDetail() {
         val optionMenuList = context?.let { SellerReviewProductDetailMapper.mapToItemUnifyMenuOption(it) }
         optionMenuList?.let { optionFeedbackDetailUnify?.setData(it) }
@@ -211,8 +240,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             it.onLoadFinish {
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
-                        1 -> {
-
+                        0 -> {
+                            RouteManager.route(context, ApplinkConst.PRODUCT_EDIT, productID.toString())
                         }
                     }
                 }
@@ -253,6 +282,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     review_detail_toolbar.title = it.data.second
 
                     renderList(it.data.first, it.data.third)
+                    coachMarkShow()
                 }
                 is Fail -> {
                     onErrorGetReviewDetailData(it.throwable)
@@ -317,10 +347,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
         val filterDetailItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterDetailList)
         filterPeriodDetailUnify?.setData(filterDetailItemUnify)
-        initBottomSheetFilterPeriod(view, title, filterDetailItemUnify)
+        initBottomSheetFilterPeriod(title, filterDetailItemUnify)
     }
 
-    private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
+    private fun initBottomSheetFilterPeriod(title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         bottomSheetPeriodDetail?.apply {
             setTitle(title)
             showCloseIcon = true
@@ -381,9 +411,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     override fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
+
         optionFeedbackDetailUnify?.setData(optionDetailListItemUnify)
 
         bottomSheetOptionFeedback?.apply {
+
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
@@ -395,12 +427,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             it.onLoadFinish {
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
-                        1 -> {
+                        0 -> {
                             if (!isEmptyReply) {
 
                             }
                         }
-                        2 -> {
+                        1 -> {
 
                         }
                     }

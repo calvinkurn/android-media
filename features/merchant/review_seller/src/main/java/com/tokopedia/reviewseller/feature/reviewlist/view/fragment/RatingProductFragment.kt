@@ -303,6 +303,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         reviewSellerAdapter.hideLoading()
         swipeToRefreshReviewSeller?.isRefreshing = false
         if (reviewProductList.isEmpty()) {
+            scrollView_emptyState_reviewSeller?.show()
             emptyState_reviewProduct?.show()
         } else {
             reviewSellerAdapter.setProductListReviewData(reviewProductList)
@@ -408,9 +409,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         chipsSort?.apply {
             setOnClickListener {
+                chipsSort?.toggle()
                 initBottomSheetSort(sortListItemUnify, getString(R.string.title_bottom_sheet_sort))
             }
             setChevronClickListener {
+                chipsSort?.toggle()
                 initBottomSheetSort(sortListItemUnify, getString(R.string.title_bottom_sheet_sort))
             }
         }
@@ -431,9 +434,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         chipsFilter?.apply {
             setOnClickListener {
+                chipsFilter?.toggle()
                 initBottomSheetFilter(filterListItemUnify, getString(R.string.title_bottom_sheet_filter))
             }
             setChevronClickListener {
+                chipsFilter?.toggle()
                 initBottomSheetFilter(filterListItemUnify, getString(R.string.title_bottom_sheet_filter))
             }
         }
@@ -463,12 +468,16 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     override fun onItemProductReviewClicked(productId: Int) {
         startActivity(Intent(context, SellerReviewDetailActivity::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
+            putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
         })
     }
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
 
         bottomSheetFilter?.apply {
+            setOnDismissListener {
+                chipsFilter?.toggle()
+            }
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
@@ -499,6 +508,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun initBottomSheetSort(sortListItemUnify: ArrayList<ListItemUnify>, title: String) {
 
         bottomSheetSort?.apply {
+            setOnDismissListener {
+                chipsSort?.toggle()
+            }
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
@@ -531,7 +543,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         try {
             viewModelListReviewList?.positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
-            chipsFilter?.chip_text?.text = chipsFilterText
+            chipsFilter?.apply {
+                chip_text.text = chipsFilterText
+            }
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelListReviewList?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
             viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
