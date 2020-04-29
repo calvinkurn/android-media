@@ -460,10 +460,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     companion object {
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
-
         private const val EXTRA_PARAM = "extra_param"
-
-        const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
+        private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
