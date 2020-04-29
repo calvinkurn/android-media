@@ -10,6 +10,7 @@ import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUse
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -50,6 +51,8 @@ abstract class ProductManageViewModelTestFixture {
     lateinit var multiEditProductUseCase: MultiEditProductUseCase
     @RelaxedMockK
     lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
+    @RelaxedMockK
+    lateinit var editProductVariantUseCase: EditProductVariantUseCase
 
     protected lateinit var viewModel: ProductManageViewModel
 
@@ -69,24 +72,8 @@ abstract class ProductManageViewModelTestFixture {
                 deleteProductUseCase,
                 multiEditProductUseCase,
                 getProductListMetaUseCase,
+                editProductVariantUseCase,
                 TestCoroutineDispatchers
         )
-    }
-
-    protected fun LiveData<*>.verifyValueEquals(expected: Any) {
-        val actual = value
-        assertEquals(expected, actual)
-    }
-
-    protected fun LiveData<*>.verifySuccessEquals(expected: Success<*>) {
-        val expectedResult = expected.data
-        val actualResult = (value as Success<*>).data
-        assertEquals(expectedResult, actualResult)
-    }
-
-    protected fun LiveData<*>.verifyErrorEquals(expected: Fail) {
-        val expectedResult = expected.throwable::class.java
-        val actualResult = (value as Fail).throwable::class.java
-        assertEquals(expectedResult, actualResult)
     }
 }
