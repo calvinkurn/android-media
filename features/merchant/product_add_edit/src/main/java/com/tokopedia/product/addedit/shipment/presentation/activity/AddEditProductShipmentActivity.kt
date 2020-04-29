@@ -20,6 +20,17 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 
 class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEditProductShipmentComponent> {
 
+    companion object {
+        private const val PARAM_SHIPMENT_INPUT_MODEL = "param_shipment_input_model"
+        private const val PARAM_IS_ADD_MODE = "param_shipment_is_add_mode"
+        fun createInstance(context: Context?) = Intent(context, AddEditProductShipmentActivity::class.java)
+        fun createInstanceEditMode(context: Context?, shipmentInputModel: ShipmentInputModel, isAddMode: Boolean): Intent =
+                Intent(context, AddEditProductShipmentActivity::class.java)
+                        .putExtra(PARAM_SHIPMENT_INPUT_MODEL, shipmentInputModel)
+                        .putExtra(PARAM_IS_ADD_MODE, isAddMode)
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -62,16 +73,5 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
         if (f!= null && f is AddEditProductShipmentFragment) {
             f.onBackPressed()
         }
-    }
-
-    companion object {
-        private const val PARAM_SHIPMENT_INPUT_MODEL = "param_shipment_input_model"
-        private const val PARAM_IS_ADD_MODE = "param_shipment_is_add_mode"
-        fun createInstance(context: Context?) = Intent(context, AddEditProductShipmentActivity::class.java)
-        fun createInstanceEditMode(context: Context?, shipmentInputModel: ShipmentInputModel, isAddMode: Boolean): Intent =
-                Intent(context, AddEditProductShipmentActivity::class.java)
-                        .putExtra(PARAM_SHIPMENT_INPUT_MODEL, shipmentInputModel)
-                        .putExtra(PARAM_IS_ADD_MODE, isAddMode)
-
     }
 }

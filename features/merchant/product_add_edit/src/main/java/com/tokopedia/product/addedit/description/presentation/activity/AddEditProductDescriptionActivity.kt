@@ -12,6 +12,25 @@ import com.tokopedia.product.addedit.description.presentation.fragment.AddEditPr
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 
 class AddEditProductDescriptionActivity : BaseSimpleActivity() {
+
+    companion object {
+        const val PARAM_PRODUCT_INPUT_MODEL = "param_product_input_model"
+        const val PARAM_IS_EDIT_MODE = "is_edit_mode"
+        const val PARAM_IS_ADD_MODE = "is_add_mode"
+
+        fun createInstance(context: Context?, productInputModel: ProductInputModel): Intent =
+                Intent(context, AddEditProductDescriptionActivity::class.java)
+                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
+
+        fun createInstanceEditMode(context: Context?,
+                                   productInputModel: ProductInputModel,
+                                   isAddMode: Boolean): Intent =
+                Intent(context, AddEditProductDescriptionActivity::class.java)
+                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
+                        .putExtra(PARAM_IS_EDIT_MODE, true)
+                        .putExtra(PARAM_IS_ADD_MODE, isAddMode)
+    }
+
     private var isEditMode: Boolean = false
     private var isAddMode: Boolean = false
     private var productInputModel: ProductInputModel = ProductInputModel()
@@ -57,23 +76,5 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
         if (f!= null && f is AddEditProductDescriptionFragment) {
             f.onBackPressed()
         }
-    }
-
-    companion object {
-        const val PARAM_PRODUCT_INPUT_MODEL = "param_product_input_model"
-        const val PARAM_IS_EDIT_MODE = "is_edit_mode"
-        const val PARAM_IS_ADD_MODE = "is_add_mode"
-
-        fun createInstance(context: Context?, productInputModel: ProductInputModel): Intent =
-                Intent(context, AddEditProductDescriptionActivity::class.java)
-                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
-
-        fun createInstanceEditMode(context: Context?,
-                                   productInputModel: ProductInputModel,
-                                   isAddMode: Boolean): Intent =
-                Intent(context, AddEditProductDescriptionActivity::class.java)
-                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
-                        .putExtra(PARAM_IS_EDIT_MODE, true)
-                        .putExtra(PARAM_IS_ADD_MODE, isAddMode)
     }
 }
