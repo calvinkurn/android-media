@@ -99,7 +99,9 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
+import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -117,6 +119,7 @@ import javax.inject.Inject
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
     private var isProductStatusSwitchFirstTime = false
+    private var countTouchPhoto = 0
 
     private var toolbar: Toolbar? = null
 
@@ -351,18 +354,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         }
                     }
                 } else {
-                    context?.apply {
-                        viewModel.productInputModel.value?.let { productInputModel ->
-                            AddEditProductAddService.startService(
-                                    context = this,
-                                    detailInputModel = productInputModel.detailInputModel,
-                                    descriptionInputModel = productInputModel.descriptionInputModel,
-                                    shipmentInputModel = productInputModel.shipmentInputModel,
-                                    variantInputModel = productInputModel.variantInputModel,
-                                    draftId = viewModel.getDraftId()
-                            )
-                            moveToManageProduct()
-                        }
+                    viewModel.productInputModel.value?.let { productInputModel ->
+                        startProductAddService(productInputModel)
+                        moveToManageProduct()
                     }
                 }
             }
@@ -502,9 +496,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     context?.let {
                         val validateMessage = viewModel.validateProductInput(detailInputModel)
                         if (validateMessage.isEmpty()) {
-                            AddEditProductAddService.startService(it, detailInputModel,
-                                descriptionInputModel, shipmentInputModel, variantInputModel,
-                                    viewModel.getDraftId())
+                            startProductAddService(ProductInputModel(
+                                    detailInputModel = detailInputModel,
+                                    descriptionInputModel = descriptionInputModel,
+                                    shipmentInputModel = shipmentInputModel,
+                                    variantInputModel = variantInputModel
+                            ))
                             activity?.finish()
                         } else {
                             view?.let { view ->
@@ -584,6 +581,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        countTouchPhoto += 1
+        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
+        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
+        if(countTouchPhoto == 2) {
+            if (viewModel.isEditing.value == true && !viewModel.isAdding) {
+                ProductEditMainTracking.trackDragPhoto(shopId)
+            } else {
+                ProductAddMainTracking.trackDragPhoto(shopId)
+            }
+            countTouchPhoto = 0
+        }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
@@ -1014,8 +1022,19 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun startProductAddService(productInputModel: ProductInputModel) {
+        context?.let {
+            val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
+            saveInstanceCacheManager.put(ProductInputModel.TAG, productInputModel)
+            AddEditProductAddService.startService(
+                    context = it,
+                    cacheId = saveInstanceCacheManager.id ?: "",
+                    draftId = viewModel.getDraftId()
+            )
+        }
     }
 
     private fun showLoading() {

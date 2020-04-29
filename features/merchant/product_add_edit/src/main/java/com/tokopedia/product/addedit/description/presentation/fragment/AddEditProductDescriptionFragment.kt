@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
@@ -102,13 +103,11 @@ class AddEditProductDescriptionFragment:
         }
 
         const val MAX_VIDEOS = 3
+        const val MAX_DESCRIPTION_CHAR = 2000
         const val REQUEST_CODE_VARIANT = 0
-
         const val TYPE_IDR = 1
-
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
-
         const val VIDEO_REQUEST_DELAY = 250L
     }
 
@@ -220,8 +219,20 @@ class AddEditProductDescriptionFragment:
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textFieldDescription.textFieldInput.setSingleLine(false)
-        textFieldDescription.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+        textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
+        textFieldDescription.textFieldInput.apply {
+            setSingleLine(false)
+            imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+            afterTextChanged {
+                if (it.length >= MAX_DESCRIPTION_CHAR) {
+                    textFieldDescription.setMessage(getString(R.string.error_description_character_limit))
+                    textFieldDescription.setError(true)
+                } else {
+                    textFieldDescription.setMessage("")
+                    textFieldDescription.setError(false)
+                }
+            }
+        }
 
         if (descriptionViewModel.isEditMode) applyEditMode()
 

@@ -120,6 +120,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private var selectedDurationPosition: Int = UNIT_DAY
     private var isPreOrderFirstTime = false
+    private var countTouchPhoto = 0
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -277,6 +278,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 showImmutableCategoryDialog()
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
+                intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing && !viewModel.isAdding))
                 startActivityForResult(intent, REQUEST_CODE_CATEGORY)
             }
         }
@@ -296,6 +298,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         ProductEditMainTracking.clickRemoveWholesale(shopId)
                     } else {
                         ProductAddMainTracking.clickRemoveWholesale(shopId)
+                    }
+                    wholeSaleInputFormsAdapter?.itemCount?.let {
+                        if (it == 1) {
+                            productWholeSaleSwitch?.isChecked = false
+                        }
                     }
                     addNewWholeSalePriceButton?.visibility = View.VISIBLE
                 },
@@ -658,12 +665,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isEditing && !viewModel.isAdding) {
-            ProductEditMainTracking.trackDragPhoto(shopId)
-        } else {
-            ProductAddMainTracking.trackDragPhoto(shopId)
-        }
         photoItemTouchHelper?.startDrag(viewHolder)
+        countTouchPhoto += 1
+        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
+        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
+        if(countTouchPhoto == 2) {
+            if (viewModel.isEditing && !viewModel.isAdding) {
+                ProductEditMainTracking.trackDragPhoto(shopId)
+            } else {
+                ProductAddMainTracking.trackDragPhoto(shopId)
+            }
+            countTouchPhoto = 0
+        }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {

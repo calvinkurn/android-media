@@ -65,10 +65,13 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
@@ -268,10 +271,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return if(showProductEmptyState()) {
-            ProductEmptyModel
-        } else {
-            SearchEmptyModel
+        return EmptyModel().apply {
+            if(showProductEmptyState()) {
+                contentRes = R.string.product_manage_list_empty_product
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_LIST_EMPTY_STATE
+            } else {
+                contentRes = R.string.product_manage_list_empty_search
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_SEARCH_EMPTY_STATE
+            }
         }
     }
 
@@ -456,6 +463,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         getFiltersTab(withDelay = true)
                         getProductList(withDelay = true, isRefresh = true)
                     }
+                }
+            } else if (intent.action == TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS &&
+                    intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
+                    intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
+                activity?.runOnUiThread {
+                    getProductList(withDelay = true, isRefresh = true)
                 }
             }
         }
@@ -1195,6 +1208,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         activity?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+            intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS)
             it.registerReceiver(addProductReceiver, intentFilter)
         }
     }
