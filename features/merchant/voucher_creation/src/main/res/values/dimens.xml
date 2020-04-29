@@ -51,6 +51,7 @@
     <dimen name="mvc_create_voucher_type_budget_promotion_widget_margin_top">8dp</dimen>
     <dimen name="mvc_create_voucher_type_budget_ticker_padding_vertical">12dp</dimen>
     <dimen name="mvc_create_voucher_type_budget_ticker_desc_margin_left">11dp</dimen>
+    <dimen name="mvc_textfield_margin_vertical">20dp</dimen>
 
     <dimen name="mvc_create_target_description_size">12sp</dimen>
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>

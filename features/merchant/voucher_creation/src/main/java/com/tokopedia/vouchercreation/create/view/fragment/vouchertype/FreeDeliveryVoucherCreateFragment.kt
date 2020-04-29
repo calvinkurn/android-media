@@ -7,11 +7,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
-import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemTypeFactory
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.PromotionTypeTickerUiModel
 
-class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<PromotionTypeItemTypeFactory>, PromotionTypeItemAdapterFactory>() {
+class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
@@ -20,7 +19,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<PromotionTyp
 
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 
-    override fun onItemClicked(t: Visitable<PromotionTypeItemTypeFactory>?) {}
+    override fun onItemClicked(t: Visitable<*>?) {}
 
     override fun getScreenName(): String = ""
 
@@ -41,8 +40,6 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<PromotionTyp
 
     private fun setupView() {
         adapter.notifyDataSetChanged()
-        renderList(listOf(
-                PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_free_deliv_ticker)
-        ))
+        renderList(PromotionTypeUiListStaticDataSource.getFreeDeliveryTypeUiList())
     }
 }

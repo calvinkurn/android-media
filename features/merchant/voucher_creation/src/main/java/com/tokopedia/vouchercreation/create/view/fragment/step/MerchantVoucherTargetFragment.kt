@@ -22,7 +22,7 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.Vouch
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.FillVoucherNameUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.VoucherTargetUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
-import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import javax.inject.Inject
 
 class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})

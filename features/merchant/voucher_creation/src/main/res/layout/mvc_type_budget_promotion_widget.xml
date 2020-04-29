@@ -15,19 +15,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/typeBudgetPromotionViewPager"/>
 
-    <View
-        android:id="@+id/typeBudgetPromotionDivider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/mvc_create_divider_height"
-        android:background="@color/mvc_color_grey"
-        app:layout_constraintTop_toBottomOf="@id/typeBudgetPromotionContentSwitcher"
-        app:layout_constraintBottom_toTopOf="@id/typeBudgetPromotionViewPager"/>
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/typeBudgetPromotionViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/typeBudgetPromotionDivider"
+        app:layout_constraintTop_toBottomOf="@id/typeBudgetPromotionContentSwitcher"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

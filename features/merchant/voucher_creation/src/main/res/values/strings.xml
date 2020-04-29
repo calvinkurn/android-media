@@ -138,4 +138,5 @@
     <string name="mvc_shop_cover">Sampul Toko</string>
     <string name="mvc_for_cover_of_your_shop">Untuk sampul di halaman tokomu.</string>
     <string name="mvc_rp">Rp</string>
+    <string name="mvc_percent">&#37;</string>
 </resources>

@@ -1,6 +1,6 @@
-package com.tokopedia.vouchercreation.di.module
+package com.tokopedia.vouchercreation.common.di.module
 
-import com.tokopedia.vouchercreation.di.scope.VoucherCreationScope
+import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
