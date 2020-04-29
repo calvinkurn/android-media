@@ -44,12 +44,12 @@ object SellerReviewProductDetailMapper {
         return ProductReviewFilterUiModel(ratingBarListUiModel)
     }
 
-    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData): TopicUiModel {
+    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData, oldData: List<SortFilterItemWrapper>): TopicUiModel {
         val topicListUiModel = TopicUiModel(countFeedback = productFeedbackDataPerProduct.reviewCount)
 
         productFeedbackDataPerProduct.topics.map {
             topicListUiModel.apply {
-                sortFilterItemList = mapToItemSortFilter(productFeedbackDataPerProduct.topics)
+                sortFilterItemList = mapToItemSortFilter(productFeedbackDataPerProduct.topics, oldData)
                 countFeedback = productFeedbackDataPerProduct.reviewCount
             }
         }
@@ -150,18 +150,28 @@ object SellerReviewProductDetailMapper {
     }
 
 
-    private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>): ArrayList<SortFilterItemWrapper> {
+    private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>, oldData: List<SortFilterItemWrapper>): ArrayList<SortFilterItemWrapper> {
         val itemSortFilterList = ArrayList<SortFilterItemWrapper>()
-        val maxData = data.take(4)
+        val updatedData = updateNewDataWithOldData(data,oldData)
+        val maxData = updatedData.take(4)
         maxData.map {
             val sortFilter = SortFilterItem(
-                    title = it.formatted,
+                    title = it.first.formatted,
                     type = ChipsUnify.TYPE_NORMAL,
                     size = ChipsUnify.SIZE_SMALL)
 
-            itemSortFilterList.add(SortFilterItemWrapper(sortFilter, ReviewSellerConstant.TOPIC_POPULAR_UNSELECTED, it.count))
+            itemSortFilterList.add(SortFilterItemWrapper(sortFilter, it.second, it.first.count, it.first.title))
         }
         return itemSortFilterList
+    }
+
+    private fun updateNewDataWithOldData(newData: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>, oldData: List<SortFilterItemWrapper>): List<Pair<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic,Boolean>> {
+        val updatedData = newData.mapIndexed { index, topic ->
+            val lastState = oldData.getOrNull(index)?.isSelected ?: false
+            topic to lastState
+        }
+
+       return updatedData
     }
 
     fun mapToItemImageSlider(attachmentList: List<FeedbackUiModel.Attachment>?): Pair<List<String>, List<String>> {
