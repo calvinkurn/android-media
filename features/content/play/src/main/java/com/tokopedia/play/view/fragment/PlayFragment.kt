@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -35,7 +36,9 @@ import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
+import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
@@ -50,13 +53,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.OrientationListener {
+class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragmentContract {
 
     companion object {
         private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
@@ -107,8 +109,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     private lateinit var layoutManager: PlayParentLayoutManager
 
-    private lateinit var videoFragment: PlayVideoFragment
-
     private val keyboardWatcher = KeyboardWatcher()
 
     private lateinit var orientationManager: PlaySensorOrientationManager
@@ -155,16 +155,10 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         setupView(view)
         setupScreen(view)
 
-        val fragmentVideo = childFragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG)
-        videoFragment = if (fragmentVideo == null) {
-            val videoFragment = PlayVideoFragment.newInstance(channelId)
+        if (childFragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG) == null) {
             childFragmentManager.beginTransaction()
-                    .replace(flVideo.id, videoFragment, VIDEO_FRAGMENT_TAG)
+                    .replace(flVideo.id, PlayVideoFragment.newInstance(channelId), VIDEO_FRAGMENT_TAG)
                     .commit()
-
-            videoFragment
-        } else {
-            fragmentVideo as PlayVideoFragment
         }
 
         if (childFragmentManager.findFragmentByTag(INTERACTION_FRAGMENT_TAG) == null) {
@@ -239,13 +233,21 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         super.onSaveInstanceState(outState)
     }
 
-    override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
+    override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
         val event = playViewModel.observableEvent.value
-        val videoOrientation = playViewModel.videoOrientation
         val isFreezeOrBanned = (event?.isFreeze ?: false) || (event?.isBanned ?: false)
-        if (requestedOrientation != screenOrientation.requestedOrientation && !isFreezeOrBanned && videoOrientation.isHorizontal)
+        if (requestedOrientation != screenOrientation.requestedOrientation && !isFreezeOrBanned && !onInterceptOrientationChangedEvent(screenOrientation))
             requestedOrientation = screenOrientation.requestedOrientation
-        sendTrackerWhenRotateScreen(screenOrientation)
+
+        sendTrackerWhenRotateScreen(screenOrientation, isTilting)
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        val isIntercepted = childFragmentManager.fragments.asSequence()
+                .filterIsInstance<PlayFragmentContract>()
+                .any { it.onInterceptOrientationChangedEvent(newOrientation) }
+        val videoOrientation = playViewModel.videoOrientation
+        return isIntercepted || !videoOrientation.isHorizontal
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
@@ -510,8 +512,8 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         playViewModel.hideInsets(isKeyboardHandled = true)
     }
 
-    private fun sendTrackerWhenRotateScreen(screenOrientation: ScreenOrientation) {
-        if (screenOrientation.isLandscape) {
+    private fun sendTrackerWhenRotateScreen(screenOrientation: ScreenOrientation, isTilting: Boolean) {
+        if (screenOrientation.isLandscape && isTilting) {
             PlayAnalytics.userTiltFromPortraitToLandscape(
                     userId = userSession.userId,
                     channelId = channelId,

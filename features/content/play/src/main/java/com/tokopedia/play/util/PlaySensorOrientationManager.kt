@@ -4,6 +4,7 @@ import android.content.Context
 import android.hardware.SensorManager
 import android.provider.Settings
 import android.view.OrientationEventListener
+import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.type.ScreenOrientation
 
 /**
@@ -11,7 +12,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
  */
 class PlaySensorOrientationManager(
         private val context: Context,
-        private val listener: OrientationListener
+        private val listener: PlayOrientationListener
 ) : OrientationEventListener(context, SensorManager.SENSOR_DELAY_NORMAL) {
 
     /**
@@ -55,11 +56,7 @@ class PlaySensorOrientationManager(
             return
         } else if (newOrientation != currentOrientation) {
             currentOrientation = newOrientation
-            if (isAutoRotateEnabled) listener.onOrientationChanged(currentOrientation)
+            if (isAutoRotateEnabled) listener.onOrientationChanged(currentOrientation, isTilting = true)
         }
-    }
-
-    interface OrientationListener {
-        fun onOrientationChanged(screenOrientation: ScreenOrientation)
     }
 }

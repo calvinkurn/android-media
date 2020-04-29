@@ -30,10 +30,12 @@ import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -54,7 +56,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 06/03/20
  */
-class PlayBottomSheetFragment : BaseDaggerFragment() {
+class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -162,6 +164,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         job.cancel()
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return ::loadingDialog.isInitialized && loadingDialog.isVisible
     }
 
     private fun observeProductSheetContent() {

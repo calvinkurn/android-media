@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.fragment
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,11 +17,14 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.youtube.YouTubeComponent
 import com.tokopedia.play.ui.youtube.interaction.YouTubeInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.youtube.PlayYouTubeLayoutManager
 import com.tokopedia.play.view.layout.youtube.PlayYouTubeLayoutManagerImpl
 import com.tokopedia.play.view.layout.youtube.PlayYouTubeViewInitializer
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +38,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 28/04/20
  */
-class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer {
+class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, PlayFragmentContract {
 
     companion object {
 
@@ -65,11 +67,8 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
 
-    private var requestedOrientation: Int
-        get() = requireActivity().requestedOrientation
-        set(value) {
-            requireActivity().requestedOrientation = value
-        }
+    private val orientationListener: PlayOrientationListener
+        get() = requireParentFragment() as PlayOrientationListener
 
     override fun getScreenName(): String = "Play YouTube"
 
@@ -103,6 +102,16 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer {
 
         observeVideoPlayer()
         observeBottomInsetsState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        layoutManager.onDestroy()
+        job.cancel()
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return false
     }
 
     //region observe
@@ -176,10 +185,10 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer {
     }
 
     private fun enterFullscreen() {
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
     }
 }
