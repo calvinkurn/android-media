@@ -545,6 +545,7 @@ public class OrderListAnalytics {
         Map<String, Object> map = new HashMap<>();
         map.put("event", "openScreen");
         map.put("screenName", page);
+        map.put("isLoggedInStatus", "true");
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
 
     }
