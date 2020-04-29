@@ -37,7 +37,8 @@
         android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_marginEnd="@dimen/spacing_lvl4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

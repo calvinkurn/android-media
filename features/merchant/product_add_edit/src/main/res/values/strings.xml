@@ -207,8 +207,4 @@
     <!-- image picker -->
     <string name="error_image_under_x_resolution">Minimum file foto harus %1$dx%2$d piksel</string>
     <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
-
-    <!-- variant -->
-    <string name="error_variant_more_than_max">Stok melebihi batas maks. 999.999</string>
-    <string name="error_variant_minimum">Batas stok minimum varian adalah 1</string>
 </resources>
