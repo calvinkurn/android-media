@@ -27,10 +27,15 @@ import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.home.account.presentation.widget.SellerMigrationBottomSheetListener;
+import com.tokopedia.home.account.presentation.widget.SellerMigrationBottomsheet;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +50,7 @@ import kotlin.jvm.functions.Function2;
  * @author okasurya on 7/16/18.
  */
 public class SellerAccountFragment extends BaseAccountFragment implements AccountItemListener,
-        SellerAccount.View, FragmentListener {
+        SellerAccount.View, FragmentListener, SellerMigrationBottomSheetListener {
 
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
@@ -55,6 +60,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private RecyclerView recyclerView;
     private SellerAccountAdapter adapter;
     private PerformanceMonitoring fpmSeller;
+    private Ticker migrationTicker;
 
     @Inject
     SellerAccount.Presenter presenter;
@@ -81,6 +87,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         View view = inflater.inflate(R.layout.fragment_seller_account, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_seller);
+        migrationTicker = view.findViewById(R.id.account_seller_migration_ticker);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
@@ -99,7 +106,18 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
+        migrationTicker.setHtmlDescription(getString(R.string.account_ticker_seller_subtitle));
+        migrationTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                openSellerMigrationBottomSheet();
+            }
 
+            @Override
+            public void onDismiss() {
+
+            }
+        });
         swipeRefreshLayout.setOnRefreshListener(() -> {
             isLoaded = false;
             getData();
@@ -258,5 +276,22 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onProductRecommendationThreeDotsClicked(@NotNull RecommendationItem product, int adapterPosition) {
 
+    }
+
+    @Override
+    public void onClickGoToSellerApp() {
+        //Go To Seller App
+    }
+
+    @Override
+    public void onClickBottomSheetFooter() {
+        //Open webview or sth
+    }
+
+    private void openSellerMigrationBottomSheet() {
+        if(getContext() != null) {
+            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationBottomsheet.Companion.createNewInstance(getContext(), this);
+            sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
+        }
     }
 }
