@@ -16,6 +16,7 @@ import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
+import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
@@ -43,6 +44,7 @@ class FlightSearchViewModel @Inject constructor(
         private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
         private val flightAnalytics: FlightAnalytics,
+        private val flightSearchCache: FlightSearchCache,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -52,7 +54,6 @@ class FlightSearchViewModel @Inject constructor(
     var isCombineDone: Boolean = false
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
     var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
-    var internationalTransitTag: String = ""
     private var searchStatisticModel: FlightSearchStatisticModel? = null
     val isInFilterMode: Boolean
         get() {
@@ -312,7 +313,11 @@ class FlightSearchViewModel @Inject constructor(
 
     private fun onGetSearchMeta(flightSearchMeta: FlightSearchMetaModel, returnTrip: Boolean) {
         if (flightSearchMeta.internationalTag != null) {
-            internationalTransitTag = flightSearchMeta.internationalTag
+            flightSearchCache.setInternationalTransitTag(flightSearchMeta.internationalTag)
+        }
+
+        if (flightSearchMeta.backgroundRefreshTime > 0) {
+            flightSearchCache.setBackgroundRefreshTime(flightSearchMeta.backgroundRefreshTime)
         }
 
         if (!returnTrip) {

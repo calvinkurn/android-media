@@ -92,6 +92,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(getLayout(), container, false)
 
+    override fun onResume() {
+        super.onResume()
+        if (::flightSearchCache.isInitialized && flightSearchCache.isBackgroundCacheExpired()) {
+            resetDateAndReload(true)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -240,7 +247,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onDetailClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
         journeyModel?.let {
             flightSearchViewModel.sendDetailClickTrack(it, adapterPosition)
-            flightSearchCache.setInternationalTransitTag(flightSearchViewModel.internationalTransitTag)
             val flightDetailModel = FlightDetailModel()
             flightDetailModel.build(it)
             flightDetailModel.build(flightSearchViewModel.flightSearchPassData)

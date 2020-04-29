@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flight.R
+import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -33,5 +34,9 @@ class FlightSearchModule {
     @Provides
     @FlightSearchScope
     fun provideGraphqlCoroutineRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @Provides
+    @FlightSearchScope
+    fun provideFlightSearchCache(@ApplicationContext context: Context) = FlightSearchCache(context)
 
 }
