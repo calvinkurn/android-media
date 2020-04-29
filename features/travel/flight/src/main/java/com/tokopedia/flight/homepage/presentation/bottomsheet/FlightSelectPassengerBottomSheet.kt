@@ -63,6 +63,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
             setupQuantity(it)
         }
 
+        tickerPassengerInfo.setHtmlDescription(getString(R.string.select_passenger_infant_greater_than_adult_error_message))
         qtyFlightPassengerAdult.editText.isFocusable = false
         qtyFlightPassengerChild.editText.isFocusable = false
         qtyFlightPassengerInfant.editText.isFocusable = false
