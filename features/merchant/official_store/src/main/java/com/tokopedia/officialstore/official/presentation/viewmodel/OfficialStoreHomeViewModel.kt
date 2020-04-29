@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
@@ -61,7 +62,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
         get() = _officialStoreFeaturedShopResult
 
-    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
+    val officialStoreDynamicChannelResult: LiveData<Result<DynamicHomeChannelCommon>>
         get() = _officialStoreDynamicChannelResult
 
     val officialStoreProductRecommendationResult: LiveData<Result<RecommendationWidget>>
@@ -86,7 +87,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
+    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicHomeChannelCommon>>()
 
     private val _officialStoreProductRecommendation by lazy {
         MutableLiveData<Result<RecommendationWidget>>()

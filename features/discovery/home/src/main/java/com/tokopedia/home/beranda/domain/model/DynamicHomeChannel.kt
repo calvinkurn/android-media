@@ -13,8 +13,6 @@ data class DynamicHomeChannel(
     @SerializedName("channels")
     var channels: List<Channels> = listOf()
 ) {
-
-
     data class Channels(
             @Expose
             @SerializedName("id")

@@ -30,6 +30,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
@@ -55,6 +56,8 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -148,7 +151,12 @@ class OfficialHomeFragment :
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
+                this,
+                this,
+                this,
+                OfficialStoreHomeComponentCallback(),
+                OfficialStoreLegoBannerComponentCallback(this))
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -584,18 +592,18 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener {
+    override fun onClickLegoImage(channelModel: ChannelModel, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val gridData = channelData.grids?.get(position)
-            val applink = gridData?.applink ?: ""
+            val gridData = channelModel.channelGrids[position]
+            val applink = gridData.applink ?: ""
 
-            gridData?.let {
+            gridData.let {
                 tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
-                        channelData.header?.name ?: "",
+                        channelModel.headerName ?: "",
                         (position + 1).toString(10),
                         it,
-                        channelData
+                        channelModel
                 )
             }
 

@@ -3,6 +3,8 @@ package com.tokopedia.officialstore.analytics
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
@@ -360,31 +362,32 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
-    fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, gridData: Grid, channelData: Channel) {
+    fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(DataLayer.mapOf(
-                        "id", gridData.id.toString(10),
+                        "id", channelGrid.id,
                         "name", "/official-store/$categoryName - dynamic channel - $headerName",
                         "position", position,
-                        "creative", gridData.attribution,
-                        "creative_url", gridData.applink,
+                        "creative", channelGrid.attribution,
+                        "creative_url", channelGrid.applink,
                         "promo_id", null,
                         "promo_code", null
                 ))
             )
         )
 
+        val trackingAttributionModel = channelModel.trackingAttributionModel
         tracker.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, "promoClick",
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel - click",
                 EVENT_LABEL, "click dynamic channel - $headerName",
-                ATTRIBUTION, channelData.galaxyAttribution,
-                AFFINITY_LABEL, channelData.persona,
-                CATEGORY_ID, channelData.categoryPersona,
-                SHOP_ID, channelData.brandId,
-                CAMPAIGN_CODE, channelData.campaignID.toString(),
+                ATTRIBUTION, trackingAttributionModel.galaxyAttribution,
+                AFFINITY_LABEL, trackingAttributionModel.persona,
+                CATEGORY_ID, trackingAttributionModel.categoryPersona,
+                SHOP_ID, trackingAttributionModel.brandId,
+                CAMPAIGN_CODE, trackingAttributionModel.categoryId,
                 ECOMMERCE, ecommerceBody
         ))
     }

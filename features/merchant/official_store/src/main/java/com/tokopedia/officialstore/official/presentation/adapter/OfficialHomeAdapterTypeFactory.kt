@@ -6,6 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.listener.DynamicLegoBannerListener
+import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
@@ -15,8 +20,10 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 class OfficialHomeAdapterTypeFactory(
         private val recommendationListener: RecommendationListener,
         private val dcEventHandler: DynamicChannelEventHandler,
-        private val featuredShopListener: FeaturedShopListener
-) : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
+        private val featuredShopListener: FeaturedShopListener,
+        private val homeComponentListener: HomeComponentListener,
+        private val legoBannerListener: DynamicLegoBannerListener
+) : BaseAdapterTypeFactory(), OfficialHomeTypeFactory, HomeComponentTypeFactory {
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
         return if (officialBannerViewModel.banner.isEmpty())
@@ -54,6 +61,10 @@ class OfficialHomeAdapterTypeFactory(
         return OfficialLoadingContentViewHolder.LAYOUT
     }
 
+    override fun type(dynamicLegoBannerViewModel: DynamicLegoBannerViewModel): Int {
+        return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
@@ -68,6 +79,9 @@ class OfficialHomeAdapterTypeFactory(
             OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(parent, recommendationListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
+            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(
+                    parent, legoBannerListener, homeComponentListener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }
