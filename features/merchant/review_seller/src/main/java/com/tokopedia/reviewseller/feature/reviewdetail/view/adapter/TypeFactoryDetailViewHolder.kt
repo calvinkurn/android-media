@@ -7,4 +7,5 @@ interface TypeFactoryDetailViewHolder {
     fun type(overallRatingDetailUiModel: OverallRatingDetailUiModel): Int
     fun type(topicUiModel: TopicUiModel): Int
     fun type(filterUiModel: ProductReviewFilterUiModel): Int
+    fun type(feedbackErrorUiModel: ProductFeedbackErrorUiModel): Int
 }

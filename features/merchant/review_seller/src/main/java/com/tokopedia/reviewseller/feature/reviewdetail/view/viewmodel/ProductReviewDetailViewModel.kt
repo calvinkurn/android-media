@@ -10,6 +10,7 @@ import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.common.util.ReviewSellerUtil
 import com.tokopedia.reviewseller.common.util.getKeyByValue
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
+import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.domain.GetProductFeedbackDetailListUseCase
 import com.tokopedia.reviewseller.feature.reviewdetail.domain.GetProductReviewInitialUseCase
@@ -17,6 +18,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewP
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.BaseSellerReviewDetail
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackErrorUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductReviewFilterUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -39,42 +41,37 @@ class ProductReviewDetailViewModel @Inject constructor(
     private var chipsFilterText = "30 Hari Terakhir"
     private var productId = 0
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
+    var filterRatingData: List<RatingBarUiModel> = listOf()
 
     private val _chipFilterText = MutableLiveData<String>()
     private val _ratingFilterData = MutableLiveData<List<RatingBarUiModel>>()
 
-    private val _reviewInitialData = MediatorLiveData<Result<Pair<List<BaseSellerReviewDetail>, String>>>()
-    val reviewInitialData: LiveData<Result<Pair<List<BaseSellerReviewDetail>, String>>>
+    private val _reviewInitialData = MediatorLiveData<Result<Triple<List<BaseSellerReviewDetail>, String, Boolean>>>()
+    val reviewInitialData: LiveData<Result<Triple<List<BaseSellerReviewDetail>, String, Boolean>>>
         get() = _reviewInitialData
 
-    private val _productFeedbackDetail = MediatorLiveData<Result<Pair<Boolean, ProductFeedbackDetailUiModel>>>()
-    val productFeedbackDetail: LiveData<Result<Pair<Boolean, ProductFeedbackDetailUiModel>>>
+    private val _productFeedbackDetail = MediatorLiveData<Result<ProductFeedbackDetailUiModel>>()
+    val productFeedbackDetail: LiveData<Result<ProductFeedbackDetailUiModel>>
         get() = _productFeedbackDetail
 
     init {
         //Add Default Filter Date Value
         filterByList = mutableListOf(ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText))
 
-        setupInitialData()
         setupFeedBackDetail()
     }
 
-    private fun setupInitialData() {
-        _reviewInitialData.addSource(_chipFilterText) {
-            chipsFilterText = it
-            filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(it)
-            removeFilterElement("time=")
-            filterByList.add(ReviewSellerUtil.setFilterJoinValueFormat(filterPeriod))
-
-            getProductRatingDetail(productId, "")
-        }
+    fun setChipFilterDateText(chipFilterText: String) {
+        chipsFilterText = chipFilterText
+        filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterText)
+        removeFilterElement("time=")
+        filterByList.add(ReviewSellerUtil.setFilterJoinValueFormat(filterPeriod))
     }
 
     private fun setupFeedBackDetail() {
         _productFeedbackDetail.addSource(_ratingFilterData) { data ->
             val ratingFilterText = data?.filter { it.ratingIsChecked }.orEmpty()
-            val ratingFilterGenerated = if(ratingFilterText.isEmpty()) "" else ratingFilterText.
-            joinToString(prefix = "rating=", separator = ",") {
+            val ratingFilterGenerated = if (ratingFilterText.isEmpty()) "" else ratingFilterText.joinToString(prefix = "rating=", separator = ",") {
                 it.ratingLabel.toString()
             }
 
@@ -88,18 +85,25 @@ class ProductReviewDetailViewModel @Inject constructor(
         }
     }
 
-    private fun removeFilterElement(regex:String) {
+    private fun removeFilterElement(regex: String) {
         filterByList.removeAll {
             it.contains(regex)
         }
     }
 
-    fun setFilterRatingData(data: List<RatingBarUiModel>) {
-        _ratingFilterData.value = data
+    fun updateRatingFilterData(data: List<RatingBarUiModel>) {
+        filterRatingData = data
     }
 
-    fun setChipFilterText(text: String) {
-        _chipFilterText.value = text
+    fun setFilterRatingDataText(data: List<RatingBarUiModel>) {
+        val updatedData = data.map {
+            //UNCOMMENT THIS
+//            if (it.ratingCount == 0) {
+//                it.ratingIsChecked = false
+//            }
+            it
+        }
+        _ratingFilterData.value = updatedData
     }
 
     fun getProductRatingDetail(productID: Int, sortBy: String) {
@@ -107,16 +111,16 @@ class ProductReviewDetailViewModel @Inject constructor(
             productId = productID
             getProductReviewInitialUseCase.requestParams = GetProductReviewInitialUseCase.createParams(productID, getGeneratedFilterByText(), sortBy, 1)
             val data = getProductReviewInitialUseCase.executeOnBackground()
-            val productName = data.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct?.productName
-                    ?: ""
+
+            val productName = data.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct?.productName ?: ""
+            val hasNext = data.productFeedBackResponse?.productrevFeedbackDataPerProduct?.hasNext ?: false
+            val productFilterData = data.productReviewFilterResponse?.productrevFeedbackDataPerProduct ?: ProductFeedbackFilterData()
             val uiData: MutableList<BaseSellerReviewDetail> = mutableListOf()
 
             uiData.add(SellerReviewProductDetailMapper.mapToRatingDetailOverallUiModel(data.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct
                     ?: ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct(), chipsFilterText))
-            uiData.add(SellerReviewProductDetailMapper.mapToRatingBarUiModel(data.productFeedBackResponse?.productrevFeedbackDataPerProduct
-                    ?: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct()))
-            uiData.add(SellerReviewProductDetailMapper.mapToTopicUiModel(data.productFeedBackResponse?.productrevFeedbackDataPerProduct
-                    ?: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct()))
+            uiData.add(SellerReviewProductDetailMapper.mapToRatingBarUiModel(productFilterData, filterRatingData))
+            uiData.add(SellerReviewProductDetailMapper.mapToTopicUiModel(productFilterData))
 
             if (data.productFeedBackResponse == null) {
                 _reviewInitialData.postValue(Fail(Throwable()))
@@ -126,9 +130,9 @@ class ProductReviewDetailViewModel @Inject constructor(
                 } else {
                     uiData.addAll(SellerReviewProductDetailMapper.mapToFeedbackUiModel(data.productFeedBackResponse!!.productrevFeedbackDataPerProduct, userSession))
                 }
+                _reviewInitialData.postValue(Success(Triple(uiData, productName, hasNext)))
             }
 
-            _reviewInitialData.postValue(Success(uiData to productName))
         }) {
             _reviewInitialData.postValue(Fail(it))
         }
@@ -153,8 +157,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getProductFeedbackDetailList(productID: Int, sortBy: String, filterBy: String, page: Int = 1):
-            Pair<Boolean, ProductFeedbackDetailUiModel> {
+    private suspend fun getProductFeedbackDetailList(productID: Int, sortBy: String, filterBy: String, page: Int = 1): ProductFeedbackDetailUiModel {
         getProductFeedbackDetailListUseCase.params = GetProductFeedbackDetailListUseCase.createParams(
                 productID,
                 sortBy,
@@ -164,8 +167,6 @@ class ProductReviewDetailViewModel @Inject constructor(
         )
 
         val productFeedbackDetailResponse = getProductFeedbackDetailListUseCase.executeOnBackground()
-        return Pair(
-                productFeedbackDetailResponse.hasNext,
-                SellerReviewProductDetailMapper.mapToProductFeedbackDetailUiModel(productFeedbackDetailResponse, userSession))
+        return SellerReviewProductDetailMapper.mapToProductFeedbackDetailUiModel(productFeedbackDetailResponse, userSession)
     }
 }

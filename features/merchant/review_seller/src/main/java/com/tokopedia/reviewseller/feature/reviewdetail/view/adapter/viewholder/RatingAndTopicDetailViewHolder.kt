@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerRatingAndTopicListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
@@ -21,7 +22,7 @@ class RatingAndTopicDetailViewHolder(val view: View, val listener: SellerRatingA
     fun bind(element: RatingBarUiModel) {
         with(view) {
             rating_checkbox.setOnCheckedChangeListener(null)
-            rating_checkbox.isChecked = element.ratingIsChecked
+            setupRatingCheckbox(element)
 
             rating_checkbox.setOnCheckedChangeListener { _, isChecked ->
                 if (element.ratingLabel != -1 && element.ratingLabel != null && isChecked != element.ratingIsChecked) {
@@ -34,6 +35,20 @@ class RatingAndTopicDetailViewHolder(val view: View, val listener: SellerRatingA
             progress_bar_rating.apply {
                 setValue(element.ratingProgressBar.toInt(), true)
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private fun setupRatingCheckbox(element: RatingBarUiModel) = with(view) {
+        if (element.ratingCount == 0) {
+            rating_star_icon.setImageResource(R.drawable.ic_rating_star_inactive)
+            rating_star_label.setTextColor(MethodChecker.getColor(view.context, R.color.clr_review_not_found))
+            rating_checkbox.isEnabled = false
+        } else {
+            rating_star_icon.setImageResource(R.drawable.ic_rating_star_item)
+            rating_star_label.setTextColor(MethodChecker.getColor(view.context, R.color.typography_black))
+            rating_checkbox.isEnabled = true
+            rating_checkbox.isChecked = element.ratingIsChecked
         }
     }
 }

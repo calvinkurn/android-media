@@ -7,10 +7,10 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReview
  * Created by Yehezkiel on 28/04/20
  */
 data class ProductFeedbackErrorUiModel(
-        //False is backend error, and true if list is empty
         val error: Boolean = false
 ) : BaseSellerReviewDetail {
-    override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory?): Int {
-        TODO("Not yet implemented")
+
+    override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }

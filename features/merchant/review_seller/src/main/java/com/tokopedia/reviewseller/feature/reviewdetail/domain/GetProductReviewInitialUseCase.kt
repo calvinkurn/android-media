@@ -2,9 +2,11 @@ package com.tokopedia.reviewseller.feature.reviewdetail.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_FEEDBACK_FILTER
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
+import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewInitialDataResponse
 import com.tokopedia.usecase.RequestParams
@@ -58,7 +60,15 @@ class GetProductReviewInitialUseCase @Inject constructor(
         val feedbackDetailListRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL], ProductFeedbackDetailResponse::class.java,
                 feedbackDetailListParams)
 
-        val requests = mutableListOf(overAllRatingRequest, feedbackDetailListRequest)
+        val feedbackFilterParams = mapOf(PRODUCT_ID to productId,
+                SORT_BY to sortBy,
+                FILTER_BY to filterBy,
+                LIMIT to 10,
+                PAGE to 0)
+        val feedbackDetailFilterRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_FEEDBACK_FILTER], ProductFeedbackFilterResponse::class.java,
+                feedbackFilterParams)
+
+        val requests = mutableListOf(overAllRatingRequest, feedbackDetailListRequest, feedbackDetailFilterRequest)
 
         try {
             val gqlResponse = graphQlRepository.getReseponse(requests)
@@ -75,6 +85,11 @@ class GetProductReviewInitialUseCase @Inject constructor(
                 productReviewInitialResponse.productFeedBackResponse = null
             }
 
+            if (gqlResponse.getError(ProductFeedbackFilterResponse::class.java)?.isNotEmpty() != true) {
+                productReviewInitialResponse.productReviewFilterResponse = gqlResponse.getData<ProductFeedbackFilterResponse>(ProductFeedbackFilterResponse::class.java)
+            } else {
+                productReviewInitialResponse.productReviewFilterResponse = null
+            }
         } catch (e: Throwable) {
 
         }

@@ -42,9 +42,27 @@ class SellerReviewDetailAdapter(
 
     fun updateFilterRating(position: Int, updatedState: Boolean, filterRatingInstance: ProductReviewFilterUiModel?) {
         val filterRatingIndex = visitables.indexOf(filterRatingInstance)
+        val feedbackFirstIndex = visitables.count { it is FeedbackUiModel }
+
         if (filterRatingInstance != null && filterRatingIndex != -1) {
             filterRatingInstance.ratingBarList.getOrNull(position)?.ratingIsChecked = updatedState
             notifyItemChanged(filterRatingIndex, PAYLOAD_RATING_FILTER)
+            visitables.removeAll { it is FeedbackUiModel }
+            notifyItemRangeRemoved(visitables.size, feedbackFirstIndex)
+        }
+    }
+
+    fun removeReviewNotFound() {
+        if (visitables.getOrNull(lastIndex) is ProductFeedbackErrorUiModel) {
+            visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
+    }
+
+    fun addReviewNotFound() {
+        if (visitables.getOrNull(lastIndex) !is ProductFeedbackErrorUiModel) {
+            visitables.add(ProductFeedbackErrorUiModel())
+            notifyItemInserted(lastIndex)
         }
     }
 
