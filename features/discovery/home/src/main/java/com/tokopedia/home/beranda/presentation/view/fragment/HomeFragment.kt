@@ -717,7 +717,8 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
-        return list.any{it == type}
+        val instance = list.filterIsInstance(type)
+        return instance.isNotEmpty()
     }
 
     private fun loadEggData() {
