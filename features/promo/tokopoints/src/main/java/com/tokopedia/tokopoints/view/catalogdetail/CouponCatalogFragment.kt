@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -35,6 +36,7 @@ import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
@@ -653,16 +655,21 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     private fun loadWebViewInBottomsheet(data: String, title: String) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
-        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, true)
+        val bottomSheet = BottomSheetUnify()
+        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        val closeBtn = view.findViewById<ImageView>(R.id.close_button)
-        val titleView: Typography = view.findViewById(R.id.title_closeable)
+       /* val closeBtn = view.findViewById<ImageView>(R.id.close_button)
+        val titleView = view.findViewById<Typography>(R.id.title_closeable)*/
+
         webView.loadData(data, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        closeBtn.setOnClickListener { v: View? -> bottomSheet.dismiss() }
-        titleView.text = title
-        bottomSheet.setCustomContentView(view, title, false)
-        bottomSheet.show()
+     /*   closeBtn.setOnClickListener { v -> bottomSheet.dismiss() }
+        titleView.text = title*/
+        bottomSheet.setChild(view)
+        bottomSheet.setTitle(title)
+        bottomSheet.showCloseIcon=true
+        bottomSheet.isDragable=true
+        bottomSheet.isHideable=true
+        bottomSheet.show(fragmentManager!!,"")
     }
 
     override fun gotoSendGiftPage(id: Int, title: String, pointStr: String, banner: String) {

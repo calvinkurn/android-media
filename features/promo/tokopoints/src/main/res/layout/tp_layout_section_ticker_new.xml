@@ -15,7 +15,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/container_dynamic_links"
     tools:visibility="visible">
-
+<!--
     <ImageView
         android:id="@+id/ic_close_ticker"
         android:layout_width="wrap_content"
@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+    <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/page_indicator_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,9 +45,19 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/dp_4"
         android:padding="@dimen/tp_margin_xsmall"
-        app:fillColor="@color/tp_ticker_indicator_selected_color"
         app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker"
-        app:pageColor="@color/tp_ticker_indicator_default_color" />
+        app:indicator_color="@color/tp_ticker_indicator_default_color" />-->
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_section"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="visible"
+        app:enableAutoSlide="true"
+        app:autoSlideDelayNumber="5000"
+        app:tickerType="announcement"
+        app:tickerShapeType="full" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

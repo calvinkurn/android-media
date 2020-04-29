@@ -51,14 +51,15 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mTvFlashTimerLabel: TextView? = null
     private var mProgressFlash: ProgressBar? = null
     private var mContainerFlashTimer: ConstraintLayout? = null
+
     /*This section is exclusively for handling flash-sale timer*/
     var mFlashTimer: CountDownTimer? = null
     private var mAppBarHeader: AppBarLayout? = null
 
     @Inject
-    lateinit var  factory: ViewModelFactory
+    lateinit var factory: ViewModelFactory
 
-    private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java)}
+    private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java) }
 
     private var bottomViewMembership: LinearLayout? = null
     private var mContainerPointDetail: ConstraintLayout? = null
@@ -67,8 +68,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var filtersBottomSheet: FiltersBottomSheet? = null
     private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
-
-
 
 
     override fun onErrorFilter(errorMessage: String, hasInternet: Boolean) {
@@ -126,7 +125,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private fun addPointObserver() = mViewModel.pointLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is ErrorMessage -> onErrorPoint(it.data)
                 is Success -> onSuccessPoints(it.data.points.rewardStr,
                         it.data.points.reward,
@@ -136,9 +135,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
     })
 
-    private fun addFlterObserver()  = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addFlterObserver() = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Loading -> showLoader()
                 is ErrorMessage -> onErrorFilter(it.data, NetworkDetector.isConnectedToInternet(context))
                 is Success -> onSuccessFilter(it.data)
@@ -148,7 +147,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private fun addBannerOberser() = mViewModel.bannerLiveDate.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Success -> onSuccessBanners(it.data.banners)
                 is ErrorMessage -> onErrorBanners(it.data)
             }
@@ -175,8 +174,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun refreshTab() {
         val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
         if (fragment != null && fragment.isAdded) {
-                fragment.viewModel.pointRange = mViewModel.pointRangeId
-                fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
+            fragment.viewModel.pointRange = mViewModel.pointRangeId
+            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
         }
     }
 
@@ -191,7 +190,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             return
         }
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
-        pager.adapter = CatalogBannerPagerAdapter(context, banners,this)
+        pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
         val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator)
         pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
@@ -203,7 +202,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
         if (!rewardStr.isEmpty()) mTextPoints!!.text = rewardStr
-        mTextPointsBottom!!.text = CurrencyFormatUtil.convertPriceValue(rewardValue.toDouble(), false)
+        mTextPointsBottom!!.text = CurrencyHelper.convertPriceValue(rewardValue.toDouble(), false)
         isPointsAvailable = true
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
@@ -213,7 +212,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun onSuccessFilter(filters: CatalogFilterBase) {
         hideLoader()
         //Setting up filters
-        setUpFilters(filters.pointRanges)
+        //  setUpFilters(filters.pointRanges)
         //Setting up subcategories types tabs
         if (filters == null || filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
@@ -257,10 +256,10 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                     val fragment = mViewPagerAdapter!!.getRegisteredFragment(position) as CatalogListItemFragment?
                     if (fragment != null
                             && fragment.isAdded) {
-                            mViewModel.currentCategoryId = filters.categories[0].id
-                            mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
-                            fragment.viewModel.pointRange = mViewModel.pointRangeId
-                            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
+                        mViewModel.currentCategoryId = filters.categories[0].id
+                        mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
+                        fragment.viewModel.pointRange = mViewModel.pointRangeId
+                        fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
                     }
                     if (filters.categories[0].subCategory[position].timeRemainingSeconds > 0) {
                         startFlashTimer(filters.categories[0].subCategory[position])
@@ -454,10 +453,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     private val isSeeAllPage: Boolean
-        private get() = if (arguments == null
-                || StringUtils.isBlank(arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY))) {
-            true
-        } else false
+        get() = (arguments == null
+                || (arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY)).isNullOrEmpty())
 
     private fun getSelectedCategoryIndex(data: List<CatalogSubCategory>): Int {
         var counter = 0

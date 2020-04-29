@@ -25,6 +25,7 @@ import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.view.*
 import javax.inject.Inject
@@ -195,7 +196,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     fun showCouponInStackBottomSheet(data: TokoPointPromosEntity) {
-        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(activity)
+        val closeableBottomSheetDialog = BottomSheetUnify()
         val view = layoutInflater.inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_coupon_in_stack)
 
@@ -217,7 +218,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
             }
 
             override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-                closeableBottomSheetDialog.show()
+                closeableBottomSheetDialog.show(childFragmentManager,"")
             }
 
             override fun onStartPageLoad(pageNumber: Int) {
@@ -234,7 +235,14 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }, data)
 
         recyclerView.adapter = mStackedInadapter
-        closeableBottomSheetDialog.setContentView(view)
+        closeableBottomSheetDialog.apply {
+            setChild(view)
+            isDragable=true
+            isHideable=true
+            showCloseIcon=false
+            showHeader=false
+        }
+        closeableBottomSheetDialog.show(childFragmentManager,"")
         mStackedInadapter.startDataLoading()
 
     }

@@ -21,6 +21,7 @@ import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.layout_tp_server_error.view.*
 import kotlinx.android.synthetic.main.tp_content_point_history.view.*
 import kotlinx.android.synthetic.main.tp_content_point_history_header.view.*
@@ -40,12 +41,12 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     private var mStrLoyaltyExpInfo: String? = null
 
     @Inject
-    lateinit var viewModelFactory : ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var mAdapter: PointHistoryListAdapter
 
-    private  val mPresenter: PointHistoryViewModel by  lazy { ViewModelProviders.of(this,viewModelFactory).get(PointHistoryViewModel::class.java) }
+    private val mPresenter: PointHistoryViewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(PointHistoryViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
@@ -77,8 +78,8 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
             it?.let {
                 when (it) {
                     is Loading -> mAdapter.startDataLoading()
-                    is ErrorMessage ->{
-                        if (it.data.isEmpty()){
+                    is ErrorMessage -> {
+                        if (it.data.isEmpty()) {
                             onEmptyList()
                             return@let
                         }
@@ -131,8 +132,8 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
         view?.apply {
             data?.let { data ->
                 con_header.visibility = View.VISIBLE
-                text_my_points_value.text = CurrencyFormatUtil.convertPriceValue(data.reward.toDouble(), false)
-                text_loyalty_value.text = CurrencyFormatUtil.convertPriceValue(data.loyalty.toDouble(), false)
+                text_my_points_value.text = CurrencyHelper.convertPriceValue(data.reward.toDouble(), false)
+                text_loyalty_value.text = CurrencyHelper.convertPriceValue(data.loyalty.toDouble(), false)
                 mStrPointExpInfo = data.rewardExpiryInfo
                 mStrLoyaltyExpInfo = data.loyaltyExpiryInfo
                 container_main.displayedChild = CONTAINER_DATA
@@ -155,7 +156,6 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     }
 
 
-
     override fun onClick(v: View) {
         if (v.id == R.id.btn_history_info) {
             showHistoryExpiryBottomSheet(mStrPointExpInfo, mStrLoyaltyExpInfo)
@@ -167,16 +167,21 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     }
 
     private fun showHistoryExpiryBottomSheet(pointInfo: String?, loyaltyInfo: String?) {
-        val dialog = CloseableBottomSheetDialog.createInstanceRounded(activity)
+        val dialog = BottomSheetUnify()
         val view = layoutInflater.inflate(R.layout.tp_point_history_info, null, false)
         val textPoint = view.findViewById<TextView>(R.id.text_point_exp_info)
         val textLoyalty = view.findViewById<TextView>(R.id.text_loyalty_exp_info)
         textPoint.text = MethodChecker.fromHtml(pointInfo)
         textLoyalty.text = MethodChecker.fromHtml(loyaltyInfo)
         view.findViewById<View>(R.id.btn_help_history).setOnClickListener { v -> RouteManager.route(context, CommonConstant.WebLink.INFO_EXPIRED_POINTS, getString(R.string.tp_title_tokopoints)) }
-        dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), false)
-        dialog.show()
-        view.findViewById<View>(R.id.close_button).setOnClickListener { v -> dialog.dismiss() }
+        dialog.apply {
+            setChild(view)
+            showCloseIcon = true
+            setCloseClickListener { dismiss() }
+            context?.resources?.getString(R.string.tp_title_history_bottomshet)?.let { setTitle(it) }
+        }
+
+        dialog.show(childFragmentManager, "")
     }
 
     companion object {

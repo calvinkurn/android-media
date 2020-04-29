@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
@@ -64,9 +65,17 @@ import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.tp_tooltip_es.view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /*
  * Dynamic layout params are applied via
@@ -88,9 +97,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var bottomViewMembership: LinearLayout? = null
     private var appBarHeader: AppBarLayout? = null
     private var mRvDynamicLinks: RecyclerView? = null
+
     @Inject
     lateinit var viewFactory: ViewModelFactory
-    private val mPresenter: TokoPointsHomeViewModel by lazy { ViewModelProviders.of(this,viewFactory).get(TokoPointsHomeViewModel::class.java) }
+    private val mPresenter: TokoPointsHomeViewModel by lazy { ViewModelProviders.of(this, viewFactory).get(TokoPointsHomeViewModel::class.java) }
     private var mSumToken = 0
     private var mValueMembershipDescription: String? = null
     private var mStartPurchaseBottomSheet: StartPurchaseBottomSheet? = null
@@ -289,33 +299,33 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     private fun addTokopointDetailObserver() = mPresenter.tokopointDetailLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-           when(it){
-               is Loading -> showLoading()
-               is ErrorMessage -> {
-                   hideLoading()
-                   onError(it.data, NetworkDetector.isConnectedToInternet(context))
-                   onFinishRendering()
-               }
-               is Success -> {
-                   hideLoading()
-                   onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
-                   onFinishRendering()
-               }
-           }
+            when (it) {
+                is Loading -> showLoading()
+                is ErrorMessage -> {
+                    hideLoading()
+                    onError(it.data, NetworkDetector.isConnectedToInternet(context))
+                    onFinishRendering()
+                }
+                is Success -> {
+                    hideLoading()
+                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
+                    onFinishRendering()
+                }
+            }
         }
     })
 
     private fun addRedeemCouponObserver() = mPresenter.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context,it) }
+        it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = mPresenter.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = mPresenter.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
-                is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
+            when (it) {
+                is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
                 is ValidationError<*, *> -> {
-                    if (it.data is ValidateMessageDialog){
-                        showValidationMessageDialog(it.data.item,it.data.title,it.data.desc,it.data.messageCode)
+                    if (it.data is ValidateMessageDialog) {
+                        showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                     }
                 }
             }
@@ -690,21 +700,25 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     private fun showOnBoardingTooltip(title: String, content: String) {
-        val mToolTip = BottomSheetView(activityContext)
-        mToolTip.renderBottomSheet(BottomSheetFieldBuilder()
-                .setTitle(title)
-                .setBody(content)
-                .setCloseButton(getString(R.string.tp_label_check_storepoints))
-                .build())
-        mToolTip.show()
-        mToolTip.setBtnCloseOnClick { view: View? ->
+        val view = LayoutInflater.from(context).inflate(R.layout.tp_tooltip_es, null, false)
+        view.es_tooltip.setDescription(content)
+        view.es_tooltip.emptyStatePrimaryCTAText = getString(R.string.tp_label_check_storepoints)
+        val mToolTip = BottomSheetUnify()
+        mToolTip.apply {
+            setChild(view)
+            setTitle(title)
+            showCloseIcon = false
+        }
+        view.es_tooltip.setPrimaryCTAClickListener {
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
                     AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL)
-            mToolTip.cancel()
+            mToolTip.dismiss()
         }
+
+        mToolTip.show(childFragmentManager, "")
     }
 
     override fun showTokoPointCoupon(data: TokoPointSumCoupon) {
@@ -723,30 +737,19 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             tickerContainer!!.visibility = View.GONE
             return
         }
-        val pager: ViewPager = view!!.findViewById(R.id.view_pager_ticker)
-        pager.adapter = SectionTickerPagerAdapter(context, content.layoutTickerAttr.tickerList)
-        val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator_ticker)
-        val hideTickerView = view!!.findViewById<View>(R.id.ic_close_ticker)
-        hideTickerView.visibility = View.GONE
-        if (content.layoutTickerAttr.tickerList.size > 1) { //adding bottom dots(Page Indicator)
-            pageIndicator.visibility = View.VISIBLE
-            pageIndicator.setViewPager(pager, 0)
-        } else {
-            pageIndicator.visibility = View.GONE
-        }
-        tickerContainer!!.visibility = View.VISIBLE
-        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-            override fun onPageSelected(position: Int) {
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_TICKER,
-                        "")
-            }
+        tickerContainer?.visibility = View.VISIBLE
+        val ticker: Ticker = view!!.findViewById(R.id.ticker_section)
+        val tickerDataList = content.layoutTickerAttr.tickerList as ArrayList<TickerData>
+        val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
+        ticker.addPagerView(tickerPagerAdapter, tickerDataList)
 
-            override fun onPageScrollStateChanged(state: Int) {}
-        })
+        ticker.setOnClickListener {
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_TICKER,
+                    "")
+        }
     }
 
     override fun renderCategory(content: SectionContent) {
@@ -796,14 +799,14 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     ImageHandler.loadImageCircle2(activityContext, mImgEggBottom, data.status.tier.eggImageHomepageURL)
                 }
                 if (data.status.points != null) {
-                    mTextPoints!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.reward.toDouble(), false)
-                    mTextPointsBottom!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.reward.toDouble(), false)
-                    mTextLoyalty!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.loyalty.toDouble(), false)
+                    mTextPoints!!.text = CurrencyHelper.convertPriceValue(data.status.points.reward.toDouble(), false)
+                    mTextPointsBottom!!.text = CurrencyHelper.convertPriceValue(data.status.points.reward.toDouble(), false)
+                    mTextLoyalty!!.text = CurrencyHelper.convertPriceValue(data.status.points.loyalty.toDouble(), false)
                 }
             }
         }
         //init bottom sheet
-        renderPurchaseBottomsheet(data.lobs)
+        // renderPurchaseBottomsheet(data.lobs)
     }
 
     override fun renderPurchaseBottomsheet(data: LobDetails) {
@@ -879,7 +882,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         if (data.title.isEmpty() || data.title == null || data.appLink.isEmpty() || data.appLink == null) {
             return
         }
-        val btn: ButtonCompat
+        val btn: UnifyButton
         val titleDialog: Typography
         val descDialog: Typography
         val boxImageView: ImageView
