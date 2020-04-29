@@ -195,6 +195,10 @@ public class FavoritePresenter
         }
     }
 
+    boolean hasNextPage() {
+        return pagingHandler.CheckNextPage();
+    }
+
     private class InitialDataSubscriber extends Subscriber<DataFavorite> {
 
         @Override
