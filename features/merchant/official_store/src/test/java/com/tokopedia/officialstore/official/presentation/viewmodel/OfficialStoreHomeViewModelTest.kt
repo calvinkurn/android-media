@@ -33,6 +33,8 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rx.Observable
+import rx.observables.BlockingObservable
 
 @ExperimentalCoroutinesApi
 class OfficialStoreHomeViewModelTest {
@@ -146,28 +148,12 @@ class OfficialStoreHomeViewModelTest {
 ////            verifyDynamicChannelParamsEquals(channelType)
 ////        }
 ////    }
-//
+
     @Test
     fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation() {
-//        runBlocking {
-//            val page = 1
-//            val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-//            val productRecommendation = listOf(
-//                    RecommendationWidget(title = "Recommendation 1"),
-//                    RecommendationWidget(title = "Recommendation 2")
-//            )
-//
-//            onGetOfficialStoreProductRecommendation_thenReturn(productRecommendation)
-//
-//            viewModel.loadMoreProducts(categoryId, page)
-//
-//            val expectedProductRecommendation = Success(productRecommendation[0])
-//            verifyOfficialStoreProductRecommendationEquals(expectedProductRecommendation)
-//        }
         val page = 1
         val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
         val listOfRecom = RecommendationWidget()
-        // val error = NullPointerException()
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first().get(0)
@@ -186,7 +172,6 @@ class OfficialStoreHomeViewModelTest {
     fun given_get_data_error__when_load_more__should_set_product_recommendation_error_value() {
         val page = 1
         val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-        // val error = NullPointerException()
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking()
@@ -199,64 +184,30 @@ class OfficialStoreHomeViewModelTest {
         }
         print(viewModel.productRecommendation.value)
         Assert.assertTrue(viewModel.productRecommendation.value is Fail)
-
-//        runBlocking {
-//            val page = 1
-//            val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-////        val error = NullPointerException()
-//
-//            onGetOfficialStoreProductRecommendation_thenReturn()
-////        coEvery {
-////            getRecommendationUseCase.createObservable(any()).toBlocking()
-////        } throws Throwable()
-//
-//            viewModel.loadMoreProducts(categoryId, page)
-//
-////        coVerify {
-////            getRecommendationUseCase.createObservable(any())
-////        }
-//            print(viewModel.productRecommendation.value)
-//            val expectedError = Fail(NullPointerException())
-//            verifyOfficialStoreProductRecommendationError(expectedError)
-//        }
-
-//        Assert.assertTrue(viewModel.productRecommendation.value is Fail)
-
-//          ==================== //
-//        runBlocking {
-//            val page = 1
-//            val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-//            val error = NullPointerException()
-//
-//            onGetOfficialStoreProductRecommendation_thenReturn(error)
-//
-//            viewModel.loadMoreProducts(categoryId, page)
-//            print(viewModel.productRecommendation.value)
-//
-//            val expectedError = Fail(NullPointerException())
-//            verifyOfficialStoreProductRecommendationError(expectedError)
-//        }
     }
-//
-//    @Test
-//    fun given_recommendation_is_top_ads__when_add_to_wishlist__should_set_success_value() {
-//        runBlocking {
-//            val isTopAds = true
-//            val wishList = WishlistModel()
-//            val recommendation = RecommendationItem(isTopAds = isTopAds)
-//            val callback = mockk<((Boolean, Throwable?) -> Unit)>()
-//
-//            onAddTopAdsWishList_thenReturn(wishList)
-//
-//            viewModel.addWishlist(recommendation, callback)
-//
-//            val expectedWishList = Success(wishList)
-//            verifyTopAdsWishListEquals(expectedWishList)
-//
-//            callback.assertSuccess()
-//        }
-//    }
-//
+
+    @Test
+    fun given_recommendation_is_top_ads__when_add_to_wishlist__should_set_success_value() {
+        runBlocking {
+            val isTopAds = true
+            val wishList = WishlistModel()
+            val recommendation = RecommendationItem(isTopAds = isTopAds)
+            val callback = mockk<((Boolean, Throwable?) -> Unit)>()
+
+            coEvery {
+                topAdsWishlishedUseCase.createObservable(any())
+            } returns mockObservable(wishList)
+
+            viewModel.addWishlist(recommendation, callback)
+
+            coVerify { topAdsWishlishedUseCase.createObservable(any()) }
+
+            print(viewModel.topAdsWishlistResult)
+            Assert.assertTrue(viewModel.topAdsWishlistResult.value is Success)
+            callback.assertSuccess()
+        }
+    }
+
 //    @Test
 //    fun given_recommendation_is_top_ads__when_add_to_wishlist_failed__should_set_error_value() {
 //        runBlocking {
@@ -373,4 +324,18 @@ class OfficialStoreHomeViewModelTest {
 //
 //        verifyIsLoggedInEquals(false)
 //    }
+
+    private fun <T> mockObservable(data: T): Observable<T> {
+        val obs = mockk<Observable<T>>()
+        val blockingObs = mockk<BlockingObservable<T>>()
+
+        coEvery { blockingObs.first() } returns data
+        coEvery { obs.toBlocking() } returns blockingObs
+
+        return obs
+    }
+
+    protected fun ((Boolean, Throwable?) -> Unit).assertSuccess() {
+        coVerify { this@assertSuccess.invoke(true, null) }
+    }
 }
