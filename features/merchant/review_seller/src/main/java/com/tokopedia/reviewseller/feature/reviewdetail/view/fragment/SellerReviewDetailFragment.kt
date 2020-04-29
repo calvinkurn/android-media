@@ -27,10 +27,12 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularT
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductReviewFilterUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -154,23 +156,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.productFeedbackDetail?.removeObservers(this)
         viewModelProductReviewDetail?.flush()
         super.onDestroy()
-    }
-
-    /**
-     * Listener Section
-     */
-    override fun onChildTopicFilterClicked(item: SortFilterItem) {
-        // asd.foreach{ if(name==terbaru) isSelected =isSelected }
-        // asd.map{ if(selected) globalTopics = it.name.append(, )} " "
-        // globalData terbaru
-        // topics = "
-        Toaster.make(view!!, item.title.toString(), Snackbar.LENGTH_LONG)
-    }
-
-    override fun onParentTopicFilterClicked() {
-        val bottomSheet = PopularTopicsBottomSheet(activity, "test", ::onTopicsClicked)
-        bottomSheet.showDialog()
-        Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
     }
 
     private fun onTopicsClicked(data: List<String>) {
@@ -440,12 +425,27 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
+    /**
+     * Listener Section
+     */
+    override fun onChildTopicFilterClicked(item: SortFilterItem, adapterPosition: Int) {
+        val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
+        val updatedState = item.type == ChipsUnify.TYPE_SELECTED
+        reviewSellerDetailAdapter.updateFilterTopic(adapterPosition, item.title.toString(), updatedState, getTopicsFilterFromAdapter)
+    }
+
+    override fun onParentTopicFilterClicked() {
+        val bottomSheet = PopularTopicsBottomSheet(activity, "test", ::onTopicsClicked)
+        bottomSheet.showDialog()
+        Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
+    }
+
     override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int) {
-        val getTopicFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()
-        val getSelectedCheckbox = getTopicFromAdapter?.ratingBarList?.getOrNull(adapterPosition)
+        val getRatingFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()
+        val getSelectedCheckbox = getRatingFilterFromAdapter?.ratingBarList?.getOrNull(adapterPosition)
         if (getSelectedCheckbox?.ratingIsChecked != ratingAndState.second && getSelectedCheckbox != null) {
-            reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second, getTopicFromAdapter)
-            viewModelProductReviewDetail?.setFilterRatingDataText(getTopicFromAdapter.ratingBarList)
+            reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second, getRatingFilterFromAdapter)
+            viewModelProductReviewDetail?.setFilterRatingDataText(getRatingFilterFromAdapter.ratingBarList)
             reviewSellerDetailAdapter.removeReviewNotFound()
             reviewSellerDetailAdapter.showLoading()
         }

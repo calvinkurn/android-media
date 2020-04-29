@@ -11,6 +11,7 @@ class SellerReviewDetailAdapter(
 
     companion object {
         const val PAYLOAD_RATING_FILTER = 101
+        const val PAYLOAD_TOPIC_FILTER = 102
     }
 
     private var productReviewDetailFeedback: MutableList<FeedbackUiModel> = mutableListOf()
@@ -49,6 +50,19 @@ class SellerReviewDetailAdapter(
             notifyItemChanged(filterRatingIndex, PAYLOAD_RATING_FILTER)
             visitables.removeAll { it is FeedbackUiModel }
             notifyItemRangeRemoved(visitables.size, feedbackFirstIndex)
+        }
+    }
+
+    fun updateFilterTopic(position: Int, selectedTopic: String, updatedState: Boolean, data: TopicUiModel?) {
+        val feedbackFirstIndex = visitables.count { it is FeedbackUiModel }
+        if (position != -1) {
+            val selectedTopicData = data?.sortFilterItemList?.find {
+                it.sortFilterItem?.title == selectedTopic
+            }
+            selectedTopicData?.isSelected = updatedState
+            notifyItemChanged(position, PAYLOAD_TOPIC_FILTER)
+//            visitables.removeAll { it is FeedbackUiModel }
+//            notifyItemRangeRemoved(visitables.size, feedbackFirstIndex)
         }
     }
 

@@ -150,8 +150,8 @@ object SellerReviewProductDetailMapper {
     }
 
 
-    private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>): ArrayList<Triple<SortFilterItem, Boolean, Int>> {
-        val itemSortFilterList = ArrayList<Triple<SortFilterItem, Boolean, Int>>()
+    private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>): ArrayList<SortFilterItemWrapper> {
+        val itemSortFilterList = ArrayList<SortFilterItemWrapper>()
         val maxData = data.take(4)
         maxData.map {
             val sortFilter = SortFilterItem(
@@ -159,7 +159,7 @@ object SellerReviewProductDetailMapper {
                     type = ChipsUnify.TYPE_NORMAL,
                     size = ChipsUnify.SIZE_SMALL)
 
-            itemSortFilterList.add(Triple(sortFilter, ReviewSellerConstant.TOPIC_POPULAR_UNSELECTED, it.count))
+            itemSortFilterList.add(SortFilterItemWrapper(sortFilter, ReviewSellerConstant.TOPIC_POPULAR_UNSELECTED, it.count))
         }
         return itemSortFilterList
     }
