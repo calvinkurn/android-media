@@ -3,7 +3,6 @@ package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
