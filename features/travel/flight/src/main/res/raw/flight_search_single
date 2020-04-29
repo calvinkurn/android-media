@@ -76,8 +76,6 @@ query Searching($data: SearchSingleArgs) {
       child
       infant
       requestID
-      internationalTransitTag
-      backgroundRefreshTime
     }
   }
 }
