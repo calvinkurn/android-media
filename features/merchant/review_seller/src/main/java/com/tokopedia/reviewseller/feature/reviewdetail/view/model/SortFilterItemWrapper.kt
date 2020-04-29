@@ -8,5 +8,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 data class SortFilterItemWrapper(
         val sortFilterItem: SortFilterItem? = null,
         var isSelected: Boolean = false,
-        val count: Int = 0
+        val count: Int = 0,
+        val titleUnformated: String = ""
 )

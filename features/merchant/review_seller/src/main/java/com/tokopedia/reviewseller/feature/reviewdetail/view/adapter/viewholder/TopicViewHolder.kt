@@ -39,6 +39,11 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
         resultFeedbackLabel.text = setReviewCountBold(element.countFeedback.orZero())
     }
 
+    override fun bind(element: TopicUiModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        // Do Nothing, just Update Data
+    }
+
     private fun setReviewCountBold(reviewCount: Int): SpannableString {
         val strView = getString(R.string.count_review_label).substring(0, 11)
         val strFormat = String.format(getString(R.string.count_review_label), reviewCount.toString())

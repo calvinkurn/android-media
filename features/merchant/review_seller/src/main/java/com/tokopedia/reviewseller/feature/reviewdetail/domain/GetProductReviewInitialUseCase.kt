@@ -27,13 +27,15 @@ class GetProductReviewInitialUseCase @Inject constructor(
         private const val SORT_BY = "sortBy"
         private const val LIMIT = "limit"
         private const val PAGE = "page"
+        private const val TIME_FILTER = "timeFilter"
 
         @JvmStatic
-        fun createParams(productID: Int, filterBy: String, sortBy: String, page: Int): RequestParams = RequestParams.create().apply {
+        fun createParams(productID: Int, filterBy: String, sortBy: String, page: Int, timeFilter: String): RequestParams = RequestParams.create().apply {
             putInt(PRODUCT_ID, productID)
             putString(FILTER_BY, filterBy)
             putString(SORT_BY, sortBy)
             putInt(PAGE, page)
+            putString(TIME_FILTER, timeFilter)
         }
     }
 
@@ -44,9 +46,9 @@ class GetProductReviewInitialUseCase @Inject constructor(
 
         val productId = requestParams.getInt(PRODUCT_ID, 0)
         val filterBy = requestParams.getString(FILTER_BY, "")
-        val limit = requestParams.getInt(LIMIT, 0)
         val sortBy = requestParams.getString(SORT_BY, "")
         val page = requestParams.getInt(PAGE, 0)
+        val timeFilter = requestParams.getString(TIME_FILTER, "")
 
         val overAllRatingParams = mapOf(PRODUCT_ID to productId, FILTER_BY to filterBy)
         val overAllRatingRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL], ProductReviewDetailOverallResponse::class.java,
@@ -62,7 +64,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
 
         val feedbackFilterParams = mapOf(PRODUCT_ID to productId,
                 SORT_BY to sortBy,
-                FILTER_BY to filterBy,
+                FILTER_BY to timeFilter,
                 LIMIT to 10,
                 PAGE to 0)
         val feedbackDetailFilterRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_FEEDBACK_FILTER], ProductFeedbackFilterResponse::class.java,

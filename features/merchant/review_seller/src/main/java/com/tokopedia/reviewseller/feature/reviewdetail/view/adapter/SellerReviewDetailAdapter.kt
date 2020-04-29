@@ -16,29 +16,11 @@ class SellerReviewDetailAdapter(
 
     private var productReviewDetailFeedback: MutableList<FeedbackUiModel> = mutableListOf()
 
-    fun setOverallRatingDetailData(overallRatingDetailUiModel: OverallRatingDetailUiModel) {
-        val lastIndex = visitables.size
-        visitables.add(overallRatingDetailUiModel)
-        notifyItemInserted(lastIndex)
-    }
-
-    fun setRatingBarDetailData(ratingBarUiModel: List<RatingBarUiModel>) {
-        val lastIndex = visitables.size
-//        visitables.addAll(ratingBarUiModel)
-        notifyItemRangeInserted(lastIndex, ratingBarUiModel.size)
-    }
-
-    fun setTopicDetailData(topicUiModel: TopicUiModel) {
-        val lastIndex = visitables.size
-        visitables.add(topicUiModel)
-        notifyItemInserted(lastIndex)
-    }
-
     fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>) {
         val lastIndex = visitables.size
         productReviewDetailFeedback.addAll(feedbackListUiModel)
         visitables.addAll(feedbackListUiModel)
-        notifyItemRangeInserted(lastIndex, feedbackListUiModel.size)
+        notifyItemRangeInserted(lastIndex + 1, feedbackListUiModel.size)
     }
 
     fun updateFilterRating(position: Int, updatedState: Boolean, filterRatingInstance: ProductReviewFilterUiModel?) {
@@ -61,15 +43,14 @@ class SellerReviewDetailAdapter(
             }
             selectedTopicData?.isSelected = updatedState
             notifyItemChanged(position, PAYLOAD_TOPIC_FILTER)
-//            visitables.removeAll { it is FeedbackUiModel }
-//            notifyItemRangeRemoved(visitables.size, feedbackFirstIndex)
+            visitables.removeAll { it is FeedbackUiModel }
+            notifyItemRangeRemoved(visitables.size, feedbackFirstIndex)
         }
     }
 
     fun removeReviewNotFound() {
         if (visitables.getOrNull(lastIndex) is ProductFeedbackErrorUiModel) {
             visitables.removeAt(lastIndex)
-            notifyItemRemoved(lastIndex)
         }
     }
 

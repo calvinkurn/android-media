@@ -277,8 +277,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             when (it) {
                 is Success -> {
                     swipeToRefreshReviewDetail?.isRefreshing = false
-                    viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
-                            ?: listOf())
+                    viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList ?: listOf())
+                    viewModelProductReviewDetail?.updateTopicsFilterData(it.data.first.filterIsInstance<TopicUiModel>().firstOrNull()?.sortFilterItemList ?: arrayListOf())
                     review_detail_toolbar.title = it.data.second
 
                     renderList(it.data.first, it.data.third)
@@ -464,6 +464,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
         val updatedState = item.type == ChipsUnify.TYPE_SELECTED
         reviewSellerDetailAdapter.updateFilterTopic(adapterPosition, item.title.toString(), updatedState, getTopicsFilterFromAdapter)
+        viewModelProductReviewDetail?.setFilterTopicDataText(getTopicsFilterFromAdapter?.sortFilterItemList)
     }
 
     override fun onParentTopicFilterClicked() {
