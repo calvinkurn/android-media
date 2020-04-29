@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
@@ -26,8 +27,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+//import kotlinx.coroutines.CoroutineDispatcher
+//import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -41,8 +43,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
-        dispatchers: CoroutineDispatcher
-) : BaseViewModel(dispatchers) {
+        private val dispatchers: OfficialStoreDispatcherProvider
+) : BaseViewModel(dispatchers.ui()) {
 
     var currentSlug: String = ""
         private set
@@ -107,32 +109,71 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+//    fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
+////        launch {
+////            try {
+////                withContext(dispatchers.io()) {
+////                    val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+////                    val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+////                    _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
+////                }
+////            } catch (t: Throwable) {
+////                _productRecommendation.value = Fail(t)
+////            }
+////        }
+//        launchCatchError(block = {
+//            withContext(dispatchers.io()) {
+//                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+//                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+//                _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
+////                _productRecommendation.value = Success(dataProductResponse.first().get(0))
+////                _productRecommendation.postValue(getProductRecommendation(categoryId, pageNumber, pageName))
+//            }
+//        }) {
+//            _productRecommendation.value = Fail(it)
+//        }
+//    }
+
     fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
-        launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking().first()
-                _productRecommendation.postValue(Success(dataProductResponse.get(0)))
+//        launch {
+//            try {
+//                withContext(dispatchers.io()) {
+//                    val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+//                    val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+//                    _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
+//                }
+//            } catch (t: Throwable) {
+//                Fail(t)
+//            }
+//        }
+
+        launch {
+            try {
+                withContext(dispatchers.io()) {
+                    val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase
+                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)).toBlocking()
+                    _productRecommendation.postValue(Success(recomData.first().get(0)))
+                }
+            } catch (e: Throwable) {
+                _productRecommendation.value = Fail(e)
             }
-        }) {
-            _productRecommendation.value = Fail(it)
         }
     }
 
     private suspend fun getOfficialStoreBanners(categoryId: String): Result<OfficialStoreBanners> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatchers.io()) {
             try {
                 getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.createParams(categoryId)
                 val banner = getOfficialStoreBannersUseCase.executeOnBackground()
                 Success(banner)
-            } catch (t:  Throwable) {
+            } catch (t: Throwable) {
                 Fail(t)
             }
         }
     }
 
     private suspend fun getOfficialStoreBenefit(): Result<OfficialStoreBenefits> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatchers.io()) {
             try {
                 val benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
                 Success(benefits)
@@ -143,14 +184,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private suspend fun getOfficialStoreFeaturedShop(categoryId: Int): Result<OfficialStoreFeaturedShop> {
-        return withContext(Dispatchers.IO) {
-           try {
-               getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
-               val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
-               Success(featuredShop)
-           } catch (t: Throwable) {
-               Fail(t)
-           }
+        return withContext(dispatchers.io()) {
+            try {
+                getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
+                val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
+                Success(featuredShop)
+            } catch (t: Throwable) {
+                Fail(t)
+            }
         }
     }
 
@@ -162,26 +203,26 @@ class OfficialStoreHomeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getOfficialStoreProductRecommendation(
-        categoryId: String,
-        pageNumber: Int
-    ): Result<RecommendationWidget> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val pageName = "official-store"
-                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-                val dataProduct = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-                val recommendationWidget = dataProduct.first()[0]
-
-                Success(recommendationWidget)
-            } catch (t: Throwable) {
-                Fail(t)
-            }
-        }
-    }
+//    private suspend fun getOfficialStoreProductRecommendation(
+//            categoryId: String,
+//            pageNumber: Int
+//    ): Result<RecommendationWidget> {
+//        return withContext(dispatchers.io()) {
+//            try {
+//                val pageName = "official-store"
+//                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+//                val dataProduct = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+//                val recommendationWidget = dataProduct.first()[0]
+//
+//                Success(recommendationWidget)
+//            } catch (t: Throwable) {
+//                Fail(t)
+//            }
+//        }
+//    }
 
     private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatchers.io()) {
             try {
                 val params = RequestParams.create().apply {
                     putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
@@ -196,16 +237,29 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getProductRecommendation(categoryId: String, pageNumber: Int, pageName: String): Result<RecommendationWidget> {
+        return withContext(dispatchers.io()) {
+            try {
+                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+                // _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
+                Success(dataProductResponse.first().get(0))
+            } catch (t: Throwable) {
+                Fail(t)
+            }
+        }
+    }
+
     fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         if (model.isTopAds) {
-            launchCatchError (block = {
+            launchCatchError(block = {
                 _topAdsWishlistResult.value = addTopAdsWishlist(model)
                 _topAdsWishlistResult.value?.handleResult(callback)
             }) {
                 callback.invoke(false, it)
             }
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     callback.invoke(false, Throwable(errorMessage))
                 }
@@ -214,19 +268,19 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     callback.invoke(true, null)
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) { }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
-                override fun onSuccessRemoveWishlist(productId: String?) { }
+                override fun onSuccessRemoveWishlist(productId: String?) {}
 
             })
         }
     }
 
     fun removeWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
-        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) { }
+        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
 
-            override fun onSuccessAddWishlist(productId: String?) { }
+            override fun onSuccessAddWishlist(productId: String?) {}
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
                 callback.invoke(false, Throwable(errorMessage))
@@ -239,7 +293,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private fun Result<Any>.handleResult(callback: (Boolean, Throwable?) -> Unit) {
-        when(this) {
+        when (this) {
             is Success -> callback.invoke(true, null)
             is Fail -> callback.invoke(false, throwable)
         }

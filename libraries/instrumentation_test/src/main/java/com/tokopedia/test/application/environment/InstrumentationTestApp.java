@@ -160,11 +160,11 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
         return null;
     }
-
-    @Override
-    public Intent getInboxMessageIntent(Context mContext) {
-        return null;
-    }
+//
+//    @Override
+//    public Intent getInboxMessageIntent(Context mContext) {
+//        return null;
+//    }
 
     @Override
     public void onAppsFlyerInit() {

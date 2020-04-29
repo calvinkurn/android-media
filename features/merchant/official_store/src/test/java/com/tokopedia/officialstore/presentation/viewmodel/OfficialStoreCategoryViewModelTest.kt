@@ -18,23 +18,23 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class OfficialStoreCategoryViewModelTest {
 
-    @RelaxedMockK
-    lateinit var getOfficialStoreCategoriesUseCase: GetOfficialStoreCategoriesUseCase
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
-    private val viewModelStore: OfficialStoreCategoryViewModel by lazy {
-        OfficialStoreCategoryViewModel(
-                getOfficialStoreCategoriesUseCase,
-                Dispatchers.Unconfined
-        )
-    }
-
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
-    }
+//    @RelaxedMockK
+//    lateinit var getOfficialStoreCategoriesUseCase: GetOfficialStoreCategoriesUseCase
+//
+//    @get:Rule
+//    val rule = InstantTaskExecutorRule()
+//
+//    private val viewModelStore: OfficialStoreCategoryViewModel by lazy {
+//        OfficialStoreCategoryViewModel(
+//                getOfficialStoreCategoriesUseCase,
+//                Dispatchers.Unconfined
+//        )
+//    }
+//
+//    @Before
+//    fun setup() {
+//        MockKAnnotations.init(this)
+//    }
 
 //    @Test
 //    fun testGetOfficialStoreCategoriesSuccess() {
