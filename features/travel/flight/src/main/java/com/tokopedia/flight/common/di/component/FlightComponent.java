@@ -74,8 +74,6 @@ public interface FlightComponent {
 
     void inject(FlightDetailActivity flightDetailActivity);
 
-    void inject(FlightInsuranceWebViewFragment flightInsuranceWebViewFragment);
-
     void inject(FlightDetailOrderFragment flightDetailOrderFragment);
 
     void inject(FlightDetailOrderActivity flightDetailOrderActivity);

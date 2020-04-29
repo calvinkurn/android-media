@@ -6,6 +6,7 @@ include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
 include "features:category:common_tradein"
+include "features:category:kategori"
 
 include "features:communication:broadcast_message_common"
 
@@ -39,7 +40,8 @@ include "features:recharge:recharge_general"
 include "features:recharge:digital_emoney"
 include "features:recharge:digital_homepage"
 include "features:recharge:rechargeocr"
-include "features:recharge_slice"
+include "features:recharge:recharge_credit_card"
+include "features:recharge:recharge_slice"
 
 include "features:travel:travel_homepage"
 include "features:travel:travel_country_code"
@@ -50,6 +52,8 @@ include "features:travel:hotel"
 include "features:travel:common_travel"
 
 include "features:entertainment:event"
+include "features:entertainment:event_home"
+include "features:entertainment:event_search"
 include "features:entertainment:digital_deals"
 
 include "features:salam:umrah"
@@ -72,7 +76,6 @@ include "features:discovery:wishlist_common"
 include "features:discovery:search"
 include "features:discovery:global_nav_widget"
 
-include "features:fintech:mitra_toppers"
 include "features:fintech:home_credit"
 include "features:fintech:ovo_pay_with_qr"
 include "features:digital:instant_debit_bca"
@@ -130,7 +133,7 @@ include "features:payment:pms"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
 
-include "features:product:gallery"
+include "features:merchant:gallery"
 
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"

@@ -43,6 +43,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticaddaddress.utils.rxPinPoint
+import com.tokopedia.logisticaddaddress.utils.toCompositeSubs
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.response.Data
@@ -265,7 +266,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
                 override fun onError(e: Throwable?) {
                 }
-            }).toCompositeSubs()
+            }).toCompositeSubs(composite)
         }
     }
 
@@ -801,9 +802,5 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         super.onDetach()
         presenter.detachView()
         composite.unsubscribe()
-    }
-
-    private fun Subscription.toCompositeSubs() {
-        composite.add(this)
     }
 }

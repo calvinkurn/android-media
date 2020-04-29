@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.utils.uri.DeeplinkUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -212,15 +213,18 @@ public class RouteManager {
 
     private static void logErrorOpenDeeplink(Context context, String uriString){
         try {
-            String name = "-";
+            String sourceClass = "";
+            String referrer = "";
             if (context instanceof Activity) {
-                name = ((Activity) context).getClass().getCanonicalName();
+                sourceClass = ((Activity) context).getClass().getCanonicalName();
+                referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible((Activity) context);
             } else if (context instanceof Service) {
-                name = ((Service) context).getClass().getCanonicalName();
+                sourceClass = ((Service) context).getClass().getCanonicalName();
             }
-            Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'", name, uriString);
+            Timber.w("P1#APPLINK_OPEN_ERROR#Router;source='%s';referrer='%s';uri='%s'",
+                    sourceClass, referrer, uriString);
         } catch (Exception e) {
-            
+            Timber.e(e);
         }
     }
 

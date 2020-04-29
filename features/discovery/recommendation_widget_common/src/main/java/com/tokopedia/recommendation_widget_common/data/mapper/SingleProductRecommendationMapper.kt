@@ -49,7 +49,7 @@ object SingleProductRecommendationMapper {
                     data.shop?.id ?: -1,
                     "",
                     data.shop?.name ?: "",
-                    -1,
+                    "",
                     1,
                     title ?: "",
                     pageName ?: "",

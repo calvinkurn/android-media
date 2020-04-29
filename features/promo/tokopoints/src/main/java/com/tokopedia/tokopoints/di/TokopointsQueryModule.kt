@@ -189,4 +189,11 @@ class TokopointsQueryModule(val activity: Activity) {
     fun getGQLSumCoupon(context: Context) : String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_sum_coupon)
     }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_ADD_POINT_REWARD)
+    fun getGQLaddPoint(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_add_point_rewards)
+    }
 }

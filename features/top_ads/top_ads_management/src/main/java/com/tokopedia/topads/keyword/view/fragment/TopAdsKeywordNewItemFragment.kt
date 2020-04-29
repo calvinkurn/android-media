@@ -15,7 +15,7 @@ import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.design.widget.ExpandableView.ExpandableLayoutListener
+import com.tokopedia.topads.widget.ExpandableView.ExpandableLayoutListener
 import com.tokopedia.topads.R
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
 import com.tokopedia.topads.keyword.helper.KeywordTypeMapper

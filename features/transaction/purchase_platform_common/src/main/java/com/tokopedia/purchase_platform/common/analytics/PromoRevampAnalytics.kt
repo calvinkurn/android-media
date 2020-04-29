@@ -52,15 +52,15 @@ object PromoRevampAnalytics {
 
     fun eventCartClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean) {
         var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
-        eventAction += if (isApplied) APPLIED
-        else NOT_APPLIED
+        eventAction += if (isApplied) " $APPLIED"
+        else " $NOT_APPLIED"
 
         var promo = ""
         listPromoCodes.forEach {
             if (promo.isNotEmpty()) promo += ", "
             promo += it
         }
-        sendEventCategoryActionLabel(CLICK_ATC, CATEGORY_CART, CLICK_PROMO_SECTION_WITH_PROMO, promo)
+        sendEventCategoryActionLabel(CLICK_ATC, CATEGORY_CART, eventAction, promo)
     }
 
     // TODO : check after backend give new struct
@@ -70,10 +70,6 @@ object PromoRevampAnalytics {
         else eventAction += " $RELEASED"
         eventAction += ""
         sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, AFTER_ADJUST_ITEM)
-    }
-
-    fun eventCartViewPromoChanged(msg: String) {
-        sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, msg)
     }
 
     fun eventCartViewPromoAlreadyApplied() {
@@ -86,15 +82,15 @@ object PromoRevampAnalytics {
 
     fun eventCheckoutClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean) {
         var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
-        eventAction += if (isApplied) APPLIED
-        else NOT_APPLIED
+        eventAction += if (isApplied) " $APPLIED"
+        else " $NOT_APPLIED"
 
         var promo = ""
         listPromoCodes.forEach {
             if (promo.isNotEmpty()) promo += ", "
             promo += it
         }
-        sendEventCategoryActionLabel(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_PROMO_SECTION_WITH_PROMO, promo)
+        sendEventCategoryActionLabel(CLICK_COURIER, CATEGORY_COURIER_SELECTION, eventAction, promo)
     }
 
     fun eventCheckoutViewPromoChanged(msg: String) {

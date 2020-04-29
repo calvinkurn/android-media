@@ -40,7 +40,6 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     private val imageView: AppCompatImageView = itemView.findViewById(R.id.appCompatImageView)
-    private val imageIcon: AppCompatImageView = itemView.findViewById(R.id.icon)
     private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)
     private val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvSubTitle)
 
@@ -51,10 +50,6 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
             tvSubTitle.visibility = View.GONE
         } else {
             tvSubTitle.visibility = View.VISIBLE
-        }
-
-        data.icon?.let {
-            ImageUtils.loadImage(imageIcon, it)
         }
 
         data.imageUrl?.let {

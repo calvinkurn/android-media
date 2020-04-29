@@ -77,9 +77,9 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         initInjector()
         initViewModel()
         initTabList()
-        initTabLayout()
         initViewPagerAdapter()
         initViewPager()
+        initTabLayout()
         initViewModel()
         initData()
         initOnBoarding()
@@ -244,7 +244,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         context?.let {
             chatNotifCounterViewModel.getLastVisitedTab(it).apply {
                 if (this == -1) return@apply
-                viewPager?.currentItem = this
+                viewPager?.setCurrentItem(this, false)
             }
         }
     }

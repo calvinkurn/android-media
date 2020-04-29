@@ -8,6 +8,7 @@ query getCartRedirection($params:[CartRedirectionParams]){
         text
         color
         cart_type
+        onboarding_message
         show_recommendation
       }
       unavailable_buttons

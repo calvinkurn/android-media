@@ -64,7 +64,7 @@ public class PushNotification {
         try {
             String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
             String userId = applinkNotificationModel.getToUserId();
-            if (whiteListedUsers.contains(userId)) {
+            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
                 executeLogOnMessageReceived(applinkNotificationModel);
             }
         } catch (Exception exception) {
@@ -80,7 +80,7 @@ public class PushNotification {
                     "createTime: " + applinkNotificationModel.getCreateTime() + ", " +
                     "transactionId: " + applinkNotificationModel.getTransactionId() + ", " +
                     "targetApp: " + applinkNotificationModel.getTargetApp();
-            Crashlytics.log(errorMessage);
+            Crashlytics.logException(new Exception(errorMessage));
         }
     }
 

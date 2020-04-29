@@ -158,17 +158,14 @@ class CartModule {
     @CartScope
     @Named("UpdateReloadUseCase")
     fun provideGetCartListSimplifiedUseCase(@Named("shopGroupSimplifiedQuery") queryString: String,
-                                            graphqlUseCase: GraphqlUseCase,
                                             cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(queryString, graphqlUseCase, cartSimplifiedMapper, IOSchedulers)
+            GetCartListSimplifiedUseCase(queryString, cartSimplifiedMapper, IOSchedulers)
 
     @Provides
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartUseCase: DeleteCartUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
-                                  checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                                  checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                   compositeSubscription: CompositeSubscription,
                                   addWishListUseCase: AddWishListUseCase,
                                   removeWishListUseCase: RemoveWishListUseCase,

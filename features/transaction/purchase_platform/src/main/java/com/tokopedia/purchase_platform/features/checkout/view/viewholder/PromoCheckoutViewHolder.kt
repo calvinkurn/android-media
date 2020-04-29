@@ -63,7 +63,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
             setOnClickListener {
                 actionListener.onClickPromoCheckout(lastApplyUiModel)
-                actionListener.onSendAnalyticsClickPromoCheckout(isApplied, lastApplyUiModel.listAllPromoCodes)
+                actionListener.onSendAnalyticsClickPromoCheckout(isApplied, getAllPromosApplied(lastApplyUiModel))
             }
         }
 
@@ -74,6 +74,17 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             if  (hasChildren(llSummaryTransaction)) llSummaryTransaction.removeAllViews()
             generateChildrenView(lastApplyUiModel)
         }
+    }
+
+    private fun getAllPromosApplied(lastApplyData: LastApplyUiModel): List<String> {
+        val listPromos = arrayListOf<String>()
+        lastApplyData.codes.forEach {
+            listPromos.add(it)
+        }
+        lastApplyData.voucherOrders.forEach {
+            listPromos.add(it.code)
+        }
+        return listPromos
     }
 
     private fun hasChildren(viewGroup: ViewGroup): Boolean {

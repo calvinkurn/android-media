@@ -41,6 +41,10 @@ public class Items {
     @Expose
     private String price;
 
+    @SerializedName("unformattedPrice")
+    @Expose
+    private String unformattedPrice;
+
     @SerializedName("freeShipping")
     private FreeShipping freeShipping;
 
@@ -233,6 +237,14 @@ public class Items {
 
     public void setTotalPrice(String totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getUnformattedPrice() {
+        return unformattedPrice;
+    }
+
+    public void setUnformattedPrice(String unformattedPrice) {
+        this.unformattedPrice = unformattedPrice;
     }
 
     public String getWeight() {

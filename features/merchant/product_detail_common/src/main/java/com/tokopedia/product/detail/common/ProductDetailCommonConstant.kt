@@ -21,9 +21,12 @@ object ProductDetailCommonConstant{
     const val PARAM_PRODUCT_IDS = "productIds"
     const val PARAM_WAREHOUSE_ID = "warehouseID"
     const val PARAM_CART_TYPE = "cartTypeParam"
+    const val PARAM_INCLUDE_WAREHOUSE = "includeWarehouse"
+    const val PARAM_IS_VARIANT = "isVariant"
 
     const val PARAM_SHOP_IDS = "shopIds"
     const val PARAM_SHOP_FIELDS = "fields"
+    const val PARAM_NEED_REQUEST_COD = "needRequestCod"
 
     const val PARAM_RATE_EST_SHOP_DOMAIN = "domain"
     const val PARAM_RATE_EST_WEIGHT = "weight"

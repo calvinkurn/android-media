@@ -47,15 +47,18 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -139,9 +142,15 @@ final class ProductListPresenter
     }
 
     private boolean getIsUseRatingString() {
-        return getView().getABTestRemoteConfig()
-                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
-                .equals(AB_TEST_VARIANT_COMMA_STAR);
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
+                    .equals(AB_TEST_VARIANT_COMMA_STAR);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -577,9 +586,11 @@ final class ProductListPresenter
             enrichWithAdditionalParams(requestParams, additionalParams);
         }
 
+        getView().stopPreparePagePerformanceMonitoring();
+        getView().startNetworkRequestPerformanceMonitoring();
+
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
-
         searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter));
     }
 
@@ -636,6 +647,9 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
         if (isViewAttached()) {
+            getView().stopNetworkRequestPerformanceMonitoring();
+            getView().startRenderPerformanceMonitoring();
+
             if (isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
             } else {
@@ -902,7 +916,7 @@ final class ProductListPresenter
                     continue;
                 }
 
-                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                if (data.getPosition() <= productList.size()) {
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
@@ -936,7 +950,8 @@ final class ProductListPresenter
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
-        HashMap<String, String> gtmTrackingCategory = new HashMap<>();
+        Set<String> categoryIdMapping = new HashSet<>();
+        Set<String> categoryNameMapping = new HashSet<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -947,22 +962,24 @@ final class ProductListPresenter
                     moengageTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
                 }
 
-                gtmTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
+                categoryIdMapping.add(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()));
+                categoryNameMapping.add(productViewModel.getProductList().get(i).getCategoryName());
             }
         }
 
         getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, productViewModel.getQuery(), prodIdArray);
         getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
-        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, gtmTrackingCategory));
+        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, categoryIdMapping, categoryNameMapping));
 
         isFirstTimeLoad = false;
     }
 
-    private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Map<String, String> category) {
+    private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
         return new GeneralSearchTrackingModel(
                 createGeneralSearchTrackingEventLabel(productViewModel),
                 !productViewModel.getProductList().isEmpty(),
-                category,
+                StringUtils.join(categoryIdMapping, ","),
+                StringUtils.join(categoryNameMapping, ","),
                 createGeneralSearchTrackingRelatedKeyword(productViewModel)
         );
     }
@@ -1197,6 +1214,31 @@ final class ProductListPresenter
     private void handleWishlistNonRecommendationProductWithNotLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
         getView().trackWishlistProduct(createWishlistTrackingModel(productCardOptionsModel, !productCardOptionsModel.isWishlisted()));
         getView().launchLoginActivity(productCardOptionsModel.getProductId());
+    }
+
+    @Override
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null || item == null) return;
+
+        if (item.isTopAds()) {
+            getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+            getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+        }
+    }
+
+    @Override
+    public void onProductClick(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null || item == null) return;
+
+        if (item.isTopAds()) {
+            getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+            getView().sendTopAdsGTMTrackingProductClick(item, adapterPosition);
+        }
+        else {
+            getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());
+        }
+
+        getView().routeToProductDetail(item, adapterPosition);
     }
 
     @Override
