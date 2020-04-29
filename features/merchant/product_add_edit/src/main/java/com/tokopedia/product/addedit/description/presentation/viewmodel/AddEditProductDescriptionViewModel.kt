@@ -49,13 +49,16 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val variantInputModel: ProductVariantInputModel get() {
         return productInputModel.variantInputModel
     }
+    val hasWholesale: Boolean get() {
+        return productInputModel.detailInputModel.wholesaleList.isNotEmpty()
+    }
     var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
     var urlToFetch: MutableMap<Int, String> = mutableMapOf()
     var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>> = _productVariant
-    val productVariantData get() = _productVariant.value.let {
+    val productVariantData: List<ProductVariantByCatModel>? get() = _productVariant.value.let {
         when(it) {
             is Success -> it.data
             else -> null

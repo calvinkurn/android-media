@@ -445,6 +445,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
                 val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
                 if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+                if (viewModel.isAdding && viewModel.hasVariants) {
+                    showVariantWholesalePriceToast()
+                }
             }
         }
 
@@ -1046,6 +1049,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun showMaxProductImageErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun showVariantWholesalePriceToast() {
+        view?.let {
+            Toaster.make(it, getString(R.string.message_variant_price_wholesale))
         }
     }
 
