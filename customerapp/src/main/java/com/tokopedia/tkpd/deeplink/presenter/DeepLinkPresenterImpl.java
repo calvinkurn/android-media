@@ -631,7 +631,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_INFO,
                                     shopId);
-                                    shopId);
                         } else if (isShopHome(linkSegment)) {
                             RouteManager.route(context,
                                     bundle,
