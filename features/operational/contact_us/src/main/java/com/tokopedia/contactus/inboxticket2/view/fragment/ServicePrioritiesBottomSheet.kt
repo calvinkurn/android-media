@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 
@@ -32,7 +32,7 @@ class ServicePrioritiesBottomSheet(private val mContext: Context,
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(mContext,com.tokopedia.design.R.color.green_250) // specific color for this link
+                ds.color = MethodChecker.getColor(mContext,com.tokopedia.design.R.color.green_250) // specific color for this link
             }
         }, startIndexOfLink, startIndexOfLink + LEARN_MORE_TEXT.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         link.highlightColor = Color.TRANSPARENT

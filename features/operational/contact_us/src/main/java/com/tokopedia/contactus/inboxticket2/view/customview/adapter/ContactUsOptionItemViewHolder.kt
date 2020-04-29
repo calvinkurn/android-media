@@ -2,7 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.customview.adapter
 
 import android.view.View
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.csat_rating.adapter.OptionItemViewHolder
 import com.tokopedia.design.quickfilter.QuickFilterItem
@@ -19,11 +19,11 @@ class ContactUsOptionItemViewHolder(itemView: View, listener: QuickSingleFilterL
 
     override fun updateItemColor(selected: Boolean) {
         if (selected) {
-            layoutInside1.setBackgroundResource(R.drawable.checked)
-            filterName.setTextColor(ContextCompat.getColor(filterName.context, com.tokopedia.design.R.color.font_black_primary_70))
+            MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(itemView.context, R.drawable.checked))
+            filterName.setTextColor(MethodChecker.getColor(filterName.context, com.tokopedia.design.R.color.font_black_primary_70))
         } else {
-            layoutInside1.setBackgroundResource(R.drawable.check_box_bg)
-            filterName.setTextColor(ContextCompat.getColor(filterName.context, com.tokopedia.design.R.color.grey_500))
+            MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(itemView.context, R.drawable.check_box_bg))
+            filterName.setTextColor(MethodChecker.getColor(filterName.context, com.tokopedia.design.R.color.grey_500))
         }
     }
 

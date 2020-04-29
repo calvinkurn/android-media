@@ -22,7 +22,7 @@ class InboxModule(private val context: Context) {
     @InboxScope
     @Provides
     fun provideContext(): Context {
-        return context.applicationContext
+        return context
     }
 
     @InboxScope

@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter.TicketItemHolder
@@ -21,6 +21,11 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
+const val TICKET_TITLE_NORMAL = 2
+const val CLOSED = 2
+const val NEED_RATING = 1
+const val IN_PROCESS = 1
+
 class TicketListAdapter(private val itemList: MutableList<TicketsItem>,
                         private val mPresenter: InboxListPresenter) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val footerItem = TicketsItem()
@@ -28,22 +33,17 @@ class TicketListAdapter(private val itemList: MutableList<TicketsItem>,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(
                 parent.context)
-        var holder: RecyclerView.ViewHolder? = null
         val v: View
         return when (viewType) {
-            ITEM -> {
-                v = inflater.inflate(R.layout.layout_item_ticket, parent, false)
-                holder = TicketItemHolder(v)
-                holder
-            }
             FOOTER -> {
                 v = inflater.inflate(R.layout.inbox_footer_layout, parent, false)
-                holder = FooterViewHolder(v)
-                holder
+                FooterViewHolder(v)
             }
             else -> {
-                holder!!
+                v = inflater.inflate(R.layout.layout_item_ticket, parent, false)
+                TicketItemHolder(v)
             }
+
         }
 
     }
@@ -147,27 +147,27 @@ class TicketListAdapter(private val itemList: MutableList<TicketsItem>,
         fun bindViewHolder(item: TicketsItem) {
             val mContext = itemView.context
             val utils = Utils()
-            if (item.readStatusId == 2) {
-                tvTicketDesc?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_38))
+            if (item.readStatusId == TICKET_TITLE_NORMAL) {
+                tvTicketDesc?.setTextColor(MethodChecker.getColor(mContext, com.tokopedia.design.R.color.black_38))
                 tvTicketTitle?.setTypeface(null, Typeface.NORMAL)
             } else {
-                tvTicketDesc?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_70))
+                tvTicketDesc?.setTextColor(MethodChecker.getColor(mContext, com.tokopedia.design.R.color.black_70))
                 tvTicketTitle?.setTypeface(null, Typeface.BOLD)
             }
             tvTicketTitle?.text = item.subject
             tvTicketDesc?.text = item.lastMessagePlaintext
             tvTicketDate?.text = utils.getDateTimeYear(item.lastUpdate ?: "")
-            if (item.statusId == 1) {
-                tvTicketStatus?.setBackgroundResource(R.drawable.rounded_rect_yellow)
+            if (item.statusId == IN_PROCESS) {
+                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_yellow))
                 tvTicketStatus?.setText(R.string.on_going)
-                tvTicketStatus?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_38))
-            } else if (item.statusId == 2 && item.needRating != 1) {
-                tvTicketStatus?.setBackgroundResource(R.drawable.rounded_rect_grey)
-                tvTicketStatus?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.black_38))
+                tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, com.tokopedia.design.R.color.black_38))
+            } else if (item.statusId == CLOSED && item.needRating != NEED_RATING) {
+                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_grey))
+                tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, com.tokopedia.design.R.color.black_38))
                 tvTicketStatus?.setText(R.string.closed)
-            } else if (item.needRating == 1) {
-                tvTicketStatus?.setBackgroundResource(R.drawable.rounded_rect_orange)
-                tvTicketStatus?.setTextColor(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_150))
+            } else if (item.needRating == NEED_RATING) {
+                MethodChecker.setBackground(tvTicketStatus, MethodChecker.getDrawable(mContext, R.drawable.rounded_rect_orange))
+                tvTicketStatus?.setTextColor(MethodChecker.getColor(mContext, com.tokopedia.design.R.color.red_150))
                 tvTicketStatus?.setText(R.string.need_rating)
             }
             if (item.isSelectableMode) checkboxDelete?.show() else checkboxDelete?.hide()
