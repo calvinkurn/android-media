@@ -2,7 +2,6 @@ package com.tokopedia.flight.searchV4.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
@@ -185,9 +184,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
         wrapper = LinearLayout(this)
         wrapper.apply {
             val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            setBackgroundColor(Color.WHITE)
+            background = resources.getDrawable(R.drawable.bg_white_rounded_no_stroke)
             layoutParams = param
         }
+        wrapper.setPadding(DIMEN_4_IN_PX, DIMEN_4_IN_PX, DIMEN_4_IN_PX, DIMEN_4_IN_PX)
 
         val imageView = ImageView(this)
         val param = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
@@ -320,6 +320,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         private const val REQUEST_CODE_RETURN = 11
         private const val DELAY_THREE_SECONDS: Long = 3000
         private val DIMEN_24_IN_PX = 24.toPx()
+        private val DIMEN_4_IN_PX = 4.toPx()
         private const val CORNER_RADIUS = 8f
 
         fun getCallingIntent(context: Context,
