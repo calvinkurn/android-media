@@ -10,6 +10,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.smartbills.R
 import kotlinx.android.synthetic.main.fragment_smart_bills_onboarding.*
@@ -23,25 +24,28 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bulletSpan: BulletSpan
-        val gapWidth = dpToPx(BULLET_GAP_WIDTH_PX)
-        val radius = dpToPx(BULLET_RADIUS_PX)
-        bulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            BulletSpan(gapWidth, Color.BLACK, radius)
-        } else {
-            BulletSpan(gapWidth, Color.BLACK)
-        }
+        activity?.let { activity ->
+            val bulletSpan: BulletSpan
+            val gapWidth = dpToPx(BULLET_GAP_WIDTH_PX)
+            val radius = dpToPx(BULLET_RADIUS_PX)
+            val bulletColor = ContextCompat.getColor(activity, R.color.Neutral_N700)
+            bulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                BulletSpan(gapWidth, bulletColor, radius)
+            } else {
+                BulletSpan(gapWidth, bulletColor)
+            }
 
-        val firstDesc = SpannableString(getString(R.string.smart_bills_onboarding_desc_1))
-        firstDesc.setSpan(bulletSpan, 0, firstDesc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        smart_bills_onboarding_desc_1.text = firstDesc
+            val firstDesc = SpannableString(getString(R.string.smart_bills_onboarding_desc_1))
+            firstDesc.setSpan(bulletSpan, 0, firstDesc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            smart_bills_onboarding_desc_1.text = firstDesc
 
-        val secondDesc = SpannableString(getString(R.string.smart_bills_onboarding_desc_2))
-        secondDesc.setSpan(bulletSpan, 0, firstDesc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        smart_bills_onboarding_desc_2.text = secondDesc
+            val secondDesc = SpannableString(getString(R.string.smart_bills_onboarding_desc_2))
+            secondDesc.setSpan(bulletSpan, 0, firstDesc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            smart_bills_onboarding_desc_2.text = secondDesc
 
-        smart_bills_onboarding_button.setOnClickListener {
-            activity?.finish()
+            smart_bills_onboarding_button.setOnClickListener {
+                activity.finish()
+            }
         }
     }
 

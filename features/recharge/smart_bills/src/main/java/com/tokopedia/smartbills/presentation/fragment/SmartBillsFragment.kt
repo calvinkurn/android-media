@@ -106,6 +106,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     if (it.data.bills.isNotEmpty()) {
+                        view_smart_bills_select_all_checkbox_container.show()
                         adapter.renderList(it.data.bills)
 
                         // Save maximum price
@@ -180,6 +181,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 }
 
                 // Setup ticker
+                ticker_smart_bills.tickerTitle = "test"
                 ticker_smart_bills.setHtmlDescription(getString(R.string.smart_bills_ticker))
                 ticker_smart_bills.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -238,6 +240,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
     }
 
     override fun loadData() {
+        view_smart_bills_select_all_checkbox_container.hide()
         view_smart_bills_shimmering.show()
 
         viewModel.getStatementMonths(
