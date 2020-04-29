@@ -17,10 +17,9 @@ const val POST_KEY = "post_key"
 class PostMessageUseCase2 @Inject internal constructor(private val repository: ContactUsRepository) {
 
     suspend fun getInboxDataResponse(queryMap: MutableMap<String, Any>): InboxDataResponse<*>? {
-        return (repository.getRestData(
+        return (repository.postRestData(
                 url,
                 object : TypeToken<InboxDataResponse<StepTwoResponse>>() {}.type,
-                RequestType.POST,
                 queryMap) as InboxDataResponse<StepTwoResponse>)
 
     }

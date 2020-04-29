@@ -66,7 +66,7 @@ class PostMessageUseCase2Test {
     fun `check function invocation getInboxDataResponse`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.getRestData(any(),
+                contactUsRepository.postRestData(any(),
                         object : TypeToken<InboxDataResponse<StepTwoResponse>>() {}.type,
                         any(),
                         any()) as InboxDataResponse<StepTwoResponse>
@@ -75,7 +75,7 @@ class PostMessageUseCase2Test {
             postMessageUseCase2.getInboxDataResponse(mockk())
 
             coVerify(exactly = 1) {
-                contactUsRepository.getRestData(any(),
+                contactUsRepository.postRestData(any(),
                         object : TypeToken<InboxDataResponse<StepTwoResponse>>() {}.type,
                         any(),
                         any()) as InboxDataResponse<StepTwoResponse>
