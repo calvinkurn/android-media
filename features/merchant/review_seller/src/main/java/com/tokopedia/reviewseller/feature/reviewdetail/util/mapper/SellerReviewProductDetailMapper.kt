@@ -24,6 +24,7 @@ object SellerReviewProductDetailMapper {
             productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct, userSession)
             page = productFeedbackDataPerProduct.page ?: 0
             hasNext = productFeedbackDataPerProduct.hasNext
+            reviewCount = productFeedbackDataPerProduct.reviewCount
         }
     }
 
