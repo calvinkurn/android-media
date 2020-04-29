@@ -3,6 +3,7 @@ package com.tokopedia.orderhistory.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -13,9 +14,10 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import javax.inject.Inject
 
 class OrderHistoryViewModel @Inject constructor(
+        private val contextProvider: OrderHistoryCoroutineContextProvider,
         private val productHistoryUseCase: GetProductOrderHistoryUseCase,
         private val addWishListUseCase: AddWishListUseCase
-) : ViewModel() {
+) : BaseViewModel(contextProvider.Main) {
 
     private val _product: MutableLiveData<Result<ChatHistoryProductResponse>> = MutableLiveData()
     val product: LiveData<Result<ChatHistoryProductResponse>> get() = _product
