@@ -723,8 +723,8 @@ final class ProductListPresenter
     private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
         try {
             String alternativeKeyword = "";
-            if (relatedViewModel != null) {
-                alternativeKeyword = relatedViewModel.getRelatedKeyword();
+            if (productViewModel.getRelatedViewModel() != null) {
+                alternativeKeyword = productViewModel.getRelatedViewModel().getRelatedKeyword();
             }
             int resultCode = Integer.parseInt(productViewModel.getResponseCode());
             if (searchNoResultCodeList.contains(resultCode)) {
