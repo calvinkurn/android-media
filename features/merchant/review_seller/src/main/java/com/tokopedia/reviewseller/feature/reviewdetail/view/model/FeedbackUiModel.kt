@@ -15,7 +15,8 @@ data class FeedbackUiModel(
         var reviewTime: String? = "",
         var reviewerName: String? = "",
         var variantName: String? = "",
-        var sellerUser: String? = ""
+        var sellerUser: String? = "",
+        var page : Int? = 0
 ): BaseSellerReviewDetail {
 
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {

@@ -29,13 +29,15 @@ import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProduc
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductReviewFilterUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -43,7 +45,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
-import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
 
 /**
@@ -54,6 +55,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
+        const val CHIP_FILTER = "EXTRA_CHIPS_FILTER"
         private const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
     }
 
@@ -62,9 +64,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var viewModelProductReviewDetail: ProductReviewDetailViewModel? = null
 
     private var linearLayoutManager: LinearLayoutManager? = null
-
-    private val reviewSellerDetailAdapter: SellerReviewDetailAdapter
-        get() = adapter as SellerReviewDetailAdapter
+    private val reviewSellerDetailAdapter by lazy { SellerReviewDetailAdapter(sellerReviewDetailTypeFactory) }
 
     private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
 
@@ -72,11 +72,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         SellerReviewDetailAdapterTypeFactory(this, this, this, this)
     }
 
+    private var chipFilterBundle = ""
+
     var productID: Int = 0
     var sortBy: String = ""
     var filterBy: String = "time=all"
-    var chipsFilterText = ""
-
     var toolbarTitle = ""
 
     private var filterPeriodDetailUnify: ListUnify? = null
@@ -103,13 +103,18 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         context?.let {
             activity?.intent?.run {
                 productID = getIntExtra(PRODUCT_ID, 0)
+                chipFilterBundle = getStringExtra(CHIP_FILTER)
             }
         }
         super.onCreate(savedInstanceState)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         viewModelProductReviewDetail = ViewModelProvider(this, viewModelFactory).get(ProductReviewDetailViewModel::class.java)
+        iniFilterData()
+    }
+
+    private fun iniFilterData() {
         viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(getString(R.string.default_filter_detail))
-        viewModelProductReviewDetail?.filterAllText = viewModelProductReviewDetail?.filterPeriod.orEmpty()
+        viewModelProductReviewDetail?.filterByText = viewModelProductReviewDetail?.filterPeriod.orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -118,11 +123,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
         initViewBottomSheet()
-        initChipsView()
     }
 
     override fun initInjector() {
@@ -139,13 +144,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         clearAllData()
         rvRatingDetail?.show()
         globalError_reviewDetail?.hide()
-        emptyState_reviewDetail?.hide()
         showLoading()
 
         viewModelProductReviewDetail?.getProductRatingDetail(
                 productID,
-                sortBy,
-                viewModelProductReviewDetail?.filterAllText.orEmpty())
+                sortBy)
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
@@ -153,7 +156,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, SellerReviewDetailAdapterTypeFactory> {
-        return SellerReviewDetailAdapter(sellerReviewDetailTypeFactory)
+        return reviewSellerDetailAdapter
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -162,31 +165,17 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 reviewSellerDetailAdapter.showLoading()
                 loadNextPage(page)
             }
+
+            override fun isDataEmpty(): Boolean {
+                return reviewSellerDetailAdapter.list.isEmpty()
+            }
         }
     }
 
     override fun onDestroy() {
         viewModelProductReviewDetail?.productFeedbackDetail?.removeObservers(this)
-        viewModelProductReviewDetail?.reviewDetailOverallRating?.removeObservers(this)
         viewModelProductReviewDetail?.flush()
         super.onDestroy()
-    }
-
-    /**
-     * Listener Section
-     */
-    override fun onChildTopicFilterClicked(item: SortFilterItem) {
-        // asd.foreach{ if(name==terbaru) isSelected =isSelected }
-        // asd.map{ if(selected) globalTopics = it.name.append(, )} " "
-        // globalData terbaru
-        // topics = "
-        Toaster.make(view!!, item.title.toString(), Snackbar.LENGTH_LONG)
-    }
-
-    override fun onParentTopicFilterClicked() {
-        val bottomSheet = PopularTopicsBottomSheet(activity, "test", ::onTopicsClicked)
-        bottomSheet.showDialog()
-        Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
     }
 
     private fun onTopicsClicked(data: List<String>) {
@@ -268,7 +257,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.getFeedbackDetailListNext(
                 productID = productID,
                 sortBy = sortBy,
-                filterBy = filterBy,
                 page = page)
     }
 
@@ -284,11 +272,19 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     private fun observeLiveData() {
-        viewModelProductReviewDetail?.reviewDetailOverallRating?.observe(this, Observer {
+        viewModelProductReviewDetail?.reviewInitialData?.observe(this, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetProductReviewDetailOverallData(it.data)
+                    swipeToRefreshReviewDetail?.isRefreshing = false
+                    viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
+                            ?: listOf())
+                    viewModelProductReviewDetail?.updateTopicsFilterData(it.data.first.filterIsInstance<TopicUiModel>().firstOrNull()?.sortFilterItemList
+                            ?: arrayListOf())
+                    review_detail_toolbar.title = it.data.second
+
+                    renderList(it.data.first, it.data.third)
+                    coachMarkShow()
                 }
                 is Fail -> {
                     onErrorGetReviewDetailData(it.throwable)
@@ -297,10 +293,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         })
 
         viewModelProductReviewDetail?.productFeedbackDetail?.observe(this, Observer {
-            hideLoading()
+            reviewSellerDetailAdapter.hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetFeedbackReviewListData(it.data.first, it.data.second)
+                    onSuccessGetFeedbackReviewListData(it.data)
                 }
                 is Fail -> {
                     onErrorGetReviewDetailData(it.throwable)
@@ -309,52 +305,27 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         })
     }
 
-    private fun onSuccessGetProductReviewDetailOverallData(data: OverallRatingDetailUiModel) {
-        reviewSellerDetailAdapter.hideLoading()
-        swipeToRefreshReviewDetail?.isRefreshing = false
-        toolbarTitle = data.productName.orEmpty()
-        review_detail_toolbar.apply {
-            title = toolbarTitle
-        }
-
-        reviewSellerDetailAdapter.setOverallRatingDetailData(data.apply {
-            chipFilter = chipsFilterText
-        })
-    }
-
-    private fun onSuccessGetFeedbackReviewListData(hasNextPage: Boolean, reviewProductDetail: ProductFeedbackDetailUiModel) {
-        reviewSellerDetailAdapter.hideLoading()
-        swipeToRefreshReviewDetail?.isRefreshing = false
-        if (reviewSellerDetailAdapter.itemCount == 1) {
-            if (reviewProductDetail.productFeedbackDetailList.isEmpty()) {
-                reviewSellerDetailAdapter.apply {
-                    setRatingBarDetailData(reviewProductDetail.ratingBarList)
-                    setTopicDetailData(reviewProductDetail.topicList)
-                }
-                emptyState_reviewDetail?.show()
-            } else {
-                reviewSellerDetailAdapter.apply {
-                    setRatingBarDetailData(reviewProductDetail.ratingBarList)
-                    setTopicDetailData(reviewProductDetail.topicList)
-                    setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
-                }
-            }
-            coachMarkShow()
+    private fun onSuccessGetFeedbackReviewListData(data: ProductFeedbackDetailUiModel) {
+        if (data.page == 1 && data.productFeedbackDetailList.isEmpty()) {
+            // We only want to show no data found if there is no data left loaded
+            reviewSellerDetailAdapter.addReviewNotFound()
         } else {
-            reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
+            reviewSellerDetailAdapter.removeReviewNotFound()
+            reviewSellerDetailAdapter.setFeedbackListData(data.productFeedbackDetailList, data.reviewCount)
         }
-        updateScrollListenerState(hasNextPage)
+        updateScrollListenerState(data.hasNext)
     }
 
     private fun onErrorGetReviewDetailData(throwable: Throwable) {
         swipeToRefreshReviewDetail?.isRefreshing = false
-        if (reviewSellerDetailAdapter.itemCount == 0) {
+        val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
+        if (feedbackReviewCount == 0) {
             if (throwable.message?.isNotEmpty() == true) {
                 globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
             } else if (throwable.message?.isEmpty() == true) {
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
-            emptyState_reviewDetail?.hide()
+            reviewSellerDetailAdapter.removeReviewNotFound()
             rvRatingDetail?.hide()
             globalError_reviewDetail?.show()
 
@@ -378,14 +349,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
         val filterDetailItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterDetailList)
         filterPeriodDetailUnify?.setData(filterDetailItemUnify)
-        initBottomSheetFilterPeriod(view, title, filterDetailItemUnify)
+        initBottomSheetFilterPeriod(title, filterDetailItemUnify)
     }
 
-    private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
+    private fun initBottomSheetFilterPeriod(title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         bottomSheetPeriodDetail?.apply {
-            setOnDismissListener {
-                view.review_period_filter_button_detail.toggle()
-            }
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
@@ -398,12 +366,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 it.setSelectedFilterOrSort(filterPeriodItemUnify, viewModelProductReviewDetail?.positionFilterPeriod.orZero())
 
                 it.setOnItemClickListener { _, _, position, _ ->
-                    onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
+                    onItemFilterClickedBottomSheet(position, filterPeriodItemUnify, it)
                 }
 
                 filterPeriodItemUnify.forEachIndexed { position, listItemUnify ->
                     listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
-                        onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
+                        onItemFilterClickedBottomSheet(position, filterPeriodItemUnify, it)
                     }
                 }
             }
@@ -414,17 +382,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    private fun onItemFilterClickedBottomSheet(itemView: View, position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
-                                               filterListUnify: ListUnify) {
+    private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>, filterListUnify: ListUnify) {
         try {
+            if (position == viewModelProductReviewDetail?.positionFilterPeriod) return
             viewModelProductReviewDetail?.positionFilterPeriod = position
-            chipsFilterText = filterListItemUnify[position].listTitleText
-            itemView.review_period_filter_button_detail?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
-            viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText)
-            viewModelProductReviewDetail?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelProductReviewDetail?.filterPeriod.orEmpty())
-            loadInitialData()
+            viewModelProductReviewDetail?.setChipFilterDateText(filterListItemUnify[position].listTitleText)
             bottomSheetPeriodDetail?.dismiss()
+            loadInitialData()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -445,10 +410,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetMenuDetail = BottomSheetUnify()
         optionMenuDetailUnify = viewMenu.findViewById(R.id.optionMenuDetail)
         bottomSheetMenuDetail?.setChild(viewMenu)
-    }
-
-    private fun initChipsView() {
-        chipsFilterText = getString(R.string.default_filter_detail)
     }
 
     override fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
@@ -498,15 +459,30 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int) {
-        val getTopicFromAdapter: List<RatingBarUiModel> = reviewSellerDetailAdapter.list.filterIsInstance<RatingBarUiModel>()
-        val filterRatingSelected = getTopicFromAdapter.find { it.ratingLabel == ratingAndState.first }
-        if (filterRatingSelected?.ratingIsChecked != ratingAndState.second && filterRatingSelected != null) {
-            reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second)
-        }
+    /**
+     * Listener Section
+     */
+    override fun onChildTopicFilterClicked(item: SortFilterItem, adapterPosition: Int) {
+        val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
+        val updatedState = item.type == ChipsUnify.TYPE_SELECTED
+        reviewSellerDetailAdapter.updateFilterTopic(adapterPosition, item.title.toString(), updatedState, getTopicsFilterFromAdapter)
+        viewModelProductReviewDetail?.setFilterTopicDataText(getTopicsFilterFromAdapter?.sortFilterItemList)
+    }
 
-        val generatedFilterRatingString = getTopicFromAdapter.filter { it.ratingIsChecked }.joinToString(postfix = ";", prefix = "rating=", separator = ",") {
-            it.ratingLabel.toString()
+    override fun onParentTopicFilterClicked() {
+        val bottomSheet = PopularTopicsBottomSheet(activity, "test", ::onTopicsClicked)
+        bottomSheet.showDialog()
+        Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
+    }
+
+    override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int) {
+        val getRatingFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()
+        val getSelectedCheckbox = getRatingFilterFromAdapter?.ratingBarList?.getOrNull(adapterPosition)
+        if (getSelectedCheckbox?.ratingIsChecked != ratingAndState.second && getSelectedCheckbox != null) {
+            reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second, getRatingFilterFromAdapter)
+            viewModelProductReviewDetail?.setFilterRatingDataText(getRatingFilterFromAdapter.ratingBarList)
+            reviewSellerDetailAdapter.removeReviewNotFound()
+            reviewSellerDetailAdapter.showLoading()
         }
     }
 

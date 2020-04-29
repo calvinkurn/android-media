@@ -6,10 +6,13 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.toggle
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter.Companion.PAYLOAD_TOPIC_FILTER_REVIEW_COUNT
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailListener
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -29,59 +32,61 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     override fun bind(element: TopicUiModel) {
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
-            addItem(dataStaticItemSortFilter())
+            addItem(dataStaticItemSortFilter(element.sortFilterItemList))
             parentListener = {
                 fragmentListener.onParentTopicFilterClicked()
             }
         }
-
-        resultFeedbackLabel.text = setReviewCountBold(element.countFeedback.orZero())
+        setReviewCount(element.countFeedback.orZero())
     }
 
-    private fun setReviewCountBold(reviewCount: Int): SpannableString {
-        val strView = getString(R.string.count_review_label).substring(0, 11)
-        val strFormat = String.format(getString(R.string.count_review_label), reviewCount.toString())
-        val strReviewSpan = SpannableString(strFormat)
-        val strLengthView = strView.length + 1
-        strReviewSpan.setSpan(StyleSpan(Typeface.BOLD), strLengthView, strLengthView + reviewCount.toString().length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        return strReviewSpan
-    }
-
-    private fun dataStaticItemSortFilter(): ArrayList<SortFilterItem> {
-        val itemSortFilterList = ArrayList<SortFilterItem>()
-
-        itemSortFilterList.apply {
-            add(SortFilterItem(
-                    title = "Kategori (99)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
-            add(SortFilterItem(
-                    title = "Kemasan (105)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
-            add(SortFilterItem(
-                    title = "Harga (900)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
-            add(SortFilterItem(
-                    title = "Shipping (205)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
+    override fun bind(element: TopicUiModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty()) {
+            return
         }
 
+        when (payloads[0] as Int) {
+            PAYLOAD_TOPIC_FILTER_REVIEW_COUNT -> setReviewCount(element.countFeedback.orZero())
+        }
+    }
+
+    private fun setReviewCount(countFeedBack: Int) {
+        resultFeedbackLabel.text = MethodChecker.fromHtml(view.context.getString(R.string.count_review_label, countFeedBack))
+    }
+
+    private fun dataStaticItemSortFilter(sortFilterItemList: ArrayList<SortFilterItemWrapper>): ArrayList<SortFilterItem> {
+        val itemSortFilterList = ArrayList<SortFilterItem>()
+
+        itemSortFilterList.addAll(sortFilterItemList.map {
+            SortFilterItem(title = it.sortFilterItem?.title
+                    ?: "", type = sortFilterMapper(it.isSelected, it.count), size = ChipsUnify.SIZE_SMALL)
+        })
+
         itemSortFilterList.forEach {
-            it.apply {
-                listener = {
-                    toggle()
-                    fragmentListener.onChildTopicFilterClicked(this)
+            it.listener = {
+                if (it.type != ChipsUnify.TYPE_DISABLE) {
+                    it.toggle()
+                    fragmentListener.onChildTopicFilterClicked(it, adapterPosition)
                 }
             }
         }
+
         return itemSortFilterList
     }
+
+    private fun sortFilterMapper(isSelected: Boolean, count: Int): String {
+        return when {
+            isSelected -> {
+                ChipsUnify.TYPE_SELECTED
+            }
+            count == 0 -> {
+                ChipsUnify.TYPE_DISABLE
+            }
+            else -> {
+                ChipsUnify.TYPE_NORMAL
+            }
+        }
+    }
+
 }

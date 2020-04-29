@@ -11,8 +11,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class GetProductReviewDetailOverallUseCase @Inject constructor(
-        @Named(GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL)
-        val gqlQuery: String,
+        val rawQuery: Map<String,String>,
         private val graphQlRepository: GraphqlRepository
 ): UseCase<ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct>() {
 
@@ -27,7 +26,7 @@ class GetProductReviewDetailOverallUseCase @Inject constructor(
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct {
-        val gqlRequest = GraphqlRequest(gqlQuery, ProductReviewDetailOverallResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL], ProductReviewDetailOverallResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
