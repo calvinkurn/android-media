@@ -8,7 +8,7 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
  * Created by Yehezkiel on 24/04/20
  */
 interface SellerReviewDetailListener {
-    fun onChildTopicFilterClicked(item: SortFilterItem)
+    fun onChildTopicFilterClicked(item: SortFilterItem, adapterPosition: Int)
     fun onParentTopicFilterClicked()
 }
 

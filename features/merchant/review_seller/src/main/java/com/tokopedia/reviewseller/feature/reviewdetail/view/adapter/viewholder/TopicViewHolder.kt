@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.toggle
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailListener
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -48,16 +49,16 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
         return strReviewSpan
     }
 
-    private fun dataStaticItemSortFilter(sortFilterItemList: ArrayList<Triple<SortFilterItem, Boolean, Int>>): ArrayList<SortFilterItem> {
+    private fun dataStaticItemSortFilter(sortFilterItemList: ArrayList<SortFilterItemWrapper>): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()
 
-        itemSortFilterList.addAll(sortFilterItemList.map { SortFilterItem(title = it.first.title, type = sortFilterMapper(it.second, it.third), size = ChipsUnify.SIZE_SMALL) })
+        itemSortFilterList.addAll(sortFilterItemList.map { SortFilterItem(title = it.sortFilterItem?.title ?: "", type = sortFilterMapper(it.isSelected, it.count), size = ChipsUnify.SIZE_SMALL) })
 
         itemSortFilterList.forEach {
             it.listener = {
                 if (it.type != ChipsUnify.TYPE_DISABLE) {
                     it.toggle()
-                    fragmentListener.onChildTopicFilterClicked(it)
+                    fragmentListener.onChildTopicFilterClicked(it, adapterPosition)
                 }
             }
         }
