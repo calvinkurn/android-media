@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class OrderHistoryViewModel @Inject constructor(
         private val productHistoryUseCase: GetProductOrderHistoryUseCase,
-        private var addWishListUseCase: AddWishListUseCase
+        private val addWishListUseCase: AddWishListUseCase
 ) : ViewModel() {
 
     private val _product: MutableLiveData<Result<ChatHistoryProductResponse>> = MutableLiveData()
