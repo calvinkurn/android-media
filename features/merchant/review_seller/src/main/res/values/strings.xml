@@ -70,4 +70,6 @@
     <string name="change_product_label">Ubah Produk</string>
     <string name="label_name_reviewer_builder">Oleh <![CDATA[<b>%1s</b>]]></string>
     <string name="change_product_desc">Sekarang kamu bisa ubah stok ataupun gambar produk langsung dari sini</string>
+    <string name="popular_topic_label">Topik Populer</string>
+    <string name="sort_label">Urutkan</string>
 </resources>

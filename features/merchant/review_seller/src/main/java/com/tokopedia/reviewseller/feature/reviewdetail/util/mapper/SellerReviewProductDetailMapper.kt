@@ -145,7 +145,6 @@ object SellerReviewProductDetailMapper {
         return itemUnifyList
     }
 
-
     private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()
         val maxData = data.topics.take(4)
