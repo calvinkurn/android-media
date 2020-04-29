@@ -19,7 +19,7 @@
     <string name="search_flight">Search Flight</string>
     <string name="flight_label_city">%1$s, %2$s</string>
     <string name="flight_label_airport">%1$s - %2$s</string>
-    <string name="flight_label_search_hint_airport">Ketik kota atau bandara %s</string>
+    <string name="flight_label_search_hint_airport">Cari bandara atau kota yang dituju</string>
     <string name="flight_label_search_hint_phone_code">Cari kode telepon negara</string>
 
     <string name="select_passenger_adult_subtitle">Usia 12 tahun ke atas</string>

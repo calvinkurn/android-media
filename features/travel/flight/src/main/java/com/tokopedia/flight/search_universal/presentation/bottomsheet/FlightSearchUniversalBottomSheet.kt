@@ -61,12 +61,12 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     }
 
     override fun onDepartureAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_departure_title))
+        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_title))
         startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE)
     }
 
     override fun onDestinationAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_arrival_title))
+        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_title))
         startActivityForResult(intent, REQUEST_CODE_AIRPORT_DESTINATION)
     }
 
