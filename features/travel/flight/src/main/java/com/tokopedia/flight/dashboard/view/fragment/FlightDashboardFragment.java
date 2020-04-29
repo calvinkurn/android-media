@@ -202,14 +202,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         airportDepartureLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_departure_title));
+                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_title));
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE);
             }
         });
         airportArrivalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_arrival_title));
+                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_title));
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_ARRIVAL);
             }
         });

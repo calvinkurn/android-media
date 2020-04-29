@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -40,6 +39,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -429,7 +429,13 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resourceId))
+        view?.let {
+            Toaster.make(it,
+                    getString(resourceId),
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.flight_booking_action_okay))
+        }
     }
 
     private fun stopTrace() {
