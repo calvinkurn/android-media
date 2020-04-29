@@ -216,7 +216,7 @@
 
     <!-- OVO -->
     <string name="product_detail_price__goods">Harga Barang</string>
-    <string name="product_detail_estimation_price_min">Estimasi Ongkir Minimum</string>
+    <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
     <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 
