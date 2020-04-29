@@ -24,7 +24,7 @@ sealed class MoreMenuUiModel(
             override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class Share(
+    data class ShareVoucher(
             override val title: String,
             @DrawableRes
             override val icon: Int

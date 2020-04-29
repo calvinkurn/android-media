@@ -141,9 +141,9 @@
             android:text="@string/mvc_used"
             android:textColor="@color/light_N700_96"
             app:layout_constraintBottom_toTopOf="@+id/tvVoucherUsed"
-            app:layout_constraintEnd_toStartOf="@+id/unifyButton"
+            app:layout_constraintEnd_toStartOf="@+id/btnMvcShareVoucher"
             app:layout_constraintStart_toStartOf="@+id/tvVoucherName"
-            app:layout_constraintTop_toTopOf="@+id/unifyButton"
+            app:layout_constraintTop_toTopOf="@+id/btnMvcShareVoucher"
             app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -154,23 +154,23 @@
             android:layout_marginRight="@dimen/layout_lvl1"
             android:text="50/100"
             android:textColor="@color/Neutral_N700_96"
-            app:layout_constraintBottom_toBottomOf="@+id/unifyButton"
-            app:layout_constraintEnd_toStartOf="@+id/unifyButton"
+            app:layout_constraintBottom_toBottomOf="@+id/btnMvcShareVoucher"
+            app:layout_constraintEnd_toStartOf="@+id/btnMvcShareVoucher"
             app:layout_constraintStart_toStartOf="@+id/tvVoucherName"
             app:layout_constraintTop_toBottomOf="@+id/tvLblUsed"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/unifyButton"
+            android:id="@+id/btnMvcShareVoucher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/mvc_dimen_12dp"
             android:layout_marginEnd="@dimen/layout_lvl1"
             android:layout_marginRight="@dimen/layout_lvl1"
             android:layout_marginBottom="@dimen/spacing_lvl2"
-            android:text="@string/mvc_share"
             android:gravity="center"
             android:minWidth="100dp"
+            android:text="@string/mvc_share"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnMore"
             app:layout_constraintTop_toBottomOf="@+id/viewVoucherCode"
@@ -182,9 +182,9 @@
             android:layout_height="@dimen/layout_lvl4"
             android:background="@drawable/mvc_rectangle_white_radius_4dp"
             android:scaleType="centerInside"
-            app:layout_constraintBottom_toBottomOf="@+id/unifyButton"
+            app:layout_constraintBottom_toBottomOf="@+id/btnMvcShareVoucher"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/unifyButton"
+            app:layout_constraintTop_toTopOf="@+id/btnMvcShareVoucher"
             app:srcCompat="@drawable/ic_mvc_more" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

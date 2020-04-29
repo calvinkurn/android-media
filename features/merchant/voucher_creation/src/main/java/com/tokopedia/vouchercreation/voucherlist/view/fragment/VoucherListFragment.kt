@@ -22,10 +22,12 @@ import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.Hea
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
+import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.*
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
@@ -35,7 +37,7 @@ import javax.inject.Inject
  */
 
 class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
-        VoucherListAdapterFactoryImpl.Listener {
+        VoucherViewHolder.Listener {
 
     companion object {
         private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
@@ -141,7 +143,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onMoreClickListener(voucher: VoucherUiModel) {
+    override fun onMoreMenuClickListener(voucher: VoucherUiModel) {
         moreBottomSheet?.let {
             it.setOnModeClickListener(voucher) { menu ->
                 onMoreMenuItemClickListener(menu, voucher)
@@ -150,14 +152,33 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
+    override fun onVoucherClickListener(voucher: VoucherUiModel) {
+
+    }
+
+    override fun onShareClickListener(voucher: VoucherUiModel) {
+        showShareBottomSheet(voucher)
+    }
+
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
             is EditQuota -> showEditQuotaBottomSheet()
+            is ShareVoucher -> showShareBottomSheet(voucher)
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
         }
+    }
+
+    private fun showShareBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        ShareVoucherBottomSheet(parent)
+                .setOnItemClickListener {
+
+                }
+                .show(childFragmentManager)
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
