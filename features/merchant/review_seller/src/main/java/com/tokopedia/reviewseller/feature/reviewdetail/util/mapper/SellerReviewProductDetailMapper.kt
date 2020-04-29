@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
+import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.sortfilter.SortFilterItem
@@ -19,44 +21,45 @@ object SellerReviewProductDetailMapper {
                                           ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
                                           userSession: UserSessionInterface): ProductFeedbackDetailUiModel {
         return ProductFeedbackDetailUiModel().apply {
-            ratingBarList = mapToRatingBarUiModel(productFeedbackDataPerProduct)
             productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct, userSession)
-            topicList = mapToTopicUiModel(productFeedbackDataPerProduct)
+            page = productFeedbackDataPerProduct.page ?: 0
+            hasNext = productFeedbackDataPerProduct.hasNext
+            reviewCount = productFeedbackDataPerProduct.reviewCount
         }
     }
 
-    private fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<RatingBarUiModel> {
+    fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData, oldData: List<RatingBarUiModel>): ProductReviewFilterUiModel {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
         val totalAggregatRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
 
-        productFeedbackDataPerProduct.aggregatedRating.map {
+        productFeedbackDataPerProduct.aggregatedRating.mapIndexed { index, it ->
             ratingBarListUiModel.add(
                     RatingBarUiModel(
-                            ratingProgressBar = if (totalAggregatRating == 0) 0 else it.ratingCount / totalAggregatRating,
+                            ratingProgressBar = if (totalAggregatRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregatRating.toFloat()) * 100,
                             ratingLabel = it.rating,
-                            ratingCount = it.ratingCount
+                            ratingCount = it.ratingCount,
+                            ratingIsChecked = oldData.getOrNull(index)?.ratingIsChecked ?: false
                     )
             )
         }
-        return ratingBarListUiModel
+        return ProductReviewFilterUiModel(ratingBarListUiModel)
     }
 
-    private fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): TopicUiModel {
-        val topicListUiModel = TopicUiModel()
+    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData, oldData: List<SortFilterItemWrapper>): TopicUiModel {
+        val topicListUiModel = TopicUiModel(countFeedback = productFeedbackDataPerProduct.reviewCount)
 
         productFeedbackDataPerProduct.topics.map {
             topicListUiModel.apply {
-                sortFilterItemList = mapToItemSortFilter(productFeedbackDataPerProduct)
-                countFeedback = productFeedbackDataPerProduct.list.size
+                sortFilterItemList = mapToItemSortFilter(productFeedbackDataPerProduct.topics, oldData)
+                countFeedback = productFeedbackDataPerProduct.reviewCount
             }
         }
         return topicListUiModel
     }
 
-    private fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
-                                     userSession: UserSessionInterface): List<FeedbackUiModel> {
+    fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
+                             userSession: UserSessionInterface): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
-
         productFeedbackDataPerProduct.list.map {
             val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
             it.attachments.map { attachment ->
@@ -88,11 +91,13 @@ object SellerReviewProductDetailMapper {
 
 
     fun mapToRatingDetailOverallUiModel(productFeedbackDetailResponse:
-                                        ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct): OverallRatingDetailUiModel {
+                                        ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct,
+                                        chipFilterString: String): OverallRatingDetailUiModel {
         return OverallRatingDetailUiModel().apply {
             productName = productFeedbackDetailResponse.productName
             ratingAvg = productFeedbackDetailResponse.ratingAverage
             reviewCount = productFeedbackDetailResponse.ratingCount
+            chipFilter = chipFilterString
         }
     }
 
@@ -146,17 +151,28 @@ object SellerReviewProductDetailMapper {
     }
 
 
-    private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
-        val itemSortFilterList = ArrayList<SortFilterItem>()
-        val maxData = data.topics.take(4)
+    private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>, oldData: List<SortFilterItemWrapper>): ArrayList<SortFilterItemWrapper> {
+        val itemSortFilterList = ArrayList<SortFilterItemWrapper>()
+        val updatedData = updateNewDataWithOldData(data,oldData)
+        val maxData = updatedData.take(4)
         maxData.map {
             val sortFilter = SortFilterItem(
-                    title = it.formatted,
+                    title = it.first.formatted,
                     type = ChipsUnify.TYPE_NORMAL,
                     size = ChipsUnify.SIZE_SMALL)
-            itemSortFilterList.add(sortFilter)
+
+            itemSortFilterList.add(SortFilterItemWrapper(sortFilter, it.second, it.first.count, it.first.title))
         }
         return itemSortFilterList
+    }
+
+    private fun updateNewDataWithOldData(newData: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>, oldData: List<SortFilterItemWrapper>): List<Pair<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic,Boolean>> {
+        val updatedData = newData.mapIndexed { index, topic ->
+            val lastState = oldData.getOrNull(index)?.isSelected ?: false
+            topic to lastState
+        }
+
+       return updatedData
     }
 
     fun mapToItemImageSlider(attachmentList: List<FeedbackUiModel.Attachment>?): Pair<List<String>, List<String>> {

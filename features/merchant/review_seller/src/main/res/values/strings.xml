@@ -54,7 +54,7 @@
     <string name="default_total_star_review">(1200)</string>
     <string name="default_filter_detail">30 Hari Terakhir</string>
     <string name="topic_review_detail_label">Topik Populer</string>
-    <string name="count_review_label">Menampilkan %s ulasan dari pembeli</string>
+    <string name="count_review_label">Menampilkan <![CDATA[<b>%1d</b>]]> ulasan dari pembeli</string>
     <string name="label_by">Oleh</string>
     <string name="variant_feedback_label">Varian:</string>
     <string name="otomatis_reply">Balasan Otomatis</string>

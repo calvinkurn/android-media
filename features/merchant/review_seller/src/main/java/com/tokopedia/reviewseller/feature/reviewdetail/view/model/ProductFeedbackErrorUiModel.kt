@@ -2,12 +2,14 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.model
 
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.BaseSellerReviewDetail
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
-import com.tokopedia.sortfilter.SortFilterItem
 
-data class TopicUiModel(
-        var sortFilterItemList: ArrayList<SortFilterItemWrapper> = arrayListOf(),
-        var countFeedback: Int? = -1
+/**
+ * Created by Yehezkiel on 28/04/20
+ */
+data class ProductFeedbackErrorUiModel(
+        val error: Boolean = false
 ) : BaseSellerReviewDetail {
+
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
