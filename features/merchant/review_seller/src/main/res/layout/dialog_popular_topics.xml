@@ -47,7 +47,7 @@
         android:id="@+id/tvSortTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/popular_topic_label"
+        android:text="@string/sort_label"
         app:typographyWeight="bold"
         app:typographyType="body_1"
         android:textColor="@color/clr_f531353b"

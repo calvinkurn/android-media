@@ -29,10 +29,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProduc
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductReviewFilterUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.sortfilter.SortFilterItem
@@ -485,7 +482,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     override fun onParentTopicFilterClicked() {
-        val bottomSheet = PopularTopicsBottomSheet(activity, reviewSellerDetailAdapter, "test", ::onTopicsClicked)
+        val bottomSheet = PopularTopicsBottomSheet(activity,  ::onTopicsClicked)
+        viewModelProductReviewDetail?.filterTopicData?.let { bottomSheet.setFilterTopicListData(it) }
+        viewModelProductReviewDetail?.sortTopicData?.let { bottomSheet.setSortTopic(it) }
         bottomSheet.showDialog()
     }
 
@@ -500,7 +499,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    private fun onTopicsClicked(data: List<String>) {
+    private fun onTopicsClicked(data: List<SortFilterItemWrapper>, sort: List<SortItemUiModel>) {
 
     }
 
