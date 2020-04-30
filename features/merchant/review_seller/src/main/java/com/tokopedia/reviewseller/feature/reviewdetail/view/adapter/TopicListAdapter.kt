@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_chips.view.*
 
 class TopicListAdapter(private val topicSortFilterListener: TopicSortFilterListener) : RecyclerView.Adapter<TopicListAdapter.TopicListViewHolder>() {
 
-    private var sortFilterList: MutableList<SortFilterItemWrapper>? = null
+    var sortFilterList: MutableList<SortFilterItemWrapper>? = null
 
     fun setTopicFilter(sortFilterList: List<SortFilterItemWrapper>) {
         this.sortFilterList = sortFilterList.toMutableList()

@@ -29,5 +29,5 @@ interface SellerRatingAndTopicListener {
 
 interface TopicSortFilterListener {
     fun onTopicClicked(item: SortFilterItemWrapper, adapterPosition: Int)
-    fun onSortClicked(itemUiModel: SortItemUiModel, adapterPosition: Int)
+    fun onSortClicked(itemUiModel: SortItemUiModel, chipType: String, adapterPosition: Int)
 }

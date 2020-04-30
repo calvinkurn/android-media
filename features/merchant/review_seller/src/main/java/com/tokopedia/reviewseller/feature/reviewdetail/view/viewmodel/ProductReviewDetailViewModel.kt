@@ -39,7 +39,7 @@ class ProductReviewDetailViewModel @Inject constructor(
     private var productId = 0
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
     private var filterRatingData: List<RatingBarUiModel> = listOf()
-    private var filterTopicData: List<SortFilterItemWrapper> = listOf()
+    var filterTopicData: List<SortFilterItemWrapper> = listOf()
 
     var sortTopicData: List<SortItemUiModel> = listOf()
 
