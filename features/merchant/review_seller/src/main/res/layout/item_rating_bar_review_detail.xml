@@ -51,7 +51,7 @@
 
     <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar_rating"
-        android:layout_width="@dimen/dp_200"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:unify_progress_bar_height="6"
         android:layout_marginStart="@dimen/dp_12"
