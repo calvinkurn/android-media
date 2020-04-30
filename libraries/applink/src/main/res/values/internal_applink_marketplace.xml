@@ -54,6 +54,7 @@
 
     <string name="path_review_inbox" translatable="false">/review</string>
     <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
+    <string name="path_review_report" translatable="false">/review-report</string>
 
 
     <string name="path_seller_review_page" translatable="false">/seller-review-page</string>
