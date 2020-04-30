@@ -185,6 +185,7 @@
     <item name="selected_catalog" type="id" />
 
     <!-- add edit draft -->
+    <string name="label_description_on_dialog">Sayang lho udah sampai di sini! Datamu akan tersimpan jika kamu kembali ke halaman sebelumnya</string>
     <string name="label_cta_primary_button_on_dialog">Batal</string>
     <string name="label_cta_secondary_button_on_dialog">Ya</string>
     <string name="label_title_on_dialog">Yakin ingin keluar?</string>
