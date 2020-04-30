@@ -10,6 +10,9 @@ class ReviewSellerAdapter(
         sellerReviewListTypeFactory: SellerReviewListTypeFactory
 ): BaseListAdapter<Visitable<*>,SellerReviewListTypeFactory>(sellerReviewListTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
 
+    companion object{
+        const val PAYLOAD_SUMMARY_PERIOD = 512
+    }
     private var productReviewListViewModel: MutableList<ProductReviewUiModel> = mutableListOf()
 
     fun setProductListReviewData(productListReviewUiModel: List<ProductReviewUiModel>) {
@@ -23,6 +26,16 @@ class ReviewSellerAdapter(
         val lastIndex = visitables.size
         visitables.add(data)
         notifyItemInserted(lastIndex)
+    }
+
+    fun updateDatePeriod(datePeriod: String) {
+        val reviewSummaryData = visitables.find { it is ProductRatingOverallUiModel }
+        val indexOfReviewSummary = visitables.indexOf(reviewSummaryData)
+
+        if (indexOfReviewSummary != -1) {
+            (reviewSummaryData as? ProductRatingOverallUiModel)?.period = datePeriod
+            notifyItemChanged(indexOfReviewSummary, PAYLOAD_SUMMARY_PERIOD)
+        }
     }
 
     override val endlessDataSize: Int

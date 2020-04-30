@@ -1,11 +1,13 @@
 package com.tokopedia.reviewseller.feature.reviewlist.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -154,6 +156,29 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         super.onDestroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            ReviewSellerConstant.RESULT_INTENT_DETAIL -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val stringData = data?.getStringExtra("selectedDateChip")
+                    val updatedPosition = data?.getIntExtra("selectedDatePosition", 0) ?: 0
+
+                    if (chipsFilterText == stringData) return
+
+                    viewModelListReviewList?.positionFilter = updatedPosition
+                    val filterListItemUnify = populateFilterDate()
+                    filterListUnify?.apply {
+                        setSelectedFilterOrSort(filterListItemUnify, viewModelListReviewList?.positionFilter.orZero())
+                        onItemFilterClickedBottomSheet(updatedPosition, filterListItemUnify, this)
+                    }
+                }
+            }
+
+            else -> super.onActivityResult(requestCode, resultCode, data)
+
+        }
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, SellerReviewListTypeFactory> {
         return ReviewSellerAdapter(sellerReviewListTypeFactory)
     }
@@ -218,6 +243,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun initSearchBar() {
         searchBarRatingProduct?.apply {
+            isClearable = true
+            iconListener = {
+                loadInitialData()
+            }
             searchBarIcon.setOnClickListener {
                 if (searchBarPlaceholder.isNotEmpty()) {
                     searchFilterText = "$searchQuery="
@@ -433,10 +462,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             chip_text.ellipsize = TextUtils.TruncateAt.END
         }
 
-        val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
-        val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
-
-        filterListUnify?.setData(filterListItemUnify)
+        val filterListItemUnify = populateFilterDate()
 
         chipsFilter?.apply {
             setOnClickListener {
@@ -448,6 +474,14 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 initBottomSheetFilter(filterListItemUnify, getString(R.string.title_bottom_sheet_filter))
             }
         }
+    }
+
+    private fun populateFilterDate(): ArrayList<ListItemUnify>{
+        val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
+        val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
+
+        filterListUnify?.setData(filterListItemUnify)
+        return filterListItemUnify
     }
 
     private fun initViewBottomSheet() {
@@ -472,10 +506,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun onItemProductReviewClicked(productId: Int) {
-        startActivity(Intent(context, SellerReviewDetailActivity::class.java).apply {
+        startActivityForResult(Intent(context, SellerReviewDetailActivity::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
             putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
-        })
+        }, ReviewSellerConstant.RESULT_INTENT_DETAIL)
     }
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
@@ -549,6 +583,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         try {
             viewModelListReviewList?.positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
+            reviewSellerAdapter.updateDatePeriod(ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
             chipsFilter?.apply {
                 chip_text.text = chipsFilterText
             }
