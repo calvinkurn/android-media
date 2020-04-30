@@ -144,6 +144,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         swipe_refresh_layout.setOnRefreshListener {
             refreshProduct()
         }
+        product_list.itemAnimator = null
         product_list.adapter = productListAdapter
         product_list.layoutManager = LinearLayoutManager(context)
     }
@@ -151,6 +152,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun refreshProduct() {
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.items.clear()
+        productListAdapter.notifyDataSetChanged()
         viewModel.productList(getKeyword(),
                 getSelectedEtalaseId(),
                 getSelectedSortId(),
@@ -214,7 +216,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         clearRefreshLoading()
         btn_next.isEnabled = false
-        productListAdapter.items.clear()
         data.forEach { result ->
             if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
                 if (result.adID > 0)
@@ -230,7 +231,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         if (productListAdapter.items[0] !is ProductEmptyViewModel)
             productListAdapter.setSelectedList(stepperModel?.selectedProductIds!!)
-        var count = stepperModel?.selectedProductIds!!.size
+        val count = stepperModel?.selectedProductIds!!.size
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
         productListAdapter.notifyDataSetChanged()

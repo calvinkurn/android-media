@@ -1,5 +1,8 @@
 package com.tokopedia.product_photo_adapter
 
+import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
@@ -26,13 +29,22 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
+        hideCloseButton(viewHolder)
         reduceViewHoldersTransparency(viewHolder)
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
+        showCloseButton(viewHolder)
         restoreTransparency(viewHolder)
-        recyclerView.adapter?.notifyDataSetChanged()
+        recyclerView.post {
+            recyclerView.adapter?.notifyDataSetChanged()
+        }
+    }
+
+    private fun hideCloseButton(viewHolder: RecyclerView.ViewHolder?) {
+        val closeButton = viewHolder?.itemView?.findViewById<AppCompatImageView>(R.id.iv_delete_button)
+        closeButton?.visibility = View.GONE
     }
 
     private fun reduceViewHoldersTransparency(viewHolder: RecyclerView.ViewHolder?) {
@@ -45,6 +57,11 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
                 }
             }
         }
+    }
+
+    private fun showCloseButton(viewHolder: RecyclerView.ViewHolder?) {
+        val closeButton = viewHolder?.itemView?.findViewById<AppCompatImageView>(R.id.iv_delete_button)
+        closeButton?.visibility = View.VISIBLE
     }
 
     private fun restoreTransparency(viewHolder: RecyclerView.ViewHolder?) {
