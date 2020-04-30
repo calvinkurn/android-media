@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -281,7 +282,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
     private void removeServiceSelectionFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                .setCustomAnimations(R.animator.slide_out_right_logistic, R.animator.slide_out_right_logistic)
                 .remove(getSupportFragmentManager()
                         .findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG)).commit();
     }

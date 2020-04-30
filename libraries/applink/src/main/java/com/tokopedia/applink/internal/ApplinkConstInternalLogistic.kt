@@ -39,6 +39,6 @@ object ApplinkConstInternalLogistic {
     val DROPOFF_PICKER = "$INTERNAL_LOGISTIC/dropoff/"
 
     @JvmField
-    val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/{order_id}/"
+    val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/"
 
 }
