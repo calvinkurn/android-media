@@ -220,11 +220,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         destroyInsets(requireView())
         super.onDestroyView()
         if (::orientationManager.isInitialized) orientationManager.disable()
-        layoutManager.onDestroy()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         if (::layoutManager.isInitialized) layoutManager.onDestroy()
     }
 
@@ -451,64 +446,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        videoScaleAnimator.cancel()
-    }
-
-    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val currentHeight = flVideo.height
-        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
-        val scaleFactor = destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        flVideo.pivotX = (flVideo.width / 2).toFloat()
-        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val marginTopXt = marginTop * scaleFactor
-        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsShownAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
-    }
-
-    fun onBottomInsetsViewHidden() {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsHiddenAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
-    }
-
-    fun setResultBeforeFinish() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val totalView = playViewModel.totalView
-            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
-        })
-    }
-
     /**
      * Performance Monitoring
      */
@@ -549,13 +486,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     private fun stopPageMonitoring() {
         pageMonitoring.stopMonitoring()
-    }
-
-    /**
-     * @return true means the onBackPressed() has been handled by this fragment
-     */
-    fun onBackPressed(): Boolean {
-        return playViewModel.onBackPressed()
     }
 
     private fun hideKeyboard() {
