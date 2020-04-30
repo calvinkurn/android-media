@@ -129,7 +129,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
             if (dismiss) {
                 dialog.dismiss()
             } else {
-                //finish()
+                dialog.dismiss()
                 super.onBackPressed()
             }
 

@@ -93,13 +93,14 @@ class EditProductFragment : BaseDaggerFragment() {
     private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>) {
         data.forEach { result ->
             adapter.items.add(EditProductItemViewModel(result))
-            sharedViewModel.setProductIds(getProductIds())
             originalIdList.add(result.itemID)
         }
 
         adapter.notifyDataSetChanged()
         setVisibilityOperation(true)
         updateItemCount()
+        sharedViewModel.setProductIds(getProductIds())
+
     }
 
     private fun getProductIds(): MutableList<String> {
@@ -145,6 +146,7 @@ class EditProductFragment : BaseDaggerFragment() {
             buttonStateCallback?.setButtonState()
             adapter.notifyDataSetChanged()
         }
+        sharedViewModel.setProductIds(getProductIds())
 
     }
 
@@ -175,6 +177,7 @@ class EditProductFragment : BaseDaggerFragment() {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getIntegerArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
+                sharedViewModel.setProductIds(getProductIds())
 
             }
         }
@@ -189,11 +192,9 @@ class EditProductFragment : BaseDaggerFragment() {
             adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", 0, 0, dataItem)))
             if (!existsOriginal(product[ind])) {
                 addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", 0, 0, dataItem))
-
             }
         }
         adapter.notifyDataSetChanged()
-        sharedViewModel.setProductIds(getProductIds())
         updateItemCount()
         btnState = true
         buttonStateCallback?.setButtonState()

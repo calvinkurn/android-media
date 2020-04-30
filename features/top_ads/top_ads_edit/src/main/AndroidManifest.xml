@@ -8,7 +8,8 @@
         android:label="@string/ubah_group"
         android:supportsRtl="true"
         tools:replace="android:label">
-        <activity android:name="com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
+        <activity
+            android:name="com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -24,32 +25,24 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.activity.SelectKeywordActivity"
-            android:theme="@style/Theme.White"
+        <activity
+            android:name=".view.activity.SelectKeywordActivity"
             android:label="@string/add_keword"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".view.activity.SelectNegKeywordActivity"
             android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".view.activity.SelectNegKeywordActivity"
             android:label="@string/add_negative_keyword"
-
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".view.activity.SelectProductActivity"
             android:theme="@style/Theme.White"
-            android:label="@string/product_select_label"
             android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
+
         </activity>
+        <activity
+            android:name=".view.activity.SelectProductActivity"
+            android:label="@string/product_select_label"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

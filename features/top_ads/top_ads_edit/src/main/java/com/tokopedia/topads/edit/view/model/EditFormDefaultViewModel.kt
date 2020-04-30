@@ -43,7 +43,7 @@ class EditFormDefaultViewModel @Inject constructor(private val context: Context,
         launchCatchError(
                 block = {
                     val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_validate_group_name),
+                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_validate_group_name),
                                 ResponseGroupValidateName::class.java, mapOf(ParamObject.SHOP_ID to userSession.shopId.toIntOrZero(), ParamObject.GROUP_NAME to groupName))
                         val cacheStrategy = GraphqlCacheStrategy
                                 .Builder(CacheType.CLOUD_THEN_CACHE).build()
@@ -74,7 +74,7 @@ class EditFormDefaultViewModel @Inject constructor(private val context: Context,
                     queryMap[SUGGESTION] = suggestions
                     queryMap[REQUEST_TYPE] = ParamObject.PRODUCT
                     val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_bid_info), ResponseBidInfo.Result::class.java, queryMap)
+                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_bid_info), ResponseBidInfo.Result::class.java, queryMap)
                         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
@@ -182,7 +182,7 @@ class EditFormDefaultViewModel @Inject constructor(private val context: Context,
                     queryMap[SUGGESTION] = suggestions
                     queryMap[REQUEST_TYPE] = KEYWORD
                     val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_bid_info), ResponseBidInfo.Result::class.java, queryMap)
+                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_bid_info), ResponseBidInfo.Result::class.java, queryMap)
                         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }

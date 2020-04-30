@@ -10,13 +10,7 @@ query topadsGetListProductsOfGroup($shopID: Int!, $page: Int!, $perPage: Int!, $
     data {
       adID
       itemID
-      adStatusDesc
       adPriceBidFmt
-      adPriceDailyFmt
-      adStartDate
-      adStartTime
-      adEndDate
-      adEndTime
       adDetailProduct {
         productName
         productURI

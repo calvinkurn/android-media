@@ -3,7 +3,6 @@ query topAdsGetPromoGroup($group_id : String!){
     data {
       group_id
       group_name
-      group_type
       shop_id
       status
       price_bid
@@ -12,13 +11,7 @@ query topAdsGetPromoGroup($group_id : String!){
       group_start_time
       group_end_date
       group_end_time
-      sticker_id
-      group_total
       keyword_total
-      external_campaigns {
-        group_id
-        type
-      }
     }
   }
 }

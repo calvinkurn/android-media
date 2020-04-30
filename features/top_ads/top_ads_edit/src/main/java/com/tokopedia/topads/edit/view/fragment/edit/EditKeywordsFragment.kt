@@ -100,13 +100,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
-            productIds = it.toString()
-        })
-        sharedViewModel.groupId.observe(viewLifecycleOwner, Observer {
-            groupId = it
-            viewmodel.getAdKeyword(groupId, this::onSuccessKeyword, this::onErrorKeyword, this::onEmptyKeyword)
-        })
         val suggestions = java.util.ArrayList<DataSuggestions>()
         val dummyId: MutableList<Int> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
@@ -232,6 +225,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
+            productIds = it.toString()
+        })
+        sharedViewModel.groupId.observe(viewLifecycleOwner, Observer {
+            groupId = it
+            viewmodel.getAdKeyword(groupId, this::onSuccessKeyword, this::onErrorKeyword, this::onEmptyKeyword)
+        })
 
         add_keyword.setOnClickListener {
             onAddKeyword()
