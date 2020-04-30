@@ -1,7 +1,7 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
-import com.tokopedia.akamai_bot_lib.getAny
-import com.tokopedia.akamai_bot_lib.registeredGqlFunctions
+import com.tokopedia.akamai_bot_lib.*
+import com.tokopedia.network.exception.MessageErrorException
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -63,7 +63,12 @@ class GqlAkamaiBotInterceptor : Interceptor {
             }
         }
 
-        return chain.proceed(newRequest.build())
+        val response = chain.proceed(newRequest.build())
+
+        if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
+            throw MessageErrorException(ERROR_MESSAGE_AKAMAI)
+        }
+        return response
     }
 
     private fun isPlaintext(buffer: Buffer): Boolean {

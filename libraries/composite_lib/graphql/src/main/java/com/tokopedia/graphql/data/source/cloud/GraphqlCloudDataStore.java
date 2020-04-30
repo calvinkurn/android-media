@@ -53,7 +53,11 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
         if (isAkamai(requests.get(0).getQuery())) {
             Map<String, String> header = new HashMap<>();
-            header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
+            if (requests.get(0).getQuery().contains("add")) {
+                header.put(AKAMAI_SENSOR_DATA_HEADER, "");
+            } else {
+                header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
+            }
             return mApi.getResponse(requests, header);
         } else {
             return mApi.getResponse(requests, new HashMap<>());
