@@ -43,7 +43,6 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARA
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -111,8 +110,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            UnifyThemeHelper.setTheme(it)
-
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
 

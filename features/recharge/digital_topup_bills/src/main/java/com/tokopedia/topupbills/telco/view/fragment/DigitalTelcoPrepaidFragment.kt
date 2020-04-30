@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -58,8 +59,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var layoutProgressBar: ProgressBar
+    private lateinit var performanceMonitoring: PerformanceMonitoring
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var clientNumber = ""
+    private var traceStop = false
 
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
     private var operatorData: TelcoCustomComponentData =
@@ -69,6 +72,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
+            performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_PREPAID_TRACE)
+
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
             sharedModel.setShowTotalPrice(false)
@@ -381,11 +386,23 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun setFavNumbers(data: TopupBillsFavNumber) {
+        performanceMonitoringStopTrace()
         val favNumbers = data.favNumberList
         favNumberList.addAll(favNumbers)
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
             telcoClientNumberWidget.setInputNumber(favNumbers[0].clientNumber)
             setTabFromProductSelected()
+        }
+    }
+
+    override fun errorSetFavNumbers() {
+        performanceMonitoringStopTrace()
+    }
+
+    private fun performanceMonitoringStopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace()
+            traceStop = true
         }
     }
 
@@ -443,8 +460,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     companion object {
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
-
         private const val EXTRA_PARAM = "extra_param"
+        private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()

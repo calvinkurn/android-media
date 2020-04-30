@@ -1,7 +1,5 @@
 package com.tokopedia.topads.dashboard.di;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsEtalaseFactory;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsEtalaseListMapper;
 import com.tokopedia.topads.dashboard.data.repository.TopAdsEtalaseListRepositoryImpl;

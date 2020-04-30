@@ -33,6 +33,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -45,7 +46,6 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
@@ -443,10 +443,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onBuyerName() {
-        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
-            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                    .getTopProfileIntent(getActivity(), userId));
-        }
+        startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, userId));
     }
 
     public void onDetailClick() {
@@ -719,22 +716,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void showProgress() {
         progressDialog.showDialog();
-    }
-
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-        switch (type) {
-            case SellingService.CONFIRM_SHIPPING:
-            case SellingService.CANCEL_SHIPPING:
-                progressDialog.dismiss();
-                break;
-        }
     }
 
     @Override

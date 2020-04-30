@@ -8,4 +8,5 @@ object RawQueryKeyObject {
     const val QUERY_ADS_BID_INFO = "query_ads_bid_info"
     const val QUERY_GET_AUTO_ADS = "query_get_auto_ads"
     const val QUERY_POST_AUTO_ADS = "query_post_auto_ads"
+    const val QUERY_POTENTIAL_REACH_ESTIMATION = "query_potential_reach_estimation"
 }

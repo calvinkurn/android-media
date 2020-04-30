@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -88,7 +90,7 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
 
     @Override
     public void goToSellerCenter() {
-        openUrl(Uri.parse(SELLER_CENTER_LINK));
+        openUrlWebView(SELLER_CENTER_LINK);
     }
 
     @Override
@@ -103,5 +105,10 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
         } catch (ActivityNotFoundException e) {
             NetworkErrorHelper.showSnackbar(this, getString(R.string.error_no_browser));
         }
+    }
+
+    private void openUrlWebView(String urlString) {
+        String webViewApplink = ApplinkConst.WEBVIEW + "?url=" + urlString;
+        RouteManager.route(this, webViewApplink);
     }
 }

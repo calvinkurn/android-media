@@ -39,7 +39,6 @@ interface TopChatContract {
 
         fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
 
-        fun showErrorWebSocket(b: Boolean)
 
         fun getStringArgument(key: String, savedInstanceState: Bundle?): String
 
@@ -65,7 +64,6 @@ interface TopChatContract {
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
-
         fun connectWebSocket(messageId: String)
 
         fun startTyping()

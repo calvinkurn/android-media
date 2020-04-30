@@ -24,27 +24,21 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.test.application.environment.interceptor.MockInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
+import com.tokopedia.test.application.util.MockResponseList;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
@@ -69,41 +63,11 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
     public void enableMockResponse() {
         if (GlobalConfig.DEBUG) {
-            HashMap<String, String> responseList = new HashMap<>();
-            responseList.put("dynamicHomeChannel", getRawString(R.raw.response_mock_data_dynamic_home_channel));
-            responseList.put("widget_tab", getRawString(R.raw.response_mock_data_home_widget_tab));
-            responseList.put("widget_grid", getRawString(R.raw.response_mock_data_home_widget_grid));
-            responseList.put("suggestedProductReview", getRawString(R.raw.response_mock_data_suggested_review));
-            responseList.put("playGetLiveDynamicChannels", getRawString(R.raw.response_mock_data_play_widget));
-
             List<Interceptor> testInterceptors = new ArrayList<>();
-            testInterceptors.add(new MockInterceptor(responseList));
+            testInterceptors.add(new MockInterceptor(MockResponseList.INSTANCE.create(this)));
 
             GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
         }
-    }
-
-    private String getRawString(int res) {
-        InputStream rawResource = this.getResources().openRawResource(res);
-        String content = streamToString(rawResource);
-        try {
-            rawResource.close();
-        } catch (IOException e) {
-        }
-        return content;
-    }
-
-    public static String streamToString(InputStream in) {
-        String temp;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            while ((temp = bufferedReader.readLine()) != null) {
-                stringBuilder.append(temp + "\n");
-            }
-        } catch (IOException e) {
-        }
-        return stringBuilder.toString();
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {
@@ -205,11 +169,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxMessageIntent(Context mContext) {
         return null;
     }
 
@@ -449,6 +408,11 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
     @Override
     public void doRelogin(String newAccessToken) {
+
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
 }

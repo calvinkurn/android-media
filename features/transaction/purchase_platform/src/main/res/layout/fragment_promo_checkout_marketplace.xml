@@ -162,7 +162,7 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_apply_promo"
-            android:layout_width="@dimen/dp_153"
+            android:layout_width="@dimen/dp_165"
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             app:layout_constraintBottom_toBottomOf="parent"

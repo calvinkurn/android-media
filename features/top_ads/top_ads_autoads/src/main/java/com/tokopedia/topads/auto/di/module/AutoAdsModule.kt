@@ -61,8 +61,8 @@ class AutoAdsModule {
     @AutoAdsScope
     @Provides
     fun provideAutoAdsWidgetViewModelFactory(dispatcher: CoroutineDispatcher,
-                                          repository: GraphqlRepository,
-                                          query: Map<String, String>):
+                                             repository: GraphqlRepository,
+                                             query: Map<String, String>):
             AutoAdsWidgetViewModelFactory = AutoAdsWidgetViewModelFactory(dispatcher, repository, query)
 
 }

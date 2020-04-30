@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.find.data.repository
 
-import com.tokopedia.discovery.categoryrevamp.data.filter.FilterResponse
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
+import com.tokopedia.common_category.model.filter.FilterResponse
+import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.discovery.find.data.model.RelatedLinkResponse
 import com.tokopedia.discovery.find.util.FindNavConstants
 import com.tokopedia.filter.common.data.DynamicFilterModel

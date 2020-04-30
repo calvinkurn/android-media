@@ -12,6 +12,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -52,8 +53,8 @@ public class GetFacebookCredentialUseCase {
 
     }
 
-    private void promptFacebookLogin(Fragment fragment, CallbackManager callbackManager,
-                                     final GetFacebookCredentialSubscriber subscriber) {
+    private void promptFacebookLogin(Fragment fragment, CallbackManager callbackManager, final GetFacebookCredentialSubscriber subscriber) {
+        FacebookSdk.fullyInitialize();
         LoginManager.getInstance().logInWithReadPermissions(fragment, READ_PERMISSIONS);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 

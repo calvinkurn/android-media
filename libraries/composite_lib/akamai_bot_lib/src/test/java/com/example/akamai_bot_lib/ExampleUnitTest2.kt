@@ -1,11 +1,9 @@
 package com.example.akamai_bot_lib
 
-import com.tokopedia.akamai_bot_lib.getAny
-import com.tokopedia.akamai_bot_lib.getMutation
-import com.tokopedia.akamai_bot_lib.interceptor.registeredGqlFunctions
+import com.tokopedia.akamai_bot_lib.*
 import org.junit.Assert
 import org.junit.Test
-import java.util.regex.Pattern
+import java.util.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -38,4 +36,55 @@ class ExampleUnitTest2 {
         assert(!xTkpdAkamai.isNullOrEmpty())
         assert(xTkpdAkamai.equals("promorevamp"))
     }
+
+    @Test
+    fun testTime() {
+
+        val cal2 = Calendar.getInstance()
+        cal2.timeInMillis = System.currentTimeMillis()
+        var notedTime = cal2.timeInMillis
+        cal2.add(Calendar.SECOND, 15)
+        var currentTime = cal2.timeInMillis
+        var value = ""
+
+        var akamaiValue = setExpire(
+                { currentTime },
+                { notedTime },
+                { time -> notedTime = time },
+                { value = "1234" },
+                { value }
+        )
+
+        assert(akamaiValue.equals("1234"))
+
+        cal2.add(Calendar.SECOND, 1)
+        currentTime = cal2.timeInMillis
+
+        akamaiValue = setExpire(
+                { currentTime },
+                { notedTime },
+                { time -> notedTime = time },
+                { value = "12345" },
+                { value }
+        )
+
+        assert(akamaiValue.equals("1234"))
+
+        cal2.add(Calendar.SECOND, 9)
+        currentTime = cal2.timeInMillis
+
+        akamaiValue = setExpire(
+                { currentTime },
+                { notedTime },
+                { time -> notedTime = time },
+                { value = "12345" },
+                { value }
+        )
+
+        assert(akamaiValue.equals("12345"))
+
+
+    }
+
+
 }

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.extensions.selectedPrice
@@ -95,7 +96,7 @@ class TopAdsAutoTopUpFragment:
         selectedItem = data.selectedPrice
         min_auto_topup_descr.text = getString(R.string.descr_min_autotopup, selectedItem.minCreditFmt)
         auto_topup_status.text = data.statusDesc
-        auto_topup_toggle.isChecked = data.status.toInt() != 0
+        auto_topup_toggle.isChecked = data.status.toIntOrZero() != 0
         addListenerToToggle()
         super.renderList(data.availableNominals)
     }

@@ -998,11 +998,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
+    private fun visitShopPageWithAnalytics(positionInFeed: Int, shop: Shop) {
         goToShopPage(shop.id)
-
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, trackingList, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+            val (_, dataList, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             for ((templateType, _, _, _, authorName, _, authorId, cardPosition, adId) in trackingList) {
                 if (TextUtils.equals(authorName, shop.name)) {
                     analytics.eventTopadsRecommendationClick(
@@ -1015,10 +1014,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     break
                 }
             }
+            feedAnalytics.eventClickTopadsPromoted(shop.id)
+        }
+    }
+
+    override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
+        visitShopPageWithAnalytics(positionInFeed, shop)
+        trackShopClickImpression(positionInFeed, adapterPosition, shop)
+    }
+
+    private fun trackShopClickImpression(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
+        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
+            val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 trackUrlEvent(dataList[adapterPosition].shopClickUrl)
             }
-            feedAnalytics.eventClickTopadsPromoted(shop.id)
         }
     }
 
@@ -1027,20 +1037,25 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
-        feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+        if (data.isFavorit) {
+            onShopItemClicked(positionInFeed, adapterPosition, data.shop)
+        } else {
+            feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
-        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+            if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
+                val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
 
-            for (tracking in trackingList) {
-                if (TextUtils.equals(tracking.authorName, data.shop.name)) {
-                    trackRecommendationFollowClick(
-                            tracking,
-                            FeedAnalytics.Element.FOLLOW
-                    )
-                    break
+                for (tracking in trackingList) {
+                    if (TextUtils.equals(tracking.authorName, data.shop.name)) {
+                        trackRecommendationFollowClick(
+                                tracking,
+                                FeedAnalytics.Element.FOLLOW
+                        )
+                        break
+                    }
                 }
             }
+            trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
         }
     }
 
