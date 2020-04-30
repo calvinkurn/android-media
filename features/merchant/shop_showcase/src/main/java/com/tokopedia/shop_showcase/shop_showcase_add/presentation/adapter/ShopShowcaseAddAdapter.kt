@@ -29,10 +29,10 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
     }
 
     fun updateSelectedDataSet(newSelectedProductList: ArrayList<ShowcaseProduct>?, isActionEdit: Boolean) {
-        if(!isActionEdit) selectedProductList.clear()
+        selectedProductList.clear()
         newSelectedProductList?.let {
             it.map { showcaseProduct ->
-                showcaseProduct.isCloseable = true
+                if(isActionEdit) showcaseProduct.isCloseable = true
                 showcaseProduct.ishighlighted = false
                 if(!selectedProductList.contains(showcaseProduct))
                     selectedProductList.add(showcaseProduct)
@@ -43,16 +43,18 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
 
     fun updateAppendedDataSet(newAppendedProductList: ArrayList<ShowcaseProduct>?) {
         newAppendedProductList?.let { newAppendedList ->
-            val filteredList = selectedProductList.filter {
-                !(it as ShowcaseProduct).isNewAppended
-            }
             appendedProductList.clear()
-            appendedProductList.addAll(newAppendedList)
-            selectedProductList.apply {
-                clear()
-                addAll(filteredList)
-                addAll(newAppendedList)
+            newAppendedList.forEach {
+                if(it.isNewAppended)
+                    appendedProductList.add(it)
             }
+        }
+    }
+
+    fun updateDeletedDataSet(newDeletedProducList: ArrayList<ShowcaseProduct>?) {
+        newDeletedProducList?.let { deletedList ->
+            deletedProductList.clear()
+            deletedProductList.addAll(deletedList)
         }
     }
 
