@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.replaceTextAndRestoreCursorPosition
 import com.tokopedia.product.addedit.common.util.setText
@@ -47,6 +48,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             itemView.textFieldUrl.textAreaInput.apply {
                 maxLines = 1
                 setSingleLine(true)
+                setMargin(0, 0, context.resources.getDimension(R.dimen.layout_lvl2).toInt(), 0)
             }
             itemView.textFieldUrl.apply {
                 isLabelStatic = false
