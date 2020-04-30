@@ -239,4 +239,7 @@
     <string name="product_manage_label_supervision">Pengawasan</string>
     <string name="product_manage_list_empty_search">Oops, produk yang kamu cari tidak ditemukan.</string>
     <string name="product_manage_list_empty_product">Kata orang, jutaan mimpi berawal dari satu langkah kecil. Tambah produk pertamamu.</string>
+
+    <string name="seller_migration_product_manage_ticker_title">Kelola stok produk langsung di Seller App</string>
+    <string name="seller_migration_product_manage_ticker_content">Penuhi permintaan pembeli dengan rutin cek ketersediaan stok produkmu. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
 </resources>

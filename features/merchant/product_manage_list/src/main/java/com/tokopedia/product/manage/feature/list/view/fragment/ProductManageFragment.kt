@@ -100,6 +100,8 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.I
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationBottomSheetListener
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationProductBottomSheet
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -110,6 +112,7 @@ import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -126,7 +129,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     ProductMultiEditBottomSheet.MultiEditListener,
     ProductManageFilterFragment.OnFinishedListener,
     ProductManageQuickEditPriceFragment.OnFinishedListener,
-    ProductManageQuickEditStockFragment.OnFinishedListener {
+    ProductManageQuickEditStockFragment.OnFinishedListener,
+    SellerMigrationBottomSheetListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -173,6 +177,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupBottomSheet()
         setupMultiSelect()
         setupSelectAll()
+        setupTicker()
         renderCheckedView()
 
         observeShopInfo()
@@ -377,6 +382,27 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 onClickProductCheckBox(isChecked, index)
             }
             productManageListAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun setupTicker() {
+        productManageSellerMigrationTicker.apply {
+            setHtmlDescription(getString(R.string.seller_migration_product_manage_ticker_content))
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    openSellerMigrationBottomSheet()
+                }
+                override fun onDismiss() {
+                    // No Op
+                }
+            })
+        }
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            val sellerMigrationBottomSheet = SellerMigrationProductBottomSheet.createNewInstance(it, this@ProductManageFragment)
+            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
         }
     }
 
@@ -1559,5 +1585,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
+    }
+
+    override fun onClickGoToSellerApp() {
+        // Go To Seller App
+    }
+
+    override fun onClickBottomSheetFooter() {
+        // Go To Web View
     }
 }
