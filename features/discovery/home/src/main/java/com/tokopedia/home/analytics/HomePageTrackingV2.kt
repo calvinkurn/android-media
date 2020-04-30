@@ -136,7 +136,7 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
-                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
+                            name = channel.promoName,
                             position = position.toString()
                     )
                 }
@@ -245,7 +245,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 CurrentSite.KEY, CurrentSite.DEFAULT
         )
 
-        fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, userId: String = "") = DataLayer.mapOf(
+        fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
                 Event.KEY, Event.PRODUCT_ADD_TO_CART,
                 Category.KEY, Category.HOMEPAGE,
                 Label.KEY, channel.header.name,
@@ -271,6 +271,7 @@ object HomePageTrackingV2 : BaseTracking() {
                                     persoType = channel.persoType,
                                     categoryId = channel.categoryID,
                                     isTopAds = grid.isTopads,
+                                    quantity = quantity,
                                     cartId = cartId
                             )
                     ),

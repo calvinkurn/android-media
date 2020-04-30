@@ -18,14 +18,13 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
+import com.tokopedia.play.*
 import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.analytic.TrackingField
@@ -73,6 +72,8 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
             }
         }
     }
+
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     private var channelId = ""
 
@@ -131,6 +132,8 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startPageMonitoring()
+        starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -194,6 +197,9 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     override fun onResume() {
         super.onResume()
         if (!isChangingOrientation) playViewModel.resumeWithChannelId(channelId)
+        stopPrepareMonitoring()
+        startNetworkMonitoring()
+        playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -214,11 +220,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         destroyInsets(requireView())
         super.onDestroyView()
         if (::orientationManager.isInitialized) orientationManager.disable()
-        layoutManager.onDestroy()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         if (::layoutManager.isInitialized) layoutManager.onDestroy()
     }
 
@@ -404,7 +405,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
                         isBuffering = false,
                         shouldTrackNext = true
                 )
-
             }
 
             layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
@@ -434,6 +434,58 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
             dialog.setOverlayClose(false)
             dialog.show()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * Performance Monitoring
+     */
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_TRACE_PREPARE_PAGE,
+                PLAY_TRACE_REQUEST_NETWORK,
+                PLAY_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        pageMonitoring.stopMonitoring()
     }
 
     private fun hideKeyboard() {

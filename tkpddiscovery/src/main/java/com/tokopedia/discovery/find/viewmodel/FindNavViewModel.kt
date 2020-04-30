@@ -3,9 +3,9 @@ package com.tokopedia.discovery.find.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.productModel.SearchProduct
+import com.tokopedia.common_category.model.productModel.ProductListResponse
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.SearchProduct
 import com.tokopedia.discovery.find.data.repository.FindNavRepository
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.discovery.find.util.FindNavParamBuilder
@@ -84,7 +84,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     }
 
     private fun checkForBannedData(searchProduct: SearchProduct): Boolean {
-        return searchProduct.errorMessage != null && searchProduct.errorMessage.isNotEmpty()
+        return searchProduct.errorMessage != null &&  searchProduct.errorMessage!!.isNotEmpty()
     }
 
     fun fetchQuickFilterList(productId: String) {
