@@ -84,10 +84,11 @@
     <string name="label_available_stock">Stok tersedia</string>
     <string name="label_minimum_order">Minimum pemesanan</string>
     <string name="error_empty_product_stock">Stok produk tidak boleh kosong</string>
-    <string name="error_minimum_stock_quantity_is_one">Stok minimal 1</string>
+    <string name="error_minimum_stock_quantity_is_one">Stok tidak boleh 0</string>
     <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
     <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
     <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
+    <string name="error_maximum_order_exceeding_max_limit">Minimum pemesanan melebihi batas maks. 999.999</string>
     <string name="error_minimum_order_cant_exceed_available_stock">Minimum pemesanan tidak boleh melebihi jumlah stok</string>
 
     <!-- activate pre order state -->
@@ -137,6 +138,7 @@
     <string name="action_next_button">Lanjut</string>
     <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>
     <string name="error_video_is_exist">Link video tidak boleh sama</string>
+    <string name="error_description_character_limit">Sudah mencapai maks. karakter</string>
 
     <!--Tooltip wording-->
     <string name="title_tooltip_photo_tips">Tips memilih foto produk</string>
@@ -185,17 +187,21 @@
     <item name="selected_catalog" type="id" />
 
     <!-- add edit draft -->
-    <string name="label_description_on_dialog">Sayang lho udah sampai di sini! Datamu akan tersimpan jika kamu kembali ke halaman sebelumnya</string>
+    <string name="label_description_on_dialog">Sayang lho udah sampai di sini! Datamu akan tersimpan jika kamu kembali ke halaman sebelumnya.</string>
+    <string name="label_description_on_dialog_edit">Datamu tidak akan tersimpan jika kamu kembali ke halaman sebelumnya.</string>
     <string name="label_cta_primary_button_on_dialog">Batal</string>
     <string name="label_cta_secondary_button_on_dialog">Ya</string>
     <string name="label_title_on_dialog">Yakin ingin keluar?</string>
-    <string name="label_succes_save_draft">TopSeller: Produk berhasil disimpan dalam draft</string>
+    <string name="label_succes_save_draft">Produk berhasil disimpan dalam draft</string>
 
     <!-- set cash back -->
-    <string name="product_manage_set_cashback_success">Cashback %1$d&#x0025; berhasil kamu pilih</string>
-    <string name="product_manage_set_cashback_no_cashback_success">Tanpa Cashback berhasil dipilih</string>
-    <string name="product_manage_set_cashback_error">Perubahan gagal disimpan. Cek kembali promosi produkmu</string>
+    <string name="product_edit_set_cashback_success">Pengaturan Cashback untuk produk ini berhasil</string>
+    <string name="product_edit_set_cashback_error">Gagal mengatur cashback untuk produk ini. Coba lagi, ya.</string>
 
     <!--network errors-->
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>
+
+    <!-- image picker -->
+    <string name="error_image_under_x_resolution">Minimum file foto harus %1$dx%2$d piksel</string>
+    <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
 </resources>

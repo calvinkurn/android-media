@@ -204,25 +204,27 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         Integer colorKtp = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
         Integer colorFace = ResourcesCompat.getColor(getResources(), R.color.kyc_centralized_f531353b, null);
 
-        for(int i=0; i<listRetake.size(); i++){
-            switch (listRetake.get(i)){
-                case KYCConstant.KTP_RETAKE : {
-                    imageKtp = KycUrl.KTP_VERIF_FAIL;
-                    colorKtp = null;
-                    setKtpUploadButtonListener();
-                    break;
-                }
-                case KYCConstant.FACE_RETAKE : {
-                    imageFace = KycUrl.FACE_VERIF_FAIL;
-                    colorFace = null;
-                    setFaceUploadButtonListener();
-                    break;
+        if(listRetake != null) {
+            for(int i=0; i<listRetake.size(); i++){
+                switch (listRetake.get(i)){
+                    case KYCConstant.KTP_RETAKE : {
+                        imageKtp = KycUrl.KTP_VERIF_FAIL;
+                        colorKtp = null;
+                        setKtpUploadButtonListener();
+                        break;
+                    }
+                    case KYCConstant.FACE_RETAKE : {
+                        imageFace = KycUrl.FACE_VERIF_FAIL;
+                        colorFace = null;
+                        setFaceUploadButtonListener();
+                        break;
+                    }
                 }
             }
-        }
 
-        if(listRetake.size() == 2){
-            setKtpFaceUploadButtonListener();
+            if(listRetake.size() == 2){
+                setKtpFaceUploadButtonListener();
+            }
         }
 
         setResultViews(imageKtp, imageFace, stepperModel.getTitleText(), stepperModel.getSubtitleText(), colorKtp, colorFace, stepperModel.getButtonText());
@@ -278,7 +280,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private Boolean isKycSelfie(){
-        return !remoteConfigInstance.getABTestPlatform().getString("Liveness Detection 1", "").equals("Liveness Detection 1");
+        if(UserIdentificationFormActivity.isSupportedLiveness) {
+            return !remoteConfigInstance.getABTestPlatform().getString(KYCConstant.KYC_AB_KEYWORD).equals(KYCConstant.KYC_AB_KEYWORD);
+        }
+        return true;
     }
 
     private void checkKtp(){
