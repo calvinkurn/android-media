@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include layout="@layout/layout_hotel_cancellation_summary"/>
+
+        <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
+            android:id="@+id/hotel_cancellation_room_duration_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Neutral_N0" />
+
+        <!--    will be updated to 6pt-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl3"
+            android:background="@color/Neutral_N50"/>
+
+        <include layout="@layout/layout_hotel_cancellation_payment_policy"/>
+
+
+        <!--    will be updated to 6pt-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl3"
+            android:background="@color/Neutral_N50"/>
+
+        <include layout="@layout/layout_hotel_cancellation_refund_detail"/>
+    </LinearLayout>
+</ScrollView>
