@@ -6,7 +6,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReview
 data class OverallRatingDetailUiModel(
     var productName: String? = "",
     var ratingAvg: Float? = 0.0F,
-    var reviewCount: Int? = -1,
+    var reviewCount: Int? = 0,
     var chipFilter: String? = ""
 ): BaseSellerReviewDetail {
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
