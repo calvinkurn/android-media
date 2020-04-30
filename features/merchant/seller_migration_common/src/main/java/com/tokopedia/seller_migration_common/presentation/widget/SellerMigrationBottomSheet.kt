@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.partial_seller_migration_footer.*
 
 abstract class SellerMigrationBottomSheet(private val sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : BottomSheetUnify() {
@@ -17,7 +18,7 @@ abstract class SellerMigrationBottomSheet(private val sellerMigrationBottomSheet
         sellerMigrationBottomSheetButton.setOnClickListener {
             sellerMigrationBottomSheetListener.onClickGoToSellerApp()
         }
-        sellerMigrationBottomSheetLink.text = getString(R.string.seller_migration_bottom_sheet_footer)
+        sellerMigrationBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
         sellerMigrationBottomSheetLink.setOnClickListener {
             sellerMigrationBottomSheetListener.onClickBottomSheetFooter()
         }

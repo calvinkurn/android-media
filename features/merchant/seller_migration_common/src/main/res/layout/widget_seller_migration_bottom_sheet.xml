@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,6 +35,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true" />
 
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/sellerMigrationCarousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seller_migration_warning_card"
+        android:layout_centerHorizontal="true"/>
+
     <ImageView
         android:id="@+id/sellerMigrationBottomSheetProductImage"
         android:layout_width="match_parent"
@@ -62,6 +70,7 @@
     <include layout="@layout/partial_seller_migration_footer"
         android:layout_below="@id/sellerMigrationBottomSheetContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl3"/>
 
 </RelativeLayout>

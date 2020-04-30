@@ -111,4 +111,7 @@
     <string name="title_done">Selesai</string>
     <string name="title_skip">Lewati</string>
     <string name="drawer_title_statistic">Statistik</string>
+
+    <string name="seller_migration_topads_ticker_title">Beragam fitur promosi di Seller App</string>
+    <string name="seller_migration_topads_ticker_description">Jangkau pembeli dengan fitur promosi yang bisa kamu kelola di Seller App. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
 </resources>

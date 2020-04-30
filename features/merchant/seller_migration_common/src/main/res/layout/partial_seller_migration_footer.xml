@@ -20,7 +20,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl3"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/sellerMigrationBottomSheetButton"
         app:layout_constraintStart_toStartOf="parent"
