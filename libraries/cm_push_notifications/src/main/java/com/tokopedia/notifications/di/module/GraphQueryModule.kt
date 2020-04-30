@@ -11,7 +11,7 @@ import javax.inject.Named
 @Module class GraphQueryModule {
 
     @Provides
-    @Named(NOTIFICATION_ATTRIBUTION)
+    @Named(ATTRIBUTION_QUERY)
     fun provideAttributionQuery(
             @CMNotificationContext context: Context
     ): String {
@@ -44,9 +44,9 @@ import javax.inject.Named
     }
 
     companion object {
-        const val NOTIFICATION_ATTRIBUTION = "notification_attribution"
-        const val ATC_MUTATION_QUERY = "atcMutation"
-        const val AMPLIFICATION_QUERY = "atcMutation"
+        const val ATTRIBUTION_QUERY = "query_attribution"
+        const val ATC_MUTATION_QUERY = "query_atcMutation"
+        const val AMPLIFICATION_QUERY = "query_amplification"
     }
 
 }
