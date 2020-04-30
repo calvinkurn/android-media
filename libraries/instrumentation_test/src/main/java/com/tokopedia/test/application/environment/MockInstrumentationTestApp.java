@@ -61,6 +61,12 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
         super.onCreate();
     }
 
+public void sendAnalyticsAnomalyResponse(String title,
+
+                                      String accessToken, String refreshToken,
+
+                                      String response, String request){}
+
     public void enableMockResponse() {
         if (GlobalConfig.DEBUG) {
             List<Interceptor> testInterceptors = new ArrayList<>();
@@ -411,8 +417,4 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
     }
 
-    @Override
-    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
-
-    }
 }
