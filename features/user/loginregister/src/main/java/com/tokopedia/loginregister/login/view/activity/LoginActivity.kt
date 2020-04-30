@@ -29,7 +29,7 @@ import com.tokopedia.user.session.UserSession
 /**
  * @author by nisie on 10/1/18.
  */
-class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
+open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
 
     companion object {
 
