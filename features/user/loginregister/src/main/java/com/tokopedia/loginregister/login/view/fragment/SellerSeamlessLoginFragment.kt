@@ -14,13 +14,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.RemoteApi
-import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
@@ -33,8 +34,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_seller_seamless_login.*
 import kotlinx.android.synthetic.main.fragment_seller_seamless_login.view.*
 import kotlinx.android.synthetic.main.item_account_with_shop.*
+import kotlinx.android.synthetic.main.item_account_with_shop.view.*
 import java.util.*
-
 import javax.inject.Inject
 
 /**
@@ -94,29 +95,31 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun handleIntentReceive(taskId: String, bundle: Bundle?) {
-        bundle?.run {
+        if(bundle != null) {
             hideProgressBar()
             if(!bundle.containsKey(SeamlessSellerConstant.KEY_ERROR)) {
-                if (taskId == getUserTaskId) {
-                    ImageHandler.loadImageCircle2(activity, seamless_fragment_avatar, getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
-                    seamless_fragment_shop_name.text = getString(SeamlessSellerConstant.KEY_SHOP_NAME)
-                    seamless_fragment_name.text = getString(SeamlessSellerConstant.KEY_NAME)
-                    seamless_fragment_email.text = maskEmail(getString(SeamlessSellerConstant.KEY_EMAIL))
-                    hideProgressBar()
+                if (taskId == getUserTaskId
+                        && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME).isNotEmpty()
+                        && bundle.getString(SeamlessSellerConstant.KEY_EMAIL).isNotEmpty()) {
+                            ImageHandler.loadImageCircle2(activity, seamless_fragment_avatar, bundle.getString(SeamlessSellerConstant.KEY_SHOP_AVATAR))
+                            seamless_fragment_shop_name.text = bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME)
+                            seamless_fragment_name.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
+                            seamless_fragment_email.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL))
+                            hideProgressBar()
                 } else if (taskId == getKeyTaskId) {
-                    seamlessViewModel.loginSeamless(getString(SeamlessSellerConstant.KEY_TOKEN))
+                    seamlessViewModel.loginSeamless(bundle.getString(SeamlessSellerConstant.KEY_TOKEN))
                 } else onErrorLoginToken(null)
-            }  else activity?.finish()
-        }
+            }  else moveToNormalLogin()
+        }else moveToNormalLogin()
     }
 
-    private fun maskEmail(email: String): String {
-        val indexBefore = email.indexOf("@")
-        var replacer = ""
-        for(i in 0 until indexBefore-2) { replacer += "*" }
-        return email.replace(email.substring(2,indexBefore), replacer)
+    private fun moveToNormalLogin(){
+        RouteManager.route(context, ApplinkConst.LOGIN)
+        activity?.finish()
     }
 
+    private fun maskEmail(email: String): String =
+            email.replace("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)".toRegex(), "*")
 
     private fun showProgressBar(){
         seller_seamless_main_view?.alpha = 0.4F
@@ -135,7 +138,13 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_seller_seamless_login, container, false)
+        val view = inflater.inflate(R.layout.fragment_seller_seamless_login, container, false)
+
+        context?.run {
+            view?.seamless_fragment_shop_name?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
+            view?.seller_seamless_title?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
+        }
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -156,6 +165,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
         view?.seller_seamless_negative_btn.setOnClickListener {
             analytics.eventClickLoginWithOtherAcc()
+            RouteManager.route(activity, ApplinkConst.LOGIN)
             activity?.finish()
         }
 
