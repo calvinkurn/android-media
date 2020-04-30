@@ -94,28 +94,53 @@ class DynamicLegoBannerViewHolder(itemView: View,
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                if(layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE){
-                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
-                } else {
-                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
-                }
-                holder.imageView.setOnClickListener {
-                    when(layout) {
-                        DynamicChannelLayout.LAYOUT_6_IMAGE -> {
-                            listener.onClickGridSixImage(channel, grid, position, parentPosition)
-                        }
-                        DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
-                            listener.onClickGridThreeImage(channel, grid, position, parentPosition)
-                        }
-                        DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
-                            listener.onClickGridFourImage(channel, grid, position, parentPosition)
-                        }
-                    }
-                }
+                setLegoViewData(holder, grid)
+                setLegoClickListener(holder, grid, position)
+                setLegoImpressionListener(holder)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
+        }
+
+        private fun setLegoViewData(holder: LegoItemViewHolder, grid: ChannelGrid) {
+            if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE) {
+                holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+            } else {
+                holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+            }
+        }
+
+        private fun setLegoImpressionListener(holder: LegoItemViewHolder) {
+            holder.itemView.addOnImpressionListener(channel, onView = {
+                when (layout) {
+                    DynamicChannelLayout.LAYOUT_6_IMAGE -> {
+                        listener.onImpressionGridSixImage(channel, parentPosition)
+                    }
+                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
+                        listener.onImpressionGridThreeImage(channel, parentPosition)
+                    }
+                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
+                        listener.onImpressionGridFourImage(channel, parentPosition)
+                    }
+                }
+            })
+        }
+
+        private fun setLegoClickListener(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
+            holder.imageView.setOnClickListener {
+                when (layout) {
+                    DynamicChannelLayout.LAYOUT_6_IMAGE -> {
+                        listener.onClickGridSixImage(channel, grid, position, parentPosition)
+                    }
+                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
+                        listener.onClickGridThreeImage(channel, grid, position, parentPosition)
+                    }
+                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
+                        listener.onClickGridFourImage(channel, grid, position, parentPosition)
+                    }
+                }
+            }
         }
 
         override fun getItemCount(): Int {

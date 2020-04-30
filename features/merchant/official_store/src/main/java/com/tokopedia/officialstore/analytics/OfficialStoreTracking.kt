@@ -409,6 +409,23 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
+    fun dynamicChannelHomeComponentImpression(categoryName: String, channelModel: ChannelModel) {
+        val headerName = channelModel.headerName ?: ""
+        val promotionBody = getHomeComponentImpressionPromotion(categoryName, channelModel, "dynamic channel", headerName)
+
+        trackingQueue.putEETracking(DataLayer.mapOf(
+                EVENT, "promoView",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "dynamic channel - impression",
+                EVENT_LABEL, "impression of dynamic channel - $headerName",
+                ECOMMERCE, DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", promotionBody
+        )
+        )
+        ) as HashMap<String, Any>)
+    }
+
     fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignId: Int) {
         val ecommerceBody = DataLayer.mapOf(
                 "click", DataLayer.mapOf(
@@ -566,6 +583,25 @@ class OfficialStoreTracking(context: Context) {
             grid?.run {
                 promotionBody.add(DataLayer.mapOf(
                         "id", id.toString(10),
+                        "name", "/official-store/$categoryName - $channelType - $headerName",
+                        "position", (index + 1).toString(10),
+                        "creative", attribution,
+                        "creative_url", applink,
+                        "promo_id", null,
+                        "promo_code", null
+                ))
+            }
+        }
+        return promotionBody
+    }
+
+    private fun getHomeComponentImpressionPromotion(categoryName: String, channelModel: ChannelModel,
+                                                     channelType: String, headerName: String): List<Any> {
+        val promotionBody: MutableList<Any> = DataLayer.listOf()
+        channelModel.channelGrids?.forEachIndexed { index, grid ->
+            grid?.run {
+                promotionBody.add(DataLayer.mapOf(
+                        "id", id,
                         "name", "/official-store/$categoryName - $channelType - $headerName",
                         "position", (index + 1).toString(10),
                         "creative", attribution,

@@ -586,35 +586,31 @@ class OfficialHomeFragment :
         loadData(true)
     }
 
-    override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {
-        return View.OnClickListener {
-            RouteManager.route(context, applink)
-        }
+    override fun onClickLegoHeaderActionText(applink: String) {
+        RouteManager.route(context, applink)
     }
 
-    override fun onClickLegoImage(channelModel: ChannelModel, position: Int): View.OnClickListener {
-        return View.OnClickListener {
-            val gridData = channelModel.channelGrids[position]
-            val applink = gridData.applink ?: ""
+    override fun onClickLegoImage(channelModel: ChannelModel, position: Int) {
+        val gridData = channelModel.channelGrids[position]
+        val applink = gridData.applink ?: ""
 
-            gridData.let {
-                tracking?.dynamicChannelImageClick(
-                        viewModel.currentSlug,
-                        channelModel.headerName ?: "",
-                        (position + 1).toString(10),
-                        it,
-                        channelModel
-                )
-            }
-
-            RouteManager.route(context, applink)
+        gridData.let {
+            tracking?.dynamicChannelImageClick(
+                    viewModel.currentSlug,
+                    channelModel.headerName ?: "",
+                    (position + 1).toString(10),
+                    it,
+                    channelModel
+            )
         }
+
+        RouteManager.route(context, applink)
     }
 
-    override fun legoImpression(channelData: Channel) {
-        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
-            tracking?.dynamicChannelImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id)
+    override fun legoImpression(channelModel: ChannelModel) {
+        if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
+            tracking?.dynamicChannelHomeComponentImpression(viewModel.currentSlug, channelModel)
+            sentDynamicChannelTrackers.add(channelModel.id)
         }
     }
 

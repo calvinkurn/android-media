@@ -9,9 +9,9 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 
 interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     // Lego layout event handlers
-    fun onClickLegoHeaderActionText(applink: String): View.OnClickListener
-    fun onClickLegoImage(channelModel: ChannelModel, position: Int): View.OnClickListener
-    fun legoImpression(channelData: Channel)
+    fun onClickLegoHeaderActionText(applink: String)
+    fun onClickLegoImage(channelModel: ChannelModel, position: Int)
+    fun legoImpression(channelModel: ChannelModel)
 
     // Flash Sale layout event handlers
     fun onClickFlashSaleActionText(applink: String, headerId: Long): View.OnClickListener
