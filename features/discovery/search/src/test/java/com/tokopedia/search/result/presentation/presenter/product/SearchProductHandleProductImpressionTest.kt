@@ -120,6 +120,11 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                 searchLocalCacheHandler,
                 remoteConfigTrackingViewPortDisabled
         )
+        productListPresenter.attachView(productListView)
+
+        verify {
+            productListView.abTestRemoteConfig
+        }
     }
 
     private fun `When handle product impressed for disabled tracking view port`(productItemViewModel: ProductItemViewModel?, position: Int) {
