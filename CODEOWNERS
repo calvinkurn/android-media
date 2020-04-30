@@ -11,7 +11,7 @@
 /features/category/       				                @tokopedia/minion-darth
 /features/discovery2/       				            @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
-/features/discovery/topadssdk/                      	@tokopedia/minion-dave
+/features/discovery/topadssdk/                      	@nathaniel09
 /features/discovery/home/                           	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
 /features/discovery/home_wishlist/                     	@tokopedia/minion-dave
@@ -105,6 +105,8 @@
 
 /features/entertainment/event                 			@tokopedia/minion-mark
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
+/features/entertainment/event_home                 		@tokopedia/minion-mark
+/features/entertainment/event_search        			@tokopedia/minion-mark
 
 /features/travel/flight_orderlist                       @tokopedia/minion-mark
 /features/travel/flight/                                @tokopedia/minion-mark
@@ -129,6 +131,7 @@
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
 /features/logistic/logisticorder/                    	@tokopedia/minion-bob
+/features/logistic/dropoff/                    	        @tokopedia/minion-bob
 /features/promo/promo_checkout/                 		@tokopedia/minion-bob
 /features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob
@@ -227,7 +230,7 @@
 /libraries/image_preview/								@tokopedia/core-team
 /libraries/imageuploader/								@tokopedia/core-team
 /libraries/inappupdate/									@tokopedia/core-team
-/libraries/iris/										@tokopedia/core-team
+/libraries/iris/										@nathaniel09
 /libraries/kotlin_extensions/							@tokopedia/core-team
 /libraries/linker/										@tokopedia/core-team
 /libraries/locationmanager/								@tokopedia/core-team

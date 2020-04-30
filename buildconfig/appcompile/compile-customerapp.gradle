@@ -101,6 +101,7 @@ include "features:kyc"
 
 include "features:logistic:logisticorder"
 include "features:logistic:logisticaddaddress"
+include "features:logistic:dropoff"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
 

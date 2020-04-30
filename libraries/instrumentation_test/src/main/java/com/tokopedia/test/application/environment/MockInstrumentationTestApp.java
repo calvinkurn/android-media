@@ -61,6 +61,12 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
         super.onCreate();
     }
 
+public void sendAnalyticsAnomalyResponse(String title,
+
+                                      String accessToken, String refreshToken,
+
+                                      String response, String request){}
+
     public void enableMockResponse() {
         if (GlobalConfig.DEBUG) {
             List<Interceptor> testInterceptors = new ArrayList<>();
@@ -169,11 +175,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxMessageIntent(Context mContext) {
         return null;
     }
 
@@ -416,8 +417,4 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
     }
 
-    @Override
-    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
-
-    }
 }

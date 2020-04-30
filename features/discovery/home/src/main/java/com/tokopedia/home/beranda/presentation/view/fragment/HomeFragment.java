@@ -260,6 +260,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final long CLICK_TIME_INTERVAL = 500;
 
     private FragmentFramePerformanceIndexMonitoring fragmentFramePerformanceIndexMonitoring = new FragmentFramePerformanceIndexMonitoring();
+    private boolean isOnRecylerViewLayoutAdded = false;
 
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
@@ -356,7 +357,9 @@ public class HomeFragment extends BaseDaggerFragment implements
                     }
                 }
         );
-        getViewLifecycleOwner().getLifecycle().addObserver(fragmentFramePerformanceIndexMonitoring);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getViewLifecycleOwner().getLifecycle().addObserver(fragmentFramePerformanceIndexMonitoring);
+        }
         homeMainToolbar = view.findViewById(R.id.toolbar);
         homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
@@ -620,7 +623,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                     getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
                 } else if (getPageLoadTimeCallback() != null) {
                     getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
-                    getPageLoadTimeCallback().startRenderPerformanceMonitoring();
                 }
             }
         });
@@ -700,7 +702,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                         (DynamicHomeChannel.Grid) dataMap.get(HomeViewModel.GRID),
                         (int) dataMap.get(HomeViewModel.POSITION),
                         ((AddToCartDataModel) dataMap.get(HomeViewModel.ATC)).getData().getCartId(),
-                       viewModel.getUserId()
+                        (String) dataMap.get(HomeViewModel.QUANTITIY),
+                        viewModel.getUserId()
                ));
                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT);
             }
@@ -763,10 +766,14 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback().startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
+                adapter.submitList(data);
+                adapter.notifyDataSetChanged();
+            } else {
+                adapter.submitList(data);
             }
 
-            adapter.submitList(data);
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
@@ -1158,6 +1165,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void setOnRecyclerViewLayoutReady(boolean isCache) {
+        isOnRecylerViewLayoutAdded = true;
         homeRecyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -1330,19 +1338,15 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void addImpressionToTrackingQueue(List<Visitable> visitables) {
         if (visitables != null) {
-            List<Object> combinedTracking = new ArrayList<>();
             for (Visitable visitable : visitables) {
                 if(visitable instanceof HomeVisitable) {
                     HomeVisitable homeVisitable = (HomeVisitable) visitable;
                     if (homeVisitable.isTrackingCombined() && homeVisitable.getTrackingDataForCombination() != null) {
-                        combinedTracking.addAll(homeVisitable.getTrackingDataForCombination());
+                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, homeVisitable.getTrackingDataForCombination());
                     } else if (!homeVisitable.isTrackingCombined() && homeVisitable.getTrackingData() != null) {
                         HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.getTrackingData());
                     }
                 }
-            }
-            if (!combinedTracking.isEmpty()) {
-                HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
             }
         }
     }
@@ -1958,7 +1962,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean needToPerformanceMonitoring() {
-        return homePerformanceMonitoringListener != null;
+        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded;
     }
 
     private void showToaster(String message, int typeToaster){
