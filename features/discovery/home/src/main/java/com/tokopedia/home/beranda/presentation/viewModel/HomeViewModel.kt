@@ -626,8 +626,8 @@ open class HomeViewModel @Inject constructor(
         _isRequestNetworkLiveData.value = Event(true)
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
-                _isRequestNetworkLiveData.postValue(Event(false))
                 if (homeDataModel?.isCache == false) {
+                    _isRequestNetworkLiveData.postValue(Event(false))
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
                     getReviewData()

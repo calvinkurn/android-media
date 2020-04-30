@@ -178,10 +178,6 @@ public void sendAnalyticsAnomalyResponse(String title,
         return null;
     }
 
-    public Intent getInboxMessageIntent(Context mContext) {
-        return null;
-    }
-
     @Override
     public void onAppsFlyerInit() {
 
