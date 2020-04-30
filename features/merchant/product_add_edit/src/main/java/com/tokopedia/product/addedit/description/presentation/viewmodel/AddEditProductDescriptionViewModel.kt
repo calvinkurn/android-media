@@ -62,6 +62,18 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
+    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoModel>>>()
+    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoModel>>> = MediatorLiveData()
+
+    init {
+        videoYoutube.addSource(_videoYoutubeNew) { pair ->
+            val position = pair.first
+            when (val result = pair.second) {
+                is Success -> videoYoutube.value = Pair(position, result)
+                is Fail -> videoYoutube.value = Pair(position, result)
+            }
+        }
+    }
     private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
     val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
 
