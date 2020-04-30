@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_AMOUNT
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GROUP_ID
@@ -39,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -195,7 +197,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
-        //  ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
+        renderPromo(productDetailData)
         cb_event_checkout.setOnCheckedChangeListener { _, isChecked ->
             btn_event_checkout.isEnabled = isChecked
         }
@@ -223,6 +225,35 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                                             getEntityPessangerVerify(productDetailData.forms, map), ""))
                     }
                 }
+            }
+        }
+    }
+
+    private fun renderPromo(productDetailData: ProductDetailData){
+        ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
+        ticker_event_checkout_promo.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
+            override fun onClickDetailPromo() {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_EVENT)
+                intent.putExtra(EXTRA_COUPON_ACTIVE,true)
+                intent.putExtra(PAGE_TRACKING,1)
+                intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
+                startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
+            }
+
+            override fun onClickUsePromo() {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_EVENT)
+                intent.putExtra(EXTRA_COUPON_ACTIVE,true)
+                intent.putExtra(PAGE_TRACKING,1)
+                intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
+                startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
+            }
+
+            override fun onDisablePromoDiscount() {
+
+            }
+
+            override fun onResetPromoDiscount() {
+
             }
         }
     }
@@ -305,8 +336,12 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"
         const val REQUEST_CODE = 100
+        const val PROMO_EXTRA_LIST_ACTIVITY_RESULT = 123
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
+        const val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
+        const val PAGE_TRACKING = "PAGE_TRACKING"
+        const val EXTRA_EVENT_CATEGORY_ID = "EXTRA_EVENT_CATEGORY_ID"
 
         const val PASSENGER_NAME = "fullname"
         const val PASSENGER_EMAIL = "email"

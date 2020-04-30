@@ -16,10 +16,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMappe
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailHotelPresenter
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
+import com.tokopedia.promocheckout.detail.view.presenter.*
 import dagger.Module
 import dagger.Provides
 
@@ -90,6 +87,13 @@ class PromoCheckoutDetailModule {
                               hotelCheckVoucherMapper: HotelCheckVoucherMapper,
                               flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailHotelPresenter {
         return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper, flightCancelVoucherUseCase)
+    }
+
+    @PromoCheckoutDetailScope
+    @Provides
+    fun provideEventPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
+                              clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailEventPresenter {
+        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase,clearCacheAutoApplyStackUseCase)
     }
 
     @PromoCheckoutDetailScope

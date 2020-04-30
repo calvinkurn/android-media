@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-<!--    <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView-->
-<!--        android:id="@+id/ticker_event_checkout_promo"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="@dimen/spacing_lvl4"-->
-<!--        android:layout_marginLeft="@dimen/spacing_lvl4"-->
-<!--        android:layout_marginRight="@dimen/spacing_lvl4"-->
-<!--        />-->
+    <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+        android:id="@+id/ticker_event_checkout_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_event_checkout"

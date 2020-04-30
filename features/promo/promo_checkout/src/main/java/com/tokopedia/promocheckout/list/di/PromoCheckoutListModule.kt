@@ -94,6 +94,12 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
+    fun provideEventPresenter():PromoCheckoutListEventPresenter{
+        return PromoCheckoutListEventPresenter()
+    }
+
+    @PromoCheckoutListScope
+    @Provides
     fun provideTrackingPromo(@ApplicationContext context: Context): TrackingPromoCheckoutUtil {
         return TrackingPromoCheckoutUtil()
     }
