@@ -106,9 +106,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 try {
-                    bundleToMap(bundle)?.let {
-                        saveEventSuspend(it)
-                    }
+                    saveEventSuspend(bundleToMap(bundle))
                 } catch (e: Exception) {
                     Timber.e("P1#IRIS#saveEvent %s", e.toString())
                 }
@@ -130,13 +128,20 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         setAlarm(true, force = false)
     }
 
-    private fun bundleToMap(extras: Bundle): Map<String, String>? {
-        val map: MutableMap<String, String> = HashMap()
+    private fun bundleToMap(extras: Bundle): Map<String, Any> {
+        val map: MutableMap<String, Any> = HashMap()
         val ks: Set<String> = extras.keySet()
         val iterator = ks.iterator()
         while (iterator.hasNext()) {
             val key = iterator.next()
-            map[key] = extras.getString(key)
+            val value = extras[key]
+            if (value != null) {
+                if (value is Bundle) {
+                    map[key] = bundleToMap(value)
+                } else {
+                    map[key] = extras.get(key) ?: ""
+                }
+            }
         }
         return map
     }
