@@ -29,6 +29,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.F
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -165,10 +166,21 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         when (menu) {
             is EditQuota -> showEditQuotaBottomSheet()
             is ShareVoucher -> showShareBottomSheet(voucher)
+            is EditPeriod -> showEditPeriodBottomSheet(voucher)
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
         }
+    }
+
+    private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        VoucherPeriodBottomSheet(parent, voucher)
+                .setOnSaveClickListener {
+
+                }
+                .show(childFragmentManager)
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
@@ -336,7 +348,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         list.add(ErrorStateUiModel)
         list.add(EmptyStateUiModel(isActiveVoucher))*/
         repeat(10) {
-            list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
+            list.add(VoucherUiModel("Voucher Hura Nyoba Doang", "Cachback 10%", it % 2 == 0))
         }
         return list
     }

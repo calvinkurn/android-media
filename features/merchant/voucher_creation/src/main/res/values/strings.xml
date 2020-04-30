@@ -148,4 +148,5 @@
     <string name="mvc_others">Lainnya</string>
     <string name="mvc_rp">Rp</string>
     <string name="mvc_percent">&#37;</string>
+    <string name="mvc_start_date">Tanggal Mulai</string>
 </resources>
