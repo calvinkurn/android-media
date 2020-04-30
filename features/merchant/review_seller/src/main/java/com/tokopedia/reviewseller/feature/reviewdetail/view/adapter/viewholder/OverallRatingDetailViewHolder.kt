@@ -40,11 +40,11 @@ class OverallRatingDetailViewHolder(val view: View,
             chip_text.text = element?.chipFilter.orEmpty()
             setOnClickListener {
                 toggle()
-                listener.onFilterPeriodClicked(view, chip_text.text.toString())
+                listener.onFilterPeriodClicked(view, getString(R.string.title_bottom_sheet_filter))
             }
             setChevronClickListener {
                 toggle()
-                listener.onFilterPeriodClicked(view, chip_text.text.toString())
+                listener.onFilterPeriodClicked(view, getString(R.string.title_bottom_sheet_filter))
             }
         }
     }

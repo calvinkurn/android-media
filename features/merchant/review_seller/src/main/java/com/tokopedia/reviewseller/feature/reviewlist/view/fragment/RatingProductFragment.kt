@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +92,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
 
-    private var tabReview: ViewGroup? = null
+    private var tabReview: View? = null
     private var firstTabItem: View? = null
 
     var chipsSortText: String? = ""
@@ -107,11 +106,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private val coachMarkTabRatingProduct: CoachMarkItem by lazy {
 
         tabReview = (view?.rootView?.findViewById<TabsUnify>(R.id.tab_review)?.getUnifyTabLayout()
-                ?.getChildAt(0) as ViewGroup)
+                ?.getChildAt(0) as ViewGroup).getChildAt(0)
 
-        firstTabItem = tabReview?.getChildAt(0)
-
-        CoachMarkItem(firstTabItem,
+        CoachMarkItem(tabReview,
                 getString(R.string.full_summary_of_product_ratings),
                 getString(R.string.desc_full_summary_of_product_ratings))
     }
@@ -373,12 +370,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
             override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
 
-                if (nextStep > 0) {
-                    firstTabItem?.setBackgroundColor(Color.TRANSPARENT)
-                } else {
-                    firstTabItem?.setBackgroundColor(Color.WHITE)
-                    firstTabItem?.setBackgroundResource(R.drawable.rounded_tab_unify)
-                }
 
                 val countCoachMarkItem = coachMarkItems.size - 1
                 coachMark.enableSkip = (nextStep < countCoachMarkItem)
@@ -427,11 +418,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         chipsSort = view.findViewById(R.id.review_sort_chips)
         chipsSortText = getString(R.string.most_review)
         chipsSort?.apply {
+            chip_text.ellipsize = TextUtils.TruncateAt.END
             centerText = true
             chip_text.text = chipsSortText
-            chip_right_icon.setPadding(0, 0, chipsPaddingRight, 0)
-            chip_text.width = maxChipTextWidth
-            chip_text.ellipsize = TextUtils.TruncateAt.END
         }
 
         val sortList: Array<String> = resources.getStringArray(R.array.sort_review_product_array)
@@ -456,10 +445,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         chipsFilter = view.findViewById(R.id.review_period_filter_chips)
         chipsFilterText = getString(R.string.last_week)
         chipsFilter?.apply {
-            chip_text.text = chipsFilterText
-            centerText = true
-            chip_right_icon.setPadding(0, 0, chipsPaddingRight, 0)
             chip_text.ellipsize = TextUtils.TruncateAt.END
+            centerText = true
+            chip_text.text = chipsFilterText
         }
 
         val filterListItemUnify = populateFilterDate()

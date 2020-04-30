@@ -28,6 +28,13 @@ class TopicListAdapter(private val topicSortFilterListener: TopicSortFilterListe
         notifyItemChanged(position)
     }
 
+    fun resetSortFilter() {
+        sortFilterList?.mapIndexed { _, sortItemUiModel ->
+            sortItemUiModel.isSelected = false
+        }
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chips, parent, false)
         return TopicListViewHolder(view, topicSortFilterListener)

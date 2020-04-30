@@ -47,7 +47,7 @@ object SellerReviewProductListMapper {
         }
         cal.add(Calendar.DATE, - pastDateInterval)
 
-        val dateFormat = SimpleDateFormat("dd MMM yyyy")
+        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         dateFormat.timeZone = cal.timeZone
         return dateFormat.format(cal.time)
     }

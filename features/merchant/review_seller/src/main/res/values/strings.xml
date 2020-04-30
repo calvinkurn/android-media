@@ -11,7 +11,7 @@
     <string name="review_text">Ulasan</string>
     <string name="period_seller_review">/ %s ulasan</string>
     <string name="no_reviews_yet">Tidak ada ulasan</string>
-    <string name="no_reviews_yet_content_detail">Tidak ada ulasan berdasarkan filtermu. Coba lagi dengan filter lain ya!</string>
+    <string name="no_reviews_yet_content_detail">Yuk, terus berjualan agar pembeli kasih kamu ulasan yang bikin happy</string>
     <string name="content_no_reviews_yet">Terus berjualan ya agar pembeli kasih kamu ulasan yang bikin happy</string>
     <string name="product_search">Cari nama produk</string>
     <string name="action_bottom_sheet_rating_product">Pilih</string>
@@ -30,8 +30,8 @@
 
     <string-array name="sort_review_product_array">
         <item>Ulasan Terbanyak</item>
-        <item>Rating Tertinggi - Terendah</item>
-        <item>Rating Terendah - Tertinggi</item>
+        <item>Rating Tertinggi</item>
+        <item>Rating Terendah</item>
     </string-array>
 
     <string-array name="filter_review_product_array">
