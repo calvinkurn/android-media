@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
@@ -85,7 +86,7 @@ public class SplashScreenActivity extends SplashScreen {
                     .getBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, false);
             Intent intent;
             if (hasOnboarding) {
-                intent = LoginActivity.DeepLinkIntents.getCallingIntent(this);
+                intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             } else {
                 intent = new Intent(this, SellerOnboardingActivity.class);
             }
