@@ -18,14 +18,13 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
+import com.tokopedia.play.*
 import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.analytic.TrackingField
@@ -73,6 +72,8 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
             }
         }
     }
+
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     private var channelId = ""
 
@@ -131,6 +132,8 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startPageMonitoring()
+        starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -194,6 +197,9 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     override fun onResume() {
         super.onResume()
         if (!isChangingOrientation) playViewModel.resumeWithChannelId(channelId)
+        stopPrepareMonitoring()
+        startNetworkMonitoring()
+        playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -404,7 +410,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
                         isBuffering = false,
                         shouldTrackNext = true
                 )
-
             }
 
             layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
@@ -434,6 +439,123 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
             dialog.setOverlayClose(false)
             dialog.show()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        videoScaleAnimator.cancel()
+    }
+
+    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
+        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
+        videoScaleAnimator.cancel()
+
+        val currentHeight = flVideo.height
+        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
+        val scaleFactor = destHeight / currentHeight
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
+        animatorY.duration = ANIMATION_DURATION
+        animatorX.duration = ANIMATION_DURATION
+
+        flVideo.pivotX = (flVideo.width / 2).toFloat()
+        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+        val marginTopXt = marginTop * scaleFactor
+        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
+        videoScaleAnimator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsShownAnimatorListener)
+            playTogether(animatorX, animatorY)
+        }.start()
+    }
+
+    fun onBottomInsetsViewHidden() {
+        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+
+        videoScaleAnimator.cancel()
+
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
+        animatorY.duration = ANIMATION_DURATION
+        animatorX.duration = ANIMATION_DURATION
+
+        videoScaleAnimator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsHiddenAnimatorListener)
+            playTogether(animatorX, animatorY)
+        }.start()
+    }
+
+    fun setResultBeforeFinish() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            val totalView = playViewModel.totalView
+            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+        })
+    }
+
+    /**
+     * Performance Monitoring
+     */
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_TRACE_PREPARE_PAGE,
+                PLAY_TRACE_REQUEST_NETWORK,
+                PLAY_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        pageMonitoring.stopMonitoring()
+    }
+
+    /**
+     * @return true means the onBackPressed() has been handled by this fragment
+     */
+    fun onBackPressed(): Boolean {
+        return playViewModel.onBackPressed()
     }
 
     private fun hideKeyboard() {

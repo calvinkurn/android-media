@@ -179,6 +179,18 @@
             android:text="Enable Analytics Log on Notification" />
 
         <TextView
+            android:id="@+id/goto_cassava"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Client Analytics Validator"
+            android:textColor="@color/white" />
+
+        <TextView
             android:id="@+id/goto_analytics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

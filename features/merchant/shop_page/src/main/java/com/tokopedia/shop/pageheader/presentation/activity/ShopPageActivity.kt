@@ -11,6 +11,10 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HEADER_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_WEB_VIEW_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
@@ -21,11 +25,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         const val SHOP_ID = "EXTRA_SHOP_ID"
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val PATH_INFO = "info"
-        const val SHOP_HEADER_TRACE = "mp_shop_header"
-        const val SHOP_PRODUCT_TAB_TRACE = "mp_shop_product"
-        const val SHOP_HOME_TAB_TRACE = "mp_shop_home"
-        const val SHOP_HOME_WEB_VIEW_TRACE = "mp_shop_home_web_view"
-
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageActivity::class.java)

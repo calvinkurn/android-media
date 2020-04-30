@@ -4,7 +4,7 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.BannedCategoryResponse
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.usecase.RequestParams

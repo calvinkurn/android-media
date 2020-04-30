@@ -3,8 +3,10 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -20,13 +22,17 @@ class ShopHomeItemImageColumnViewHolder(
         private val heightRatio: Float
 ) : RecyclerView.ViewHolder(itemView) {
 
-    private val ivMultipleColumn: ImageUnify = itemView.findViewById(R.id.ivMultipleColumn)
     var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
     var parentPosition: Int = 0
+    private val ivMultipleColumn: ImageUnify = itemView.findViewById(R.id.ivMultipleColumn)
+    private var performanceMonitoring: PerformanceMonitoring? = null
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE)
         ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
-
+        ivMultipleColumn.onUrlLoaded = {
+            performanceMonitoring?.stopTrace() ?: Unit
+        }
         ivMultipleColumn.setOnClickListener {
             listener.onDisplayItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
