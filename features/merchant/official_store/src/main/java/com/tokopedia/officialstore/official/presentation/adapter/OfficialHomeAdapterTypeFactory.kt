@@ -70,7 +70,6 @@ class OfficialHomeAdapterTypeFactory(
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent, featuredShopListener)
-            DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent, dcEventHandler)
             DynamicChannelMixLeftViewHolder.LAYOUT -> DynamicChannelMixLeftViewHolder(parent, dcEventHandler)
