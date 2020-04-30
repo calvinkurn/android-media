@@ -9,7 +9,5 @@ import dagger.Component
 @GiftBoxActivityScope
 @Component(modules = [GiftBoxActivityModule::class, ActivityContextModule::class])
 interface GiftBoxActivityComponent {
-//    fun context(): Context
-
     fun inject(activity: BaseGiftBoxActivity)
 }
