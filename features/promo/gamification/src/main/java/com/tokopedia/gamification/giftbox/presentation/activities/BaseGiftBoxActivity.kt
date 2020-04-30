@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxActivityComponent
 import com.tokopedia.user.session.UserSession
@@ -38,7 +37,7 @@ abstract class BaseGiftBoxActivity : AppCompatActivity() {
     fun showGiftBoxFragment() {
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fm, getDestinationFragment())
+                .add(com.tokopedia.gamification.R.id.fm, getDestinationFragment())
                 .commit()
     }
 
