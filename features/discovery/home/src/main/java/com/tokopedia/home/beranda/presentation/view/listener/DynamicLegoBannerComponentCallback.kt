@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
 import android.content.Context
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -14,10 +15,16 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
                 context,
                 channelModel.channelHeader.applink,
                 channelModel.id)
+        RouteManager.route(context,
+                if (channelModel.channelHeader.applink.isNotEmpty())
+                    channelModel.channelHeader.applink else channelModel.channelHeader.url)
     }
 
     override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channelModel))
+        RouteManager.route(context,
+                if (channelModel.channelHeader.applink.isNotEmpty())
+                    channelModel.channelHeader.applink else channelModel.channelHeader.url)
     }
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
@@ -25,6 +32,9 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
                 context,
                 channelModel.channelHeader.applink,
                 channelModel.id)
+        RouteManager.route(context,
+                if (channelModel.channelHeader.applink.isNotEmpty())
+                    channelModel.channelHeader.applink else channelModel.channelHeader.url)
     }
 
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -34,6 +44,9 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
                         channelModel,
                         position + 1)
         )
+        RouteManager.route(context,
+                if (channelGrid.applink.isNotEmpty())
+                    channelGrid.applink else channelGrid.url)
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -43,6 +56,9 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
                         channelGrid,
                         position + 1)
         )
+        RouteManager.route(context,
+                if (channelGrid.applink.isNotEmpty())
+                    channelGrid.applink else channelGrid.url)
     }
 
     override fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -52,5 +68,8 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
                         channelGrid,
                         position + 1)
         )
+        RouteManager.route(context,
+                if (channelGrid.applink.isNotEmpty())
+                    channelGrid.applink else channelGrid.url)
     }
 }
