@@ -83,7 +83,6 @@ dependencies {
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
     //Merchant
-    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.shopOpen)
     //Operational
 

@@ -10,7 +10,9 @@ ext {
             nps                             : ":features:common:nps",
 
             commonTradein                   : ":features:category:common_tradein",
+            commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
+            hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",

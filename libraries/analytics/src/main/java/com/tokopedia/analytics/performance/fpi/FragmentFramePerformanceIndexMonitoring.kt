@@ -76,7 +76,9 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
                 )
                 cacheFpiDatabaseModel?.let {
                     if (it.fragmentHashCode != fragment?.hashCode().toString()) {
-                        sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
+                        withContext(Dispatchers.Main) {
+                            sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
+                        }
                         cacheManager?.delete(pageName)
                     } else {
                         mainPerformanceData = it.fpiPerformanceData
@@ -122,12 +124,12 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     @TargetApi(Build.VERSION_CODES.N)
     private suspend fun startFrameMetrics() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
-            onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
-                val frameMetricsCopy = FrameMetrics(frameMetrics)
-                recordFrames(frameMetricsCopy)
-            }
-            onFrameMetricAvailableListener?.let {
-                withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
+                    val frameMetricsCopy = FrameMetrics(frameMetrics)
+                    recordFrames(frameMetricsCopy)
+                }
+                onFrameMetricAvailableListener?.let {
                     fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler())
                 }
             }

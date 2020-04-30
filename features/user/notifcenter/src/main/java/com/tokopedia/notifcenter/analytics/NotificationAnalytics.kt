@@ -21,7 +21,8 @@ open class NotificationAnalytics {
         return "$notificationId - $productPrice - $location"
     }
 
-    fun getImpressionTrackLabel(notificationId: String, productNumber: Int, location: String): String {
+    fun getImpressionTrackLabel(notificationId: String, location: String): String {
+        val productNumber = 1
         return "$notificationId - $productNumber - $location"
     }
 
