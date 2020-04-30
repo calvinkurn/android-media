@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -26,6 +27,7 @@ import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMa
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -66,6 +68,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import kotlin.collections.CollectionsKt;
+import kotlin.jvm.functions.Function1;
 import rx.Subscriber;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
@@ -79,8 +83,9 @@ final class ProductListPresenter
         extends BaseDaggerPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
-    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6, 8);
-    private List<String> showBroadMatchResponseCodeList = Arrays.asList("4", "5");
+    private static final List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 4, 5, 6, 8);
+    private static final List<String> showBroadMatchResponseCodeList = Arrays.asList("4", "5");
+    private static final List<String> generalSearchTrackingRelatedKeywordResponseCodeList = Arrays.asList("3", "4", "5", "6");
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -104,12 +109,12 @@ final class ProductListPresenter
     private int totalData = 0;
     private boolean hasLoadData = false;
     private boolean useRatingString = false;
+    private String responseCode = "";
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
-    private String responseCode = "";
-    @Nullable private SuggestionViewModel suggestionViewModel = null;
-    @Nullable private RelatedViewModel relatedViewModel = null;
+    private SuggestionViewModel suggestionViewModel = null;
+    private RelatedViewModel relatedViewModel = null;
 
     @Inject
     ProductListPresenter(
@@ -1073,7 +1078,7 @@ final class ProductListPresenter
         String alternativeKeyword = SearchEventTracking.NONE;
 
         if (isAlternativeKeywordFromRelated(productViewModel)) {
-            alternativeKeyword = productViewModel.getRelatedViewModel().getRelatedKeyword();
+            alternativeKeyword = getAlternativeKeywordFromRelated(productViewModel.getRelatedViewModel());
         }
         else if (isAlternativeKeywordFromSuggestion(productViewModel)) {
             alternativeKeyword = productViewModel.getSuggestionModel().getSuggestion();
@@ -1085,12 +1090,30 @@ final class ProductListPresenter
     private boolean isAlternativeKeywordFromRelated(ProductViewModel productViewModel) {
         String responseCode = productViewModel.getResponseCode();
 
-        boolean isResponseCodeForRelatedKeyword = responseCode.equals("3") || responseCode.equals("6");
+        boolean isResponseCodeForRelatedKeyword = generalSearchTrackingRelatedKeywordResponseCodeList.contains(responseCode);
         boolean relatedKeywordIsNotEmpty =
                 productViewModel.getRelatedViewModel() != null
                 && !productViewModel.getRelatedViewModel().getRelatedKeyword().isEmpty();
 
         return isResponseCodeForRelatedKeyword && relatedKeywordIsNotEmpty;
+    }
+
+    private String getAlternativeKeywordFromRelated(RelatedViewModel relatedViewModel) {
+        String broadMatchKeywords = "";
+
+        if (!relatedViewModel.getBroadMatchViewModelList().isEmpty()) {
+            broadMatchKeywords = joinToString(relatedViewModel.getBroadMatchViewModelList(), ",", BroadMatchViewModel::getKeyword);
+        }
+
+        return relatedViewModel.getRelatedKeyword()
+                + (!broadMatchKeywords.isEmpty() ? "," : "")
+                + broadMatchKeywords;
+    }
+
+    private <T> String joinToString(Iterable<T> list, String separator, Function1<T, CharSequence> transform) {
+        if (list == null) return "";
+
+        return CollectionsKt.joinToString(list, separator, "", "", -1, "...", transform);
     }
 
     private boolean isAlternativeKeywordFromSuggestion(ProductViewModel productViewModel) {
