@@ -3,8 +3,8 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.BaseSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.BaseSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 
 abstract class SettingViewHolder<T : BaseSetting>(
         itemView: View?,
@@ -22,6 +22,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
         fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
         fun getNotificationType(): String
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+        fun updateParentSettingLastState(position: Int)
     }
 
     override fun bind(element: T?) {
@@ -55,6 +56,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
         val notificationType: String = settingListener.getNotificationType()
         val updatedSettingIds: List<Map<String, Any>> = getUpdatedSettingIds(element, checked)
         settingListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
+        settingListener.updateParentSettingLastState(adapterPosition)
     }
 
     protected fun getMapSettingToChange(element: BaseSetting, checked: Boolean) : Map<String, Any> {
