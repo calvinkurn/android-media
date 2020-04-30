@@ -131,7 +131,7 @@ class ProductSheetView(
     internal fun setProductSheet(model: ProductSheetUiModel) {
         showContent(true)
 
-        if (isProductUpdated(model.productList.size)) showToasterProductUpdated()
+        if (isProductDecreased(model.productList.size)) showToasterProductUpdated()
 
         tvSheetTitle.text = model.title
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
@@ -190,7 +190,7 @@ class ProductSheetView(
             productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
     )
 
-    private fun isProductUpdated(productSize: Int): Boolean {
+    private fun isProductDecreased(productSize: Int): Boolean {
         return productLineAdapter.getItems().isNotEmpty() &&
                 productLineAdapter.getItems().first() is ProductLineUiModel &&
                 productLineAdapter.itemCount > productSize
