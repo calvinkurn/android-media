@@ -91,11 +91,9 @@ class PromoCheckoutModule {
         return (context as NetworkRouter)
     }
 
-    @PromoCheckoutQualifier
     @Provides
     fun provideUserSession(@ApplicationContext context: Context) : UserSession {
         val userSession = UserSession(context)
         return userSession
     }
-
 }
