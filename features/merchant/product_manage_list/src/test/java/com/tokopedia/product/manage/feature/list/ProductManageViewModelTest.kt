@@ -1,6 +1,8 @@
 package com.tokopedia.product.manage.feature.list
 
 import android.accounts.NetworkErrorException
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.data.createEditVariantResult
 import com.tokopedia.product.manage.data.createProduct
 import com.tokopedia.product.manage.data.createProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
@@ -17,6 +19,7 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.*
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Data
+import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
@@ -24,6 +27,9 @@ import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStock
 import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.FeaturedProductResponseModel
 import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.Header
+import com.tokopedia.product.manage.verification.verifyErrorEquals
+import com.tokopedia.product.manage.verification.verifySuccessEquals
+import com.tokopedia.product.manage.verification.verifyValueEquals
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Price
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
@@ -482,6 +488,104 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             .verifyValueEquals(expectedFilter)
     }
 
+    @Test
+    fun `when edit variant price success should set live data value success`() {
+        val data = ProductUpdateV3Data(isSuccess = true)
+        val response = ProductUpdateV3Response(data)
+        val result = createEditVariantResult()
+
+        onEditProductVariant_thenReturn(response)
+
+        viewModel.editVariantsPrice(result)
+
+        val expectedResult = Success(result)
+
+        viewModel.editVariantPriceResult
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when edit variant price NOT success should set live data value fail`() {
+        val errorMessage = "can't edit price :("
+        val headerResponse = ProductUpdateV3Header(errorMessage = arrayListOf(errorMessage))
+        val data = ProductUpdateV3Data(isSuccess = false, header = headerResponse)
+        val response = ProductUpdateV3Response(data)
+        val result = createEditVariantResult()
+
+        onEditProductVariant_thenReturn(response)
+
+        viewModel.editVariantsPrice(result)
+
+        val expectedResult = Fail(MessageErrorException(errorMessage))
+
+        viewModel.editVariantPriceResult
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when edit variant price error should set live data value fail`() {
+        val error = NullPointerException()
+        val result = createEditVariantResult()
+
+        onEditProductVariant_thenReturn(error)
+
+        viewModel.editVariantsPrice(result)
+
+        val expectedResult = Fail(error)
+
+        viewModel.editVariantPriceResult
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when edit variant stock success should set live data value success`() {
+        val data = ProductUpdateV3Data(isSuccess = true)
+        val response = ProductUpdateV3Response(data)
+        val result = createEditVariantResult()
+
+        onEditProductVariant_thenReturn(response)
+
+        viewModel.editVariantsStock(result)
+
+        val expectedResult = Success(result)
+
+        viewModel.editVariantStockResult
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when edit variant stock NOT success should set live data value fail`() {
+        val errorMessage = "can't edit stock :("
+        val headerResponse = ProductUpdateV3Header(errorMessage = arrayListOf(errorMessage))
+        val data = ProductUpdateV3Data(isSuccess = false, header = headerResponse)
+        val response = ProductUpdateV3Response(data)
+        val result = createEditVariantResult()
+
+        onEditProductVariant_thenReturn(response)
+
+        viewModel.editVariantsStock(result)
+
+        val expectedResult = Fail(MessageErrorException(errorMessage))
+
+        viewModel.editVariantStockResult
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when edit variant stock error should set live data value fail`() {
+        val error = NullPointerException()
+        val result = createEditVariantResult()
+
+        onEditProductVariant_thenReturn(error)
+
+        viewModel.editVariantsStock(result)
+
+        val expectedResult = Fail(error)
+
+        viewModel.editVariantStockResult
+            .verifyErrorEquals(expectedResult)
+    }
+
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
         coEvery { multiEditProductUseCase.execute(any()) } coAnswers { throw exception }
     }
@@ -528,6 +632,14 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun onGetShopInfo_thenError(error: Throwable) {
         coEvery { gqlGetShopInfoUseCase.executeOnBackground() } coAnswers { throw error }
+    }
+
+    private fun onEditProductVariant_thenReturn(response: ProductUpdateV3Response) {
+        coEvery { editProductVariantUseCase.execute(any()) } returns response
+    }
+
+    private fun onEditProductVariant_thenReturn(error: Throwable) {
+        coEvery { editProductVariantUseCase.execute(any()) } throws error
     }
 
     private fun verifyEditPriceUseCaseCalled() {
