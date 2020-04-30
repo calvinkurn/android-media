@@ -5,11 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_INFORMATION_LINK
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -96,6 +99,6 @@ abstract class SellerMigrationBottomSheet : BottomSheetUnify() {
     }
 
     private fun goToInformationWebview() {
-
+        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${SELLER_MIGRATION_INFORMATION_LINK}")
     }
 }
