@@ -191,7 +191,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     @Test
-    fun `Test broad match with product list on page 2 and above`() {
+    fun `Show broad match under product list on page 2 and above`() {
         val visitableList = mutableListOf<Visitable<*>>()
         val searchProductModelPage1 = broadMatchResponseCode5Page1.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode5Page2.jsonToObject<SearchProductModel>()
