@@ -35,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -339,5 +340,10 @@ class CatalogNavFragment : BaseBannedProductFragment(),
 
     override fun getSortRequestCode(): Int {
         return REQUEST_ACTIVITY_SORT_PRODUCT
+    }
+
+    override fun addBannedProductScreen() {
+        super.addBannedProductScreen()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.show()
     }
 }

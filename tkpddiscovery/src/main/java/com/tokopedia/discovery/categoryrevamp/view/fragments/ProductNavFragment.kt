@@ -36,7 +36,7 @@ import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
+import com.tokopedia.common_category.model.bannedCategory.SubCategoryItem
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.utils.CategoryApiParamBuilder.Companion.categoryApiParamBuilder
@@ -56,7 +56,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -68,6 +67,7 @@ import kotlinx.android.synthetic.main.fragment_product_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import rx.Subscriber
 import javax.inject.Inject
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -751,5 +751,10 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     private fun isUserLoggedIn(): Boolean {
         return userSession.isLoggedIn
+    }
+
+    override fun addBannedProductScreen() {
+        super.addBannedProductScreen()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.show()
     }
 }

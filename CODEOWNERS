@@ -131,6 +131,7 @@
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
 /features/logistic/logisticorder/                    	@tokopedia/minion-bob
+/features/logistic/dropoff/                    	        @tokopedia/minion-bob
 /features/promo/promo_checkout/                 		@tokopedia/minion-bob
 /features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob

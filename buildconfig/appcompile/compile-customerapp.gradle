@@ -9,6 +9,7 @@ include "features:category:common_tradein"
 include "features:category:common_category"
 include "features:category:kategori"
 include "features:discovery2:hotlist"
+include "features:category:find_native"
 
 include "features:communication:broadcast_message_common"
 
@@ -100,6 +101,7 @@ include "features:kyc"
 
 include "features:logistic:logisticorder"
 include "features:logistic:logisticaddaddress"
+include "features:logistic:dropoff"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
 
