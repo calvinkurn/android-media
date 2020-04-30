@@ -101,6 +101,12 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         }
     }
 
+public void sendAnalyticsAnomalyResponse(String title,
+
+                                      String accessToken, String refreshToken,
+
+                                      String response, String request){}
+
     @Override
     public Class<?> getDeeplinkClass() {
         return null;
@@ -158,11 +164,6 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxMessageIntent(Context mContext) {
         return null;
     }
 
@@ -401,8 +402,4 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     }
 
-    @Override
-    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
-
-    }
 }
