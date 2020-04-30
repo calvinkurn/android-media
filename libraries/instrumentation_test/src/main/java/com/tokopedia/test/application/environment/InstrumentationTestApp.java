@@ -162,11 +162,6 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
     }
 
     @Override
-    public Intent getInboxMessageIntent(Context mContext) {
-        return null;
-    }
-
-    @Override
     public void onAppsFlyerInit() {
 
     }

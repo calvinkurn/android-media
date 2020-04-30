@@ -173,11 +173,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
     }
 
     @Override
-    public Intent getInboxMessageIntent(Context mContext) {
-        return null;
-    }
-
-    @Override
     public void onAppsFlyerInit() {
 
     }
