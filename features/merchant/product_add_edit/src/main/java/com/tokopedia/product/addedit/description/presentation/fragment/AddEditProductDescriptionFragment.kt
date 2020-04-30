@@ -544,7 +544,7 @@ class AddEditProductDescriptionFragment:
                 put(EXTRA_DEFAULT_SKU, "")
                 put(EXTRA_NEED_RETAIN_IMAGE, false)
                 put(EXTRA_HAS_WHOLESALE, descriptionViewModel.hasWholesale)
-                put(EXTRA_IS_ADD, descriptionViewModel.isAddMode)
+                put(EXTRA_IS_ADD, !descriptionViewModel.isEditMode || descriptionViewModel.isAddMode)
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {

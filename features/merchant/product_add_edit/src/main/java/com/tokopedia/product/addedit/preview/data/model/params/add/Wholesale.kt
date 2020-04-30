@@ -12,7 +12,7 @@ data class Wholesale(
         var minQty: Int = 0,
         @SerializedName("price")
     @Expose
-        var price: Float = 0F
+        var price: Double = 0.toDouble()
 ) : Parcelable
 
 @Parcelize
