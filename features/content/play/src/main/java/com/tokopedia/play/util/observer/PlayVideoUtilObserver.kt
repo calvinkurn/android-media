@@ -10,9 +10,10 @@ import com.tokopedia.play.util.video.PlayVideoUtil
 /**
  * Created by jegul on 24/04/20
  */
-class PlayVideoUtilObserver(private val context: Context) : LifecycleObserver {
-
-    private val videoUtil = PlayVideoUtil(context)
+class PlayVideoUtilObserver(
+        private val context: Context,
+        private val videoUtil: PlayVideoUtil
+) : LifecycleObserver {
 
     private val isChangingConfig: Boolean
         get() {
