@@ -644,9 +644,11 @@ class PlayViewModel @Inject constructor(
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()
             }
+            val partnerId = partnerId?:0L
             _observableProductSheetContent.value = PlayResult.Success(
                     PlayUiMapper.mapProductSheet(
                             channel.pinnedProduct.titleBottomSheet,
+                            partnerId,
                             productTagsItems)
             )
 

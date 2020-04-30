@@ -40,7 +40,13 @@ open class ProductSheetComponent(
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.ProductSheet]?.let(::handleShowHideProductSheet) }
                             is ScreenStateEvent.SetProductSheet -> when (it.productResult) {
                                 is PlayResult.Loading -> if (it.productResult.showPlaceholder) uiView.showPlaceholder()
-                                is PlayResult.Success -> uiView.setProductSheet(it.productResult.data)
+                                is PlayResult.Success -> {
+                                    if (it.productResult.data.productList.isNotEmpty()) {
+                                        uiView.setProductSheet(it.productResult.data)
+                                    } else {
+                                        uiView.showEmpty(it.productResult.data.partnerId)
+                                    }
+                                }
                                 is PlayResult.Failure -> uiView.showError(
                                         isConnectionError = it.productResult.error is ConnectException || it.productResult.error is UnknownHostException,
                                         onError = it.productResult.onRetry
@@ -86,6 +92,12 @@ open class ProductSheetComponent(
     override fun onVoucherScrolled(lastPositionViewed: Int) {
         scope.launch {
             bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnVoucherScrolled(lastPositionViewed))
+        }
+    }
+
+    override fun onEmptyButtonClicked(partnerId: Long) {
+        scope.launch {
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnEmptyButtonClicked(partnerId))
         }
     }
 

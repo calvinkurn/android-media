@@ -316,6 +316,7 @@ class PlayViewModelTest {
         val expectedResult = PlayResult.Success(
                 PlayUiMapper.mapProductSheet(
                         mockChannel.pinnedProduct.titleBottomSheet,
+                        mockChannel.partnerId,
                         expectedModel)
         )
 
