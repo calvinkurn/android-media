@@ -131,11 +131,7 @@ class ProductSheetView(
     internal fun setProductSheet(model: ProductSheetUiModel) {
         showContent(true)
 
-        if (productLineAdapter.getItems().isNotEmpty() &&
-                productLineAdapter.getItems().first() is ProductLineUiModel &&
-                productLineAdapter.itemCount > model.productList.size) {
-            showToasterProductRemoved()
-        }
+        if (isProductUpdated(model.productList.size)) showToasterProductUpdated()
 
         tvSheetTitle.text = model.title
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
@@ -172,13 +168,6 @@ class ProductSheetView(
         }
     }
 
-    private fun showToasterProductRemoved() {
-        Toaster.make(
-                view,
-                view.context.getString(R.string.play_product_updated),
-                type = Toaster.TYPE_NORMAL)
-    }
-
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
             rvProductList.visible()
@@ -200,6 +189,19 @@ class ProductSheetView(
             voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
             productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
     )
+
+    private fun isProductUpdated(productSize: Int): Boolean {
+        return productLineAdapter.getItems().isNotEmpty() &&
+                productLineAdapter.getItems().first() is ProductLineUiModel &&
+                productLineAdapter.itemCount > productSize
+    }
+
+    private fun showToasterProductUpdated() {
+        Toaster.make(
+                view,
+                view.context.getString(R.string.play_product_updated),
+                type = Toaster.TYPE_NORMAL)
+    }
 
     companion object {
         private const val PLACEHOLDER_COUNT = 5
