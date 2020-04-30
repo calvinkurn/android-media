@@ -12,10 +12,21 @@ import kotlinx.android.synthetic.main.item_chips.view.*
 
 class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener): RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
 
-    private var sortFilterListUiModel: List<SortItemUiModel>? = null
+    var sortFilterListUiModel: List<SortItemUiModel>? = null
 
     fun setSortFilter(sortFilterListUiModel: List<SortItemUiModel>) {
         this.sortFilterListUiModel = sortFilterListUiModel
+    }
+
+    fun updatedSortFilter(isSelected: Boolean, position: Int) {
+        val itemSelected = sortFilterListUiModel?.getOrNull(position)
+
+        sortFilterListUiModel?.filter {
+            it.isSelected
+        }?.filterNot { it == itemSelected }?.onEach { it.isSelected = false }
+
+        itemSelected?.isSelected = true
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SortListViewHolder {
@@ -44,7 +55,7 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
                         ChipsUnify.TYPE_NORMAL
                     }
                     setOnClickListener {
-                        topicSortFilterListener.onSortClicked(data, adapterPosition)
+                        topicSortFilterListener.onSortClicked(chipType.orEmpty(), adapterPosition)
                     }
                 }
             }

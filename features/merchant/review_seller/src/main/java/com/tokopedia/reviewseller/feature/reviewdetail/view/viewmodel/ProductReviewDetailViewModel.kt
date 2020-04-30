@@ -38,12 +38,16 @@ class ProductReviewDetailViewModel @Inject constructor(
     private var productId = 0
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
     private var filterRatingData: List<RatingBarUiModel> = listOf()
-    private var filterTopicData: List<SortFilterItemWrapper> = listOf()
+    var filterTopicData: List<SortFilterItemWrapper> = listOf()
 
     var sortTopicData: List<SortItemUiModel> = listOf()
 
+    var sortAndFilter: Pair<List<SortFilterItemWrapper>, String>? = null
+
     private val _ratingFilterData = MutableLiveData<List<RatingBarUiModel>>()
     private val _topicFilterData = MutableLiveData<List<SortFilterItemWrapper>>()
+
+    private val _topicAndSortFilterData = MutableLiveData<Pair<List<SortFilterItemWrapper>, String>>()
 
     private val _reviewInitialData = MediatorLiveData<Result<Triple<List<BaseSellerReviewDetail>, String, Boolean>>>()
     val reviewInitialData: LiveData<Result<Triple<List<BaseSellerReviewDetail>, String, Boolean>>>
@@ -83,7 +87,7 @@ class ProductReviewDetailViewModel @Inject constructor(
             if (topicFilterTextGenerated.isNotBlank()) {
                 filterByList.add(topicFilterTextGenerated)
             }
-            getFeedbackDetailListNext(productId, "", 1)
+            getFeedbackDetailListNext(productId, sortBy, 1)
         }
 
         _productFeedbackDetail.addSource(_ratingFilterData) { data ->
@@ -98,7 +102,25 @@ class ProductReviewDetailViewModel @Inject constructor(
                 filterByList.add(ratingFilterGenerated)
             }
 
-            getFeedbackDetailListNext(productId, "", 1)
+            getFeedbackDetailListNext(productId, sortBy, 1)
+        }
+
+        _productFeedbackDetail.addSource(_topicAndSortFilterData) { data ->
+            val topicFilterText = data.first.filter { it.isSelected }
+            val topicFilterTextGenerated = if (topicFilterText.isEmpty()) "" else topicFilterText.joinToString(prefix = "topic=", separator = ",") {
+                it.titleUnformated
+            }
+            removeFilterElement("topic=")
+
+            updateSortAndFilterTopicData(data)
+
+            if (topicFilterTextGenerated.isNotBlank()) {
+                filterByList.add(topicFilterTextGenerated)
+            }
+
+            sortBy = data.second
+
+            getFeedbackDetailListNext(productId, sortBy, 1)
         }
     }
 
@@ -116,21 +138,29 @@ class ProductReviewDetailViewModel @Inject constructor(
         filterTopicData = data
     }
 
+    fun updateSortAndFilterTopicData(data: Pair<List<SortFilterItemWrapper>, String>) {
+        this.sortAndFilter = data
+    }
+
     private fun setSortDetailBottomSheet() {
         val data = SellerReviewProductDetailMapper.mapToItemSortTopic()
         sortTopicData = data
+        val sortValue = data.firstOrNull { it.isSelected }?.title.orEmpty()
+        sortBy = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortValue)
     }
 
-    fun updateSortFilterBottomSheet(selected: Boolean, position: Int) {
-        sortTopicData.forEachIndexed { index, sortItemUiModel ->
-            if(index == position) {
-                if(!sortItemUiModel.isSelected) {
-                    sortItemUiModel.isSelected = selected
-                } else {
-                    sortItemUiModel.isSelected = !selected
-                }
+    fun updateSortFilterBottomSheet(data: List<SortItemUiModel>) {
+        sortTopicData = data
+    }
+
+    fun setSortAndFilterTopicData(data: Pair<List<SortFilterItemWrapper>, String>) {
+        val updatedData = data.first.map {
+            if(it.count == 0) {
+                it.isSelected = false
             }
+            it
         }
+        _topicAndSortFilterData.value = updatedData to data.second
     }
 
     fun setFilterTopicDataText(data: List<SortFilterItemWrapper>?) {

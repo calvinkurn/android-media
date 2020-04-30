@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -47,7 +47,7 @@
         android:id="@+id/tvSortTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/popular_topic_label"
+        android:text="@string/sort_label"
         app:typographyWeight="bold"
         app:typographyType="body_1"
         android:textColor="@color/clr_f531353b"
