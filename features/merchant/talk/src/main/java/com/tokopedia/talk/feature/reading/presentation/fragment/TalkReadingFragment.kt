@@ -60,6 +60,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
+        const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
@@ -183,9 +184,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             TALK_REPLY_ACTIVITY_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
-                view?.let {
-                    Toaster.make(it, getString(R.string.delete_question_toaster_success), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
-                }
+                onSuccessDeleteQuestion()
+            }
+            TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                onSuccessCreateQuestion()
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -349,6 +351,20 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getHeaderData() {
         viewModel.getDiscussionAggregate(productId, shopId)
+    }
+
+    private fun onSuccessCreateQuestion() {
+        showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
+        loadInitialData()
+    }
+
+    private fun onSuccessDeleteQuestion() {
+        showSuccessToaster(getString(R.string.delete_question_toaster_success))
+        loadInitialData()
+    }
+
+    private fun showSuccessToaster(message: String) {
+        view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.talk_ok)) }
     }
 
     private fun showErrorToaster() {

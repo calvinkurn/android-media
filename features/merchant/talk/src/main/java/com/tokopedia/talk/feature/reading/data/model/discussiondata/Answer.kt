@@ -10,6 +10,9 @@ data class Answer(
         @SerializedName("content")
         @Expose
         val content: String = "",
+        @SerializedName("maskedContent")
+        @Expose
+        val maskedContent: String = "",
         @SerializedName("userName")
         @Expose
         val userName: String = "",
