@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.view.widget
+package com.tokopedia.vouchercreation.common.widget.downloadvoucher
 
 import android.graphics.Rect
 import android.view.LayoutInflater
@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.DownloadVoucherUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.DownloadVoucherAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
 
@@ -19,8 +17,7 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
  */
 
 class DownloadVoucherBottomSheet(
-        private val parent: ViewGroup,
-        private val voucher: VoucherUiModel
+        private val parent: ViewGroup
 ) : BottomSheetUnify() {
 
     private val mAdapter by lazy { DownloadVoucherAdapter() }
@@ -35,7 +32,7 @@ class DownloadVoucherBottomSheet(
         setChild(child)
     }
 
-    private fun setupView(child: View) = with(child) view@ {
+    private fun setupView(child: View) = with(child) view@{
         rvMvcVouchers.run {
             layoutManager = LinearLayoutManager(this@view.context)
             adapter = mAdapter

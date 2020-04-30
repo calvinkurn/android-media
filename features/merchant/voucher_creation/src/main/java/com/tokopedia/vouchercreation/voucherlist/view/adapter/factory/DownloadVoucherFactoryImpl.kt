@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.vouchercreation.voucherlist.model.DownloadVoucherUiModel
+import com.tokopedia.vouchercreation.common.widget.downloadvoucher.DownloadVoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.DownloadVoucherViewHolder
 
 /**

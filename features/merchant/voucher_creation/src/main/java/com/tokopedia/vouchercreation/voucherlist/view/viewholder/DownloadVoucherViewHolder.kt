@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.DownloadVoucherUiModel
+import com.tokopedia.vouchercreation.common.widget.downloadvoucher.DownloadVoucherUiModel
 import kotlinx.android.synthetic.main.item_mvc_download_voucher.view.*
 
 /**

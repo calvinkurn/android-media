@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.widget.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
@@ -196,7 +197,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent, voucher)
+        DownloadVoucherBottomSheet(parent)
                 .setOnDownloadClickListener {
 
                 }
