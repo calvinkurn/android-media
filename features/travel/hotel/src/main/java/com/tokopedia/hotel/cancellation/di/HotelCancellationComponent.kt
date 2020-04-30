@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.cancellation.di
 
+import com.tokopedia.hotel.cancellation.presentation.fragment.HotelCancellationFragment
 import com.tokopedia.hotel.common.di.component.HotelComponent
 import dagger.Component
 
@@ -8,7 +9,7 @@ import dagger.Component
  */
 
 @HotelCancellationScope
-@Component(modules = [HotelCancellationViewModelModule::class], dependencies = [HotelComponent::class])
+@Component(modules = [HotelCancellationModule::class, HotelCancellationViewModelModule::class], dependencies = [HotelComponent::class])
 interface HotelCancellationComponent {
-
+    fun inject(hotelCancellationFragment: HotelCancellationFragment)
 }
