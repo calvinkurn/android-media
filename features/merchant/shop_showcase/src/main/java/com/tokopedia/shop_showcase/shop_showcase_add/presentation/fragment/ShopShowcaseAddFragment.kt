@@ -186,6 +186,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             updateSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             updateAppendedSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             showSelectedProductList()
+            showToaster(resources.getString(R.string.success_add_product, newSelectedProductList?.size.toString()))
         }
     }
 
@@ -607,6 +608,12 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun updateAppendedSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newSelectedProductList: ArrayList<ShowcaseProduct>?) {
         showcaseAddAdapter?.updateAppendedDataSet(newSelectedProductList)
+    }
+
+    private fun showToaster(message: String) {
+        view?.run {
+            Toaster.make(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        }
     }
 
     private fun showSoftKeyboard() {
