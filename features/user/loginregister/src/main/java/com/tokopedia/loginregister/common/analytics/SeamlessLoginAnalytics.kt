@@ -14,12 +14,12 @@ class SeamlessLoginAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    fun eventClickLoginSeamless() {
+    fun eventClickLoginSeamless(label: String) {
         val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE_SELLER,
                 ACTION_CLICK_ON_BUTTON_LOGIN,
-                ""
+                label
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
     }
@@ -55,5 +55,10 @@ class SeamlessLoginAnalytics {
         private val ACTION_CLICK_ON_BUTTON_LOGIN = "click on masuk"
         private val ACTION_CLICK_ON_BUTTON_ANOTHER_ACCS = "click on masuk ke akun lain"
         private val ACTION_CLICK_ON_BUTTON_BACK = "click on button back"
+
+        val LABEL_CLICK = "click"
+        val LABEL_SUCCESS = "success"
+        val LABEL_FAILED = "failed -"
+
     }
 }

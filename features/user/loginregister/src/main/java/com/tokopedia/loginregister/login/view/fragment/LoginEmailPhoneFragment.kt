@@ -103,7 +103,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
+open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
@@ -282,10 +282,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
-        if(GlobalConfig.isSellerApp()) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_LOGIN)
-            startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
-        }
     }
 
     private fun fetchRemoteConfig() {
@@ -1116,14 +1112,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 onSuccessLogin()
             } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
-            } else if(requestCode == REQUEST_SEAMLESS_LOGIN && resultCode == Activity.RESULT_OK){
-                if (data != null) {
-                    data.extras?.let {
-                        if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                            onGoToSecurityQuestion("")
-                        } else  { presenter.getUserInfo() }
-                    }
-                } else { presenter.getUserInfo() }
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1452,7 +1440,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val REQUEST_ADD_PIN_AFTER_SQ = 119
         private val REQUEST_OTP_VALIDATE = 120
         private val REQUEST_PENDING_OTP_VALIDATE = 121
-        const val REQUEST_SEAMLESS_LOGIN = 122
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"

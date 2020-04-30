@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.fragment_seller_seamless_login.*
 import kotlinx.android.synthetic.main.fragment_seller_seamless_login.view.*
 import kotlinx.android.synthetic.main.item_account_with_shop.*
 import java.util.*
+
 import javax.inject.Inject
 
 /**
@@ -109,8 +110,13 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun maskEmail(email: String):
-            String = email.replace("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\\\G(?=[^@]*\$)).(?=.*\\\\.)".toRegex(), "*")
+    private fun maskEmail(email: String): String {
+        val indexBefore = email.indexOf("@")
+        var replacer = ""
+        for(i in 0 until indexBefore-2) { replacer += "*" }
+        return email.replace(email.substring(2,indexBefore), replacer)
+    }
+
 
     private fun showProgressBar(){
         seller_seamless_main_view?.alpha = 0.4F
@@ -141,7 +147,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
         view?.seller_seamless_positive_btn.setOnClickListener {
             if(service != null){
-                analytics.eventClickLoginSeamless()
+                analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_CLICK)
                 showProgressBar()
                 getKeyTaskId = UUID.randomUUID().toString()
                 getKey(getKeyTaskId)
@@ -186,16 +192,17 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessLoginToken(){
+        analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
         hideProgressBar()
-        Toaster.showNormal(view!!, "Success Login Token", Snackbar.LENGTH_LONG)
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
 
     private fun onErrorLoginToken(throwable: Throwable?){
+        val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        analytics.eventClickLoginSeamless("${SeamlessLoginAnalytics.LABEL_FAILED} $errorMessage")
         hideProgressBar()
         view?.run{
-            val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
     }
