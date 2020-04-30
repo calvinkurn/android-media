@@ -21,6 +21,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 /**
  * @author by nisie on 8/19/17.
@@ -54,6 +55,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     GridLayoutManager gridLayout;
     LinearLayoutManager linearLayoutManager;
     Context context;
+    Ticker ovoTicker;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
@@ -85,7 +87,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                 .HORIZONTAL, false);
         smiley.setLayoutManager(gridLayout);
         smiley.setAdapter(adapter);
-        
+        ovoTicker = itemView.findViewById(R.id.ovoPointsTicker);
     }
 
     @Override
@@ -104,6 +106,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                 goToInfoPage(element);
             }
         });
+        ovoTicker.setHtmlDescription(getString(R.string.review_ovo_ticker_description));
 
         setReputation(element);
 

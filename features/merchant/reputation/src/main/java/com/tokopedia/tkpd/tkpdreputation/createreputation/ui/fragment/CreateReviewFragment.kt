@@ -286,6 +286,8 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         btn_submit_review.setOnClickListener {
             submitReview()
         }
+
+        ovoPointsTicker.setHtmlDescription(getString(R.string.review_ovo_ticker_description))
     }
 
     override fun onDestroy() {

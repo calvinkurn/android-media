@@ -42,6 +42,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPre
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import java.util.concurrent.TimeUnit;
 
@@ -73,6 +74,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private String scoreFilter;
     private View filterButton;
     private boolean isFromWhitespace;
+    private Ticker ovoTicker;
 
     @Inject
     InboxReputationPresenter presenter;
@@ -143,6 +145,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         mainList = (RecyclerView) parentView.findViewById(R.id.review_list);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
+        ovoTicker = parentView.findViewById(R.id.ovoPointsTicker);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);
         searchView.setFocusChangeListener(this);
@@ -209,6 +212,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ovoTicker.setHtmlDescription(getString(R.string.review_ovo_ticker_description));
         KeyboardHandler.hideSoftKeyboard(getActivity());
         if (savedInstanceState != null)
             presenter.getFilteredInboxReputation(

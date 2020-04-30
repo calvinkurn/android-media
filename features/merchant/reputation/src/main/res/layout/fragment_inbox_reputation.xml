@@ -48,7 +48,6 @@
                 android:layout_marginTop="@dimen/layout_lvl1"
                 app:layout_constraintTop_toTopOf="parent"
                 app:titleText="@string/review_ovo_ticker_title"
-                app:descriptionText="@string/review_ovo_ticker_description"
                 app:tickerType="announcement"/>
 
             <androidx.recyclerview.widget.RecyclerView

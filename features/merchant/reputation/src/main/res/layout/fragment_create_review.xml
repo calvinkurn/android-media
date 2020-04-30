@@ -33,7 +33,6 @@
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 app:titleText="@string/review_ovo_ticker_title"
-                app:descriptionText="@string/review_ovo_ticker_description"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tickerType="announcement"/>
 

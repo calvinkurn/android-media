@@ -162,5 +162,5 @@
     </string-array>
 
     <string name="review_ovo_ticker_title">Kasih ulasan, dapat OVO Points!</string>
-    <string name="review_ovo_ticker_description">Kamu dapat membantu penjual tingkatkan layanannya plus dapat OVO Points, lho! <b>Baca S&amp;K.</b></string>
+    <string name="review_ovo_ticker_description">Kamu dapat membantu penjual tingkatkan layanannya plus dapat OVO Points, lho! &lt;b>Baca S&amp;K.&lt;/b></string>
 </resources>

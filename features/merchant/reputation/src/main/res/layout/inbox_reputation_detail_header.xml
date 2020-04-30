@@ -87,6 +87,17 @@
 
     </LinearLayout>
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ovoPointsTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:titleText="@string/review_ovo_ticker_title"
+        app:tickerType="announcement" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
@@ -265,15 +276,4 @@
             android:gravity="center_vertical"
             tools:src="@drawable/ic_smiley_empty"/>
     </RelativeLayout>
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ovoPointsTicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        app:titleText="@string/review_ovo_ticker_title"
-        app:descriptionText="@string/review_ovo_ticker_description"
-        app:tickerType="announcement"/>
 </LinearLayout>
