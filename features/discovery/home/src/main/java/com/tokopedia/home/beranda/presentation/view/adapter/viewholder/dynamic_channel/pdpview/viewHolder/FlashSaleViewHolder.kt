@@ -15,10 +15,11 @@ class FlashSaleViewHolder (view: View,
 
     companion object{
         val LAYOUT = R.layout.home_banner_item_flashsale_carousel
-        val CLASS_NAME = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder"
     }
 
     private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
+    private val className = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder"
+
     override fun bind(element: FlashSaleDataModel) {
         setLayout(element)
     }
@@ -29,13 +30,13 @@ class FlashSaleViewHolder (view: View,
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
                 if(element.grid.isTopads){
-                    ImpresionTask(CLASS_NAME).execute(element.grid.impression)
+                    ImpresionTask(className).execute(element.grid.impression)
                 }
                 element.listener.onFlashSaleCardImpressed(adapterPosition, channels)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    ImpresionTask(CLASS_NAME).execute(element.grid.productClickUrl)
+                    ImpresionTask(className).execute(element.grid.productClickUrl)
                 }
                 element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }
