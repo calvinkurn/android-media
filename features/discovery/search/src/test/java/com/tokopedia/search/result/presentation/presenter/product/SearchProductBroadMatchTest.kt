@@ -14,14 +14,14 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-private const val broadMatchResponseCode1EmptySearch = "searchproduct/broadmatch/broad-match-response-code-1-empty-search.json"
-private const val broadMatchResponseCode1NotEmptySearch = "searchproduct/broadmatch/broad-match-response-code-1-not-empty-search.json"
-private const val broadMatchResponseCode4 = "searchproduct/broadmatch/broad-match-response-code-4.json"
-private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/broad-match-response-code-4-but-no-broadmatch.json"
-private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/broad-match-response-code-4-no-suggestion.json"
-private const val broadMatchResponseCode5 = "searchproduct/broadmatch/broad-match-response-code-5.json"
-private const val broadMatchResponseCode5Page1 = "searchproduct/broadmatch/broad-match-response-code-5-page-1.json"
-private const val broadMatchResponseCode5Page2 = "searchproduct/broadmatch/broad-match-response-code-5-page-2.json"
+private const val broadMatchResponseCode1EmptySearch = "searchproduct/broadmatch/response-code-1-empty-search.json"
+private const val broadMatchResponseCode1NotEmptySearch = "searchproduct/broadmatch/response-code-1-not-empty-search.json"
+private const val broadMatchResponseCode4 = "searchproduct/broadmatch/response-code-4.json"
+private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/response-code-4-but-no-broadmatch.json"
+private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/response-code-4-no-suggestion.json"
+private const val broadMatchResponseCode5 = "searchproduct/broadmatch/response-code-5.json"
+private const val broadMatchResponseCode5Page1 = "searchproduct/broadmatch/response-code-5-page-1.json"
+private const val broadMatchResponseCode5Page2 = "searchproduct/broadmatch/response-code-5-page-2.json"
 
 internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
@@ -238,7 +238,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     private fun `Then assert SuggestionViewModel is after the last product item view model`(visitableList: List<Visitable<*>>) {
         val expectedSuggestionViewModelIndex = visitableList.indexOfLast { it is ProductItemViewModel } + 1
         val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionViewModel }
-        
+
         actualSuggestionViewModelIndex shouldBe expectedSuggestionViewModelIndex
     }
 }
