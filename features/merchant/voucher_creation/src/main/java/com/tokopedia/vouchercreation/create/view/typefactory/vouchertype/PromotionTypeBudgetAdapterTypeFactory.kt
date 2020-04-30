@@ -9,11 +9,12 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.Prom
 import com.tokopedia.vouchercreation.create.view.viewholder.NextButtonViewHolder
 import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.widget.PromotionTypeInputViewHolder
 
-class PromotionTypeBudgetAdapterTypeFactory(private val fragment: Fragment) : BaseAdapterTypeFactory(), PromotionTypeBudgetTypeFactory {
+class PromotionTypeBudgetAdapterTypeFactory(private val fragment: Fragment,
+                                            private val onNextStep: () -> Unit = {}) : BaseAdapterTypeFactory(), PromotionTypeBudgetTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            PromotionTypeInputViewHolder.LAYOUT -> PromotionTypeInputViewHolder(parent, fragment)
+            PromotionTypeInputViewHolder.LAYOUT -> PromotionTypeInputViewHolder(parent, fragment, onNextStep)
             NextButtonViewHolder.LAYOUT -> NextButtonViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

@@ -9,7 +9,7 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.Promoti
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 
 class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
-    : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>(onNextStep) {
+    : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>(onNextStep, false) {
 
     companion object {
         @JvmStatic

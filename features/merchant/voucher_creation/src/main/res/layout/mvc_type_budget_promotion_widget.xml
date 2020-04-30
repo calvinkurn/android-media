@@ -12,8 +12,7 @@
         android:layout_margin="@dimen/mvc_create_margin_padding"
         android:textOff="@string/mvc_create_promo_type_free_deliv_tab"
         android:textOn="@string/mvc_create_promo_type_cashback_tab"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/typeBudgetPromotionViewPager"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/typeBudgetPromotionViewPager"

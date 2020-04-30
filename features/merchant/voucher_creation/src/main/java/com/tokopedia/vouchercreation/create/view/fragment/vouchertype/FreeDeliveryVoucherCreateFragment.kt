@@ -7,15 +7,64 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
+import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
+import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeTickerUiModel
 
-class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
+class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance() = FreeDeliveryVoucherCreateFragment()
+        fun createInstance(onNextStep: () -> Unit = {}) = FreeDeliveryVoucherCreateFragment(onNextStep)
     }
+
+    private val promoDescTickerModel by lazy {
+        PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_free_deliv_ticker, ::onDismissTicker)
+    }
+
+    private val freeDeliveryAmountTextFieldModel by lazy {
+        VoucherTextFieldUiModel(
+                type = VoucherTextFieldType.CURRENCY,
+                labelRes = R.string.mvc_create_promo_type_free_deliv_textfield_free_deliv_amount,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.FREE_DELIV_AMOUNT,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.FREE_DELIV_AMOUNT,
+                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+    }
+
+    private val minimumPurchaseTextFieldModel by lazy {
+        VoucherTextFieldUiModel(
+                type = VoucherTextFieldType.CURRENCY,
+                labelRes = R.string.mvc_create_promo_type_textfield_minimum_purchase,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.PUCHASE_AMOUNT,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
+                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+    }
+
+    private val voucherQuotaTextFieldModel by lazy {
+        VoucherTextFieldUiModel(
+                type = VoucherTextFieldType.QUANTITY,
+                labelRes = R.string.mvc_create_promo_type_textfield_voucher_quota,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.VOUCHER_QUOTA,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
+                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                isLastTextField = true)
+    }
+
+    private val freeDeliveryTypeUiList = mutableListOf(
+            promoDescTickerModel,
+            freeDeliveryAmountTextFieldModel,
+            minimumPurchaseTextFieldModel,
+            voucherQuotaTextFieldModel,
+            PromotionExpenseEstimationUiModel(),
+            NextButtonUiModel(onNextStep)
+    )
 
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 
@@ -38,8 +87,18 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
         setupView()
     }
 
-    private fun setupView() {
+    override fun onResume() {
+        super.onResume()
         adapter.notifyDataSetChanged()
-        renderList(PromotionTypeUiListStaticDataSource.getFreeDeliveryTypeUiList())
     }
+
+    private fun setupView() {
+        renderList(freeDeliveryTypeUiList)
+    }
+
+    private fun onDismissTicker() {
+        adapter.data.remove(promoDescTickerModel)
+        adapter.notifyDataSetChanged()
+    }
+
 }

@@ -3,7 +3,7 @@ package com.tokopedia.vouchercreation.create.data.source
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.PromotionTypeTickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeTickerUiModel
 
 object PromotionTypeUiListStaticDataSource {
 
