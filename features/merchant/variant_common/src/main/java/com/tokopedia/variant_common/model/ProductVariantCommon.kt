@@ -59,7 +59,7 @@ data class ProductVariantCommon(
     }
 
     val hasChildren: Boolean
-        get() = with(children) {this.isNotEmpty() }
+        get() = with(children) { this.isNotEmpty() }
 
     val hasVariant: Boolean
         get() = with(variant) { this.isNotEmpty() }
@@ -70,6 +70,19 @@ data class ProductVariantCommon(
         } else {
             null
         }
+
+    fun autoSelectedOptionIds(): List<Int> {
+        val listOfOptionAutoSelectedId = children.filter {
+            it.isBuyable
+        }
+
+        //If there is only 1 child is available , then auto selected
+        return if (listOfOptionAutoSelectedId.size == 1) {
+            listOfOptionAutoSelectedId.firstOrNull()?.optionIds ?: listOf()
+        } else {
+            listOf()
+        }
+    }
 
     fun getVariant(selectedVariantId: String?): VariantChildCommon? {
         if (selectedVariantId.isNullOrEmpty()) {

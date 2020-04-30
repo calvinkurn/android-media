@@ -11,5 +11,8 @@ data class SuccessData(
         var success: Boolean = false,
 
         @SerializedName("ticker_message")
-        var tickerMessage: String = ""
+        var tickerMessage: String = "",
+
+        @SerializedName("default_empty_promo_message")
+        var defaultEmptyPromoMessage: String = ""
 )

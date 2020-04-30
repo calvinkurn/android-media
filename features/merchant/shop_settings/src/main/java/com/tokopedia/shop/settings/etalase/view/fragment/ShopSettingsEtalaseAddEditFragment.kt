@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -91,6 +90,11 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
             }
         })
         getEtalaseList()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
     fun saveAddEditEtalase() {
@@ -192,11 +196,11 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     override fun showLoading() {
-        progress_bar.visibility = View.VISIBLE
+        progress_bar?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        progress_bar.visibility = View.GONE
+        progress_bar?.visibility = View.GONE
     }
 
 }

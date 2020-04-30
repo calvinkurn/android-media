@@ -9,6 +9,7 @@ import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import kotlinx.android.synthetic.main.product_card_flashsale_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
+import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.labelProductStatus
 
 internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productCardModel: ProductCardFlashSaleModel) {
     renderPdpCountView(productCardModel)
@@ -18,6 +19,7 @@ internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productC
     renderTextPrice(productCardModel)
     renderStockPercentage(productCardModel)
     renderStockLabel(productCardModel)
+    renderOutOfStockView(productCardModel)
 }
 
 private fun ProductCardFlashSaleView.renderPdpCountView(productCardModel: ProductCardFlashSaleModel) {
@@ -66,6 +68,18 @@ private fun ProductCardFlashSaleView.renderStockPercentage(productCardModel: Pro
 private fun ProductCardFlashSaleView.renderStockLabel(productCardModel: ProductCardFlashSaleModel) {
     tvLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
         it.text = productCardModel.stockBarLabel
+    }
+}
+
+private fun ProductCardFlashSaleView.renderOutOfStockView(productCardModel: ProductCardFlashSaleModel) {
+    if (productCardModel.isOutOfStock) {
+        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+        tvLabel.visibility = View.GONE
+        progressBar.visibility = View.GONE
+        outOfStockOverlay.visibility = View.VISIBLE
+    } else {
+        outOfStockOverlay.visibility = View.GONE
+        labelProductStatus?.hide()
     }
 }
 

@@ -45,7 +45,7 @@ data class DFConfig(
 
     @SerializedName("df_singleton_service")
     @Expose
-    private val useSingletonService: Boolean = false
+    val useSingletonService: Boolean = true
 
 ) {
     fun allowRunningServiceFromActivity(): Boolean {

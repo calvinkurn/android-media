@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,12 +14,15 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +31,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -44,6 +49,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -100,6 +106,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
     public static final String NO_SALIN = "No. Resi";
+    public static final String NAMA_TOKO = "Nama Toko";
     public static final String NO_SANIN_NEXT_LINE = "\n\nSalin No. Resi";
     public static final String BELI_LAGI = "Beli Lagi";
     public static final String KEY_TULIS_REVIEW = "give_review";
@@ -109,12 +116,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String STATUS_CODE_400 = "400";
     public static final String STATUS_CODE_11 = "11";
     private static final String CLICK_REQUEST_CANCEL = "click request cancel";
-    private static final String CLICK_TRACK= "click track";
+    private static final String CLICK_TRACK = "click track";
     private static final String CLICK_ASK_SELLER = "click ask seller";
     private static final String CLICK_ASK_SELLER_CANCELATION = "click ask seller - cancelation";
     private static final String CLICK_KEMBALI = "click kembali - cancelation";
-    private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
-    private static final String CLICK_VIEW_COMPLAIN ="click view complain";
+    private static final String CLICK_SUBMIT_CANCELATION = "click submit cancelation";
+    private static final String CLICK_VIEW_COMPLAIN = "click view complain";
     private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
     private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
 
@@ -133,6 +140,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView statusValue;
     private TextView conditionalInfoText;
     private TextView invoiceView;
+    private ImageView invoiceCopy;
     private TextView lihat;
     private TextView detailLabel;
     private TextView additionalText;
@@ -153,6 +161,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private NestedScrollView nestedScrollView;
     private RecyclerView itemsRecyclerView;
     private TextView productInformationTitle;
+    private TextView shopInformationTitle;
+    private RelativeLayout rlShopInfo;
+    private ImageView ivShopInfo;
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
     private CardView driverLayout, dropShipperLayout;
@@ -200,6 +211,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
+        invoiceCopy = view.findViewById(R.id.iv_copy_invoice);
         statusLihat = view.findViewById(R.id.lihat_status);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
@@ -216,6 +228,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         itemsRecyclerView = view.findViewById(R.id.rv_items);
         productInformationTitle = view.findViewById(R.id.product_info_label);
+        shopInformationTitle = view.findViewById(R.id.shop_info_label);
+        rlShopInfo = view.findViewById(R.id.rl_shop_info);
+        ivShopInfo = view.findViewById(R.id.iv_shop_info);
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
@@ -301,6 +316,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
+        invoiceCopy.setOnClickListener(view -> {
+            ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
+            clipboard.setPrimaryClip(clip);
+            Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+        });
         if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
@@ -323,52 +344,45 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setDetail(Detail detail) {
         detailLabel.setText(getContext().getResources().getString(R.string.detail_product));
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        if (!detail.label().equalsIgnoreCase(NO_SALIN)) {
-            doubleTextView.setTopText(detail.label());
-            doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
-            doubleTextView.setBottomText(detail.value());
-            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
-            doubleTextView.setBottomTextStyle("bold");
-            doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
-        } else {
-            doubleTextView.setTopText(detail.label());
-            String text = detail.value() + NO_SANIN_NEXT_LINE;
-            SpannableString spannableString = new SpannableString(text);
-            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
-            doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
-            int startIndexOfLink = text.indexOf("Salin");
-            spannableString.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        myClip = ClipData.newPlainText("text", detail.value());
-                        myClipboard.setPrimaryClip(myClip);
-                        ToasterNormal.showClose(getActivity(), getContext().getResources().getString(R.string.awb_number_copied));
-                    } catch (Exception e) {
-                        e.printStackTrace();
+        if (!detail.label().equalsIgnoreCase(NAMA_TOKO)) {
+            if (!detail.label().equalsIgnoreCase(NO_SALIN)) {
+                doubleTextView.setTopText(detail.label());
+                doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setBottomText(detail.value());
+                doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextStyle("bold");
+                doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
+            } else {
+                doubleTextView.setTopText(detail.label());
+                String text = detail.value() + NO_SANIN_NEXT_LINE;
+                SpannableString spannableString = new SpannableString(text);
+                doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
+                int startIndexOfLink = text.indexOf("Salin");
+                spannableString.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            myClip = ClipData.newPlainText("text", detail.value());
+                            myClipboard.setPrimaryClip(myClip);
+                            ToasterNormal.showClose(getActivity(), getContext().getResources().getString(R.string.awb_number_copied));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
 
-                @Override
-                public void updateDrawState(TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
-                }
-            }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            doubleTextView.setBottomText(spannableString);
-        }
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                        ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
+                    }
+                }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                doubleTextView.setBottomText(spannableString);
+            }
 
-        if (detail.label().equalsIgnoreCase("Nama Toko")) {
-            doubleTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String applink = ApplinkConst.SHOP_INFO.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
-                    RouteManager.route(getContext(), applink);
-                }
-            });
+            detailContent.addView(doubleTextView);
         }
-        detailContent.addView(doubleTextView);
     }
 
     @Override
@@ -393,7 +407,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
-        if (getContext()!= null && tickerInfos.size() > 0) {
+        if (getContext() != null && tickerInfos.size() > 0) {
             mTickerInfos.setTickerTitle(tickerInfos.get(0).getTitle());
             mTickerInfos.setHtmlDescription(tickerInfos.get(0).getNotes());
             mTickerInfos.setVisibility(View.VISIBLE);
@@ -576,20 +590,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order");
+                        presenter.onBuyAgainAllItems(" - order", status.status());
                     }
                 });
             } else {
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
                     textView.setOnClickListener(clickActionButton(actionButton));
                 }
-
-                if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
-                    orderListAnalytics.sendTulisReviewEventData(this.status.status());
-                }
             }
             actionBtnLayout.addView(textView);
-            if(!stickyButtonAdded){
+            if (!stickyButtonAdded) {
                 //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
                 TextView stickyTextView = new TextView(getContext());
                 stickyTextView.setText(actionButton.getLabel());
@@ -614,7 +624,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order");
+                            presenter.onBuyAgainAllItems(" - order", status.status());
                         }
                     });
                 } else {
@@ -643,7 +653,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         refreshHandler.startRefresh();
 //        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
-
 
     private View.OnClickListener clickActionButton(ActionButton actionButton) {
         if (!TextUtils.isEmpty(actionButton.getKey())) {
@@ -749,6 +758,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
+                    RouteManager.route(getContext(), actionButton.getUri());
+                } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
+                    orderListAnalytics.sendTulisReviewEventData(status.status());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
@@ -863,14 +875,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                try {
-                    orderListAnalytics.sendHelpEventData(status.status());
-                    startActivity(((UnifiedOrderListRouter) getActivity()
-                            .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(helpLink, ORDER_LIST_URL_ENCODING)));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                orderListAnalytics.sendHelpEventData(status.status());
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, helpLink);
             }
 
             @Override
@@ -935,13 +941,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private View.OnClickListener getActionButtonClickListener(final String uri) {
         return view -> {
             if (uri != null && !uri.equals("")) {
-                try {
-                    startActivity(((UnifiedOrderListRouter) getActivity()
-                            .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(uri, ORDER_LIST_URL_ENCODING)));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         };
     }
@@ -952,9 +952,27 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         secondaryActionBtn.setVisibility(bottomBtnVisibility);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void setItems(List<Items> items, boolean isTradeIn) {
-        productInformationTitle.setVisibility(View.VISIBLE);
+        rlShopInfo.setVisibility(View.VISIBLE);
+        String labelShop = shopInformationTitle.getContext().getResources().getString(R.string.label_shop_title) + " ";
+        int startLabelShop = labelShop.length();
+        String shopName = shopInfo.getShopName();
+
+        SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
+        completeLabelShop.append(labelShop);
+        completeLabelShop.append(shopName);
+        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        shopInformationTitle.setText(completeLabelShop);
+
+        ivShopInfo.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right));
+
+        rlShopInfo.setOnClickListener(v -> {
+            orderListAnalytics.sendClickShopName(status.status());
+            String applink = ApplinkConst.SHOP.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
+            RouteManager.route(getContext(), applink);
+        });
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
     }

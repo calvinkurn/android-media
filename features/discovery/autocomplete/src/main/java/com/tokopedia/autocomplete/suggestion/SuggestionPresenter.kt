@@ -2,12 +2,10 @@ package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.autocomplete.suggestion.SuggestionTrackerUseCase.Companion.URL_TRACKER
 import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToDoubleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -18,7 +16,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private var querySearch = ""
 
     @Inject
-    lateinit var getSuggestionUseCase: SuggestionUseCase
+    lateinit var getSuggestionUseCase: UseCase<SuggestionData>
 
     @Inject
     lateinit var suggestionTrackerUseCase: UseCase<Void?>
@@ -126,12 +124,17 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun trackSuggestionItemWithUrl(item: BaseSuggestionViewModel) {
         if (item.urlTracker.isNotEmpty()) {
-            val requestParam = RequestParams()
-            requestParam.putString(URL_TRACKER, item.urlTracker)
+            val requestParam = createSuggestionTrackerParams(item.urlTracker)
 
             suggestionTrackerUseCase.execute(requestParam, createEmptySubscriberForUrlTracker())
         }
     }
+
+    private fun createSuggestionTrackerParams(urlTracker:String) = SuggestionTrackerUseCase.getParams(
+            urlTracker,
+            userSession.deviceId,
+            userSession.userId
+    )
 
     private fun createEmptySubscriberForUrlTracker() = object : Subscriber<Void?>() {
         override fun onNext(t: Void?) {
@@ -153,13 +156,16 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 view?.trackEventClickKeyword(getKeywordEventLabelForTracking(item))
             }
             TYPE_CURATED -> {
-                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item))
+                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item), item.trackingCode)
             }
             TYPE_SHOP -> {
                 view?.trackEventClickShop(getShopEventLabelForTracking(item))
             }
             TYPE_PROFILE -> {
                 view?.trackEventClickProfile(getProfileEventLabelForTracking(item))
+            }
+            TYPE_RECENT_KEYWORD -> {
+                view?.trackEventClickRecentKeyword(item.title)
             }
         }
     }

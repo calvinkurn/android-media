@@ -16,19 +16,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
+import com.tokopedia.play.*
+import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
@@ -68,7 +70,17 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
+
     private var channelId = ""
+
+    @TrackingField
+    private var bufferTrackingModel = BufferTrackingModel(
+            isBuffering = false,
+            bufferCount = 0,
+            lastBufferMs = System.currentTimeMillis(),
+            shouldTrackNext = false
+    )
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -132,6 +144,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startPageMonitoring()
+        starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -183,6 +197,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        stopPrepareMonitoring()
+        startNetworkMonitoring()
         playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
@@ -192,6 +208,12 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onPause() {
         unregisterKeyboardListener(requireView())
         super.onPause()
+
+        bufferTrackingModel = bufferTrackingModel.copy(
+                isBuffering = false,
+                bufferCount = if (bufferTrackingModel.isBuffering) bufferTrackingModel.bufferCount - 1 else bufferTrackingModel.bufferCount,
+                shouldTrackNext = false
+        )
     }
 
     fun onNewChannelId(channelId: String?) {
@@ -272,6 +294,29 @@ class PlayFragment : BaseDaggerFragment() {
                 PlayAnalytics.errorState(channelId,
                         "$ERR_STATE_VIDEO: ${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
                         playViewModel.channelType)
+
+            } else if (it.state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
+                val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
+
+                bufferTrackingModel = BufferTrackingModel(
+                        isBuffering = true,
+                        bufferCount = nextBufferCount,
+                        lastBufferMs = System.currentTimeMillis(),
+                        shouldTrackNext = bufferTrackingModel.shouldTrackNext
+                )
+
+            } else if ((it.state is PlayVideoState.Playing || it.state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
+                if (bufferTrackingModel.shouldTrackNext) {
+                    PlayAnalytics.trackVideoBuffering(
+                            bufferCount = bufferTrackingModel.bufferCount,
+                            bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt()
+                    )
+                }
+
+                bufferTrackingModel = bufferTrackingModel.copy(
+                        isBuffering = false,
+                        shouldTrackNext = true
+                )
             }
         })
     }
@@ -367,6 +412,48 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     /**
+     * Performance Monitoring
+     */
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_TRACE_PREPARE_PAGE,
+                PLAY_TRACE_REQUEST_NETWORK,
+                PLAY_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        pageMonitoring.stopMonitoring()
+    }
+
+    /**
      * @return true means the onBackPressed() has been handled by this fragment
      */
     fun onBackPressed(): Boolean {
@@ -398,7 +485,7 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
-                if (!playViewModel.isAnyBottomSheetShown) this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.stateHelper.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }

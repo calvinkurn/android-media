@@ -1,12 +1,13 @@
 package com.tokopedia.similarsearch.viewmodel
 
-import com.tokopedia.similarsearch.*
-import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
-import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelOriginalProductWishlisted
-import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
+import com.tokopedia.similarsearch.SimilarSearchViewModel
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.similarsearch.testutils.shouldBe
 import com.tokopedia.similarsearch.testutils.stubExecute
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelOriginalProductWishlisted
+import com.tokopedia.usecase.coroutines.UseCase
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -18,7 +19,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
 
         Scenario("Degenerate cases") {
             val similarProductModel = getSimilarProductModelCommon()
-            val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+            val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
@@ -60,7 +61,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
 
             Given("view already created and has similar search data with original product wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelOriginalProductWishlisted)
                 similarSearchViewModel.onViewCreated()
             }
@@ -96,7 +97,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
 
             Given("view already created and has similar search data with original product wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -132,7 +133,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
 
             Given("view already created and has similar search data with original product wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -168,7 +169,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
 
             Given("view already created and has similar search data with original product wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelOriginalProductWishlisted)
                 similarSearchViewModel.onViewCreated()
             }

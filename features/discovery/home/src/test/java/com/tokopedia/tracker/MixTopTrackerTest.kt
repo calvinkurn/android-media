@@ -131,7 +131,8 @@ class MixTopTrackerTest : Spek({
                                     "position", "0",
                                     "dimension83", "bebas ongkir",
                                     "dimension84", "21370",
-                                    "list", "/ - p5 - dynamic channel top carousel - Testing Top - topads"
+                                    "list", "/ - p5 - dynamic channel top carousel - Testing Top - topads",
+                                    "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top - topads"
                             )
                         )
                 )
@@ -139,7 +140,7 @@ class MixTopTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopClick(listOf(MixTopTracking.mapGridToProductTracker(channel.grids.first(), channel.id, 0, channel.persoType, channel.categoryID)), channel.header.name, channel.id, positionOnWidgetHome.toString()))
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopClick(listOf(MixTopTracking.mapGridToProductTracker(channel.grids.first(), channel.id, 0, channel.persoType, channel.categoryID)), channel.header.name, channel.id, positionOnWidgetHome.toString(), channel.campaignCode))
                 Assert.assertEquals(result, true)
             }
         }
@@ -166,7 +167,8 @@ class MixTopTrackerTest : Spek({
                                 "position", "0",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel top carousel - Testing Top - topads"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top - topads",
+                                "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top - topads"
                         ),
                         DataLayer.mapOf(
                                 "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
@@ -178,7 +180,8 @@ class MixTopTrackerTest : Spek({
                                 "position", "1",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top",
+                                "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top"
                         ),
                         DataLayer.mapOf(
                                 "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
@@ -190,7 +193,8 @@ class MixTopTrackerTest : Spek({
                                 "position", "2",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top",
+                                "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top"
                         )
                     )
                 )

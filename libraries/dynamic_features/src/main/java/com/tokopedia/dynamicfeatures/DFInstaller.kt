@@ -18,6 +18,7 @@ import com.tokopedia.dynamicfeatures.utils.StorageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
+import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -62,6 +63,8 @@ object DFInstaller {
         fun onInstalling(state: SplitInstallSessionState)
         fun onFailed(errorString: String)
         fun getModuleNameView(): String
+        fun getDeeplink(): String
+        fun getFallbackUrl(): String
     }
 
     @JvmStatic
@@ -151,6 +154,8 @@ object DFInstaller {
         if (view != null && view.getModuleNameView() == moduleName) {
             view.onInstalled()
             tag = DOWNLOAD_MODE_PAGE
+            deeplink = view.getDeeplink()
+            fallbackUrl = view.getFallbackUrl()
         } else {
             tag = DOWNLOAD_MODE_BACKGROUND
         }
@@ -171,6 +176,8 @@ object DFInstaller {
             // to stop download other DFs in queue
             DFQueue.clear(context)
             tag = DOWNLOAD_MODE_PAGE
+            deeplink = view.getDeeplink()
+            fallbackUrl = view.getFallbackUrl()
         } else {
             tag = DOWNLOAD_MODE_BACKGROUND
         }
@@ -183,17 +190,33 @@ object DFInstaller {
         }
     }
 
+    @JvmStatic
+    fun installOnBackground(context: Context, moduleName: String, message: String) {
+        if (isInstalled(context, moduleName)) {
+            return
+        }
+        val moduleNameList = ArrayList<String>()
+        moduleNameList.add(moduleName)
+        installOnBackground(context, moduleNameList, message)
+    }
+
     /**
      * Non suspended function to trigger the schedule of the service.
      * The service will run suspend function of install on background.
      */
     @JvmStatic
-    fun installOnBackground(context: Context, moduleNames: List<String>, message: String) {
+    fun installOnBackground(context: Context, moduleNameList: List<String>, message: String) {
+        val filteredModuleNameList = ArrayList<String>()
+        for (moduleName in moduleNameList) {
+            if (!isInstalled(context, moduleName)) {
+                filteredModuleNameList.add(moduleName)
+            }
+        }
         val dfConfig = DFRemoteConfig.getConfig(context.applicationContext)
         if (dfConfig.downloadInBackground && !dfConfig.downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)) {
-            DFDownloader.startSchedule(context.applicationContext, moduleNames, true)
+            DFDownloader.startSchedule(context.applicationContext, filteredModuleNameList, true)
         } else {
-            startDeferredInstall(context, moduleNames, message)
+            startDeferredInstall(context, filteredModuleNameList, message)
         }
     }
 
@@ -212,7 +235,7 @@ object DFInstaller {
     private fun logDeferredStatus(context: Context, message: String, moduleNames: List<String>, errorCode: List<String> = emptyList()) {
         val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
         DFInstallerLogUtil.logStatus(context, TAG_DFM_DEFERRED, message, moduleNames.joinToString(),
-            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false)
+            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false)
     }
 
     /**

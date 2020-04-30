@@ -625,6 +625,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setIsOneWay(currentDashboardViewModel.isOneWay())
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .setLinkUrl(getArguments().getString(EXTRA_FROM_DEEPLINK_URL))
+                .setSearchRequestId("")
                 .build();
 
         startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(

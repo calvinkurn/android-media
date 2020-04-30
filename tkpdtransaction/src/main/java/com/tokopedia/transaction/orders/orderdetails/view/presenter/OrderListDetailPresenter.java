@@ -311,14 +311,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void onBuyAgainAllItems(String eventActionLabel) {
-        onBuyAgainItems(orderDetails.getItems(), eventActionLabel);
+    public void onBuyAgainAllItems(String eventActionLabel, String statusCode) {
+        onBuyAgainItems(orderDetails.getItems(), eventActionLabel, statusCode);
     }
 
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgainItems(List<Items> items, String eventActionLabel) {
+    public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(items));
@@ -355,7 +355,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel);
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel, statusCode);
                 }
 
             }

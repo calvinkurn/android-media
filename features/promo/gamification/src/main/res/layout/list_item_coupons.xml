@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/gami_rv_coupons_height">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.gamification.giftbox.presentation.views.CouponImageView
         android:id="@+id/appCompatImageView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_96"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="h,3:1"
         android:background="@color/colorGray"
-        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -56,6 +56,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
+            app:srcCompat="@drawable/gami_ic_transaction_icon"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_10"
@@ -64,8 +65,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.50"
-            tools:background="@color/colorPink" />
+            app:layout_constraintVertical_bias="0.50" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

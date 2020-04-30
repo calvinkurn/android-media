@@ -137,6 +137,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
+    private var activityShouldEnd = true
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
@@ -170,7 +171,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onResume() {
         super.onResume()
-        if (userSession.isLoggedIn && activity != null) {
+        if (userSession.isLoggedIn && activity != null && activityShouldEnd) {
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
         }
@@ -650,6 +651,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onSuccessLogin() {
         dismissLoadingLogin()
+        activityShouldEnd = true
 
         if(userSession.userId != fingerprintPreferenceHelper.getFingerprintUserId()){
             presenter.removeFingerprintData()
@@ -1115,6 +1117,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 }
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                     && resultCode == Activity.RESULT_OK) {
+                activityShouldEnd = false
                 if (data != null) {
                     data.extras?.let {
                         if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
@@ -1310,6 +1313,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     override fun goToFingerprintRegisterPage() {
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
+        activity?.finish()
     }
 
     private fun onErrorCheckStatusPin(): (Throwable) -> Unit {

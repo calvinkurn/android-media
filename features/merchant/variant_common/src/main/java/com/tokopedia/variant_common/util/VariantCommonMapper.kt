@@ -19,6 +19,16 @@ object VariantCommonMapper {
         })?.toMutableMap() ?: mutableMapOf()
     }
 
+    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariantCommon?, selectedOptionIds: List<Int>): MutableMap<String, Int> {
+        val hashMap: MutableMap<String, Int> = mutableMapOf()
+
+        variantData?.variant?.mapIndexed { index, variant ->
+            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: 0
+        }
+
+        return hashMap
+    }
+
     fun processVariant(variantData: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
         val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variant?.size ?: 0)
         if (variantData == null) return null

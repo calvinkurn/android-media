@@ -83,6 +83,7 @@ interface DynamicProductDetailListener {
     fun eventRecommendationImpression(recomItem: RecommendationItem, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
     fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool?
     fun getRecommendationCarouselSavedState(): SparseIntArray
+    fun sendTopAds(topAdsUrl: String)
 
     /**
      * ProductGeneralInfoViewHolder
@@ -111,4 +112,5 @@ interface DynamicProductDetailListener {
      * ProductNotifyMeViewHolder
      */
     fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
+    fun showAlertUpcomingEnded()
 }

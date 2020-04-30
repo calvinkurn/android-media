@@ -85,7 +85,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         if (feed.activity != ACTIVITY_TOPADS) {
                             mapCardRecommendation(posts, feed, templateData.template)
                         } else {
-                            mapTopadsShop(posts, feed, templateData.template)
+                            mapTopAdsShop(posts, feed, templateData.template)
                         }
                     }
                     TYPE_CARDPOST -> {
@@ -152,12 +152,18 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         }
     }
 
-    private fun mapTopadsShop(posts: MutableList<Visitable<*>>, feed: Feed,
+    private fun mapTopAdsShop(posts: MutableList<Visitable<*>>, feed: Feed,
                               template: Template) {
-        val trackingList = arrayListOf<TrackingRecommendationModel>()
-        if (feed.content.cardRecommendation.items.isNotEmpty()) {
-            feed.content.cardRecommendation.items.forEachIndexed { index, card ->
-                trackingList.add(TrackingRecommendationModel(
+        val trackingRecommendationList = arrayListOf<TrackingRecommendationModel>()
+        val trackingList = arrayListOf<TrackingViewModel>()
+         if (feed.content.cardRecommendation.items.isNotEmpty()) {
+
+             val topAdsShopList = feed.tracking.topads.filter {
+                 it.shop != null && it.shopClickUrl != null
+             } as MutableList
+
+             feed.content.cardRecommendation.items.forEachIndexed { index, card ->
+                trackingRecommendationList.add(TrackingRecommendationModel(
                         feed.type,
                         feed.activity,
                         feed.tracking.type,
@@ -168,21 +174,25 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         index,
                         feed.tracking.topads.getOrNull(index)?.id.toIntOrZero()
                 ))
-            }
-
-            val topadsShopList = feed.tracking.topads.filter {
-                it.shop != null && it.shopClickUrl != null
-            } as MutableList
-
-            feed.content.cardRecommendation.items.forEachIndexed { index, item ->
-                topadsShopList.get(index).isFavorit = item.header.followCta.isFollow
+                card.tracking.firstOrNull()?.let { tracking ->
+                    trackingList.add(TrackingViewModel(
+                            tracking.clickURL,
+                            tracking.viewURL,
+                            tracking.type,
+                            tracking.source,
+                            tracking.viewType,
+                            tracking.recomID
+                    ))
+                }
+                topAdsShopList[index].isFavorit = card.header.followCta.isFollow
             }
 
             posts.add(
                     TopadsShopViewModel(
                             feed.content.cardRecommendation.title,
-                            topadsShopList,
+                            topAdsShopList,
                             template,
+                            trackingRecommendationList,
                             trackingList
                     )
             )
@@ -490,7 +500,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun convertTempTrackingToList(tracking: Tracking): List<Tracking> {
-        val list:MutableList<Tracking> = ArrayList()
+        val list: MutableList<Tracking> = ArrayList()
         list.add(tracking)
         return list
     }

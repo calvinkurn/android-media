@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
+import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
@@ -61,7 +62,8 @@ open class WishlistViewModel @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase,
         private val bulkRemoveWishlistUseCase: BulkRemoveWishlistUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase
+        private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase,
+        private val sendTopAdsUseCase: SendTopAdsUseCase
 ) : ViewModel(), CoroutineScope{
 
     private val masterJob = SupervisorJob()
@@ -758,6 +760,10 @@ open class WishlistViewModel @Inject constructor(
             bulkSelectCountActionData.value = Event(listVisitableMarked.size)
             wishlistData.value = wishlistDataTemp.copy()
         }
+    }
+
+    fun sendTopAds(url: String){
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     private fun addWishlistForRecommendationItem(productId: String,

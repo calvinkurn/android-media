@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
-import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase

@@ -181,7 +181,8 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
-                              isBestPairing: Boolean, isCombineDone: Boolean) {
+                              isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
+        passDataViewModel.searchRequestId = requestId
         if (passDataViewModel.isOneWay) {
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
                 startActivityForResult(FlightBookingActivity
@@ -249,7 +250,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
             coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
             Handler().postDelayed({
                 if (coachMark.isAdded && coachMark.isVisible) {
-                    coachMark.dismiss()
+                    coachMark.dismissAllowingStateLoss()
                 }
                 coachMarkCache.setSearchCoachMarkIsShowed()
             }, DELAY_THREE_SECONDS)

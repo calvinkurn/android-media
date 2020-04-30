@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -52,21 +54,28 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
     companion object {
         val TAG: String = SaldoHoldInfoItem::class.java.simpleName
+        val SALDOHOLD_FINTECH_PLT = "saldoholdfintech_plt"
+        val SALDOHOLD_FINTECH_PLT_PREPARE_METRICS = "saldoholdfintech_plt_prepare_metrics"
+        val SALDOHOLD_FINTECH_PLT_NETWORK_METRICS = "saldoholdfintech_plt_network_metrics"
+        val SALDOHOLD_FINTECH_PLT_RENDER_METRICS = "saldoholdfintech_plt_render_metrics"
     }
+
+    private val performanceInterface by lazy { PageLoadTimePerformanceCallback(SALDOHOLD_FINTECH_PLT_PREPARE_METRICS, SALDOHOLD_FINTECH_PLT_NETWORK_METRICS, SALDOHOLD_FINTECH_PLT_RENDER_METRICS) as PageLoadTimePerformanceInterface }
 
     @Inject
     lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceInterface.startMonitoring()
+        performanceInterface.stopPreparePagePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.saldo_hold_info_tabview)
-        SaldoDetailsComponentInstance.getComponent(application).inject(this)
+        SaldoDetailsComponentInstance.getComponent(this).inject(this)
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
         viewPager = findViewById(R.id.view_pager_saldo_info_type)
         saldoInfoPresenter.attachView(this)
         clearFrgmentManger()
-        saldoInfoPresenter.getSaldoHoldInfo()
         top_bar_close_button.setOnClickListener {
             onBackPressed()
         }
@@ -74,22 +83,27 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         btn_bantuan.setOnClickListener {
             initBottomSheet()
         }
+        performanceInterface.stopPreparePagePerformanceMonitoring()
+        performanceInterface.startNetworkRequestPerformanceMonitoring()
+        saldoInfoPresenter.getSaldoHoldInfo()
     }
 
     private fun clearFrgmentManger() {
-         supportFragmentManager.fragments.forEach {
+        supportFragmentManager.fragments.forEach {
             supportFragmentManager.beginTransaction().remove(it).commit()
         }
 
     }
 
     override fun getComponent(): SaldoDetailsComponent {
-        return SaldoDetailsComponentInstance.getComponent(application)
+        return SaldoDetailsComponentInstance.getComponent(this)
     }
 
     override fun getNewFragment(): Fragment? = null
 
     override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
+        performanceInterface.stopNetworkRequestPerformanceMonitoring()
+        performanceInterface.startRenderPerformanceMonitoring()
         saldoHoldDepositHistory?.let {
 
             tv_valueTotalSaldoHold.text = it.totalFmt
@@ -100,12 +114,14 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
             sellerListSize?.let {
                 for (i in 0 until it) {
-                    sellerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListSeller?.get(i)?.amountFmt ?: "0" ).let { it1 -> sellerAmount.plus(it1) }
+                    sellerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListSeller?.get(i)?.amountFmt
+                            ?: "0").let { it1 -> sellerAmount.plus(it1) }
                 }
             }
             buyerListSize?.let {
                 for (i in 0 until it) {
-                    buyerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListBuyer?.get(i)?.amountFmt ?: "0" ).let { it1 -> buyerAmount.plus(it1) }
+                    buyerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListBuyer?.get(i)?.amountFmt
+                            ?: "0").let { it1 -> buyerAmount.plus(it1) }
                 }
             }
             isTickerShow = it.tickerMessageIsshow
@@ -122,7 +138,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         setUpViewPager(sellerListSize, buyerListSize)
         initViewPagerAdapter()
         showLayout()
-
+        performanceInterface.stopRenderPerformanceMonitoring()
     }
 
     private fun setUpViewPager(sellerListSize: Int?, buyerListSize: Int?) {
@@ -243,6 +259,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     }
 
     override fun showErrorView() {
+        performanceInterface.stopNetworkRequestPerformanceMonitoring()
         container_cl.visibility = View.GONE
         viewflipper_container.displayedChild = 1
         globalerror.setType(5)
@@ -262,6 +279,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     override fun onDestroy() {
         super.onDestroy()
         saldoInfoPresenter.detachView()
+        performanceInterface.stopMonitoring()
+
     }
 
 }

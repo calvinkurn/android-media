@@ -10,10 +10,11 @@
     app:cardCornerRadius="@dimen/dp_8"
     app:layout_constraintCircleRadius="@dimen/dp_8">
 
-    <ImageView
+    <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
         android:id="@+id/review_card_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:focusable="false"
+        android:layout_height="match_parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/review_card_content_container"
@@ -42,10 +43,10 @@
 
         </androidx.cardview.widget.CardView>
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
             android:id="@+id/img_review"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:maxHeight="@dimen/dp_72"
             android:maxWidth="@dimen/dp_72"
             android:adjustViewBounds="true"
@@ -93,8 +94,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>
 

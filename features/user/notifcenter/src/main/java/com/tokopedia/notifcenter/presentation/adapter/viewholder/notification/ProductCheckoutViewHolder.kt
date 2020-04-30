@@ -63,12 +63,11 @@ class ProductCheckoutViewHolder(
         if (element.products.size > SINGLE_PRODUCT) {
             cardContainer.hide()
             lstProduct.show()
-            listener.getAnalytic().trackProductListImpression(
+            listener.getAnalytic().trackMultiProductListImpression(
                     userId = element.userInfo.userId,
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
-            productStockTracker.productCardImpression(element, element.userInfo.userId)
             val factory = MultipleProductCardFactoryImpl(
                     sourceView = SourceMultipleProductView.NotificationCenter,
                     listener = listener
@@ -96,7 +95,6 @@ class ProductCheckoutViewHolder(
 
     override fun trackProduct(element: NotificationItemViewBean) {
         if (element.totalProduct == SINGLE_PRODUCT) {
-            productStockTracker.productCardClicked(element, element.userInfo.userId)
             listener.getAnalytic().trackSingleProductCheckoutCardClick(
                     notification = element
             )

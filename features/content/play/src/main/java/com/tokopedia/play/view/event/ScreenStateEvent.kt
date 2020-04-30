@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.event
 
+import android.view.View
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.ComponentEvent
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -28,6 +29,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
     data class SetProductSheet(val productResult: PlayResult<ProductSheetUiModel>) : ScreenStateEvent()
     data class SetVariantSheet(val variantResult: PlayResult<VariantSheetUiModel>) : ScreenStateEvent()
+    data class SetVariantToaster(val toasterType: Int, val message: String, val actionText: String?, val actionClickListener: View.OnClickListener?) : ScreenStateEvent()
     /**
      * Chat
      */

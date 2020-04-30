@@ -97,6 +97,7 @@
         android:layout_height="wrap_content"
         android:background="@color/grey_background"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/product_name"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"

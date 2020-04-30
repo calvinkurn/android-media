@@ -443,4 +443,12 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     override fun getModuleNameView(): String {
         return moduleName
     }
+
+    override fun getDeeplink(): String {
+        return deeplink
+    }
+
+    override fun getFallbackUrl(): String {
+        return fallbackUrl
+    }
 }

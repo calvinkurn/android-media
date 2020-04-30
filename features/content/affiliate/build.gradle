@@ -38,9 +38,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.twitterShare)
     implementation project(rootProject.ext.libraries.videoUploader)
     implementation project(rootProject.ext.libraries.videoRecorder)
-
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.global_error
@@ -55,6 +57,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.cameraView
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
@@ -79,7 +82,7 @@ dependencies {
 project.ext {
     artifactId = 'affiliate'
     groupId = 'com.tokopedia.content'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "affiliate-release"
 }
 

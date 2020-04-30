@@ -32,6 +32,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         countTalk
         rating
       }
+      defaultOngkirEstimation
       shopID
       alias
       minOrder
@@ -116,6 +117,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             isActive
             hideGimmick
             isCheckImei
+            isUsingOvo
           }
           stock {
             useStock

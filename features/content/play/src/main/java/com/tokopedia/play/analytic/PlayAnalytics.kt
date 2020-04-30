@@ -61,12 +61,12 @@ object PlayAnalytics {
         )
     }
 
-    fun clickPinnedMessage(channelId: String, message: String, channelType: PlayChannelType) {
+    fun clickPinnedMessage(channelId: String, message: String, appLink: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on admin pinned message",
-                "$channelId - $message - ${channelType.value}"
+                "$channelId - $message - $appLink - ${channelType.value}"
         )
     }
 
@@ -148,20 +148,20 @@ object PlayAnalytics {
                               listOfProducts: List<ProductLineUiModel>,
                               channelType: PlayChannelType) {
         if (listOfProducts.isNotEmpty())
-        trackingQueue.putEETracking(
-                EventModel(
-                        "productView",
-                        KEY_TRACK_GROUP_CHAT_ROOM,
-                        "view product",
-                        "$channelId - ${listOfProducts[0].id} - ${channelType.value} - product in bottom sheet"
-                ),
-                hashMapOf<String, Any>(
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "impressions" to convertProductsToListOfObject(listOfProducts)
-                        )
-                )
-        )
+            trackingQueue.putEETracking(
+                    EventModel(
+                            "productView",
+                            KEY_TRACK_GROUP_CHAT_ROOM,
+                            "view product",
+                            "$channelId - ${listOfProducts[0].id} - ${channelType.value} - product in bottom sheet"
+                    ),
+                    hashMapOf<String, Any>(
+                            "ecommerce" to hashMapOf(
+                                    "currencyCode" to "IDR",
+                                    "impressions" to convertProductsToListOfObject(listOfProducts)
+                            )
+                    )
+            )
     }
 
     fun clickProduct(trackingQueue: TrackingQueue,
@@ -186,6 +186,64 @@ object PlayAnalytics {
         )
     }
 
+    fun scrollMerchantVoucher(channelId: String, lastPositionViewed: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "scroll merchant voucher",
+                "$channelId - $lastPositionViewed"
+        )
+    }
+
+    fun clickActionProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType, productAction: ProductAction) {
+        when(productAction) {
+            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(channelId, productId, channelType)
+            ProductAction.Buy -> clickBeliButtonProductWithVariant(channelId, productId, channelType)
+        }
+    }
+
+    fun clickProductAction(trackingQueue: TrackingQueue,
+                           channelId: String,
+                           productLineUiModel: ProductLineUiModel,
+                           cartId: String,
+                           channelType: PlayChannelType,
+                           productAction: ProductAction,
+                           bottomInsetsType: BottomInsetsType) {
+        when(productAction) {
+            ProductAction.AddToCart ->
+                when (bottomInsetsType) {
+                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                }
+            ProductAction.Buy -> {
+                when (bottomInsetsType) {
+                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                }
+            }
+        }
+    }
+
+    fun clickSeeToasterAfterAtc(channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK lihat in message ticker",
+                "$channelId - ${channelType.value}"
+        )
+    }
+
+    fun trackVideoBuffering(
+            bufferCount: Int,
+            bufferDurationInSecond: Int
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_VIEW_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "buffer",
+                "$bufferCount - $bufferDurationInSecond"
+        )
+    }
 
     private fun convertProductsToListOfObject(listOfProducts: List<ProductLineUiModel>): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
@@ -211,22 +269,6 @@ object PlayAnalytics {
         )
     }
 
-    fun scrollMerchantVoucher(channelId: String, lastPositionViewed: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "scroll merchant voucher",
-                "$channelId - $lastPositionViewed"
-        )
-    }
-
-    fun clickActionProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType, productAction: ProductAction) {
-        when(productAction) {
-            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(channelId, productId, channelType)
-            ProductAction.Buy -> clickBeliButtonProductWithVariant(channelId, productId, channelType)
-        }
-    }
-
     private fun clickBeliButtonProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
@@ -243,28 +285,6 @@ object PlayAnalytics {
                 "$KEY_TRACK_CLICK atc in bottom sheet with varian",
                 "$channelId - $productId - ${channelType.value}"
         )
-    }
-
-    fun clickProductAction(trackingQueue: TrackingQueue,
-                           channelId: String,
-                           productLineUiModel: ProductLineUiModel,
-                           cartId: String,
-                           channelType: PlayChannelType,
-                           productAction: ProductAction,
-                           bottomInsetsType: BottomInsetsType) {
-        when(productAction) {
-            ProductAction.AddToCart ->
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-                }
-            ProductAction.Buy -> {
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-                }
-            }
-        }
     }
 
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
@@ -379,15 +399,6 @@ object PlayAnalytics {
                         "dimension45" to cartId,
                         "dimension40" to "/groupchat - $page"
                 )
-        )
-    }
-
-    fun clickSeeToasterAfterAtc(channelId: String, channelType: PlayChannelType) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK lihat in message ticker",
-                "$channelId - ${channelType.value}"
         )
     }
 }
