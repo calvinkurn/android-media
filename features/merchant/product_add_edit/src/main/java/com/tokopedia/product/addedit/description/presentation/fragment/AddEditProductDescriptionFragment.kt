@@ -390,7 +390,7 @@ class AddEditProductDescriptionFragment:
         return isItemTheSame
     }
 
-    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel, index: Int): Boolean {
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoDetailModel, index: Int): Boolean {
         var isItemTheSame = false
         adapter.data.getOrNull(index)?.apply {
             if (descriptionViewModel.fetchedUrl[index] == inputUrl) {
