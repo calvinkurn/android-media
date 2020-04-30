@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
@@ -184,6 +185,17 @@ object SellerReviewProductDetailMapper {
         }
 
         return Pair(thumbnailSlider, imageSlider)
+    }
+
+    fun mapToItemSortTopic(): List<SortItemUiModel> {
+        val data = ReviewSellerConstant.mapSortReviewProduct()
+        val list = arrayListOf<SortItemUiModel>()
+
+        data.map {
+            list.add(SortItemUiModel(title = it.value, isSelected = false))
+        }
+
+        return list
     }
 
 }

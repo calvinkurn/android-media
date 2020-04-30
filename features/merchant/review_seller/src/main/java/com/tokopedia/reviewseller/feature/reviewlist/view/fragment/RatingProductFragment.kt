@@ -224,6 +224,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
                     searchBarTextField.text.clear()
                     searchBarPlaceholder = getString(R.string.product_search)
+                    loadInitialData()
                 }
             }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
@@ -280,7 +281,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         if (reviewSellerAdapter.itemCount.isZero()) {
             if (throwable.message?.isNotEmpty() == true) {
                 globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
-            } else if(throwable.message?.isEmpty() == true) {
+            } else if (throwable.message?.isEmpty() == true) {
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
 
@@ -396,10 +397,13 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun initChipsSort(view: View) {
         chipsSort = view.findViewById(R.id.review_sort_chips)
         chipsSortText = getString(R.string.most_review)
-        chipsSort?.chip_text?.text = chipsSortText
-        chipsSort?.chip_right_icon?.setPadding(0, 0, chipsPaddingRight, 0)
-        chipsSort?.chip_text?.width = maxChipTextWidth
-        chipsSort?.chip_text?.ellipsize = TextUtils.TruncateAt.END
+        chipsSort?.apply {
+            centerText = true
+            chip_text.text = chipsSortText
+            chip_right_icon.setPadding(0, 0, chipsPaddingRight, 0)
+            chip_text.width = maxChipTextWidth
+            chip_text.ellipsize = TextUtils.TruncateAt.END
+        }
 
         val sortList: Array<String> = resources.getStringArray(R.array.sort_review_product_array)
 
@@ -422,10 +426,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun initChipsFilter(view: View) {
         chipsFilter = view.findViewById(R.id.review_period_filter_chips)
         chipsFilterText = getString(R.string.last_week)
-        chipsFilter?.chip_text?.text = chipsFilterText
-
-        chipsFilter?.chip_right_icon?.setPadding(0, 0, chipsPaddingRight, 0)
-        chipsFilter?.chip_text?.ellipsize = TextUtils.TruncateAt.END
+        chipsFilter?.apply {
+            chip_text.text = chipsFilterText
+            centerText = true
+            chip_right_icon.setPadding(0, 0, chipsPaddingRight, 0)
+            chip_text.ellipsize = TextUtils.TruncateAt.END
+        }
 
         val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
         val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
