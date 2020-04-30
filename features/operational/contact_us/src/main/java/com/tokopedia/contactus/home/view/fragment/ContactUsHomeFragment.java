@@ -4,8 +4,6 @@ package com.tokopedia.contactus.home.view.fragment;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
-import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,15 +14,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.common.analytics.ContactUsEventTracking;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.customview.ShadowTransformer;
@@ -43,8 +42,7 @@ import com.tokopedia.core.util.SessionHandler;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.ApplinkConst.*;
+
 import javax.inject.Inject;
 
 

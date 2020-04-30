@@ -12,7 +12,6 @@ import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -23,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -45,6 +45,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
@@ -373,8 +374,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         int SEGMENT_GROUPCHAT = 2;
         Intent intent;
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
-            intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
-                    context, linkSegment.get(1));
+            intent = RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, linkSegment.get(1));
             intent.putExtras(bundle);
             context.startActivity(intent);
         }
@@ -603,6 +603,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (context!= null) {
                     prepareOpenWebView(uriData);
                 }
+                if (e instanceof ResponseV4ErrorException) {
+                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                }
             }
 
             @Override
@@ -628,13 +631,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     ApplinkConst.SHOP_HOME,
                                     shopId);
                         } else {
-                            Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
+                            Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }
 
                         context.finish();
                     } else {
+                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
                         if (!GlobalConfig.DEBUG) {
                             Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         }
@@ -659,11 +663,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
+        String internalSource = uriData.getQueryParameter("search_ref");
         String source = uriData.getQueryParameter("ref");
         String productId = linkSegment.size() > 1 ? linkSegment.get(1) : "";
         Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_RECOMMENDATION);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_internal_ref), source == null ? "" : internalSource);
         intent.putExtras(bundle);
         intent.setData(uriData);
         context.startActivity(intent);
@@ -698,6 +704,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.startActivity(intent);
                     context.finish();
                 }
+                if (e instanceof ResponseV4ErrorException) {
+                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
+                            linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                }
             }
 
             @Override
@@ -717,6 +727,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 linkSegment.get(1),
                                 affiliateString));
                     } else {
+                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
+                                linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
                         if (!GlobalConfig.DEBUG) {
                             Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                             Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));

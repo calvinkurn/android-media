@@ -87,5 +87,9 @@
     <string name="discovery_home_action_error"> coba lagi</string>
     <string name="home_recommendation_empty_title">Tidak ada hasil</string>
     <string name="home_recommendation_empty_description">Produk tidak ada untuk kategori ini</string>
+    <string name="home_buy_again">Beli Langsung</string>
+
+    <string name="home_recharge_recommendation_button_label">Bayar Sekarang</string>
+    <string name="home_recharge_recommendation_title">Yuk, segara bayar tagihanmu!</string>
 
 </resources>

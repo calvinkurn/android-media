@@ -1,9 +1,9 @@
 package com.tokopedia.akamai_bot_lib
 
 import android.app.Application
-import android.os.Build
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import com.akamai.botman.CYFMonitor
-import com.tokopedia.config.GlobalConfig
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -13,7 +13,7 @@ val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\
 
 val map = ConcurrentHashMap<String, String>()
 
-fun initAkamaiBotManager(app:Application?){
+fun initAkamaiBotManager(app: Application?) {
     app?.let { CYFMonitor.initialize(it) }
 }
 
@@ -28,11 +28,11 @@ val registeredGqlFunctions = mapOf(
         "getPDPInfo" to "product_info",
         "shopInfoByID" to "shop_info",
         "followShop" to "followshop",
-        "validate_use_promo_revamp" to	"promorevamp",
-        "crackResult" to	"crackresult",
-        "gamiCrack" to	"gamicrack",
-        "add_to_cart_occ" to	"atcocc",
-        "one_click_checkout" to	"checkoutocc",
+        "validate_use_promo_revamp" to "promorevamp",
+        "crackResult" to "crackresult",
+        "gamiCrack" to "gamicrack",
+        "add_to_cart_occ" to "atcocc",
+        "one_click_checkout" to "checkoutocc",
         "add_to_cart_transactional" to "atc",
         "add_to_cart" to "atc"
 )
@@ -48,19 +48,73 @@ fun isAkamai(query: String): Boolean {
     return !isAkamai.isNullOrEmpty()
 }
 
-fun getMutation(input: String, match:String) : Boolean{
+fun getMutation(input: String, match: String): Boolean {
     val input2 = input.replace("\n", "")
     val input3 = input2.replace("\\s+", " ")
     val m: Matcher = getMutationPattern.matcher(input3)
     while (m.find()) {
-        if( m.group(0).equals(match, ignoreCase = true))
+        if (m.group(0).equals(match, ignoreCase = true))
             return true
     }
     return false
 }
 
-fun getAny(input:String) : MutableList<String>{
-    if(map[input]?.isEmpty() == true) {
+const val KEY_AKAMAI_EXPIRED_TIME = "KEY_AKAMAI_EXPIRED_TIME"
+const val KEY_VALUE_AKAMAI_EXPIRED_TIME = "KEY_AKAMAI_EXPIRED_TIME"
+const val KEY_REAL_VALUE_AKAMAI = "KEY_REAL_VALUE_AKAMAI_EXPIRED_TIME"
+
+const val sdValidTime = 10000
+
+fun Context.setExpiredTime(expiredTime: Long) {
+    val sharedPreferences = this.getSharedPreferences(
+            KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+    ).edit()
+
+    sharedPreferences.putLong(KEY_VALUE_AKAMAI_EXPIRED_TIME, expiredTime)
+    sharedPreferences.apply()
+}
+
+fun Context.getExpiredTime(): Long {
+    return this.getSharedPreferences(
+            KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+    ).getLong(KEY_VALUE_AKAMAI_EXPIRED_TIME, -1L)
+}
+
+fun Context.setAkamaiValue(realAkamaiValue: String) {
+    val sharedPreferences = this.getSharedPreferences(
+            KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+    ).edit()
+    sharedPreferences.putString(KEY_REAL_VALUE_AKAMAI, realAkamaiValue)
+    sharedPreferences.apply()
+}
+
+fun Context.getAkamaiValue(): String {
+    return this.getSharedPreferences(
+            KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
+    ).getString(KEY_REAL_VALUE_AKAMAI, "") ?: ""
+}
+
+
+fun <E> setExpire(
+        currentTime: () -> Long,
+        alreadyNotedTime: () -> Long,
+        saveTime: (param: Long) -> Unit,
+        setValue: () -> Unit,
+        getValue: () -> E): E {
+    val curr_time = currentTime.invoke()
+    val alreadyNotedTime1 = alreadyNotedTime.invoke()
+
+    if ((curr_time - alreadyNotedTime1) >= sdValidTime) {
+        saveTime(curr_time)
+        setValue()
+        return getValue.invoke()
+    } else {
+        return getValue.invoke()
+    }
+}
+
+fun getAny(input: String): MutableList<String> {
+    if (map[input]?.isEmpty() == true) {
         return map[input]?.let { mutableListOf(it) } ?: mutableListOf()
     }
 
@@ -74,3 +128,4 @@ fun getAny(input:String) : MutableList<String>{
 
     return any
 }
+

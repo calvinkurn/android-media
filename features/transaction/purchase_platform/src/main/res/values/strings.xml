@@ -370,4 +370,5 @@
     <string name="lbl_osp_secondary_header">Pengiriman dan pembayaran</string>
 
     <string name="default_osp_error_message">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
+    <string name="message_error_checkout_empty">Barangmu lagi nggak bisa dibeli. Silakan balik ke keranjang untuk cek belanjaanmu.</string>
 </resources>

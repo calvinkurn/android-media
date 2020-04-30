@@ -395,6 +395,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_KELUAR_HALAMAN = "click keluar halaman";
         String CLICK_RESET_PROMO = "click reset promo";
         String CLICK_BELI_TANPA_PROMO = "click beli tanpa promo";
+        String VIEW_PROMO_MESSAGE = "view promo message";
 
         //OCC
         String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
@@ -414,7 +415,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BACK_ARROW_IN_EDIT_PREFERENCE = "click back in edit preference";
         String CLICK_BACK_ARROW_IN_PILIH_ALAMAT = "click back in pilih alamat";
         String CLICK_BACK_ARROW_IN_PILIH_DURASI = "click back in pilih durasi";
-        String CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode pembayaran";
+        String CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode bayar";
+        String CLICK_SIMPAN_ON_SUMMARY_PURCHASE_SETTING = "click simpan on summary purchase setting";
 
         String EDIT_QUANTITY_INCRESE = "product - click button plus";
         String EDIT_QUANTITY_DECREASE = "product - click button minus";
@@ -425,7 +427,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
         String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";
         String CLICK_PILIH_PEMBAYARAN = "click pilih pembayaran";
-        String VIEW_ERROR_ON_OSP = "view error messagge";
+        String VIEW_ERROR_ON_OSP = "view error message";
         String CLICK_ADD_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
         String USER_CHANGES_PROFILE = "preference - click ganti pilihan on order summary";
         String USER_SETS_FIRST_PREFERENCE = "preference - click atur preferensi for new buyer";
@@ -436,8 +438,8 @@ public interface ConstantTransactionAnalytics {
         String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP  = "preference -  click gunakan pilihan ini from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
         String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
-        String CLICK_PROMO_SECTION_APPLIED_OSP = "promo - click promo section with promo applied";
-        String CLICK_PROMO_SECTION_NOT_APPLIED_OSP = "promo - click promo section with promo not applied";
+        String CLICK_PROMO_SECTION_APPLIED_OSP = "click promo section with promo applied";
+        String CLICK_PROMO_SECTION_NOT_APPLIED_OSP = "click promo section with promo not applied";
         String CLICK_LANJUT_BAYAR_PROMO_ERROR_OSP = "promo - click lanjut bayar on bottom sheet promo error";
         String CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP = "promo - click pilih promo lain on bottom sheet promo error";
 
@@ -505,6 +507,7 @@ public interface ConstantTransactionAnalytics {
         String PHONE_VERIFICATION_MESSAGE = "phone verification message";
 
         String NEW_OCC = "new occ";
+        String NEW_BUYER = "new buyer";
         String SHOP_CLOSED = "shop closed";
         String EMPTY_STOCK = "empty_stock";
     }

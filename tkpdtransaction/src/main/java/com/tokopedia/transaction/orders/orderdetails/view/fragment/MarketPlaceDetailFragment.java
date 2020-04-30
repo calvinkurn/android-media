@@ -140,6 +140,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView statusValue;
     private TextView conditionalInfoText;
     private TextView invoiceView;
+    private ImageView invoiceCopy;
     private TextView lihat;
     private TextView detailLabel;
     private TextView additionalText;
@@ -210,6 +211,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
+        invoiceCopy = view.findViewById(R.id.iv_copy_invoice);
         statusLihat = view.findViewById(R.id.lihat_status);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
@@ -314,6 +316,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
+        invoiceCopy.setOnClickListener(view -> {
+            ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
+            clipboard.setPrimaryClip(clip);
+            Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+        });
         if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
@@ -582,7 +590,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order");
+                        presenter.onBuyAgainAllItems(" - order", status.status());
                     }
                 });
             } else {
@@ -616,7 +624,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order");
+                            presenter.onBuyAgainAllItems(" - order", status.status());
                         }
                     });
                 } else {

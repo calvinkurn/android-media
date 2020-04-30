@@ -121,8 +121,6 @@ public interface TkpdCoreRouter {
 
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle);
 
-    Intent getInboxMessageIntent(Context mContext);
-
     void onAppsFlyerInit();
 
     SessionHandler legacySessionHandler();

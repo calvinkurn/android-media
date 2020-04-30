@@ -74,7 +74,7 @@ private fun ProductCardFlashSaleModel.getPromoSectionHeight(context: Context): I
     var labelPriceMarginBottom = 0
     var labelPriceHeight = 0
 
-    if (discountPercentage.isNotEmpty()) {
+    if (discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()) {
         labelDiscountMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_discount_margin_bottom)
         labelDiscountHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_label_discount_height)
     }

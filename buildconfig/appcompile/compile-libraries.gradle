@@ -32,6 +32,7 @@ include 'libraries:locationmanager'
 include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
+include 'libraries:iris_session'
 //include 'libraries:iris_no_op'
 include "libraries:mediauploader"
 include "libraries:oms"
@@ -60,6 +61,7 @@ include "libraries:linker"
 include "libraries:webview"
 include "libraries:imagepreviewslider"
 include "libraries:weaver"
+include "libraries:tokofix"
 include "libraries:utils"
 include "libraries:pre_release_inspector"
 include "libraries:pre_release_inspector_no_op"

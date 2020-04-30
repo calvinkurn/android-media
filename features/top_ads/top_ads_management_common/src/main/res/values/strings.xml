@@ -5,4 +5,11 @@
     <string name="claim_expired">Batas klaim</string>
     <string name="bonus_expired">Bonus %1$s</string>
     <string name="template_claim_n_days">%1$d hari lagi</string>
+    <string name="lihat_performa_iklan">Lihat Performa Iklan</string>
+    <string name="ilustration">Ilustration</string>
+    <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
+    <string name="yuk_isi_kredit_sekarang">Yuk, isi kredit sekarang</string>
+    <string name="yay_produkmu_berhasil_diiklankan">Yay, produkmu\nberhasil diiklankan!</string>
+    <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
+    <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
 </resources>

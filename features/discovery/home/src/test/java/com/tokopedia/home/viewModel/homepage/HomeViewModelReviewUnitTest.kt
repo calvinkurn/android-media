@@ -150,7 +150,7 @@ class HomeViewModelReviewUnitTest : Spek({
             }
 
             When("Close widget pressed"){
-                homeViewModel.removeSuggestedReview()
+                homeViewModel.onRemoveSuggestedReview()
             }
 
             Then("Expect Review widget will show on user screen") {
