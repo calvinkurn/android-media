@@ -8,7 +8,8 @@ data class TrackingAttributionModel(
         val categoryId: String = "",
         val persoType: String = "",
         val campaignCode: String = "",
-        val homeAttribution: String = ""
+        val homeAttribution: String = "",
+        val campaignId: String = ""
 ) {
     val promoName: String = ""
 }

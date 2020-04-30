@@ -44,6 +44,9 @@ data class DynamicHomeChannelCommon(
             @Expose
             @SerializedName("type")
             val type: String = "",
+            @Expose
+            @SerializedName("campaignID")
+            val campaignID: String = "",
             @SerializedName("showPromoBadge")
             val showPromoBadge: Boolean = false,
             @Expose

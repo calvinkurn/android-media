@@ -51,7 +51,7 @@ class OfficialHomeMapper {
             )
         }
 
-        fun mappingDynamicChannel(dynamicChannel: DynamicHomeChannelCommon, adapter: OfficialHomeAdapter?) {
+        fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
             if (dynamicChannel.channels.isNotEmpty()) {
                 val availableScreens = setOf(
                         DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
@@ -71,7 +71,7 @@ class OfficialHomeMapper {
                         views.add(DynamicChannelViewModel(channel))
                     } else if (availableLegoBannerScreens.contains(channel.layout)) {
                         views.add(DynamicLegoBannerViewModel(
-                                DynamicChannelComponentMapper.mapChannelToComponent(channel, position)
+                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(channel, position)
                         ))
                     }
                 }

@@ -15,6 +15,7 @@ object DynamicChannelQueryCommon{
               name
               layout
               type
+              campaignID
               showPromoBadge
               categoryID
               perso_type
