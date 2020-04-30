@@ -1105,11 +1105,20 @@ final class ProductListPresenter
         String responseCode = productViewModel.getResponseCode();
 
         boolean isResponseCodeForRelatedKeyword = generalSearchTrackingRelatedKeywordResponseCodeList.contains(responseCode);
-        boolean relatedKeywordIsNotEmpty =
-                productViewModel.getRelatedViewModel() != null
-                && !productViewModel.getRelatedViewModel().getRelatedKeyword().isEmpty();
+        boolean canConstructAlternativeKeywordFromRelated = canConstructAlternativeKeywordFromRelated(productViewModel);
 
-        return isResponseCodeForRelatedKeyword && relatedKeywordIsNotEmpty;
+        return isResponseCodeForRelatedKeyword && canConstructAlternativeKeywordFromRelated;
+    }
+
+    private boolean canConstructAlternativeKeywordFromRelated(ProductViewModel productViewModel) {
+        RelatedViewModel relatedViewModel = productViewModel.getRelatedViewModel();
+
+        if (relatedViewModel == null) return false;
+
+        String relatedKeyword = relatedViewModel.getRelatedKeyword();
+        List<BroadMatchViewModel> broadMatchViewModelList = relatedViewModel.getBroadMatchViewModelList();
+
+        return !relatedKeyword.isEmpty() || !broadMatchViewModelList.isEmpty();
     }
 
     private String getAlternativeKeywordFromRelated(RelatedViewModel relatedViewModel) {
@@ -1119,8 +1128,12 @@ final class ProductListPresenter
             broadMatchKeywords = joinToString(relatedViewModel.getBroadMatchViewModelList(), ",", BroadMatchViewModel::getKeyword);
         }
 
+        boolean shouldAppendComma =
+                !relatedViewModel.getRelatedKeyword().isEmpty()
+                && !broadMatchKeywords.isEmpty();
+
         return relatedViewModel.getRelatedKeyword()
-                + (!broadMatchKeywords.isEmpty() ? "," : "")
+                + (shouldAppendComma ? "," : "")
                 + broadMatchKeywords;
     }
 

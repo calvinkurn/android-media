@@ -19,6 +19,7 @@ private const val multipleCategories = "${generalSearchTrackingDirectory}multipl
 private const val noResult = "${generalSearchTrackingDirectory}no-result.json"
 private const val responseCode3RelatedSearch = "${generalSearchTrackingDirectory}response-code-3-related-search.json"
 private const val responseCode4RelatedSearch = "${generalSearchTrackingDirectory}response-code-4-related-search.json"
+private const val responseCode4NoRelatedKeyword = "${generalSearchTrackingDirectory}response-code-4-no-related-keyword.json"
 private const val responseCode5RelatedSearch = "${generalSearchTrackingDirectory}response-code-5-related-search.json"
 private const val responseCode6RelatedSearch = "${generalSearchTrackingDirectory}response-code-6-related-search.json"
 private const val responseCode7SuggestedSearch = "${generalSearchTrackingDirectory}response-code-7-suggested-search.json"
@@ -199,6 +200,27 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
                         "${searchProductModel.searchProduct.related.relatedKeyword}," +
+                        searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General search tracking with previous keyword, response code 4, without related keyword`() {
+        val searchProductModel = responseCode4NoRelatedKeyword.jsonToObject<SearchProductModel>()
+        val previousKeyword = "xiaomi"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        searchProductModel.searchProduct.query,
+                        searchProductModel.searchProduct.keywordProcess,
+                        searchProductModel.searchProduct.responseCode
+                ),
+                isResultFound = true,
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
+                relatedKeyword = "$previousKeyword - " +
                         searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
         )
 

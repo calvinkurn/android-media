@@ -1687,8 +1687,7 @@ public class ProductListFragment
     public void onBroadMatchItemClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
         trackEventClickBroadMatchItem(broadMatchItemViewModel);
 
-        String applink = modifyApplinkToSearchResult(broadMatchItemViewModel.getApplink());
-        redirectionStartActivity(applink, broadMatchItemViewModel.getUrl());
+        redirectionStartActivity(broadMatchItemViewModel.getApplink(), broadMatchItemViewModel.getUrl());
     }
 
     private void trackEventClickBroadMatchItem(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
@@ -1702,7 +1701,9 @@ public class ProductListFragment
     public void onBroadMatchSeeMoreClicked(@NotNull BroadMatchViewModel broadMatchViewModel) {
         SearchTracking.trackEventClickBroadMatchSeeMore(getQueryKey(), broadMatchViewModel.getKeyword());
 
-        String applink = modifyApplinkToSearchResult(broadMatchViewModel.getApplink());
+        String applink = (broadMatchViewModel.getApplink().startsWith(ApplinkConst.DISCOVERY_SEARCH)) ?
+            modifyApplinkToSearchResult(broadMatchViewModel.getApplink()) : broadMatchViewModel.getApplink();
+
         redirectionStartActivity(applink, broadMatchViewModel.getUrl());
     }
 
