@@ -17,14 +17,11 @@ class TopicListAdapter(private val topicSortFilterListener: TopicSortFilterListe
         this.sortFilterList = sortFilterList.toMutableList()
     }
 
-    fun updateTopicFilter(position: Int, updatedState: Boolean) {
-        sortFilterList?.mapIndexed { index, sortItemUiModel ->
-            if(index == position) {
-                if(!sortItemUiModel.isSelected) {
-                    sortItemUiModel.isSelected = updatedState
-                } else {
-                    sortItemUiModel.isSelected = !updatedState
-                }
+    fun updateTopicFilter(updatedState: Boolean, position: Int) {
+        val isSelected = sortFilterList?.getOrNull(position)
+        sortFilterList?.map { sortItemUiModel ->
+            if(isSelected == sortItemUiModel) {
+                sortItemUiModel.isSelected = !updatedState
             }
         }
 
@@ -57,7 +54,7 @@ class TopicListAdapter(private val topicSortFilterListener: TopicSortFilterListe
                         ChipsUnify.TYPE_NORMAL
                     }
                     setOnClickListener {
-                        topicSortFilterListener.onTopicClicked(data, adapterPosition)
+                        topicSortFilterListener.onTopicClicked(chipType.orEmpty(), adapterPosition)
                     }
                 }
             }
