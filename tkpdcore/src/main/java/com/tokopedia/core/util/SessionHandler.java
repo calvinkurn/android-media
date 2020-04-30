@@ -20,7 +20,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
@@ -38,7 +37,6 @@ public class SessionHandler {
     public static final String DEFAULT_EMPTY_SHOP_ID = "0";
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
-    private static final String SAVE_REAL = "SAVE_REAL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     private static final String PHONE_NUMBER = "PHONE_NUMBER";
     private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
@@ -476,22 +474,6 @@ public class SessionHandler {
         //return status;
     }
 
-    public void Logout(Context context) {
-        if (context != null && context instanceof AppCompatActivity && context instanceof onLogoutListener) {
-            if (((AppCompatActivity) context).getFragmentManager().findFragmentByTag(DialogLogoutFragment.FRAGMENT_TAG) == null) {
-                DialogLogoutFragment dialogLogoutFragment = new DialogLogoutFragment();
-                dialogLogoutFragment.show(((AppCompatActivity) context).getFragmentManager(), DialogLogoutFragment.FRAGMENT_TAG);
-                if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier("");
-            }
-        }
-
-        //Set logout to Branch.io sdk,
-        LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGOUT_VAL,
-                        null)
-        );
-    }
-
     private void clearUserData() {
         clearUserData(context);
     }
@@ -622,10 +604,6 @@ public class SessionHandler {
         Editor editor = sharedPrefs.edit();
         editor.putString("temp_login_id", u_id);
         editor.apply();
-    }
-
-    public interface onLogoutListener {
-        void onLogout(Boolean success);
     }
 
     public void setHasPassword(boolean hasPassword) {

@@ -240,7 +240,7 @@ class PartialButtonActionView private constructor(val view: View,
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         with(view) {
-            if (show) {
+            if (show && !isWarehouseProduct) {
                 showByMe = true
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()

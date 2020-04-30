@@ -24,7 +24,6 @@ public class ReputationLevelUtils {
     private static final int MEDAL_GOLD = R.drawable.ic_icon_repsis_medal_gold;
     private static final int MEDAL_DIAMOND = R.drawable.ic_icon_repsis_medal_diamond;
     private static final int SIZE = R.dimen.dp_20;
-    private static final int MARGIN = R.integer.medal_margin;
 
     public static final int MEDAL_TYPE_0 = 0;
     public static final int MEDAL_TYPE_1 = 1;

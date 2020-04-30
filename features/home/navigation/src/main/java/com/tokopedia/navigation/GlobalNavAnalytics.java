@@ -3,6 +3,8 @@ package com.tokopedia.navigation;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -111,7 +113,7 @@ public class GlobalNavAnalytics {
     }
 
     public void trackFirstTime(Context context) {
-        ((GlobalNavRouter) context.getApplicationContext()).sendAnalyticsFirstTime();
+        TrackingUtils.activityBasedAFEvent(context, HomeRouter.IDENTIFIER_HOME_ACTIVITY);
         LocalCacheHandler cache = new LocalCacheHandler(context, GlobalNavConstant.Cache.KEY_FIRST_TIME);
         cache.putBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, true);
         cache.applyEditor();

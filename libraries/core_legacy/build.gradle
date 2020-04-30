@@ -44,7 +44,9 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

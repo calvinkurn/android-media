@@ -351,6 +351,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
@@ -397,6 +398,7 @@ dependencies {
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
