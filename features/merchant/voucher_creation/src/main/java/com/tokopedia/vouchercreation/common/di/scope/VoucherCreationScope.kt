@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.di.scope
+package com.tokopedia.vouchercreation.common.di.scope
 
 import javax.inject.Scope
 

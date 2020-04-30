@@ -23,7 +23,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAn
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
-import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import javax.inject.Inject
 

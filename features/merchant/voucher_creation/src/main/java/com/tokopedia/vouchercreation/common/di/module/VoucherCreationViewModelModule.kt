@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.di.module
+package com.tokopedia.vouchercreation.common.di.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
-import com.tokopedia.vouchercreation.di.scope.VoucherCreationScope
+import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

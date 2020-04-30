@@ -8,5 +8,10 @@
     <item name="mvc_create_voucher_display_page_control_vertical_bias" format="float" type="integer">0.413</item>
     <item name="mvc_create_icon_image_width_percent" format="float" type="integer">0.1</item>
     <item name="mvc_create_voucher_tips_item_width_percent" format="float" type="integer">0.85</item>
+    <item name="mvc_create_voucher_type_budget_ticker_icon_width_percent" format="float" type="integer">0.03</item>
+    <item name="mvc_create_voucher_type_budget_ticker_tips_vertical_bias" format="float" type="integer">0.36</item>
+    <item name="mvc_create_voucher_type_budget_ticker_tips_horizontal_bias" format="float" type="integer">0.065</item>
+    <item name="mvc_create_voucher_type_budget_ticker_desc_width_percent" format="float" type="integer">0.73</item>
+    <item name="mvc_create_voucher_type_budget_ticker_close_vertical_bias" format="float" type="integer">0.31</item>
 
 </resources>

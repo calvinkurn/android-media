@@ -10,4 +10,5 @@
     <color name="mvc_bg_color_grey">#F8FAFC</color>
     <color name="mvc_color_grey">#E5E7E9</color>
     <color name="mvc_dot_color_grey">#6C727C</color>
+    <color name="mvc_tips_color_yellow">#FFC400</color>
 </resources>
