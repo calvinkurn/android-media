@@ -33,20 +33,21 @@ internal open class ProductListPresenterTestFixtures {
         every { it.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { secondArg() }
     }
     protected val advertisingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
-    protected val productListPresenter = ProductListPresenter(
-            searchProductFirstPageUseCase,
-            searchProductLoadMoreUseCase,
-            recommendationUseCase,
-            seamlessLoginUseCase,
-            userSession,
-            advertisingLocalCache,
-            getDynamicFilterUseCase,
-            searchLocalCacheHandler,
-            remoteConfig
-    )
+    lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
+        productListPresenter = ProductListPresenter(
+                searchProductFirstPageUseCase,
+                searchProductLoadMoreUseCase,
+                recommendationUseCase,
+                seamlessLoginUseCase,
+                userSession,
+                advertisingLocalCache,
+                getDynamicFilterUseCase,
+                searchLocalCacheHandler,
+                remoteConfig
+        )
         productListPresenter.attachView(productListView)
 
         verify {

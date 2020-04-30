@@ -84,27 +84,9 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         confirmVerified(productListView)
     }
 
-    protected val remoteConfigTrackingViewPortDisabled = mockk<RemoteConfig>().also {
-        every { it.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true) } answers { secondArg() }
-        every { it.getBoolean(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false) } answers { secondArg() }
-        every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true) } answers { secondArg() }
-        every { it.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { false }
-    }
-    protected val productListPresenterTrackingViewPortDisabled = ProductListPresenter(
-            searchProductFirstPageUseCase,
-            searchProductLoadMoreUseCase,
-            recommendationUseCase,
-            seamlessLoginUseCase,
-            userSession,
-            advertisingLocalCache,
-            getDynamicFilterUseCase,
-            searchLocalCacheHandler,
-            remoteConfigTrackingViewPortDisabled
-    )
-
     @Test
     fun `Handle onProductImpressed for non Top Ads Product when Tracking View Port Disabled`() {
-        setUpTrackingViewPortDisabled()
+        disableTrackingViewPortInRemoteConfig()
         val productItemViewModel = ProductItemViewModel().also {
             it.productID = "12345"
             it.productName = "Hp Samsung"
@@ -119,19 +101,33 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Then verify interaction for product impression is not called`(productItemViewModel)
     }
 
-    private fun setUpTrackingViewPortDisabled() {
-        productListPresenterTrackingViewPortDisabled.attachView(productListView)
-        verify {
-            productListView.abTestRemoteConfig
+    private fun disableTrackingViewPortInRemoteConfig() {
+        val remoteConfigTrackingViewPortDisabled = mockk<RemoteConfig>().also {
+            every { it.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true) } answers { secondArg() }
+            every { it.getBoolean(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false) } answers { secondArg() }
+            every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true) } answers { secondArg() }
+            every { it.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { false }
         }
+
+        productListPresenter = ProductListPresenter(
+                searchProductFirstPageUseCase,
+                searchProductLoadMoreUseCase,
+                recommendationUseCase,
+                seamlessLoginUseCase,
+                userSession,
+                advertisingLocalCache,
+                getDynamicFilterUseCase,
+                searchLocalCacheHandler,
+                remoteConfigTrackingViewPortDisabled
+        )
     }
 
     private fun `When handle product impressed for disabled tracking view port`(productItemViewModel: ProductItemViewModel?, position: Int) {
-        productListPresenterTrackingViewPortDisabled.onProductImpressed(productItemViewModel, position)
+        productListPresenter.onProductImpressed(productItemViewModel, position)
     }
 
     private fun `Then verify enableTrackingViewPort is False`() {
-        assert(!productListPresenterTrackingViewPortDisabled.isTrackingViewPortEnabled)
+        assert(!productListPresenter.isTrackingViewPortEnabled)
     }
 
     private fun `Then verify interaction for product impression is not called`(productItemViewModel: ProductItemViewModel) {
