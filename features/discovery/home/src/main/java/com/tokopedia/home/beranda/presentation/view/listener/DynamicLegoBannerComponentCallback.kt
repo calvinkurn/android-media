@@ -72,4 +72,16 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
                 if (channelGrid.applink.isNotEmpty())
                     channelGrid.applink else channelGrid.url)
     }
+
+    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
 }
