@@ -199,7 +199,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         if (!isChangingOrientation) playViewModel.resumeWithChannelId(channelId)
         stopPrepareMonitoring()
         startNetworkMonitoring()
-        playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
