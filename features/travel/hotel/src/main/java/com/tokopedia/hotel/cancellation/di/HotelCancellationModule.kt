@@ -10,7 +10,8 @@ import dagger.Provides
  */
 
 @Module
-class HotelCancellationModule {
+@HotelCancellationScope
+abstract class HotelCancellationModule {
 
     @HotelCancellationScope
     @Provides

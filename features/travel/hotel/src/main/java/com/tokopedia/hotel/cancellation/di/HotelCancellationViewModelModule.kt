@@ -19,11 +19,11 @@ abstract class HotelCancellationViewModelModule  {
 
     @HotelCancellationScope
     @Binds
-    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(HotelCancellationViewModel::class)
-    abstract fun hotelCancellationViewModel(viewModel: HotelCancellationViewModel): ViewModel
+    internal abstract fun hotelCancellationViewModel(viewModel: HotelCancellationViewModel): ViewModel
 
 }
