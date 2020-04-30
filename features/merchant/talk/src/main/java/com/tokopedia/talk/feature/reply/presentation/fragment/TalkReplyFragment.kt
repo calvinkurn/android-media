@@ -352,7 +352,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onSuccessDeleteQuestion() {
-        this.activity?.setResult(Activity.RESULT_OK)
+        this.activity?.let {
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
+        }
     }
 
     private fun onFailDeleteQuestion() {
