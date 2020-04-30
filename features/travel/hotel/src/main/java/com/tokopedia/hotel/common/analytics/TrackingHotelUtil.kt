@@ -465,7 +465,7 @@ class TrackingHotelUtil(context: Context) {
         map[SESSION_IRIS] = irisSessionId
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = TRAVELENTERTAINMENT_LABEL
-        map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
+        map[CATEGORY_LABEL] = HOTEL_LABEL
         return map
     }
 
