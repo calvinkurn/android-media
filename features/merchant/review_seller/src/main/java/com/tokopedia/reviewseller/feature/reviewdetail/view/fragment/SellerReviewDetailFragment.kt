@@ -499,8 +499,23 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    private fun onTopicsClicked(data: List<SortFilterItemWrapper>, sort: List<SortItemUiModel>) {
+    private fun onTopicsClicked(topic: List<SortFilterItemWrapper>, sort: List<SortItemUiModel>) {
+        var isDifferent = false
+        val sortBy = sort.firstOrNull { it.isSelected }?.title.orEmpty()
+        val sortValue = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortBy)
 
+        viewModelProductReviewDetail?.sortAndFilter?.first?.mapIndexed { index, data ->
+            isDifferent = topic[index].isSelected == data.isSelected
+        }
+
+        if(viewModelProductReviewDetail?.sortAndFilter?.second == sortBy && isDifferent) return
+
+
+
+        reviewSellerDetailAdapter.updateTopicFromBottomSheet(topic)
+        viewModelProductReviewDetail?.setSortAndFilterTopicData(topic to sortValue)
+        reviewSellerDetailAdapter.removeReviewNotFound()
+        reviewSellerDetailAdapter.showLoading()
     }
 
 }

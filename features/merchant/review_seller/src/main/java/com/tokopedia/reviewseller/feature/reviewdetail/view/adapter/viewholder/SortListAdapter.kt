@@ -18,9 +18,15 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
         this.sortFilterListUiModel = sortFilterListUiModel
     }
 
-    fun updatedSortFilter(data: SortItemUiModel, isSelected: Boolean, position: Int) {
-        sortFilterListUiModel?.getOrNull(position)?.isSelected = isSelected
-        notifyItemChanged(position)
+    fun updatedSortFilter(isSelected: Boolean, position: Int) {
+        val itemSelected = sortFilterListUiModel?.getOrNull(position)
+
+        sortFilterListUiModel?.filter {
+            it.isSelected
+        }?.filterNot { it == itemSelected }?.onEach { it.isSelected = false }
+
+        itemSelected?.isSelected = true
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SortListViewHolder {
@@ -49,7 +55,7 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
                         ChipsUnify.TYPE_NORMAL
                     }
                     setOnClickListener {
-                        topicSortFilterListener.onSortClicked(data, chipType.orEmpty(), adapterPosition)
+                        topicSortFilterListener.onSortClicked(chipType.orEmpty(), adapterPosition)
                     }
                 }
             }

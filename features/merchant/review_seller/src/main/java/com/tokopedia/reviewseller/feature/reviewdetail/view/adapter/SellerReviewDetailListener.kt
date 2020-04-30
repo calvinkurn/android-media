@@ -1,8 +1,6 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter
 
 import android.view.View
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.list.ListItemUnify
 
@@ -28,6 +26,6 @@ interface SellerRatingAndTopicListener {
 }
 
 interface TopicSortFilterListener {
-    fun onTopicClicked(item: SortFilterItemWrapper, adapterPosition: Int)
-    fun onSortClicked(itemUiModel: SortItemUiModel, chipType: String, adapterPosition: Int)
+    fun onTopicClicked(chipType: String, adapterPosition: Int)
+    fun onSortClicked(chipType: String, adapterPosition: Int)
 }

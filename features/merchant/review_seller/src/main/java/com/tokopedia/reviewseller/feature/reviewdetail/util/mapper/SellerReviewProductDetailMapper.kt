@@ -188,11 +188,15 @@ object SellerReviewProductDetailMapper {
     }
 
     fun mapToItemSortTopic(): List<SortItemUiModel> {
-        val data = ReviewSellerConstant.mapSortReviewProduct()
+        val data = ReviewSellerConstant.mapSortReviewDetail()
         val list = arrayListOf<SortItemUiModel>()
 
         data.map {
-            list.add(SortItemUiModel(title = it.value, isSelected = false))
+            if(list.size == 0) {
+                list.add(SortItemUiModel(title = it.value, isSelected = true))
+            } else {
+                list.add(SortItemUiModel(title = it.value, isSelected = false))
+            }
         }
 
         return list

@@ -19,7 +19,8 @@ import com.tokopedia.unifycomponents.ChipsUnify
 /**
  * Created by Yehezkiel on 27/04/20
  */
-class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?, val listener: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit):
+class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?,
+                               val listener: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit):
         BottomSheetUnify(), TopicSortFilterListener {
 
     companion object {
@@ -41,8 +42,13 @@ class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?, val lis
         rvTopicFilter = contentView.findViewById(R.id.rvTopicFilter)
         rvSortFilter = contentView.findViewById(R.id.rvSortFilter)
         isDragable = true
+        isFullpage = true
         setTitle(BOTTOM_SHEET_TITLE)
         setChild(contentView)
+//        setAction(ACTION_TITLE, listener = (
+//                View.OnClickListener {
+//
+//                }))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,16 +107,21 @@ class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?, val lis
     override fun dismiss() {
         super.dismiss()
 //        listener.invoke(sortAdapter)
+        topicAdapter.sortFilterList?.toList()?.let { topic ->
+            sortAdapter.sortFilterListUiModel?.let { sort ->
+                listener.invoke(topic, sort)
+            }
+        }
+
     }
 
-    override fun onTopicClicked(item: SortFilterItemWrapper, adapterPosition: Int) {
-
-    }
-
-    override fun onSortClicked(itemUiModel: SortItemUiModel, chipType: String, adapterPosition: Int) {
+    override fun onTopicClicked(chipType: String, adapterPosition: Int) {
         val isSelected = chipType == ChipsUnify.TYPE_SELECTED
-        sortAdapter.updatedSortFilter(itemUiModel, isSelected, adapterPosition)
+        topicAdapter.updateTopicFilter(isSelected, adapterPosition)
+    }
 
-
+    override fun onSortClicked(chipType: String, adapterPosition: Int) {
+        val isSelected = chipType == ChipsUnify.TYPE_SELECTED
+        sortAdapter.updatedSortFilter(isSelected, adapterPosition)
     }
 }

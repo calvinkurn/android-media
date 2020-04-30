@@ -47,6 +47,19 @@ class SellerReviewDetailAdapter(
         }
     }
 
+    fun updateTopicFromBottomSheet(topic: List<SortFilterItemWrapper>) {
+        val topicFirstIndex = visitables.indexOfFirst { it is TopicUiModel }
+        val feedbackFirstIndex = visitables.count { it is FeedbackUiModel }
+
+        val topicUiModelData = visitables.find { it is TopicUiModel }
+        (topicUiModelData as TopicUiModel).sortFilterItemList = topic as ArrayList<SortFilterItemWrapper>
+
+        notifyItemChanged(topicFirstIndex)
+        visitables.removeAll { it is FeedbackUiModel }
+
+        notifyItemRangeRemoved(visitables.size, feedbackFirstIndex)
+    }
+
     fun updateFilterTopic(position: Int, selectedTopic: String, updatedState: Boolean, data: TopicUiModel?) {
         val feedbackFirstIndex = visitables.count { it is FeedbackUiModel }
         if (position != -1) {
