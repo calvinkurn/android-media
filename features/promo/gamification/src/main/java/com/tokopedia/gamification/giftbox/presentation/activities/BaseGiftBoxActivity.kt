@@ -31,7 +31,7 @@ open class BaseGiftBoxActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.wtf(TAG, "onCreate start")
         setContentView(getLayout())
-        fm = findViewById(com.tokopedia.gamification.R.id.fm)
+        fm = findViewById(com.tokopedia.gamification.R.id.fmGiftRoot)
 
         val component = DaggerGiftBoxActivityComponent.builder()
                 .activityContextModule(ActivityContextModule(this))
