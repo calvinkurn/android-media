@@ -49,9 +49,17 @@ class SyncFcmTokenService : JobIntentService(), FirebaseMessagingManager.SyncLis
                 enqueueWork(context, SyncFcmTokenService::class.java, JOB_ID, intent)
             } catch (e: Exception) {
                 e.printStackTrace()
+                logExceptionToCrashlytic(e)
+            }
+        }
+
+        private fun logExceptionToCrashlytic(exception: Exception) {
+            try {
                 if (!BuildConfig.DEBUG) {
-                    Crashlytics.logException(e)
+                    Crashlytics.logException(exception)
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
