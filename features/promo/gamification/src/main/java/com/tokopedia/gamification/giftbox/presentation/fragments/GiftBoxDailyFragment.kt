@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -66,15 +67,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var isReminderSet = false
     var reminder: Reminder? = null
     var gameRemindMeCheck: GameRemindMeCheck? = null
+
     @TokenUserState
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    private val TAG = "GiftFragment"
 
     override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.wtf(TAG,"onCreate stat")
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
                     .activityContextModule(ActivityContextModule(it))
@@ -88,6 +92,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
             mAudiosManager = AudioFactory.createAudio(it)
         }
+        Log.wtf(TAG,"onCreate end")
     }
 
     override fun onDestroy() {
@@ -116,6 +121,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     override fun initViews(v: View) {
+        Log.wtf(TAG,"initViews start")
         tvBenefits = v.findViewById(R.id.tvBenefits)
         llBenefits = v.findViewById(R.id.ll_benefits)
         llRewardMessage = v.findViewById(R.id.ll_reward_message)
@@ -135,6 +141,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         setTextSize()
         setShadows()
         setListeners()
+        Log.wtf(TAG,"initViews ends")
     }
 
     fun setShadows() {
