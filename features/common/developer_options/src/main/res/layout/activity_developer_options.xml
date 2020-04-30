@@ -464,7 +464,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:text="Version is changed as long as app is not killed" />
+            android:text="Version change is for api purpose - app kill will change back" />
 
         <LinearLayout
             android:layout_width="match_parent"
