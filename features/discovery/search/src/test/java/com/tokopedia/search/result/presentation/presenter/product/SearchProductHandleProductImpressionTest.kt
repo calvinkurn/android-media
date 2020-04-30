@@ -1,13 +1,11 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsClickUrl
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsImpressionUrl
 import io.mockk.confirmVerified
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
 
@@ -116,10 +114,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
     }
 
     private fun `Then verify interaction for product impression is not called`(productItemViewModel: ProductItemViewModel) {
-        verify(exactly =  0){
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel)
-        }
-
         confirmVerified(productListView)
     }
 }

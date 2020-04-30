@@ -33,7 +33,7 @@ internal open class ProductListPresenterTestFixtures {
         every { it.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { secondArg() }
     }
     protected val advertisingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
-    lateinit var productListPresenter: ProductListPresenter
+    protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
