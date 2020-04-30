@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.StringRes
-import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -716,7 +715,5 @@ class TopChatRoomPresenter @Inject constructor(
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
-    private fun onErrorGetOrderProgress(throwable: Throwable) {
-        Toast.makeText(view.context, "onError", Toast.LENGTH_SHORT).show()
-    }
+    private fun onErrorGetOrderProgress(throwable: Throwable) { }
 }
