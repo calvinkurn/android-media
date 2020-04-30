@@ -334,7 +334,7 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel) {
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoDetailModel) {
         adapter.data.getOrNull(positionVideoChanged)?.apply {
             inputTitle = youtubeVideoModel.title.orEmpty()
             inputDescription = youtubeVideoModel.description.orEmpty()
