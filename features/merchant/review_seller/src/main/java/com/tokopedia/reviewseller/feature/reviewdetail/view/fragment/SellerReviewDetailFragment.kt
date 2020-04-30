@@ -1,5 +1,7 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -400,6 +402,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>, filterListUnify: ListUnify) {
         try {
             if (position == viewModelProductReviewDetail?.positionFilterPeriod) return
+            setIntentResultChipDate(filterListItemUnify[position].listTitleText, position)
             viewModelProductReviewDetail?.positionFilterPeriod = position
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelProductReviewDetail?.setChipFilterDateText(filterListItemUnify[position].listTitleText)
@@ -408,6 +411,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun setIntentResultChipDate(selectedDateChip: String, position: Int) {
+        val returnIntent = Intent()
+        returnIntent.putExtra("selectedDateChip", selectedDateChip)
+        returnIntent.putExtra("selectedDatePosition", position)
+
+        if (selectedDateChip == ReviewSellerConstant.ALL_VALUE) activity?.setResult(Activity.RESULT_CANCELED) else activity?.setResult(Activity.RESULT_OK, returnIntent)
     }
 
     private fun initViewBottomSheet() {

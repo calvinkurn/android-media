@@ -1,10 +1,14 @@
 package com.tokopedia.reviewseller.feature.reviewlist.util.mapper
 
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.LAST_MONTH_KEY
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.LAST_WEEK_KEY
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant.LAST_YEAR_KEY
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import java.text.SimpleDateFormat
 import java.util.*
 
 object SellerReviewProductListMapper {
@@ -29,8 +33,23 @@ object SellerReviewProductListMapper {
         return ProductRatingOverallUiModel().apply {
             rating = productGetProductRatingOverallByShop.rating
             reviewCount = productGetProductRatingOverallByShop.reviewCount
-            period = productGetProductRatingOverallByShop.filterBy
+            period = getPastDateCalculate(productGetProductRatingOverallByShop.filterBy ?: LAST_WEEK_KEY)
         }
+    }
+
+    fun getPastDateCalculate(filterDateString: String): String {
+        val cal = Calendar.getInstance(Locale("in","id"))
+        val pastDateInterval = when (filterDateString) {
+            LAST_WEEK_KEY -> 7
+            LAST_MONTH_KEY -> 30
+            LAST_YEAR_KEY -> 365
+            else -> 7
+        }
+        cal.add(Calendar.DATE, - pastDateInterval)
+
+        val dateFormat = SimpleDateFormat("dd MMM yyyy")
+        dateFormat.timeZone = cal.timeZone
+        return dateFormat.format(cal.time)
     }
 
     fun mapToItemUnifyList(list: Array<String>): ArrayList<ListItemUnify> {

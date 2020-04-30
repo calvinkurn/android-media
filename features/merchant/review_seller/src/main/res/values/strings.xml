@@ -16,6 +16,7 @@
     <string name="product_search">Cari nama produk</string>
     <string name="action_bottom_sheet_rating_product">Pilih</string>
     <string name="title_bottom_sheet_filter">Tampilkan periode ulasan dalam</string>
+    <string name="date_summary_calculation_builder">%1s - Hari ini</string>
     <string name="title_bottom_sheet_sort">Urutkan rating berdasarkan</string>
     <string name="error_message_load_more_review_product">Oops, halaman bermasalah. coba refresh atau cek koneksi</string>
     <string name="action_retry_toaster_review_product">Coba lagi</string>

@@ -5,25 +5,43 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.roundDecimal
+import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ReviewSummaryViewHolder(itemView: View,
-                              private val listener: ReviewSummaryViewListener): AbstractViewHolder<ProductRatingOverallUiModel>(itemView) {
+class ReviewSummaryViewHolder(val view: View,
+                              private val listener: ReviewSummaryViewListener) : AbstractViewHolder<ProductRatingOverallUiModel>(view) {
 
-    private val tgCountRating: Typography = itemView.findViewById(R.id.tgCountRating)
-    private val tgCountReview: Typography = itemView.findViewById(R.id.tgCountReview)
-    private val tgFiveReview: Typography = itemView.findViewById(R.id.tgFiveReview)
-    private val tgPeriodReview: Typography = itemView.findViewById(R.id.tgPeriodReview)
+    private val tgCountRating: Typography = view.findViewById(R.id.tgCountRating)
+    private val tgCountReview: Typography = view.findViewById(R.id.tgCountReview)
+    private val tgFiveReview: Typography = view.findViewById(R.id.tgFiveReview)
+    private val tgPeriodReview: Typography = view.findViewById(R.id.tgPeriodReview)
 
     override fun bind(element: ProductRatingOverallUiModel?) {
 
         tgCountRating.text = element?.rating?.roundDecimal()
         tgCountReview.text = element?.reviewCount?.toString()
         tgFiveReview.text = getString(R.string.rating_overall_product)
-        tgPeriodReview.text = "1 Des 2019 - Hari Ini"
+        updatePeriod(element?.period ?: "")
 
         listener.onAddedCoachMarkOverallRating(itemView)
+    }
+
+    override fun bind(element: ProductRatingOverallUiModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty()) {
+            return
+        }
+
+        when (payloads[0] as Int) {
+            ReviewSellerAdapter.PAYLOAD_SUMMARY_PERIOD -> updatePeriod(element.period ?: "")
+
+        }
+
+    }
+
+    private fun updatePeriod(periodString: String) {
+        tgPeriodReview.text = view.context.getString(R.string.date_summary_calculation_builder, periodString)
     }
 
     companion object {

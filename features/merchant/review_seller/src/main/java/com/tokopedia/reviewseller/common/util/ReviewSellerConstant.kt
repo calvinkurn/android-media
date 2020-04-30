@@ -5,8 +5,7 @@ package com.tokopedia.reviewseller.common.util
  */
 
 object ReviewSellerConstant {
-    const val TOPIC_POPULAR_UNSELECTED = false
-    const val TOPIC_POPULAR_SELECTED = true
+    const val RESULT_INTENT_DETAIL = 772
 
     const val LAST_WEEK_KEY = "time=7d"
     const val LAST_MONTH_KEY = "time=30d"

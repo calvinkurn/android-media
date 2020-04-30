@@ -77,7 +77,7 @@ class RecommendationPageTestViewModel {
         //when
         spy.getPrimaryProduct(productsId)
 
-        //then
+        //thenw
         verify { spy.getPrimaryProduct(productsId) }
         assertNotNull(spy.productInfoDataModel.value)
     }
