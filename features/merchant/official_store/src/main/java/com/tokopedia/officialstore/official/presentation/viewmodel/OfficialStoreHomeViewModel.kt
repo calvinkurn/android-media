@@ -3,7 +3,6 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.home_component.data.DynamicHomeChannelCommon
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners

@@ -12,7 +12,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase
+        private val graphqlUseCase: MultiRequestGraphqlUseCase,
+        @Named(GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL) val gqlQuery: String
 ) : UseCase<DynamicChannel>() {
     private val paramChannelType = "type"
 
@@ -21,13 +22,13 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): DynamicChannel {
         val responseType: Type = DynamicChannel.Response::class.java
-        val requestInstance = GraphqlRequest(DynamicChannelQueryCommon.getQuery(), responseType, requestParams)
+        val requestInstance = GraphqlRequest(gqlQuery, responseType, requestParams)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(requestInstance)
 
         return graphqlUseCase.executeOnBackground().run {
-            getData<DynamicChannel>(responseType)
+            getData<DynamicChannel.Response>(responseType).dynamicHomeChannel
         }
     }
 
