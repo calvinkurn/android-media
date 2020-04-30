@@ -16,14 +16,14 @@
 
         <ImageView
             android:id="@+id/seamless_fragment_avatar"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:srcCompat="@drawable/ic_shop_greyscale"
+            app:srcCompat="@drawable/ic_shop_dark_grey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,9 +45,9 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:drawablePadding="@dimen/spacing_lvl2"
-                android:drawableLeft="@drawable/ic_shop_greyscale"
-                android:textColor="@color/black_70"
-                app:typographyType="body_2"
+                android:drawableLeft="@drawable/ic_shop_dark_grey"
+                android:textColor="@color/Neutral_N700"
+                app:typographyType="heading_3"
                 tools:text="Toko Saya ini"
                 app:typographyWeight="bold" />
 
@@ -55,19 +55,21 @@
                 android:id="@+id/seamless_fragment_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:maxLines="1"
-                app:typographyType="body_3"
+                android:textColor="@color/Neutral_N700"
+                app:typographyType="body_2"
                 tools:text="Albert Wesker" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <TextView
                 android:id="@+id/seamless_fragment_email"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                app:typographyType="body_3"
-                tools:text="a*******@g****.com"
-                />
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:fontFamily="roboto-medium"
+                android:textSize="@dimen/fontSize_lvl3"
+                android:textColor="@color/Neutral_N700"
+                tools:text="y***********@g****.com" />
 
         </LinearLayout>
 

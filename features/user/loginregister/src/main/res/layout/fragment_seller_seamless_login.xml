@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Neutral_N0"
     android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -23,10 +24,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/seller_direct_login"
+            android:textColor="@color/Neutral_N700"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_3"
+            app:typographyType="heading_2"
             app:typographyWeight="bold" />
 
         <include
@@ -64,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:gravity="bottom|center"
-            app:typographyType="body_3"
+            android:textSize="@dimen/fontSize_lvl3"
             android:text="@string/seamless_footer_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
