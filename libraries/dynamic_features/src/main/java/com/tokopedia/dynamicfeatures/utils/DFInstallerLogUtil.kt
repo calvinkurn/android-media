@@ -1,25 +1,20 @@
 package com.tokopedia.dynamicfeatures.utils
 
-import android.app.usage.StorageStatsManager
 import android.content.Context
-import android.os.Build
-import android.os.Environment
-import android.os.StatFs
-import android.os.storage.StorageManager
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
 
 /**
  * Created by hendry on 2019-10-03.
  */
 object DFInstallerLogUtil {
-    private const val DFM_TAG = "DFM"
 
     internal fun logStatus(context: Context,
+                           tag: String = CommonConstant.DFM_TAG,
                            message: String = "",
                            modulesName: String,
                            freeInternalStorageBeforeDownload: Long = 0,
@@ -27,72 +22,70 @@ object DFInstallerLogUtil {
                            errorList: List<String> = emptyList(),
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false,
-                           tag: String = DFM_TAG) {
+                           startDownloadTime: Long = 0L,
+                           endDownloadTime: Long = 0L,
+                           startDownloadPercentage: Float = -1f,
+                           singletonService: Boolean = true,
+                           deeplink: String = "",
+                           fallbackUrl: String = "") {
 
-        GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }) {
+        GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }) {
             val messageBuilder = StringBuilder()
+
+            //Success or error information
             messageBuilder.append(message)
-
             messageBuilder.append(";mod_name=$modulesName")
-
             messageBuilder.append(";success=$isSuccess")
-
             messageBuilder.append(";dl_times=$downloadTimes")
+            messageBuilder.append(";err='${Utils.getError(errorList)}'")
 
-            messageBuilder.append(";err='${getError(errorList)}'")
-
+            //Size information
             messageBuilder.append(";mod_size=")
             if (moduleSize > 0) {
-                messageBuilder.append(getSizeInMB(moduleSize))
+                messageBuilder.append(Utils.getSizeInMB(moduleSize))
             } else {
                 messageBuilder.append(-1)
             }
-
             messageBuilder.append(";phone_size=")
             val phoneSize = StorageUtils.getTotalInternalSpaceBytes(context)
             if (phoneSize > 0) {
-                messageBuilder.append(getSizeInMB(phoneSize))
+                messageBuilder.append(Utils.getSizeInMB(phoneSize))
             } else {
                 messageBuilder.append(-1)
             }
-
             messageBuilder.append(";free_bef=")
             if (freeInternalStorageBeforeDownload > 0) {
-                messageBuilder.append(getSizeInMB(freeInternalStorageBeforeDownload))
+                messageBuilder.append(Utils.getSizeInMB(freeInternalStorageBeforeDownload))
             } else {
                 messageBuilder.append(-1)
             }
-
             messageBuilder.append(";free_aft=")
             try {
-                messageBuilder.append(getSizeInMB(StorageUtils.getFreeSpaceBytes(context)))
+                messageBuilder.append(Utils.getSizeInMB(StorageUtils.getFreeSpaceBytes(context)))
             } catch (ignored: Exception) {
                 messageBuilder.append(-1)
             }
-            messageBuilder.append(";cache_size='${getSizeInMB(StorageUtils.getInternalCacheSize(context))}'")
+            messageBuilder.append(";cache_size='${Utils.getSizeInMB(StorageUtils.getInternalCacheSize(context))}'")
 
-            messageBuilder.append(";play_str='${Utils.getPlayStoreVersionName(context)}'")
-            messageBuilder.append(";play_str_l=${Utils.getPlayStoreLongVersionCode(context)}")
-            messageBuilder.append(";play_srv=${Utils.getPlayServiceLongVersionCode(context)}")
-            messageBuilder.append(";installer_pkg=${Utils.getInstallerPackageName(context)}")
+            // Additional download information
+            messageBuilder.append(";dl_duration=${Utils.getDownloadDuration(startDownloadTime, endDownloadTime)}")
+            messageBuilder.append(";start_progress=")
+            if (startDownloadPercentage < 0) {
+                messageBuilder.append("0")
+            } else {
+                messageBuilder.append(Utils.getFormattedNumber(startDownloadPercentage))
+            }
+            messageBuilder.append(";dl_service=$singletonService")
+            messageBuilder.append(";deeplink='$deeplink'")
+            messageBuilder.append(";fallback_url='$fallbackUrl'")
+
+            //Play service information
+            messageBuilder.append(";play_str='${PlayServiceUtils.getPlayStoreVersionName(context)}'")
+            messageBuilder.append(";play_str_l=${PlayServiceUtils.getPlayStoreLongVersionCode(context)}")
+            messageBuilder.append(";play_srv=${PlayServiceUtils.getPlayServiceLongVersionCode(context)}")
+            messageBuilder.append(";installer_pkg=${PlayServiceUtils.getInstallerPackageName(context)}")
 
             Timber.w("P1#$tag#$messageBuilder")
         }
-    }
-
-    private fun getSizeInMB(size: Long) : String {
-        return String.format("%.2f", size.toDouble() / CommonConstant.MEGA_BYTE)
-    }
-
-    private fun getError(errorList: List<String>):String {
-        if (errorList.isEmpty()) {
-            return "0"
-        }
-        var errorText = errorList.first()
-        for (error in errorList) if (error != errorText) {
-            errorText = errorList.joinToString("|")
-            break
-        }
-        return errorText
     }
 }

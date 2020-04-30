@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.view.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Build
@@ -38,7 +37,9 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
+        val unMaskedRequestCode = requestCode and 0x0000ffff
+        if ((requestCode == REQUEST_WITHDRAW_CODE || unMaskedRequestCode == REQUEST_WITHDRAW_CODE)
+                && resultCode == Activity.RESULT_OK) {
             if (supportFragmentManager.findFragmentByTag(TAG) == null) {
                 finish()
             } else {
@@ -55,11 +56,11 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     private fun initInjector() {
-        SaldoDetailsComponentInstance.getComponent(application).inject(this)
+        SaldoDetailsComponentInstance.getComponent(this).inject(this)
     }
 
     override fun getComponent(): SaldoDetailsComponent? {
-        return SaldoDetailsComponentInstance.getComponent(application)
+        return SaldoDetailsComponentInstance.getComponent(this)
     }
 
     override fun getLayoutRes(): Int {
@@ -126,6 +127,11 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
             window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.design.R.color.white)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
+    }
+
+
+    override fun getTagFragment(): String? {
+        return TAG
     }
 
     companion object {

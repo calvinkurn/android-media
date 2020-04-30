@@ -35,7 +35,8 @@ data class ProductCardFlashSaleModel (
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
         val stockBarLabel: String = "",
-        val stockBarPercentage: Int = 0
+        val stockBarPercentage: Int = 0,
+        val isOutOfStock: Boolean = false
 ) {
     @Deprecated("replace with LabelGroup")
     data class Label(

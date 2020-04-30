@@ -21,6 +21,7 @@ class RecommendationCarouselItemViewHolder(
 ) : SmartAbstractViewHolder<RecommendationCarouselItemDataModel>(view){
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
+    private val className: String = "com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder"
 
     override fun bind(element: RecommendationCarouselItemDataModel, listener: SmartListener) {
         productCardView.apply {
@@ -56,7 +57,7 @@ class RecommendationCarouselItemViewHolder(
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener{
                 override fun onViewHint() {
                     if(element.recommendationItem.isTopAds){
-                        ImpresionTask(RecommendationCarouselItemViewHolder::class.java).execute(element.recommendationItem.trackerImageUrl)
+                        ImpresionTask(className).execute(element.recommendationItem.trackerImageUrl)
                     }
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
@@ -65,7 +66,7 @@ class RecommendationCarouselItemViewHolder(
             setOnClickListener {
                 (listener as WishlistListener).onProductClick(element, element.parentPosition, adapterPosition)
                 if (element.recommendationItem.isTopAds) {
-                    ImpresionTask(RecommendationCarouselItemViewHolder::class.java).execute(element.recommendationItem.clickUrl)
+                    ImpresionTask(className).execute(element.recommendationItem.clickUrl)
                 }
             }
         }

@@ -2,10 +2,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewStub
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
@@ -14,21 +15,17 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.unifyprinciples.Typography
-import android.view.ViewStub
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import androidx.constraintlayout.widget.ConstraintSet
 
-
-
 abstract class DynamicChannelViewHolder(itemView: View,
-                                        private val listener: HomeCategoryListener,
-                                        private val countDownListener: CountDownView.CountDownListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
+                                        private val listener: HomeCategoryListener) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
     private val context: Context = itemView.context
 
     var countDownView: CountDownView? = null
@@ -76,7 +73,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         try {
             val channel = element.channel
@@ -95,7 +92,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel) {
+    override fun bind(element: DynamicChannelDataModel) {
         try {
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
@@ -113,7 +110,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         }
     }
 
-    private fun handleHeaderComponent(channelHeaderName: String?, channel: DynamicHomeChannel.Channels, channelSubtitleName: String?, element: DynamicChannelViewModel) {
+    private fun handleHeaderComponent(channelHeaderName: String?, channel: DynamicHomeChannel.Channels, channelSubtitleName: String?, element: DynamicChannelDataModel) {
         val channelTitleContainer: ConstraintLayout? = itemView.findViewById(R.id.channel_title_container)
         val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
         val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
@@ -267,7 +264,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         seeAllButton?.hide()
     }
 
-    private fun handleHeaderExpiredTime(channel: DynamicHomeChannel.Channels, stubCountDownView: View?, element: DynamicChannelViewModel) {
+    private fun handleHeaderExpiredTime(channel: DynamicHomeChannel.Channels, stubCountDownView: View?, element: DynamicChannelDataModel) {
         /**
          * Requirement:
          * Only show countDownView when expired time exist
@@ -285,7 +282,9 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
             val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
             if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
-                countDownView?.setup(element.serverTimeOffset, expiredTime, countDownListener)
+                countDownView?.setup(element.serverTimeOffset, expiredTime) {
+                    listener.updateExpiredChannel(element, adapterPosition)
+                }
                 countDownView?.visibility = View.VISIBLE
             }
         } else {

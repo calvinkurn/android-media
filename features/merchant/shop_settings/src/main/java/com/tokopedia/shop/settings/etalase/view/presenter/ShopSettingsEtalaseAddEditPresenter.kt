@@ -20,6 +20,7 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
     : BaseDaggerPresenter<ShopSettingsEtalaseAddEditView>() {
 
     var etalaseCount = 0
+    var listEtalaseModel: ArrayList<ShopEtalaseModel>? = null
     override fun detachView() {
         super.detachView()
         addShopEtalaseUseCase.unsubscribe()
@@ -55,6 +56,7 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
                     override fun onNext(listEtalase: ArrayList<ShopEtalaseModel>?) {
                         view?.hideLoading()
                         listEtalase?.let {
+                            listEtalaseModel = it
                             etalaseCount = listEtalase.filter { it.type!= DEFAULT_ETALASE_TYPE }.size
                             view?.onSuccessGetEtalaseList()
                         }
@@ -75,6 +77,10 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
     fun isPowerMerchant() = userSession.isGoldMerchant
 
     fun isEtalaseCountAtMax() = etalaseCount >= ShopSettingsEtalaseAddEditFragment.MAXIMUN_ETALASE_COUNT
+
+    fun isEtalaseDuplicate(query: String): Boolean {
+        return listEtalaseModel?.any { it.name == query } ?: false
+    }
 
     companion object {
         private const val ID = "id"

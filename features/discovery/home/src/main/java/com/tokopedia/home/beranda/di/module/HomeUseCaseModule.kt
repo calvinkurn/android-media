@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,22 +13,23 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -54,11 +57,19 @@ class HomeUseCaseModule {
     }
 
     @Provides
-    fun provideGetHomeFeedUseCase(@ApplicationContext context: Context?,
-                                  graphqlUseCase: GraphqlUseCase?,
-                                  homeFeedMapper: HomeFeedMapper?): GetHomeFeedUseCase {
-        return GetHomeFeedUseCase(context, graphqlUseCase, homeFeedMapper)
+    fun provideGetHomeRecommendationUseCase(
+            @ApplicationContext context: Context,
+            graphqlRepository: GraphqlRepository,
+            homeRecommendationMapper: HomeRecommendationMapper
+    ): GetHomeRecommendationUseCase{
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed)
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
+        useCase.setGraphqlQuery(query)
+        return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
     }
+
+    @Provides
+    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
 
     @Provides
     fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
@@ -164,6 +175,30 @@ class HomeUseCaseModule {
     @HomeScope
     fun providePopularKeywordUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): GetPopularKeywordUseCase {
         return GetPopularKeywordUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>)
+    }
 
+    @Provides
+    @HomeScope
+    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDataMapper: HomeDataMapper): GetDynamicChannelsUseCase{
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.dynamic_channel_query)
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
+        useCase.setGraphqlQuery(query)
+        return GetDynamicChannelsUseCase(useCase, homeDataMapper)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideAddToCartOccUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): AddToCartOccUseCase{
+        val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+        return AddToCartOccUseCase(query, graphqlUseCase, AddToCartDataMapper())
+    }
+
+    @Provides
+    @HomeScope
+    fun provideCloseChannelUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): CloseChannelUseCase{
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_close_channel_query)
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<CloseChannelMutation>(graphqlRepository)
+        useCase.setGraphqlQuery(query)
+        return CloseChannelUseCase(useCase)
     }
 }

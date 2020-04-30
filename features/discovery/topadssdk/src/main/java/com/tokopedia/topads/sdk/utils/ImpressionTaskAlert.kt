@@ -5,7 +5,7 @@ import timber.log.Timber
 /**
  * Author errysuprayogi on 30,March,2020
  */
-class ImpressionTaskAlert(private val aClass: Class<*>) {
+class ImpressionTaskAlert(private val className: String) {
     private var lastImpression = 0L
     private var lastClick = 0L
     private val impressionTreshold = 500L
@@ -15,7 +15,7 @@ class ImpressionTaskAlert(private val aClass: Class<*>) {
         val currentTime = System.currentTimeMillis()
         val timeSpan = currentTime - lastClick
         if (timeSpan < clickTreshold) {
-            Timber.w("P2#TOPADS_TRACKING#Alert click;class=" + aClass.simpleName + ";diff_time=" + timeSpan)
+            Timber.w("P2#TOPADS_TRACKING#Alert click;class=$className;diff_time=" + timeSpan)
         }
         lastClick = currentTime
     }
@@ -24,7 +24,7 @@ class ImpressionTaskAlert(private val aClass: Class<*>) {
         val currentTime = System.currentTimeMillis()
         val timeSpan = currentTime - lastImpression
         if (timeSpan > impressionTreshold) {
-            Timber.w("P2#TOPADS_TRACKING#Alert impression;class=" + aClass.simpleName + ";diff_time=" + timeSpan)
+            Timber.w("P2#TOPADS_TRACKING#Alert impression;class=$className;diff_time=" + timeSpan)
         }
         lastImpression = currentTime
     }
@@ -41,9 +41,9 @@ class ImpressionTaskAlert(private val aClass: Class<*>) {
         private val TAG = ImpressionTaskAlert::class.java.simpleName
         private var instance: ImpressionTaskAlert? = null
         @JvmStatic
-        fun getInstance(aClass: Class<*>): ImpressionTaskAlert? {
+        fun getInstance(className: String = ""): ImpressionTaskAlert? {
             if (instance == null) {
-                instance = ImpressionTaskAlert(aClass)
+                instance = ImpressionTaskAlert(className)
             }
             return instance
         }

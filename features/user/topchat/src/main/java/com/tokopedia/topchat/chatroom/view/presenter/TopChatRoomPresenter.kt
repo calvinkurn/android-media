@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.StringRes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -94,22 +95,20 @@ class TopChatRoomPresenter @Inject constructor(
 
     var thisMessageId: String = ""
 
+    private lateinit var webSocketUrl: String
+    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
-    private lateinit var webSocketUrl: String
-    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
     private var dummyList: ArrayList<Visitable<*>>
+    private var paramBeforeReplyTime = "0"
 
     init {
         mSubscription = CompositeSubscription()
         compressImageSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
-    }
-
-    override fun clearText() {
     }
 
     override fun connectWebSocket(messageId: String) {
@@ -130,7 +129,7 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
-                view.showErrorWebSocket(false)
+                view?.showErrorWebSocket(false)
                 networkMode = WebsocketEvent.Mode.MODE_WEBSOCKET
                 readMessage()
             }
@@ -162,7 +161,7 @@ class TopChatRoomPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", "onReconnect")
                 }
                 networkMode = WebsocketEvent.Mode.MODE_API
-                view.showErrorWebSocket(true)
+                view?.showErrorWebSocket(true)
             }
 
             override fun onClose() {
@@ -171,7 +170,7 @@ class TopChatRoomPresenter @Inject constructor(
                 }
                 networkMode = WebsocketEvent.Mode.MODE_API
                 destroyWebSocket()
-                view.showErrorWebSocket(true)
+                view?.showErrorWebSocket(true)
                 connectWebSocket(messageId)
             }
 
@@ -193,12 +192,12 @@ class TopChatRoomPresenter @Inject constructor(
 
         if (pojo.msgId.toString() != messageId) return
         when (response.code) {
-            EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
-            EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
-            EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
+            EVENT_TOPCHAT_TYPING -> view?.onReceiveStartTypingEvent()
+            EVENT_TOPCHAT_END_TYPING -> view?.onReceiveStopTypingEvent()
+            EVENT_TOPCHAT_READ_MESSAGE -> view?.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 var temp = mapToVisitable(pojo)
-                view.onReceiveMessageEvent(temp)
+                view?.onReceiveMessageEvent(temp)
                 if (!pojo.isOpposite) {
                     checkDummyAndRemove(temp)
                 } else {
@@ -213,8 +212,15 @@ class TopChatRoomPresenter @Inject constructor(
             onError: (Throwable) -> Unit,
             onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
-                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
+            getChatUseCase.execute(
+                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
+                    GetChatSubscriber(
+                            view?.isUseCarousel() ?: false,
+                            view?.isUseNewCard() ?: true,
+                            onError,
+                            onSuccessGetExistingMessage
+                    )
+            )
         }
     }
 
@@ -231,13 +237,19 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun loadPreviousChat(
             messageId: String,
-            page: Int,
             onError: (Throwable) -> Unit,
             onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page),
-                    GetChatSubscriber(onError, onSuccessGetPreviousChat))
+            getChatUseCase.execute(
+                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
+                    GetChatSubscriber(
+                            view?.isUseCarousel() ?: false,
+                            view?.isUseNewCard() ?: true,
+                            onError,
+                            onSuccessGetPreviousChat
+                    )
+            )
         }
     }
 
@@ -254,7 +266,7 @@ class TopChatRoomPresenter @Inject constructor(
                                 }
                             }
                         }
-                        view.onSuccessGetTemplate(templateList)
+                        view?.onSuccessGetTemplate(templateList)
                     }
 
                     override fun onCompleted() {
@@ -262,7 +274,7 @@ class TopChatRoomPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        view.onErrorGetTemplate()
+                        view?.onErrorGetTemplate()
                     }
 
                 }
@@ -287,7 +299,7 @@ class TopChatRoomPresenter @Inject constructor(
                             }
 
                             override fun onError(e: Throwable?) {
-                                view.showSnackbarError(view.getStringResource(R.string.error_compress_image))
+                                showErrorSnackbar(R.string.error_compress_image)
                             }
                         })
                 compressImageSubscription?.clear()
@@ -309,7 +321,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
-        view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, throwable), image)
+        view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
     }
 
     private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
@@ -338,10 +350,10 @@ class TopChatRoomPresenter @Inject constructor(
         val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
 
         return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
-            view.showSnackbarError(view.getStringResource(R.string.undersize_image))
+            showErrorSnackbar(R.string.undersize_image)
             false
         } else if (fileSize >= MAX_FILE_SIZE) {
-            view.showSnackbarError(view.getStringResource(R.string.oversize_image))
+            showErrorSnackbar(R.string.oversize_image)
             false
         } else {
             true
@@ -353,7 +365,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun processDummyMessage(it: Visitable<*>) {
-        view.addDummyMessage(it)
+        view?.addDummyMessage(it)
         dummyList.add(it)
     }
 
@@ -395,7 +407,7 @@ class TopChatRoomPresenter @Inject constructor(
         replyChatUseCase.execute(requestParams, object : Subscriber<ReplyChatViewModel>() {
             override fun onNext(response: ReplyChatViewModel) {
                 if (response.isSuccessReplyChat) {
-                    view.onReceiveMessageEvent(response.chat)
+                    view?.onReceiveMessageEvent(response.chat)
                     checkDummyAndRemove(dummyMessage);
                 }
             }
@@ -405,7 +417,7 @@ class TopChatRoomPresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
-                view.showSnackbarError(ErrorHandler.getErrorMessage(view.context, e))
+                view?.showSnackbarError(ErrorHandler.getErrorMessage(view?.context, e))
             }
 
         })
@@ -413,12 +425,14 @@ class TopChatRoomPresenter @Inject constructor(
 
     private fun checkDummyAndRemove(dummyMessage: Visitable<*>) {
         getDummyOnList(dummyMessage)?.let {
-            view.removeDummy(it)
+            view?.removeDummy(it)
         }
     }
 
-    override fun showErrorSnackbar(stringId: Int) {
-        view.showSnackbarError(view.getStringResource(stringId))
+    override fun showErrorSnackbar(@StringRes stringId: Int) {
+        view?.let {
+            it.showSnackbarError(it.getStringResource(stringId))
+        }
     }
 
     private fun sendMessageWebSocket(messageText: String) {
@@ -435,7 +449,7 @@ class TopChatRoomPresenter @Inject constructor(
         if (isValidReply(sendMessage)) {
             sendAttachments(messageId, opponentId, sendMessage)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
-            view.clearAttachmentPreviews()
+            view?.clearAttachmentPreviews()
         }
     }
 
@@ -443,7 +457,7 @@ class TopChatRoomPresenter @Inject constructor(
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             attachment.sendTo(messageId, opponentId, message, listInterceptor)
-            view.sendAnalyticAttachmentSent(attachment)
+            view?.sendAnalyticAttachmentSent(attachment)
         }
     }
 
@@ -517,9 +531,9 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun initProductPreview(savedInstanceState: Bundle?) {
-        val stringProductPreviews = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
+        val stringProductPreviews = view?.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
 
-        if (stringProductPreviews.isEmpty()) return
+        if (stringProductPreviews == null || stringProductPreviews.isEmpty()) return
 
         val listType = object : TypeToken<List<ProductPreview>>() {}.type
         val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
@@ -535,15 +549,15 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun initInvoicePreview(savedInstanceState: Bundle?) {
-        val id = view.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
-        val invoiceCode = view.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
-        val productName = view.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
-        val date = view.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState)
-        val imageUrl = view.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
-        val invoiceUrl = view.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
-        val statusId = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
-        val status = view.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
-        val totalPriceAmount = view.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+        val id = view?.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState) ?: ""
+        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState) ?: ""
+        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState) ?: ""
+        val date = view?.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState) ?: ""
+        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState) ?: ""
+        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState) ?: ""
+        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState) ?: ""
+        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState) ?: ""
+        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState) ?: ""
 
         val invoiceViewModel = InvoicePreviewUiModel(
                 id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
@@ -565,8 +579,8 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun initAttachmentPreview() {
         if (attachmentsPreview.isEmpty()) return
-        view.showAttachmentPreview(attachmentsPreview)
-        view.focusOnReply()
+        view?.showAttachmentPreview(attachmentsPreview)
+        view?.focusOnReply()
     }
 
     override fun clearAttachmentPreview() {
@@ -635,9 +649,9 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun initVoucherPreview(extras: Bundle?) {
-        val stringVoucherPreview = view.getStringArgument(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, extras)
+        val stringVoucherPreview = view?.getStringArgument(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, extras)
 
-        if (stringVoucherPreview.isEmpty()) return
+        if (stringVoucherPreview == null || stringVoucherPreview.isEmpty()) return
 
         val voucherPreview = CommonUtil.fromJson<VoucherPreview>(stringVoucherPreview, VoucherPreview::class.java)
         val sendableVoucher = SendableVoucherPreview(voucherPreview)
@@ -653,11 +667,11 @@ class TopChatRoomPresenter @Inject constructor(
     private fun createSeamlessLoginSubscriber(liteUrl: String): SeamlessLoginSubscriber {
         return object : SeamlessLoginSubscriber {
             override fun onUrlGenerated(url: String) {
-                view.redirectToBrowser(url)
+                view?.redirectToBrowser(url)
             }
 
             override fun onError(msg: String) {
-                view.redirectToBrowser(liteUrl)
+                view?.redirectToBrowser(liteUrl)
             }
         }
     }
@@ -680,4 +694,10 @@ class TopChatRoomPresenter @Inject constructor(
     override fun removeFromWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
+
+    override fun updateMinReplyTime(chatRoom: ChatroomViewModel) {
+        paramBeforeReplyTime = chatRoom.minReplyTime
+    }
+
+    override fun clearText() { }
 }

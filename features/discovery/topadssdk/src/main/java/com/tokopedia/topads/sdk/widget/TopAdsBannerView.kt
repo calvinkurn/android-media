@@ -47,6 +47,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreVie
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
@@ -67,9 +68,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val NO_TEMPLATE = 0
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
-    private final val VARIANT_A = "Headline Ads A"
-    private final val VARIANT_B = "Headline Ads B"
-    private final val AB_TEST_KEY = "Headline Ads New Design"
+    private final val VARIANT_A = "Headline A"
+    private final val VARIANT_NO_HEADLINE = "No Headline"
+    private final val VARIANT_B = "Headline B"
+    private final val AB_TEST_KEY = "Headline Ads New Design 2"
+    private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
 
     @Inject
     lateinit var bannerPresenter: BannerAdsPresenter
@@ -91,18 +94,22 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun renderViewCpmShop(context: Context, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (activityIsFinishing(context))
             return
+
+        var defaultVariant = if (isLoggedIn()) VARIANT_NO_HEADLINE else VARIANT_A
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
-            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
+            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, defaultVariant)
             if (variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b
                 BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_more
-            } else {
+            } else if (variant.equals(VARIANT_A)){
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
                 BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
+            } else {
+                return
             }
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
@@ -121,14 +128,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
                     impressionListener?.let {
                         it.onImpressionHeadlineAdsItem(0, cpmData)
-                        ImpresionTask(TopAdsBannerView::class.java).execute(cpmData.cpm.cpmImage.fullUrl)
+                        ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
                     }
                 }
             }
             shop_image?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
+                    ImpresionTask(className).execute(cpmData?.adClickUrl)
                 }
             }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
@@ -141,6 +148,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             template = SHOP_TEMPLATE
         }
         setHeadlineShopData(cpmData, appLink, adsClickUrl)
+    }
+
+    private fun isLoggedIn(): Boolean {
+        var userSession = UserSession(context)
+        return userSession.isLoggedIn
     }
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {
@@ -159,19 +171,19 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shop_badge?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
+                    ImpresionTask(className).execute(cpmData?.adClickUrl)
                 }
             }
             shop_name?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
+                    ImpresionTask(className).execute(cpmData?.adClickUrl)
                 }
             }
             kunjungi_toko?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
+                    ImpresionTask(className).execute(cpmData?.adClickUrl)
                 }
             }
             val items = ArrayList<Item<*>>()
@@ -220,7 +232,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             if (image != null) {
                                 image.setImageBitmap(resource)
-                                ImpresionTask(TopAdsBannerView::class.java).execute(cpm.cpmImage.fullUrl)
+                                ImpresionTask(className).execute(cpm.cpmImage.fullUrl)
                             }
                         }
 
@@ -269,7 +281,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         setOnClickListener {
                             if (topAdsBannerClickListener != null) {
                                 topAdsBannerClickListener!!.onBannerAdsClicked(0, data.applinks, data)
-                                ImpresionTask(TopAdsBannerView::class.java).execute(data.adClickUrl)
+                                ImpresionTask(className).execute(data.adClickUrl)
                             }
                         }
                     }

@@ -52,7 +52,6 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
@@ -96,6 +95,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private lateinit var optionTitle: TextView
     private lateinit var separator: View
     private lateinit var partialRegisterInputView: PartialRegisterInputView
+    private lateinit var emailPhoneEditText: AutoCompleteTextView
     private lateinit var registerButton: LoginTextView
     private lateinit var loginButton: TextView
     private lateinit var container: ScrollView
@@ -214,6 +214,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         optionTitle = view.findViewById(R.id.register_option_title)
         separator = view.findViewById(R.id.separator)
         partialRegisterInputView = view.findViewById(R.id.register_input_view)
+        emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         registerButton = view.findViewById(R.id.register)
         socmedButton = view.findViewById(R.id.socmed_btn)
         loginButton = view.findViewById(R.id.login_button)
@@ -1082,7 +1083,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     userSession.loginMethod,
                     userSession.userId.toIntOrZero(),
                     userSession.name,
-                    userSession.email
+                    userSession.email,
+                    userSession.phoneNumber,
+                    userSession.isGoldMerchant,
+                    userSession.shopId,
+                    userSession.shopName
             )
 
             if (isFromAccount()) {
@@ -1160,31 +1165,45 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
     }
 
-    @SuppressLint("MissingPermission", "HardwareIds")
+    @SuppressLint("MissingPermission", "HardwareIds", "PrivateResource")
     fun getPhoneNumber() {
         activity?.let {
-            val phoneNumbers = arrayListOf<String>()
+            if(permissionCheckerHelper.hasPermission(it, arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE))) {
+                val phoneNumbers = arrayListOf<String>()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
-                    for (info in subscription.activeSubscriptionInfoList) {
-                        if (!info.number.isNullOrEmpty() &&
-                                PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                                PartialRegisterInputUtils.isValidPhone(info.number))
-                            phoneNumbers.add(info.number)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                    if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
+                        for (info in subscription.activeSubscriptionInfoList) {
+                            if (!info.number.isNullOrEmpty() &&
+                                    PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                                    PartialRegisterInputUtils.isValidPhone(info.number))
+                                phoneNumbers.add(info.number)
+                        }
                     }
+                } else {
+                    val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
+                    if (!telephony.line1Number.isNullOrEmpty() &&
+                            PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
+                        phoneNumbers.add(telephony.line1Number)
                 }
-            } else {
-                val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
-                if (!telephony.line1Number.isNullOrEmpty() &&
-                        PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                        PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
-                    phoneNumbers.add(telephony.line1Number)
-            }
 
-            if (phoneNumbers.isNotEmpty())
-                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
+                if (phoneNumbers.isNotEmpty())
+                    partialRegisterInputView.setAdapterInputEmailPhone(
+                            ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers)
+                    ) { v, hasFocus ->
+                        activity?.isFinishing?.let { isFinishing ->
+                            if(!isFinishing) {
+                                if (hasFocus && this::emailPhoneEditText.isInitialized) {
+                                    emailPhoneEditText.showDropDown()
+                                } else {
+                                    emailPhoneEditText.dismissDropDown()
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 

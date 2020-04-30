@@ -9,7 +9,7 @@ import android.os.Parcelable
 
 data class DataModel(
         var success: Int = 0,
-        var cartId: Int = 0,
+        var cartId: String = "",
         var productId: Int = 0,
         var quantity: Int = 0,
         var notes: String = "",
@@ -20,12 +20,14 @@ data class DataModel(
         var trackerListName: String = "",
         var ucUtParam: String = "",
         var isTradeIn: Boolean = false,
-        var message: ArrayList<String> = arrayListOf()
+        var message: ArrayList<String> = arrayListOf(),
+        var ovoValidationDataModel: OvoValidationDataModel = OvoValidationDataModel(),
+        var refreshPrerequisitePage: Boolean = false
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readInt(),
+            parcel.readString(),
             parcel.readInt(),
             parcel.readInt(),
             parcel.readString(),
@@ -36,11 +38,13 @@ data class DataModel(
             parcel.readString(),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
-            parcel.createStringArrayList())
+            parcel.createStringArrayList(),
+            parcel.readParcelable(OvoValidationDataModel::class.java.classLoader),
+            parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(success)
-        parcel.writeInt(cartId)
+        parcel.writeString(cartId)
         parcel.writeInt(productId)
         parcel.writeInt(quantity)
         parcel.writeString(notes)
@@ -52,6 +56,8 @@ data class DataModel(
         parcel.writeString(ucUtParam)
         parcel.writeByte(if (isTradeIn) 1 else 0)
         parcel.writeStringList(message)
+        parcel.writeParcelable(ovoValidationDataModel, flags)
+        parcel.writeByte(if (refreshPrerequisitePage) 1 else 0)
     }
 
     override fun describeContents(): Int {

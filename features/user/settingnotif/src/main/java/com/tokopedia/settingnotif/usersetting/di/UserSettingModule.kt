@@ -7,13 +7,19 @@ import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCa
 import com.tokopedia.settingnotif.usersetting.domain.usecase.SetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.presenter.SettingFieldPresenter
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
 
-@UserSettingScope
-@Module
-class UserSettingModule(var context: Context?, @RawRes val gqlQueryRaw: Int) {
+@Module class UserSettingModule(var context: Context?, @RawRes val gqlQueryRaw: Int) {
+
+    @UserSettingScope
+    @Provides
+    fun provideUserSession(): UserSessionInterface {
+        return UserSession(context)
+    }
 
     @UserSettingScope
     @Provides

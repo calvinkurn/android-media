@@ -5,22 +5,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
-import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.ProductCardFlashSaleView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 
-class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListener,
+class FlashSaleViewHolder (view: View,
                            private val channels: DynamicHomeChannel.Channels):
         AbstractViewHolder<FlashSaleDataModel>(view) {
 
     companion object{
         val LAYOUT = R.layout.home_banner_item_flashsale_carousel
+        val CLASS_NAME = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder"
     }
 
     private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
@@ -33,10 +28,16 @@ class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListen
             applyCarousel()
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
-                listener.onFlashSaleCardImpressed(adapterPosition, channels)
+                if(element.grid.isTopads){
+                    ImpresionTask(CLASS_NAME).execute(element.grid.impression)
+                }
+                element.listener.onFlashSaleCardImpressed(adapterPosition, channels)
             }
             setOnClickListener {
-                listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
+                if(element.grid.isTopads){
+                    ImpresionTask(CLASS_NAME).execute(element.grid.productClickUrl)
+                }
+                element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }
         }
     }

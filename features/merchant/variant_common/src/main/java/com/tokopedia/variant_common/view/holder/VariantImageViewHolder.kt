@@ -32,20 +32,26 @@ class VariantImageViewHolder(val view: View,
     }
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
+        if (element.flashSale) {
+            promoVariantImage.show()
+        } else {
+            promoVariantImage.hide()
+        }
+
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
                 overlayVariantImgContainer.show()
-                variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
+                imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
                 view.isEnabled = false
             }
             VariantConstant.STATE_SELECTED -> {
                 overlayVariantImgContainer.hide()
-                variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_selected)
+                imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_selected)
                 view.isEnabled = false
             }
             VariantConstant.STATE_UNSELECTED -> {
                 overlayVariantImgContainer.hide()
-                variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
+                imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
                 view.isEnabled = true
             }
         }

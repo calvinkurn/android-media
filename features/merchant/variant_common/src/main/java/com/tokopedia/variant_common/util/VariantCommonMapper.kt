@@ -19,6 +19,16 @@ object VariantCommonMapper {
         })?.toMutableMap() ?: mutableMapOf()
     }
 
+    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariantCommon?, selectedOptionIds: List<Int>): MutableMap<String, Int> {
+        val hashMap: MutableMap<String, Int> = mutableMapOf()
+
+        variantData?.variant?.mapIndexed { index, variant ->
+            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: 0
+        }
+
+        return hashMap
+    }
+
     fun processVariant(variantData: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
         val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variant?.size ?: 0)
         if (variantData == null) return null
@@ -50,12 +60,13 @@ object VariantCommonMapper {
             updateSelectedOptionsIds(variantData, updatedSelectedOptionsId, mapOfSelectedVariant)
         }
         val isSelectedProductBuyable = selectedProductData?.isBuyable ?: false
+        val isSelectedProductFlashSale = selectedProductData?.isFlashSale ?: false
 
         selectedOptionId = updatedSelectedOptionsId
 
         for ((level, variant: Variant) in variantData.variant.withIndex()) {
             listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variant.size,
-                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne))
+                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne, isSelectedProductFlashSale))
         }
 
         return listOfVariant
@@ -81,7 +92,8 @@ object VariantCommonMapper {
     private fun convertVariantViewModel(variant: Variant, variantData: ProductVariantCommon, level: Int, selectedOptionIds: List<Int>, isLeaf: Boolean,
                                         isSelectedProductBuyable: Boolean,
                                         partialySelected: Boolean,
-                                        selectedLevelOne: Boolean): VariantCategory {
+                                        selectedLevelOne: Boolean,
+                                        isSelectedProductFlashSale: Boolean): VariantCategory {
 
         //If all options has images, show images, if not show colour type / chip type
         val hasCustomImage = variant.options.all {
@@ -97,35 +109,48 @@ object VariantCommonMapper {
         val optionList = variant.options.map { option ->
             var currentState = VariantConstant.STATE_EMPTY
             var stock = 0
-
+            var isFlashSale = false
             if (selectedOptionIds.isNotEmpty() && option.id in selectedOptionIds) {
                 if (isSelectedProductBuyable) {
+                    // This Function is Fired When User Already Select All Of The Variant
                     currentState = VariantConstant.STATE_SELECTED
+                    isFlashSale = if (level == 0) {
+                        variantData.isSelectedChildHasFlashSale(selectedOptionIds[level])
+                    } else {
+                        isSelectedProductFlashSale
+                    }
                 } else {
+                    // This Function is Fired When User Selected Partial Variant
                     for (child: VariantChildCommon in variantData.children) {
                         if (child.isBuyable && selectedOptionIds.first() in child.optionIds) {
                             currentState = VariantConstant.STATE_SELECTED
-                            break
+                            if (selectedLevelOne && child.isFlashSale) {
+                                isFlashSale = true
+                                break
+                            }
                         }
                     }
                 }
             } else {
+                //This Function is to determine unselect or empty variant
                 for (child: VariantChildCommon in variantData.children) {
                     //child.optionIds[1] means variant lvl2
                     //child.optionIds[0] means variant lvl1
                     //Check one by one wether childId is match with another Id
                     if (child.isBuyable && child.optionIds[level] == option.id) {
-                        //|| (partialySelected && !isLeaf)
                         if (partialSelectedListByLevel.isEmpty()) {
-                            // if not lvl 1, should not go to this if , so have to check if not leaf
+                            //It means level 1
                             currentState = VariantConstant.STATE_UNSELECTED
+                            if (level == 0 && child.isFlashSale) {
+                                isFlashSale = true
+                            }
                         } else {
                             val childOptionId = child.optionIds.getOrNull(level)
                             childOptionId?.let {
                                 if (child.optionIds.subList(0, level) == partialSelectedListByLevel) {
-                                    //User selecting 2+ level variant
+                                    //Check if the combination is match with child
                                     currentState = VariantConstant.STATE_UNSELECTED
-                                    // || (partialySelected && isLeaf)
+                                    isFlashSale = child.isFlashSale
                                 } else if (selectedOptionIds.isEmpty()) {
                                     currentState = VariantConstant.STATE_UNSELECTED
                                 }
@@ -155,7 +180,8 @@ object VariantCommonMapper {
                     hasCustomImages = hasCustomImage,
                     level = level,
                     variantOptionIdentifier = variant.identifier.orEmpty(),
-                    variantCategoryKey = variant.pv.toString()
+                    variantCategoryKey = variant.pv.toString(),
+                    flashSale = isFlashSale
             )
         }
 

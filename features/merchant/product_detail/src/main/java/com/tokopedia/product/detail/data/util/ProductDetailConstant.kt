@@ -55,6 +55,16 @@ object ProductDetailConstant {
     const val KEY_PRODUCT_ID = "productIDs"
     const val KEY_XSOURCE = "xSource"
     const val KEY_PAGE_NUMBER = "pageNumber"
+    const val KEY_PREORDER = "preorder"
+    const val KEY_LEASING = "leasing"
+    const val KEY_NORMAL_BUTTON = "normal"
+    const val KEY_OCS_BUTTON = "ocs"
+    const val KEY_OCC_BUTTON = "occ"
+    const val KEY_OVO_DEALS = "ovo_deals"
+    const val KEY_CHAT = "chat"
+    const val KEY_BYME = "byme"
+    const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
 
@@ -72,7 +82,7 @@ object ProductDetailConstant {
     const val PAYLOAD_VARIANT_SELECTED = 5
     const val PAYLOAD_FULLFILLMENT = 192
     const val PAYLOAD_VARIANT_COMPONENT = 1
-
+    const val PAYLOAD_NOTIFY_ME = 1
 
     //Request Code
     const val REQUEST_CODE_TALK_PRODUCT = 1
@@ -102,9 +112,10 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
-    const val SEPARATOR = "separator"
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
+    const val NOTIFY_ME = "teaser"
+    const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
     const val SOCIAL_PROOF_PV = "social_proof_pv"
@@ -162,4 +173,10 @@ object ProductDetailConstant {
     const val REQUEST_CODE_LOGIN_THEN_BUY = 563
     const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
     const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 569
+
+    const val REQUEST_CODE_CHECKOUT = 12382
+
+    //OVO
+    const val OVO_INACTIVE_STATUS = 1;
+    const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 }

@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.graphics.Color
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -10,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -21,9 +19,11 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mixleft.model.MixLeftAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.EmptyDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.home.util.setGradientBackground
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -36,9 +36,8 @@ import kotlinx.coroutines.launch
  * @author by yoasfs on 2020-03-05
  */
 class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryListener,
-                         val countDownListener: CountDownView.CountDownListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
-    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), CoroutineScope, FlashSaleCardListener {
+    : DynamicChannelViewHolder(itemView, homeCategoryListener), CoroutineScope, FlashSaleCardListener {
 
     private lateinit var adapter: MixLeftAdapter
 
@@ -48,6 +47,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.rv_product)
     private val image: ImageView = itemView.findViewById(R.id.parallax_image)
+    private val loadingBackground: ImageView = itemView.findViewById(R.id.background_loader)
     private val parallaxBackground: View = itemView.findViewById(R.id.parallax_background)
     private val parallaxView: View = itemView.findViewById(R.id.parallax_view)
 
@@ -57,6 +57,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_dc_mix_left
+        private const val FPM_MIX_LEFT = "home_mix_left"
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -87,11 +88,21 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
-        if (channel.banner.backColor.isNotEmpty()) {
-            parallaxBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
-        }
         if (channel.banner.imageUrl.isNotEmpty()) {
-            image.loadImage(channel.banner.imageUrl)
+            loadingBackground.show()
+            image.loadImage(channel.banner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
+                override fun successLoad() {
+                    parallaxBackground.setGradientBackground(channel.banner.gradientColor)
+                    loadingBackground.hide()
+                }
+
+                override fun failedLoad() {
+                    parallaxBackground.setGradientBackground(channel.banner.gradientColor)
+                    loadingBackground.hide()
+                }
+            })
+        } else {
+            loadingBackground.hide()
         }
     }
 
@@ -100,7 +111,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
@@ -159,11 +170,21 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             discountPercentage = element.discount,
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
-                            stockBarPercentage = element.soldPercentage
+                            isTopAds = element.isTopads,
+                            stockBarPercentage = element.soldPercentage,
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
-                    applink = element.applink
+                    applink = element.applink,
+                    listener = this
             ))
         }
         return list

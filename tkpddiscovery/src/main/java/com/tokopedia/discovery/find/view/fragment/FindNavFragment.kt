@@ -90,7 +90,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     private var rows = 60
     private var productCount = 0
     private var isPagingAllowed: Boolean = true
-
+    private val className: String = "com.tokopedia.discovery.find.view.fragment.FindNavFragment"
     private lateinit var findSearchParam: String
 
     companion object {
@@ -470,7 +470,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
-            ImpresionTask(FindNavFragment::class.java).execute(item.productClickTrackingUrl)
+            ImpresionTask(className).execute(item.productClickTrackingUrl)
         }
     }
 

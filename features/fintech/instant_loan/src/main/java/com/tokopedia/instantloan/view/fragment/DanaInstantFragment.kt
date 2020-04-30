@@ -22,7 +22,6 @@ import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_OTP
-import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter
 import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
 import com.tokopedia.instantloan.view.presenter.DanaInstanLoanPresenter
@@ -69,7 +68,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     private fun initView() {
-        button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
+        button_search_pinjaman.setOnClickListener { searchLoanOnline() }
         il_learn_more.setOnClickListener {
             openWebView(InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE)
         }
@@ -87,11 +86,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun getAppContext(): Context? {
-        return getContext()?.applicationContext
-    }
-
-    override fun getActivityContext(): Context? {
-        return getContext()
+        return context?.applicationContext
     }
 
     override fun onSuccessLoanProfileStatus(data: UserProfileLoanEntity) {
@@ -117,10 +112,8 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
 
     }
 
-    override fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int) {
-        if (activityInteractor != null) {
-            activityInteractor!!.setUserOnGoingLoanStatus(status, loanId)
-        }
+    override fun setUserOnGoingLoanStatus(loanId: Int) {
+        activityInteractor?.setUserOnGoingLoanStatus(loanId)
     }
 
     override fun onErrorLoanProfileStatus(onErrorLoanProfileStatus: String) {
@@ -160,10 +153,9 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
 
         val layouts = intArrayOf(com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_1, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_2, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_3)
 
-        pager.adapter = InstantLoanIntroViewPagerAdapter(activity as InstantLoanActivity,
-                layouts, presenter)
-        pageIndicator.fillColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.tkpd_main_green)
-        pageIndicator.pageColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.black_54)
+        pager.adapter = InstantLoanIntroViewPagerAdapter(layouts, presenter)
+        pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
+        pageIndicator.pageColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.black_54)
         pageIndicator.setViewPager(pager, 0)
         btnNext.show()
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -198,7 +190,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
             }
         })
 
-        btnNext.setOnClickListener { v ->
+        btnNext.setOnClickListener {
             if (pager.currentItem != layouts.size) {
 
                 val position = pager.currentItem
@@ -233,7 +225,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun showToastMessage(message: String, duration: Int) {
-        Toast.makeText(getContext(), message, duration).show()
+        Toast.makeText(context, message, duration).show()
     }
 
     override fun openWebView(url: String) {
@@ -241,7 +233,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     override fun searchLoanOnline() {
-        if (presenter.isUserLoggedIn()) {
+        if (userSession.isLoggedIn) {
             sendCariPinjamanClickEvent()
             presenter.getLoanProfileStatus()
         } else {
@@ -307,7 +299,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (userSession != null && userSession.isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 presenter.getLoanProfileStatus()
             } else {
                 NetworkErrorHelper.showSnackbar(activity,
@@ -331,12 +323,12 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     interface ActivityInteractor {
-        fun setUserOnGoingLoanStatus(status: Boolean, id: Int)
+        fun setUserOnGoingLoanStatus(id: Int)
     }
 
     companion object {
 
-        val LOGIN_REQUEST_CODE = 1005
+        const val LOGIN_REQUEST_CODE = 1005
 
         fun createInstance(): DanaInstantFragment {
             val args = Bundle()

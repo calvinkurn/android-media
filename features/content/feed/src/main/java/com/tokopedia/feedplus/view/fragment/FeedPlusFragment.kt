@@ -73,9 +73,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.feedplus.KEY_FEED
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
@@ -90,6 +87,9 @@ import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
 import com.tokopedia.feedplus.view.analytics.ProductEcommerce
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_LAST_CURSOR
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
@@ -110,7 +110,6 @@ import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -155,7 +154,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener{
 
-    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
@@ -273,17 +271,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         initVar()
         retainInstance = true
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
-    }
-
-    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
-        return if (context is JankyFramesMonitoringListener) {
-            context
-        } else null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -534,8 +521,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
         mainContent = parentView.findViewById(R.id.main)
         newFeed = parentView.findViewById(R.id.layout_new_feed)
-
-        recyclerView.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_FEED_PAGE_NAME) }
 
         prepareView()
         return parentView
@@ -1013,11 +998,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
+    private fun visitShopPageWithAnalytics(positionInFeed: Int, shop: Shop) {
         goToShopPage(shop.id)
-
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+            val (_, dataList, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             for ((templateType, _, _, _, authorName, _, authorId, cardPosition, adId) in trackingList) {
                 if (TextUtils.equals(authorName, shop.name)) {
                     analytics.eventTopadsRecommendationClick(
@@ -1034,21 +1018,44 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
-        feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+    override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
+        visitShopPageWithAnalytics(positionInFeed, shop)
+        trackShopClickImpression(positionInFeed, adapterPosition, shop)
+    }
 
+    private fun trackShopClickImpression(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+            val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                trackUrlEvent(dataList[adapterPosition].shopClickUrl)
+            }
+        }
+    }
 
-            for (tracking in trackingList) {
-                if (TextUtils.equals(tracking.authorName, data.shop.name)) {
-                    trackRecommendationFollowClick(
-                            tracking,
-                            FeedAnalytics.Element.FOLLOW
-                    )
-                    break
+    private fun trackUrlEvent(url: String) {
+        feedViewModel.doTrackAffiliate(url)
+    }
+
+    override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
+        if (data.isFavorit) {
+            onShopItemClicked(positionInFeed, adapterPosition, data.shop)
+        } else {
+            feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
+
+            if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
+                val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+
+                for (tracking in trackingList) {
+                    if (TextUtils.equals(tracking.authorName, data.shop.name)) {
+                        trackRecommendationFollowClick(
+                                tracking,
+                                FeedAnalytics.Element.FOLLOW
+                        )
+                        break
+                    }
                 }
             }
+            trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
         }
     }
 
@@ -1228,9 +1235,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
-                feedViewModel.doTrackAffiliate(track.clickURL)
+                trackUrlEvent(track.clickURL)
             } else {
-                feedViewModel.doTrackAffiliate(track.viewURL)
+                trackUrlEvent(track.viewURL)
             }
         }
     }
@@ -1387,7 +1394,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun getFirstPageCursor(): String {
         context?.let {
             val cache = LocalCacheHandler(it, KEY_FEED)
-            return cache.getString(KEY_FEED_FIRSTPAGE_CURSOR, "")
+            return cache.getString(KEY_FEED_FIRST_PAGE_CURSOR, "")
         }
         return ""
     }
@@ -1698,7 +1705,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun setLastCursorOnFirstPage(lastCursor: String) {
         activity?.applicationContext?.let {
             val cache = LocalCacheHandler(it, KEY_FEED)
-            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
+            cache.putString(KEY_FEED_FIRST_PAGE_LAST_CURSOR, lastCursor)
             cache.applyEditor()
         }
     }
@@ -1706,7 +1713,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun setFirstPageCursor(firstPageCursor: String) {
         activity?.applicationContext?.let {
             val cache = LocalCacheHandler(it, KEY_FEED)
-            cache.putString(KEY_FEED_FIRSTPAGE_CURSOR, firstPageCursor)
+            cache.putString(KEY_FEED_FIRST_PAGE_CURSOR, firstPageCursor)
             cache.applyEditor()
         }
     }

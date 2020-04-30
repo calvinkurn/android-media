@@ -270,7 +270,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
         if (item.isTopAds()) {
-            new ImpresionTask(InboxFragment.class).execute(item.getClickUrl());
             onClickTopAds(item);
         }else {
             onClickOrganic(item);
@@ -304,7 +303,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onProductImpression(@NotNull RecommendationItem item) {
         if(item.isTopAds()){
-            new ImpresionTask(InboxFragment.class).execute(item.getTrackerImageUrl());
             onImpressionTopAds(item);
         }else {
             onImpressionOrganic(item);
@@ -353,10 +351,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-                if (getActivity().getApplication() instanceof GlobalNavRouter) {
-                    startActivity(((GlobalNavRouter) getActivity().getApplication())
-                            .getInboxTicketCallingIntent(getActivity()));
-                }
+                RouteManager.route(getActivity(),ApplinkConst.INBOX_TICKET);
                 break;
         }
     }

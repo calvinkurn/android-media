@@ -33,6 +33,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.chuckerteam.chucker.api.Chucker;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
@@ -45,6 +47,8 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
+import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
+import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.logger.utils.DataLogConfig;
@@ -80,6 +84,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String DEVELOPEROPTION = "developeroption";
+    public static final int DEFAULT_DELAY_UI_BLOCK = 500;
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
@@ -127,10 +132,12 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
+    private TextView tvFakeResponse;
 
     private Button requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
+    private EditText etUIBlockDelay;
 
     @Override
     public String getScreenName() {
@@ -205,6 +212,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
 
+        etUIBlockDelay = findViewById(R.id.et_block_canary_delay);
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
@@ -239,6 +247,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
+
+        tvFakeResponse = findViewById(R.id.tv_fake_response);
 
     }
 
@@ -430,10 +440,19 @@ public class DeveloperOptionActivity extends BaseActivity {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
         });
 
-        SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
-        toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
         toggleUiBlockDebugger.setOnCheckedChangeListener((compoundButton, state) -> {
-            uiBlockDebuggerPref.edit().putBoolean("isEnabled", state).apply();
+            String delayStr = etUIBlockDelay.getText().toString();
+            int delay = toInt(delayStr);
+            if (delay <= 0) {
+                delay = DEFAULT_DELAY_UI_BLOCK;
+            }
+            if (state) {
+                Toast.makeText(DeveloperOptionActivity.this,
+                        "(TODO) UI Block is enabled with delay " + delay , Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(DeveloperOptionActivity.this,
+                        "(TODO) UI Block is disabled" , Toast.LENGTH_LONG).show();
+            }
         });
 
         saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
@@ -484,6 +503,18 @@ public class DeveloperOptionActivity extends BaseActivity {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
         });
+
+        tvFakeResponse.setOnClickListener(v -> {
+            new FakeResponseActivityProvider().startActivity(this);
+        });
+    }
+
+    private int toInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        }catch (Exception e) {
+            return 0;
+        }
     }
 
     private void requestPermissionWriteFile() {
@@ -547,6 +578,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void initTranslator() {
-//        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 }

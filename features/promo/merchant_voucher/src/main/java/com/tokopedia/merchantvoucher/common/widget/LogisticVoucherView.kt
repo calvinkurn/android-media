@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.model.*
-import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
+import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 
 
 /*

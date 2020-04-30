@@ -14,11 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:focusableInTouchMode="true"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl4"
         android:scrollbars="none">
 
         <LinearLayout
@@ -30,8 +30,8 @@
                 android:id="@+id/photo_id_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/updateinactivephone_10dp"
+                android:layout_marginTop="@dimen/updateinactivephone_10dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -39,37 +39,37 @@
                     android:layout_height="wrap_content"
                     android:text="@string/foto_ktp_title"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/dp_16"
+                    android:textSize="@dimen/layout_lvl2"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_7"
-                    android:lineSpacingExtra="@dimen/dp_7"
+                    android:layout_marginTop="@dimen/updateinactivephone_7dp"
+                    android:lineSpacingExtra="@dimen/updateinactivephone_7dp"
                     android:text="@string/foto_ktp_desc"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/dp_14" />
+                    android:textSize="@dimen/updateinactivephone_14dp" />
 
                 <ImageView
                     android:id="@+id/upload_id_photo_button"
-                    android:layout_width="210dp"
-                    android:layout_height="210dp"
+                    android:layout_width="@dimen/updateinactivephone_210dp"
+                    android:layout_height="@dimen/updateinactivephone_210dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginBottom="@dimen/dp_24"
-                    android:padding="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/layout_lvl3"
+                    android:layout_marginBottom="@dimen/layout_lvl3"
+                    android:padding="@dimen/updateinactivephone_5dp"
                     android:src="@drawable/ic_add_photo_change_inactive_form"
                     android:background="@drawable/bg_white_border_grey_rounded_upload_photo_button"
                     android:visibility="visible" />
 
                 <RelativeLayout
                     android:id="@+id/upload_id_photo_view"
-                    android:layout_width="210dp"
-                    android:layout_height="210dp"
+                    android:layout_width="@dimen/updateinactivephone_210dp"
+                    android:layout_height="@dimen/updateinactivephone_210dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/dp_24"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/spacing_lvl5"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
                     android:background="@drawable/bg_border"
                     android:visibility="gone">
 
@@ -83,13 +83,13 @@
                         tools:src="@drawable/ic_add_photo" />
 
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/updateinactivephone_30dp"
+                        android:layout_height="@dimen/updateinactivephone_30dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
                         android:background="@drawable/bg_border"
-                        android:padding="@dimen/dp_5"
+                        android:padding="@dimen/updateinactivephone_5dp"
                         app:srcCompat="@drawable/ic_edit" />
 
                 </RelativeLayout>
@@ -107,37 +107,37 @@
                     android:layout_height="wrap_content"
                     android:text="@string/foto_payment_title"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/dp_16"
+                    android:textSize="@dimen/layout_lvl2"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_7"
-                    android:lineSpacingExtra="@dimen/dp_7"
+                    android:layout_marginTop="@dimen/updateinactivephone_7dp"
+                    android:lineSpacingExtra="@dimen/updateinactivephone_7dp"
                     android:text="@string/foto_payment_desc"
                     android:textColor="@color/black_54"
-                    android:textSize="@dimen/dp_14" />
+                    android:textSize="@dimen/updateinactivephone_14dp" />
 
                 <ImageView
                     android:id="@+id/upload_account_book_button"
-                    android:layout_width="210dp"
-                    android:layout_height="210dp"
+                    android:layout_width="@dimen/updateinactivephone_210dp"
+                    android:layout_height="@dimen/updateinactivephone_210dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/dp_30"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:padding="@dimen/dp_5"
+                    android:layout_marginBottom="@dimen/updateinactivephone_30dp"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
+                    android:padding="@dimen/updateinactivephone_5dp"
                     android:src="@drawable/ic_add_photo_change_inactive_form"
                     android:background="@drawable/bg_white_border_grey_rounded_upload_photo_button"
                     android:visibility="visible" />
 
                 <RelativeLayout
                     android:id="@+id/upload_account_book_view"
-                    android:layout_width="210dp"
-                    android:layout_height="210dp"
+                    android:layout_width="@dimen/updateinactivephone_210dp"
+                    android:layout_height="@dimen/updateinactivephone_210dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/dp_24"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/spacing_lvl5"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
                     android:background="@drawable/bg_border"
                     android:visibility="gone">
 
@@ -151,13 +151,13 @@
                         tools:src="@drawable/ic_add_photo" />
 
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/updateinactivephone_30dp"
+                        android:layout_height="@dimen/updateinactivephone_30dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
                         android:background="@drawable/bg_border"
-                        android:padding="@dimen/dp_5"
+                        android:padding="@dimen/updateinactivephone_5dp"
                         app:srcCompat="@drawable/ic_edit" />
 
                 </RelativeLayout>
@@ -168,17 +168,17 @@
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="0dp"
-                android:padding="@dimen/dp_16"
-                app:cardElevation="0dp">
+                android:elevation="@dimen/updateinactivephone_0dp"
+                android:padding="@dimen/spacing_lvl4"
+                app:cardElevation="@dimen/updateinactivephone_0dp">
 
                 <TextView
                     android:id="@+id/button_submit"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_48"
+                    android:layout_height="@dimen/layout_lvl5"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="24dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="@dimen/spacing_lvl5"
+                    android:layout_marginTop="@dimen/updateinactivephone_40dp"
                     android:background="@drawable/login_button_selector"
                     android:clickable="false"
                     android:enabled="false"

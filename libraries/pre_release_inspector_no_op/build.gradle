@@ -7,8 +7,8 @@ dependencies {
 project.ext {
     artifactId = 'pre-release-inspector-noop'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
-    artifactName = "pre-release-inspector-noop-release"
+    versionName = "0.0.2"
+    artifactName = "pre_release_inspector_no_op-release"
 }
 
 apply from: '../../publish_local.gradle'

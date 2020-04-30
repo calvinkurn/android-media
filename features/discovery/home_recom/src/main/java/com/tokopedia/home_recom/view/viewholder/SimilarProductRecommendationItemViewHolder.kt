@@ -17,7 +17,7 @@ class SimilarProductRecommendationItemViewHolder (
 ) : AbstractViewHolder<SimilarProductRecommendationItemDataModel>(view){
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
-
+    private val className: String = "com.tokopedia.home_recom.view.viewholder.SimilarProductRecommendationItemViewHolder"
     override fun bind(element: SimilarProductRecommendationItemDataModel) {
         productCardView.run {
             setProductModel(
@@ -47,7 +47,7 @@ class SimilarProductRecommendationItemViewHolder (
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if(element.productItem.isTopAds){
-                        ImpresionTask(SimilarProductRecommendationItemViewHolder::class.java).execute(element.productItem.trackerImageUrl)
+                        ImpresionTask(className).execute(element.productItem.trackerImageUrl)
                     }
                     element.listener.onProductImpression(element.productItem)
                 }
@@ -55,7 +55,7 @@ class SimilarProductRecommendationItemViewHolder (
 
             setOnClickListener {
                 element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) ImpresionTask(SimilarProductRecommendationItemViewHolder::class.java).execute(element.productItem.clickUrl)
+                if (element.productItem.isTopAds) ImpresionTask(className).execute(element.productItem.clickUrl)
             }
         }
     }

@@ -7,23 +7,24 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 
-class PartialButtonActionView private constructor(private val view: View,
+class PartialButtonActionView private constructor(val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
     var rincianTopAdsClick: (() -> Unit)? = null
     var buyNowClick: ((String) -> Unit)? = null
     var addToCartClick: ((String) -> Unit)? = null
+    var buttonCartTypeClick: ((String, String, Boolean) -> Unit)? = null
+
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
         set(value) {
@@ -38,23 +39,32 @@ class PartialButtonActionView private constructor(private val view: View,
     var hasShopAuthority: Boolean = false
     var isLeasing: Boolean = false
     var hasTopAdsActive: Boolean = false
+    var isShopOwner: Boolean = false
     var preOrder: PreOrder? = PreOrder()
+    var onSuccessGetCartType = false
+    var showByMe = false
+    var cartTypeData: CartTypeData? = null
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
-        this.isWarehouseProduct = isWarehouseProduct
-        this.hasShopAuthority = hasShopAuthority
+    fun setButtonP1(preOrder: PreOrder?, isLeasing: Boolean) {
         this.preOrder = preOrder
-        renderButton()
+        this.isLeasing = isLeasing
     }
 
-    fun renderData(isWarehouseProduct: Boolean, isExpressCheckout: Boolean, hasTopAdsActive: Boolean) {
-        this.isWarehouseProduct = isWarehouseProduct
-        this.isExpressCheckout = isExpressCheckout
+    fun setTopAdsButton(hasTopAdsActive: Boolean) {
         this.hasTopAdsActive = hasTopAdsActive
+    }
+
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, isShopOwner: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+        this.isWarehouseProduct = isWarehouseProduct
+        this.hasShopAuthority = hasShopAuthority
+        this.hasTopAdsActive = hasTopAdsActive
+        this.cartTypeData = cartTypeData
+        this.isShopOwner = isShopOwner
+        this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton()
     }
 
@@ -63,8 +73,54 @@ class PartialButtonActionView private constructor(private val view: View,
             showNoStockButton()
         } else if (hasShopAuthority) {
             showShopManageButton()
-        } else if (!GlobalConfig.isSellerApp()) {
+        } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
+            showCartTypeButton()
+        } else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType) {
             showNewCheckoutButton()
+        }
+    }
+
+    private fun showCartTypeButton() = with(view) {
+        hideButtonEmptyAndTopAds()
+        resetTopChatLayoutParams()
+
+        val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtons ?: listOf()
+
+        btn_topchat.showWithCondition(ProductDetailConstant.KEY_CHAT !in unavailableButton)
+        btn_byme.showWithCondition(showByMe && ProductDetailConstant.KEY_BYME !in unavailableButton)
+
+        btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
+        btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
+
+        btn_buy_now.text = availableButton.getOrNull(0)?.text ?: ""
+        btn_add_to_cart.text = availableButton.getOrNull(1)?.text ?: ""
+
+        btn_buy_now.setOnClickListener {
+            buttonCartTypeClick?.invoke(availableButton.getOrNull(0)?.cartType
+                    ?: "", btn_buy_now.text.toString(), availableButton.getOrNull(0)?.showRecommendation
+                    ?: false)
+        }
+
+        btn_add_to_cart.setOnClickListener {
+            buttonCartTypeClick?.invoke(availableButton.getOrNull(1)?.cartType
+                    ?: "", btn_add_to_cart.text.toString(), availableButton.getOrNull(1)?.showRecommendation
+                    ?: false)
+        }
+
+        btn_topchat.setOnClickListener(this@PartialButtonActionView)
+        btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
+        btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")
+        btn_add_to_cart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
+    }
+
+    private fun UnifyButton.generateTheme(colorDescription: String) {
+        if (colorDescription == ProductDetailConstant.KEY_BUTTON_PRIMARY) {
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.buttonType = UnifyButton.Type.TRANSACTION
+        } else {
+            this.buttonVariant = UnifyButton.Variant.GHOST
+            this.buttonType = UnifyButton.Type.TRANSACTION
         }
     }
 
@@ -82,7 +138,7 @@ class PartialButtonActionView private constructor(private val view: View,
                             R.string.buy
                         }
                     })
-            btn_add_to_cart.text = context.getString(R.string.add_product_to_cart)
+            btn_add_to_cart.text = context.getString(R.string.plus_product_to_cart)
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visible()
             if (isLeasing) {
@@ -102,6 +158,9 @@ class PartialButtonActionView private constructor(private val view: View,
                 if (hasComponentLoading) return@setOnClickListener
                 addToCartClick?.invoke(btn_add_to_cart.text.toString())
             }
+
+            btn_buy_now.generateTheme(ProductDetailConstant.KEY_BUTTON_SECONDARY)
+            btn_add_to_cart.generateTheme(ProductDetailConstant.KEY_BUTTON_PRIMARY)
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
         }
@@ -164,8 +223,9 @@ class PartialButtonActionView private constructor(private val view: View,
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
             btn_byme.hide()
+            btn_top_ads.hide()
             btn_empty_stock.show()
-            btn_topchat.show()
+            btn_topchat.showWithCondition(!isShopOwner)
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
         }
     }
@@ -180,10 +240,14 @@ class PartialButtonActionView private constructor(private val view: View,
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         with(view) {
-            if (show) {
+            if (show && !isWarehouseProduct) {
+                showByMe = true
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()
-            } else btn_byme.gone()
+            } else {
+                showByMe = false
+                btn_byme.gone()
+            }
         }
     }
 

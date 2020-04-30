@@ -46,6 +46,15 @@ object ApplinkConstInternalMarketplace {
     // CartAddressChoiceActivity
     @JvmField
     val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
+    // PreferenceListActivity
+    @JvmField
+    val PREFERENCE_LIST = "$INTERNAL_MARKETPLACE/preference-list"
+    // PreferenceEditActivity
+    @JvmField
+    val PREFERENCE_EDIT = "$INTERNAL_MARKETPLACE/preference-edit"
+    // OrderSummaryPageActivity
+    @JvmField
+    val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
     // ProductDetailActivity
     @JvmField
@@ -104,6 +113,15 @@ object ApplinkConstInternalMarketplace {
     //ShopPageActivity
     @JvmField
     val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
+
+    @JvmField
+    val SHOP_PAGE_HOME = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/home"
+
+    @JvmField
+    val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
 
     //ReviewShopInfoActiviy
     @JvmField
@@ -175,6 +193,8 @@ object ApplinkConstInternalMarketplace {
     //Report Product
     @JvmField
     val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
+    @JvmField
+    val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
     // ShopScoreDetailActivity
     @JvmField
@@ -213,5 +233,8 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
+    @JvmField
+    val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
 }

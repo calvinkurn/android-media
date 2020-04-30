@@ -11,6 +11,7 @@
         naming: path_{module}_{page}
         order by name
     -->
+    <string name="host_feed_detail_page" translatable="false">feedcommunicationdetail</string>
     <string name="path_category_detail" translatable="false">/category/.*\\/</string>
 
     <string name="path_checkout_variant" translatable="false">/checkout-variant</string>
@@ -18,6 +19,9 @@
     <string name="path_checkout" translatable="false">/checkout</string>
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
     <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
+    <string name="path_preference_list" translatable="false">/preference-list</string>
+    <string name="path_preference_edit" translatable="false">/preference-edit</string>
+    <string name="path_one_click_checkout" translatable="false">/one-click-checkout</string>
 
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
     <string name="path_gold_merchant_membership" translatable="false">/gold-merchant-membership</string>
@@ -41,6 +45,10 @@
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
     <string name="path_shop_page" translatable="false">/shop-page/.*\\/</string>
+    <string name="path_shop_page_home" translatable="false">/shop-page/.*\\/home</string>
+    <string name="path_shop_page_info" translatable="false">/shop-page/.*\\/info</string>
+    <string name="path_shop_page_product_list_result" translatable="false">/shop-page-product-list/.*\\/etalase/.*\\/</string>
+
     <string name="path_shop_info" translatable="false">/shop-info/.*\\/</string>
     <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
 

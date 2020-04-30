@@ -24,6 +24,8 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 @Deprecated("RecommendationCardView replaced with ProductCardView v2")
 open class RecommendationCardView : ProductCardView {
 
+    private val className: String = "com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView"
+
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -45,7 +47,7 @@ open class RecommendationCardView : ProductCardView {
                 object: ViewHintListener {
                     override fun onViewHint() {
                         if(item.isTopAds){
-                            ImpresionTask(RecommendationCardView::class.java).execute(item.trackerImageUrl)
+                            ImpresionTask(className).execute(item.trackerImageUrl)
                             //Impression for topads item
                             trackingListener.onImpressionTopAds(item)
                         } else {
@@ -58,7 +60,7 @@ open class RecommendationCardView : ProductCardView {
 
         setOnClickListener {
             if (item.isTopAds) {
-                ImpresionTask(RecommendationCardView::class.java).execute(item.clickUrl)
+                ImpresionTask(className).execute(item.clickUrl)
                 //Click for topads item
                 trackingListener.onClickTopAds(item)
             } else {

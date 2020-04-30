@@ -25,6 +25,8 @@ class ShopHomeAdapterTypeFactory(
         private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
+    private var previousViewHolder: AbstractViewHolder<*>? = null
+
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         when(baseShopHomeWidgetUiModel.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
@@ -50,21 +52,25 @@ class ShopHomeAdapterTypeFactory(
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        return when (type) {
+        val viewHolder = when (type) {
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnViewHolder(
                     parent,
+                    previousViewHolder,
                     listener
             )
             ShopHomeSliderSquareViewHolder.LAYOUT_RES -> ShopHomeSliderSquareViewHolder(
                     parent,
+                    previousViewHolder,
                     listener
             )
             ShopHomeSliderBannerViewHolder.LAYOUT_RES -> ShopHomeSliderBannerViewHolder(
                     parent,
+                    previousViewHolder,
                     listener
             )
             ShopHomeVideoViewHolder.LAYOUT_RES -> ShopHomeVideoViewHolder(
                     parent,
+                    previousViewHolder,
                     listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
@@ -85,5 +91,7 @@ class ShopHomeAdapterTypeFactory(
 
             else -> return super.createViewHolder(parent, type)
         }
+        previousViewHolder = viewHolder
+        return viewHolder
     }
 }

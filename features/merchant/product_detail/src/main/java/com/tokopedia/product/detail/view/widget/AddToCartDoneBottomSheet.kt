@@ -68,6 +68,7 @@ class AddToCartDoneBottomSheet :
     private lateinit var containerLayout: FrameLayout
     private lateinit var viewShimmeringLoading: View
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
+    private val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
 
     override fun getLayoutResourceId(): Int {
         return R.layout.add_to_cart_done_bottomsheet
@@ -211,7 +212,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if (item.isTopAds) ImpresionTask(AddToCartDoneBottomSheet::class.java).execute(item.clickUrl)
+        if (item.isTopAds) ImpresionTask(className).execute(item.clickUrl)
         productDetailTracking.eventAddToCartRecommendationClick(
                 item,
                 item.position,
@@ -228,7 +229,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        if (item.isTopAds) ImpresionTask(AddToCartDoneBottomSheet::class.java).execute(item.trackerImageUrl)
+        if (item.isTopAds) ImpresionTask(className).execute(item.trackerImageUrl)
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,

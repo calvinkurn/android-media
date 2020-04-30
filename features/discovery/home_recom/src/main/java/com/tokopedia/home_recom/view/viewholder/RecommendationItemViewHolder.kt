@@ -19,7 +19,7 @@ class RecommendationItemViewHolder(
 ) : AbstractViewHolder<RecommendationItemDataModel>(view){
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
-
+    private val className: String = "com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder"
     override fun bind(element: RecommendationItemDataModel) {
         productCardView.run {
             setProductModel(
@@ -50,7 +50,7 @@ class RecommendationItemViewHolder(
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if(element.productItem.isTopAds){
-                        ImpresionTask(RecommendationItemViewHolder::class.java).execute(element.productItem.trackerImageUrl)
+                        ImpresionTask(className).execute(element.productItem.trackerImageUrl)
                     }
                     element.listener.onProductImpression(element.productItem)
                 }
@@ -58,7 +58,7 @@ class RecommendationItemViewHolder(
 
             setOnClickListener {
                 element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) ImpresionTask(RecommendationItemViewHolder::class.java).execute(element.productItem.clickUrl)
+                if (element.productItem.isTopAds) ImpresionTask(className).execute(element.productItem.clickUrl)
             }
         }
     }

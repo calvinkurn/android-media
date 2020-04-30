@@ -9,10 +9,18 @@ import com.tokopedia.search.shouldBe
 import io.mockk.MockKVerificationScope
 
 fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
+    productListView.stopPreparePagePerformanceMonitoring()
+    productListView.startNetworkRequestPerformanceMonitoring()
+
     productListView.showRefreshLayout()
 }
 
 fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View) {
+    productListView.stopNetworkRequestPerformanceMonitoring()
+    productListView.startRenderPerformanceMonitoring()
+
+    productListView.isLandingPage
+
     productListView.clearLastProductItemPositionFromCache()
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(any())

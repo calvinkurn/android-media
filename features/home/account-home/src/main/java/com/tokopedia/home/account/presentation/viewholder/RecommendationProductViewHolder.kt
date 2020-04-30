@@ -49,7 +49,8 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
                                         title = recommendationLabel.title,
                                         type = recommendationLabel.type
                                 )
-                            }
+                            },
+                            hasThreeDots = true
                     )
             )
             setImageProductViewHintListener(element.product, object : ViewHintListener {
@@ -60,6 +61,10 @@ class RecommendationProductViewHolder(itemView: View, val accountItemListener: A
 
             setOnClickListener {
                 accountItemListener.onProductRecommendationClicked(element.product, adapterPosition, element.widgetTitle)
+            }
+
+            setThreeDotsOnClickListener {
+                accountItemListener.onProductRecommendationThreeDotsClicked(element.product, adapterPosition)
             }
         }
     }

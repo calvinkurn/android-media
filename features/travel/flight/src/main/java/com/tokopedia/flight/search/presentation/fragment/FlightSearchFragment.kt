@@ -410,7 +410,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun navigateToTheNextPage(selectedId: String, selectedTerm: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel, isBestPairing, isCombineDone)
+            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel,
+                    isBestPairing, isCombineDone, flightSearchPassData.searchRequestId)
         }
     }
 
@@ -428,6 +429,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (!flightAirportCombineModel.isHasLoad) {
             flightAirportCombineModel.isHasLoad = true
             progress += halfProgressAmount
+        }
+
+        if (!isReturning()) {
+            flightSearchPassData.searchRequestId = flightSearchMetaViewModel.searchRequestId
         }
 
         if (flightAirportCombineModel.isNeedRefresh) {
@@ -641,12 +646,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun setUpProgress() {
         if (horizontal_progress_bar.visibility == View.VISIBLE) {
-            if (isDoneLoadData() || isCombineDone) {
-                if (isDoneLoadData() && !isCombineDone) {
-                    progress = MAX_PROGRESS - 10
-                } else if (isDoneLoadData() && isCombineDone) {
-                    progress = MAX_PROGRESS
-                }
+            if (isDoneLoadData()) {
                 horizontal_progress_bar.setProgress(progress)
                 flightSearchPresenter.setDelayHorizontalProgress()
             } else {
@@ -895,7 +895,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     interface OnFlightSearchFragmentListener {
 
         fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
-                         isBestPairing: Boolean, isCombineDone: Boolean)
+                         isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
 
         fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel)
     }

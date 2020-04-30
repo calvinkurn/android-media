@@ -3,17 +3,22 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.graphics.Color
 import android.view.View
 import android.view.ViewStub
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -23,40 +28,59 @@ import com.tokopedia.unifyprinciples.Typography
 class PopularKeywordViewHolder (val view: View,
                                 val homeCategoryListener: HomeCategoryListener,
                                 val popularKeywordListener: PopularKeywordListener)
-    : AbstractViewHolder<PopularKeywordListViewModel>(view) {
+    : AbstractViewHolder<PopularKeywordListDataModel>(view) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_popular_keyword
     }
 
-    lateinit var adapter: PopularKeywordAdapter
+    private var adapter: PopularKeywordAdapter? = null
     var channelTitle: Typography? = null
     var tvReload: Typography? = null
-    var ivReload: SquareImageView? = null
+    var ivReload: AppCompatImageView? = null
+    var loadingView: View? = null
+    private val rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+    private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
 
+    init{
+        rotateAnimation.duration = 500
+        rotateAnimation.interpolator = LinearInterpolator()
+    }
 
-    override fun bind(element: PopularKeywordListViewModel) {
+    override fun bind(element: PopularKeywordListDataModel) {
         initStub(element)
         initAdapter(element)
     }
 
-    override fun bind(element: PopularKeywordListViewModel, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
+    override fun bind(element: PopularKeywordListDataModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
-    private fun initAdapter(element: PopularKeywordListViewModel) {
-        adapter = PopularKeywordAdapter(element.popularKeywordList, popularKeywordListener, element.channel)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
-        recyclerView.layoutManager = GridLayoutManager(view.context, 2)
-        recyclerView.adapter = adapter
+    private fun initAdapter(element: PopularKeywordListDataModel) {
+        if(adapter == null) {
+            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel)
+            recyclerView.layoutManager = GridLayoutManager(view.context, 2)
+            recyclerView.adapter = adapter
+        }
+        adapter?.submitList(element.popularKeywordList)
     }
 
-    private fun initStub(element: PopularKeywordListViewModel) {
+    private fun initStub(element: PopularKeywordListDataModel) {
         try {
             val channelTitleStub: View? = itemView.findViewById(R.id.channel_title)
             val tvReloadStub: View? = itemView.findViewById(R.id.tv_reload)
             val ivReloadStub: View? = itemView.findViewById(R.id.iv_reload)
+            val loadingViewStub: View? = itemView.findViewById(R.id.loading_popular)
+
+            loadingViewStub?.let {
+                initLoadingView()
+                if(element.popularKeywordList.isEmpty()){
+                    loadingView?.show()
+                }else {
+                    loadingView?.gone()
+                }
+            }
+
             channelTitleStub?.let {
                 if (element.channel.header.name.isNotEmpty()) {
                     it.visibility = View.VISIBLE
@@ -108,9 +132,23 @@ class PopularKeywordViewHolder (val view: View,
         return viewStub?.parent == null
     }
 
-    private fun reloadClickListener(element: PopularKeywordListViewModel): View.OnClickListener {
+    private fun reloadClickListener(element: PopularKeywordListDataModel): View.OnClickListener {
         return View.OnClickListener {
+            ivReload?.startAnimation(rotateAnimation)
+            loadingView?.show()
+            adapter?.clearList()
             popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
+        }
+    }
+
+    private fun initLoadingView(){
+        val loadingViewStub: View? = itemView.findViewById(R.id.loading_popular)
+        loadingView = if (loadingViewStub is ViewStub &&
+                !isViewStubHasBeenInflated(loadingViewStub)) {
+            val stubView = loadingViewStub.inflate()
+            stubView?.findViewById(R.id.loading_popular)
+        } else {
+            itemView.findViewById(R.id.loading_popular)
         }
     }
 
