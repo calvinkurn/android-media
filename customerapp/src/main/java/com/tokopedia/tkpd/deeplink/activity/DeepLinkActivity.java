@@ -14,6 +14,7 @@ import androidx.core.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
@@ -28,8 +29,6 @@ import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
-import java.util.List;
-
 import timber.log.Timber;
 
 /**
@@ -42,7 +41,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private Uri uriData;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
-    private static final String AMP = "amp";
     private View mainView;
 
     @Override
@@ -77,7 +75,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void setupURIPass(Uri data) {
-        this.uriData = removeAmpFromLink(data);
+        this.uriData = DeepLinkChecker.getRemoveAmpLink(this, data);
     }
 
     @Override
@@ -154,7 +152,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
             if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
                 Bundle bundle = getIntent().getExtras();
-                uriData = removeAmpFromLink(Uri.parse(bundle.getString(APPLINK_URL)));
+                uriData = DeepLinkChecker.getRemoveAmpLink(this, Uri.parse(bundle.getString(APPLINK_URL)));
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);
@@ -179,16 +177,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onNewIntent(intent);
         Timber.d("FCM onNewIntent " + intent.getData());
         if (intent.getData() != null) {
-            uriData = removeAmpFromLink(intent.getData());
+            uriData = DeepLinkChecker.getRemoveAmpLink(this, intent.getData());
         }
-    }
-
-    private Uri removeAmpFromLink(Uri uriData){
-        List<String> path = uriData.getPathSegments();
-        if (path!= null && path.size() > 1 && path.get(0).equals(AMP)) {
-            return Uri.parse(uriData.toString().replaceFirst(AMP + "/", ""));
-        }
-        return uriData;
     }
 
     private void logDeeplink() {

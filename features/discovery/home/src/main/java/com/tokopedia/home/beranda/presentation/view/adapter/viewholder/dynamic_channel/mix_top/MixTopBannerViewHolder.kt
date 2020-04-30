@@ -90,11 +90,6 @@ class MixTopBannerViewHolder(
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
-        homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopView(
-                MixTopTracking.mapChannelToProductTracker(channel),
-                channel.header.name,
-                adapterPosition.toString()
-        ) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {

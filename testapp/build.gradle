@@ -150,6 +150,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icon
@@ -173,7 +174,7 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-
+	implementation project(rootProject.ext.libraries.analyticsDebugger)
 }
 
 repositories {

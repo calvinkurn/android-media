@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.hotlistRevamp.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.SendTopAdsUseCase
+import com.tokopedia.common_category.usecase.SendTopAdsUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
