@@ -37,7 +37,7 @@ class PromoCheckoutAnalytics {
     private val KEY_CATEGORY_DIGITAL_COUPON_DETAIL = "kupon milik saya - coupon detail"
     private val KEY_ACTION_DIGITAL_CLICK_BANNER = "click banner ticker"
     private val KEY_ACTION_DIGITAL_CLICK_COUPON = "click coupon ticker"
-    private val KEY_ACTION_DIGITAL_CLICK_COUPON_DETAIL = "click gunakanr"
+    private val KEY_ACTION_DIGITAL_CLICK_COUPON_DETAIL = "click gunakan"
     private val KEY_EVENT_DIGITAL_CLICK_COUPON = "clickCoupon"
     private val KEY_EVENT_DIGITAL_CLICK_BANNER = "clickBanner"
     private val KEY_USER_ID = "userId"
@@ -136,7 +136,7 @@ class PromoCheckoutAnalytics {
                 KEY_EVENT_DIGITAL_CLICK_COUPON,
                 KEY_CATEGORY_DIGITAL_MY_COUPON,
                 KEY_ACTION_DIGITAL_CLICK_COUPON,
-                "$category + $operator")
+                "$category - $operator")
         map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
