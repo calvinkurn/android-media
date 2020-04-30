@@ -142,7 +142,9 @@ class EditProductInputMapper @Inject constructor() {
             }
             variantOptionUploadId.getOrNull(this - 1)?.apply {
                 if (this.isNotEmpty()) {
-                    variantPictureList = listOf(Picture(uploadId = this))
+                    val picture = Picture(uploadId = this)
+                    picture.picID  = ""
+                    variantPictureList = listOf(picture)
                 }
             }
         }

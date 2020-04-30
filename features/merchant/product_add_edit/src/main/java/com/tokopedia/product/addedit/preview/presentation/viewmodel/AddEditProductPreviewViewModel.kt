@@ -107,6 +107,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
 
+    val hasWholesale: Boolean
+        get() = productInputModel.value?.detailInputModel?.wholesaleList?.isNotEmpty() ?: false
+
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
