@@ -13,13 +13,13 @@ import javax.inject.Named
 
 class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase
-) : UseCase<DynamicHomeChannelCommon>() {
+) : UseCase<DynamicChannel>() {
     private val paramChannelType = "type"
 
     var requestParams: MutableMap<String, Any> = mutableMapOf()
         private set
 
-    override suspend fun executeOnBackground(): DynamicHomeChannelCommon {
+    override suspend fun executeOnBackground(): DynamicChannel {
         val responseType: Type = DynamicChannel.Response::class.java
         val requestInstance = GraphqlRequest(DynamicChannelQueryCommon.getQuery(), responseType, requestParams)
 
@@ -27,11 +27,11 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         graphqlUseCase.addRequest(requestInstance)
 
         return graphqlUseCase.executeOnBackground().run {
-            getData<DynamicHomeChannelCommon>(responseType)
+            getData<DynamicChannel>(responseType)
         }
     }
 
-    suspend operator fun invoke(): DynamicHomeChannelCommon = executeOnBackground()
+    suspend operator fun invoke(): DynamicChannel = executeOnBackground()
 
     fun setupParams(channelType: String) {
         if (channelType.isNotEmpty()) {

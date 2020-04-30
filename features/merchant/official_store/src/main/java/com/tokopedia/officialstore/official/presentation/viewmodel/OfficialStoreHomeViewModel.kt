@@ -62,7 +62,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
         get() = _officialStoreFeaturedShopResult
 
-    val officialStoreDynamicChannelResult: LiveData<Result<DynamicHomeChannelCommon>>
+    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
         get() = _officialStoreDynamicChannelResult
 
     val officialStoreProductRecommendationResult: LiveData<Result<RecommendationWidget>>
@@ -87,7 +87,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicHomeChannelCommon>>()
+    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
 
     private val _officialStoreProductRecommendation by lazy {
         MutableLiveData<Result<RecommendationWidget>>()
