@@ -100,7 +100,6 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.I
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationBottomSheetListener
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationProductBottomSheet
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -129,8 +128,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     ProductMultiEditBottomSheet.MultiEditListener,
     ProductManageFilterFragment.OnFinishedListener,
     ProductManageQuickEditPriceFragment.OnFinishedListener,
-    ProductManageQuickEditStockFragment.OnFinishedListener,
-    SellerMigrationBottomSheetListener {
+    ProductManageQuickEditStockFragment.OnFinishedListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -401,7 +399,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun openSellerMigrationBottomSheet() {
         context?.let {
-            val sellerMigrationBottomSheet = SellerMigrationProductBottomSheet.createNewInstance(it, this@ProductManageFragment)
+            val sellerMigrationBottomSheet = SellerMigrationProductBottomSheet.createNewInstance(it)
             sellerMigrationBottomSheet.show(this.childFragmentManager, "")
         }
     }
@@ -1587,11 +1585,4 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         private const val DESC_IMAGE_LIST = "desc_img_list"
     }
 
-    override fun onClickGoToSellerApp() {
-        // Go To Seller App
-    }
-
-    override fun onClickBottomSheetFooter() {
-        // Go To Web View
-    }
 }

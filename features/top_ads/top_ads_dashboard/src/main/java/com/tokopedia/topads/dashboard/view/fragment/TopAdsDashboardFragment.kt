@@ -32,7 +32,6 @@ import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationBottomSheetListener
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationPromoBottomSheet
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.auto.view.activity.EmptyProductActivity
@@ -71,7 +70,7 @@ import javax.inject.Inject
  * Created by hadi.putra on 23/04/18.
  */
 
-class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, SellerMigrationBottomSheetListener {
+class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var isShowAutoAddPromo = false
     internal var isAutoTopUpActive = false
     internal var isAutoAds = false
@@ -246,7 +245,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Selle
 
     private fun showSellerMigrationBottomSheet() {
         context?.let {
-            val sellerMigrationBottomSheet =  SellerMigrationPromoBottomSheet.createNewInstance(it, this)
+            val sellerMigrationBottomSheet =  SellerMigrationPromoBottomSheet.createNewInstance(it)
             sellerMigrationBottomSheet.show(this.childFragmentManager, "")
         }
     }
@@ -724,14 +723,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView, Selle
 
     override fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data) {
         adStatus = data.category
-    }
-
-    override fun onClickGoToSellerApp() {
-        // Go To Seller App
-    }
-
-    override fun onClickBottomSheetFooter() {
-        // Go to Webview
     }
 
     private fun onActiveAutoAds() {

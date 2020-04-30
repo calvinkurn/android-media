@@ -30,7 +30,6 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationBottomSheetListener;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
@@ -50,7 +49,7 @@ import kotlin.jvm.functions.Function2;
  * @author okasurya on 7/16/18.
  */
 public class SellerAccountFragment extends BaseAccountFragment implements AccountItemListener,
-        SellerAccount.View, FragmentListener, SellerMigrationBottomSheetListener {
+        SellerAccount.View, FragmentListener {
 
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
@@ -278,19 +277,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     }
 
-    @Override
-    public void onClickGoToSellerApp() {
-        //Go To Seller App
-    }
-
-    @Override
-    public void onClickBottomSheetFooter() {
-        //Open webview or sth
-    }
-
     private void openSellerMigrationBottomSheet() {
         if(getContext() != null) {
-            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.createNewInstance(getContext(), this);
+            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.
+                    createNewInstance(getContext());
             sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
         }
     }

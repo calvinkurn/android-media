@@ -6,15 +6,13 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.ACCOUNT_SELLER_MIGRATION_IMAGE_LINK
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_seller_migration_account_bottom_sheet.*
 
-class SellerMigrationAccountBottomSheet(sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : SellerMigrationBottomSheet(sellerMigrationBottomSheetListener) {
+class SellerMigrationAccountBottomSheet : SellerMigrationBottomSheet() {
 
     companion object {
-        fun createNewInstance(context: Context, sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : SellerMigrationAccountBottomSheet {
-            return SellerMigrationAccountBottomSheet(sellerMigrationBottomSheetListener).apply{
+        fun createNewInstance(context: Context) : SellerMigrationAccountBottomSheet {
+            return SellerMigrationAccountBottomSheet().apply{
                 val view = View.inflate(context, R.layout.widget_seller_migration_account_bottom_sheet,null)
                 setChild(view)
             }

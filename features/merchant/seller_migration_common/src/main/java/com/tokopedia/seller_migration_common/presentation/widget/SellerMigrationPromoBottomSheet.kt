@@ -6,11 +6,11 @@ import android.view.View
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 
-class SellerMigrationPromoBottomSheet(sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : SellerMigrationBottomSheet(sellerMigrationBottomSheetListener) {
+class SellerMigrationPromoBottomSheet : SellerMigrationBottomSheet() {
 
     companion object {
-        fun createNewInstance(context: Context, sellerMigrationBottomSheetListener: SellerMigrationBottomSheetListener) : SellerMigrationPromoBottomSheet {
-            return SellerMigrationPromoBottomSheet(sellerMigrationBottomSheetListener).apply{
+        fun createNewInstance(context: Context) : SellerMigrationPromoBottomSheet {
+            return SellerMigrationPromoBottomSheet().apply{
                 val view = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet,null)
                 setChild(view)
             }
