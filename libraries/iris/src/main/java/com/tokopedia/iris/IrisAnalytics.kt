@@ -130,7 +130,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         setAlarm(true, force = false)
     }
 
-    fun bundleToMap(extras: Bundle): Map<String, String>? {
+    private fun bundleToMap(extras: Bundle): Map<String, String>? {
         val map: MutableMap<String, String> = HashMap()
         val ks: Set<String> = extras.keySet()
         val iterator = ks.iterator()
