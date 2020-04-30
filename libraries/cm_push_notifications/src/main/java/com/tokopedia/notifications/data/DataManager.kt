@@ -1,11 +1,13 @@
 package com.tokopedia.notifications.data
 
-import android.util.Log
+import android.content.Context
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
+import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.analytics.NotificationAnalytics
+import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
 import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.domain.AttributionUseCase
 import com.tokopedia.notifications.model.AddToCart
@@ -75,19 +77,19 @@ class DataManager @Inject constructor(
     * fetch all of notification haven't rendered yet
     * and store it on local CM_Push_Notification database
     * */
-    fun amplification(deviceToken: String) {
+    fun amplification(applicationContext: Context, deviceToken: String) {
         val params = amplificationUseCase.params(deviceToken)
         amplificationUseCase.execute(params) {
             it.webhookAttributionNotifier.pushData.forEach { data ->
-                //TODO add converter to baseNotificationModel
-                //TODO store into local CM database
-                Log.d("TAG", data)
+                val bundle = jsonToBundle(data)
+                PushController(
+                        applicationContext
+                ).handleNotificationBundle(bundle)
             }
         }
     }
 
     companion object {
-        
         fun atcParams(productId: String, shopId: Int?): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = productId.toLongOrNull()?: 0
@@ -99,7 +101,6 @@ class DataManager @Inject constructor(
                 putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
             }
         }
-        
     }
 
 }
