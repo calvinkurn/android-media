@@ -114,8 +114,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     private fun iniFilterData() {
-        viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(getString(R.string.default_filter_detail))
-        viewModelProductReviewDetail?.filterByText = viewModelProductReviewDetail?.filterPeriod.orEmpty()
+        val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
+
+        viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterBundle)
+        viewModelProductReviewDetail?.positionFilterPeriod = ReviewSellerUtil.getDateChipFilterPosition(filterDetailList, chipFilterBundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -355,7 +357,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun initBottomSheetFilterPeriod(title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         bottomSheetPeriodDetail?.apply {
-            setTitle(title)
+            setTitle(this.context?.getString(R.string.title_bottom_sheet_filter) ?: "")
             showCloseIcon = true
             setCloseClickListener {
                 dismiss()

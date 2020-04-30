@@ -32,7 +32,6 @@ class ProductReviewDetailViewModel @Inject constructor(
 
     var positionFilterPeriod = 1
     var filterPeriod: String = ""
-    var filterByText: String = ""
 
     private var chipsFilterText = "30 Hari Terakhir"
     private var productId = 0

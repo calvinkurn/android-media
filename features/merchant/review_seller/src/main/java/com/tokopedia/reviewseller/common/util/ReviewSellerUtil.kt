@@ -15,10 +15,14 @@ object ReviewSellerUtil {
     }
 
     fun setFilterJoinValueFormat(old: String, newValue: String = ""): String {
-        return if(newValue.isNotEmpty()) {
+        return if (newValue.isNotEmpty()) {
             String.format("$old;$newValue")
         } else
             String.format(old)
+    }
+
+    fun getDateChipFilterPosition(data: Array<String>, dateKeyword: String): Int {
+        return data.indexOf(dateKeyword)
     }
 }
 
@@ -58,7 +62,7 @@ fun Float?.roundDecimal(): String {
 }
 
 fun String?.isDecimalLengthOne(): String {
-    return if(this?.length == 1) {
+    return if (this?.length == 1) {
         "$this.0"
     } else {
         "$this"
