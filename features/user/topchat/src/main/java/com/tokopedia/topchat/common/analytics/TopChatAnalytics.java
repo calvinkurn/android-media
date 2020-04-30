@@ -1,6 +1,9 @@
 package com.tokopedia.topchat.common.analytics;
 
 
+import android.content.Context;
+import android.os.Bundle;
+
 import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
@@ -10,6 +13,7 @@ import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
@@ -263,6 +267,7 @@ public class TopChatAnalytics {
 
     // #AP6
     public void eventClickProductThumbnailEE(
+            Context context,
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
@@ -281,22 +286,25 @@ public class TopChatAnalytics {
         );
         products.add(topChatProduct);
 
+        Bundle bundle = ProductListClickBundler.getBundle(
+                getField(String.valueOf(product.getBlastId())),
+                products,
+                Category.CHAT_DETAIL,
+                Action.CLICK_PRODUCT_IMAGE,
+                Name.EVENT_NAME_PRODUCT_CLICK,
+                null,
+                null,
+                null
+        );
+        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductListClickBundler.KEY, ProductListClickBundler.getBundle(
-                        getField(String.valueOf(product.getBlastId())),
-                        products,
-                        Category.CHAT_DETAIL,
-                        Action.CLICK_PRODUCT_IMAGE,
-                        Name.EVENT_NAME_PRODUCT_CLICK,
-                        null,
-                        null,
-                        null
-                )
+                ProductListClickBundler.KEY, bundle
         );
     }
 
     // #AP5
     public void eventSeenProductAttachment(
+            Context context,
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
@@ -316,17 +324,19 @@ public class TopChatAnalytics {
         );
         products.add(product1);
 
+        Bundle bundle = ProductListImpressionBundler.getBundle(
+                getField(String.valueOf(product.getBlastId())),
+                products,
+                null,
+                Name.EVENT_NAME_PRODUCT_PREVIEW,
+                Category.CHAT_DETAIL,
+                Action.VIEW_PRODUCT_PREVIEW,
+                null,
+                null
+        );
+        IrisAnalytics.getInstance(context).saveEvent(bundle);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductListImpressionBundler.KEY, ProductListImpressionBundler.getBundle(
-                        getField(String.valueOf(product.getBlastId())),
-                        products,
-                        null,
-                        Name.EVENT_NAME_PRODUCT_PREVIEW,
-                        Category.CHAT_DETAIL,
-                        Action.VIEW_PRODUCT_PREVIEW,
-                        null,
-                        null
-                )
+                ProductListImpressionBundler.KEY, bundle
         );
     }
 

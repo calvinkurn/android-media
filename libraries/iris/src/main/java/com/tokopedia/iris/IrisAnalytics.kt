@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
@@ -93,22 +94,51 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 try {
-                    val trackingRepository = TrackingRepository(context)
-
-                    val eventName = map["event"] as? String
-                    val eventCategory = map["eventCategory"] as? String
-                    val eventAction = map["eventAction"] as? String
-
-                    // convert map to json then save as string
-                    val event = gson.toJson(map)
-                    val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-                    trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
-                    setAlarm(true, force = false)
+                    saveEventSuspend(map)
                 } catch (e: Exception) {
                     Timber.e("P1#IRIS#saveEvent %s", e.toString())
                 }
             }
         }
+    }
+
+    override fun saveEvent(bundle: Bundle) {
+        if (cache.isEnabled()) {
+            launch(coroutineContext) {
+                try {
+                    bundleToMap(bundle)?.let {
+                        saveEventSuspend(it)
+                    }
+                } catch (e: Exception) {
+                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                }
+            }
+        }
+    }
+
+    suspend fun saveEventSuspend(map: Map<String, Any>){
+        val trackingRepository = TrackingRepository(context)
+
+        val eventName = map["event"] as? String
+        val eventCategory = map["eventCategory"] as? String
+        val eventAction = map["eventAction"] as? String
+
+        // convert map to json then save as string
+        val event = gson.toJson(map)
+        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+        trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
+        setAlarm(true, force = false)
+    }
+
+    fun bundleToMap(extras: Bundle): Map<String, String>? {
+        val map: MutableMap<String, String> = HashMap()
+        val ks: Set<String> = extras.keySet()
+        val iterator = ks.iterator()
+        while (iterator.hasNext()) {
+            val key = iterator.next()
+            map[key] = extras.getString(key)
+        }
+        return map
     }
 
     @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(input)"))
