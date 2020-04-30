@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.di.ActivityContextModule
@@ -14,7 +14,7 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxDailyFra
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-open class BaseGiftBoxActivity : AppCompatActivity() {
+open class BaseGiftBoxActivity : BaseActivity() {
 
     private val TAG = "BaseGift"
 
