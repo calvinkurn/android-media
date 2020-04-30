@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:titleText="@string/account_ticker_seller_title"
+            app:titleText="@string/seller_migration_account_ticker_title"
             app:tickerType="announcement"/>
 
         <androidx.recyclerview.widget.RecyclerView

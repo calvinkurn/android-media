@@ -250,4 +250,6 @@
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
     <string name="clear_cache">clear cache</string>
 
+    <string name="seller_migration_account_ticker_title">Lebih leluasa berjualan dengan Seller App</string>
+    <string name="seller_migration_account_ticker_content">Nikmati kendali penuh bertransaksi dengan semua fitur khusus penjual di SellerApp. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
 </resources>

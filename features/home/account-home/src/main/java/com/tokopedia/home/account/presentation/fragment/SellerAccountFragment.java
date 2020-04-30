@@ -106,7 +106,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
-        migrationTicker.setHtmlDescription(getString(R.string.account_ticker_seller_subtitle));
+        migrationTicker.setHtmlDescription(getString(R.string.seller_migration_account_ticker_content));
         migrationTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {

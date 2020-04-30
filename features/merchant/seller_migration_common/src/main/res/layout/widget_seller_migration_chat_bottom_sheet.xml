@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl3"
-        android:text="@string/account_seller_migration_bottomsheet_title"
+        android:text="@string/seller_migration_account_bottom_sheet_title"
         android:gravity="center"
         android:maxLines="2"
         android:layout_alignParentEnd="true"
