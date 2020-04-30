@@ -15,14 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -43,10 +41,13 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private val reviewCount = itemView.findViewById<Typography>(R.id.review_count)
     private val freeOngkirImage = itemView.findViewById<ImageView>(R.id.image_free_ongkir)
     private val ticker = itemView.findViewById<Ticker>(R.id.ticker)
+    private val headerPrice = itemView.findViewById<Typography>(R.id.heading_price)
+    private val discountPercentage = itemView.findViewById<Label>(R.id.discount_percentage)
+    private val slashedPrice = itemView.findViewById<Typography>(R.id.slashed_price)
     private val price = itemView.findViewById<Typography>(R.id.price)
     private val addToCartButton = itemView.findViewById<UnifyButton>(R.id.btn_add_to_cart)
-    private val adapter = RecommendationCarouselAdapter()
     private val containerContent = itemView.findViewById<View>(R.id.content_layout)
+    private val adapter = RecommendationCarouselAdapter()
 
     // animation
     private val slideLeftOut = ObjectAnimator.ofFloat(containerContent, "translationX", 0f, -100f)
@@ -65,7 +66,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private var model: AddToCartDoneRecommendationCarouselDataModel ?= null
 
     private val pageMarginPx = itemView.resources.getDimensionPixelOffset(R.dimen.dp_20)
-    private val offsetPx = itemView.resources.getDimensionPixelOffset(R.dimen.dp_80)
+    private val offsetPx = itemView.resources.getDimensionPixelOffset(R.dimen.dp_100)
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_carousel_layout
         const val ATC_LOADING = "atc_loading"
@@ -197,6 +198,11 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         ratingCount.text = recommendation.rating.toString()
         shopBadges.loadImage(recommendation.badgesUrl.firstOrNull() ?: "")
         freeOngkirImage.loadImage(recommendation.freeOngkirImageUrl)
+        discountPercentage.visibility = if(recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        slashedPrice.visibility = if(recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        headerPrice.visibility = if(!recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        discountPercentage.text = recommendation.discountPercentage
+        slashedPrice.text = recommendation.slashedPrice
         price.text = recommendation.price
         ticker.tickerType = if(recommendation.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
         ticker.setTextDescription(getString(if(recommendation.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
@@ -229,6 +235,20 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                     recommendation.imageUrl,
                     8f
             )
+            if(!itemView.hasOnClickListeners()){
+                itemView.setOnClickListener {
+                    recommendationListener.onProductClick(
+                            recommendation,
+                            null,
+                            adapterPosition
+                    )
+                }
+            }
+            itemView.findViewById<ImageView>(R.id.carousel_image).addOnImpressionListener(recommendation, object : ViewHintListener {
+                override fun onViewHint() {
+                    recommendationListener.onProductImpression(recommendation)
+                }
+            })
         }
     }
 
