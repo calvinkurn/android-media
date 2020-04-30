@@ -451,13 +451,12 @@ class AddEditProductDescriptionFragment:
                         activity?.finish()
                         return
                     }
-                    val shipmentInputModel =
-                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
                     submitInput(shipmentInputModel)
                 }
                 REQUEST_CODE_VARIANT -> {
                     val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
-                    val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
+                    val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
                     val productPictureViewModel = if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         cacheManager.get(EXTRA_PRODUCT_SIZECHART,
                                 object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())

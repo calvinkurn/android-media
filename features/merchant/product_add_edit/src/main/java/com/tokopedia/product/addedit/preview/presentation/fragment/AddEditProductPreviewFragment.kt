@@ -462,7 +462,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
                 REQUEST_CODE_DETAIL -> {
                     val dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
-                    val productInputModel = data.getParcelableExtra<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)
+                    val productInputModel = data.getParcelableExtra(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
                     viewModel.productAddResult.value = productInputModel
                     when (dataBackPressed) {
                         1 -> {
@@ -484,15 +484,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             return
                         }
                     }
-
-                    val shipmentInputModel =
-                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
-                    val descriptionInputModel =
-                            data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
-                    val detailInputModel =
-                            data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-                    val variantInputModel =
-                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
+                    val descriptionInputModel = data.getParcelableExtra(EXTRA_DESCRIPTION_INPUT) ?: DescriptionInputModel()
+                    val detailInputModel = data.getParcelableExtra(EXTRA_DETAIL_INPUT) ?: DetailInputModel()
+                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
                     context?.let {
                         val validateMessage = viewModel.validateProductInput(detailInputModel)
                         if (validateMessage.isEmpty()) {
@@ -510,39 +505,32 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         }
                     }
                 }
-
                 REQUEST_CODE_DETAIL_EDIT -> {
-                    val detailInputModel =
-                            data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-                    val variantInputModel =
-                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    val detailInputModel = data.getParcelableExtra(EXTRA_DETAIL_INPUT) ?: DetailInputModel()
+                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
                     viewModel.updateDetailInputModel(detailInputModel)
                     viewModel.updateVariantInputModel(variantInputModel)
                 }
                 REQUEST_CODE_DESCRIPTION_EDIT -> {
-                    val descriptionInputModel =
-                            data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
-                    val variantInputModel =
-                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    val descriptionInputModel = data.getParcelableExtra(EXTRA_DESCRIPTION_INPUT) ?: DescriptionInputModel()
+                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
                     viewModel.updateDescriptionInputModel(descriptionInputModel)
                     viewModel.updateVariantInputModel(variantInputModel)
                     enableDescriptionEdit()
                 }
                 REQUEST_CODE_SHIPMENT_EDIT -> {
-                    val shipmentInputModel =
-                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
                     viewModel.updateShipmentInputModel(shipmentInputModel)
                     enableShipmentEdit()
                 }
                 REQUEST_CODE_VARIANT_EDIT -> {
-                    val variantInputModel =
-                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
                     viewModel.updateVariantInputModel(variantInputModel)
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     viewModel.productInputModel.value?.let { productInputModel ->
-                        val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
-                        val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
+                        val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID) ?: ""
+                        val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
                         if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                             val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                     object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
@@ -558,7 +546,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
-                    val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
+                    val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
                     val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
                     if(setCashbackResult == null) {
