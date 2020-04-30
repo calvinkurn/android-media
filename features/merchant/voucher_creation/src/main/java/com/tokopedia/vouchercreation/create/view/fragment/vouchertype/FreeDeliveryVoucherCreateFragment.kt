@@ -13,7 +13,7 @@ import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiMod
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeTickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 
 class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 

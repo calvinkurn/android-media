@@ -8,9 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
+import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeTickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 
 class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
@@ -53,6 +55,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
 
     private fun getCashbackTypeUiList()= listOf(
             promoDescTickerModel,
+            CashbackTypePickerUiModel(::onCashbackSelectedType),
             PromotionExpenseEstimationUiModel(),
             NextButtonUiModel(::onNext)
     )
@@ -63,6 +66,10 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     }
 
     private fun onNext() {
+
+    }
+
+    private fun onCashbackSelectedType(cashbackType: CashbackType) {
 
     }
 }

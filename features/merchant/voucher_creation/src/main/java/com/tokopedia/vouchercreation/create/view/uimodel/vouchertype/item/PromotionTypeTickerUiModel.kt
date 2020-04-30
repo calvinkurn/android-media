@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget
+package com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item
 
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable

@@ -10,9 +10,11 @@ import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpen
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldViewHolder
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeTickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 import com.tokopedia.vouchercreation.create.view.viewholder.NextButtonViewHolder
-import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.widget.PromotionTypeTickerViewHolder
+import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.CashbackTypePickerViewHolder
+import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.PromotionTypeTickerViewHolder
 
 class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeItemTypeFactory, VoucherCommonTypeFactory, CreateVoucherTypeFactory {
 
@@ -21,6 +23,7 @@ class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeI
             PromotionTypeTickerViewHolder.LAYOUT -> PromotionTypeTickerViewHolder(parent)
             VoucherTextFieldViewHolder.LAYOUT -> VoucherTextFieldViewHolder(parent)
             PromotionExpenseEstimationViewHolder.LAYOUT -> PromotionExpenseEstimationViewHolder(parent)
+            CashbackTypePickerViewHolder.LAYOUT -> CashbackTypePickerViewHolder(parent)
             NextButtonViewHolder.LAYOUT -> NextButtonViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
@@ -29,4 +32,5 @@ class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeI
     override fun type(promotionTypeTickerUiModel: PromotionTypeTickerUiModel): Int = PromotionTypeTickerViewHolder.LAYOUT
     override fun type(voucherTextFieldUiModel: VoucherTextFieldUiModel): Int = VoucherTextFieldViewHolder.LAYOUT
     override fun type(promotionExpenseEstimationUiModel: PromotionExpenseEstimationUiModel): Int = PromotionExpenseEstimationViewHolder.LAYOUT
+    override fun type(cashbackTypePickerUiModel: CashbackTypePickerUiModel): Int = CashbackTypePickerViewHolder.LAYOUT
 }
