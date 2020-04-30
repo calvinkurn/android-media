@@ -12,7 +12,7 @@
     <string name="period_seller_review">/ %s ulasan</string>
     <string name="no_reviews_yet">Tidak ada ulasan</string>
     <string name="no_reviews_yet_content_detail">Tidak ada ulasan berdasarkan filtermu. Coba lagi dengan filter lain ya!</string>
-    <string name="content_no_reviews_yet">Terus berjualan ya agar pembeli kasih kamu alasan yang bikin happy</string>
+    <string name="content_no_reviews_yet">Terus berjualan ya agar pembeli kasih kamu ulasan yang bikin happy</string>
     <string name="product_search">Cari nama produk</string>
     <string name="action_bottom_sheet_rating_product">Pilih</string>
     <string name="title_bottom_sheet_filter">Tampilkan periode ulasan dalam</string>
@@ -20,12 +20,12 @@
     <string name="error_message_load_more_review_product">Oops, halaman bermasalah. coba refresh atau cek koneksi</string>
     <string name="action_retry_toaster_review_product">Coba lagi</string>
     <string name="rating_overall_product">/ 5.0</string>
-    <string name="full_summary_of_product_ratings">Rangkuman lengkap rating product</string>
-    <string name="desc_full_summary_of_product_ratings">Kamu bisa dengan mudah cek produk mana yang dapat rating baik maupun buruk</string>
+    <string name="full_summary_of_product_ratings">Rangkuman lengkap rating produk</string>
+    <string name="desc_full_summary_of_product_ratings">Kamu bisa dengan mudah cek produk mana yang dapat rating baik maupun buruk.</string>
     <string name="label_filter_and_sort">Filter dan Urutkan</string>
-    <string name="desc_filter_and_sort">Tampilkan ulasan dari 90, 30 atau 7 hari terakhir dan urutkan berdasarkan rating terendah atau tertinggi</string>
+    <string name="desc_filter_and_sort">Tampilkan ulasan dari 7 hari, 30 hari hingga 1 tahun terakhir dan urutkan berdasarkan rating terendah tertinggi.</string>
     <string name="average_rating_title">Rata-rata rating</string>
-    <string name="average_rating_desc">Cek pergerakan rata-rata rating setiap hari. Rating 4 hingga 5 artinya pembeli puas dengan produkmu</string>
+    <string name="average_rating_desc">Cek pergerakan rata-rata rating setiap hari. Rating 4 hingga 5 artinya pembeli puas dengan produkmu.</string>
 
     <string-array name="sort_review_product_array">
         <item>Ulasan Terbanyak</item>
@@ -70,4 +70,6 @@
     <string name="change_product_label">Ubah Produk</string>
     <string name="label_name_reviewer_builder">Oleh <![CDATA[<b>%1s</b>]]></string>
     <string name="change_product_desc">Sekarang kamu bisa ubah stok ataupun gambar produk langsung dari sini</string>
+    <string name="popular_topic_label">Topik Populer</string>
+    <string name="sort_label">Urutkan</string>
 </resources>

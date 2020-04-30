@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerRatingAndTopicListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
@@ -26,7 +27,7 @@ class RatingAndTopicDetailViewHolder(val view: View, val listener: SellerRatingA
 
             rating_checkbox.setOnCheckedChangeListener { _, isChecked ->
                 if (element.ratingLabel != -1 && element.ratingLabel != null && isChecked != element.ratingIsChecked) {
-                    listener.onRatingCheckBoxClicked(element.ratingLabel!! to isChecked, adapterPosition)
+                    listener.onRatingCheckBoxClicked(element.ratingLabel.orZero() to isChecked, adapterPosition)
                 }
             }
 

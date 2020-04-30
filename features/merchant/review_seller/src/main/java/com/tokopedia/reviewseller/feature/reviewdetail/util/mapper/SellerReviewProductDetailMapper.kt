@@ -30,12 +30,12 @@ object SellerReviewProductDetailMapper {
 
     fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData, oldData: List<RatingBarUiModel>): ProductReviewFilterUiModel {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
-        val totalAggregatRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
+        val totalAggregateRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
 
         productFeedbackDataPerProduct.aggregatedRating.mapIndexed { index, it ->
             ratingBarListUiModel.add(
                     RatingBarUiModel(
-                            ratingProgressBar = if (totalAggregatRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregatRating.toFloat()) * 100,
+                            ratingProgressBar = if (totalAggregateRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregateRating.toFloat()) * 100,
                             ratingLabel = it.rating,
                             ratingCount = it.ratingCount,
                             ratingIsChecked = oldData.getOrNull(index)?.ratingIsChecked ?: false
@@ -185,6 +185,17 @@ object SellerReviewProductDetailMapper {
         }
 
         return Pair(thumbnailSlider, imageSlider)
+    }
+
+    fun mapToItemSortTopic(): List<SortItemUiModel> {
+        val data = ReviewSellerConstant.mapSortReviewProduct()
+        val list = arrayListOf<SortItemUiModel>()
+
+        data.map {
+            list.add(SortItemUiModel(title = it.value, isSelected = false))
+        }
+
+        return list
     }
 
 }
