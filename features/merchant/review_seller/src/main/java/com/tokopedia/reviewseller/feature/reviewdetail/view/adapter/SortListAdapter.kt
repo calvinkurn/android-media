@@ -1,11 +1,10 @@
-package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
+package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicSortFilterListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_chips.view.*
@@ -18,7 +17,7 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
         this.sortFilterListUiModel = sortFilterListUiModel
     }
 
-    fun updatedSortFilter(isSelected: Boolean, position: Int) {
+    fun updatedSortFilter(position: Int) {
         val itemSelected = sortFilterListUiModel?.getOrNull(position)
 
         sortFilterListUiModel?.filter {
@@ -26,6 +25,13 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
         }?.filterNot { it == itemSelected }?.onEach { it.isSelected = false }
 
         itemSelected?.isSelected = true
+        notifyDataSetChanged()
+    }
+
+    fun resetSortFilter() {
+        sortFilterListUiModel?.mapIndexed { index, sortItemUiModel ->
+            sortItemUiModel.isSelected = index == 0
+        }
         notifyDataSetChanged()
     }
 

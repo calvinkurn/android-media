@@ -10,10 +10,6 @@ import java.text.DecimalFormat
 
 object ReviewSellerUtil {
 
-    fun setFilterMultipleFormat(old: String, newValue: String): String {
-        return String.format("$old,$newValue")
-    }
-
     fun setFilterJoinValueFormat(old: String, newValue: String = ""): String {
         return if (newValue.isNotEmpty()) {
             String.format("$old;$newValue")

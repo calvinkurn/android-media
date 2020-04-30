@@ -3,7 +3,6 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.toggle
@@ -15,7 +14,6 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_topic_review_detail.view.*
 
 class TopicViewHolder(val view: View, private val fragmentListener: SellerReviewDetailListener) : AbstractViewHolder<TopicUiModel>(view) {
 
@@ -27,13 +25,18 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     private val sortFilterTopics: SortFilter = view.findViewById(R.id.topicSortFilterTopic)
     private val resultFeedbackLabel: Typography = view.findViewById(R.id.resultFeedbackLabel)
 
+    private var countSortFilter = 0
+
     override fun bind(element: TopicUiModel) {
 
-        if(element.sortFilterItemList.size == 0) view.topicReviewDetailLabel?.hide()
+        countSortFilter = element.sortFilterItemList.count {
+            it.isSelected
+        }
 
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
             addItem(dataItemSortFilter(element.sortFilterItemList))
+            indicatorCounter = countSortFilter
             parentListener = {
                 fragmentListener.onParentTopicFilterClicked()
             }
@@ -81,9 +84,9 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
             isSelected -> {
                 ChipsUnify.TYPE_SELECTED
             }
-//            count == 0 -> {
-//                ChipsUnify.TYPE_DISABLE
-//            }
+            count == 0 -> {
+                ChipsUnify.TYPE_DISABLE
+            }
             else -> {
                 ChipsUnify.TYPE_NORMAL
             }

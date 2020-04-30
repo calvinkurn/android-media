@@ -364,11 +364,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         bottomSheetPeriodDetail?.apply {
-            setTitle(this.context?.getString(R.string.title_bottom_sheet_filter) ?: "")
+            setTitle(title)
             setOnDismissListener {
                 view.review_period_filter_button_detail.toggle()
             }
-            setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
                 dismiss()
@@ -520,8 +519,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
 
         if(viewModelProductReviewDetail?.sortAndFilter?.second == sortBy && isDifferent) return
-
-
 
         reviewSellerDetailAdapter.updateTopicFromBottomSheet(topic)
         viewModelProductReviewDetail?.setSortAndFilterTopicData(topic to sortValue)
