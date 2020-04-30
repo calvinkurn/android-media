@@ -33,12 +33,15 @@ class ProductReviewDetailViewModel @Inject constructor(
     var positionFilterPeriod = 1
     var filterPeriod: String = ""
     var filterByText: String = ""
+    var sortBy: String = ""
 
     private var chipsFilterText = "30 Hari Terakhir"
     private var productId = 0
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
     private var filterRatingData: List<RatingBarUiModel> = listOf()
     private var filterTopicData: List<SortFilterItemWrapper> = listOf()
+
+    var sortTopicData: List<SortItemUiModel> = listOf()
 
     private val _ratingFilterData = MutableLiveData<List<RatingBarUiModel>>()
     private val _topicFilterData = MutableLiveData<List<SortFilterItemWrapper>>()
@@ -56,6 +59,11 @@ class ProductReviewDetailViewModel @Inject constructor(
         filterByList = mutableListOf(ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText))
 
         setupFeedBackDetail()
+        setSortDetailBottomSheet()
+    }
+
+    fun setSortTopic(sortBy: String) {
+        this.sortBy = sortBy
     }
 
     fun setChipFilterDateText(chipFilterText: String) {
@@ -107,6 +115,23 @@ class ProductReviewDetailViewModel @Inject constructor(
 
     fun updateTopicsFilterData(data: List<SortFilterItemWrapper>) {
         filterTopicData = data
+    }
+
+    private fun setSortDetailBottomSheet() {
+        val data = SellerReviewProductDetailMapper.mapToItemSortTopic()
+        sortTopicData = data
+    }
+
+    fun updateSortFilterBottomSheet(selected: Boolean, position: Int) {
+        sortTopicData.forEachIndexed { index, sortItemUiModel ->
+            if(index == position) {
+                if(!sortItemUiModel.isSelected) {
+                    sortItemUiModel.isSelected = selected
+                } else {
+                    sortItemUiModel.isSelected = !selected
+                }
+            }
+        }
     }
 
     fun setFilterTopicDataText(data: List<SortFilterItemWrapper>?) {

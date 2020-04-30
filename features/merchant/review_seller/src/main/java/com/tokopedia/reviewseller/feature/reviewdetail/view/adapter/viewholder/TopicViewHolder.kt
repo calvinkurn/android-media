@@ -1,12 +1,9 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.toggle
@@ -18,6 +15,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.item_topic_review_detail.view.*
 
 class TopicViewHolder(val view: View, private val fragmentListener: SellerReviewDetailListener) : AbstractViewHolder<TopicUiModel>(view) {
 
@@ -30,9 +28,12 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     private val resultFeedbackLabel: Typography = view.findViewById(R.id.resultFeedbackLabel)
 
     override fun bind(element: TopicUiModel) {
+
+        if(element.sortFilterItemList.size == 0) view.topicReviewDetailLabel?.hide()
+
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
-            addItem(dataStaticItemSortFilter(element.sortFilterItemList))
+            addItem(dataItemSortFilter(element.sortFilterItemList))
             parentListener = {
                 fragmentListener.onParentTopicFilterClicked()
             }
@@ -55,7 +56,7 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
         resultFeedbackLabel.text = MethodChecker.fromHtml(view.context.getString(R.string.count_review_label, countFeedBack))
     }
 
-    private fun dataStaticItemSortFilter(sortFilterItemList: ArrayList<SortFilterItemWrapper>): ArrayList<SortFilterItem> {
+    private fun dataItemSortFilter(sortFilterItemList: ArrayList<SortFilterItemWrapper>): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()
 
         itemSortFilterList.addAll(sortFilterItemList.map {
@@ -80,9 +81,9 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
             isSelected -> {
                 ChipsUnify.TYPE_SELECTED
             }
-            count == 0 -> {
-                ChipsUnify.TYPE_DISABLE
-            }
+//            count == 0 -> {
+//                ChipsUnify.TYPE_DISABLE
+//            }
             else -> {
                 ChipsUnify.TYPE_NORMAL
             }
