@@ -8,6 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
+import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
+import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
+import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
@@ -24,6 +27,90 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     private val promoDescTickerModel by lazy {
         PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_cashback_ticker, ::onDismissTicker)
     }
+
+    private val cashbackTypePickerModel by lazy {
+        CashbackTypePickerUiModel(::onCashbackSelectedType)
+    }
+
+    private val maximumDiscountTextFieldModel =
+        VoucherTextFieldUiModel(
+                type = VoucherTextFieldType.CURRENCY,
+                labelRes = R.string.mvc_create_promo_type_cashback_textfield_discount_maximum,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.NOMINAL_AMOUNT,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
+                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+
+
+    private val minimumPurchaseTextFieldModel =
+        VoucherTextFieldUiModel(
+                type = VoucherTextFieldType.CURRENCY,
+                labelRes = R.string.mvc_create_promo_type_textfield_minimum_purchase,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.PUCHASE_AMOUNT,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
+                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+
+
+    private val voucherQuotaTextFieldModel =
+        VoucherTextFieldUiModel(
+                type = VoucherTextFieldType.QUANTITY,
+                labelRes = R.string.mvc_create_promo_type_textfield_voucher_quota,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.VOUCHER_QUOTA,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
+                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                isLastTextField = true)
+
+
+    private val discountAmountTextFieldModel =
+        VoucherTextFieldUiModel(
+                type = VoucherTextFieldType.PERCENTAGE,
+                labelRes = R.string.mvc_create_promo_type_cashback_textfield_discount_amount,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.DISCOUNT_AMOUNT,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.DISCOUNT_AMOUNT,
+                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                isLastTextField = true)
+
+
+    private val promotionExpenseEstimationUiModel by lazy {
+        PromotionExpenseEstimationUiModel()
+    }
+
+    private val nextButtonUiModel by lazy {
+        NextButtonUiModel(::onNext)
+    }
+
+    private val topSectionUiModelList =
+        listOf(
+                promoDescTickerModel,
+                cashbackTypePickerModel
+        )
+
+
+    private val rupiahCashbackTextFieldList =
+        listOf(
+                maximumDiscountTextFieldModel,
+                minimumPurchaseTextFieldModel,
+                voucherQuotaTextFieldModel
+        )
+
+
+    private val percentageCashbackTextFieldList by lazy {
+        listOf(
+                discountAmountTextFieldModel
+        )
+    }
+
+    private val bottomSectionUiModelList by lazy {
+        listOf(
+                promotionExpenseEstimationUiModel,
+                nextButtonUiModel
+        )
+    }
+
+    private var textFieldIndex = topSectionUiModelList.size - 1
 
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 
@@ -53,12 +140,13 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
         renderList(getCashbackTypeUiList())
     }
 
-    private fun getCashbackTypeUiList()= listOf(
-            promoDescTickerModel,
-            CashbackTypePickerUiModel(::onCashbackSelectedType),
-            PromotionExpenseEstimationUiModel(),
-            NextButtonUiModel(::onNext)
-    )
+    private fun getCashbackTypeUiList() : List<Visitable<*>> {
+        return mutableListOf<Visitable<*>>().apply {
+            addAll(topSectionUiModelList)
+            addAll(rupiahCashbackTextFieldList)
+            addAll(bottomSectionUiModelList)
+        }
+    }
 
     private fun onDismissTicker() {
         adapter.data.remove(promoDescTickerModel)
@@ -70,6 +158,23 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     }
 
     private fun onCashbackSelectedType(cashbackType: CashbackType) {
-
+        view?.clearFocus()
+        val extraSize =
+                when(cashbackType) {
+                    CashbackType.RUPIAH -> percentageCashbackTextFieldList.size + bottomSectionUiModelList.size
+                    CashbackType.PERCENTAGE -> rupiahCashbackTextFieldList.size + bottomSectionUiModelList.size
+                }
+        textFieldIndex = adapter.data.size - extraSize
+        when(cashbackType) {
+            CashbackType.RUPIAH -> {
+                adapter.data.removeAll(percentageCashbackTextFieldList)
+                adapter.data.addAll(textFieldIndex, rupiahCashbackTextFieldList)
+            }
+            CashbackType.PERCENTAGE -> {
+                adapter.data.removeAll(rupiahCashbackTextFieldList)
+                adapter.data.addAll(textFieldIndex, percentageCashbackTextFieldList)
+            }
+        }
+        adapter.notifyDataSetChanged()
     }
 }

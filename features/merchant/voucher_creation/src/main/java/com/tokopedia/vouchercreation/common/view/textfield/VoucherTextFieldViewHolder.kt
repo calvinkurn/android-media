@@ -29,6 +29,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
         itemView.textField?.run {
             setLabelStatic(true)
             setInputType(InputType.TYPE_CLASS_NUMBER)
+            textFieldInput.text.clear()
 
             element.labelRes?.let { labelRes ->
                 textFiedlLabelText.text = context.resources.getString(labelRes).toBlankOrString()
@@ -72,8 +73,8 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     })
                 }
                 VoucherTextFieldType.PERCENTAGE -> {
-                    minAlertErrorMessage = String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))
-                    maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))
+                    minAlertErrorMessage = "${String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))}%"
+                    maxAlertErrorMessage = "${String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))}%"
 
                     appendText(context.resources.getString(R.string.mvc_percent).toBlankOrString())
                     textFieldInput.addTextChangedListener(object : TextWatcher {

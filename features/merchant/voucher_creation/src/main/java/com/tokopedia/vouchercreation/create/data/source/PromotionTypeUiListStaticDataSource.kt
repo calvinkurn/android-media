@@ -12,8 +12,8 @@ object PromotionTypeUiListStaticDataSource {
             VoucherTextFieldUiModel(
                     type = VoucherTextFieldType.CURRENCY,
                     labelRes = R.string.mvc_create_promo_type_free_deliv_textfield_free_deliv_amount,
-                    minValue = MinValue.FREE_DELIV_AMOUNT,
-                    maxValue = MaxValue.FREE_DELIV_AMOUNT,
+                    minValue = MinValue.NOMINAL_AMOUNT,
+                    maxValue = MaxValue.NOMINAL_AMOUNT,
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum),
             VoucherTextFieldUiModel(
@@ -34,7 +34,7 @@ object PromotionTypeUiListStaticDataSource {
     )
 
     object MinValue {
-        const val FREE_DELIV_AMOUNT = 5000
+        const val NOMINAL_AMOUNT = 5000
         const val PUCHASE_AMOUNT = 50000
         const val VOUCHER_QUOTA = 1
         const val DISCOUNT_AMOUNT = 5
@@ -42,7 +42,7 @@ object PromotionTypeUiListStaticDataSource {
     }
 
     object MaxValue {
-        const val FREE_DELIV_AMOUNT = 99999999
+        const val NOMINAL_AMOUNT = 99999999
         const val PUCHASE_AMOUNT = 99999999
         const val VOUCHER_QUOTA = 999
         const val DISCOUNT_AMOUNT = 100

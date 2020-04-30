@@ -36,16 +36,22 @@ class CashbackTypePickerViewHolder(itemView: View) : AbstractViewHolder<Cashback
         CashbackTypeAdapter(cashbackChipsList, ::onChipSelected)
     }
 
+    private var onSelectedType: (CashbackType) -> Unit = {}
+
     override fun bind(element: CashbackTypePickerUiModel) {
         itemView.cashbackTypeRecyclerView?.run {
             adapter = cashbackTypeAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
+        onSelectedType = element.onSelectedType
     }
 
     private fun onChipSelected(position: Int) {
         cashbackChipsList.forEachIndexed { index, cashbackTypeChipUiModel ->
             cashbackTypeChipUiModel.isActive = position == index
+            if (position == index) {
+                onSelectedType(cashbackTypeChipUiModel.cashbackType)
+            }
         }
         cashbackTypeAdapter.notifyDataSetChanged()
     }

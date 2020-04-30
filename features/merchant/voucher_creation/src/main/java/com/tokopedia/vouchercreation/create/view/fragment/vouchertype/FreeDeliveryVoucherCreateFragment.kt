@@ -30,8 +30,8 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
         VoucherTextFieldUiModel(
                 type = VoucherTextFieldType.CURRENCY,
                 labelRes = R.string.mvc_create_promo_type_free_deliv_textfield_free_deliv_amount,
-                minValue = PromotionTypeUiListStaticDataSource.MinValue.FREE_DELIV_AMOUNT,
-                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.FREE_DELIV_AMOUNT,
+                minValue = PromotionTypeUiListStaticDataSource.MinValue.NOMINAL_AMOUNT,
+                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
     }
