@@ -86,7 +86,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     @Test
     fun `Handle onProductImpressed for non Top Ads Product when Tracking View Port Disabled`() {
-        disableTrackingViewPortInRemoteConfig()
         val productItemViewModel = ProductItemViewModel().also {
             it.productID = "12345"
             it.productName = "Hp Samsung"
@@ -95,36 +94,17 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
             it.isTopAds = false
         }
 
+        `Given tracking by view port is disabled`()
+        setUp()
+
         `When handle product impressed for disabled tracking view port`(productItemViewModel, 0)
 
         `Then verify enableTrackingViewPort is False`()
         `Then verify interaction for product impression is not called`(productItemViewModel)
     }
 
-    private fun disableTrackingViewPortInRemoteConfig() {
-        val remoteConfigTrackingViewPortDisabled = mockk<RemoteConfig>().also {
-            every { it.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true) } answers { secondArg() }
-            every { it.getBoolean(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false) } answers { secondArg() }
-            every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true) } answers { secondArg() }
-            every { it.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { false }
-        }
-
-        productListPresenter = ProductListPresenter(
-                searchProductFirstPageUseCase,
-                searchProductLoadMoreUseCase,
-                recommendationUseCase,
-                seamlessLoginUseCase,
-                userSession,
-                advertisingLocalCache,
-                getDynamicFilterUseCase,
-                searchLocalCacheHandler,
-                remoteConfigTrackingViewPortDisabled
-        )
-        productListPresenter.attachView(productListView)
-
-        verify {
-            productListView.abTestRemoteConfig
-        }
+    private fun `Given tracking by view port is disabled`() {
+        every { remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { false }
     }
 
     private fun `When handle product impressed for disabled tracking view port`(productItemViewModel: ProductItemViewModel?, position: Int) {
