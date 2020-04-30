@@ -66,6 +66,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:gravity="bottom|center"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
             android:textSize="@dimen/fontSize_lvl3"
             android:text="@string/seamless_footer_text"
             app:layout_constraintBottom_toBottomOf="parent"
