@@ -72,6 +72,9 @@ public interface SearchEventTracking {
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
         String CLICK = "click";
         String CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion";
+        String IMPRESSION_BROAD_MATCH = "impression - broad match";
+        String CLICK_BROAD_MATCH_LIHAT_SEMUA = "click - broad match lihat semua";
+        String CLICK_BROAD_MATCH = "click - broad match";
     }
 
     interface Label {

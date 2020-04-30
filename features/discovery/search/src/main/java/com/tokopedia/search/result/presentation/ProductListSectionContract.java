@@ -163,6 +163,8 @@ public interface ProductListSectionContract {
         void stopNetworkRequestPerformanceMonitoring();
 
         void startRenderPerformanceMonitoring();
+
+        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -148,8 +148,10 @@ public class ProductViewModelMapper {
 
     private BroadMatchViewModel convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated) {
         List<BroadMatchItemViewModel> broadMatchItemViewModelList = new ArrayList<>();
+        int position = 0;
         for (SearchProductModel.OtherRelatedProduct otherRelatedProduct: otherRelated.getOtherRelatedProductList()) {
-            broadMatchItemViewModelList.add(convertToBroadMatchItemViewModel(otherRelatedProduct));
+            position++;
+            broadMatchItemViewModelList.add(convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.getKeyword()));
         }
 
         return new BroadMatchViewModel(
@@ -160,7 +162,11 @@ public class ProductViewModelMapper {
         );
     }
 
-    private BroadMatchItemViewModel convertToBroadMatchItemViewModel(SearchProductModel.OtherRelatedProduct otherRelatedProduct) {
+    private BroadMatchItemViewModel convertToBroadMatchItemViewModel(
+            SearchProductModel.OtherRelatedProduct otherRelatedProduct,
+            int position,
+            String alternativeKeyword
+    ) {
         return new BroadMatchItemViewModel(
                 otherRelatedProduct.getId(),
                 otherRelatedProduct.getName(),
@@ -170,7 +176,9 @@ public class ProductViewModelMapper {
                 otherRelatedProduct.getCountReview(),
                 otherRelatedProduct.getUrl(),
                 otherRelatedProduct.getApplink(),
-                otherRelatedProduct.getPriceString()
+                otherRelatedProduct.getPriceString(),
+                position,
+                alternativeKeyword
         );
     }
 

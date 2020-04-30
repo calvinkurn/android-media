@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -27,6 +26,7 @@ import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMa
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
@@ -53,7 +53,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -766,7 +765,7 @@ final class ProductListPresenter
 
     private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
         if (isShowBroadMatch()) {
-            getViewToShowBroadMatchToReplaceEmptySearch(productViewModel);
+            getViewToShowBroadMatchToReplaceEmptySearch();
         } else {
             if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
                 getViewToHandleEmptySearchWithErrorMessage(searchProduct);
@@ -784,7 +783,7 @@ final class ProductListPresenter
                 && !relatedViewModel.getBroadMatchViewModelList().isEmpty();
     }
 
-    private void getViewToShowBroadMatchToReplaceEmptySearch(ProductViewModel productViewModel) {
+    private void getViewToShowBroadMatchToReplaceEmptySearch() {
         List<Visitable> visitableList = new ArrayList<>();
 
         processSuggestionAndBroadMatch(visitableList);
@@ -800,6 +799,21 @@ final class ProductListPresenter
 
         if (relatedViewModel != null) {
             visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
+            trackBroadMatchImpression();
+        }
+    }
+
+    private void trackBroadMatchImpression() {
+        for (BroadMatchViewModel broadMatchViewModel: relatedViewModel.getBroadMatchViewModelList()) {
+            List<Object> broadMatchItemAsImpressionObjectDataLayer = new ArrayList<>();
+
+            for(BroadMatchItemViewModel broadMatchItemViewModel: broadMatchViewModel.getBroadMatchItemViewModelList())
+                broadMatchItemAsImpressionObjectDataLayer.add(broadMatchItemViewModel.asImpressionObjectDataLayer());
+
+            getView().trackBroadMatchImpression(
+                    broadMatchViewModel.getKeyword(),
+                    broadMatchItemAsImpressionObjectDataLayer
+            );
         }
     }
 

@@ -1685,13 +1685,29 @@ public class ProductListFragment
 
     @Override
     public void onBroadMatchItemClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        trackEventClickBroadMatchItem(broadMatchItemViewModel);
+
         String applink = modifyApplinkToSearchResult(broadMatchItemViewModel.getApplink());
         redirectionStartActivity(applink, broadMatchItemViewModel.getUrl());
     }
 
+    private void trackEventClickBroadMatchItem(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        List<Object> broadMatchItem = new ArrayList<>();
+        broadMatchItem.add(broadMatchItemViewModel.asClickObjectDataLayer());
+
+        SearchTracking.trackEventClickBroadMatchItem(getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), broadMatchItem);
+    }
+
     @Override
     public void onBroadMatchSeeMoreClicked(@NotNull BroadMatchViewModel broadMatchViewModel) {
+        SearchTracking.trackEventClickBroadMatchSeeMore(getQueryKey(), broadMatchViewModel.getKeyword());
+
         String applink = modifyApplinkToSearchResult(broadMatchViewModel.getApplink());
         redirectionStartActivity(applink, broadMatchViewModel.getUrl());
+    }
+
+    @Override
+    public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
+        SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, impressionObjectDataLayer);
     }
 }
