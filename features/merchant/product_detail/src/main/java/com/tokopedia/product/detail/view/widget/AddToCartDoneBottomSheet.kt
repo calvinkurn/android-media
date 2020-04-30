@@ -41,7 +41,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.videoplayer.utils.showToast
 import javax.inject.Inject
 
 class AddToCartDoneBottomSheet :
@@ -129,16 +128,23 @@ class AddToCartDoneBottomSheet :
             bundle.putBoolean(AddToCartDoneRecommendationCarouselViewHolder.ATC_LOADING, false)
             atcDoneAdapter.notifyItemChanged(atcDoneAdapter.itemCount - 1, bundle)
             if(result is Success){
-                showToast(getString(R.string.atc_done_add_product_success))
+                dialog?.run{
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
+                    Toaster.make(findViewById(android.R.id.content),
+                            getString(R.string.atc_done_add_product_success),
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                    )
+                }
             } else if(result is Fail){
-                recyclerView?.let {view ->
-                    context?.let { ctx ->
-                        Toaster.make(view,
-                                ProductDetailErrorHandler.getErrorMessage(ctx, result.throwable),
-                                Snackbar.LENGTH_LONG,
-                                Toaster.TYPE_ERROR
-                        )
-                    }
+                dialog?.run{
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
+                    Toaster.make(findViewById(android.R.id.content),
+                            ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                    )
+
                 }
             }
         })
@@ -185,7 +191,7 @@ class AddToCartDoneBottomSheet :
             val displaymetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
             val screenHeight = displaymetrics.heightPixels
-            val maxHeight = (screenHeight * 0.91f).toInt()
+            val maxHeight = (screenHeight * 0.92f).toInt()
             val params = parent.layoutParams
             params.height = maxHeight
             parent.layoutParams = params

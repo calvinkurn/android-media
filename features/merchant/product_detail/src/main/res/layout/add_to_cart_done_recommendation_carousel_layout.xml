@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     android:layout_width="match_parent"
-    android:layout_height="380dp"
+    android:layout_height="390dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="Blus Lengan pendek Wanita gaya" />
+            tools:text="Kombinasikan dengan ini" />
 
 
         <androidx.viewpager2.widget.ViewPager2
@@ -34,8 +34,6 @@
             android:descendantFocusability="blocksDescendants"
             android:scrollbars="none"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             tools:layout_height="180dp"
             tools:orientation="vertical"
             tools:scrollbars="vertical"
@@ -61,7 +59,7 @@
                 android:id="@+id/product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_4"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/product_card_product_name_text_color"
@@ -69,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_5"
+                app:typographyType="body_2"
                 tools:lines="2"
                 tools:text="Nama"
                 tools:visibility="visible" />
@@ -110,8 +108,8 @@
 
             <ImageView
                 android:id="@+id/image_rating"
-                android:layout_width="@dimen/dp_13"
-                android:layout_height="@dimen/dp_13"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
@@ -127,11 +125,11 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:gravity="center_vertical"
-                android:textColor="@color/product_card_review_count_text_color"
                 android:visibility="gone"
+                android:textColor="@color/charcoal_grey_68"
                 app:layout_constraintStart_toEndOf="@+id/image_rating"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
-                app:typographyType="body_3"
+                app:typographyType="heading_6"
                 app:typographyWeight="bold"
                 tools:text="4.5"
                 tools:visibility="visible" />
@@ -143,7 +141,7 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:gravity="center_vertical"
-                android:textColor="@color/product_card_review_count_text_color"
+                android:textColor="@color/charcoal_grey_44"
                 android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/rating_count"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
@@ -157,10 +155,9 @@
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
-                android:adjustViewBounds="true"
-                android:gravity="center"
                 android:scaleType="fitStart"
                 android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/shop_location"
                 app:layout_constraintStart_toEndOf="@+id/shop_location"
                 app:layout_constraintTop_toTopOf="@+id/shop_location"
                 tools:background="@color/af_commission_blue"
@@ -170,8 +167,9 @@
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker"
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
+                android:layout_marginTop="@dimen/dp_2"
                 app:closeButtonVisibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -180,13 +178,14 @@
                 app:tickerShapeType="loose"
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <View
             android:id="@+id/shadow"
             android:layout_width="match_parent"
             android:layout_height="4dp"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_24"
             android:background="@drawable/add_to_cart_shadow"
-            app:layout_constraintBottom_toTopOf="@+id/heading_price"/>
+            app:layout_constraintBottom_toTopOf="@+id/price"/>
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/heading_price"
             android:layout_width="@dimen/dp_0"
@@ -198,14 +197,52 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:text="Harga Barang"
-            android:textColor="@color/product_card_location_text_color"
+            android:textColor="@color/charcoal_grey_44"
             app:layout_constraintBottom_toTopOf="@+id/price"
             app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:typographyType="heading_6"
+            app:typographyType="body_3"
             app:typographyWeight="reguler"
+            tools:visibility="gone" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/discount_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/product_card_label_discount_height"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            app:labelType="general_light_red"
+            app:layout_constraintBottom_toTopOf="@+id/price"
+            app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="20%"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/slashed_price"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/charcoal_grey_44"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/discount_percentage"
+            app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
+            app:layout_constraintStart_toEndOf="@id/discount_percentage"
+            app:layout_constraintTop_toTopOf="@id/discount_percentage"
+            app:typographyType="small"
+            tools:text="Rp8.499.000"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -214,15 +251,16 @@
             android:layout_height="@dimen/dp_18"
             android:layout_marginLeft="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_8"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/product_card_location_text_color"
+            android:textColor="@color/charcoal_grey_96"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
             app:layout_constraintStart_toStartOf="parent"
-            app:typographyType="body_2"
+            app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Harga Barang"
             tools:visibility="visible" />
@@ -231,15 +269,15 @@
             android:id="@+id/btn_add_to_cart"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/plus_product_to_cart"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_marginRight="@dimen/dp_20"
+            android:gravity="center_horizontal"
+            android:text="@string/plus_product_to_cart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/heading_price"
-            app:unifyButtonSize="small"
+            app:layout_constraintTop_toBottomOf="@+id/shadow"
+            app:unifyButtonSize="medium"
             app:unifyButtonType="transaction"
-            app:unifyButtonVariant="filled"/>
+            app:unifyButtonVariant="filled" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
