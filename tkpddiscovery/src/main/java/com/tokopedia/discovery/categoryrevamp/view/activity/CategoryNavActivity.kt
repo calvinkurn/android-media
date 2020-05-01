@@ -45,10 +45,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import javax.inject.Inject
@@ -333,9 +333,12 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private fun setErrorPage() {
         hideBottomNavigation()
         view_pager_container.hide()
-        layout_no_data.show()
-        txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-        txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+        /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
+        layout_no_data.run {
+            show()
+            findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_product_no_data_title)
+            findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_product_no_data_description)
+        }
     }
 
     private fun initBottomSheetListener() {

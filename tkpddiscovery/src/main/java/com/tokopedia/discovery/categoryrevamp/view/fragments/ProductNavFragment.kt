@@ -64,10 +64,10 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import rx.Subscriber
 import javax.inject.Inject
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
+import com.tokopedia.unifyprinciples.Typography
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -393,9 +393,12 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.show()
-            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+            /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
+            layout_no_data.run {
+                show()
+                findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_product_no_data_title)
+                findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_product_no_data_description)
+            }
             quickfilter_parent.hide()
             val selectedFilterFromEmptyStateListener = getSelectedFilterAsOptionList()
             if (selectedFilterFromEmptyStateListener != null && selectedFilterFromEmptyStateListener.isNotEmpty()) {

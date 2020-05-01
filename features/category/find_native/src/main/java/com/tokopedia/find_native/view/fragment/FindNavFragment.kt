@@ -29,7 +29,6 @@ import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.common_category.model.productModel.ProductsItem
-
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -48,6 +47,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,7 +56,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.find_nav_fragment.*
 import kotlinx.android.synthetic.main.layout_find_related.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -71,14 +70,19 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         FindRelatedLinkAdapter.RelatedLinkClickListener, FindPriceListAdapter.PriceListClickListener {
 
     private var findNavScreenName: String = "Find"
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var gcmHandler: GCMHandler
+
     @Inject
     lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
+
     @Inject
     lateinit var addWishListActionUseCase: AddWishListUseCase
     private lateinit var component: FindNavComponent
@@ -168,7 +172,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         findNavViewModel.getProductListLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if(!findNavViewModel.checkForAdultData()){
+                    if (!findNavViewModel.checkForAdultData()) {
                         AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_FIND_PAGE, findSearchParam)
                     }
                     removeShimmerIfRunning()
@@ -607,11 +611,14 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layoutNoData.show()
             layoutRelated.hide()
             btnLoadMore.hide()
-            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+            /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
+            layoutNoData.run {
+                show()
+                findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_product_no_data_title)
+                findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_product_no_data_description)
+            }
         } else {
             layoutNoData.hide()
             layoutRelated.show()
