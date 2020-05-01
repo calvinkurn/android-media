@@ -10,8 +10,6 @@ import dagger.Component
 @GiftBoxScope
 @Component(modules = [GiftBoxDailyModule::class, GiftBoxTapTapModule::class, ViewModelModule::class, DispatcherModule::class, ActivityContextModule::class])
 interface GiftBoxComponent {
-//    fun context(): Context
-
     fun inject(fragment: GiftBoxDailyFragment)
     fun inject(fragment: GiftBoxTapTapFragment)
 }

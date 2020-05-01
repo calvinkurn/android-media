@@ -62,7 +62,6 @@ import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -559,7 +558,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void navigateToLoginPage() {
-        if(getActivity()!=null) {
+        if (getActivity() != null) {
             Intent loginIntent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
             startActivityForResult(loginIntent, REQUEST_CODE_LOGIN);
         }
