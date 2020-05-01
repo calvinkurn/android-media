@@ -41,7 +41,7 @@ class OrderSummaryPageEnhanceECommerce {
     }
 
     fun setDiscountedPrice(discountedPrice: Boolean) {
-        data[KEY_DISCOUNTED_PRICE] = discountedPrice
+        data[KEY_DISCOUNTED_PRICE] = discountedPrice.toString()
     }
 
     fun setWarehouseId(warehouseId: Int) {
@@ -52,8 +52,8 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_PRODUCT_WEIGHT] = productWeight
     }
 
-    fun setPromoCode(promoCode: String) {
-        data[KEY_PROMO_CODE] = promoCode
+    fun setPromoCode(promoCodes: List<String>) {
+        data[KEY_PROMO_CODE] = promoCodes.joinToString("-")
     }
 
     fun setPromoDetails(promoDetails: String) {
@@ -73,15 +73,15 @@ class OrderSummaryPageEnhanceECommerce {
     }
 
     fun setCodFlag(codFlag: Boolean) {
-        data[KEY_COD_FLAG] = codFlag
+        data[KEY_COD_FLAG] = codFlag.toString()
     }
 
     fun setCornerFlag(cornerFlag: Boolean) {
-        data[KEY_TOKOPEDIA_CORNER_FLAG] = cornerFlag
+        data[KEY_TOKOPEDIA_CORNER_FLAG] = cornerFlag.toString()
     }
 
     fun setIsFullfilment(isFullfilment: Boolean) {
-        data[KEY_IS_FULFILLMENT] = isFullfilment
+        data[KEY_IS_FULFILLMENT] = isFullfilment.toString()
     }
 
     fun setShopId(shopId: Int) {

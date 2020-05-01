@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
+
+import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.RouteManager;
@@ -49,8 +50,7 @@ public class DetailResChatActivity extends BasePresenterActivity<DetailResChatAc
     private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (GlobalConfig.isSellerApp()) {
-                return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW,
-                        String.format(ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
+                return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
             } else {
                 return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
                         String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));

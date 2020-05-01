@@ -240,6 +240,8 @@ public interface ShipmentContract {
         void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod);
 
         void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId);
+
+        void sendAnalyticsViewPromoAfterAdjustItem(String msg);
     }
 
     interface Presenter extends CustomerPresenter<View> {

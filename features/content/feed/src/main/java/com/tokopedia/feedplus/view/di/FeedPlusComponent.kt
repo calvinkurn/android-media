@@ -18,7 +18,7 @@ import retrofit2.Retrofit
  * @author by nisie on 5/15/17.
  */
 @FeedPlusScope
-@Component(modules = [FeedPlusModule::class, FeedComponentModule::class, GqlRawQueryModule::class,
+@Component(modules = [FeedPlusModule::class, FeedComponentModule::class,
     ViewModelModule::class, InterestPickCommonModule::class],
         dependencies = [BaseAppComponent::class])
 interface FeedPlusComponent {

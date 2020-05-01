@@ -26,6 +26,8 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() : ShippingDurat
             this.servicesId = it.serviceId
             this.servicesName = it.serviceName
             this.texts = textItemModel(it.texts)
+            this.errorMessage = it.error.errorMessage
+            this.errorId = it.error.errorId
         }
     }
 

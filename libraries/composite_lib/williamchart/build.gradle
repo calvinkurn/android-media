@@ -25,8 +25,8 @@ dependencies {
 project.ext {
     artifactId = 'williamchart'
     groupId = 'com.tokopedia.williamchart'
-    versionName = "0.0.3"
-    artifactName = "williamchart-debug"
+    versionName = "0.0.6"
+    artifactName = "williamchart"
 }
 
 apply from: '../publish_local.gradle'

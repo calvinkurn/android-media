@@ -33,7 +33,8 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
         PushActionButtonConverter.class,
         CarouselConverter.class,
         GridConverter.class,
-        ProductInfoConverter.class})
+        ProductInfoConverter.class
+})
 public abstract class RoomDB extends RoomDatabase {
 
     public abstract InAppDataDao inAppDataDao();
@@ -163,6 +164,17 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    /**
+     * Migration for adding notification center webHook entity
+     * @column: webhook_params
+     */
+    private static final Migration MIGRATION_7_8 = new Migration(7, 8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `webhook_params` TEXT");
+        }
+    };
+
     public static RoomDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomDB.class) {
@@ -175,7 +187,8 @@ public abstract class RoomDB extends RoomDatabase {
                                     MIGRATION_3_4,
                                     MIGRATION_4_5,
                                     MIGRATION_5_6,
-                                    MIGRATION_6_7
+                                    MIGRATION_6_7,
+                                    MIGRATION_7_8
                             )
                             .build();
                 }
