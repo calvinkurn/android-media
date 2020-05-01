@@ -41,6 +41,7 @@ import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -49,8 +50,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.Typography
 
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
@@ -289,9 +290,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.visibility = View.VISIBLE
-            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+            /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
+            layout_no_data.run {
+                show()
+                findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_product_no_data_title)
+                findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_product_no_data_description)
+            }
         } else {
             layout_no_data.visibility = View.GONE
         }
