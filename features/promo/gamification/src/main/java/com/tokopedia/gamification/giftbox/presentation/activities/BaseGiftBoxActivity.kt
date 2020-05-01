@@ -2,7 +2,6 @@ package com.tokopedia.gamification.giftbox.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -16,8 +15,6 @@ import javax.inject.Inject
 
 open class BaseGiftBoxActivity : BaseActivity() {
 
-    private val TAG = "BaseGift"
-
     @Inject
     lateinit var userSession: UserSession
     private val REQUEST_CODE_LOGIN = 10
@@ -29,7 +26,6 @@ open class BaseGiftBoxActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.wtf(TAG, "onCreate start")
         setContentView(getLayout())
         fm = findViewById(com.tokopedia.gamification.R.id.fmGiftRoot)
 
@@ -39,32 +35,25 @@ open class BaseGiftBoxActivity : BaseActivity() {
         component.inject(this)
 
         if (savedInstanceState == null) {
-            Log.wtf(TAG, "onCreate savedins == null")
             checkLoggedIn()
         }
-        Log.wtf(TAG, "onCreate ends")
     }
 
     fun showGiftBoxFragment() {
-        Log.wtf(TAG, "showGiftBoxFragment start")
-        Log.wtf(TAG, "fm == null ->${fm == null}")
         supportFragmentManager
                 .beginTransaction()
                 .add(fm.id, getDestinationFragment())
                 .commit()
-        Log.wtf(TAG, "showGiftBoxFragment end")
 
     }
 
     fun checkLoggedIn() {
-        Log.wtf(TAG, "checkLoggedIn start")
         if (userSession.isLoggedIn) {
             showGiftBoxFragment()
         } else {
             val loginIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
             startActivityForResult(loginIntent, REQUEST_CODE_LOGIN)
         }
-        Log.wtf(TAG, "checkLoggedIn end")
     }
 
     fun afterLoginAttempt() {
@@ -77,12 +66,10 @@ open class BaseGiftBoxActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.wtf(TAG, "onActivityResult start")
         when (requestCode) {
             REQUEST_CODE_LOGIN -> {
                 afterLoginAttempt()
             }
         }
-        Log.wtf(TAG, "onActivityResult end")
     }
 }

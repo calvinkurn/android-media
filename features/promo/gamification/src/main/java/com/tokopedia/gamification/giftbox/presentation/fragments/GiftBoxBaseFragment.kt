@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ViewFlipper
@@ -63,21 +62,17 @@ open class GiftBoxBaseFragment : Fragment() {
     var userSession: UserSession? = null
     var isTablet = false
     open fun getLayout() = 0
-    private val TAG = "GiftBaseFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Log.wtf(TAG,"onCreate start")
         setHasOptionsMenu(true)
         val v = LayoutInflater.from(context).inflate(getLayout(), container, false)
         userSession = UserSession(context)
         getScreenDimens()
         initViews(v)
-        Log.wtf(TAG,"onCreate ends")
         return v
     }
 
     open fun initViews(v: View) {
-        Log.wtf(TAG,"initViews start")
         giftBoxDailyView = v.findViewById(R.id.gift_box_view)
         loader = v.findViewById(R.id.loader)
         tvTapHint = v.findViewById(R.id.tvTapHint)
@@ -118,7 +113,6 @@ open class GiftBoxBaseFragment : Fragment() {
                 stopBgSound()
             }
         }
-        Log.wtf(TAG,"initViews ends")
     }
 
     open fun initialViewSetup() {
