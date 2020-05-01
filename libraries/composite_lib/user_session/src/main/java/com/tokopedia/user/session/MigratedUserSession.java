@@ -17,7 +17,18 @@ public class MigratedUserSession {
         this.context = context;
     }
 
+
+    protected String internalGetString(String prefName, String keyName, String defValue) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName, defValue);
+    }
+
     protected String getString(String prefName, String keyName, String defValue) {
+        if(!IS_ENABLE){
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
+
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getString(keyName, defValue);
     }
@@ -28,13 +39,23 @@ public class MigratedUserSession {
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
         }
 
+        internalCleanKey(prefName, keyName);
+    }
+
+
+    private void internalCleanKey(String prefName, String keyName){
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.remove(keyName).apply();
     }
 
     protected void nullString(String prefName, String keyName) {
-        setString(prefName, keyName, null);
+        if(!IS_ENABLE){
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
+
+        internalSetString(prefName, keyName, null);
     }
 
     protected void setString(String prefName, String keyName, String value) {
@@ -43,6 +64,10 @@ public class MigratedUserSession {
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
         }
 
+        internalSetString(prefName, keyName, value);
+    }
+
+    protected void internalSetString(String prefName, String keyName, String value) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(keyName, value);
@@ -54,14 +79,14 @@ public class MigratedUserSession {
         String oldprefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
         String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
 
-        String oldValue = getString(oldprefName, oldKeyName, defValue);
+        String oldValue = internalGetString(oldprefName, oldKeyName, defValue);
 
         if(!IS_ENABLE)
             return oldValue;
 
         if(oldValue != null && !oldValue.equals(defValue)){
-            cleanKey(oldprefName, oldKeyName);
-            setString(prefName, keyName, oldValue);
+            internalCleanKey(oldprefName, oldKeyName);
+            internalSetString(prefName, keyName, oldValue);
             return oldValue;
         }
 
@@ -74,6 +99,10 @@ public class MigratedUserSession {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
         }
+        return internalGetBoolean(prefName, keyName, defValue);
+    }
+
+    private boolean internalGetBoolean(String prefName, String keyName, boolean defValue) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(keyName, defValue);
     }
@@ -83,6 +112,10 @@ public class MigratedUserSession {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
         }
+        internalSetBoolean(prefName, keyName, value);
+    }
+
+    private void internalSetBoolean(String prefName, String keyName, boolean value) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(keyName, value);
@@ -94,14 +127,14 @@ public class MigratedUserSession {
         String oldprefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
         String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
 
-        boolean oldValue = getBoolean(oldprefName, oldKeyName, defValue);
+        boolean oldValue = internalGetBoolean(oldprefName, oldKeyName, defValue);
 
         if(!IS_ENABLE)
             return oldValue;
 
         if( oldValue != defValue){
-            cleanKey(oldprefName, oldKeyName);
-            setBoolean(prefName, keyName, oldValue);
+            internalCleanKey(oldprefName, oldKeyName);
+            internalSetBoolean(prefName, keyName, oldValue);
 
             return oldValue;
         }

@@ -41,6 +41,8 @@ import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -157,6 +159,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GraphqlClient.init(this);
         NetworkClient.init(this);
         initializeAbTestVariant();
+
+        initBlockCanary();
+    }
+
+    public void initBlockCanary(){
+        BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
     @Override

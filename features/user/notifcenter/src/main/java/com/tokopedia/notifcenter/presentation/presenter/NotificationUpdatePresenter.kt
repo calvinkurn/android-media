@@ -114,7 +114,7 @@ class NotificationUpdatePresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
-                view.showMessageAtcError(e)
+                view.showToastMessageError(e)
             }
         }
     }
@@ -125,6 +125,8 @@ class NotificationUpdatePresenter @Inject constructor(
         addToCartRequestParams.shopId = product.shop?.id ?: -1
         addToCartRequestParams.quantity = 1
         addToCartRequestParams.notes = ""
+        addToCartRequestParams.productName = product.name
+        addToCartRequestParams.price = product.price
 
        return RequestParams.create().apply {
            putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

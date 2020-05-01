@@ -31,23 +31,24 @@ object MixTopTracking : BaseTracking() {
             products
     )
 
-    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductView(
+    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductChannelView(
             Event.PRODUCT_VIEW_IRIS,
             Category.HOMEPAGE,
             CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
             Label.NONE,
-            channelId,
             CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
-            products
+            products,
+            channelId
     )
 
-    fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductChannelClick(
+    fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String, campaignCode: String) = getBasicProductChannelClick(
             Event.PRODUCT_CLICK,
             Category.HOMEPAGE,
             CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
             headerName,
             CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
             channelId,
+            campaignCode,
             products
     )
 
@@ -65,7 +66,7 @@ object MixTopTracking : BaseTracking() {
             Label.KEY, headerName
     )
 
-    private fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int) = Product(
+    fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
@@ -74,9 +75,14 @@ object MixTopTracking : BaseTracking() {
             isFreeOngkir = grid.freeOngkir.isActive,
             productPosition = position.toString(),
             productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
-            variant = ""
+            variant = "",
+            persoType = persoType,
+            categoryId = categoryId,
+            isTopAds = grid.isTopads
     )
 
-    fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map { mapGridToProductTracker(it.value, channels.id,  it.index) }
+    fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map {
+        mapGridToProductTracker(it.value, channels.id, it.index, channels.persoType, channels.categoryID)
+    }
 
 }

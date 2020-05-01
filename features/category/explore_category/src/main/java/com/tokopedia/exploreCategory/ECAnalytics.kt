@@ -105,7 +105,7 @@ class ECAnalytics {
                         "promoClick", DataLayer.mapOf(
                         "promotions", DataLayer.listOf(DataLayer.mapOf(
                         "id", it.id.toString(),
-                        "name", PROMO_SLOT_NAME,
+                        "name", categoryTitle?.toLowerCase(Locale.getDefault()),
                         "creative", it.name?.toLowerCase(Locale.getDefault()),
                         "creative_url", NONE_OTHER,
                         "position", position + 1,

@@ -8,10 +8,12 @@ import dagger.Component
 @SuggestionScope
 @Component(modules = [
     SuggestionUseCaseModule::class,
+    SuggestionTrackerUseCaseModule::class,
     SuggestionRepositoryModule::class,
-    SuggestionMapperModule::class,
     SuggestionNetModule::class,
-    SuggestionUserSessionInterfaceModule::class
+    SuggestionUserSessionInterfaceModule::class,
+    SuggestionDataMapperModule::class,
+    SuggestionContextModule::class
 ], dependencies = [BaseAppComponent::class])
 interface SuggestionComponent {
     fun inject(fragment: SuggestionFragment)

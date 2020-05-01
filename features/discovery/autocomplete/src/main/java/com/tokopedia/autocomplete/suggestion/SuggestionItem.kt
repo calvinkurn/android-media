@@ -40,5 +40,11 @@ data class SuggestionItem(
         val label: String = "",
 
         @SerializedName("label_type")
-        val labelType: String = ""
+        val labelType: String = "",
+
+        @SerializedName("url_tracker")
+        val urlTracker: String = "",
+
+        @SerializedName("tracking")
+        val tracking: SuggestionTracking = SuggestionTracking()
 )

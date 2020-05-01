@@ -42,7 +42,6 @@ import javax.inject.Inject
 class NotificationTransactionFragment : BaseNotificationFragment(), TransactionMenuListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: NotificationTransactionViewModel
 
@@ -90,6 +89,11 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getInfoStatusNotification()
+    }
+
     override fun updateFilter(filter: HashMap<String, Int>) {
         fetchUpdateFilter(filter)
     }
@@ -100,20 +104,17 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     private fun initObservable() {
-        viewModel.errorMessage.observe(this, onViewError())
+        viewModel.errorMessage.observe(viewLifecycleOwner, onViewError())
 
-        viewModel.infoNotification.observe(this, Observer {
-            if (NotificationMapper.isHasShop(it)) {
-                _adapter.addElement(sellerMenu())
-            }
+        viewModel.infoNotification.observe(viewLifecycleOwner, Observer {
             _adapter.updateValue(it.notifications)
         })
 
-        viewModel.filterNotification.observe(this, Observer {
+        viewModel.filterNotification.observe(viewLifecycleOwner, Observer {
             _adapter.addElement(it)
         })
 
-        viewModel.notification.observe(this, Observer {
+        viewModel.notification.observe(viewLifecycleOwner, Observer {
             _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
@@ -125,15 +126,15 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
             }
         })
 
-        viewModel.lastNotificationId.observe(this, Observer {
+        viewModel.lastNotificationId.observe(viewLifecycleOwner, Observer {
             viewModel.getNotification(it)
         })
 
-        viewModel.markAllNotification.observe(this, Observer {
+        viewModel.markAllNotification.observe(viewLifecycleOwner, Observer {
             onSuccessMarkAllRead()
         })
 
-        viewModel.totalUnreadNotification.observe(this, Observer {
+        viewModel.totalUnreadNotification.observe(viewLifecycleOwner, Observer {
             markAllReadCounter = it
             notifyBottomActionView()
         })
@@ -157,8 +158,17 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
 
     override fun loadData(page: Int) {
         swipeRefresh?.isRefreshing = false
+
+        // adding a static buyer notification
         renderList(buyerMenu(), false)
+
+        // adding a static seller notification if user has shop
+        if (userSession.hasShop()) {
+            _adapter.addElement(sellerMenu())
+        }
+
         viewModel.getInfoStatusNotification()
+        viewModel.getNotificationFilter()
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -231,6 +241,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     override fun bottomFilterView(): BottomActionView? = view?.findViewById(R.id.btnFilter)
+    override fun onItemStockHandlerClick(notification: NotificationItemViewBean) {}
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit

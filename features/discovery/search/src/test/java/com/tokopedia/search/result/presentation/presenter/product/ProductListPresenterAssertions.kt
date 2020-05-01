@@ -3,17 +3,24 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
-import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.shouldBe
 import io.mockk.MockKVerificationScope
 
 fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
+    productListView.stopPreparePagePerformanceMonitoring()
+    productListView.startNetworkRequestPerformanceMonitoring()
+
     productListView.showRefreshLayout()
 }
 
 fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View) {
+    productListView.stopNetworkRequestPerformanceMonitoring()
+    productListView.startRenderPerformanceMonitoring()
+
+    productListView.isLandingPage
+
     productListView.clearLastProductItemPositionFromCache()
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(any())
@@ -46,10 +53,11 @@ fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListS
     productListView.showNetworkError(startRow)
 }
 
-fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View, generalSearchTrackingModel: GeneralSearchTrackingModel) {
+fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View) {
     productListView.sendTrackingEventAppsFlyerViewListingSearch(any(), any(), any())
     productListView.sendTrackingEventMoEngageSearchAttempt(any(), any(), any())
-    productListView.sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel)
+    productListView.previousKeyword
+    productListView.sendTrackingGTMEventSearchAttempt(any())
 }
 
 fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductListSectionContract.View) {

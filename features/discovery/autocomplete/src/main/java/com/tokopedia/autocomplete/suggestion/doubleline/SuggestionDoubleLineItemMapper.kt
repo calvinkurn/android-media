@@ -17,6 +17,7 @@ fun SuggestionItem.convertSuggestionItemToDoubleLineVisitableList(searchTerm: St
     item.imageUrl = this.imageUrl
     item.label = this.label
     item.labelType = this.labelType
+    item.urlTracker = this.urlTracker
     item.searchTerm = searchTerm
     item.position = position
     return item

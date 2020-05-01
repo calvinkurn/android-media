@@ -27,14 +27,14 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
-import com.tokopedia.tokopoints.view.contract.CatalogListItemContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
-import com.tokopedia.tokopoints.view.fragment.SendGiftFragment
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig.Companion.instance
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -95,20 +95,20 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { refreshCatalog(it)}
+        it?.let { refreshCatalog(it) }
     })
 
     private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context,it) }
+        it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
-                is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
-                is ValidationError<*,*> -> {
-                    if (it.data is ValidateMessageDialog){
-                     showValidationMessageDialog(it.data.item,it.data.title,it.data.desc,it.data.messageCode)
+            when (it) {
+                is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
+                is ValidationError<*, *> -> {
+                    if (it.data is ValidateMessageDialog) {
+                        showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                     }
                 }
             }
@@ -473,7 +473,10 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
         hideLoader()
         if (itemCount == -1) {
-            showError()
+            try {
+                showError()
+            } catch (exception: Exception) {
+            }
         } else {
             if (mTimer == null) {
                 startUpdateCatalogStatusTimer()
@@ -485,13 +488,17 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {}
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
-            showError()
+            try {
+                showError()
+            } catch (exception: Exception) {
+            }
         }
     }
 
     fun getCatalog(categoryId: Int, subCategoryId: Int, showLoader: Boolean) {
         populateCatalog(categoryId, subCategoryId, viewModel.pointRange, showLoader)
     }
+
     companion object {
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1

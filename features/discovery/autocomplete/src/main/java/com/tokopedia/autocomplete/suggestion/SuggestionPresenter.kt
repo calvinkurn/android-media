@@ -6,6 +6,7 @@ import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToD
 import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -15,7 +16,10 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private var querySearch = ""
 
     @Inject
-    lateinit var getSuggestionUseCase: SuggestionUseCase
+    lateinit var getSuggestionUseCase: UseCase<SuggestionData>
+
+    @Inject
+    lateinit var suggestionTrackerUseCase: UseCase<Void?>
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -110,10 +114,40 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     override fun onSuggestionItemClicked(item: BaseSuggestionViewModel) {
+        trackSuggestionItemWithUrl(item)
         trackEventItemClicked(item)
+
         view?.dropKeyBoard()
         view?.route(item.applink)
         view?.finish()
+    }
+
+    private fun trackSuggestionItemWithUrl(item: BaseSuggestionViewModel) {
+        if (item.urlTracker.isNotEmpty()) {
+            val requestParam = createSuggestionTrackerParams(item.urlTracker)
+
+            suggestionTrackerUseCase.execute(requestParam, createEmptySubscriberForUrlTracker())
+        }
+    }
+
+    private fun createSuggestionTrackerParams(urlTracker:String) = SuggestionTrackerUseCase.getParams(
+            urlTracker,
+            userSession.deviceId,
+            userSession.userId
+    )
+
+    private fun createEmptySubscriberForUrlTracker() = object : Subscriber<Void?>() {
+        override fun onNext(t: Void?) {
+
+        }
+
+        override fun onCompleted() {
+
+        }
+
+        override fun onError(e: Throwable?) {
+
+        }
     }
 
     private fun trackEventItemClicked(item: BaseSuggestionViewModel) {
@@ -122,13 +156,16 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 view?.trackEventClickKeyword(getKeywordEventLabelForTracking(item))
             }
             TYPE_CURATED -> {
-                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item))
+                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item), item.trackingCode)
             }
             TYPE_SHOP -> {
                 view?.trackEventClickShop(getShopEventLabelForTracking(item))
             }
             TYPE_PROFILE -> {
                 view?.trackEventClickProfile(getProfileEventLabelForTracking(item))
+            }
+            TYPE_RECENT_KEYWORD -> {
+                view?.trackEventClickRecentKeyword(item.title)
             }
         }
     }
@@ -200,5 +237,6 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     override fun detachView() {
         super.detachView()
         getSuggestionUseCase.unsubscribe()
+        suggestionTrackerUseCase.unsubscribe()
     }
 }

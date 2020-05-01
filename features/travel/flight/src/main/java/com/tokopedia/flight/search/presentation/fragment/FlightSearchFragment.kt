@@ -42,6 +42,7 @@ import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
+import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.search.util.select
 import com.tokopedia.flight.search.util.unselect
 import com.tokopedia.kotlin.extensions.view.show
@@ -83,6 +84,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
 
     private val filterItems = arrayListOf<SortFilterItem>()
+    private lateinit var coachMarkCache: FlightSearchCache
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +105,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     savedInstanceState.getInt(SAVED_PRICE_MIN_STATISTIC),
                     savedInstanceState.getInt(SAVED_PRICE_MAX_STATISTIC))
         }
+
+        coachMarkCache = FlightSearchCache(requireContext())
 
         performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
@@ -236,6 +240,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         if (flightSearchPresenter.isDoneLoadData()) {
             performanceMonitoringP2.stopTrace()
+            if (!coachMarkCache.isSearchCoachMarkShowed()) {
+                (activity as FlightSearchActivity).setupAndShowCoachMark()
+            }
         }
 
         setUpProgress()
@@ -403,7 +410,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun navigateToTheNextPage(selectedId: String, selectedTerm: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel, isBestPairing, isCombineDone)
+            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel,
+                    isBestPairing, isCombineDone, flightSearchPassData.searchRequestId)
         }
     }
 
@@ -421,6 +429,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (!flightAirportCombineModel.isHasLoad) {
             flightAirportCombineModel.isHasLoad = true
             progress += halfProgressAmount
+        }
+
+        if (!isReturning()) {
+            flightSearchPassData.searchRequestId = flightSearchMetaViewModel.searchRequestId
         }
 
         if (flightAirportCombineModel.isNeedRefresh) {
@@ -634,12 +646,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun setUpProgress() {
         if (horizontal_progress_bar.visibility == View.VISIBLE) {
-            if (isDoneLoadData() || isCombineDone) {
-                if (isDoneLoadData() && !isCombineDone) {
-                    progress = MAX_PROGRESS - 10
-                } else if (isDoneLoadData() && isCombineDone) {
-                    progress = MAX_PROGRESS
-                }
+            if (isDoneLoadData()) {
                 horizontal_progress_bar.setProgress(progress)
                 flightSearchPresenter.setDelayHorizontalProgress()
             } else {
@@ -776,6 +783,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private fun buildQuickFilterView() {
         flight_sort_filter.filterType = SortFilter.TYPE_ADVANCED
         flight_sort_filter.parentListener = {
+            flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER)
             showFilterSortBottomSheet()
         }
         flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
@@ -791,6 +799,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.transitTypeList.add(TransitEnum.DIRECT)
                     quickDirectFilter.select()
                 }
+
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_DIRECT)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -803,6 +813,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.BAGGAGE)
                     quickBaggageFilter.select()
                 }
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_BAGGAGE)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -815,6 +826,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.MEAL)
                     quickMealFilter.select()
                 }
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_MEAL)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -827,6 +839,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.transitTypeList.add(TransitEnum.ONE)
                     quickTransitFilter.select()
                 }
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_TRANSIT)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -882,7 +895,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     interface OnFlightSearchFragmentListener {
 
         fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
-                         isBestPairing: Boolean, isCombineDone: Boolean)
+                         isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
 
         fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel)
     }
@@ -911,6 +924,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private const val QUICK_FILTER_BAGGAGE_ORDER = 1
         private const val QUICK_FILTER_MEAL_ORDER = 2
         private const val QUICK_FILTER_TRANSIT_ORDER = 3
+
+        private const val FLIGHT_QUICK_FILTER = "Filter"
+        private const val FLIGHT_QUICK_FILTER_DIRECT = "Langsung"
+        private const val FLIGHT_QUICK_FILTER_BAGGAGE = "Gratis Bagasi"
+        private const val FLIGHT_QUICK_FILTER_MEAL = "In-flight Meal"
+        private const val FLIGHT_QUICK_FILTER_TRANSIT = "Transit"
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {
             val bundle = Bundle()

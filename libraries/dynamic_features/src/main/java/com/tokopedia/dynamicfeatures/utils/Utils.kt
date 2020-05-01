@@ -1,86 +1,35 @@
 package com.tokopedia.dynamicfeatures.utils
 
-import android.app.Activity
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.content.pm.PackageInfoCompat
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
+import java.util.*
 
 object Utils {
 
-    fun isPlayStoreAvailable(context: Context): Boolean {
-        return try {
-            val pm: PackageManager = context.packageManager
-            pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == "com.android.vending"
-            }
-            true
-        } catch (e: Exception) {
-            false
-        }
+    fun getFormattedNumber(number: Float, format: String = "%.2f", locale: Locale = Locale.ENGLISH) : String {
+        return String.format(locale, format, number)
     }
 
-    fun isPlayServiceConnected(context: Context): Boolean {
-        // this code should be on main thread.
-        val googleAPI = GoogleApiAvailability.getInstance()
-        val result = googleAPI.isGooglePlayServicesAvailable(context)
-        return result == ConnectionResult.SUCCESS
+    fun getSizeInMB(size: Long): String {
+        return getFormattedNumber(size.toFloat() / CommonConstant.MEGA_BYTE)
     }
 
-    fun showPlayServiceErrorDialog(activity: Activity) {
-        // this code should be on main thread.
-        val googleAPI = GoogleApiAvailability.getInstance()
-        val result = googleAPI.isGooglePlayServicesAvailable(activity)
-        if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(activity, result, 9000).show()
-            }
+    fun getDownloadDuration(startDownloadTime:Long, endDownloadTime:Long): String {
+        var diffTime = 0f
+        if (startDownloadTime in 1 until endDownloadTime) {
+            diffTime = (endDownloadTime - startDownloadTime).toFloat() / 1000
         }
+        return getFormattedNumber(diffTime)
     }
 
-    fun getPlayStoreVersionName(context: Context):String {
-        return try {
-            val pm: PackageManager = context.packageManager
-            val playStoreInfo = pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == CommonConstant.PLAY_STORE_PACKAGE_NAME
-            }
-            playStoreInfo.versionName
-        } catch (e: Exception) {
-            "-1"
+    fun getError(errorList: List<String>): String {
+        if (errorList.isEmpty()) {
+            return "0"
         }
-    }
-
-    fun getPlayStoreLongVersionCode(context: Context):Long {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return -1
-        return try {
-            val pm: PackageManager = context.packageManager
-            val playStoreInfo = pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == CommonConstant.PLAY_STORE_PACKAGE_NAME
-            }
-            playStoreInfo.longVersionCode
-        } catch (e: Exception) {
-            -1
+        var errorText = errorList.first()
+        for (error in errorList) if (error != errorText) {
+            errorText = errorList.joinToString("|")
+            break
         }
-    }
-
-    fun getPlayServiceLongVersionCode(context: Context):Long {
-        return try {
-            val pm: PackageManager = context.packageManager
-            PackageInfoCompat.getLongVersionCode(pm.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0))
-        } catch (e: Exception) {
-            -1
-        }
-    }
-
-    fun getInstallerPackageName(context: Context):String {
-        return try {
-            val pm: PackageManager = context.packageManager
-            pm.getInstallerPackageName(context.packageName)
-        } catch (e: Exception) {
-            "-"
-        }
+        return errorText
     }
 }

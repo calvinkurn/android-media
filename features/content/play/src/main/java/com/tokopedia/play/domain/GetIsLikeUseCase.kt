@@ -1,10 +1,9 @@
 package com.tokopedia.play.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.IsLikedContent
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -13,17 +12,15 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-03.
  */
 
-class GetIsLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Boolean>() {
+class GetIsLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository) : UseCase<Boolean>() {
 
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, IsLikedContent.Response::class.java, params)
-        gqlUseCase.addRequest(gqlRequest)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
 
-        val gqlResponse = gqlUseCase.executeOnBackground()
+        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<IsLikedContent.Response>(IsLikedContent.Response::class.java)
 
         if (response == null)

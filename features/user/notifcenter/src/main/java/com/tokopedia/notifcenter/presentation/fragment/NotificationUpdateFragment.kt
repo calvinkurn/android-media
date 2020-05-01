@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -25,6 +27,7 @@ import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.listener.NotificationUpdateListener
@@ -38,19 +41,24 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotifi
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
+import com.tokopedia.notifcenter.presentation.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.notifcenter.util.isSingleItem
+import com.tokopedia.notifcenter.util.viewModelProvider
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
+import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
 
 class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
         NotificationLongerTextDialog.LongerContentListener {
 
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var presenter: NotificationUpdatePresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
-    @Inject lateinit var userSession: UserSessionInterface
+
+    private lateinit var viewModel: NotificationUpdateViewModel
 
     private val notificationUpdateListener by lazy { context as NotificationUpdateListener }
     private val _adapter by lazy { adapter as NotificationUpdateAdapter }
@@ -69,6 +77,11 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     * */
     private var isFirstLoaded = true
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = viewModelProvider(viewModelFactory)
+    }
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -81,10 +94,19 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         )
     }
 
+    /*
+    * notification id for buyer info consume
+    * the id comes from tokopedia://notif-center/{id}
+    * */
+    private val notificationId by lazy {
+        (activity as NotificationActivity).notificationId
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onListLastScroll(view)
         initLoadPresenter()
+        initObservable()
 
         bottomFilterView()?.setButton1OnClickListener {
             analytics.trackMarkAllAsRead(markAllReadCounter.toString())
@@ -109,6 +131,18 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
+    private fun initObservable() {
+        viewModel.productStockHandler.observe(viewLifecycleOwner, Observer {
+            showNotificationDetail(BottomSheetType.StockHandler, stockHandlerMapper(it))
+        })
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+            showToastMessageError(it)
+        })
+        viewModel.singleNotification.observe(viewLifecycleOwner, Observer {
+            onSuccessInitiateData(it)
+        })
+    }
+
     private fun initLoadPresenter() {
         presenter.getFilter(onSuccessGetFilter())
         presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
@@ -122,7 +156,18 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun loadData(page: Int) {
-        presenter.loadData(cursor, ::onSuccessInitiateData, onErrorInitiateData())
+        notificationId.let {
+            if (it.isNotEmpty()) {
+                lstFilter?.hide()
+                viewModel.getSingleNotification(it)
+            } else {
+                presenter.loadData(
+                        cursor,
+                        ::onSuccessInitiateData,
+                        onErrorInitiateData()
+                )
+            }
+        }
     }
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
@@ -198,6 +243,13 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
+    override fun onItemStockHandlerClick(notification: NotificationItemViewBean) {
+        //if product data only one, check product stock
+        if (notification.products.isSingleItem()) {
+            viewModel.isProductStockHandler(notification.notificationId)
+        }
+    }
+
     override fun onSwipeRefresh() {
         cursor = ""
         presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
@@ -224,10 +276,10 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         analytics.trackAtcOnClick(product, atc)
     }
 
-    override fun showMessageAtcError(e: Throwable?) {
+    override fun showToastMessageError(e: Throwable?) {
         view?.let {
             val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
-            Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG)
+            showToastMessageError(errorMessage)
         }
     }
 

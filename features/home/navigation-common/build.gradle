@@ -19,6 +19,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -35,7 +38,7 @@ dependencies {
 project.ext {
     artifactId = 'navigation-common'
     groupId = 'com.tokopedia.home'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="navigation-common-release"
 }
 

@@ -47,7 +47,8 @@
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
-    <string name="title_favorite_page">Favorit</string>
+    <string name="title_occ_preference_setting">Beli Langsung</string>
+    <string name="subtitle_occ_preference_setting">Atur pengiriman &amp; pembayaranmu favoritmu</string>
 
     <string name="label_chat">Chat</string>
     <string name="label_chat_admin">Chat Tokopedia Administrator</string>
@@ -156,7 +157,7 @@
     <string name="title_menu_product_draft">Draft Produk</string>
     <string name="label_menu_product_draft">Selesaikan kelengkapan detail Produk</string>
     <string name="title_menu_other_features">Fitur Lainnya</string>
-    <string name="title_menu_seller_center">Pusat Seller</string>
+    <string name="title_menu_seller_center">Pusat Edukasi Seller</string>
     <string name="title_menu_topads">TopAds</string>
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
@@ -189,7 +190,7 @@
     <string name="top_features">Top Features</string>
     <string name="topads_desc">Media iklan Produk dan Toko</string>
     <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
-    <string name="seller_center">Pusat Seller</string>
+    <string name="seller_center">Pusat Edukasi Seller</string>
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>

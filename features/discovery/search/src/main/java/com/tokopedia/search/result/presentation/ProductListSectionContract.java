@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -8,7 +10,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -33,10 +34,6 @@ public interface ProductListSectionContract {
 
         void addRecommendationList(List<Visitable> list);
 
-        void disableWishlistButton(String productId);
-
-        void enableWishlistButton(String productId);
-
         void showNetworkError(int startRow);
 
         String getQueryKey();
@@ -54,16 +51,6 @@ public interface ProductListSectionContract {
         void addLoading();
 
         void removeLoading();
-
-        void successAddWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorAddWishList(String errorMessage, String productId);
-
-        void successRemoveWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorRemoveWishlist(String errorMessage, String productId);
-
-        void notifyAdapter();
 
         void stopTracePerformanceMonitoring();
 
@@ -93,19 +80,11 @@ public interface ProductListSectionContract {
 
         void showAdultRestriction();
 
-        void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel);
-
         void redirectSearchToAnotherPage(String applink);
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
         void setDefaultLayoutType(int defaultView);
-
-        void successRemoveRecommendationWishlist(String productId);
-
-        void successAddRecommendationWishlist(String productId);
-
-        void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
@@ -128,8 +107,6 @@ public interface ProductListSectionContract {
         void setTotalSearchResultCount(String formattedResultCount);
 
         BaseAppComponent getBaseAppComponent();
-
-        void logDebug(String tag, String message);
 
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
@@ -162,11 +139,33 @@ public interface ProductListSectionContract {
         void showMessageSuccessWishlistAction(boolean isWishlisted);
 
         void showMessageFailedWishlistAction(boolean isWishlisited);
+
+        String getPreviousKeyword();
+
+        boolean isLandingPage();
+
+        void logWarning(String message, @Nullable Throwable throwable);
+
+        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
+
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
+
+        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+
+        void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
+
+        void stopPreparePagePerformanceMonitoring();
+
+        void startNetworkRequestPerformanceMonitoring();
+
+        void stopNetworkRequestPerformanceMonitoring();
+
+        void startRenderPerformanceMonitoring();
     }
 
     interface Presenter extends CustomerPresenter<View> {
-
-        void initInjector(View view);
 
         void requestDynamicFilter(Map<String, Object> searchParameter);
 
@@ -201,5 +200,9 @@ public interface ProductListSectionContract {
         void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
+
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+
+        void onProductClick(ProductItemViewModel item, int adapterPosition);
     }
 }

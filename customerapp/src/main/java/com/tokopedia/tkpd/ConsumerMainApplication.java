@@ -14,15 +14,14 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.bugsnag.android.BreadcrumbType;
-import com.bugsnag.android.Bugsnag;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
@@ -30,6 +29,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -51,7 +52,9 @@ import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -69,15 +72,13 @@ import com.tokopedia.tkpd.timber.UserIdChangeCallback;
 import com.tokopedia.tkpd.timber.UserIdSubscriber;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.tkpd.utils.DeviceUtil;
-import com.tokopedia.tkpd.utils.UIBlockDebugger;
+import com.tokopedia.tkpd.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -89,7 +90,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
@@ -127,7 +127,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        initBugSnag();
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
@@ -151,12 +150,51 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
-                Bugsnag.leaveBreadcrumb("shake_campaign", BreadcrumbType.STATE, new HashMap<String, String>() {{
-                    put("shake_detected", "shake_detect");
-                }});
             }
         });
         registerActivityLifecycleCallbacks(shakeSubscriber);
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                if(activity != null && Build.VERSION.SDK_INT >= 21 && BetaInterceptor.Companion.isBeta(activity))
+                {
+                    Window window = activity.getWindow();
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.setStatusBarColor(getResources().getColor(android.R.color.holo_red_dark));
+                }
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
 
         UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
             @Override
@@ -168,6 +206,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
+
+        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
+        initBlockCanary();
     }
 
     private void createAndCallPreSeq(){
@@ -217,7 +259,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @NotNull
     private Boolean executePreCreateSequence(){
         initReact();
-        UIBlockDebugger.init(ConsumerMainApplication.this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         PersistentCacheManager.init(ConsumerMainApplication.this);
         return true;
@@ -239,16 +280,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
+        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         generateConsumerAppNetworkKeys();
-    }
-
-    private void initBugSnag() {
-        Bugsnag.init(this);
-        UserSessionInterface userSession = new UserSession(this);
-        if (!TextUtils.isEmpty(userSession.getUserId())) {
-            Bugsnag.setUser(userSession.getUserId(), userSession.getEmail(), userSession.getName());
-        }
     }
 
     private void initGqlNWClient(){
@@ -293,10 +326,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
-        Bugsnag.leaveBreadcrumb("shake_campaign", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "open_shake_detect");
-            put("long_shake", Boolean.toString(isLongShake));
-        }});
     }
 
 
@@ -328,6 +357,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void onLowMemory() {
         super.onLowMemory();
         CoreLegacyDbFlowDatabase.reset();
+    }
+
+    public void initBlockCanary(){
+        BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -370,20 +403,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initializeSdk() {
-        Bugsnag.beforeNotify(error -> {
-            UserSessionInterface userSession = new UserSession(ConsumerMainApplication.this);
-            if (!TextUtils.isEmpty(userSession.getUserId())) {
-                error.addToTab("account", "userId", userSession.getUserId());
-                error.addToTab("account", "deviceId", userSession.getDeviceId());
-                error.addToTab("account", "owner", "core");
-            }
-            return true;
-        });
         try {
             FirebaseApp.initializeApp(this);
             FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
-            Bugsnag.notify(e);
+
         }
     }
 
@@ -392,11 +416,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
         Long current = new Date().getTime();
-        Bugsnag.leaveBreadcrumb("initialization", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "ab_test_variant");
-            put("start_time", timestampAbTest.toString());
-            put("current_time", current.toString());
-        }});
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -532,7 +551,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
             Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
-            Bugsnag.notify(e);
             return false;
         }
     }
@@ -577,7 +595,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             sb.append("\n");
         } catch (CertificateException e) {
-            Bugsnag.notify(e);
+
         }
         return sb.toString();
     }

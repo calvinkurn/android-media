@@ -1,10 +1,14 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import java.util.concurrent.TimeUnit
+
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
         val layoutName: String = ""
 ) {
+
+    fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
 
     val parentProductId: String
         get() =
@@ -46,4 +50,31 @@ data class DynamicProductInfoP1(
                 ""
             }
         }
+
+    fun checkImei(imeiRemoteConfig: Boolean): Boolean {
+        return imeiRemoteConfig && data.campaign.isCheckImei
+    }
+
+    fun getFinalStock(multiOriginStock: String): String {
+        return if (multiOriginStock.isEmpty()) {
+            if (data.campaign.isActive) {
+                data.campaign.stock.toString()
+            } else {
+                data.stock.value.toString()
+            }
+        } else {
+            multiOriginStock
+        }
+    }
+
+    fun shouldShowNotifyMe(): Boolean {
+        return try {
+            val now = System.currentTimeMillis()
+            val startTime = (data.startDate.toLongOrNull() ?: 0) * 1000L
+            val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
+            !(data.campaignId.isEmpty() || dayLeft > 3)
+        } catch (ex: Exception) {
+            false
+        }
+    }
 }

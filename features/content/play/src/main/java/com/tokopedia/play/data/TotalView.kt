@@ -12,5 +12,5 @@ data class TotalView(
         val totalView: Int = 0,
 
         @SerializedName("total_view_formatted")
-        var totalViewFormatted: String = ""
+        val totalViewFormatted: String = "0"
 )

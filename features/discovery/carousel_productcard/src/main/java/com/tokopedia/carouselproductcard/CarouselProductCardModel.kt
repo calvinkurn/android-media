@@ -4,7 +4,7 @@ import com.tokopedia.productcard.ProductCardModel
 
 internal data class CarouselProductCardModel(
         val productCardModel: ProductCardModel,
-        val carouselProductCardListenerInfo: CarouselProductCardListenerInfo
+        var carouselProductCardListenerInfo: CarouselProductCardListenerInfo
 ) {
     fun getOnItemClickListener() = carouselProductCardListenerInfo.onItemClickListener
     fun getOnItemAddToCartListener() = carouselProductCardListenerInfo.onItemAddToCartListener

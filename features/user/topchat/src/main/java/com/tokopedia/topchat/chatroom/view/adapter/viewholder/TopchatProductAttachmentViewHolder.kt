@@ -15,21 +15,28 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.item_topchat_product_attachment.view.*
+import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
-class TopchatProductAttachmentViewHolder(
+open class TopchatProductAttachmentViewHolder(
         itemView: View?,
         private val listener: ProductAttachmentListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
     private var wishListBtn: UnifyButton? = null
+    private var cardContainer: SingleProductAttachmentContainer? = null
+    private var emptyStock: Label? = null
+
     private val white = "#ffffff"
     private val white2 = "#fff"
+    private val labelEmptyStockColor = "#80000000"
 
     override fun alwaysShowTime(): Boolean = true
 
@@ -37,20 +44,33 @@ class TopchatProductAttachmentViewHolder(
         if (product == null) return
         super.bind(product)
         bindView()
+        bindLayoutGravity(product)
         bindProductClick(product)
         bindImage(product)
+        bindImageClick(product)
         bindName(product)
         bindVariant(product)
         bindCampaign(product)
         bindPrice(product)
         bindFreeShipping(product)
         bindFooter(product)
+        bindEmptyStockLabel(product)
         bindChatReadStatus(product)
         listener.trackSeenProduct(product)
     }
 
     private fun bindView() {
         wishListBtn = itemView.findViewById(R.id.tv_wishlist)
+        cardContainer = itemView.findViewById(R.id.containerProductAttachment)
+        emptyStock = itemView.findViewById(R.id.lb_empty_stock)
+    }
+
+    private fun bindLayoutGravity(product: ProductAttachmentViewModel) {
+        if (product.isSender) {
+            cardContainer?.gravityRight()
+        } else {
+            cardContainer?.gravityLeft()
+        }
     }
 
     private fun bindProductClick(product: ProductAttachmentViewModel) {
@@ -66,9 +86,22 @@ class TopchatProductAttachmentViewHolder(
         )
     }
 
+    private fun bindImageClick(product: ProductAttachmentViewModel) {
+        itemView.iv_thumbnail?.setOnClickListener {
+            listener.trackClickProductThumbnail(product)
+            it.context.startActivity(
+                    ImagePreviewActivity.getCallingIntent(
+                            it.context,
+                            ArrayList(product.images),
+                            null,
+                            0
+                    )
+            )
+        }
+    }
+
     private fun bindName(product: ProductAttachmentViewModel) {
         itemView.tv_product_name?.let {
-            it.maxLines = if (product.hasVariant()) 2 else 1
             it.text = product.productName
         }
     }
@@ -91,7 +124,7 @@ class TopchatProductAttachmentViewHolder(
             }
 
             if (product.hasSizeVariant()) {
-                ll_variant_color?.show()
+                ll_variant_size?.show()
                 tv_variant_size?.text = product.sizeVariant
             } else {
                 ll_variant_size?.hide()
@@ -176,6 +209,18 @@ class TopchatProductAttachmentViewHolder(
         }
     }
 
+    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+        emptyStock?.apply {
+            if (product.hasEmptyStock()) {
+                show()
+                unlockFeature = true
+                setLabelType(labelEmptyStockColor)
+            } else {
+                hide()
+            }
+        }
+    }
+
     private fun hideFooter() {
         itemView.tv_buy?.hide()
         itemView.tv_atc?.hide()
@@ -215,7 +260,9 @@ class TopchatProductAttachmentViewHolder(
         if (product.hasEmptyStock()) {
             wishListBtn?.show()
             wishListBtn?.setOnClickListener {
-                listener.onClickAddToWishList(product.productId.toString()) { }
+                listener.onClickAddToWishList(product) {
+                    product.wishList = true
+                }
             }
         } else {
             wishListBtn?.hide()

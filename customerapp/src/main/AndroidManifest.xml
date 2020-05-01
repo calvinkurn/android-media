@@ -5,6 +5,7 @@
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
+    <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -40,8 +41,8 @@
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/ic_launcher_customerapp"
+        android:roundIcon="@mipmap/ic_launcher_customerapp_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:networkSecurityConfig="@xml/network_security_config"
@@ -84,7 +85,7 @@
             tools:replace="android:value"/>
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
-            android:value="@mipmap/ic_launcher"
+            android:value="@mipmap/ic_launcher_customerapp"
             tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
@@ -92,9 +93,7 @@
         <meta-data
             android:name="HANSEL_APP_KEY"
             android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
-        <meta-data
-            android:name="com.bugsnag.android.API_KEY"
-            android:value="5476717ed806545b414030fcbe0964d7"/>
+        <meta-data android:name="com.google.android.actions" android:resource="@xml/actions" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -332,6 +331,12 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
+
+        <receiver android:name="androidx.media.session.MediaButtonReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
       
     </application>
 

@@ -109,7 +109,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     }
 
     public void setShopName(String shopName) {
-        setString(LOGIN_SESSION, SHOP_ID, shopName);
+        setString(LOGIN_SESSION, SHOP_NAME, shopName);
     }
 
     @Override
@@ -371,22 +371,18 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     public void setLoginSession(boolean isLogin, String userId, String fullName,
                                 String shopId, boolean isMsisdnVerified, String shopName,
                                 String email, boolean isGoldMerchant, String phoneNumber) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putBoolean(IS_LOGIN, isLogin);
-        editor.putString(LOGIN_ID, userId);
-        editor.putString(GTM_LOGIN_ID, userId);
-        editor.putString(FULL_NAME, fullName);
-        editor.putString(SHOP_ID, shopId);
-        editor.putString(SHOP_NAME, shopName);
-        editor.putString(EMAIL, email);
-        editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
-        editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
-        editor.putBoolean(HAS_SHOWN_SALDO_INTRO_PAGE, false);
-        editor.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
-        editor.putString(PHONE_NUMBER, phoneNumber);
 
-        editor.apply();
+        setIsLogin(isLogin);
+        setUserId(userId);
+        setName(fullName);
+        setShopId(shopId);
+        setShopName(shopName);
+        setEmail(email);
+        setIsMSISDNVerified(isMsisdnVerified);
+        setBoolean(LOGIN_SESSION, HAS_SHOWN_SALDO_WARNING, false);
+        setBoolean(LOGIN_SESSION, HAS_SHOWN_SALDO_INTRO_PAGE, false);
+        setIsGoldMerchant(isGoldMerchant);
+        setPhoneNumber(phoneNumber);
     }
 
     public void logoutSession() {

@@ -22,6 +22,8 @@ import javax.inject.Inject
  */
 open class GetExistingChatMapper @Inject constructor() {
 
+    protected var latestHeaderDate: String = ""
+
     open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
 
         val listChat = mappingListChat(pojo)
@@ -29,8 +31,14 @@ open class GetExistingChatMapper @Inject constructor() {
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         val blockedStatus: BlockedStatus = mapBlockedStatus(pojo)
+        val minReplyTime = pojo.chatReplies.minReplyTime
         listChat.reverse()
-        return ChatroomViewModel(listChat, headerModel, canLoadMore, isReplyable, blockedStatus)
+        return ChatroomViewModel(
+                listChat, headerModel,
+                canLoadMore, isReplyable,
+                blockedStatus, minReplyTime,
+                latestHeaderDate
+        )
 
     }
 
@@ -87,7 +95,7 @@ open class GetExistingChatMapper @Inject constructor() {
         return listChat
     }
 
-    private fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return MessageViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -170,7 +178,7 @@ open class GetExistingChatMapper @Inject constructor() {
         )
     }
 
-    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
@@ -213,7 +221,8 @@ open class GetExistingChatMapper @Inject constructor() {
                     pojoAttribute.productProfile.minOrder,
                     pojoAttribute.productProfile.remainingStock,
                     pojoAttribute.productProfile.status,
-                    pojoAttribute.productProfile.wishList
+                    pojoAttribute.productProfile.wishList,
+                    pojoAttribute.productProfile.images
             )
         }
 
@@ -248,7 +257,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.minOrder,
                 pojoAttribute.productProfile.remainingStock,
                 pojoAttribute.productProfile.status,
-                pojoAttribute.productProfile.wishList
+                pojoAttribute.productProfile.wishList,
+                pojoAttribute.productProfile.images
         )
     }
 

@@ -1,9 +1,11 @@
 package com.tokopedia.autocomplete.suggestion
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -17,6 +19,8 @@ import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
+import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
+import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
@@ -52,6 +56,7 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     override fun initInjector() {
         val component: SuggestionComponent = DaggerSuggestionComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
+                .suggestionContextModule(activity?.let { SuggestionContextModule(it) })
                 .build()
         component.inject(this)
         component.inject(presenter)
@@ -60,7 +65,6 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     private fun getBaseAppComponent(): BaseAppComponent? {
         return if (activity == null || activity?.application == null) null else
             (activity?.application as BaseMainApplication).baseAppComponent
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -134,7 +138,8 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
 
     override fun route(applink: String) {
         activity?.let {
-            RouteManager.route(it, applink)
+            val modifiedApplink = getModifiedApplink(applink, searchParameter)
+            RouteManager.route(it, modifiedApplink)
         }
     }
 
@@ -158,8 +163,8 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         AutocompleteTracking.eventClickKeyword(eventLabel)
     }
 
-    override fun trackEventClickCurated(eventLabel: String) {
-        AutocompleteTracking.eventClickCurated(eventLabel)
+    override fun trackEventClickCurated(eventLabel: String, campaignCode: String) {
+        AutocompleteTracking.eventClickCurated(eventLabel, campaignCode)
     }
 
     override fun trackEventClickShop(eventLabel: String) {
@@ -168,5 +173,9 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
 
     override fun trackEventClickProfile(eventLabel: String) {
         AutocompleteTracking.eventClickProfile(eventLabel)
+    }
+
+    override fun trackEventClickRecentKeyword(eventLabel: String) {
+        AutocompleteTracking.eventClickRecentKeyword(eventLabel)
     }
 }

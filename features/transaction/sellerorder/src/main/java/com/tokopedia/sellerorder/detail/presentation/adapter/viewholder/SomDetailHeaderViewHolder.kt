@@ -73,7 +73,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
             if (item.dataObject.deadlineText.isNotEmpty()) {
                 itemView.header_deadline_label?.visibility = View.VISIBLE
-                if (item.dataObject.statusId == STATUS_ORDER_DELIVERED || item.dataObject.statusId == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
+                if (item.dataObject.statusCode == STATUS_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_ORDER_DELIVERED_DUE_LIMIT) {
                     itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
                 } else {
                     itemView.header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)

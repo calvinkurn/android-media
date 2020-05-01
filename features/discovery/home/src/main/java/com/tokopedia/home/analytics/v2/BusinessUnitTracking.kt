@@ -43,7 +43,6 @@ object BusinessUnitTracking : BaseTracking(){
             id = model.content.contentId.toString(),
             creative = model.content.contentName,
             name = Ecommerce.PROMOTION_NAME.format(positionWidget, "bu widget - tab $tabIndex", tabName),
-            creativeUrl = model.content.imageUrl,
             position = model.itemPosition.toString(),
             promoCodes = Label.NONE,
             promoIds = Label.NONE)

@@ -12,30 +12,34 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopProductDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopSeeMoreDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.typeFactory.MixTopTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.home.util.setGradientBackground
+import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MixTopBannerViewHolder(
-        itemView: View, val homeCategoryListener: HomeCategoryListener,
-        countDownListener: CountDownView.CountDownListener,
-        private val parentRecycledViewPool: RecyclerView.RecycledViewPool
-) : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener){
+        itemView: View, val homeCategoryListener: HomeCategoryListener
+) : DynamicChannelViewHolder(itemView, homeCategoryListener), FlashSaleCardListener, CoroutineScope {
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
@@ -57,21 +61,20 @@ class MixTopBannerViewHolder(
         private const val CTA_TYPE_TEXT = "text_only"
     }
 
+
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext = masterJob + Dispatchers.Main
+
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         mappingView(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        val channel = element?.channel
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
-        element?.let {
-            channel?.let {channel->
-                val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
-                mappingHeader(channel)
-                mappingItem(channel, visitables)
-            }
-        }
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        super.setupContent(channel, payloads)
+        val visitables = mappingVisitablesFromChannel(channel)
+        mappingHeader(channel)
+        mappingItem(channel, visitables)
     }
 
     override fun getViewHolderClassName(): String {
@@ -82,11 +85,26 @@ class MixTopBannerViewHolder(
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
     }
 
-    private fun mappingView(channel: DynamicHomeChannel.Channels) {
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
-        val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
+    override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+    }
 
-        recyclerView.setRecycledViewPool(parentRecycledViewPool)
+    override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
+    }
+
+    override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
+                listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
+                channel.header.name,
+                channel.id,
+                adapterPosition.toString(),
+                channel.campaignCode
+        ) as HashMap<String, Any>)
+        homeCategoryListener.onDynamicChannelClicked(grid.applink)
+    }
+
+    private fun mappingView(channel: DynamicHomeChannel.Channels) {
+        val visitables: MutableList<Visitable<*>> = mappingVisitablesFromChannel(channel)
         recyclerView.setHasFixedSize(true)
 
         valuateRecyclerViewDecoration()
@@ -97,20 +115,24 @@ class MixTopBannerViewHolder(
 
     }
 
+    private fun setRecyclerViewAndCardHeight(productDataList: List<FlashSaleDataModel>) {
+        launch {
+            try {
+                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
+    }
+
     private fun mappingHeader(channel: DynamicHomeChannel.Channels){
         val bannerItem = channel.banner
         val ctaData = channel.banner.cta
         var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
-        var backColor: Int = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
-            } catch (e: IllegalArgumentException) { }
-        }
-
-        if(bannerItem.backColor.isNotEmpty()) {
-            try {
-                backColor = Color.parseColor(bannerItem.backColor)
             } catch (e: IllegalArgumentException) { }
         }
 
@@ -118,8 +140,7 @@ class MixTopBannerViewHolder(
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
-
-        background.setBackgroundColor(backColor)
+        background.setGradientBackground(bannerItem.gradientColor)
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
 
@@ -137,20 +158,11 @@ class MixTopBannerViewHolder(
         }
     }
 
-    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<MixTopVisitable>){
-        if (adapter == null) {
-            startSnapHelper.attachToRecyclerView(recyclerView)
-            adapter = MixTopAdapter(
-                    MixTopTypeFactoryImpl(homeCategoryListener),
-                    channel.grids,
-                    channel,
-                    homeCategoryListener)
-            adapter?.setItems(visitables)
-
-            recyclerView.adapter = adapter
-        } else {
-            adapter?.setItems(visitables)
-        }
+    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<Visitable<*>>) {
+        startSnapHelper.attachToRecyclerView(recyclerView)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
+        adapter = MixTopAdapter(visitables, typeFactoryImpl)
+        recyclerView.adapter = adapter
     }
 
     private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
@@ -196,20 +208,6 @@ class MixTopBannerViewHolder(
                 Snackbar.LENGTH_LONG)
     }
 
-    private fun computeBlankSpaceConfig(channel: DynamicHomeChannel.Channels?): BlankSpaceConfig {
-        val blankSpaceConfig = BlankSpaceConfig(
-                twoLinesProductName = true
-        )
-        channel?.grids?.forEach {
-            if (it.freeOngkir.isActive) blankSpaceConfig.freeOngkir = true
-            if (it.slashedPrice.isNotEmpty()) blankSpaceConfig.slashedPrice = true
-            if (it.price.isNotEmpty()) blankSpaceConfig.price = true
-            if (it.discount.isNotEmpty()) blankSpaceConfig.discountPercentage = true
-            if (it.name.isNotEmpty()) blankSpaceConfig.productName = true
-        }
-        return blankSpaceConfig
-    }
-
     private fun valuateRecyclerViewDecoration() {
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
         recyclerView.layoutManager = LinearLayoutManager(
@@ -223,17 +221,57 @@ class MixTopBannerViewHolder(
         startSnapHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
-                                             blankSpaceConfig: BlankSpaceConfig): MutableList<MixTopVisitable> {
-        val visitables: MutableList<MixTopVisitable> = channel.grids.map {
-            MixTopProductDataModel(it, channel, blankSpaceConfig, adapterPosition.toString())
-        }.toMutableList()
+    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels): MutableList<Visitable<*>> {
+        val visitables: MutableList<Visitable<*>> = mutableListOf()
+        val channelProductData = convertDataToProductData(channel)
+        setRecyclerViewAndCardHeight(channelProductData)
+        visitables.addAll(channelProductData)
+        return visitables
+    }
 
-        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_MIX_TOP) {
-            visitables.add(MixTopSeeMoreDataModel(
-                    channel
+    private fun convertDataToProductData(channel: DynamicHomeChannel.Channels): List<FlashSaleDataModel> {
+        val list :MutableList<FlashSaleDataModel> = mutableListOf()
+        for (element in channel.grids) {
+            list.add(FlashSaleDataModel(
+                    ProductCardFlashSaleModel(
+                            slashedPrice = element.slashedPrice,
+                            productName = element.name,
+                            formattedPrice = element.price,
+                            productImageUrl = element.imageUrl,
+                            discountPercentage = element.discount,
+                            pdpViewCount = element.productViewCountFormatted,
+                            stockBarLabel = element.label,
+                            isTopAds = element.isTopads,
+                            stockBarPercentage = element.soldPercentage,
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
+                    ),
+                    blankSpaceConfig = BlankSpaceConfig(),
+                    grid = element,
+                    applink = element.applink,
+                    listener = this
             ))
         }
-        return visitables
+        return list
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+            productCardModelList: List<ProductCardFlashSaleModel>) {
+        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
+    }
+
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 }

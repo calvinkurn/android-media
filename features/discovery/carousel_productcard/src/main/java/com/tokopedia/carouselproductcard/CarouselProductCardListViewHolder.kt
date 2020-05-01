@@ -7,8 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import kotlinx.android.synthetic.main.carousel_product_card_item_list_layout.view.*
 
 internal class CarouselProductCardListViewHolder(
-        itemView: View,
-        private val carouselProductCardListenerInfo: CarouselProductCardListenerInfo
+        itemView: View
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -18,14 +17,21 @@ internal class CarouselProductCardListViewHolder(
 
     fun bind(carouselProductCardModel: CarouselProductCardModel) {
         val productCardModel = carouselProductCardModel.productCardModel
-        val onItemClickListener = carouselProductCardListenerInfo.onItemClickListener
-        val onItemImpressedListener = carouselProductCardListenerInfo.onItemImpressedListener
-        val onItemAddToCartListener = carouselProductCardListenerInfo.onItemAddToCartListener
-        val onItemThreeDotsClickListener = carouselProductCardListenerInfo.onItemThreeDotsClickListener
 
         itemView.carouselProductCardItem?.applyCarousel()
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
+
+        setCarouselProductCardListeners(carouselProductCardModel)
+    }
+
+    private fun setCarouselProductCardListeners(carouselProductCardModel: CarouselProductCardModel) {
+        val productCardModel = carouselProductCardModel.productCardModel
+
+        val onItemClickListener = carouselProductCardModel.getOnItemClickListener()
+        val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
+        val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
+        val onItemThreeDotsClickListener = carouselProductCardModel.getOnItemThreeDotsClickListener()
 
         itemView.carouselProductCardItem?.setOnClickListener {
             onItemClickListener?.onItemClick(productCardModel, adapterPosition)

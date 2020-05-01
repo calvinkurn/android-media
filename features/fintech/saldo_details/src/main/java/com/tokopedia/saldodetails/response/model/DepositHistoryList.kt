@@ -12,14 +12,14 @@ class DepositHistoryList : ParcelableViewModel<SaldoDetailTransactionFactory> {
     @SerializedName("amount")
     var amount: Float = 0.toFloat()
 
-    @SerializedName("class")
-    var transactionClass: String? = null
-
     @SerializedName("image")
     var imageURL: String? = null
 
     @SerializedName("create_time")
     var createTime: String? = null
+
+    @SerializedName("type_description")
+    var typeDescription: String? = null
 
     override fun type(typeFactory: SaldoDetailTransactionFactory): Int {
         return typeFactory.type(this)

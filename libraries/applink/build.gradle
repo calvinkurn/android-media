@@ -25,8 +25,8 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.remoteConfig)
-
     implementation project(rootProject.ext.libraries.playCore)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation (rootProject.ext.serviceDependencies.crashlytics)
 }
@@ -34,7 +34,7 @@ dependencies {
 project.ext {
     artifactId = 'applink'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "applink-release"
 }
 
