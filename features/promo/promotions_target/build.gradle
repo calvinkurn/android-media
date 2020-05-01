@@ -42,9 +42,9 @@ dependencies {
 
 project.ext {
     artifactId = 'promotions-target'
-    groupId = 'com.tokopedia.library'
-    versionName = "0.0.2"
+    groupId = 'com.tokopedia.promo'
+    versionName = "0.0.1"
     artifactName = "promotions_target-release"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../../../publish_local.gradle'
