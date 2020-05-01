@@ -21,8 +21,7 @@ public abstract class TopAdsDetailPresenterImpl<V extends Ad> implements TopAdsD
     }
 
     protected String getShopId() {
-        SessionHandler session = new SessionHandler(context);
-        return session.getShopID();
+        return SessionHandler.getShopID(context);
     }
 
     protected void unsubscribe(){

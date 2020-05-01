@@ -3,23 +3,24 @@ package com.tokopedia.product.manage.item.variant.dialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.RelativeLayout;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher;
-import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
 
 /**
@@ -171,8 +172,8 @@ public class ProductChangeVariantPriceDialogFragment extends DialogFragment {
     }
 
     private void onSubmitClicked() {
-        if (!checkPriceValid(counterInputPrice.getCounterValue())) {
-            CommonUtils.hideKeyboard(getActivity(), getView());
+        if (!checkPriceValid(counterInputPrice.getCounterValue()) && getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             return;
         }
         if(onProductChangeVariantPriceFragmentListener!=null){

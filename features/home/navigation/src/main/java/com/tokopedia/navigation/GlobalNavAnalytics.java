@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -34,6 +33,8 @@ import static com.tokopedia.navigation.GlobalNavConstant.Analytics.TOP_NAV;
  * Created by meta on 03/08/18.
  */
 public class GlobalNavAnalytics {
+
+    public static final String IDENTIFIER_HOME_ACTIVITY = "ParentIndexHome";
 
     @Inject
     GlobalNavAnalytics() {
@@ -113,7 +114,7 @@ public class GlobalNavAnalytics {
     }
 
     public void trackFirstTime(Context context) {
-        TrackingUtils.activityBasedAFEvent(context, HomeRouter.IDENTIFIER_HOME_ACTIVITY);
+        TrackingUtils.activityBasedAFEvent(context, IDENTIFIER_HOME_ACTIVITY);
         LocalCacheHandler cache = new LocalCacheHandler(context, GlobalNavConstant.Cache.KEY_FIRST_TIME);
         cache.putBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, true);
         cache.applyEditor();
