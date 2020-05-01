@@ -344,8 +344,8 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         viewModel.setFilterOptionWrapper(filterOptions)
         viewModel.getFiltersTab()
 
-        val filterTabList = listOf(MoreFilter(3),Active(10))
-        val expectedResult = Success(GetFilterTabResult(filterTabList, 10))
+        val filterTabList = listOf(Active(10))
+        val expectedResult = Success(ShowFilterTab(filterTabList, 10))
 
         viewModel.productFiltersTab
             .verifySuccessEquals(expectedResult)

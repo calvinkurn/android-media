@@ -62,11 +62,10 @@ import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
-import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
+import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
@@ -75,6 +74,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageFilterTab
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
@@ -116,7 +116,6 @@ import javax.inject.Inject
 
 open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactoryImpl>(),
     ProductViewHolder.ProductViewHolderView,
-    FilterTabViewHolder.ProductFilterListener,
     ProductMenuViewHolder.ProductMenuListener,
     ProductMultiEditBottomSheet.MultiEditListener,
     ProductManageFilterFragment.OnFinishedListener,
@@ -142,6 +141,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
     private var performanceMonitoring: PerformanceMonitoring? = null
+    private var filterTab: ProductManageFilterTab? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayoutRes(), container, false)
@@ -166,7 +166,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupInterceptor()
         setupSearchBar()
         setupProductList()
-        setupTabFilters()
+        setupFiltersTab()
         setupBottomSheet()
         setupMultiSelect()
         setupSelectAll()
@@ -232,17 +232,25 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onClickMoreFilter(filter: FilterTabViewModel, tabName: String) {
+    private fun onClickMoreFilter(filter: FilterTabViewModel) {
         showFilterBottomSheet()
+
+        val tabName = getString(filter.titleId)
         ProductManageTracking.eventInventory(tabName)
     }
 
-    override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
+    private fun onClickFilterTab(filter: FilterTabViewModel) {
+        showLoadingProgress()
+
         clearAllData()
         resetMultiSelect()
         disableMultiSelect()
-        showLoadingProgress()
-        clickStatusFilterTab(filter, viewHolder)
+        renderCheckedView()
+
+        getFiltersTab(withDelay = true)
+        getProductList(withDelay = true)
+
+        val tabName = getString(filter.titleId)
         ProductManageTracking.eventInventory(tabName)
     }
 
@@ -308,7 +316,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showProductEmptyState(): Boolean {
         val selectedFilters = viewModel.selectedFilterAndSort.value
         val searchKeyword = searchBar.searchTextView.text.toString()
-        return searchKeyword.isEmpty() && selectedFilters == null && !tabFilters.isActive()
+        return searchKeyword.isEmpty() && selectedFilters == null && filterTab?.isFilterActive() == false
     }
 
     private fun setupInterceptor() {
@@ -346,7 +354,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         context?.let {
             searchBar.closeImageButton.setImageResource(android.R.color.transparent)
-            searchBar.closeImageButton.setBackgroundResource(com.tokopedia.unifycomponents.R.drawable.unify_clear_ic)
+            searchBar.closeImageButton.setBackgroundResource(R.drawable.unify_clear_ic)
         }
     }
 
@@ -394,24 +402,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
     }
 
-    private fun setTabFilterCount(filter: FilterOptionWrapper) {
-        tabFilters.setFilterCount(filter.selectedFilterCount)
-    }
-
-    private fun clickStatusFilterTab(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder) {
-        val selectedFilter = filter.status
-        val currentFilter = tabFilters.selectedFilter?.status
-
-        if (selectedFilter == currentFilter) {
-            tabFilters.resetSelectedFilter()
-        } else {
-            tabFilters.resetAllFilter(viewHolder)
-            tabFilters.setSelectedFilter(filter)
-        }
-
-        renderCheckedView()
-        getFiltersTab(withDelay = true)
-        getProductList(withDelay = true)
+    private fun setActiveFilterCount(filter: FilterOptionWrapper) {
+        filterTab?.setActiveFilterCount(filter.selectedFilterCount)
     }
 
     private fun renderCheckedView() {
@@ -451,8 +443,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         recycler_view.addItemDecoration(ProductListItemDecoration())
     }
 
-    private fun setupTabFilters() {
-        tabFilters.init(this)
+    private fun setupFiltersTab() {
+        filterTab = ProductManageFilterTab(tabSortFilter, {
+            onClickMoreFilter(it)
+        }, {
+            onClickFilterTab(it)
+        })
     }
 
     private val addProductReceiver = object : BroadcastReceiver() {
@@ -502,7 +498,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val filterOptions = createFilterOptions(page, keyword)
         val sortOption = selectedFilter?.sortOption
 
-        tabFilters.selectedFilter?.status?.let {
+        filterTab?.getSelectedFilter()?.let {
             filterOptions.add(FilterByStatus(it))
         }
 
@@ -582,8 +578,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateStock(productId, stock, status)
 
-        tabFilters.selectedFilter?.let {
-            filterProductListByStatus(it.status)
+        filterTab?.getSelectedFilter()?.let {
+            filterProductListByStatus(it)
             renderMultiSelectProduct()
         }
 
@@ -648,7 +644,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         productManageListAdapter.deleteProduct(productId)
         renderMultiSelectProduct()
         getFiltersTab(withDelay = true)
-        getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun showMessageToast(message: String) {
@@ -791,8 +786,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             is EditByStatus -> {
                 updateProductListStatus(productIds, result.status)
 
-                tabFilters.selectedFilter?.let {
-                    filterProductListByStatus(it.status)
+                filterTab?.getSelectedFilter()?.let {
+                    filterProductListByStatus(it)
                     renderMultiSelectProduct()
                 }
 
@@ -860,7 +855,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun resetSelectedFilter() {
         removeObservers(viewModel.selectedFilterAndSort)
         viewModel.resetSelectedFilter()
-        tabFilters.resetFilters()
+        filterTab?.resetFilters()
         observeFilter()
     }
 
@@ -1422,8 +1417,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.productFiltersTab) {
             when(it) {
                 is Success -> {
-                    val filtersTab = it.data.tabs
-                    tabFilters.setData(filtersTab)
+                    val data = it.data
+
+                    if(data is ShowFilterTab) {
+                        filterTab?.show(data)
+                    } else {
+                        filterTab?.update(data)
+                    }
+
                     renderCheckedView()
                 }
             }
@@ -1505,7 +1506,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             clearAllData()
             resetMultiSelect()
             getProductList()
-            setTabFilterCount(it)
+            setActiveFilterCount(it)
         }
     }
 
@@ -1597,7 +1598,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun initHeaderView(productList: List<ProductViewModel>) {
         if(isLoadingInitialData && showProductEmptyState()) {
             searchBar.showWithCondition(productList.isNotEmpty())
-            tabFilters.showWithCondition(productList.isNotEmpty())
+            tabSortFilter.showWithCondition(productList.isNotEmpty())
         }
     }
 
@@ -1613,8 +1614,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun renderProductCount() {
-        val productCount = if(tabFilters.isActive()) {
-            tabFilters.getProductCount()
+        val productCount = if(filterTab?.isFilterActive() == true) {
+            filterTab?.getProductCount()
         } else {
             viewModel.getTotalProductCount()
         }
