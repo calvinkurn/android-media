@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.recommendation.presentation.adapter
 
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.model.ThankYouRecommendationModel
 
 interface ThankYouRecomViewListener : RecommendationListener {
     fun onProductImpression(item: RecommendationItem, position: Int)
@@ -9,4 +10,5 @@ interface ThankYouRecomViewListener : RecommendationListener {
     fun onWishListedSuccessfully(message: String)
     fun onRemoveFromWishList(message: String)
     fun onShowError(throwable: Throwable?)
+    fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem, position: Int)
 }

@@ -34,6 +34,17 @@ class ThankYouRecomAdapter(val thankYouRecommendationModelList: List<ThankYouRec
         holder.clearImage()
     }
 
+    override fun onViewAttachedToWindow(holder: RecommendationViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.getThankYouRecommendationModel()?.let {
+            if (!it.isSeenOnceByUser) {
+                listener?.onRecommendationItemDisplayed(it.recommendationItem,
+                        holder.adapterPosition + 1)
+                it.isSeenOnceByUser = true
+            }
+        }
+    }
+
     class ProductModelDiffUtil : DiffUtil.ItemCallback<ProductCardModel>() {
         override fun areItemsTheSame(oldItem: ProductCardModel, newItem: ProductCardModel): Boolean {
             return oldItem.productName == newItem.productName

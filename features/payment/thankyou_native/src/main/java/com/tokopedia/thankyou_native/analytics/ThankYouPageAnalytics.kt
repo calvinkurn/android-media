@@ -3,7 +3,12 @@ package com.tokopedia.thankyou_native.analytics
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.helper.InstantPaymentPage
+import com.tokopedia.thankyou_native.helper.PageType
+import com.tokopedia.thankyou_native.helper.ProcessingPaymentPage
+import com.tokopedia.thankyou_native.helper.WaitingPaymentPage
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 
 class ThankYouPageAnalytics {
@@ -75,6 +80,84 @@ class ThankYouPageAnalytics {
             productNodeList.add(productNodeMap)
         }
         return productNodeList
+    }
+
+    fun sendBackPressedEvent() {
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_CLICK_BACK,
+                        ""
+                ))
+    }
+
+    fun sendLihatDetailClickEvent(pageType: PageType?) {
+        val eventLabel = when (pageType) {
+            is InstantPaymentPage -> EVENT_LABEL_INSTANT
+            is ProcessingPaymentPage -> EVENT_LABEL_PROCESSING
+            is WaitingPaymentPage -> EVENT_LABEL_DEFERRED
+            else -> ""
+        }
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_LIHAT_DETAIL,
+                        eventLabel
+                ))
+    }
+
+    fun sendCheckTransactionListEvent() {
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_CHECK_TRANSACTION_LIST,
+                        ""
+                ))
+    }
+
+    fun sendBelanjaLagiClickEvent() {
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_BELANJA_LAGI,
+                        ""
+                ))
+    }
+
+    fun sendSalinButtonClickEvent(paymentMethod: String) {
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_SALIN_CLICK,
+                        paymentMethod
+                ))
+    }
+
+    fun sendOnHowtoPayClickEvent() {
+        analyticTracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
+                        EVENT_CATEGORY_ORDER_COMPLETE,
+                        EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK,
+                        ""
+                ))
+    }
+
+
+    companion object {
+        const val EVENT_NAME_CLICK_ORDER = "clickOrder"
+        const val EVENT_CATEGORY_ORDER_COMPLETE = "order complete"
+        const val EVENT_ACTION_CLICK_BACK = "click back arrow"
+
+        const val EVENT_ACTION_LIHAT_DETAIL = "click lihat detail tagihan"
+        const val EVENT_ACTION_CHECK_TRANSACTION_LIST = "click check transactions list"
+        const val EVENT_ACTION_BELANJA_LAGI = "click check transactions list"
+        const val EVENT_ACTION_SALIN_CLICK = "click check transactions list"
+        const val EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK = "click lihat cara pembayaran"
+
+
+        const val EVENT_LABEL_INSTANT = "instant"
+        const val EVENT_LABEL_DEFERRED = "deffer"
+        const val EVENT_LABEL_PROCESSING = "processing"
     }
 
 }

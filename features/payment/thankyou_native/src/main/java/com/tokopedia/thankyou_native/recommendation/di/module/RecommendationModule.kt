@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.thankyou_native.recommendation.analytics.RecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendation.di.module.GqlQueryModule.Companion.GQL_RECOMMENDATION_DATA
 import com.tokopedia.thankyou_native.recommendation.di.scope.RecommendationScope
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
@@ -32,6 +33,12 @@ class RecommendationModule {
     @Provides
     fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
+    }
+
+    @RecommendationScope
+    @Provides
+    fun provideRecommendationAnalytics(): RecommendationAnalytics {
+        return RecommendationAnalytics()
     }
 
     @RecommendationScope

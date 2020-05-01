@@ -88,6 +88,10 @@ class DialogHelper(val context: Context, val listener: OnDialogRedirectListener)
         listener.gotoHomePage()
     }
 
+    /**
+     * goto paymentList Activity
+     *
+     * */
     private fun gotoPaymentWaitingPage() {
         cancelDialog()
         listener.gotoPaymentWaitingPage()

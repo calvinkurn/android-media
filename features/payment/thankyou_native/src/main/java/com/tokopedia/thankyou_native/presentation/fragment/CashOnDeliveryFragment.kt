@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
@@ -18,10 +19,13 @@ import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYo
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
-class CashOnDeliveryFragment  : ThankYouBaseFragment() {
+class CashOnDeliveryFragment : ThankYouBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
 
     private lateinit var checkWhiteListViewModel: CheckWhiteListViewModel
 
@@ -55,7 +59,6 @@ class CashOnDeliveryFragment  : ThankYouBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setActionMenu()
-        pdp_recommendation_instant.fragment = this
         if (!::thanksPageData.isInitialized)
             activity?.finish()
         bindDataToUI()
@@ -73,6 +76,10 @@ class CashOnDeliveryFragment  : ThankYouBaseFragment() {
 
     override fun getRecommendationView(): PDPThankYouPageView? {
         return pdp_recommendation_instant
+    }
+
+    override fun getThankPageAnalytics(): ThankYouPageAnalytics {
+        return thankYouPageAnalytics
     }
 
     private fun bindDataToUI() {

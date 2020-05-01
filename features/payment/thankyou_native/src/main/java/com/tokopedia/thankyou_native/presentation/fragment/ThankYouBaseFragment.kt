@@ -1,16 +1,16 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
+import android.app.TaskStackBuilder
 import android.content.Intent
-import android.net.Uri
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.helper.PaymentPageMapper
 import com.tokopedia.thankyou_native.helper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.presentation.dialog.CloseableBottomSheetFragment
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
@@ -19,19 +19,24 @@ import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListene
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
 import com.tokopedia.unifycomponents.Toaster
-import retrofit2.http.Url
-import java.net.URL
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
     private lateinit var invoiceBottomSheets: CloseableBottomSheetFragment
-    private lateinit var howToPayBottomSheets: CloseableBottomSheetFragment
     private lateinit var dialogHelper: DialogHelper
 
     abstract fun getThankPageData(): ThanksPageData
     abstract fun getRecommendationView(): PDPThankYouPageView?
+    abstract fun getThankPageAnalytics(): ThankYouPageAnalytics
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getRecommendationView()?.loadRecommendation(this)
+    }
 
     fun openHowTOPay(thanksPageData: ThanksPageData) {
+        getThankPageAnalytics().sendOnHowtoPayClickEvent()
         RouteManager.route(context, thanksPageData.howToPay)
     }
 
@@ -47,6 +52,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
+        getThankPageAnalytics().sendLihatDetailClickEvent(PaymentPageMapper.getPaymentPageType(thanksPageData.pageType))
         if (!::invoiceBottomSheets.isInitialized)
             invoiceBottomSheets = CloseableBottomSheetFragment
                     .newInstance(InvoiceFragment.getInvoiceFragment(thanksPageData),
@@ -60,23 +66,33 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     override fun gotoHomePage() {
+        getThankPageAnalytics().sendBelanjaLagiClickEvent()
         RouteManager.route(context, ApplinkConst.HOME, "")
         activity?.finish()
     }
 
     override fun gotoPaymentWaitingPage() {
-        RouteManager.route(context, ApplinkConst.PMS, "")
+        val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
+        val paymentListIntent = RouteManager.getIntent(context, ApplinkConst.PMS, "")
+        paymentListIntent?.let {
+            TaskStackBuilder.create(context)
+                    .addNextIntent(homeIntent)
+                    .addNextIntent(paymentListIntent)
+                    .startActivities()
+        }
         activity?.finish()
     }
 
     override fun gotoOrderList() {
         try {
+            getThankPageAnalytics().sendCheckTransactionListEvent()
             val list: List<String> = getThankPageData().shopOrder.map {
                 it.orderId
             }
             RouteManager.route(context, ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL, list[0])
             activity?.finish()
-        }catch (e : Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

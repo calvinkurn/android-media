@@ -112,6 +112,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
+        thankYouPageAnalytics.sendBackPressedEvent()
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()

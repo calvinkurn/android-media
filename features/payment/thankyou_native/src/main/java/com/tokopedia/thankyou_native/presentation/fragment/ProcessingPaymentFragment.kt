@@ -12,6 +12,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.PaymentType
@@ -30,6 +31,11 @@ import javax.inject.Inject
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
+
+
+    @Inject
+    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,7 +76,6 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        deferredPDPView.fragment = this
         observeViewModel()
         bindDataToUi()
     }
@@ -81,6 +86,10 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     override fun getRecommendationView(): PDPThankYouPageView? {
         return deferredPDPView
+    }
+
+    override fun getThankPageAnalytics(): ThankYouPageAnalytics {
+        return thankYouPageAnalytics
     }
 
     private fun observeViewModel() {

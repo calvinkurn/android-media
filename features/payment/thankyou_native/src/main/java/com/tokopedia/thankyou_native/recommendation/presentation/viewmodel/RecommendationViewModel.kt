@@ -44,8 +44,8 @@ class RecommendationViewModel @Inject constructor(
             val topAdsProductDef = try {
                 val data = getRecommendationUseCase
                         .createObservable(getRecommendationUseCase.getRecomParams(
-                                pageNumber = 0,
-                                xSource = "mobile",
+                                pageNumber = 1,
+                                xSource = "recom_widget",
                                 pageName = "thankyou_page",
                                 productIds = arrayListOf()
                         )).toBlocking()

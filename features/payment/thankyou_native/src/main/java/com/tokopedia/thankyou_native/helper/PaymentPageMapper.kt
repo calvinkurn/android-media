@@ -13,7 +13,6 @@ object PaymentPageMapper {
             "Success" -> InstantPaymentPage
             "Processing" -> ProcessingPaymentPage
             else -> null
-
         }
     }
 }

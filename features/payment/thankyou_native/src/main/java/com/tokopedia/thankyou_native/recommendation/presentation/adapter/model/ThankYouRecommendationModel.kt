@@ -5,5 +5,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 data class ThankYouRecommendationModel(
         val recommendationItem: RecommendationItem,
-        val productCardModel: ProductCardModel
+        val productCardModel: ProductCardModel,
+        var isSeenOnceByUser: Boolean = false
 )

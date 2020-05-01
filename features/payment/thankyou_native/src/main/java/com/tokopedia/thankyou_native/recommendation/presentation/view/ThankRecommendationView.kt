@@ -17,20 +17,21 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.presentation.viewModel.state.Loaded
+import com.tokopedia.thankyou_native.recommendation.analytics.RecommendationAnalytics
+import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ThankYouRecomAdapter
-import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ThankYouRecomViewListener
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.model.ThankYouRecommendationModel
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.RecommendationViewModel
-import com.tokopedia.thankyou_native.presentation.viewModel.state.Loaded
-import com.tokopedia.thankyou_native.presentation.viewModel.state.Loading
-import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,6 +45,9 @@ class PDPThankYouPageView @JvmOverloads constructor(
     private var viewModel: RecommendationViewModel? = null
 
     @Inject
+    lateinit var analytics: RecommendationAnalytics
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
@@ -55,7 +59,7 @@ class PDPThankYouPageView @JvmOverloads constructor(
 
     fun getLayout() = R.layout.thank_pdp_recommendation
 
-    var fragment: BaseDaggerFragment? = null
+    private var fragment: BaseDaggerFragment? = null
 
     init {
         injectComponents()
@@ -76,12 +80,12 @@ class PDPThankYouPageView @JvmOverloads constructor(
         val v = LayoutInflater.from(context).inflate(getLayout(), this, true)
         viewModel?.let {
             startViewModelObserver(it)
-            loadRecommendation(it)
         }
     }
 
-    private fun loadRecommendation(recommendationViewModel: RecommendationViewModel) {
-        recommendationViewModel.loadRecommendationData()
+    fun loadRecommendation(fragment: BaseDaggerFragment) {
+        this.fragment = fragment
+        viewModel?.loadRecommendationData()
     }
 
     private fun startViewModelObserver(recommendationViewModel: RecommendationViewModel) {
@@ -97,27 +101,31 @@ class PDPThankYouPageView @JvmOverloads constructor(
 
         recommendationViewModel.recommendationListModel.observe(context as AppCompatActivity, Observer {
             when (it) {
-                is Loading -> {
-                }
                 is Loaded -> {
                     (it.data as? Success)?.data?.let { result ->
                         addItemsToAdapter(result)
                     }
+                }
+                else -> {
+
                 }
             }
         })
     }
 
     private fun addItemsToAdapter(result: List<RecommendationWidget>) {
-        result.forEach { it ->
-            val thankYouRecommendationModelList = getProductCardModel(it.recommendationItemList)
+        val recommendationItemList = result[0].recommendationItemList
+        if (recommendationItemList.isNotEmpty()) {
+            tvTitle.visible()
+            val thankYouRecommendationModelList = getProductCardModel(recommendationItemList)
             val blankSpaceConfig = computeBlankSpaceConfig(thankYouRecommendationModelList)
             setupRecyclerView(thankYouRecommendationModelList, blankSpaceConfig)
             adapter.notifyDataSetChanged()
         }
     }
 
-    private fun getProductCardModel(recommendationItemList: List<RecommendationItem>): List<ThankYouRecommendationModel> {
+    private fun getProductCardModel(recommendationItemList: List<RecommendationItem>)
+            : List<ThankYouRecommendationModel> {
         return recommendationItemList.map { recommendationItem ->
             ThankYouRecommendationModel(recommendationItem,
                     ProductCardModel(
@@ -144,16 +152,19 @@ class PDPThankYouPageView @JvmOverloads constructor(
         }
     }
 
-    private fun setupRecyclerView(thankYouRecommendationModelList: List<ThankYouRecommendationModel>, blankSpaceConfig: BlankSpaceConfig) {
+    private fun setupRecyclerView(thankYouRecommendationModelList: List<ThankYouRecommendationModel>,
+                                  blankSpaceConfig: BlankSpaceConfig) {
         listener = getRecommendationListener()
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
+                false)
         adapter = ThankYouRecomAdapter(thankYouRecommendationModelList, blankSpaceConfig, listener)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(ProductCardDefaultDecorator())
     }
 
-    private fun computeBlankSpaceConfig(productCardModelList: List<ThankYouRecommendationModel>): BlankSpaceConfig {
+    private fun computeBlankSpaceConfig(productCardModelList: List<ThankYouRecommendationModel>)
+            : BlankSpaceConfig {
         val blankSpaceConfig = BlankSpaceConfig(
                 twoLinesProductName = true
         )
@@ -180,9 +191,13 @@ class PDPThankYouPageView @JvmOverloads constructor(
     private fun getRecommendationListener(): ThankYouRecomViewListener {
         return object : ThankYouRecomViewListener {
 
-            override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
-                if (position.isNotEmpty()) intent.putExtra(WishList.PDP_EXTRA_UPDATED_POSITION, position[0])
+            override fun onProductClick(item: RecommendationItem,
+                                        layoutType: String?, vararg position: Int) {
+                analytics.sendRecommendationItemClick(item, position = position[0] + 1)
+                val intent = RouteManager.getIntent(context,
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
+                if (position.isNotEmpty())
+                    intent.putExtra(WishList.PDP_EXTRA_UPDATED_POSITION, position[0])
                 fragment?.startActivityForResult(intent, WishList.REQUEST_FROM_PDP)
             }
 
@@ -215,7 +230,6 @@ class PDPThankYouPageView @JvmOverloads constructor(
                 fragment?.view?.let { view ->
                     Toaster.make(view, message, Snackbar.LENGTH_LONG)
                 }
-
             }
 
             override fun onShowError(throwable: Throwable?) {
@@ -224,11 +238,17 @@ class PDPThankYouPageView @JvmOverloads constructor(
                     Toaster.make(view,
                             message,
                             Snackbar.LENGTH_LONG,
-                            type = Toaster.TYPE_NORMAL)
+                            type = Toaster.TYPE_ERROR)
                 }
             }
 
-            override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+            override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
+                                                       position: Int) {
+                analytics.sendRecommendationItemDisplayed(recommendationItem, position)
+            }
+
+            override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean,
+                                         callback: (Boolean, Throwable?) -> Unit) {
                 if (userSessionInterface.isLoggedIn) {
                     if (!isAddWishlist) {
                         viewModel?.addToWishList(item, callback)

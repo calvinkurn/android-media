@@ -17,8 +17,12 @@ class RecommendationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val LAYOUT_ID = R.layout.thank_item_recommendation
     }
 
+    private lateinit var thankYouRecommendationModel: ThankYouRecommendationModel
+
     fun bind(thankYouRecommendationModel: ThankYouRecommendationModel, blankSpaceConfig: BlankSpaceConfig,
              listener: ThankYouRecomViewListener?) {
+        this.thankYouRecommendationModel = thankYouRecommendationModel
+        itemView.tag = thankYouRecommendationModel
         itemView.productCardView.apply {
             val recommendationItem = thankYouRecommendationModel.recommendationItem
             setProductModel(thankYouRecommendationModel.productCardModel, blankSpaceConfig)
@@ -49,9 +53,16 @@ class RecommendationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
                 }
             }
-            setOnClickListener { listener?.onProductClick(thankYouRecommendationModel.recommendationItem) }
+            setOnClickListener { listener?.onProductClick(thankYouRecommendationModel.recommendationItem, position = *intArrayOf(adapterPosition)) }
             this.setAddToCartVisible(false)
         }
+    }
+
+
+    fun getThankYouRecommendationModel(): ThankYouRecommendationModel? {
+        if (::thankYouRecommendationModel.isInitialized)
+            return thankYouRecommendationModel
+        return null
     }
 
     private fun getString(@StringRes stringRes: Int): String {
