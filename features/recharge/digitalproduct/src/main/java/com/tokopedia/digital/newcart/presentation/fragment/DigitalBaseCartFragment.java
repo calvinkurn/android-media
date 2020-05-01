@@ -252,7 +252,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     private PromoDigitalModel getPromoDigitalModel() {
         Long price = cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0;
-        if(inputPriceHolderView.getVisibility() == View.VISIBLE){
+        if(inputPriceContainer.getVisibility() == View.VISIBLE){
             price = inputPriceHolderView.getPriceInput();
         }
         return new PromoDigitalModel(
