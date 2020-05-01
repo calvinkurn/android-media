@@ -2,28 +2,20 @@ package com.tokopedia.tkpd.timber;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.user.session.UserSession;
 
-public class UserIdSubscriber implements Application.ActivityLifecycleCallbacks {
+public class LoggerActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
 
     private String userId = "";
-    private Context appcontext;
-    private UserIdChangeCallback callback;
-
-    public UserIdSubscriber(Context context, UserIdChangeCallback callback) {
-        this.appcontext = context;
-        this.callback = callback;
-    }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        UserSession userSession = new UserSession(appcontext);
-        if(!userId.equals(userSession.getUserId())) {
+        UserSession userSession = new UserSession(activity);
+        if (!userId.equals(userSession.getUserId())) {
             userId = userSession.getUserId();
-            callback.onUserIdChanged();
+            TimberWrapper.init(activity.getApplication());
         }
     }
 
