@@ -7,11 +7,12 @@ import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class LoggerCloudDatasource {
-    suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>,
+class LoggerCloudDatasource(val token: Array<String>) {
+
+    suspend fun sendLogToServer(serverSeverity: Int,
                                 message:String): Int{
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
-        val token = TOKEN[serverSeverity - 1]
+        val token = token[serverSeverity - 1]
         withContext(Dispatchers.IO) {
             try {
                 errCode = openURL(token, message)

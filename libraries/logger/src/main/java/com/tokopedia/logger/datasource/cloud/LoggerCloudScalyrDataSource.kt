@@ -13,9 +13,8 @@ import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class LoggerCloudScalyrDataSource(val context: Context) {
+class LoggerCloudScalyrDataSource(val context: Context, val token: Array<String>) {
     companion object {
-        private val decodedToken = Constants.SCALYR_TOKEN.joinToString(separator = "") { it.toChar().toString() }
         private val gson = Gson()
     }
 
@@ -38,7 +37,7 @@ class LoggerCloudScalyrDataSource(val context: Context) {
         var responseCode = Constants.LOG_DEFAULT_ERROR_CODE
 
         try {
-            val scalyrBody = ScalyrBody(decodedToken, LogSession.getLogSession(context),
+            val scalyrBody = ScalyrBody(token.first(), LogSession.getLogSession(context),
                 ScalyrSessionInfo(Constants.ANDROID_APP_VALUE, Constants.SCALYR_PARSER),
                 scalyrEventList)
             url = URL(Constants.SCALYR_SERVER_URL)

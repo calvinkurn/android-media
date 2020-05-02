@@ -47,10 +47,9 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     override suspend fun sendLogToServer(serverSeverity: Int,
-                                         TOKEN: Array<String>,
                                          logger: Logger): Int = coroutineScope {
         val message = encryptor.decrypt(logger.message, secretKey)
-        server.sendLogToServer(serverSeverity, TOKEN, truncate(message))
+        server.sendLogToServer(serverSeverity, truncate(message))
     }
 
     override suspend fun sendScalyrLogToServer(logs: List<Logger>) = coroutineScope {

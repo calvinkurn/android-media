@@ -29,6 +29,16 @@ public class TimberWrapper {
             "60664ea7-4d61-4df1-b39c-365dc647aced"
     };
 
+    public static final String[] SCALYR_TOKEN = new String[]{
+            new String(new char[]{
+                    48, 115, 98, 97, 53, 108, 77, 56, 69, 49,
+                    112, 121, 115, 110, 71, 86, 111, 66, 111, 108,
+                    82, 67, 53, 109, 83, 51, 109, 98, 101, 95,
+                    101, 110, 68, 110, 118, 107, 116, 98, 80, 78,
+                    95, 100, 84, 77, 45
+            })
+    };
+
     private static final String ANDROID_CUSTOMER_APP_LOG_CONFIG = "android_customer_app_log_config";
     
     public static void init(@NonNull Application application){

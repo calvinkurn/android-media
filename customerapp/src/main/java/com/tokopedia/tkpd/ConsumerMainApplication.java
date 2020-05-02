@@ -264,6 +264,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LogManager.init(ConsumerMainApplication.this);
         if (LogManager.instance != null) {
             LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+            LogManager.instance.setLogScalyrToken(TimberWrapper.SCALYR_TOKEN);
         }
         TimberWrapper.init(ConsumerMainApplication.this);
         initializeAbTestVariant();

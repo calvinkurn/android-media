@@ -41,7 +41,11 @@ class LogManager(val application: Application) : CoroutineScope {
     }
 
     fun setLogEntriesToken(tokenList: Array<String>) {
-        TOKEN = tokenList
+        logentriesToken = tokenList
+    }
+
+    fun setLogScalyrToken(tokenList: Array<String>) {
+        scalyrToken = tokenList
     }
 
     private suspend fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
@@ -58,7 +62,8 @@ class LogManager(val application: Application) : CoroutineScope {
 
     companion object {
         @JvmStatic
-        var TOKEN: Array<String> = arrayOf()
+        var logentriesToken: Array<String> = arrayOf()
+        var scalyrToken: Array<String> = arrayOf()
         var scalyrEnabled: Boolean = false
         var logentriesEnabled: Boolean = true
         var isPrimaryLogentries: Boolean = true
@@ -77,8 +82,8 @@ class LogManager(val application: Application) : CoroutineScope {
                 val instance = instance ?: return null
                 val context = instance.application.applicationContext
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
-                val server = LoggerCloudDatasource()
-                val scalyrLogger = LoggerCloudScalyrDataSource(context)
+                val server = LoggerCloudDatasource(logentriesToken)
+                val scalyrLogger = LoggerCloudScalyrDataSource(context, scalyrToken)
                 val encryptor = AESEncryptorECB()
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
                 loggerRepository = LoggerRepository(logsDao, server, scalyrLogger, encryptor, secretKey)
@@ -156,7 +161,7 @@ class LogManager(val application: Application) : CoroutineScope {
                         val ts = log.timeStamp
                         val severity = getSeverity(log.serverChannel)
                         if (severity != Constants.SEVERITY_NONE) {
-                            val errorCode = logger.sendLogToServer(severity, TOKEN, log)
+                            val errorCode = logger.sendLogToServer(severity, log)
                             if (isPrimaryLogentries) {
                                 if (errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
                                     logger.deleteEntry(ts)
