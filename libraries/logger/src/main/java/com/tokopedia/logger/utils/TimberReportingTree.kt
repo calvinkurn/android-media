@@ -14,6 +14,7 @@ import java.util.*
 class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
     var userId: String = ""
+    var partDeviceId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
     var tagMaps: HashMap<String, Tag> = hashMapOf()
@@ -84,6 +85,9 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             .append("#")
         stringBuilder.append("time=")
             .append("'${getReadableTimeStamp(timeStamp)}'")
+            .append("#")
+        stringBuilder.append("did=")
+            .append(partDeviceId)
             .append("#")
         stringBuilder.append("uid=")
             .append(userId)

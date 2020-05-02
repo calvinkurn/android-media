@@ -21,6 +21,8 @@ import timber.log.Timber;
  * TimberWrapper.init(application);
  */
 public class TimberWrapper {
+    private static final String REGEX_ALPHA_NUMERIC = "[^a-zA-Z0-9]";
+    private static final int PART_DEVICE_ID_LENGTH = 9;
 
     public static final String[] LOGENTRIES_TOKEN = new String[]{
             "08fcd148-14aa-4d89-ac67-4f70fefd2f37",
@@ -46,6 +48,7 @@ public class TimberWrapper {
                     UserSession userSession = new UserSession(application);
                     TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
                     timberReportingTree.setUserId(userSession.getUserId());
+                    timberReportingTree.setPartDeviceId(getPartDeviceId(userSession.getDeviceId()));
                     timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
@@ -53,5 +56,13 @@ public class TimberWrapper {
                 }
             }
         }
+    }
+
+    private static String getPartDeviceId(String deviceId) {
+        deviceId = deviceId.replaceAll(REGEX_ALPHA_NUMERIC, "");
+        if (deviceId.length() > PART_DEVICE_ID_LENGTH) {
+            deviceId = deviceId.substring(deviceId.length() - PART_DEVICE_ID_LENGTH);
+        }
+        return deviceId;
     }
 }
