@@ -53,7 +53,11 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                     createTime
                     createTimeFormatted
                     likeCount
-                    state
+                    state {
+                        isMasked
+                        isLiked
+                        allowLike
+                    }
                     attachedProductCount
                   }
                 }

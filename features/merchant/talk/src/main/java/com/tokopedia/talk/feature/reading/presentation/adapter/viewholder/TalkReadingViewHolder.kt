@@ -1,6 +1,5 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
-import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -12,9 +11,6 @@ import kotlinx.android.synthetic.main.item_talk_reading.view.*
 class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
 
     companion object {
-        const val BULLET_POINT = "\u2022 %s"
-        const val ATTACHED_PRODUCT = "%d produk"
-        const val OTHER_ANSWERS = "Lihat %d Jawaban Lainnya"
         val LAYOUT = R.layout.item_talk_reading
     }
 
@@ -22,15 +18,19 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         element.question.apply {
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
             if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {
+                hideNoAnswersText()
                 showProfilePicture(answer.userThumbnail, answer.userId)
-                showSellerLabelWithCondition(answer.isSeller)
                 showDisplayName(answer.userName, answer.userId)
+                showSellerLabelWithCondition(answer.isSeller)
                 showDate(answer.createTimeFormatted)
+                if(answer.state.isMasked) {
+                    showMaskedAnswer(answer.maskedContent, questionID)
+                    return
+                }
                 showAnswer(answer.content, questionID)
-                showNumberOfLikesWithCondition(answer.likeCount)
+                showNumberOfLikesWithCondition(answer.likeCount, answer.state.allowLike)
                 showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
                 showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
-                hideNoAnswersText()
             } else {
                 showNoAnswersText()
             }
@@ -39,12 +39,22 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
 
     private fun showQuestionWithCondition(isMasked: Boolean, content: String, maskedContent: String, questionId: String) {
         itemView.readingQuestionTitle.apply {
-            if(isMasked) {
-                text = maskedContent
+            text = if(isMasked) {
                 isEnabled = false
-                return
+                maskedContent
+            } else {
+                content
             }
-            text = content
+            setOnClickListener {
+                threadListener.onThreadClicked(questionId)
+            }
+        }
+    }
+
+    private fun showMaskedAnswer(maskedContent: String, questionId: String) {
+        itemView.readingMessage.apply {
+            text = maskedContent
+            isEnabled = false
             setOnClickListener {
                 threadListener.onThreadClicked(questionId)
             }
@@ -116,20 +126,28 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     }
 
     private fun addBulletPointToDate(date: String): String {
-        return String.format(BULLET_POINT, date)
+        return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showNumberOfLikesWithCondition(likeCount: Int) {
+    private fun showNumberOfLikesWithCondition(likeCount: Int, allowLike: Boolean) {
+        if(!allowLike) {
+            return
+        }
         if(likeCount > 0) {
-            itemView.likeCount.text = likeCount.toString()
+            itemView.likeCount.apply {
+                text = likeCount.toString()
+                visibility = View.VISIBLE
+            }
         }
     }
 
-    private fun showNumberOfAttachedProductsWithCondition(attachedProductCount: Int) {
-        if(attachedProductCount > 0) {
-            itemView.attachedProductIcon.visibility = View.VISIBLE
-            itemView.attachedProductCount.text = String.format(ATTACHED_PRODUCT, attachedProductCount)
-            itemView.attachedProductCount.visibility = View.VISIBLE
+    private fun showNumberOfAttachedProductsWithCondition(attachedProducts: Int) {
+        if(attachedProducts > 0) {
+            itemView.apply {
+                attachedProductIcon.visibility = View.VISIBLE
+                attachedProductCount.text = String.format(context.getString(R.string.reading_attached_product), attachedProducts)
+                attachedProductCount.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -137,7 +155,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         val answersToShow = otherAnswers - 1
         if(answersToShow > 0) {
             itemView.seeOtherAnswers.apply {
-                text = String.format(OTHER_ANSWERS, answersToShow)
+                text = String.format(context.getString(R.string.reading_other_answers), answersToShow)
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }

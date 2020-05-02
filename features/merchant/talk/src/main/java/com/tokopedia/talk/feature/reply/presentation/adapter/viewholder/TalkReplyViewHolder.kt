@@ -3,7 +3,6 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingViewHolder
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
@@ -81,7 +80,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun addBulletPointToDate(date: String): String {
-        return String.format(TalkReadingViewHolder.BULLET_POINT, date)
+        return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
     private fun showAnswer(answer: String, isMasked: Boolean) {

@@ -34,6 +34,9 @@ data class Answer(
         @SerializedName("likeCount")
         @Expose
         val likeCount: Int = 0,
+        @SerializedName("state")
+        @Expose
+        val state: AnswerState = AnswerState(),
         @SerializedName("attachedProductCount")
         @Expose
         val attachedProductCount: Int = 0
