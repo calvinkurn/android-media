@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.util.AppWidgetUtil;
+
+import okhttp3.Route;
 
 /**
  * Created by alvarisi on 1/16/17.
@@ -21,8 +25,11 @@ public class NewOrderNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
+        /*mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
                 new Intent(mContext, TkpdCoreRouter.getSellingActivityClass(mContext))
+        );*/
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
+                RouteManager.getIntent(mContext, ApplinkConst.SELLER_NEW_ORDER, "")
         );
         mNotificationPass.classParentStack = TkpdCoreRouter.getSellingActivityClass(mContext);
         mNotificationPass.title = String.format(
