@@ -1,28 +1,26 @@
 package com.tokopedia.logger.datasource.cloud
 
-import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.logger.model.ScalyrBody
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrSessionInfo
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.LogSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class LoggerCloudScalyrDataSource(val context: Context, val token: Array<String>) {
+class LoggerCloudScalyrDataSource(val session: String): LoggerCloudDataSource<ScalyrEvent>() {
     companion object {
         private val gson = Gson()
     }
 
-    suspend fun sendLogToServer(scalyrEventList: List<ScalyrEvent>): Int {
+    override suspend fun sendLogToServer(token: String, eventList: List<ScalyrEvent>): Int {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
-                errCode = openURL(scalyrEventList)
+                errCode = openURL(token, eventList)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -30,14 +28,14 @@ class LoggerCloudScalyrDataSource(val context: Context, val token: Array<String>
         return errCode
     }
 
-    private fun openURL(scalyrEventList: List<ScalyrEvent>): Int {
+    private fun openURL(token: String, scalyrEventList: List<ScalyrEvent>): Int {
         var urlConnection: HttpURLConnection? = null
         val url: URL
 
         var responseCode = Constants.LOG_DEFAULT_ERROR_CODE
 
         try {
-            val scalyrBody = ScalyrBody(token.first(), LogSession.getLogSession(context),
+            val scalyrBody = ScalyrBody(token, session,
                 ScalyrSessionInfo(Constants.ANDROID_APP_VALUE, Constants.SCALYR_PARSER),
                 scalyrEventList)
             url = URL(Constants.SCALYR_SERVER_URL)

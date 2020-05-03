@@ -1,19 +1,23 @@
 package com.tokopedia.logger.repository
 
 import com.tokopedia.encryption.security.BaseEncryptor
-import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
-import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
+import com.tokopedia.logger.LogManager
+import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
+import com.tokopedia.logger.utils.TimberReportingTree
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import javax.crypto.SecretKey
 
 class LoggerRepository(private val logDao: LoggerDao,
-                       private val server: LoggerCloudDatasource,
-                       private val scalyrLogger: LoggerCloudScalyrDataSource,
+                       private val loggerCloudLogentriesDataSource: LoggerCloudDataSource<String>,
+                       private val loggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrEvent>,
+                       private val logentriesToken: Array<String>,
+                       private val scalyrToken: Array<String>,
                        private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract {
 
@@ -42,17 +46,48 @@ class LoggerRepository(private val logDao: LoggerDao,
         logDao.deleteEntries(loggers)
     }
 
-    override suspend fun deleteExpiredData(timeStamp: Long) {
-        logDao.deleteExpiredData(timeStamp)
+    override suspend fun deleteExpiredData() {
+        val currentTimestamp = System.currentTimeMillis()
+        logDao.deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
+        logDao.deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
     }
 
-    override suspend fun sendLogToServer(serverSeverity: Int,
-                                         logger: Logger): Int = coroutineScope {
+    override suspend fun sendLogToServer() {
+        sendLogToServer(Constants.SEND_PRIORITY_ONLINE, getHighPostPrio(Constants.SEND_PRIORITY_ONLINE))
+        sendLogToServer(Constants.SEND_PRIORITY_OFFLINE, getHighPostPrio(Constants.SEND_PRIORITY_OFFLINE))
+    }
+
+    private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
+        val tokenIndex = priority-1
+
+        if (LogManager.logentriesEnabled) {
+            for (log in logs) {
+                val errorCode = sendLogentriesLogToServer(logentriesToken[tokenIndex], log)
+                if (LogManager.isPrimaryLogentries && errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
+                    deleteEntry(log.timeStamp)
+                }
+                delay(100)
+            }
+        }
+
+        var scalyrSuccessCode = Constants.LOG_DEFAULT_ERROR_CODE
+        if (LogManager.scalyrEnabled) {
+            scalyrSuccessCode = sendScalyrLogToServer(scalyrToken[tokenIndex], logs)
+        }
+        if (LogManager.isPrimaryScalyr) {
+            if (scalyrSuccessCode == Constants.SCALYR_SUCCESS_CODE) {
+                deleteEntries(logs)
+            }
+        }
+    }
+
+    suspend fun sendLogentriesLogToServer(token: String, logger: Logger): Int = coroutineScope {
         val message = encryptor.decrypt(logger.message, secretKey)
-        server.sendLogToServer(serverSeverity, truncate(message))
+        val messageArray = listOf(truncate(message))
+        loggerCloudLogentriesDataSource.sendLogToServer(token, messageArray)
     }
 
-    override suspend fun sendScalyrLogToServer(logs: List<Logger>) = coroutineScope {
+    suspend fun sendScalyrLogToServer(token: String, logs: List<Logger>): Int = coroutineScope {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         //make the timestamp equals to timestamp when hit the api
         //covnert the milli to nano, based on scalyr requirement.
@@ -63,7 +98,7 @@ class LoggerRepository(private val logDao: LoggerDao,
             val message = encryptor.decrypt(log.message, secretKey)
             scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
         }
-        scalyrLogger.sendLogToServer(scalyrEventList)
+        loggerCloudScalyrDataSource.sendLogToServer(token, scalyrEventList)
     }
 
     fun truncate (str:String):String {
@@ -74,11 +109,11 @@ class LoggerRepository(private val logDao: LoggerDao,
         }
     }
 
-    override suspend fun deleteExpiredHighPrio(timeStamp: Long) {
-        logDao.deleteExpiredHighPrio(timeStamp)
-    }
-
-    override suspend fun deleteExpiredLowPrio(timeStamp: Long) {
-        logDao.deleteExpiredLowPrio(timeStamp)
+    private fun getSeverity(serverChannel: String): Int {
+        return when (serverChannel) {
+            TimberReportingTree.P1 -> Constants.SEVERITY_HIGH
+            TimberReportingTree.P2 -> Constants.SEVERITY_MEDIUM
+            else -> Constants.SEVERITY_NONE
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.logger.repository
 
 import com.tokopedia.logger.datasource.db.Logger
-import javax.crypto.SecretKey
 
 interface LoggerRepositoryContract {
     suspend fun insert(logger: Logger)
@@ -10,9 +9,7 @@ interface LoggerRepositoryContract {
     suspend fun getLowPostPrio(entries: Int): List<Logger>
     suspend fun deleteEntry(timeStamp: Long)
     suspend fun deleteEntries(loggers: List<Logger>)
-    suspend fun deleteExpiredData(timeStamp: Long)
-    suspend fun sendLogToServer(serverSeverity: Int, logger: Logger): Int
-    suspend fun sendScalyrLogToServer(logs: List<Logger>): Int
-    suspend fun deleteExpiredHighPrio(timeStamp: Long)
-    suspend fun deleteExpiredLowPrio(timeStamp: Long)
+    suspend fun deleteExpiredData()
+
+    suspend fun sendLogToServer()
 }

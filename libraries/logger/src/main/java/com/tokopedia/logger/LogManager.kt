@@ -8,7 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.encryption.security.AESEncryptorECB
-import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudLogentriesDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
@@ -16,9 +16,12 @@ import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.TimberReportingTree
+import com.tokopedia.logger.utils.LogSession
 import com.tokopedia.logger.utils.globalScopeLaunch
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -82,11 +85,14 @@ class LogManager(val application: Application) : CoroutineScope {
                 val instance = instance ?: return null
                 val context = instance.application.applicationContext
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
-                val server = LoggerCloudDatasource(logentriesToken)
-                val scalyrLogger = LoggerCloudScalyrDataSource(context, scalyrToken)
+                val loggerCloudLogentriesDataSource = LoggerCloudLogentriesDataSource()
+                val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource(LogSession.getLogSession(context))
                 val encryptor = AESEncryptorECB()
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
-                loggerRepository = LoggerRepository(logsDao, server, scalyrLogger, encryptor, secretKey)
+                loggerRepository = LoggerRepository(logsDao,
+                        loggerCloudLogentriesDataSource, loggerCloudScalyrDataSource,
+                        logentriesToken, scalyrToken,
+                        encryptor, secretKey)
             }
             return loggerRepository
         }
@@ -139,61 +145,16 @@ class LogManager(val application: Application) : CoroutineScope {
 
         suspend fun sendLogToServer() = coroutineScope {
             getLogger()?.let { logger ->
-                val highPriorityLoggers: List<Logger> = logger.getHighPostPrio(Constants.SEND_PRIORITY_OFFLINE)
-                val lowPriorityLoggers: List<Logger> = logger.getLowPostPrio(Constants.SEND_PRIORITY_ONLINE)
-                val logs = highPriorityLoggers.toMutableList()
-
-                for (lowPriorityLogger in lowPriorityLoggers) {
-                    logs.add(lowPriorityLogger)
-                }
-
-                var scalyrSuccessCode = Constants.LOG_DEFAULT_ERROR_CODE
-                if (scalyrEnabled) {
-                    try {
-                        scalyrSuccessCode = logger.sendScalyrLogToServer(logs)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-
-                if (logentriesEnabled) {
-                    for (log in logs) {
-                        val ts = log.timeStamp
-                        val severity = getSeverity(log.serverChannel)
-                        if (severity != Constants.SEVERITY_NONE) {
-                            val errorCode = logger.sendLogToServer(severity, log)
-                            if (isPrimaryLogentries) {
-                                if (errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
-                                    logger.deleteEntry(ts)
-                                }
-                            }
-                            delay(100)
-                        }
-                    }
-                }
-
-                if (isPrimaryScalyr) {
-                    if (scalyrSuccessCode == Constants.SCALYR_SUCCESS_CODE) {
-                        logger.deleteEntries(logs)
-                    }
+                try {
+                    logger.sendLogToServer()
+                } catch (e: Exception) {
+                    // do nothing
                 }
             }
         }
 
         suspend fun deleteExpiredLogs() {
-            getLogger()?.run {
-                val currentTimestamp = System.currentTimeMillis()
-                deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
-                deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
-            }
-        }
-
-        private fun getSeverity(serverChannel: String): Int {
-            return when (serverChannel) {
-                TimberReportingTree.P1 -> Constants.SEVERITY_HIGH
-                TimberReportingTree.P2 -> Constants.SEVERITY_MEDIUM
-                else -> Constants.SEVERITY_NONE
-            }
+            getLogger()?.deleteExpiredData()
         }
     }
 }
