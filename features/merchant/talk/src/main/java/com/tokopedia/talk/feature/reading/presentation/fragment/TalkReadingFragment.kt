@@ -389,7 +389,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun goToWriteActivity() {
         val intent = context?.let { AddTalkActivity.createIntent(it, productId) }
-        startActivity(intent)
+        startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
     }
 
     private fun goToReplyActivity(questionID: String) {
