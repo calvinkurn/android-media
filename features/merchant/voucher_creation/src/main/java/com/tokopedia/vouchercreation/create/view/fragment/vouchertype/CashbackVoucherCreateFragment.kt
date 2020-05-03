@@ -15,6 +15,7 @@ import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 
 class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
@@ -22,6 +23,8 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: () -> Unit = {}) = CashbackVoucherCreateFragment(onNextStep)
+
+        private const val INPUT_FIELD_ADAPTER_SIZE = 1
     }
 
     private val promoDescTickerModel by lazy {
@@ -82,25 +85,33 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
         NextButtonUiModel(::onNext)
     }
 
-    private val topSectionUiModelList =
+    private val topSectionUiModelList by lazy {
         listOf(
                 promoDescTickerModel,
                 cashbackTypePickerModel
         )
+    }
 
-
-    private val rupiahCashbackTextFieldList =
+    private val rupiahCashbackTextFieldList by lazy {
         listOf(
                 maximumDiscountTextFieldModel,
                 minimumPurchaseTextFieldModel,
                 voucherQuotaTextFieldModel
         )
+    }
 
+    private val rupiahCashbackAdapterUiModel by lazy {
+        PromotionTypeInputListUiModel(rupiahCashbackTextFieldList)
+    }
 
     private val percentageCashbackTextFieldList by lazy {
         listOf(
                 discountAmountTextFieldModel
         )
+    }
+
+    private val percentageCashbackAdapterUiModel by lazy {
+        PromotionTypeInputListUiModel(percentageCashbackTextFieldList)
     }
 
     private val bottomSectionUiModelList by lazy {
@@ -143,7 +154,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     private fun getCashbackTypeUiList() : List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             addAll(topSectionUiModelList)
-            addAll(rupiahCashbackTextFieldList)
+            add(rupiahCashbackAdapterUiModel)
             addAll(bottomSectionUiModelList)
         }
     }
@@ -161,18 +172,17 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
         view?.clearFocus()
         val extraSize =
                 when(cashbackType) {
-                    CashbackType.RUPIAH -> percentageCashbackTextFieldList.size + bottomSectionUiModelList.size
-                    CashbackType.PERCENTAGE -> rupiahCashbackTextFieldList.size + bottomSectionUiModelList.size
+                    CashbackType.RUPIAH -> INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
+                    CashbackType.PERCENTAGE -> INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
                 }
         textFieldIndex = adapter.data.size - extraSize
+        adapter.data.removeAt(textFieldIndex)
         when(cashbackType) {
             CashbackType.RUPIAH -> {
-                adapter.data.removeAll(percentageCashbackTextFieldList)
-                adapter.data.addAll(textFieldIndex, rupiahCashbackTextFieldList)
+                adapter.data.add(textFieldIndex, rupiahCashbackAdapterUiModel)
             }
             CashbackType.PERCENTAGE -> {
-                adapter.data.removeAll(rupiahCashbackTextFieldList)
-                adapter.data.addAll(textFieldIndex, percentageCashbackTextFieldList)
+                adapter.data.add(textFieldIndex, percentageCashbackAdapterUiModel)
             }
         }
         adapter.notifyDataSetChanged()
