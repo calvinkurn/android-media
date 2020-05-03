@@ -100,6 +100,7 @@ public class MyApplication extends BaseMainApplication
         }
     }
 
+
     private void upgradeSecurityProvider() {
         try {
             ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
@@ -116,6 +117,11 @@ public class MyApplication extends BaseMainApplication
         } catch (Throwable t) {
             // Do nothing
         }
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
+
     }
 
     public static class GTMAnalytics extends DummyAnalytics {
