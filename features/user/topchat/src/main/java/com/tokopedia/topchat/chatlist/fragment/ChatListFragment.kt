@@ -204,6 +204,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun setupTicker() {
+        topChatSellerMigrationTicker.tickerTitle = getString(R.string.seller_migration_chat_ticker_title)
         topChatSellerMigrationTicker.setHtmlDescription(getString(R.string.seller_migration_chat_ticker_description))
         topChatSellerMigrationTicker.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
