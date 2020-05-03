@@ -101,6 +101,7 @@ ext {
 
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
+            dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
 
@@ -215,7 +216,7 @@ ext {
             tkpdsession                     : ":tkpdsession",
             tkpdtransaction                 : ":tkpdtransaction",
             tkpdtransactioncommon           : ":tkpdtransaction-common",
-
+            promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice"
     ]
 }
