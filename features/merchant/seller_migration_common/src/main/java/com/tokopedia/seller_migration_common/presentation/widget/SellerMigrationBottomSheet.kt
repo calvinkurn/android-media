@@ -19,7 +19,9 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.partial_seller_migration_footer.*
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
-abstract class SellerMigrationBottomSheet : BottomSheetUnify() {
+abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList(),
+        val contents: List<String> = emptyList(),
+        val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpButtons()
@@ -28,9 +30,7 @@ abstract class SellerMigrationBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    open var titles: List<String> = emptyList()
-    open var contents: List<String> = emptyList()
-    open var images: ArrayList<String> = arrayListOf()
+
 
     private fun setUpButtons() {
         sellerMigrationBottomSheetButton.setOnClickListener {
