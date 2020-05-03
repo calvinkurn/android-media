@@ -25,13 +25,10 @@ public class NewOrderNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
-        /*mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, TkpdCoreRouter.getSellingActivityClass(mContext))
-        );*/
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
                 RouteManager.getIntent(mContext, ApplinkConst.SELLER_NEW_ORDER, "")
         );
-        mNotificationPass.classParentStack = TkpdCoreRouter.getSellingActivityClass(mContext);
+        mNotificationPass.classParentStack = ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeClass();
         mNotificationPass.title = String.format(
                 "%s %s",
                 incomingMessage.getString("counter"),
