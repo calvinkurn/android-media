@@ -58,6 +58,7 @@ class LogManager(val application: Application) : CoroutineScope {
         var logentriesEnabled: Boolean = true
         var isPrimaryLogentries: Boolean = true
         var isPrimaryScalyr: Boolean = false
+        var queryLimits: List<Int> = mutableListOf(5,5)
 
         @JvmField
         var instance: LogManager? = null
@@ -138,7 +139,7 @@ class LogManager(val application: Application) : CoroutineScope {
 
         fun sendLogToServer() {
             globalScopeLaunch({
-                getLogger()?.sendLogToServer()
+                getLogger()?.sendLogToServer(queryLimits)
             })
         }
 

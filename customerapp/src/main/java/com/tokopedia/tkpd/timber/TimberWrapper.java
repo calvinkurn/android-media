@@ -71,6 +71,7 @@ public class TimberWrapper {
                     timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
+                    timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
                     Timber.plant(timberReportingTree);
                 }
             }

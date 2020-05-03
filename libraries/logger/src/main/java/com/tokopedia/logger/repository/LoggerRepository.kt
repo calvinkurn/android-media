@@ -8,6 +8,7 @@ import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
+import com.tokopedia.logger.utils.TimberReportingTree
 import kotlinx.coroutines.delay
 import javax.crypto.SecretKey
 
@@ -28,11 +29,11 @@ class LoggerRepository(private val logDao: LoggerDao,
         return logDao.getCountAll()
     }
 
-    override suspend fun getHighPostPrio(entries: Int): List<Logger> {
+    suspend fun getHighPostPrio(entries: Int): List<Logger> {
         return logDao.getHighPostPrio(entries)
     }
 
-    override suspend fun getLowPostPrio(entries: Int): List<Logger> {
+    suspend fun getLowPostPrio(entries: Int): List<Logger> {
         return logDao.getLowPostPrio(entries)
     }
 
@@ -50,13 +51,13 @@ class LoggerRepository(private val logDao: LoggerDao,
         logDao.deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
     }
 
-    override suspend fun sendLogToServer() {
-        sendLogToServer(Constants.SEND_PRIORITY_ONLINE, getHighPostPrio(Constants.SEND_PRIORITY_ONLINE))
-        sendLogToServer(Constants.SEND_PRIORITY_OFFLINE, getHighPostPrio(Constants.SEND_PRIORITY_OFFLINE))
+    override suspend fun sendLogToServer(queryLimits: List<Int>) {
+        sendLogToServer(Constants.SEVERITY_HIGH, logDao.getServerChannel(TimberReportingTree.P1, queryLimits[0]))
+        sendLogToServer(Constants.SEVERITY_MEDIUM, logDao.getServerChannel(TimberReportingTree.P2, queryLimits[1]))
     }
 
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
-        val tokenIndex = priority-2
+        val tokenIndex = priority-1
 
         var scalyrSendSuccess = false
         if (LogManager.scalyrEnabled) {
@@ -87,6 +88,9 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     suspend fun sendScalyrLogToServer(token: String, logs: List<Logger>): Boolean {
+        if (logs.isEmpty()) {
+            return true
+        }
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         //make the timestamp equals to timestamp when hit the api
         //covnert the milli to nano, based on scalyr requirement.

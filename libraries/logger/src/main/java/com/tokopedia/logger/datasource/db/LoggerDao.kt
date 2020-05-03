@@ -11,11 +11,14 @@ interface LoggerDao {
     @Query("SELECT count(*) FROM log_table")
     suspend fun getCountAll(): Int
 
-    @Query("SELECT * FROM LOG_TABLE WHERE post_priority == 1 ORDER BY timestamp LIMIT :entries")
-    suspend fun getHighPostPrio(entries: Int): List<Logger>
+    @Query("SELECT * FROM LOG_TABLE WHERE server_channel == :serverChannel ORDER BY post_priority ASC, timestamp ASC LIMIT :limit")
+    suspend fun getServerChannel(serverChannel: String, limit: Int): List<Logger>
 
-    @Query("SELECT * FROM LOG_TABLE WHERE post_priority == 2 ORDER BY timestamp LIMIT :entries")
-    suspend fun getLowPostPrio(entries: Int): List<Logger>
+    @Query("SELECT * FROM LOG_TABLE WHERE post_priority == 1 ORDER BY timestamp ASC LIMIT :limit")
+    suspend fun getHighPostPrio(limit: Int): List<Logger>
+
+    @Query("SELECT * FROM LOG_TABLE WHERE post_priority == 2 ORDER BY timestamp ASC LIMIT :limit")
+    suspend fun getLowPostPrio(limit: Int): List<Logger>
 
     @Query("DELETE FROM LOG_TABLE WHERE timestamp == :ts")
     suspend fun deleteEntry(ts: Long)

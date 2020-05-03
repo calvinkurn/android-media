@@ -38,6 +38,12 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         }
     }
 
+    fun setQueryLimits(queryLimit: List<Int>?) {
+        if (queryLimit != null) {
+            LogManager.queryLimits = queryLimit
+        }
+    }
+
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
         val timeStamp = System.currentTimeMillis()
         if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
