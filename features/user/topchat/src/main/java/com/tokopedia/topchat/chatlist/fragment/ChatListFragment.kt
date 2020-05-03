@@ -33,7 +33,6 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -63,11 +62,9 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_chat_list.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -199,28 +196,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun initView(view: View) {
         showLoading()
-        setupTicker()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
-    }
-
-    private fun setupTicker() {
-        topChatSellerMigrationTicker.tickerTitle = getString(R.string.seller_migration_chat_ticker_title)
-        topChatSellerMigrationTicker.setHtmlDescription(getString(R.string.seller_migration_chat_ticker_description))
-        topChatSellerMigrationTicker.setDescriptionClickEvent(object: TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                openSellerMigrationBottomSheet()
-            }
-            override fun onDismiss() {
-                // No Op
-            }
-        })
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        context?.let {
-            val sellerMigrationBottomSheet = SellerMigrationChatBottomSheet.createNewInstance(it)
-            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
-        }
     }
 
     private fun setUpRecyclerView(view: View) {

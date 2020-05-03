@@ -23,6 +23,7 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -38,8 +39,10 @@ import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_chat_tab_list.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -84,6 +87,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         initData()
         initOnBoarding()
         initChatCounterObserver()
+        setupTicker()
     }
 
     override fun onStart() {
@@ -119,6 +123,34 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
                     }
                 }
         )
+    }
+
+    private fun setupTicker() {
+        topChatSellerMigrationTicker.tickerTitle = getString(R.string.seller_migration_chat_ticker_title)
+        topChatSellerMigrationTicker.setHtmlDescription(getString(R.string.seller_migration_chat_ticker_description))
+        topChatSellerMigrationTicker.setDescriptionClickEvent(object: TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                openSellerMigrationBottomSheet()
+            }
+            override fun onDismiss() {
+                // No Op
+            }
+        })
+    }
+
+    private fun showSellerMigrationTicker() {
+        topChatSellerMigrationTicker.visibility = View.VISIBLE
+    }
+
+    private fun hideSellerMigrationTicker() {
+        topChatSellerMigrationTicker.visibility = View.GONE
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            val sellerMigrationBottomSheet = SellerMigrationChatBottomSheet.createNewInstance(it)
+            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
+        }
     }
 
     private fun bindView(view: View) {
@@ -297,7 +329,16 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
     private fun initViewPager() {
         viewPager?.adapter = fragmentAdapter
         viewPager?.offscreenPageLimit = tabList.size
-        viewPager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        viewPager?.addOnPageChangeListener(object: TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
+            override fun onPageSelected(position: Int) {
+                if(position == 0) {
+                    showSellerMigrationTicker()
+                } else {
+                    hideSellerMigrationTicker()
+                }
+                super.onPageSelected(position)
+            }
+        })
     }
 
     private fun initViewModel() {
