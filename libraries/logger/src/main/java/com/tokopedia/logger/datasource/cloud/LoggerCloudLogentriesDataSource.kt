@@ -9,7 +9,7 @@ import java.net.URL
 
 class LoggerCloudLogentriesDataSource : LoggerCloudDataSource<String>() {
 
-    override suspend fun sendLogToServer(token: String, eventList: List<String>): Int {
+    override suspend fun sendLogToServer(token: String, eventList: List<String>): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
@@ -18,7 +18,7 @@ class LoggerCloudLogentriesDataSource : LoggerCloudDataSource<String>() {
                 e.printStackTrace()
             }
         }
-        return errCode
+        return errCode == Constants.LOGENTRIES_SUCCESS_CODE
     }
 
     private fun openURL(token: String, message: String): Int {

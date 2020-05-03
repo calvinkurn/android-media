@@ -21,7 +21,6 @@ import com.tokopedia.logger.utils.globalScopeLaunch
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -49,18 +48,6 @@ class LogManager(val application: Application) : CoroutineScope {
 
     fun setLogScalyrToken(tokenList: Array<String>) {
         scalyrToken = tokenList
-    }
-
-    private suspend fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
-        getLogger()?.let { logger ->
-            val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
-                message.substring(0, Constants.MAX_BUFFER)
-            } else {
-                message
-            }
-            val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
-            logger.insert(log)
-        }
     }
 
     companion object {
@@ -120,18 +107,10 @@ class LogManager(val application: Application) : CoroutineScope {
          * To give message log to logging server
          * logPriority to be handled are: Logger.ERROR, Logger.WARNING
          */
-
-        @JvmStatic
         fun log(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
             instance?.run {
-                globalScopeLaunch({
-                    sendLogToDB(message, timeStamp, priority, serverChannel)
-                    runService()
-                }, {
-                    it.printStackTrace()
-                }, {
-                    return@globalScopeLaunch
-                })
+                sendLogToDB(message, timeStamp, priority, serverChannel)
+                runService()
             }
         }
 
@@ -143,18 +122,30 @@ class LogManager(val application: Application) : CoroutineScope {
             }
         }
 
-        suspend fun sendLogToServer() = coroutineScope {
-            getLogger()?.let { logger ->
-                try {
-                    logger.sendLogToServer()
-                } catch (e: Exception) {
-                    // do nothing
+        private fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
+            globalScopeLaunch({
+                getLogger()?.let { logger ->
+                    val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
+                        message.substring(0, Constants.MAX_BUFFER)
+                    } else {
+                        message
+                    }
+                    val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
+                    logger.insert(log)
                 }
-            }
+            })
         }
 
-        suspend fun deleteExpiredLogs() {
-            getLogger()?.deleteExpiredData()
+        fun sendLogToServer() {
+            globalScopeLaunch({
+                getLogger()?.sendLogToServer()
+            })
+        }
+
+        fun deleteExpiredLogs() {
+            globalScopeLaunch({
+                getLogger()?.deleteExpiredData()
+            })
         }
     }
 }

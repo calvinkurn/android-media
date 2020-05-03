@@ -16,7 +16,7 @@ class LoggerCloudScalyrDataSource(val session: String): LoggerCloudDataSource<Sc
         private val gson = Gson()
     }
 
-    override suspend fun sendLogToServer(token: String, eventList: List<ScalyrEvent>): Int {
+    override suspend fun sendLogToServer(token: String, eventList: List<ScalyrEvent>): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
@@ -25,7 +25,7 @@ class LoggerCloudScalyrDataSource(val session: String): LoggerCloudDataSource<Sc
                 e.printStackTrace()
             }
         }
-        return errCode
+        return errCode == Constants.SCALYR_SUCCESS_CODE
     }
 
     private fun openURL(token: String, scalyrEventList: List<ScalyrEvent>): Int {

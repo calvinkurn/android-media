@@ -8,8 +8,6 @@ import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.TimberReportingTree
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import javax.crypto.SecretKey
 
@@ -58,36 +56,37 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
-        val tokenIndex = priority-1
+        val tokenIndex = priority-2
+
+        var scalyrSendSuccess = false
+        if (LogManager.scalyrEnabled) {
+            scalyrSendSuccess = sendScalyrLogToServer(scalyrToken[tokenIndex], logs)
+        }
 
         if (LogManager.logentriesEnabled) {
             for (log in logs) {
-                val errorCode = sendLogentriesLogToServer(logentriesToken[tokenIndex], log)
-                if (LogManager.isPrimaryLogentries && errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
+                val success = sendLogentriesLogToServer(logentriesToken[tokenIndex], log)
+                if (LogManager.isPrimaryLogentries && success) {
                     deleteEntry(log.timeStamp)
                 }
                 delay(100)
             }
         }
 
-        var scalyrSuccessCode = Constants.LOG_DEFAULT_ERROR_CODE
-        if (LogManager.scalyrEnabled) {
-            scalyrSuccessCode = sendScalyrLogToServer(scalyrToken[tokenIndex], logs)
-        }
         if (LogManager.isPrimaryScalyr) {
-            if (scalyrSuccessCode == Constants.SCALYR_SUCCESS_CODE) {
+            if (scalyrSendSuccess) {
                 deleteEntries(logs)
             }
         }
     }
 
-    suspend fun sendLogentriesLogToServer(token: String, logger: Logger): Int = coroutineScope {
+    suspend fun sendLogentriesLogToServer(token: String, logger: Logger): Boolean {
         val message = encryptor.decrypt(logger.message, secretKey)
         val messageArray = listOf(truncate(message))
-        loggerCloudLogentriesDataSource.sendLogToServer(token, messageArray)
+        return loggerCloudLogentriesDataSource.sendLogToServer(token, messageArray)
     }
 
-    suspend fun sendScalyrLogToServer(token: String, logs: List<Logger>): Int = coroutineScope {
+    suspend fun sendScalyrLogToServer(token: String, logs: List<Logger>): Boolean {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         //make the timestamp equals to timestamp when hit the api
         //covnert the milli to nano, based on scalyr requirement.
@@ -98,7 +97,7 @@ class LoggerRepository(private val logDao: LoggerDao,
             val message = encryptor.decrypt(log.message, secretKey)
             scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
         }
-        loggerCloudScalyrDataSource.sendLogToServer(token, scalyrEventList)
+        return loggerCloudScalyrDataSource.sendLogToServer(token, scalyrEventList)
     }
 
     fun truncate (str:String):String {
@@ -106,14 +105,6 @@ class LoggerRepository(private val logDao: LoggerDao,
             str.substring(0, Constants.MAX_BUFFER)
         } else {
             str
-        }
-    }
-
-    private fun getSeverity(serverChannel: String): Int {
-        return when (serverChannel) {
-            TimberReportingTree.P1 -> Constants.SEVERITY_HIGH
-            TimberReportingTree.P2 -> Constants.SEVERITY_MEDIUM
-            else -> Constants.SEVERITY_NONE
         }
     }
 }
