@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -29,7 +30,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.constant.TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
@@ -59,6 +59,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: SmartBillsViewModel
     private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     lateinit var adapter: SmartBillsAdapter
 
@@ -71,6 +72,9 @@ class SmartBillsFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize performance monitoring
+        performanceMonitoring = PerformanceMonitoring.start(RECHARGE_SMART_BILLS_PAGE_PERFORMANCE)
 
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
@@ -97,6 +101,8 @@ class SmartBillsFragment : BaseDaggerFragment(),
         })
 
         viewModel.statementBills.observe(this, Observer {
+            performanceMonitoring.stopTrace()
+
             view_smart_bills_shimmering.hide()
             when (it) {
                 is Success -> {
@@ -219,6 +225,11 @@ class SmartBillsFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
+    }
+
     override fun getScreenName(): String {
         return getString(R.string.app_name)
     }
@@ -294,6 +305,8 @@ class SmartBillsFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
+
         const val SMART_BILLS_PREF = "SMART_BILLS"
         const val SMART_BILLS_VISITED_ONBOARDING = "SMART_BILLS_VISITED_ONBOARDING"
 
