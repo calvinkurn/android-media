@@ -22,6 +22,7 @@ import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestMode
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
 import com.tokopedia.flight.searchV4.domain.*
+import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSelectedModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -296,9 +297,8 @@ class FlightSearchViewModel @Inject constructor(
 
     private fun deleteFlightReturnSearch(onNext: () -> Unit) {
         launchCatchError(dispatcherProvider.ui(), block = {
-            flightSearchDeleteReturnDataUseCase.execute().let {
-                onNext()
-            }
+            flightSearchDeleteReturnDataUseCase.execute()
+            onNext()
         }) {
             it.printStackTrace()
         }

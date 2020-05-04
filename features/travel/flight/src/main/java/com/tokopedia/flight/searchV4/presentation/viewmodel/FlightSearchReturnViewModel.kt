@@ -7,11 +7,11 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.presentation.model.FlightFareModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.domain.FlightComboKeyUseCase
 import com.tokopedia.flight.searchV4.domain.FlightSearchJouneyByIdUseCase
+import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.searchV4.presentation.model.SearchErrorEnum
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import timber.log.Timber

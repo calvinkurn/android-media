@@ -38,6 +38,9 @@ import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewMo
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -57,6 +60,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var flightHomepageViewModel: FlightHomepageViewModel
 
+    private lateinit var remoteConfig: RemoteConfig
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private var isTraceStop: Boolean = false
     private var applinkErrorTextResource = -1
@@ -72,6 +76,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         performanceMonitoring = PerformanceMonitoring.start(FLIGHT_HOMEPAGE_TRACE)
 
         val displayMetrics = DisplayMetrics()
@@ -486,8 +491,13 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun navigateToSearchPage(flightSearchData: FlightSearchPassDataModel) {
-        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
-                REQUEST_CODE_SEARCH)
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
+            startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
+                    REQUEST_CODE_SEARCH)
+        } else {
+            startActivityForResult(com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.getCallingIntent(requireContext(),
+                    flightSearchData), REQUEST_CODE_SEARCH)
+        }
     }
 
     companion object {

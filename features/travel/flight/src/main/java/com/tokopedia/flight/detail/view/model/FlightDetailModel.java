@@ -4,9 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel;
 
 import java.util.List;
 
@@ -77,6 +77,49 @@ public class FlightDetailModel implements Parcelable {
     }
 
     public FlightDetailModel build(FlightJourneyModel flightJourneyViewModel) {
+        if (flightJourneyViewModel != null) {
+            setId(flightJourneyViewModel.getId());
+            setTerm(flightJourneyViewModel.getTerm());
+            setDepartureAirport(flightJourneyViewModel.getDepartureAirport());
+            setDepartureAirportCity(flightJourneyViewModel.getDepartureAirportCity());
+            setArrivalAirport(flightJourneyViewModel.getArrivalAirport());
+            setArrivalAirportCity(flightJourneyViewModel.getArrivalAirportCity());
+            setTotalTransit(flightJourneyViewModel.getTotalTransit());
+            setBeforeTotal(flightJourneyViewModel.getBeforeTotal());
+            RefundableEnum refundableEnum = null;
+            switch (flightJourneyViewModel.isRefundable()) {
+                case NOT_REFUNDABLE:
+                    refundableEnum = RefundableEnum.NOT_REFUNDABLE;
+                    break;
+                case REFUNDABLE:
+                    refundableEnum = RefundableEnum.REFUNDABLE;
+                    break;
+                case PARTIAL_REFUNDABLE:
+                    refundableEnum = RefundableEnum.PARTIAL_REFUNDABLE;
+                    break;
+                default:
+                    refundableEnum = RefundableEnum.NOT_REFUNDABLE;
+            }
+            setIsRefundable(refundableEnum);
+            setTotal(flightJourneyViewModel.getTotal());
+            setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
+            setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
+            setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
+            setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
+
+            FlightDetailRouteInfoModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoModelMapper();
+            FlightDetailRouteModelMapper mapper = new FlightDetailRouteModelMapper(flightDetailRouteInfoViewModelMapper);
+            setRouteList(mapper.transform(flightJourneyViewModel.getRouteList(), flightJourneyViewModel.getTotalTransit()));
+            setDepartureTime(flightJourneyViewModel.getDepartureTime());
+            setArrivalTime(flightJourneyViewModel.getArrivalTime());
+            setAirlineDataList(flightJourneyViewModel.getAirlineDataList());
+            return this;
+        } else {
+            return null;
+        }
+    }
+
+    public FlightDetailModel build(com.tokopedia.flight.search.presentation.model.FlightJourneyModel flightJourneyViewModel) {
         if (flightJourneyViewModel != null) {
             setId(flightJourneyViewModel.getId());
             setTerm(flightJourneyViewModel.getTerm());

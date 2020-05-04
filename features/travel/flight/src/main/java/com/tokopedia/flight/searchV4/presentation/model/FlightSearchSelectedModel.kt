@@ -2,7 +2,6 @@ package com.tokopedia.flight.searchV4.presentation.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 
 /**

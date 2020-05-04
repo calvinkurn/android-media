@@ -9,9 +9,9 @@ import com.tokopedia.flight.search.data.api.single.response.Route
 import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.presentation.model.FlightFareModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.data.FlightSearchRepository
+import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import javax.inject.Inject
 
 /**

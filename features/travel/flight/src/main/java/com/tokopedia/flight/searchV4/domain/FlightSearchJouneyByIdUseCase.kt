@@ -8,8 +8,8 @@ import com.tokopedia.flight.search.data.api.single.response.Route
 import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.presentation.model.FlightFareModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.searchV4.data.FlightSearchRepository
+import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import javax.inject.Inject
 
 /**
@@ -19,9 +19,7 @@ class FlightSearchJouneyByIdUseCase @Inject constructor(
         private val flightSearchRepository: FlightSearchRepository) {
 
     suspend fun execute(journeyId: String): FlightJourneyModel =
-            flightSearchRepository.getJourneyById(journeyId).let {
-                mapToFlightJourneyViewModel(it)
-            }
+            mapToFlightJourneyViewModel(flightSearchRepository.getJourneyById(journeyId))
 
     private fun mapToFlightJourneyViewModel(journeyAndRoutes: JourneyAndRoutes): FlightJourneyModel {
         val gson = Gson()

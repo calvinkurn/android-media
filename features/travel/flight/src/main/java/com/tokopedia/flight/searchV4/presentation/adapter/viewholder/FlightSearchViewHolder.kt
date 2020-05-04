@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.flight.R
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.util.DurationUtil
+import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import kotlinx.android.synthetic.main.item_flight_search_new.view.*
 
 /**

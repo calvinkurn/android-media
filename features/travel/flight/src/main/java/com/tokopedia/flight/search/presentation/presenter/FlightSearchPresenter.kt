@@ -407,7 +407,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
     private fun onProductViewImpression(listJourneyModel: List<FlightJourneyModel>) {
         if (listJourneyModel.isEmpty()) flightAnalytics.eventProductViewNotFound(view.getSearchPassData())
-        else flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyModel)
+        else flightAnalytics.eventProductViewEnchanceEcommerceOld(view.getSearchPassData(), listJourneyModel)
     }
 
     override fun unsubscribeAll() {
