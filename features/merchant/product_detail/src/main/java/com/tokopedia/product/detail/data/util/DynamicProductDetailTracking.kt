@@ -878,15 +878,18 @@ object DynamicProductDetailTracking {
                                                isTradeIn: Boolean,
                                                isDiagnosed: Boolean,
                                                multiOrigin: Boolean,
-                                               deeplinkUrl: String) {
+                                               deeplinkUrl: String): Bundle {
 
+            val sentBundle = generateProductViewBundle(
+                    irisSessionId, trackerListName, productInfo, shopInfo,
+                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl
+            )
             sendTrackingBundle(
                             ProductDetailViewsBundler.KEY,
-                    generateProductViewBundle(
-                            irisSessionId, trackerListName, productInfo, shopInfo,
-                            trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl
-                    )
+                    sentBundle
             )
+
+            return sentBundle
         }
 
         fun eventRecommendationImpression(trackingQueue: TrackingQueue?, position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String,

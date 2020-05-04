@@ -63,6 +63,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -1750,8 +1751,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
+                val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
                         isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
+                context?.let {
+                    getInstance(it).saveEvent(sentBundle)
+                }
                 return
             }
         }
