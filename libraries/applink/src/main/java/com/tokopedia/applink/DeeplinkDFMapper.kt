@@ -195,10 +195,11 @@ object DeeplinkDFMapper {
 
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_BASE, R.string.title_tokopoints))
-            add(DFP({ it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK)}, DF_GAMIFICATION,R.string.internet_title_gamification))
-            add(DFP({ it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP)},DF_GAMIFICATION,R.string.internet_title_gamification))
-            add(DFP({ it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL)},DF_GAMIFICATION,R.string.internet_title_gamification))
-            add(DFP({ it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT)},DF_GAMIFICATION,R.string.internet_title_gamification))
+            add(DFP({ it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK) ||
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP) ||
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL) ||
+                    it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT)
+            }, DF_GAMIFICATION,R.string.internet_title_gamification))
 
             //Entertainment
             add(DFP({ it.startsWith(EVENT_HOME) }, DF_BASE, R.string.title_home_event))
