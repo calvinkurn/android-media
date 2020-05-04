@@ -87,7 +87,7 @@
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="title_image_review">Foto dari Pembeli</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
-    <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
+    <string name="title_review">Ulasan Paling Membantu</string>
     <string name="label_see_all_review">Lihat Semua Ulasan (%1$s)</string>
     <string name="title_latest_talk">Diskusi Terakhir</string>
     <string name="label_see_all_talk">Lihat Semua Diskusi (%1$s)</string>
@@ -150,7 +150,7 @@
 
     <string name="review_like_pattern">%1$d orang</string>
     <string name="date_review_pattern">%1$s oleh %2$s</string>
-    <string name="txt_most_helpfull">terbantu dengan ulasan ini</string>
+    <string name="txtl">terbantu dengan ulasan ini</string>
     <string name="txt_more_item_plus">%1$d +</string>
     <string name="counter_pattern_string">%1$s / %2$d</string>
     <string name="shipping_pattern_string">%1$d Kurir • </string>
@@ -217,5 +217,19 @@
     <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
     <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
+
+    // Discussion Most Helpful
+    <string name="product_detail_discussion_title">Forum Tanya-Jawab (%d)</string>
+    <string name="product_detail_discussion_empty_title">Forum Tanya-Jawab</string>
+    <string name="product_detail_discussion_see_all">Lihat Semua</string>
+    <string name="product_detail_discussion_no_answers">Belum ada jawaban</string>
+    <string name="product_detail_discussion_other_answers">Lihat %d jawaban lainnya</string>
+    <string name="product_detail_discussion_attached_products">%d produk</string>
+    <string name="product_detail_discussion_empty_subtitle">Masih ragu untuk membeli?</string>
+    <string name="product_detail_discussion_empty_description">Tanyakan aja langsung tentang barang ini di sini!</string>
+    <string name="product_detail_discussion_empty_button">Kirim Pertanyaan</string>
+    <string name="product_detail_discussion_formatted_date">• %s</string>
+    <string name="product_detail_discussion_total_answers">%d jawaban</string>
+    <string name="product_detail_discussion_seller_label">Penjual</string>
 
 </resources>
