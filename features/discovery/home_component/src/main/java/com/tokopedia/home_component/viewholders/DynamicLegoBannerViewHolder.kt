@@ -112,7 +112,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
 
         private fun setLegoImpressionListener(holder: LegoItemViewHolder) {
-            holder.itemView.addOnImpressionListener(channel, onView = {
+            holder.itemView.addOnImpressionListener(channel) {
                 when (layout) {
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> {
                         listener.onImpressionGridSixImage(channel, parentPosition)
@@ -124,7 +124,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                         listener.onImpressionGridFourImage(channel, parentPosition)
                     }
                 }
-            })
+            }
         }
 
         private fun setLegoClickListener(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
