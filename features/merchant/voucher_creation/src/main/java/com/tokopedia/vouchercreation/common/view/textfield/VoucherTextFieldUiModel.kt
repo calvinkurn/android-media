@@ -14,8 +14,10 @@ class VoucherTextFieldUiModel(
         @StringRes override val maxAlertRes: Int,
         @StringRes override val extraValidationRes: Int? = null,
         var currentValue: Int? = null,
-        val promotionTypeType: PromotionType = PromotionType.FreeDelivery.MinimumPurchase,
+        var currentErrorPair: Pair<Boolean, String>? = null,
+        val promotionType: PromotionType,
         val onValueChanged: (Int?, PromotionType) -> Unit = { _, _ -> },
+        val onSetErrorMessage: (Boolean, String?, PromotionType) -> Unit = { _,_,_ -> },
         var extraValidation: (Int, String) -> Pair<Boolean, String> = { _,_ -> Pair(true, "")}) : Visitable<VoucherCommonTypeFactory>, VoucherTextField {
 
     override fun type(typeFactory: VoucherCommonTypeFactory): Int =

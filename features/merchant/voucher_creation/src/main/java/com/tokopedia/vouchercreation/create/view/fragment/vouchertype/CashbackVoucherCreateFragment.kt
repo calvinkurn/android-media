@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
@@ -62,8 +63,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionTypeType = PromotionType.Cashback.Rupiah.MaximumDiscount,
-                onValueChanged = ::onTextFieldValueChanged)
+                promotionType = PromotionType.Cashback.Rupiah.MaximumDiscount,
+                onValueChanged = ::onTextFieldValueChanged,
+                onSetErrorMessage = ::onSetErrorMessage)
 
 
     private val rupiahMinimumPurchaseTextFieldModel =
@@ -75,8 +77,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                 extraValidationRes = R.string.mvc_create_promo_type_textfield_alert_no_under_discount,
-                promotionTypeType = PromotionType.Cashback.Rupiah.MinimumPurchase,
-                onValueChanged = ::onTextFieldValueChanged)
+                promotionType = PromotionType.Cashback.Rupiah.MinimumPurchase,
+                onValueChanged = ::onTextFieldValueChanged,
+                onSetErrorMessage = ::onSetErrorMessage)
 
 
     private val rupiahVoucherQuotaTextFieldModel =
@@ -87,8 +90,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionTypeType = PromotionType.Cashback.Rupiah.VoucherQuota,
-                onValueChanged = ::onTextFieldValueChanged)
+                promotionType = PromotionType.Cashback.Rupiah.VoucherQuota,
+                onValueChanged = ::onTextFieldValueChanged,
+                onSetErrorMessage = ::onSetErrorMessage)
 
 
     private val percentageMaximumDiscountTextFieldModel =
@@ -100,8 +104,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                     extraValidationRes = R.string.mvc_create_promo_type_textfield_alert_discount_above,
-                    promotionTypeType = PromotionType.Cashback.Percentage.MaximumDiscount,
-                    onValueChanged = ::onTextFieldValueChanged)
+                    promotionType = PromotionType.Cashback.Percentage.MaximumDiscount,
+                    onValueChanged = ::onTextFieldValueChanged,
+                    onSetErrorMessage = ::onSetErrorMessage)
 
 
     private val percentageMinimumPurchaseTextFieldModel =
@@ -112,8 +117,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                     maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                    promotionTypeType = PromotionType.Cashback.Percentage.MinimumPurchase,
-                    onValueChanged = ::onTextFieldValueChanged)
+                    promotionType = PromotionType.Cashback.Percentage.MinimumPurchase,
+                    onValueChanged = ::onTextFieldValueChanged,
+                    onSetErrorMessage = ::onSetErrorMessage)
 
 
     private val percentageVoucherQuotaTextFieldModel =
@@ -124,8 +130,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                     maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                    promotionTypeType = PromotionType.Cashback.Percentage.VoucherQuota,
-                    onValueChanged = ::onTextFieldValueChanged)
+                    promotionType = PromotionType.Cashback.Percentage.VoucherQuota,
+                    onValueChanged = ::onTextFieldValueChanged,
+                    onSetErrorMessage = ::onSetErrorMessage)
 
     private val discountAmountTextFieldModel =
         VoucherTextFieldUiModel(
@@ -135,8 +142,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.DISCOUNT_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionTypeType = PromotionType.Cashback.Percentage.Amount,
-                onValueChanged = ::onTextFieldValueChanged)
+                promotionType = PromotionType.Cashback.Percentage.Amount,
+                onValueChanged = ::onTextFieldValueChanged,
+                onSetErrorMessage = ::onSetErrorMessage)
 
     private val promotionExpenseEstimationUiModel by lazy {
         PromotionExpenseEstimationUiModel()
@@ -242,6 +250,16 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                     voucherTextFieldUiModel.currentValue = valueList[index]
                 }
             }
+            observe(viewModel.rupiahErrorPairList) { errorPairList ->
+                rupiahCashbackTextFieldList.forEachIndexed { index, voucherTextFieldUiModel ->
+                    voucherTextFieldUiModel.currentErrorPair = errorPairList[index]
+                }
+            }
+            observe(viewModel.percentageErrorPairList) { errorPairList ->
+                percentageCashbackTextFieldList.forEachIndexed { index, voucherTextFieldUiModel ->
+                    voucherTextFieldUiModel.currentErrorPair = errorPairList[index]
+                }
+            }
         }
     }
 
@@ -286,6 +304,12 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     private fun onTextFieldValueChanged(value: Int?, type: PromotionType) {
         (type as? PromotionType.Cashback)?.let {
             viewModel.addTextFieldValueToCalculation(value, it)
+        }
+    }
+
+    private fun onSetErrorMessage(isError: Boolean, errorMessage: String?, type: PromotionType) {
+        (type as? PromotionType.Cashback)?.let {
+            viewModel.addErrorPair(isError, errorMessage.toBlankOrString(), it)
         }
     }
 }

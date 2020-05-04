@@ -28,12 +28,28 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     private val mPercentageMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mPercentageVoucherQuotaLiveData = MutableLiveData<Int>()
 
+    private val mRupiahMaximumDiscountErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+    private val mRupiahMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+    private val mRupiahVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+
+    private val mPercentageDiscountAmountErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+    private val mPercentageMaximumDiscountErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+    private val mPercentageMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+    private val mPercentageVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean,String>>()
+
     private val mRupiahValueList = MutableLiveData<Array<Int>>()
     val rupiahValueList : LiveData<Array<Int>>
         get() = mRupiahValueList
     private val mPercentageValueList = MutableLiveData<Array<Int>>()
     val percentageValueList : LiveData<Array<Int>>
         get() = mPercentageValueList
+
+    private val mRupiahErrorPairList = MutableLiveData<Array<Pair<Boolean, String>?>>()
+    val rupiahErrorPairList : LiveData<Array<Pair<Boolean, String>?>>
+        get() = mRupiahErrorPairList
+    private val mPercentageErrorPairList = MutableLiveData<Array<Pair<Boolean, String>?>>()
+    val percentageErrorPairList : LiveData<Array<Pair<Boolean, String>?>>
+        get() = mPercentageErrorPairList
 
     private val mExpenseEstimationLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
         addSource(mActiveCashbackPromoTypeLiveData) { cashbackType ->
@@ -97,6 +113,32 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         }
     }
 
+    fun addErrorPair(isError: Boolean, errorMessage: String, type: PromotionType.Cashback) {
+        when(type) {
+            PromotionType.Cashback.Rupiah.MaximumDiscount -> {
+                mRupiahMaximumDiscountErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.Cashback.Rupiah.MinimumPurchase -> {
+                mRupiahMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.Cashback.Rupiah.VoucherQuota -> {
+                mRupiahVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.Cashback.Percentage.Amount -> {
+                mPercentageDiscountAmountErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.Cashback.Percentage.MaximumDiscount -> {
+                mPercentageMaximumDiscountErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.Cashback.Percentage.MinimumPurchase -> {
+                mPercentageMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.Cashback.Percentage.VoucherQuota -> {
+                mPercentageVoucherQuotaErrorPairLiveData. value = Pair(isError, errorMessage)
+            }
+        }
+    }
+
     fun changeCashbackType(cashbackType: CashbackType) {
         when(cashbackType) {
             CashbackType.Rupiah -> {
@@ -105,6 +147,11 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                         mRupiahMinimumPurchaseLiveData.value.toZeroIfNull(),
                         mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
                 )
+                mRupiahErrorPairList.value = arrayOf(
+                        mRupiahMaximumDiscountErrorPairLiveData.value,
+                        mRupiahMinimumPurchaseErrorPairLiveData.value,
+                        mRupiahVoucherQuotaErrorPairLiveData.value
+                )
             }
             CashbackType.Percentage -> {
                 mPercentageValueList.value = arrayOf(
@@ -112,6 +159,12 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                         mPercentageMaximumDiscountLiveData.value.toZeroIfNull(),
                         mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
                         mPercentageVoucherQuotaLiveData.value.toZeroIfNull()
+                )
+                mPercentageErrorPairList.value = arrayOf(
+                        mPercentageDiscountAmountErrorPairLiveData.value,
+                        mPercentageMaximumDiscountErrorPairLiveData.value,
+                        mPercentageMinimumPurchaseErrorPairLiveData.value,
+                        mPercentageVoucherQuotaErrorPairLiveData.value
                 )
             }
         }
