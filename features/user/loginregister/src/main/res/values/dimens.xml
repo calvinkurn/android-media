@@ -3,5 +3,6 @@
     <dimen name="dp_52">52dp</dimen>
 
     <dimen name="login_layout_12">12dp</dimen>
+    <dimen name="shop_img_size">58dp</dimen>
 
 </resources>
