@@ -55,4 +55,7 @@
     <string name="ent_pdp_form_error_empty_value_msg">%s belum diisi</string>
     <string name="ent_pdp_form_error_regex_msg">%s belum sesuai format</string>
     <string name="ent_pdp_form_toaster_click_msg">Oke</string>
+
+    <string name="ent_checkout_payment">Sedang diproses</string>
+
 </resources>

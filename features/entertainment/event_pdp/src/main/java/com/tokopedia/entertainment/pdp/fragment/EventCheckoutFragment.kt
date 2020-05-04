@@ -1,6 +1,8 @@
 package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity
+import android.app.ProgressDialog
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +21,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_AMOUNT
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GROUP_ID
@@ -86,6 +91,9 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    lateinit var progressDialog: ProgressDialog
+
+
     override fun initInjector() {
         getComponent(EventPDPComponent::class.java).inject(this)
     }
@@ -145,9 +153,26 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
         eventCheckoutViewModel.eventCheckoutResponse.observe(this, Observer {
             it?.let {
-                val url = "Link url=${it.data.url}" // just for dummy
+                val data = it
                 view?.let {
-                    Toaster.make(it, url, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                    val taskStackBuilder = TaskStackBuilder.create(context)
+                    val intentHomeUmrah = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
+                    taskStackBuilder.addNextIntent(intentHomeUmrah)
+
+                    val checkoutResultData = PaymentPassData()
+                  //  checkoutResultData.queryString = it.data.checkoutGeneral.data.data.queryString
+                    checkoutResultData.redirectUrl = data.data.url
+                    checkoutResultData.transactionId = data.data.transactionId
+                            //  checkoutResultData.paymentId = it.data.checkoutGeneral.data.data.parameter.pid
+
+                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                    progressDialog.dismiss()
+                    intent?.run {
+                        putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+                        taskStackBuilder.addNextIntent(this)
+                        taskStackBuilder.startActivities()
+                    }
                 }
             }
         })
@@ -155,6 +180,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initProgressDialog()
         requestData()
     }
 
@@ -163,6 +189,12 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             eventCheckoutViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail),
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it)
         }
+    }
+
+    private fun initProgressDialog() {
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage(getString(R.string.ent_checkout_payment))
+        progressDialog.setCancelable(false)
     }
 
     private fun renderLayout(eventProductDetailEntity: EventProductDetailEntity) {
@@ -215,6 +247,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
 
         btn_event_checkout.setOnClickListener {
+            progressDialog.show()
             view?.let {
                 val view = it
                 context?.let {
