@@ -65,6 +65,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonTradein)
     implementation rootProject.ext.miscDependencies.rootbeer
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     
     testImplementation rootProject.ext.testDependencies.mockk
@@ -84,3 +85,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

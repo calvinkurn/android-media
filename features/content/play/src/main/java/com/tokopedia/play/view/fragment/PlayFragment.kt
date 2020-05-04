@@ -19,6 +19,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -26,6 +28,10 @@ import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.play.*
 import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.analytic.TrackingField
@@ -79,6 +85,8 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
             }
         }
     }
+
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     private var channelId = ""
 
@@ -136,6 +144,8 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startPageMonitoring()
+        starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -199,6 +209,8 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun onResume() {
         super.onResume()
+        stopPrepareMonitoring()
+        startNetworkMonitoring()
         if (!isChangingOrientation) playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
@@ -429,7 +441,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                         isBuffering = false,
                         shouldTrackNext = true
                 )
-
             }
 
             layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)

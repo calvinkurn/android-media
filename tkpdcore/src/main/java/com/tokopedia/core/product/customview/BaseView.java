@@ -1,10 +1,11 @@
 package com.tokopedia.core.product.customview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -17,7 +18,6 @@ import android.widget.FrameLayout;
  * @param <L> Listener view dari main view (fragment atau activity)
  */
 public abstract class BaseView<D, L> extends FrameLayout {
-    private static final String TAG = BaseView.class.getSimpleName();
 
     protected L listener;
 

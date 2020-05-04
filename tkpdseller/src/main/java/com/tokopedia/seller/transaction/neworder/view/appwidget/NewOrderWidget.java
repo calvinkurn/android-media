@@ -16,7 +16,7 @@ import android.widget.RemoteViews;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
@@ -109,7 +109,7 @@ public class NewOrderWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget_new_order_setup_page);
 
-            Intent intent = SellerRouter.getActivitySplashScreenActivity(context);
+            Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getSplashScreenIntent(context);
             PendingIntent pendingIntentSplashScreen = PendingIntent.getActivity(context, 0, intent, 0);
             views.setOnClickPendingIntent(R.id.button_sign_in, pendingIntentSplashScreen);
 

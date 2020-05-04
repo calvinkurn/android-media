@@ -37,7 +37,8 @@ import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -177,7 +178,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     @Override
     public void setPurchaseList(List<BuyerPurchaseList> buyerPurchaseLists) {
         orderList.setVisibility(View.VISIBLE);
-        if (!SessionHandler.isUserHasShop(getContext()) && buyerPurchaseLists.size() <= MIN_BUYER_LIST_SIZE) {
+        UserSessionInterface userSession = new UserSession(getContext());
+        if (!userSession.hasShop() && buyerPurchaseLists.size() <= MIN_BUYER_LIST_SIZE) {
             btnFullPurchaseList.setVisibility(View.GONE);
             cardAdapter.addData(buyerPurchaseLists);
         } else {
@@ -229,7 +231,6 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
             encodedUrl = ContactUsURL.NAVIGATE_NEXT_URL;
         }
         startActivity(RouteManager.getIntent(getContext(), encodedUrl));
-//        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), encodedUrl, "Hubungi Kami"));
     }
 
     public void onBtnChatClicked() {

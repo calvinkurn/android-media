@@ -2,11 +2,18 @@ package com.tokopedia.contactus.createticket.interactor;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.createticket.UploadImageContactUsParam;
+import com.tokopedia.contactus.createticket.model.ContactUsPass;
+import com.tokopedia.contactus.createticket.model.CreateTicketResult;
 import com.tokopedia.contactus.createticket.model.GenerateHostPass;
+import com.tokopedia.contactus.createticket.model.ImageUpload;
+import com.tokopedia.contactus.createticket.model.ImageUploadResult;
+import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsWsService;
@@ -20,13 +27,8 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.contactus.createticket.UploadImageContactUsParam;
-import com.tokopedia.contactus.createticket.model.ContactUsPass;
-import com.tokopedia.contactus.createticket.model.CreateTicketResult;
-import com.tokopedia.contactus.createticket.model.ImageUpload;
-import com.tokopedia.contactus.createticket.model.ImageUploadResult;
-import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 
@@ -288,6 +290,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                 .flatMap(new Func1<ImageUpload, Observable<ImageUpload>>() {
                     @Override
                     public Observable<ImageUpload> call(ImageUpload imageUpload) {
+                        UserSessionInterface userSession = new UserSession(context);
                         String uploadUrl = "http://" + contactUsPass.getGeneratedHost().getUploadHost();
                         NetworkCalculator networkCalculator = new NetworkCalculator(
                                 NetworkConfig.POST, context,
@@ -321,7 +324,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
                         Log.d(TAG + "(step 2):host = ", contactUsPass.getGeneratedHost().getUploadHost());
                         Observable<ImageUploadResult> upload;
-                        if (SessionHandler.isV4Login(context)) {
+                        if (userSession.isLoggedIn()) {
                             upload = RetrofitUtils.createRetrofit(uploadUrl)
                                     .create(UploadImageContactUsParam.class)
                                     .uploadImage(
