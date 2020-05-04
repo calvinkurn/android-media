@@ -166,7 +166,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         view?.seller_seamless_negative_btn.setOnClickListener {
             analytics.eventClickLoginWithOtherAcc()
             RouteManager.route(activity, ApplinkConst.LOGIN)
-            activity?.finish()
         }
 
         initObserver()
@@ -224,7 +223,9 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
                 component = ComponentName(SeamlessSellerConstant.MAINAPP_PACKAGE, SeamlessSellerConstant.SERVICE_PACKAGE)
             }
             val success = activity?.bindService(i, serviceConnection, Context.BIND_AUTO_CREATE)
-            if(success == false) activity?.finish()
+            if(success == false)  {
+                moveToNormalLogin()
+            }
         }
     }
 
