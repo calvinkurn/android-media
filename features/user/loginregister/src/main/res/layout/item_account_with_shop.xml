@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:card_type="border"
+    android:paddingTop="@dimen/shop_vertical_padding"
+    android:paddingBottom="@dimen/shop_vertical_padding"
     android:layout_marginTop="@dimen/spacing_lvl3"
     android:layout_marginBottom="@dimen/spacing_lvl3">
 
