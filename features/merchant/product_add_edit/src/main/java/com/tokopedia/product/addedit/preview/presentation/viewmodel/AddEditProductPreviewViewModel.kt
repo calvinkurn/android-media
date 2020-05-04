@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
@@ -28,7 +29,6 @@ import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -40,8 +40,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
