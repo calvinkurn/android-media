@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,9 +34,6 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     private val mPercentageValueList = MutableLiveData<Array<Int>>()
     val percentageValueList : LiveData<Array<Int>>
         get() = mPercentageValueList
-    private val mTextFieldValueList = MutableLiveData<Array<Int>>()
-    val textFieldValueList : LiveData<Array<Int>>
-        get() = mTextFieldValueList
 
     private val mExpenseEstimationLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
         addSource(mActiveCashbackPromoTypeLiveData) { cashbackType ->
@@ -118,6 +116,25 @@ class CashbackVoucherCreateViewModel @Inject constructor(
             }
         }
         mActiveCashbackPromoTypeLiveData.value = cashbackType
+    }
+
+    fun checkRupiahMinimumPurchase(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {
+        mRupiahMaximumDiscountLiveData.value?.let { threshold ->
+            return Pair(currentValue >= threshold, errorMessage)
+        }
+        return Pair(false, "")
+    }
+
+    fun checkPercentageMaximumDiscount(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {
+        mPercentageDiscountAmountLiveData.value?.let { percentage ->
+            mPercentageMinimumPurchaseLiveData.value?. let { minimumPurchase ->
+                val percentValue = minimumPurchase.toDouble() * percentage / 100
+                val thresholdValue = percentValue.toInt()
+                val fullErrorMessage = "$errorMessage${CurrencyFormatHelper.convertToRupiah(thresholdValue.toString())}"
+                return Pair(currentValue > thresholdValue, fullErrorMessage)
+            }
+        }
+        return Pair(false, "")
     }
 
 }

@@ -92,6 +92,8 @@
     <string name="mvc_create_promo_type_textfield_alert_minimum">Min. %s</string>
     <string name="mvc_create_promo_type_textfield_alert_minimum_percentage">Min. %s%&#37;</string>
     <string name="mvc_create_promo_type_textfield_alert_maximum_percentage">Maks. %s%&#37;</string>
+    <string name="mvc_create_promo_type_textfield_alert_no_under_discount">Tidak boleh kurang dari potongan harga</string>
+    <string name="mvc_create_promo_type_textfield_alert_discount_above">Potongan harga harus di atas&#160;</string>
     <string name="mvc_create_promo_type_estimation">Estimasi Maks. Pengeluaran&#160;</string>
     <string name="mvc_create_promo_type_estimation_explanation">Dipotong dari transaksi selesai</string>
     <string name="mvc_create_promo_type_bottomsheet_title_promo_expenses">Pengeluaran Promosi</string>

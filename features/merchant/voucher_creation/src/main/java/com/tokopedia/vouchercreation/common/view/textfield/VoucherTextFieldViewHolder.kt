@@ -23,6 +23,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
 
     private var minAlertErrorMessage: String = ""
     private var maxAlertErrorMessage: String = ""
+    private var extraValidationErrorMessage: String = ""
 
     override fun bind(element: VoucherTextFieldUiModel) {
         itemView.textField?.run {
@@ -30,7 +31,11 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
             setInputType(InputType.TYPE_CLASS_NUMBER)
 
             element.labelRes?.let { labelRes ->
-                textFiedlLabelText.text = context.resources.getString(labelRes).toBlankOrString()
+                textFiedlLabelText.text = context?.resources?.getString(labelRes).toBlankOrString()
+            }
+
+            element.extraValidationRes?.let { errorRes ->
+                extraValidationErrorMessage = context?.resources?.getString(errorRes).toBlankOrString()
             }
 
             textFieldInput.run {
@@ -60,7 +65,8 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                         textFieldType = VoucherTextFieldType.CURRENCY,
                                         currentValue = number.toInt(),
                                         minValue = element.minValue,
-                                        maxValue = element.maxValue)
+                                        maxValue = element.maxValue,
+                                        extraValidation = element.extraValidation)
 
                                 element.onValueChanged(number.toInt(), element.promotionTypeType)
                             }
@@ -83,7 +89,8 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                     textFieldType = VoucherTextFieldType.QUANTITY,
                                     currentValue = value,
                                     minValue = element.minValue,
-                                    maxValue = element.maxValue)
+                                    maxValue = element.maxValue,
+                                    extraValidation = element.extraValidation)
 
                             element.onValueChanged(value, element.promotionTypeType)
                         }
@@ -110,7 +117,8 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                     textFieldType = VoucherTextFieldType.PERCENTAGE,
                                     currentValue = value,
                                     minValue = element.minValue,
-                                    maxValue = element.maxValue)
+                                    maxValue = element.maxValue,
+                                    extraValidation = element.extraValidation)
                             element.onValueChanged(value, element.promotionTypeType)
 
                         }
@@ -127,7 +135,8 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
     private fun TextFieldUnify.validateValue(textFieldType: VoucherTextFieldType,
                                              currentValue: Int,
                                              minValue: Int,
-                                             maxValue: Int) {
+                                             maxValue: Int,
+                                             extraValidation: (Int, String) -> Pair<Boolean, String>) {
         when {
             currentValue < minValue -> {
                 setError(true)
@@ -138,11 +147,17 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                 setMessage(maxAlertErrorMessage)
             }
             else -> {
-                setError(false)
-                if (textFieldType == VoucherTextFieldType.QUANTITY) {
-                    setMessage(maxAlertErrorMessage)
+                val pairResult = extraValidation(currentValue, extraValidationErrorMessage)
+                if (pairResult.first) {
+                    setError(false)
+                    if (textFieldType == VoucherTextFieldType.QUANTITY) {
+                        setMessage(maxAlertErrorMessage)
+                    } else {
+                        setMessage("")
+                    }
                 } else {
-                    setMessage("")
+                    setError(true)
+                    setMessage(pairResult.second)
                 }
             }
         }

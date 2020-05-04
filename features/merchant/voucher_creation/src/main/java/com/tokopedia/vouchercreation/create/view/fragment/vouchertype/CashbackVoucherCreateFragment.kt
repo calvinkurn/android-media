@@ -74,6 +74,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                extraValidationRes = R.string.mvc_create_promo_type_textfield_alert_no_under_discount,
                 promotionTypeType = PromotionType.Cashback.Rupiah.MinimumPurchase,
                 onValueChanged = ::onTextFieldValueChanged)
 
@@ -98,6 +99,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                     maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                    extraValidationRes = R.string.mvc_create_promo_type_textfield_alert_discount_above,
                     promotionTypeType = PromotionType.Cashback.Percentage.MaximumDiscount,
                     onValueChanged = ::onTextFieldValueChanged)
 
@@ -216,6 +218,8 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     }
 
     private fun setupView() {
+        rupiahMinimumPurchaseTextFieldModel.extraValidation = viewModel::checkRupiahMinimumPurchase
+        percentageMaximumDiscountTextFieldModel.extraValidation = viewModel::checkPercentageMaximumDiscount
         observeLiveData()
         renderList(getCashbackTypeUiList())
     }
