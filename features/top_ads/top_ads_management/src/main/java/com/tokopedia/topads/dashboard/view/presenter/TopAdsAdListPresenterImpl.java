@@ -23,7 +23,6 @@ public abstract class TopAdsAdListPresenterImpl<T extends Ad> implements TopAdsA
     }
 
     protected String getShopId() {
-        SessionHandler session = new SessionHandler(context);
-        return session.getShopID();
+        return SessionHandler.getShopID(context);
     }
 }
