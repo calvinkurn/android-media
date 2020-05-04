@@ -1,10 +1,15 @@
 package com.tokopedia.loginregister.login.view.activity
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment
@@ -23,6 +28,18 @@ class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginRegi
         }
 
         return SellerSeamlessLoginFragment.createInstance(bundle)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setWhiteStatusBarIfSellerApp()
+    }
+
+    private fun setWhiteStatusBarIfSellerApp() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
+            setStatusBarColor(Color.WHITE)
+            setLightStatusBar(true)
+        }
     }
 
     override fun getComponent(): LoginRegisterComponent {
