@@ -42,9 +42,4 @@ class SeamlessLoginModule(val context: Context) {
     @Provides
     fun provideUserSessionInterface(@SeamlessLoginContext context: Context): UserSessionInterface = UserSession(context)
 
-//    @SeamlessLoginScope
-//    @Provides
-//    fun provideSeamlessLoginViewModel(userSessionInterface: UserSessionInterface, dispatcher: CoroutineDispatcher)
-//            : SeamlessLoginViewModel = SeamlessLoginViewModel(userSessionInterface, dispatcher)
-
 }
