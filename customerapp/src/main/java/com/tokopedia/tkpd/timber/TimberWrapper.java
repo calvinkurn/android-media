@@ -55,7 +55,7 @@ public class TimberWrapper {
             })
     };
 
-    private static final String ANDROID_CUSTOMER_APP_LOG_CONFIG = "android_customer_app_log_config";
+    private static final String REMOTE_CONFIG_KEY_LOG = "android_customer_app_log_config";
 
     public static void init(Application application) {
         LogManager.init(application);
@@ -76,7 +76,7 @@ public class TimberWrapper {
         if (isDebug) {
             Timber.plant(new TimberDebugTree());
         } else {
-            String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
+            String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
                 if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {

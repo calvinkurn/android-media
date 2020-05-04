@@ -1,19 +1,22 @@
-package com.tokopedia.tkpd.utils;
+package com.tokopedia.sellerapp.utils.timber;
 
 import android.app.Activity;
 import android.app.Application;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 
-import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
+import com.tokopedia.user.session.UserSession;
 
-public class BetaSignActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+public class LoggerActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+
+    private String userId = "";
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        // No-op
+        UserSession userSession = new UserSession(activity);
+        if (!userId.equals(userSession.getUserId())) {
+            userId = userSession.getUserId();
+            TimberWrapper.initConfig(activity.getApplication());
+        }
     }
 
     @Override
@@ -23,12 +26,7 @@ public class BetaSignActivityLifecycleCallbacks implements Application.ActivityL
 
     @Override
     public void onActivityResumed(Activity activity) {
-        if(activity != null && Build.VERSION.SDK_INT >= 21 && BetaInterceptor.Companion.isBeta(activity)) {
-            Window window = activity.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(activity.getResources().getColor(android.R.color.holo_red_dark));
-        }
+        // No-op
     }
 
     @Override
