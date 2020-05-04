@@ -21,11 +21,11 @@ import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactoryImpl
+import com.tokopedia.common_category.data.catalog.CatalogTypeFactory
+import com.tokopedia.common_category.data.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
+import com.tokopedia.common_category.interfaces.CatalogCardListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
