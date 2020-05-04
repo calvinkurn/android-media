@@ -369,7 +369,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         super.onProductClicked(element)
-        analytics.eventClickProductThumbnailEE(this, element, session)
+        context?.let {
+            analytics.eventClickProductThumbnailEE(it, element, session)
+        }
+
         analytics.trackProductAttachmentClicked()
     }
 
