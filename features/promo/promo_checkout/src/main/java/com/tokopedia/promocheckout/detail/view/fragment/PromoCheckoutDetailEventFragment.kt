@@ -1,10 +1,17 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailEventActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailEventPresenter
@@ -64,7 +71,28 @@ class PromoCheckoutDetailEventFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailEventPresenter.checkPromoCode(codeCoupon, false, eventVerify)
+        if (codeCoupon.isNotEmpty()) {
+            eventVerify.promocode = codeCoupon
+            promoCheckoutDetailEventPresenter.checkPromoCode(codeCoupon, false, eventVerify)
+        }
+    }
+
+    override fun onClickCancel() {
+        super.onClickCancel()
+        val intent = Intent()
+        val promoData = PromoData(PromoData.TYPE_COUPON, promoCode = "" ,state = TickerCheckoutView.State.EMPTY)
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    override fun onSuccessCheckPromo(data: DataUiModel) {
+        val intent = Intent()
+        val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
+                data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     companion object{
