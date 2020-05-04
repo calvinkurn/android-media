@@ -49,8 +49,8 @@ open class BaseChatViewStateImpl(
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
-    protected lateinit var attachmentMenu: AttachmentMenuRecyclerView
-    protected lateinit var attachmentMenuContainer: FrameLayout
+    protected var attachmentMenu: AttachmentMenuRecyclerView? = null
+    protected var attachmentMenuContainer: FrameLayout? = null
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -105,10 +105,10 @@ open class BaseChatViewStateImpl(
     }
 
     protected open fun setupChatMenu() {
-        attachmentMenu.setAttachmentMenuListener(attachmentMenuListener)
-        attachmentMenu.container = attachmentMenuContainer
+        attachmentMenu?.setAttachmentMenuListener(attachmentMenuListener)
+        attachmentMenu?.container = attachmentMenuContainer
         chatMenuButton.setOnClickListener {
-            attachmentMenu.toggle()
+            attachmentMenu?.toggle()
         }
     }
 
@@ -291,14 +291,16 @@ open class BaseChatViewStateImpl(
     }
 
     private fun hideChatMenu() {
-        attachmentMenu.isKeyboardOpened = true
-        attachmentMenu.hideMenu()
+        attachmentMenu?.isKeyboardOpened = true
+        attachmentMenu?.hideMenu()
     }
 
     private fun showChatMenu() {
-        attachmentMenu.isKeyboardOpened = false
-        if (attachmentMenu.showDelayed) {
-            attachmentMenu.showDelayed()
+        attachmentMenu?.isKeyboardOpened = false
+        attachmentMenu?.let {
+            if (it.showDelayed) {
+                it.showDelayed()
+            }
         }
     }
 
@@ -320,11 +322,11 @@ open class BaseChatViewStateImpl(
     }
 
     override fun isAttachmentMenuVisible(): Boolean {
-        return attachmentMenu.isVisible
+        return attachmentMenu?.isVisible ?: false
     }
 
     override fun hideAttachmentMenu() {
-        return attachmentMenu.hideMenu()
+        attachmentMenu?.hideMenu()
     }
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {}
