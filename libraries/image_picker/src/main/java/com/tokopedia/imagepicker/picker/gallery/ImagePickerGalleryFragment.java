@@ -7,11 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.core.app.ActivityCompat;
@@ -20,9 +22,6 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -57,6 +56,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public static final String ARGS_GALLERY_TYPE = "args_gallery_type";
     public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
+    public static final String ARGS_ERROR_MIN_RESOLUTION = "args_error_min_resolution";
+    public static final String ARGS_ERROR_IMAGE_TOO_LARGE = "args_error_image_too_large";
 
     public static final String SAVED_ALBUM_TITLE_ID = "svd_album_title_id";
     public static final long MAX_VIDEO_DURATION_MS = 60000L;
@@ -78,6 +79,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     int galleryType;
     private boolean supportMultipleSelection;
     private int minImageResolution;
+    private String belowMinImageResolutionErrorMessage = "";
+    private String imageTooLargeErrorMessage = "";
 
     private LabelView labelViewAlbum;
 
@@ -95,14 +98,26 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @RequiresPermission("android.permission.CAMERA")
     public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
                                                          boolean supportMultipleSelection,
-                                                         int minImageResolution) {
+                                                         int minImageResolution,
+                                                         String imageBelowMinresolutionErrorMessage,
+                                                         String imageTooLargeErrorMessage) {
         ImagePickerGalleryFragment imagePickerGalleryFragment = new ImagePickerGalleryFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
+        bundle.putString(ARGS_ERROR_MIN_RESOLUTION, imageBelowMinresolutionErrorMessage);
+        bundle.putString(ARGS_ERROR_IMAGE_TOO_LARGE, imageTooLargeErrorMessage);
         imagePickerGalleryFragment.setArguments(bundle);
         return imagePickerGalleryFragment;
+    }
+
+    @SuppressLint("MissingPermission")
+    @RequiresPermission("android.permission.CAMERA")
+    public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
+                                                         boolean supportMultipleSelection,
+                                                         int minImageResolution) {
+        return newInstance(galleryType, supportMultipleSelection, minImageResolution, "", "");
     }
 
     @SuppressWarnings("unchecked")
@@ -113,6 +128,14 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
         supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
+        belowMinImageResolutionErrorMessage = bundle.getString(ARGS_ERROR_MIN_RESOLUTION, "");
+        if (belowMinImageResolutionErrorMessage == null || belowMinImageResolutionErrorMessage.isEmpty()) {
+            belowMinImageResolutionErrorMessage = getString(R.string.image_under_x_resolution, minImageResolution);
+        }
+        imageTooLargeErrorMessage = bundle.getString(ARGS_ERROR_IMAGE_TOO_LARGE, "");
+        if (imageTooLargeErrorMessage == null || imageTooLargeErrorMessage.isEmpty()) {
+            imageTooLargeErrorMessage = getString(R.string.max_file_size_reached);
+        }
         if (savedInstanceState != null) {
             selectedAlbumPosition = savedInstanceState.getInt(SAVED_ALBUM_TITLE_ID);
         }
@@ -312,11 +335,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             }
         } else {
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_file_size_reached));
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), imageTooLargeErrorMessage);
                 return false;
             }
             if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
                 return false;
             }
         }
