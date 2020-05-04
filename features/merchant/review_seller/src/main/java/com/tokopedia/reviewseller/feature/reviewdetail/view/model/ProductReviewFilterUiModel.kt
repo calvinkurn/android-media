@@ -14,5 +14,4 @@ data class ProductReviewFilterUiModel(
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }
