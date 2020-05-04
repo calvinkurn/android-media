@@ -29,6 +29,13 @@ class RemoteService : Service() {
         const val KEY_SHOP_AVATAR = "shop_avatar"
         const val KEY_SHOP_NAME = "shop_name"
         const val KEY_PHONE = "phone_no"
+        const val KEY_ERROR = "error"
+
+        const val KEYNAME = "key"
+
+        const val MSG_NOT_LOGIN = "not logged in"
+
+        const val PACKAGE_SELLERAPP = "com.tokopedia.sellerapp"
     }
 
     override fun onCreate() {
@@ -51,7 +58,7 @@ class RemoteService : Service() {
 
     private fun broadCastResult(data: Bundle, taskId: String) {
         val intent = Intent().apply {
-            `package` = "com.tokopedia.sellerapp"
+            `package` = PACKAGE_SELLERAPP
             action = taskId
             putExtras(data)
         }
@@ -63,12 +70,12 @@ class RemoteService : Service() {
             val data = Bundle()
             viewModel.getKey({
                 data.apply {
-                    putString("key", it.key)
+                    putString(KEYNAME, it.key)
                 }
                 broadCastResult(data, taskId = this@run)
             }, {
                 data.apply {
-                    putString("error", it.cause?.message)
+                    putString(KEY_ERROR, it.cause?.message)
                 }
                 broadCastResult(data, taskId = this)
             })
@@ -88,7 +95,7 @@ class RemoteService : Service() {
                 }
             }else {
                 data.apply {
-                    putString("error", "not logged in")
+                    putString(KEY_ERROR, MSG_NOT_LOGIN)
                 }
             }
             broadCastResult(data, taskId = this)
