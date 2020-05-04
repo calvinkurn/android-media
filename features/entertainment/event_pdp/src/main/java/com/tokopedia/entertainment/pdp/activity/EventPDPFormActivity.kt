@@ -22,19 +22,6 @@ class EventPDPFormActivity: BaseSimpleActivity(), HasComponent<EventPDPComponent
             urlPDP = savedInstanceState.getString(EXTRA_URL_PDP,"")
         }
         super.onCreate(savedInstanceState)
-//        supportActionBar?.setDisplayShowTitleEnabled(false)
-    }
-
-    override fun getToolbarResourceID(): Int {
-        return R.id.toolbar
-    }
-
-    override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.ent_pdp_form_activity
     }
 
     override fun getNewFragment(): Fragment?  = EventPDPFormFragment.newInstance(urlPDP)

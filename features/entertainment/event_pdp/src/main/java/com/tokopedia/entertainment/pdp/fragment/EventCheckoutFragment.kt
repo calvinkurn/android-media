@@ -29,6 +29,7 @@ import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.getDateString
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
+import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.Schedule
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
@@ -60,6 +61,7 @@ import kotlinx.android.synthetic.main.partial_event_checkout_footer.*
 import kotlinx.android.synthetic.main.partial_event_checkout_passenger.*
 import kotlinx.android.synthetic.main.partial_event_checkout_summary.*
 import kotlinx.android.synthetic.main.widget_event_checkout_passenger.*
+import java.io.Serializable
 import javax.inject.Inject
 
 
@@ -76,7 +78,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     private var email: String = ""
     private var promoCode: String = ""
 
-    private var map = HashMap<String, String>()
+    private var forms: List<Form> = emptyList()
 
     @Inject
     lateinit var eventCheckoutViewModel: EventCheckoutViewModel
@@ -184,7 +186,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         btn_event_checkout_passenger.setOnClickListener {
             context?.run {
                 val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
-                intent.putExtra(EXTRA_DATA_PESSANGER, map)
+                intent.putExtra(EXTRA_DATA_PESSANGER, forms as Serializable)
                 startActivityForResult(intent, REQUEST_CODE_FORM)
             }
         }
@@ -218,7 +220,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 context?.let {
                     if (!userSessionInterface.isLoggedIn) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-                    } else if (map.isEmpty()) {
+                    } else if (forms.isEmpty()) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                     } else {
 
@@ -310,8 +312,8 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_FORM) {
                 data?.let {
-                    map = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as (HashMap<String, String>)
-                    setPassengerData(map)
+                    forms = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
+                    setPassengerData(forms)
                 }
             } else if(requestCode == PROMO_EXTRA_LIST_ACTIVITY_RESULT){
                 data?.let {
@@ -358,22 +360,20 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun setPassengerData(map: HashMap<String, String>) {
-        widget_event_checkout_pessanger.renderRecycleView(map)
+    private fun setPassengerData(list: List<Form>) {
+        widget_event_checkout_pessanger.renderRecycleView(list)
 
-        for (key in map.keys) {
-            when (key) {
+        for (i in 0..list.size-1) {
+            when (list[i].title) {
                 PASSENGER_NAME -> {
-                    map.get(PASSENGER_NAME)?.let {
-                        if (it.isNotEmpty())
-                            name = it
+                    list[i].value.let {
+                        name = it
                     }
                 }
 
                 PASSENGER_EMAIL -> {
-                    map.get(PASSENGER_EMAIL)?.let {
-                        if (it.isNotEmpty())
-                            email = it
+                    list[i].value.let {
+                        email = it
                     }
                 }
             }
@@ -407,7 +407,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
                 getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
                 productDetailData.catalog.digitalProductId.toInt(),
-                getEntityPessangerVerify(productDetailData.forms, map), promoCode)
+                getEntityPessangerVerify(forms), promoCode)
     }
 
     companion object {

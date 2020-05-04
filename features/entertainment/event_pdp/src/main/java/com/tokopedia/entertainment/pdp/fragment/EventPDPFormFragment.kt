@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.ent_pdp_form_fragment.*
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
 import timber.log.Timber
+import java.io.Serializable
 
 class EventPDPFormFragment : BaseDaggerFragment(){
 
@@ -37,6 +38,8 @@ class EventPDPFormFragment : BaseDaggerFragment(){
     lateinit var userSession:UserSessionInterface
 
     lateinit var formAdapter: EventPDPFormAdapter
+
+    var mDataIntent: List<Form> = listOf()
 
     override fun getScreenName(): String = String.format(resources.getString(R.string.ent_pdp_title_form))
 
@@ -56,7 +59,7 @@ class EventPDPFormFragment : BaseDaggerFragment(){
         setViewModel()
         setupView()
         observeViewModel()
-        viewModel.getData(urlPDP)
+        setupData()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -96,9 +99,9 @@ class EventPDPFormFragment : BaseDaggerFragment(){
                     Toaster.make(view!!, String.format(resources.getString(R.string.ent_pdp_form_error_regex_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
                 }
             } else {
-                activity?.run {
+                activity?.run{
                     val intent = Intent()
-                    intent.putExtra(EXTRA_DATA_PESSANGER, formAdapter.dataset)
+                    intent.putExtra(EXTRA_DATA_PESSANGER, formAdapter.formData as Serializable)
                     this.setResult(RESULT_OK, intent)
                     this.finish()
                 }
@@ -108,8 +111,33 @@ class EventPDPFormFragment : BaseDaggerFragment(){
 
     private fun observeViewModel(){
         viewModel.mFormData.observe(this, Observer {
+            hideProgressBar()
             renderList(it)
+            showData()
         })
+    }
+
+    private fun hideProgressBar(){
+        progressBar.visibility = View.GONE
+    }
+
+    private fun showData(){
+        recycler_view.visibility = View.VISIBLE
+        tickerText.visibility = View.VISIBLE
+        simpanBtn.visibility = View.VISIBLE
+    }
+
+    private fun setupData() {
+        val dataIntent = activity?.intent
+        mDataIntent = dataIntent?.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
+
+        if(mDataIntent.isNotEmpty()){
+            hideProgressBar()
+            renderList(mDataIntent.toMutableList())
+            showData()
+        } else{
+            viewModel.getData(urlPDP)
+        }
     }
 
     private fun renderList(formData: MutableList<Form>){

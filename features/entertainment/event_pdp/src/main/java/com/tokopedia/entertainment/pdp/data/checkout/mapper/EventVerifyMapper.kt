@@ -76,14 +76,14 @@ object EventVerifyMapper {
         )
     }
 
-    fun getEntityPessangerVerify(forms: List<Form>, mapPassenger: HashMap<String, String>): List<EntityPassengerVerify> {
+    fun getEntityPessangerVerify(forms: List<Form>): List<EntityPassengerVerify> {
         val list: MutableList<EntityPassengerVerify> = mutableListOf()
-        if (!mapPassenger.isNullOrEmpty() && !forms.isNullOrEmpty()) {
+        if (!forms.isNullOrEmpty()) {
             for (i in 0..forms.size - 1) {
                 forms[i].apply {
                     val pessanger = EntityPassengerVerify(
                             id = id.toInt(), productId = productId.toInt(),
-                            name = name, title = title, value = mapPassenger.getValue(name), validatorRegex = validatorRegex,
+                            name = name, title = title, value = value, validatorRegex = validatorRegex,
                             elementType = elementType, required = required.toString(), errorMessage = errorMessage
                     )
                     list.add(pessanger)

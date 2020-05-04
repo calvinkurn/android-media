@@ -13,8 +13,11 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.entertainment.pdp.R
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImp
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
@@ -27,8 +30,11 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.END_DATE
 import com.tokopedia.entertainment.pdp.adapter.BaseListPackageAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -38,13 +44,16 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     private var startDate = ""
     private var endDate = ""
     private var selectedDate = ""
-    private var idPackages = ""
-    private var ticketQty = ""
+    private var EXTRA_PACKAGES_ID = ""
+    private var AMOUNT_TICKET = ""
     lateinit var bottomSheets: BottomSheetUnify
     private var packageTypeFactoryImp = PackageTypeFactoryImp()
 
     @Inject
     lateinit var viewModel: EventPDPTicketViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String = ""
     override fun initInjector() {
@@ -86,8 +95,8 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     }
 
     private fun setSelectedPackages(idPackages: String, nominal: String, qty: String, isError: Boolean){
-        this.idPackages = idPackages
-        this.ticketQty = qty
+        this.EXTRA_PACKAGES_ID = idPackages
+        this.AMOUNT_TICKET = qty
         setTotalPrice(nominal)
         showViewBottom(!isError)
     }
@@ -98,7 +107,6 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         setupTicker()
         setupRecycler()
         setupSwipeRefresh()
-        setupBottomSheet()
         setupHeader()
         setupPilihTicketButton()
     }
@@ -125,6 +133,7 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
             setOnRefreshListener {
                 showViewTop(false)
                 showViewBottom(false)
+                showUbah(false)
                 loadInitialData()
             }
         }
@@ -135,7 +144,7 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
             bottomSheets = BottomSheetUnify()
             val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
             view.bottom_sheet_calendar.run {
-                calendarPickerView?.init(Date(startDate.toLong() * 1000), Date(endDate.toLong()* 1000), ArrayList())
+                calendarPickerView?.init(Date(startDate.toLong() * 1000), Date(endDate.toLong()* 1000), ArrayList(), viewModel.listsActiveDate)
                         ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                         ?.withSelectedDate(Date(selectedDate.toLong() * 1000))
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener{
@@ -143,6 +152,9 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
                         activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
                         selectedDate = (date.time / 1000L).toString()
                         bottomSheets.dismiss()
+                        EXTRA_PACKAGES_ID = ""
+                        AMOUNT_TICKET = ""
+                        showViewBottom(false)
                         loadInitialData()
                     }
 
@@ -160,14 +172,26 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     private fun setupHeader(){
         activity?.txtDate?.text = getTimestamptoText(selectedDate.isNotBlank())
         if(startDate.isNotBlank() && endDate.isNotBlank()){
-            activity?.txtUbah?.visibility = View.VISIBLE
+            activity?.loaderUbah?.visibility = View.VISIBLE
             setupUbahButton()
         } else activity?.txtUbah?.visibility = View.GONE
     }
 
     private fun setupPilihTicketButton(){
         pilihTicketBtn.setOnClickListener {
+            if(!userSession.isLoggedIn) {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+            }
+            startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP,
+                    viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
+        }
+    }
 
+    private fun showUbah(state: Boolean){
+        if(startDate.isNotBlank() && endDate.isNotBlank()){
+            activity?.loaderUbah?.visibility = if(state) View.GONE else View.VISIBLE
+            activity?.txtUbah?.visibility = if(state) View.VISIBLE else View.GONE
         }
     }
 
@@ -178,6 +202,8 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
             swipe_refresh_layout.isRefreshing = false
             it?.run { renderList(this) }
             showViewTop(true)
+            showUbah(true)
+            setupBottomSheet()
         })
 
         viewModel.error.observe(this, Observer {
@@ -221,6 +247,8 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
                 putString(END_DATE, endDate)
             }
         }
+        val EMPTY_VALUE = "-"
+        val REQUEST_CODE_LOGIN = 100
     }
 
 }

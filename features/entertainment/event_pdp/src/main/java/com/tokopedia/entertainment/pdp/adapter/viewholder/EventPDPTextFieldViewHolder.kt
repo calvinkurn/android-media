@@ -19,7 +19,7 @@ import java.lang.RuntimeException
 import java.util.regex.Pattern
 
 class EventPDPTextFieldViewHolder(val view: View,
-                                  val addOrRemoveData : (String, String) -> Unit,
+                                  val addOrRemoveData : (Int, String) -> Unit,
                                   val userSession: UserSessionInterface): RecyclerView.ViewHolder(view) {
 
     fun bind(element: Form, position: Int){
@@ -43,7 +43,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                         txtValue.setError(true)
                     }
 
-                    addOrRemoveData(element.name, text.toString())
+                    addOrRemoveData(position, text.toString())
                 }
             })
 
@@ -52,6 +52,8 @@ class EventPDPTextFieldViewHolder(val view: View,
                 else if(element.name == EMAIL_TYPE) txtValue.textFieldInput.setText(userSession.email)
                 else if(element.name == PHONE_TYPE) txtValue.textFieldInput.setText(userSession.phoneNumber)
             }
+
+            if(element.value.isNotBlank()) txtValue.textFieldInput.setText(element.value)
 
         }
     }

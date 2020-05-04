@@ -16,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class EventPDPTicketViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
@@ -29,6 +30,7 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
     val ticketModel : LiveData<List<EventPDPTicketModel>> get() = _ticketModel
 
     var lists: MutableList<EventPDPTicketModel> = mutableListOf()
+    var listsActiveDate: MutableList<Date> = mutableListOf()
 
     var EXTRA_SCHEDULE_ID = ""
     var EXTRA_GROUPS_ID = ""
@@ -37,18 +39,20 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
         this.resources = resources
         launch {
             lists.clear()
+            listsActiveDate.clear()
             val data = usecase.executeUseCase(getRawQueryPDP(), getRawQueryContent(), state, url)
             when (data) {
                 is Success -> {
                     if(selectedDate.isNotBlank()){
                         data.data.eventProductDetailEntity.EventProductDetail.productDetailData.schedules.forEach {
-                            if(EventDateUtil.convertUnixToToday(it.schedule.startDate.toLong()) <= selectedDate.toLong() && selectedDate.toLong() < it.schedule.endDate.toLong()){
+                            if(EventDateUtil.convertUnixToToday(it.schedule.startDate.toLong()) == selectedDate.toLong()){
                                 EXTRA_SCHEDULE_ID = it.schedule.id
                                 it.groups.forEach {
                                     EXTRA_GROUPS_ID = it.id
                                     it.packages.forEach { lists.add(it) }
                                 }
                             }
+                            listsActiveDate.add(Date(it.schedule.startDate.toLong()*1000L))
                         }
                     } else{
                         if(data.data.eventProductDetailEntity.EventProductDetail.productDetailData.schedules.size == 1) {

@@ -13,11 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/tickerText"
@@ -25,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl6"
             android:maxHeight="@dimen/layout_lvl9"
+            android:visibility="gone"
             app:tickerType="warning"
             app:closeButtonVisibility="gone"
             app:layout_constraintTop_toBottomOf="@id/recycler_view"
@@ -36,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl8"
             android:text="@string/ent_pdp_form_ticket_submit_text"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/tickerText"
             app:layout_constraintStart_toStartOf="parent"/>
 

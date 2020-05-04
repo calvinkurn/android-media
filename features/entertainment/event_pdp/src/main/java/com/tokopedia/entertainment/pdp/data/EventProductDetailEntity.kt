@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.pdp.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
+import java.io.Serializable
 
 data class EventProductDetailEntity (
         @SerializedName("event_product_detail")
@@ -418,8 +419,8 @@ data class Form(
         val validatorRegex: String = "",
         @SerializedName("value")
         @Expose
-        val value: String = ""
-)
+        var value: String = ""
+): Serializable
 
 data class Group(
         @SerializedName("created_at")
