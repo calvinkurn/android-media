@@ -41,11 +41,11 @@ open class ProductSheetComponent(
                             is ScreenStateEvent.SetProductSheet -> when (it.productResult) {
                                 is PlayResult.Loading -> if (it.productResult.showPlaceholder) uiView.showPlaceholder()
                                 is PlayResult.Success -> {
-                                    if (it.productResult.data.productList.isNotEmpty()) {
-                                        uiView.setProductSheet(it.productResult.data)
-                                    } else {
+//                                    if (it.productResult.data.productList.isNotEmpty()) {
+//                                        uiView.setProductSheet(it.productResult.data)
+//                                    } else {
                                         uiView.showEmpty(it.productResult.data.partnerId)
-                                    }
+//                                    }
                                 }
                                 is PlayResult.Failure -> uiView.showError(
                                         isConnectionError = it.productResult.error is ConnectException || it.productResult.error is UnknownHostException,
