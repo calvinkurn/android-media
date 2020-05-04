@@ -7,16 +7,15 @@
         android:id="@+id/cl_product_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Neutral_N0"
         android:gravity="center"
         android:visibility="gone"
         android:clickable="true"
         android:focusable="true"
         tools:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_variant_content">
+        app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay">
 
         <ImageView
             android:id="@+id/iv_img_illustration"
