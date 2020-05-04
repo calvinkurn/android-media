@@ -16,7 +16,6 @@ interface OfficialStoreComponent {
     @ApplicationContext
     fun getContext(): Context
     fun getMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
-//    fun getCoroutineDispatcher(): CoroutineDispatcher
     fun getDispatcherProvider(): OfficialStoreDispatcherProvider
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun retrofitBuilder(): Retrofit.Builder
