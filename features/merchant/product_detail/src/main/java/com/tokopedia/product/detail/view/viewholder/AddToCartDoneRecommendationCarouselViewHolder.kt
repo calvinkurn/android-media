@@ -4,16 +4,17 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.view.ViewCompat
+import androidx.annotation.DimenRes
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
@@ -24,6 +25,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.abs
 
 
 class AddToCartDoneRecommendationCarouselViewHolder(
@@ -41,11 +43,6 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private val reviewCount = itemView.findViewById<Typography>(R.id.review_count)
     private val freeOngkirImage = itemView.findViewById<ImageView>(R.id.image_free_ongkir)
     private val ticker = itemView.findViewById<Ticker>(R.id.ticker)
-    private val headerPrice = itemView.findViewById<Typography>(R.id.heading_price)
-    private val discountPercentage = itemView.findViewById<Label>(R.id.discount_percentage)
-    private val slashedPrice = itemView.findViewById<Typography>(R.id.slashed_price)
-    private val price = itemView.findViewById<Typography>(R.id.price)
-    private val addToCartButton = itemView.findViewById<UnifyButton>(R.id.btn_add_to_cart)
     private val containerContent = itemView.findViewById<View>(R.id.content_layout)
     private val adapter = RecommendationCarouselAdapter()
 
@@ -60,13 +57,15 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private val reversedAnimatorSet = AnimatorSet()
     private lateinit var animationListener: Animator.AnimatorListener
     private var viewPager2PageChangeCallback: ViewPager2.OnPageChangeCallback? = null
+    private val itemDecoration = HorizontalMarginItemDecoration(
+            itemView.context,
+            R.dimen.viewpager_current_item_horizontal_margin
+    )
 
     private var previousPosition = -1
     private var currentPosition = 0
     private var model: AddToCartDoneRecommendationCarouselDataModel ?= null
 
-    private val pageMarginPx = itemView.resources.getDimensionPixelOffset(R.dimen.dp_20)
-    private val offsetPx = itemView.resources.getDimensionPixelOffset(R.dimen.dp_100)
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_carousel_layout
         const val ATC_LOADING = "atc_loading"
@@ -99,25 +98,12 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                     }
                     viewPager.registerOnPageChangeCallback(viewPager2PageChangeCallback as ViewPager2.OnPageChangeCallback)
                 }
-                if(!addToCartButton.hasOnClickListeners()){
-                    addToCartButton.setOnClickListener {
-                        if(element.recommendationWidget.recommendationItemList.isNotEmpty() && element.recommendationWidget.recommendationItemList.size > currentPosition){
-                            addToCartDoneAddedProductListener.onProductAddToCart(element.recommendationWidget.recommendationItemList[currentPosition], currentPosition)
-                        }
-                    }
-                }
+                viewPager.addItemDecoration(itemDecoration)
                 viewPager.setPageTransformer(ViewPager2PageTransformation())
                 visible()
             }
         }catch (exception: Exception){
             exception.printStackTrace()
-        }
-    }
-
-    override fun bind(element: AddToCartDoneRecommendationCarouselDataModel?, payloads: MutableList<Any>) {
-        if(payloads.isNotEmpty() && payloads.first() is Bundle && (payloads.first() as Bundle).containsKey(ATC_LOADING)){
-            val isAtcLoading = (payloads.first() as Bundle).get(ATC_LOADING) as Boolean
-            addToCartButton.isLoading = isAtcLoading
         }
     }
 
@@ -132,7 +118,6 @@ class AddToCartDoneRecommendationCarouselViewHolder(
             freeOngkirImage.visibility = if (recommendation.isFreeOngkirActive) View.VISIBLE else View.GONE
             shopBadges.visibility = if (recommendation.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
             ticker.visibility = if (model.shopId != -1) View.VISIBLE else View.GONE
-            price.show()
 
             when {
                 previousPosition == -1 -> {
@@ -198,14 +183,9 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         ratingCount.text = recommendation.rating.toString()
         shopBadges.loadImage(recommendation.badgesUrl.firstOrNull() ?: "")
         freeOngkirImage.loadImage(recommendation.freeOngkirImageUrl)
-        discountPercentage.visibility = if(recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
-        slashedPrice.visibility = if(recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
-        headerPrice.visibility = if(!recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
-        discountPercentage.text = recommendation.discountPercentage
-        slashedPrice.text = recommendation.slashedPrice
-        price.text = recommendation.price
         ticker.tickerType = if(recommendation.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
         ticker.setTextDescription(getString(if(recommendation.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
+        addToCartDoneAddedProductListener.onRecommendationItemSelected(recommendation, recommendation.position)
     }
 
     inner class RecommendationCarouselAdapter : RecyclerView.Adapter<RecommendationCarouselImageViewHolder>(){
@@ -252,32 +232,31 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         }
     }
 
+    inner class HorizontalMarginItemDecoration(context: Context, @DimenRes horizontalMarginInDp: Int) : RecyclerView.ItemDecoration() {
+
+        private val horizontalMarginInPx: Int =
+                context.resources.getDimension(horizontalMarginInDp).toInt()
+
+        override fun getItemOffsets(
+                outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
+        ) {
+            outRect.right = horizontalMarginInPx
+            outRect.left = horizontalMarginInPx
+        }
+
+    }
+
     inner class ViewPager2PageTransformation : ViewPager2.PageTransformer {
         override fun transformPage(page: View, position: Float) {
-            val absPos = Math.abs(position)
+            val nextItemVisiblePx = itemView.resources.getDimension(R.dimen.viewpager_next_item_visible)
+            val currentItemHorizontalMarginPx = itemView.resources.getDimension(R.dimen.viewpager_current_item_horizontal_margin)
+            val pageTranslationX = nextItemVisiblePx + currentItemHorizontalMarginPx
             page.apply {
-                val viewPager = page.parent.parent as ViewPager2
-                val offset = position * -(2 * offsetPx + pageMarginPx)
-                if (viewPager.orientation == ORIENTATION_HORIZONTAL) {
-                    if (ViewCompat.getLayoutDirection(viewPager) == ViewCompat.LAYOUT_DIRECTION_RTL) {
-                        page.translationX = -offset
-                    } else {
-                        page.translationX = offset
-                    }
-                } else {
-                    page.translationY = offset
-                }
-                scaleY = if (absPos >= 1) {
-                    0.5f
-                } else {
-                    (0.5f - 1) * absPos + 1
-                }
-                scaleX = if (absPos >= 1) {
-                    0.5f
-                } else {
-                    (0.5f - 1) * absPos + 1
-                }
-
+                page.translationX = -pageTranslationX * position
+                // Next line scales the item's height. You can remove it if you don't want this effect
+                page.scaleY = 1 - (0.25f * abs(position))
+                // If you want a fading effect uncomment the next line:
+                 page.alpha = 0.25f + (1 - abs(position))
             }
             when {
                 position < -1 ->

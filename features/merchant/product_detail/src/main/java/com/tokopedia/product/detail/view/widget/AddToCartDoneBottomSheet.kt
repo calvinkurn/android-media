@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -21,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -32,13 +34,15 @@ import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
-import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationCarouselViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -64,8 +68,15 @@ class AddToCartDoneBottomSheet :
     private lateinit var atcDoneAdapter: AddToCartDoneAdapter
     private var lastAdapterPosition = -1
     private lateinit var recyclerView: RecyclerView
-    private lateinit var containerLayout: FrameLayout
+    private lateinit var containerLayout: ConstraintLayout
     private lateinit var viewShimmeringLoading: View
+    private lateinit var headerPrice: Typography
+    private lateinit var discountPercentage: Label
+    private lateinit var slashedPrice: Typography
+    private lateinit var price: Typography
+    private lateinit var shadow: View
+    private lateinit var stateAtcView: View
+    private lateinit var addToCartButton: UnifyButton
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
 
     override fun getLayoutResourceId(): Int {
@@ -78,9 +89,16 @@ class AddToCartDoneBottomSheet :
 
     override fun initView(view: View?) {
         view?.let {
+            shadow = it.findViewById(R.id.shadow)
             recyclerView = it.findViewById(R.id.recycler_view_add_to_cart_done)
             containerLayout = it.findViewById(R.id.container_layout)
             viewShimmeringLoading = it.findViewById(R.id.atc_done_bottomsheet_shimmering_loading)
+            headerPrice = view.findViewById<Typography>(R.id.heading_price)
+            discountPercentage = view.findViewById<Label>(R.id.discount_percentage)
+            stateAtcView = view.findViewById<Label>(R.id.state_atc)
+            slashedPrice = view.findViewById<Typography>(R.id.slashed_price)
+            price = view.findViewById<Typography>(R.id.price)
+            addToCartButton = view.findViewById<UnifyButton>(R.id.btn_add_to_cart)
         }
     }
 
@@ -117,17 +135,18 @@ class AddToCartDoneBottomSheet :
 
     private fun initAdapter() {
         val factory = AddToCartDoneTypeFactory(this, this)
-        atcDoneAdapter = AddToCartDoneAdapter(factory)
+        atcDoneAdapter = AddToCartDoneAdapter(recyclerView, factory)
         recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.animation= null
         recyclerView.adapter = atcDoneAdapter
     }
 
     private fun observeAtcStatus(){
         addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
-            val bundle = Bundle()
-            bundle.putBoolean(AddToCartDoneRecommendationCarouselViewHolder.ATC_LOADING, false)
-            atcDoneAdapter.notifyItemChanged(atcDoneAdapter.itemCount - 1, bundle)
+            addToCartButton.isLoading = false
             if(result is Success){
+                stateAtcView.visible()
+                addToCartButton.hide()
                 dialog?.run{
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
                     Toaster.make(findViewById(android.R.id.content),
@@ -191,7 +210,7 @@ class AddToCartDoneBottomSheet :
             val displaymetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
             val screenHeight = displaymetrics.heightPixels
-            val maxHeight = (screenHeight * 0.92f).toInt()
+            val maxHeight = (screenHeight * 0.90f).toInt()
             val params = parent.layoutParams
             params.height = maxHeight
             parent.layoutParams = params
@@ -274,11 +293,24 @@ class AddToCartDoneBottomSheet :
         productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
     }
 
-    override fun onProductAddToCart(item: RecommendationItem, position: Int) {
-        val bundle = Bundle()
-        bundle.putBoolean(AddToCartDoneRecommendationCarouselViewHolder.ATC_LOADING, true)
-        atcDoneAdapter.notifyItemChanged(atcDoneAdapter.itemCount - 1, bundle)
-        addToCartDoneViewModel.addToCart(item)
+    override fun onRecommendationItemSelected(recommendation: RecommendationItem, position: Int) {
+        shadow.visible()
+        price.visible()
+        addToCartButton.visible()
+        stateAtcView.hide()
+        addToCartButton.show()
+        discountPercentage.visibility = if(recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        slashedPrice.visibility = if(recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        headerPrice.visibility = if(!recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        discountPercentage.text = recommendation.discountPercentage
+        slashedPrice.text = recommendation.slashedPrice
+        price.text = recommendation.price
+        if(!addToCartButton.hasOnClickListeners()) {
+            addToCartButton.setOnClickListener {
+                addToCartButton.isLoading = true
+                addToCartDoneViewModel.addToCart(recommendation)
+            }
+        }
     }
 
     override fun onButtonGoToCartClicked() {

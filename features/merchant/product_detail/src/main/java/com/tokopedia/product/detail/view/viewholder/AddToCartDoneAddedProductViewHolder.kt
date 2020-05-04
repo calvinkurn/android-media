@@ -33,6 +33,6 @@ class AddToCartDoneAddedProductViewHolder(
 
     interface AddToCartDoneAddedProductListener {
         fun onButtonGoToCartClicked()
-        fun onProductAddToCart(item: RecommendationItem, position: Int)
+        fun onRecommendationItemSelected(item: RecommendationItem, position: Int)
     }
 }
