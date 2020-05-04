@@ -99,10 +99,13 @@ open class BaseChatViewStateImpl(
                 .skip(1)
                 .subscribe(onChatDeBounceSubscriber, onError)
 
-        attachmentMenu.setAttachmentMenuListener(attachmentMenuListener)
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
+        setupChatMenu()
+    }
 
+    protected open fun setupChatMenu() {
+        attachmentMenu.setAttachmentMenuListener(attachmentMenuListener)
         attachmentMenu.container = attachmentMenuContainer
         chatMenuButton.setOnClickListener {
             attachmentMenu.toggle()
