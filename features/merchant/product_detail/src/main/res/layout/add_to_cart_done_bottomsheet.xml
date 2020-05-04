@@ -17,7 +17,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/shadow"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-    <include layout="@layout/add_to_cart_done_bottomsheet_shimmering"/>
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        layout="@layout/add_to_cart_done_bottomsheet_shimmering"/>
 
     <View
         android:id="@+id/shadow"

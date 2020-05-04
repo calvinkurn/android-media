@@ -127,7 +127,7 @@ class AddToCartDoneViewModel @Inject constructor(
             val addToCartRequestParams = AddToCartRequestParams().apply {
                 productId = recommendationItem.productId.toLong()
                 shopId = recommendationItem.shopId
-                quantity = recommendationItem.minOrder
+                quantity = if(recommendationItem.minOrder > 0) recommendationItem.minOrder else 1
                 notes = ""
             }
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
