@@ -2,15 +2,15 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.11",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.12-alpha",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.1.11-sellerapp",
+            graphql                 : "com.tokopedia.graphql:graphql:1.1.12-sellerapp",
             url                     : "com.tokopedia.url:url:1.0.6-hub",
-            network                 : "com.tokopedia.network:network:1.0.21-sellerapp",
+            network                 : "com.tokopedia.network:network:1.0.22-sellerapp",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.15",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.16",
             akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.19-alpha4",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",

@@ -5,9 +5,6 @@ import android.content.SharedPreferences;
 
 import com.tokopedia.user.session.util.EncoderDecoder;
 
-import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
-import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
-
 public class MigratedUserSession {
     public static final boolean IS_ENABLE = false;
 
@@ -23,8 +20,39 @@ public class MigratedUserSession {
         return sharedPrefs.getString(keyName, defValue);
     }
 
-    protected String getString(String prefName, String keyName, String defValue) {
+    protected long getLong(String prefName, String keyName, long defValue) {
         if(!IS_ENABLE){
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
+
+        return internalGetLong(prefName, keyName, defValue);
+    }
+
+    protected long internalGetLong(String prefName, String keyName, long defValue) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getLong(keyName, defValue);
+    }
+
+    protected void setLong(String prefName, String keyName, long value) {
+        if (!IS_ENABLE) {
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
+
+        internalSetLong(prefName, keyName, value);
+    }
+
+    protected void internalSetLong(String prefName, String keyName, long value) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putLong(keyName, value);
+        editor.apply();
+    }
+
+
+    protected String getString(String prefName, String keyName, String defValue) {
+        if (!IS_ENABLE) {
             prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
             keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
         }
