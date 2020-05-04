@@ -35,6 +35,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -159,6 +160,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleTeaserNotifyMe: LiveData<Result<Boolean>>
         get() = _toggleTeaserNotifyMe
 
+    private val _discussionMostHelpful = MutableLiveData<Result<DiscussionMostHelpfulResponseWrapper>>()
+    val discussionMostHelpful: LiveData<Result<DiscussionMostHelpfulResponseWrapper>>
+        get() = _discussionMostHelpful
 
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
@@ -735,8 +739,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 discussionMostHelpfulUseCase.createRequestParams(productId, shopId)
                 discussionMostHelpfulUseCase.executeOnBackground()
             }
+            _discussionMostHelpful.postValue(response.asSuccess())
         }) {
-
+            _discussionMostHelpful.postValue(it.asFail())
         }
     }
 

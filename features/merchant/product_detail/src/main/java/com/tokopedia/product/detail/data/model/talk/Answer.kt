@@ -19,6 +19,9 @@ data class Answer(
         @SerializedName("userID")
         @Expose
         val userId: String = "",
+        @SerializedName("isSeller")
+        @Expose
+        val isSeller: Boolean = false,
         @SerializedName("createTime")
         @Expose
         val createTime: String = "",
