@@ -10,8 +10,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 interface TopChatViewState : BaseChatViewState {
 
-    fun showErrorWebSocket(b: Boolean)
-
     fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
 
     fun onSetCustomMessage(customMessage: String)

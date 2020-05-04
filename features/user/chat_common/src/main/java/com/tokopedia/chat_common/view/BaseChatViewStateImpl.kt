@@ -309,6 +309,8 @@ open class BaseChatViewStateImpl(
         return attachmentMenu.hideMenu()
     }
 
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {}
+
     open fun getInterlocutorName(headerName: CharSequence): CharSequence = headerName
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress

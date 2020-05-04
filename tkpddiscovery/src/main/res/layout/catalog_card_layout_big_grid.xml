@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_8">
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageCatalog"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"

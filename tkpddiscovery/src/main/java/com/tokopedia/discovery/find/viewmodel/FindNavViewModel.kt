@@ -3,9 +3,9 @@ package com.tokopedia.discovery.find.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.productModel.SearchProduct
+import com.tokopedia.common_category.model.productModel.ProductListResponse
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.SearchProduct
 import com.tokopedia.discovery.find.data.repository.FindNavRepository
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.discovery.find.util.FindNavParamBuilder
@@ -30,6 +30,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     private var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     private var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
     private val findNavParamBuilder: FindNavParamBuilder by lazy { FindNavParamBuilder() }
+    private var isQuerySafe: Boolean = false
     private val jobs = SupervisorJob()
 
     @Inject
@@ -56,20 +57,25 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     private fun handleDataForSearchProduct(searchProduct: SearchProduct) {
         if (checkForBannedData(searchProduct)) {
-            val list = ArrayList<String>()
-            searchProduct.errorMessage?.let {
-                list.add(it)
-            }
-            searchProduct.liteUrl?.let {
-                list.add(it)
-            }
-            mBannedData.value = Success(list)
+            mBannedData.value = Success(getBannedDataValue(searchProduct))
         } else {
+            isQuerySafe = (searchProduct.isQuerySafe ?: true)
             searchProduct.products.let { productList ->
                 mProductList.value = Success((productList) as List<ProductsItem>)
             }
             setProductCountValue(searchProduct)
         }
+    }
+
+    private fun getBannedDataValue(searchProduct: SearchProduct): ArrayList<String> {
+        val list = ArrayList<String>()
+        searchProduct.errorMessage?.let {
+            list.add(it)
+        }
+        searchProduct.liteUrl?.let {
+            list.add(it)
+        }
+        return list
     }
 
     private fun setProductCountValue(searchProduct: SearchProduct) {
@@ -84,7 +90,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     }
 
     private fun checkForBannedData(searchProduct: SearchProduct): Boolean {
-        return searchProduct.errorMessage != null && searchProduct.errorMessage.isNotEmpty()
+        return searchProduct.errorMessage != null &&  searchProduct.errorMessage!!.isNotEmpty()
     }
 
     fun fetchQuickFilterList(productId: String) {
@@ -135,7 +141,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return mProductList
     }
 
-    fun getProductCountLiveData(): MutableLiveData<List<String>> {
+    fun getProductCountLiveData(): LiveData<List<String>> {
         return mProductCount
     }
 
@@ -153,5 +159,9 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     fun getRelatedLinkListLiveData(): LiveData<Result<List<RelatedLinkData>>> {
         return mRelatedLinkList
+    }
+
+    fun checkForAdultData(): Boolean {
+        return isQuerySafe
     }
 }

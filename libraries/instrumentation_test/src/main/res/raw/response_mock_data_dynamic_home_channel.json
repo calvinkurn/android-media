@@ -1984,6 +1984,37 @@
                             "image_url": "",
                             "attribution": ""
                         }
+                    },
+                    {
+                        "id": 24031,
+                        "galaxy_attribution": "",
+                        "persona": "",
+                        "brand_id": "",
+                        "category_persona": "",
+                        "name": "Digital Bills",
+                        "layout": "dg_bills",
+                        "type": "sales",
+                        "showPromoBadge": false,
+                        "header": {},
+                        "hero": null,
+                        "grids": [],
+                        "banner": {
+                            "id": 0,
+                            "title": "",
+                            "description": "",
+                            "url": "",
+                            "back_color": "",
+                            "cta": {
+                                "type": "",
+                                "mode": "",
+                                "text": "",
+                                "coupon_code": ""
+                            },
+                            "applink": "",
+                            "text_color": "",
+                            "image_url": "",
+                            "attribution": ""
+                        }
                     }
                 ]
             },

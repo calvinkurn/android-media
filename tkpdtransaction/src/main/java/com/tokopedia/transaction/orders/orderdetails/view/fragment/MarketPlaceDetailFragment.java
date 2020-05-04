@@ -143,8 +143,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView statusValue;
     private TextView conditionalInfoText;
     private TextView invoiceView;
+    private ImageView invoiceCopy;
     private View dividerInvoice;
-    private LinearLayout invoiceLayout;
+    private RelativeLayout invoiceLayout;
     private TextView lihat;
     private TextView detailLabel;
     private TextView additionalText;
@@ -217,6 +218,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
+        invoiceCopy = view.findViewById(R.id.iv_copy_invoice);
         dividerInvoice = view.findViewById(R.id.divider_invoice);
         invoiceLayout = view.findViewById(R.id.ll_invoice);
         statusLihat = view.findViewById(R.id.lihat_status);
@@ -331,7 +333,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             dividerInvoice.setVisibility(View.VISIBLE);
             invoiceLayout.setVisibility(View.VISIBLE);
             invoiceView.setText(invoice.invoiceRefNum());
-            if (!presenter.isValidUrl(invoice.invoiceUrl())) {
+            invoiceCopy.setOnClickListener(view -> {
+            ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
+            clipboard.setPrimaryClip(clip);
+            Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+        });if (!presenter.isValidUrl(invoice.invoiceUrl())) {
                 lihat.setVisibility(View.GONE);
             }
             lihat.setOnClickListener(view -> {
@@ -603,7 +610,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order");
+                        presenter.onBuyAgainAllItems(" - order", status.status());
                     }
                 });
             } else {
@@ -637,7 +644,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order");
+                            presenter.onBuyAgainAllItems(" - order", status.status());
                         }
                     });
                 } else {

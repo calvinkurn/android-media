@@ -14,7 +14,4 @@ public interface NotificationRepository {
 
     Observable<NotificationModel> getNotification(TKPDMapParam<String, Object> params);
 
-    Observable<TopChatNotificationModel> getNotificationTopChat(TKPDMapParam<String, Object> params);
-
-
 }

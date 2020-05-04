@@ -22,17 +22,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.adapter.ProductNavListAdapter
+import com.tokopedia.common_category.adapter.QuickFilterAdapter
+import com.tokopedia.common_category.factory.ProductTypeFactory
+import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
+import com.tokopedia.common_category.interfaces.ProductCardListener
+import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.find.analytics.FindPageAnalytics.Companion.findPageAnalytics
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.discovery.find.di.component.DaggerFindNavComponent
@@ -166,6 +167,9 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         findNavViewModel.getProductListLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    if(!findNavViewModel.checkForAdultData()){
+                        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_FIND_PAGE, findSearchParam)
+                    }
                     removeShimmerIfRunning()
                     handleForProductsData(it.data)
                     showProductPriceSection(it.data as ArrayList<ProductsItem>)
@@ -622,5 +626,10 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     override fun onPriceListClick(product: ProductsItem, adapterPosition: Int) {
         findPageAnalytics.eventClickPriceList()
         openProductDetailPage(product, adapterPosition)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data)
     }
 }

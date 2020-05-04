@@ -113,6 +113,7 @@ abstract class BaseTracking {
         private const val KEY_POSITION = "position"
         private const val KEY_LIST = "list"
         private const val KEY_ATTRIBUTION = "attribution"
+        private const val KEY_QUANTITY = "quantity"
         private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_45 = "dimension45"
         private const val KEY_DIMENSION_83 = "dimension83"
@@ -214,6 +215,7 @@ abstract class BaseTracking {
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = list + if(product.isTopAds) " - topads" else ""
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_45] = product.cartId
+            if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
         }
     }
@@ -232,7 +234,8 @@ abstract class BaseTracking {
             val persoType: String = "",
             val isTopAds: Boolean = false,
             val cartId: String = "",
-            val categoryId: String = ""): ImpressHolder()
+            val categoryId: String = "",
+            val quantity: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,
@@ -386,11 +389,15 @@ abstract class BaseTracking {
     }
 
     protected fun convertRupiahToInt(rupiah: String): Int {
-        var rupiah = rupiah
-        rupiah = rupiah.replace("Rp", "")
-        rupiah = rupiah.replace(".", "")
-        rupiah = rupiah.replace(" ", "")
-        return Integer.parseInt(rupiah)
+        try {
+            var rupiah = rupiah
+            rupiah = rupiah.replace("Rp", "")
+            rupiah = rupiah.replace(".", "")
+            rupiah = rupiah.replace(" ", "")
+            return Integer.parseInt(rupiah)
+        } catch (e: Exception) {
+            return 0
+        }
     }
 
     protected fun getTracker(): ContextAnalytics {

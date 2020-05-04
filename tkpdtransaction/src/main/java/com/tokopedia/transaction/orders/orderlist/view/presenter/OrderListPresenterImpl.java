@@ -477,11 +477,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         int productId = 0;
         int shopId = 0;
         String externalSource = "";
+        String clickUrl = "";
         if (productModel instanceof OrderListRecomViewModel) {
             OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
             productId = orderListRecomViewModel.getRecommendationItem().getProductId();
             shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
             externalSource = "recommendation_list";
+            clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
+        }
+
+        if(!clickUrl.isEmpty()) {
+            getView().sendATCTrackingUrl(clickUrl);
         }
         AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
         addToCartRequestParams.setProductId(productId);
@@ -670,7 +676,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     } else {
                         getView().showFailureMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, false, "");
+                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, false, "", getStatus().status());
                 }
 
             }
