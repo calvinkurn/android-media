@@ -113,7 +113,7 @@ class EditProductInputMapper @Inject constructor() {
             val levelIndex = it.opt.firstOrNull()
             val product = Product(
                     mapProductCombination(it.opt),
-                    it.priceVar,
+                    it.priceVar.toBigDecimal().toBigInteger(),
                     it.sku,
                     getActiveStatus(it.st),
                     it.stock,
@@ -199,7 +199,8 @@ class EditProductInputMapper @Inject constructor() {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
-            val price = it.price.replace(".", "").toDoubleOrZero()
+            val price = it.price.replace(".", "")
+                    .toBigIntegerOrNull() ?: 0.toBigInteger()
             if (quantity > 1) {
                 data.add(Wholesale(
                         quantity,
