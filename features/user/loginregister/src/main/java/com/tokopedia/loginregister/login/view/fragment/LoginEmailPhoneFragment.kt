@@ -247,10 +247,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
-
-        if(GlobalConfig.isSellerApp()){
-
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
