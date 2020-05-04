@@ -138,15 +138,6 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
         return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
     }
 
-    override fun onBackPressed() {
-        if(fragment != null && fragment is SellerSeamlessLoginFragment){
-            (fragment as SellerSeamlessLoginFragment).onBackPressedFragment()
-            super.onBackPressed()
-        }else{
-            super.onBackPressed()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
