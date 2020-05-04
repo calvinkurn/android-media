@@ -27,6 +27,7 @@ import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
+import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
@@ -195,6 +196,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onSendButtonClicked(text: String) {
+        TalkReplyTracking.eventSendAnswer(userSession.userId, productId, questionId)
         sendComment(text)
     }
 
