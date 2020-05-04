@@ -58,7 +58,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `failed get product draft`() {
-        onGet()
+        onGetProductDraft_thenReturn()
         viewModel.getProductDraft(3)
 
         verifyGetProductDraftUseCaseCalled()
@@ -67,7 +67,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun `failed save product draft`() {
-        onSave()
+        onSaveProductDraft_thenReturn()
         viewModel.saveProductDraft(ProductDraft(), 3, false)
 
         verifySaveProductDraftUseCaseCalled()
@@ -82,11 +82,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coEvery { saveProductDraftUseCase.executeOnBackground() } returns draftId
     }
 
-    private fun onGet() {
+    private fun onGetProductDraft_thenReturn() {
         coEvery { getProductDraftUseCase.executeOnBackground() } throws MessageErrorException("")
     }
 
-    private fun onSave() {
+    private fun onSaveProductDraft_thenReturn() {
         coEvery { saveProductDraftUseCase.executeOnBackground() } throws MessageErrorException("")
     }
 
