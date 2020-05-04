@@ -19,19 +19,20 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.R;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractorImpl;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenter;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -133,8 +134,8 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
         if (!getArguments().getString(ARGS_EMAIL, "").equals("")) {
             emailEditText.setText(getArguments().getString(ARGS_EMAIL));
         }
-
-        if (SessionHandler.isV4Login(getActivity())) {
+        UserSessionInterface userSession = new UserSession(getActivity());
+        if (userSession.isLoggedIn()) {
             registerButton.setVisibility(View.GONE);
         } else {
             registerButton.setVisibility(View.VISIBLE);
