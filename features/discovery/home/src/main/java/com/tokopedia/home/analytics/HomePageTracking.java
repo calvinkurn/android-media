@@ -44,6 +44,7 @@ public class HomePageTracking {
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
     public static final String LEGO_BANNER_3_IMAGE_CLICK = "lego banner 3 image click";
+    public static final String LEGO_BANNER_4_IMAGE_CLICK = "lego banner 4 image click";
 
     private static final String ACTION_CLICK_POINT = "click point & tier status";
 
@@ -372,6 +373,107 @@ public class HomePageTracking {
                                                         channel.getTrackingAttributionModel().getPersoType(),
                                                         channel.getTrackingAttributionModel().getCategoryId()),
                                                 FIELD_NAME, channel.getTrackingAttributionModel().getPromoName(),
+                                                FIELD_CREATIVE, grid.getAttribution(),
+                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(position)
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    //old tracking for old dynamic lego banner
+    public static Map<String, Object> getEnhanceClickLegoBannerHomePage(DynamicHomeChannel.Grid grid,
+                                                                        DynamicHomeChannel.Channels channel,
+                                                                        int position) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_CLICK,
+                EVENT_LABEL, grid.getAttribution(),
+                CHANNEL_ID, channel.getId(),
+                ATTRIBUTION, channel.getGalaxyAttribution(),
+                AFFINITY_LABEL, channel.getPersona(),
+                GALAXY_CATEGORY_ID, channel.getCategoryPersona(),
+                SHOP_ID, channel.getBrandId(),
+                CAMPAIGN_CODE, channel.getCampaignCode(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
+                                                FIELD_NAME, channel.getPromoName(),
+                                                FIELD_CREATIVE, grid.getAttribution(),
+                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(position)
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(DynamicHomeChannel.Grid grid,
+                                                                             DynamicHomeChannel.Channels channel,
+                                                                             int position) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, LEGO_BANNER_3_IMAGE_CLICK,
+                EVENT_LABEL, grid.getAttribution(),
+                CHANNEL_ID, channel.getId(),
+                ATTRIBUTION, channel.getGalaxyAttribution(),
+                AFFINITY_LABEL, channel.getPersona(),
+                GALAXY_CATEGORY_ID, channel.getCategoryPersona(),
+                SHOP_ID, channel.getBrandId(),
+                CAMPAIGN_CODE, channel.getCampaignCode(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, String.format(
+                                                        FORMAT_4_VALUE_UNDERSCORE,
+                                                        channel.getId(),
+                                                        grid.getId(),
+                                                        channel.getPersoType(),
+                                                        channel.getCategoryID()),
+                                                FIELD_NAME, channel.getPromoName(),
+                                                FIELD_CREATIVE, grid.getAttribution(),
+                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(position)
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static Map<String, Object> getEnhanceClickFourLegoBannerHomePage(DynamicHomeChannel.Grid grid,
+                                                                             DynamicHomeChannel.Channels channel,
+                                                                             int position) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, LEGO_BANNER_4_IMAGE_CLICK,
+                EVENT_LABEL, grid.getAttribution(),
+                CHANNEL_ID, channel.getId(),
+                ATTRIBUTION, channel.getGalaxyAttribution(),
+                AFFINITY_LABEL, channel.getPersona(),
+                GALAXY_CATEGORY_ID, channel.getCategoryPersona(),
+                SHOP_ID, channel.getBrandId(),
+                CAMPAIGN_CODE, channel.getCampaignCode(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, String.format(
+                                                        FORMAT_4_VALUE_UNDERSCORE,
+                                                        channel.getId(),
+                                                        grid.getId(),
+                                                        channel.getPersoType(),
+                                                        channel.getCategoryID()),
+                                                FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)

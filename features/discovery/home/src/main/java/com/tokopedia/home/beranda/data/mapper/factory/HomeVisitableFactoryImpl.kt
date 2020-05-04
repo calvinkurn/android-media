@@ -20,6 +20,8 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.base.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.ProductImage
@@ -28,7 +30,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
-class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
+class HomeVisitableFactoryImpl(
+        val userSessionInterface: UserSessionInterface,
+        val remoteConfig: RemoteConfig) : HomeVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
     private var homeData: HomeData? = null
@@ -174,7 +178,14 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
                             isCombined = true)
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
-                    createDynamicLegoBannerComponent(channel, position, isCache)
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createDynamicLegoBannerComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                                isCombined = true)
+                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
                     createDynamicChannel(channel)

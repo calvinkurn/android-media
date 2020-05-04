@@ -81,6 +81,8 @@ class OfficialHomeAdapterTypeFactory(
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(
                     parent, legoBannerListener, homeComponentListener
             )
+            //deprecated - exist for remote config
+            DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
             else -> super.createViewHolder(parent, type)
         }
     }

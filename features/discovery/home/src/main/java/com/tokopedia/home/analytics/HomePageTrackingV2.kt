@@ -144,13 +144,13 @@ object HomePageTrackingV2 : BaseTracking() {
                 )
         )
 
-        fun getLegoBannerFourImageSeeAllClick(channelModel: ChannelModel): HashMap<String, Any>{
+        fun getLegoBannerFourImageSeeAllClick(channelHeaderName: String, channelId: String): HashMap<String, Any>{
             return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME) + " view all",
-                Label.KEY, channelModel.channelHeader.name,
-                Label.CHANNEL_LABEL, channelModel.id
+                Label.KEY, channelHeaderName,
+                Label.CHANNEL_LABEL, channelId
             ) as HashMap<String, Any>
         }
     }

@@ -61,6 +61,8 @@ import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreL
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -104,6 +106,7 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 0
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
+    private var remoteConfig: RemoteConfig? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -135,6 +138,7 @@ class OfficialHomeFragment :
         }
         context?.let { tracking = OfficialStoreTracking(it) }
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -278,7 +282,8 @@ class OfficialHomeFragment :
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingDynamicChannel(
                             result.data,
-                            adapter
+                            adapter,
+                            remoteConfig
                     )
                 }
                 is Fail -> {
@@ -595,7 +600,7 @@ class OfficialHomeFragment :
         val applink = gridData.applink ?: ""
 
         gridData.let {
-            tracking?.dynamicChannelImageClick(
+            tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
                     channelModel.headerName ?: "",
                     (position + 1).toString(10),
@@ -611,6 +616,38 @@ class OfficialHomeFragment :
         if (!sentDynamicChannelTrackers.contains(channelModel.id)) {
             tracking?.dynamicChannelHomeComponentImpression(viewModel.currentSlug, channelModel)
             sentDynamicChannelTrackers.add(channelModel.id)
+        }
+    }
+
+    override fun onClickLegoHeaderActionTextListener(applink: String): View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener {
+        return View.OnClickListener {
+            val gridData = channelData.grids?.get(position)
+            val applink = gridData?.applink ?: ""
+
+            gridData?.let {
+                tracking?.dynamicChannelImageClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        (position + 1).toString(10),
+                        it,
+                        channelData
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun legoImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.dynamicChannelImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
         }
     }
 

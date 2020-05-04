@@ -21,7 +21,7 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
     }
 
     override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channelModel))
+        TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channelModel.headerName, channelModel.id))
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
                     channelModel.channelHeader.applink else channelModel.channelHeader.url)

@@ -20,6 +20,8 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class OfficialHomeMapper {
 
@@ -51,18 +53,31 @@ class OfficialHomeMapper {
             )
         }
 
-        fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
+        fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
             if (dynamicChannel.channels.isNotEmpty()) {
-                val availableScreens = setOf(
-                        DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
-                        DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP
-                )
-                val availableLegoBannerScreens = setOf(
-                        DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
-                        DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE
-                )
+                var availableScreens = setOf<String>()
+                var availableLegoBannerScreens = setOf<String>()
+                if (remoteConfig?.getBoolean(RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT) == true) {
+                    availableScreens = setOf(
+                            DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
+                            DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                    )
+                    availableLegoBannerScreens = setOf(
+                            DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
+                            DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE
+                    )
+                } else {
+                    availableScreens = setOf(
+                            DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
+                            DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
+                            DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
+                            DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
+                            DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                    )
+                }
 
                 val views = mutableListOf<Visitable<*>>()
 

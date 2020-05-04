@@ -177,6 +177,14 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
         return when (layout) {
             /**
+             * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
+             * //deprecated - exist for remote config
+             */
+            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> OldDynamicLegoBannerViewHolder.LAYOUT
+
+            /**
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
              * used by deals widget to show 1 product item
              */
@@ -236,6 +244,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                             legoListener,
                             homeComponentListener,
                             parentRecycledViewPool)
+
+            //deprecated - exist for remote config
+            OldDynamicLegoBannerViewHolder.LAYOUT -> viewHolder = OldDynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)
+
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)

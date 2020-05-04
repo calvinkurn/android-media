@@ -362,7 +362,7 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
-    fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, channelGrid: ChannelGrid, channelModel: ChannelModel) {
+    fun dynamicChannelHomeComponentClick(categoryName: String, headerName: String, position: String, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(DataLayer.mapOf(
@@ -388,6 +388,35 @@ class OfficialStoreTracking(context: Context) {
                 CATEGORY_ID, trackingAttributionModel.categoryPersona,
                 SHOP_ID, trackingAttributionModel.brandId,
                 CAMPAIGN_CODE, trackingAttributionModel.categoryId,
+                ECOMMERCE, ecommerceBody
+        ))
+    }
+
+    fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, gridData: Grid, channelData: Channel) {
+        val ecommerceBody = DataLayer.mapOf(
+                "promoClick", DataLayer.mapOf(
+                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                "id", gridData.id.toString(10),
+                "name", "/official-store/$categoryName - dynamic channel - $headerName",
+                "position", position,
+                "creative", gridData.attribution,
+                "creative_url", gridData.applink,
+                "promo_id", null,
+                "promo_code", null
+        ))
+        )
+        )
+
+        tracker.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, "promoClick",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "dynamic channel - click",
+                EVENT_LABEL, "click dynamic channel - $headerName",
+                ATTRIBUTION, channelData.galaxyAttribution,
+                AFFINITY_LABEL, channelData.persona,
+                CATEGORY_ID, channelData.categoryPersona,
+                SHOP_ID, channelData.brandId,
+                CAMPAIGN_CODE, channelData.campaignID.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
