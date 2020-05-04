@@ -6,7 +6,9 @@ include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
 include "features:category:common_tradein"
+include "features:category:common_category"
 include "features:category:kategori"
+include "features:discovery2:hotlist"
 
 include "features:communication:broadcast_message_common"
 
@@ -98,6 +100,7 @@ include "features:kyc"
 
 include "features:logistic:logisticorder"
 include "features:logistic:logisticaddaddress"
+include "features:logistic:dropoff"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
 
@@ -145,6 +148,7 @@ include "features:promo:promo_checkout_common"
 include "features:promo:promo_gamification_common"
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
+include "features:promo:promotions_target"
 
 include "features:top_ads:top_ads_autoads"
 include "features:top_ads:top_ads_create"

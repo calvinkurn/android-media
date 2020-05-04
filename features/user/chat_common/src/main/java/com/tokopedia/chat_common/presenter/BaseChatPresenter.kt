@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.presenter
 
+import androidx.annotation.StringRes
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
@@ -71,7 +72,7 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
 
     abstract fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String)
 
-    abstract fun showErrorSnackbar(stringId: Int)
+    abstract fun showErrorSnackbar(@StringRes stringId: Int)
 
     abstract fun isUploading(): Boolean
 

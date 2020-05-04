@@ -1,5 +1,6 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.ApplinkConst.DFFALLBACKURL_KEY
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -388,7 +389,7 @@ object ApplinkConstInternalGlobal {
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
-        "dffallbackurl={fallbackUrl}"
+        DFFALLBACKURL_KEY +"={fallbackUrl}"
 
     /**
      * LogoutActivity
@@ -437,10 +438,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
-
-    //ManageGeneral Activity
-    @JvmField
-    val MANAGE_GENERAL = "$INTERNAL_GLOBAL/manage-general"
 
     //ManageNotificationActivity
     @JvmField

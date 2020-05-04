@@ -10,14 +10,15 @@ ext {
             nps                             : ":features:common:nps",
 
             commonTradein                   : ":features:category:common_tradein",
+            commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
+            hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
 
             broadcastMessage                : ":features:communication:broadcast_message",
-//            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
             broadcastMessageCommon          : ":features:communication:broadcast_message_common",
 
             feed                            : ":features:content:feed",
@@ -65,14 +66,11 @@ ext {
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
             flashsaleManagement             : ":features:discovery:flashsale_management",
-//            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
-//            home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",
-            //recentview                    : ":features:discovery:recentview_no_op",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
@@ -103,6 +101,7 @@ ext {
 
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
+            dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
 
@@ -130,10 +129,8 @@ ext {
             sellerHome                      : ":features:merchant:seller_home",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
-//            shopEtalasePicker               : ":features:merchant:shop_etalase_picker_no_op",
             shopOpen                        : ":features:merchant:shop_open",
             shopPage                        : ":features:merchant:shop_page",
-//            shopPage                        : ":features:merchant:shop_page_no_op",
             shopSettings                    : ":features:merchant:shop_settings",
             officialStore                  : ":features:merchant:official_store",
             brandlist                       : ":features:merchant:brandlist",
@@ -144,11 +141,8 @@ ext {
 
             commonPayment                   : ":features:payment:common_payment",
             payment                         : ":features:payment:payment",
-//            payment                         : ":features:payment:payment_no_op",
             paymentSetting                  : ":features:payment:payment_setting",
-//            paymentSetting                  : ":features:payment:payment_setting_no_op",
             pms                             : ":features:payment:pms",
-//            pms                             : ":features:payment:pms_no_op",
             withdraw                        : ":features:payment:withdraw",
 
             gallery                         : ":features:merchant:gallery",
@@ -157,7 +151,6 @@ ext {
             merchantVoucher                 : ":features:promo:merchant_voucher",
             seamlesslogin                   : ":features:user:seamless_login",
             tokopoints                      : ":features:promo:tokopoints",
-//            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
             promoCheckout                   : ":features:promo:promo_checkout",
             promoCheckoutCommon             : ":features:promo:promo_checkout_common",
@@ -170,7 +163,6 @@ ext {
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
             topAdsWidget                    : ":features:top_ads:top_ads_widget",
             topAdsManagement                : ":features:top_ads:top_ads_management",
-//            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
 
@@ -191,7 +183,6 @@ ext {
             attachvoucher                   : ":features:user:attachvoucher",
             attachcommon                   : ":features:user:attachcommon",
             changepassword                  : ":features:user:changepassword",
-//            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             chatcommon                      : ":features:user:chat_common",
@@ -202,7 +193,6 @@ ext {
             loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
             notifCenter                     : ":features:user:notifcenter",
-//            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
@@ -211,10 +201,8 @@ ext {
             settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
-//            topchat                         : ":features:user:topchat_no_op",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
-//            userIdentification              : ":features:user:user_identification_no_op",
             seamlesslogin                   : ":features:user:seamless_login",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
@@ -229,7 +217,7 @@ ext {
             tkpdsession                     : ":tkpdsession",
             tkpdtransaction                 : ":tkpdtransaction",
             tkpdtransactioncommon           : ":tkpdtransaction-common",
-
+            promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice"
     ]
 }

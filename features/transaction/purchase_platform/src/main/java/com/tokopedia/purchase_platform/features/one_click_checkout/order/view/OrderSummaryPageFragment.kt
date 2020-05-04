@@ -126,6 +126,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private var progressDialog: AlertDialog? = null
 
     private var shouldUpdateCart: Boolean = true
+    private var shouldDismissProgressDialog: Boolean = false
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -207,6 +208,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun initViews(view: View) {
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
         orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener(), orderSummaryAnalytics)
+        btnPromoCheckout?.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
     }
 
     private fun initViewModel() {
@@ -506,8 +508,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
                 tvInsurance?.setText(R.string.label_must_insurance)
-                cbInsurance?.isChecked = true
                 cbInsurance?.isEnabled = false
+                forceSetChecked(cbInsurance, true)
                 viewModel.setInsuranceCheck(true)
                 groupInsurance?.visible()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO) {
@@ -517,16 +519,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 tvInsurance?.setText(R.string.label_shipment_insurance)
                 cbInsurance?.isEnabled = true
                 if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
-                    cbInsurance?.isChecked = true
+                    forceSetChecked(cbInsurance, true)
                     viewModel.setInsuranceCheck(true)
                 } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                    cbInsurance?.isChecked = false
+                    forceSetChecked(cbInsurance, false)
                     viewModel.setInsuranceCheck(false)
                 }
                 groupInsurance?.visible()
             }
         } else {
             groupInsurance?.gone()
+        }
+    }
+
+    private fun forceSetChecked(checkBox: CheckboxUnify?, newCheck: Boolean) {
+        checkBox?.apply {
+            if (isChecked == newCheck) {
+                isChecked = newCheck
+                setIndeterminate(false)
+            } else {
+                isChecked = newCheck
+            }
         }
     }
 
@@ -612,9 +625,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun setupPaymentError(paymentErrorMessage: String?) {
         if (paymentErrorMessage.isNullOrEmpty()) {
             tickerPaymentError?.gone()
+            orderPreferenceCard.setPaymentError(false)
         } else {
             tickerPaymentError?.setTextDescription(paymentErrorMessage)
             tickerPaymentError?.visible()
+            orderPreferenceCard.setPaymentError(true)
         }
     }
 
@@ -834,7 +849,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                     intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
                     startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                    shouldDismissProgressDialog = true
                 } else {
+                    viewModel.globalEvent.value = OccGlobalEvent.Normal
                     Toaster.make(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                 }
             }
@@ -843,6 +860,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStart() {
         shouldUpdateCart = true
+        shouldDismissProgressDialog = false
         super.onStart()
     }
 
@@ -854,6 +872,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         super.onStop()
         if (swipeRefreshLayout?.isRefreshing == false && shouldUpdateCart) {
             viewModel.updateCart()
+        }
+        if (shouldDismissProgressDialog && progressDialog?.isShowing == true) {
+            viewModel.globalEvent.value = OccGlobalEvent.Normal
         }
     }
 

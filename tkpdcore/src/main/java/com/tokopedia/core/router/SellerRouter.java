@@ -1,6 +1,5 @@
 package com.tokopedia.core.router;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 
@@ -11,14 +10,6 @@ import com.tokopedia.core.util.RouterUtils;
  */
 @Deprecated
 public class SellerRouter {
-
-    public static Fragment getFragmentShopSettings(Context context) {
-        return RouterUtils.getRouterFromContext(context).getFragmentShopSettings();
-    }
-
-    public static Intent getActivitySplashScreenActivity(Context context) {
-        return RouterUtils.getRouterFromContext(context).getSplashScreenIntent(context);
-    }
 
     public static Class<?> getSellingActivityClass() {
         return RouterUtils.getDefaultRouter().getSellingActivityClass();

@@ -112,6 +112,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private TextView vGoToApplinkDebugger;
     private TextView vGoToFpm;
+    private TextView vGoToCassava;
     private TextView vGoToAnalytics;
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
@@ -202,6 +203,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
         vGoToFpm = findViewById(R.id.goto_fpm);
+        vGoToCassava = findViewById(R.id.goto_cassava);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
         vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
@@ -427,6 +429,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
+        vGoToCassava.setOnClickListener(v -> GtmLogger.getInstance(this).navigateToValidator());
         vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
         vGoToAnalyticsError.setOnClickListener(v -> {
             GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
