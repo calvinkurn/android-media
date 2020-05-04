@@ -105,6 +105,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var productDomain: Product = Product()
 
+    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
+
+    val hasWholesale: Boolean
+        get() = productInputModel.value?.detailInputModel?.wholesaleList?.isNotEmpty() ?: false
+
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
@@ -118,7 +123,16 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
+
+                        // decrement wholesale min order by one because of > symbol
+                        val initialWholeSaleList =  productInputModel.detailInputModel.wholesaleList
+                        val actualWholeSaleList = decrementWholeSaleMinOrder(initialWholeSaleList)
+
+                        // reassign wholesale information with the actual wholesale values
+                        productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
+
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -136,6 +150,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     is Success -> {
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -194,14 +209,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
-        variantInputModel.isRemoveVariant = getIsRemoveVariant(variantInputModel.productVariant)
         productInputModel.value?.variantInputModel = variantInputModel
     }
 
     fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
-        productInputModel.value?.variantInputModel?.isRemoveVariant =
-                getIsRemoveVariant(productVariant)
         productInputModel.value?.variantInputModel?.productVariant =
                 mapProductVariant(productVariant, variantOptionParent)
         productInputModel.value?.variantInputModel?.variantOptionParent =
@@ -304,11 +316,21 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return validateProductInput(detailInputModel)
     }
 
-    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+    fun incrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
         wholesaleList.forEach { wholesaleInputModel ->
             // recalculate wholesale min order because of > symbol
             val oldValue = wholesaleInputModel.quantity.toBigInteger()
             val newValue = oldValue + 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
+    }
+
+    private fun decrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue - 1.toBigInteger()
             wholesaleInputModel.quantity = newValue.toString()
         }
         return wholesaleList
@@ -360,13 +382,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
-    // isRemoveVariant used for indicating productVariant size is decreased when not in draft mode
-    private fun getIsRemoveVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>): Boolean {
-        return if (draftId.isEmpty()) {
-            productVariant.size < productInputModel.value?.variantInputModel?.productVariant?.size ?: 0
-        } else {
-            false
+    // disable removing variant when in edit mode and if product have a variant
+    private fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
+        val variantInputModel  = inputModel.variantInputModel
+        variantInputModel?.apply {
+            if (isEditing.value == true) {
+                if (productVariant.size > 0) {
+                    return variantOptionParent.getOrNull(0) != null
+                }
+            }
         }
+        return false
     }
 
 }
