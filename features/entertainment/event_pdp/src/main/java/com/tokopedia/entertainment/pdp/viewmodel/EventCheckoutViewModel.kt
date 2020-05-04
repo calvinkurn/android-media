@@ -6,22 +6,17 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
-import com.tokopedia.entertainment.pdp.data.checkout.EventVerifyBody
-import com.tokopedia.entertainment.pdp.data.checkout.EventVerifyResponse
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPErrorEntity
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
+import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.internal.http2.ConnectionShutdownException
-import java.io.InterruptedIOException
-import java.net.SocketException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class EventCheckoutViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,

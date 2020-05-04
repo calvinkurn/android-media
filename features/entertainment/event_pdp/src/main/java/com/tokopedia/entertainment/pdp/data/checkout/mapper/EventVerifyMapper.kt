@@ -1,7 +1,7 @@
 package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
 import com.tokopedia.entertainment.pdp.data.Form
-import com.tokopedia.entertainment.pdp.data.checkout.*
+import com.tokopedia.promocheckout.common.domain.model.event.*
 
 object EventVerifyMapper {
 
@@ -24,11 +24,6 @@ object EventVerifyMapper {
                                 quantity = quantity,
                                 description = "",
                                 pricePerSeat = pricePerSeat,
-                                areaCode = listOf(),
-                                seatRowIds = listOf(),
-                                seatIds = listOf(),
-                                seatPhysicalRowIds = listOf(),
-                                actualSeatNos = listOf(),
                                 sessionID = "",
                                 productId = productID,
                                 groupId = groupID,

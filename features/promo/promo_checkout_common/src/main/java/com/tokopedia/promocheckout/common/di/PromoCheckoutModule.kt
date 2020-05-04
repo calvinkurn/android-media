@@ -1,25 +1,38 @@
 package com.tokopedia.promocheckout.common.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.converter.StringResponseConverter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
+import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
+import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 @Module
 class PromoCheckoutModule {
@@ -96,6 +109,56 @@ class PromoCheckoutModule {
     fun provideUserSession(@ApplicationContext context: Context) : UserSession {
         val userSession = UserSession(context)
         return userSession
+    }
+
+    @Provides
+    @PromoCheckoutQualifier
+    internal fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
+        return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
+    }
+
+    @Provides
+    @PromoCheckoutQualifier
+    internal fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface): FingerprintInterceptor {
+        return FingerprintInterceptor(networkRouter, userSession)
+    }
+
+    @Provides
+    @PromoCheckoutQualifier
+    internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
+                                     httpLoggingInterceptor: HttpLoggingInterceptor,
+                                     okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        return builder
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+                .build()
+    }
+
+    @Provides
+    @PromoCheckoutQualifier
+    fun provideApiService(gson: Gson, client: OkHttpClient): EventCheckoutApi {
+        val retrofitBuilder = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        retrofitBuilder.client(client)
+        val retrofit = retrofitBuilder.build()
+        return retrofit.create(EventCheckoutApi::class.java)
+    }
+
+    @Provides
+    @PromoCheckoutQualifier
+    fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
+        return EventCheckRepositoryImpl(eventCheckoutApi)
+    }
+
+    companion object{
+        const val BASE_URL = "https://omscart-staging.tokopedia.com/"
     }
 
 }

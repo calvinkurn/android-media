@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -39,10 +40,15 @@ import com.tokopedia.entertainment.pdp.viewmodel.EventCheckoutViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
 import kotlinx.android.synthetic.main.fragment_event_checkout.*
@@ -65,6 +71,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
     private var name: String = ""
     private var email: String = ""
+    private var promoCode: String = ""
 
     private var map = HashMap<String, String>()
 
@@ -175,7 +182,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             context?.run {
                 val intent = RouteManager.getIntent(this, "${ApplinkConstInternalEntertainment.EVENT_FORM}/$urlPDP")
                 intent.putExtra(EXTRA_DATA_PESSANGER, map)
-                startActivityForResult(intent, REQUEST_CODE)
+                startActivityForResult(intent, REQUEST_CODE_FORM)
             }
         }
     }
@@ -222,7 +229,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                                             productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
                                             amount, packages.salesPrice.toInt(), packages.salesPrice.toInt() * amount,
                                             productDetailData.catalog.digitalProductId.toInt(),
-                                            getEntityPessangerVerify(productDetailData.forms, map), ""))
+                                            getEntityPessangerVerify(productDetailData.forms, map), promoCode))
                     }
                 }
             }
@@ -230,6 +237,9 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun renderPromo(productDetailData: ProductDetailData){
+        if (name.isEmpty()) name = userSessionInterface.name
+        if (email.isEmpty()) email = userSessionInterface.email
+
         ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
         ticker_event_checkout_promo.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickDetailPromo() {
@@ -237,6 +247,13 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 intent.putExtra(EXTRA_COUPON_ACTIVE,true)
                 intent.putExtra(PAGE_TRACKING,1)
                 intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
+                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
+                        productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
+                        amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
+                        getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
+                        productDetailData.catalog.digitalProductId.toInt(),
+                        getEntityPessangerVerify(productDetailData.forms, map), promoCode))
+
                 startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
             }
 
@@ -245,6 +262,12 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 intent.putExtra(EXTRA_COUPON_ACTIVE,true)
                 intent.putExtra(PAGE_TRACKING,1)
                 intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
+                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
+                        productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
+                        amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
+                        getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
+                        productDetailData.catalog.digitalProductId.toInt(),
+                        getEntityPessangerVerify(productDetailData.forms, map), promoCode))
                 startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
             }
 
@@ -299,10 +322,49 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE) {
+            if (requestCode == REQUEST_CODE_FORM) {
                 data?.let {
                     map = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as (HashMap<String, String>)
                     setPassengerData(map)
+                }
+            } else if(requestCode == PROMO_EXTRA_LIST_ACTIVITY_RESULT){
+                data?.let {
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) {
+                        val itemPromoData = it.getParcelableExtra<PromoData>(EXTRA_PROMO_DATA)
+                        promoCode = itemPromoData.promoCode
+
+                        when (itemPromoData.state) {
+                            TickerCheckoutView.State.EMPTY -> {
+                                promoCode = ""
+                                setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                        "",
+                                        "")
+                            }
+                            TickerCheckoutView.State.FAILED -> {
+                                promoCode = ""
+                                setupPromoTicker(TickerCheckoutView.State.FAILED,
+                                        itemPromoData?.title.toEmptyStringIfNull(),
+                                        itemPromoData?.description.toEmptyStringIfNull())
+
+                            }
+                            TickerCheckoutView.State.ACTIVE -> {
+                                setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+                                        itemPromoData?.title.toEmptyStringIfNull(),
+                                        itemPromoData?.description.toEmptyStringIfNull())
+                            }
+                            TickerCheckoutView.State.INACTIVE -> {
+                                setupPromoTicker(TickerCheckoutView.State.INACTIVE,
+                                        itemPromoData?.title.toEmptyStringIfNull(),
+                                        itemPromoData?.description.toEmptyStringIfNull())
+                            }
+                            else -> {
+                                promoCode = ""
+                                setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                        "",
+                                        "")
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -332,16 +394,34 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupPromoTicker(state: TickerCheckoutView.State,
+                                 title: String,
+                                 description: String) {
+        if (state == TickerCheckoutView.State.EMPTY) {
+            ticker_event_checkout_promo.title = title
+            ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
+        } else if (state == TickerCheckoutView.State.ACTIVE) {
+            ticker_event_checkout_promo.title = title
+            ticker_event_checkout_promo.desc = description
+            ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.ACTIVE
+        } else if (state == TickerCheckoutView.State.INACTIVE) {
+            ticker_event_checkout_promo.title = title
+            ticker_event_checkout_promo.desc = description
+            ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.INACTIVE
+        }
+    }
+
 
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"
-        const val REQUEST_CODE = 100
+        const val REQUEST_CODE_FORM = 100
         const val PROMO_EXTRA_LIST_ACTIVITY_RESULT = 123
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         const val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         const val PAGE_TRACKING = "PAGE_TRACKING"
         const val EXTRA_EVENT_CATEGORY_ID = "EXTRA_EVENT_CATEGORY_ID"
+        const val EXTRA_EVENT_VERIFY = "EXTRA_EVENT_VERIFY"
 
         const val PASSENGER_NAME = "fullname"
         const val PASSENGER_EMAIL = "email"

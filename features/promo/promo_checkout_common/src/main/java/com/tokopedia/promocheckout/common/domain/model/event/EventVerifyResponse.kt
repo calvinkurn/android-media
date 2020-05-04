@@ -1,4 +1,4 @@
-package com.tokopedia.entertainment.pdp.data.checkout
+package com.tokopedia.promocheckout.common.domain.model.event
 
 
 import com.google.gson.annotations.Expose
@@ -16,5 +16,8 @@ data class EventVerifyResponse(
         val serverProcessTime: String = "",
         @SerializedName("status")
         @Expose
-        val status: String = ""
+        val status: String = "",
+        @SerializedName("message_error")
+        @Expose
+        val message_error: List<String> = emptyList()
 )

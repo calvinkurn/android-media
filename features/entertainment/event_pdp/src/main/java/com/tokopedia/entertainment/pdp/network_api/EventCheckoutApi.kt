@@ -2,8 +2,8 @@ package com.tokopedia.entertainment.pdp.network_api
 
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
-import com.tokopedia.entertainment.pdp.data.checkout.EventVerifyBody
-import com.tokopedia.entertainment.pdp.data.checkout.EventVerifyResponse
+import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
+import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import retrofit2.Response
 import retrofit2.http.*
 

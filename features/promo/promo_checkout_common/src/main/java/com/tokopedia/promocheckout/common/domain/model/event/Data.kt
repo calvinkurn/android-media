@@ -1,4 +1,4 @@
-package com.tokopedia.entertainment.pdp.data.checkout
+package com.tokopedia.promocheckout.common.domain.model.event
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -9,5 +9,8 @@ data class Data(
         val cart: Cart = Cart(),
         @SerializedName("status")
         @Expose
-        val status: Status = Status()
+        val status: Status = Status(),
+        @SerializedName("message")
+        @Expose
+        val message: String = ""
 )
