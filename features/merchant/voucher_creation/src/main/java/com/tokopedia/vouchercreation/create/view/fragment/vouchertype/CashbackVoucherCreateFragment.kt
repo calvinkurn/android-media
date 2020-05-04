@@ -86,7 +86,6 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                isLastTextField = true,
                 promotionTypeType = PromotionType.Cashback.Rupiah.VoucherQuota,
                 onValueChanged = ::onTextFieldValueChanged)
 
@@ -123,7 +122,6 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                     maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                    isLastTextField = true,
                     promotionTypeType = PromotionType.Cashback.Percentage.VoucherQuota,
                     onValueChanged = ::onTextFieldValueChanged)
 
@@ -135,7 +133,6 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.DISCOUNT_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                isLastTextField = true,
                 promotionTypeType = PromotionType.Cashback.Percentage.Amount,
                 onValueChanged = ::onTextFieldValueChanged)
 
@@ -154,27 +151,27 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
         )
     }
 
-    private val rupiahCashbackTextFieldList by lazy {
+    private val rupiahCashbackTextFieldList =
 //        PromotionTypeUiListStaticDataSource.getCashbackRupiahTypeTextFieldList(::onTextFieldValueChanged)
         listOf(
                 rupiahMaximumDiscountTextFieldModel,
                 rupiahMinimumPurchaseTextFieldModel,
                 rupiahVoucherQuotaTextFieldModel
         )
-    }
+
 
     private val rupiahCashbackAdapterUiModel by lazy {
         PromotionTypeInputListUiModel(rupiahCashbackTextFieldList)
     }
 
-    private val percentageCashbackTextFieldList by lazy {
+    private val percentageCashbackTextFieldList =
         listOf(
                 discountAmountTextFieldModel,
                 percentageMaximumDiscountTextFieldModel,
                 percentageMinimumPurchaseTextFieldModel,
                 percentageVoucherQuotaTextFieldModel
         )
-    }
+
 
     private val percentageCashbackAdapterUiModel by lazy {
         PromotionTypeInputListUiModel(percentageCashbackTextFieldList)
@@ -224,10 +221,22 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.expenseEstimationLiveData) { value ->
-            promotionExpenseEstimationUiModel.estimationValue = value
-            adapter.run {
-                notifyItemChanged(data.indexOf(promotionExpenseEstimationUiModel))
+        viewLifecycleOwner.run {
+            observe(viewModel.expenseEstimationLiveData) { value ->
+                promotionExpenseEstimationUiModel.estimationValue = value
+                adapter.run {
+                    notifyItemChanged(data.indexOf(promotionExpenseEstimationUiModel))
+                }
+            }
+            observe(viewModel.rupiahValueList) { valueList ->
+                rupiahCashbackTextFieldList.forEachIndexed { index, voucherTextFieldUiModel ->
+                    voucherTextFieldUiModel.currentValue = valueList[index]
+                }
+            }
+            observe(viewModel.percentageValueList) { valueList ->
+                percentageCashbackTextFieldList.forEachIndexed { index, voucherTextFieldUiModel ->
+                    voucherTextFieldUiModel.currentValue = valueList[index]
+                }
             }
         }
     }
@@ -254,7 +263,6 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
      * The text field index is equal to total visitables adapter size minus the bottom section model size and the input field itself
      */
     private fun onCashbackSelectedType(cashbackType: CashbackType) {
-        view?.clearFocus()
         viewModel.changeCashbackType(cashbackType)
 
         val extraSize = INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size

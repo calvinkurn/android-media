@@ -12,7 +12,7 @@ class VoucherTextFieldUiModel(
         override val minValue: Int = 0,
         @StringRes override val minAlertRes: Int,
         @StringRes override val maxAlertRes: Int,
-        val isLastTextField: Boolean = false,
+        var currentValue: Int? = null,
         val promotionTypeType: PromotionType = PromotionType.FreeDelivery.MinimumPurchase,
         val onValueChanged: (Int?, PromotionType) -> Unit = { _, _ -> }) : Visitable<VoucherCommonTypeFactory>, VoucherTextField {
 

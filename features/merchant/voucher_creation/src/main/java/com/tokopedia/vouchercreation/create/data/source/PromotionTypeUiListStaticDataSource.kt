@@ -30,8 +30,7 @@ object PromotionTypeUiListStaticDataSource {
                     minValue = MinValue.VOUCHER_QUOTA,
                     maxValue = MaxValue.VOUCHER_QUOTA,
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                    maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                    isLastTextField = true)
+                    maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
     )
 
     fun getCashbackRupiahTypeTextFieldList(onValueChanged: (Int?, PromotionType) -> Unit) = listOf(
@@ -60,7 +59,6 @@ object PromotionTypeUiListStaticDataSource {
                     maxValue = MaxValue.VOUCHER_QUOTA,
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                    isLastTextField = true,
                     promotionTypeType = PromotionType.Cashback.Rupiah.VoucherQuota,
                     onValueChanged = onValueChanged)
 

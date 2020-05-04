@@ -27,6 +27,16 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     private val mPercentageMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mPercentageVoucherQuotaLiveData = MutableLiveData<Int>()
 
+    private val mRupiahValueList = MutableLiveData<Array<Int>>()
+    val rupiahValueList : LiveData<Array<Int>>
+        get() = mRupiahValueList
+    private val mPercentageValueList = MutableLiveData<Array<Int>>()
+    val percentageValueList : LiveData<Array<Int>>
+        get() = mPercentageValueList
+    private val mTextFieldValueList = MutableLiveData<Array<Int>>()
+    val textFieldValueList : LiveData<Array<Int>>
+        get() = mTextFieldValueList
+
     private val mExpenseEstimationLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
         addSource(mActiveCashbackPromoTypeLiveData) { cashbackType ->
             value = when(cashbackType) {
@@ -90,6 +100,23 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     }
 
     fun changeCashbackType(cashbackType: CashbackType) {
+        when(cashbackType) {
+            CashbackType.Rupiah -> {
+                mRupiahValueList.value = arrayOf(
+                        mRupiahMaximumDiscountLiveData.value.toZeroIfNull(),
+                        mRupiahMinimumPurchaseLiveData.value.toZeroIfNull(),
+                        mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
+                )
+            }
+            CashbackType.Percentage -> {
+                mPercentageValueList.value = arrayOf(
+                        mPercentageDiscountAmountLiveData.value.toZeroIfNull(),
+                        mPercentageMaximumDiscountLiveData.value.toZeroIfNull(),
+                        mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
+                        mPercentageVoucherQuotaLiveData.value.toZeroIfNull()
+                )
+            }
+        }
         mActiveCashbackPromoTypeLiveData.value = cashbackType
     }
 

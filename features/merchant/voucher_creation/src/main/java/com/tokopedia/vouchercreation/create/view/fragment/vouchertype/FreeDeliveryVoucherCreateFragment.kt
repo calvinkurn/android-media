@@ -79,7 +79,6 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                isLastTextField = true,
                 promotionTypeType = PromotionType.FreeDelivery.VoucherQuota,
                 onValueChanged = ::onTextFieldValueChanged)
     }

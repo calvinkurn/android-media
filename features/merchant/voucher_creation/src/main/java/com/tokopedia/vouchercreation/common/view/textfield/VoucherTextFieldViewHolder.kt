@@ -33,8 +33,21 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                 textFiedlLabelText.text = context.resources.getString(labelRes).toBlankOrString()
             }
 
+            textFieldInput.run {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        selectAll()
+                    }
+                }
+            }
+
             when(element.type) {
                 VoucherTextFieldType.CURRENCY -> {
+                    element.currentValue?.let { value ->
+                        if (value > 0) {
+                            textFieldInput.setText(CurrencyFormatHelper.convertToRupiah(value.toString()))
+                        }
+                    }
                     minAlertErrorMessage = String.format(context.resources.getString(element.minAlertRes, CurrencyFormatHelper.convertToRupiah(element.minValue.toString())))
                     maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, CurrencyFormatHelper.convertToRupiah(element.maxValue.toString())))
 
@@ -55,6 +68,11 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     }
                 }
                 VoucherTextFieldType.QUANTITY -> {
+                    element.currentValue?.let { value ->
+                        if(value > 0) {
+                            textFieldInput.setText(value.toString())
+                        }
+                    }
                     minAlertErrorMessage = String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))
                     maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))
 
@@ -76,6 +94,11 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     })
                 }
                 VoucherTextFieldType.PERCENTAGE -> {
+                    element.currentValue?.let { value ->
+                        if(value > 0) {
+                            textFieldInput.setText(value.toString())
+                        }
+                    }
                     minAlertErrorMessage = "${String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))}%"
                     maxAlertErrorMessage = "${String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))}%"
 
