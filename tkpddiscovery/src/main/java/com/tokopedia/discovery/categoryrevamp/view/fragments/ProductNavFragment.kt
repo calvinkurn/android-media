@@ -23,21 +23,24 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.adapter.ProductNavListAdapter
+import com.tokopedia.common_category.adapter.QuickFilterAdapter
+import com.tokopedia.common_category.factory.ProductTypeFactory
+import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
+import com.tokopedia.common_category.interfaces.ProductCardListener
+import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.utils.CategoryApiParamBuilder.Companion.categoryApiParamBuilder
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SelectedFilterListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
@@ -339,7 +342,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
         productNavViewModel.mProductCount.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.countText != null)
-                    setTotalSearchResultCount(it.countText)
+                    setTotalSearchResultCount(it.countText.toString())
                 setTotalSearchResultCountInteger(it.totalData)
                 if (!TextUtils.isEmpty(it.countText)) {
                     setQuickFilterAdapter(getString(R.string.result_count_template_text, it.countText))

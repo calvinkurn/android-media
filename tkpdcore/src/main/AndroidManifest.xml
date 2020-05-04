@@ -138,13 +138,6 @@
         </activity>
 
         <!-- ======================================================= -->
-        <!-- RECEIVERS REGISTRY -->
-        <!-- ======================================================= -->
-        <activity
-            android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
-            android:screenOrientation="portrait" />
-
-        <!-- ======================================================= -->
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
