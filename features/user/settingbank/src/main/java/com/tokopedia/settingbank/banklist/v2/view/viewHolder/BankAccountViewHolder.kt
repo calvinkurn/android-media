@@ -35,7 +35,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         }
         ticker.gone()
         setBankStatus(
-                isPrimary = false,//(bankAccount.fsp == PRIMARY_ACCOUNT),
+                isPrimary = (bankAccount.fsp == PRIMARY_ACCOUNT),
                 status = bankAccount.statusFraud,
                 copyWriting = bankAccount.copyWriting
         )
