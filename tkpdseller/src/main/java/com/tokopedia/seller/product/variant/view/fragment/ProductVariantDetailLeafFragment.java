@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
@@ -275,12 +275,12 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     }
 
     private void onButtonSaveClicked() {
-        if (!checkPriceValid(counterInputPrice.getCounterValue())) {
-            CommonUtils.hideKeyboard(getActivity(), getView());
+        if (!checkPriceValid(counterInputPrice.getCounterValue()) && getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             return;
         }
-        if (!checkStockValid((int) counterInputViewStock.getDoubleValue())) {
-            CommonUtils.hideKeyboard(getActivity(), getView());
+        if (!checkStockValid((int) counterInputViewStock.getDoubleValue()) && getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             return;
         }
         String sku = etSku.getText().toString();

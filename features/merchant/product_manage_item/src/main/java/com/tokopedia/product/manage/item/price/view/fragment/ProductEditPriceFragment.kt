@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -253,7 +254,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 }
                 val view = activity!!.currentFocus
                 if (view != null) {
-                    CommonUtils.hideSoftKeyboard(view)
+                    KeyboardHandler.hideSoftKeyboard(activity)
                     view.clearFocus()
                 }
             })
