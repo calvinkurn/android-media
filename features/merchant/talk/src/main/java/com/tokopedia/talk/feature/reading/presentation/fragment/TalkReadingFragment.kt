@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -32,7 +31,6 @@ import com.tokopedia.talk.feature.reading.di.TalkReadingComponent
 import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapter
 import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapterTypeFactory
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
-import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingShimmerModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
 import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModifiedListener
@@ -159,10 +157,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
         return TalkReadingAdapter(adapterTypeFactory)
-    }
-
-    override fun getLoadingModel(): LoadingModel {
-        return TalkReadingShimmerModel()
     }
 
     override fun onThreadClicked(questionID: String) {
@@ -298,7 +292,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 is Success -> {
                     if(it.data.discussionData.question.isEmpty()) {
                         showPageEmpty()
+                        isLoadingInitialData = false
                     } else {
+                        hidePageEmpty()
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
                         renderDiscussionData(
@@ -325,6 +321,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
                 loadInitialData()
+                showPageLoading()
             }
         })
     }
@@ -333,6 +330,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.filterCategories.observe(this, Observer {
             if(!isLoadingInitialData) {
                 loadInitialData()
+                showPageLoading()
             }
         })
     }

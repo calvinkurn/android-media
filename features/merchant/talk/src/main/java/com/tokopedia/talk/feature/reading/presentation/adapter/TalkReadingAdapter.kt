@@ -5,7 +5,4 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadi
 
 class TalkReadingAdapter(
         talkReadingAdapterTypeFactory: TalkReadingAdapterTypeFactory
-) : BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory>(talkReadingAdapterTypeFactory) {
-
-
-}
+) : BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory>(talkReadingAdapterTypeFactory)

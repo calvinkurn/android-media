@@ -3,8 +3,8 @@ package com.tokopedia.talk.feature.reading.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingShimmerModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingShimmerViewHolder
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingViewHolder
@@ -18,7 +18,7 @@ class TalkReadingAdapterTypeFactory(
         return TalkReadingViewHolder.LAYOUT
     }
 
-    override fun type(talkReadingShimmerModel: TalkReadingShimmerModel): Int {
+    override fun type(loadingMoreModel: LoadingMoreModel): Int {
         return TalkReadingShimmerViewHolder.LAYOUT
     }
 
