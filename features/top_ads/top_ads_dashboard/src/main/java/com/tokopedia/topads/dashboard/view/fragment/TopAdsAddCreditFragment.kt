@@ -23,6 +23,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_URL
+import com.tokopedia.webview.KEY_TITLE
 import kotlinx.android.synthetic.main.fragment_top_ads_add_credit.*
 
 import javax.inject.Inject
@@ -101,6 +102,7 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
                 it.setResult(Activity.RESULT_OK)
                 val intent = Intent(activity, TopAdsPaymentCreditActivity::class.java).apply {
                     putExtra(KEY_URL, getUrl(selected))
+                    putExtra(KEY_TITLE, resources.getString(R.string.title_top_ads_add_credit))
                 }
                 startActivity(intent)
                 it.finish()
