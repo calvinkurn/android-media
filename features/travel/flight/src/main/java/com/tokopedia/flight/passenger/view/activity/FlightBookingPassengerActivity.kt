@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
 import com.tokopedia.flight.passenger.view.fragment.FlightBookingPassengerFragment
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import java.util.*
 
 /**

@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
@@ -906,54 +905,6 @@ public class FlightAnalytics {
         return refundable;
     }
 
-    public void eventDetailClick(FlightDetailModel viewModel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.BOOKING_DETAIL,
-                transformEventDetailLabel(viewModel)
-        ));
-    }
-
-    public void eventBookingNextClick(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.BOOKING_NEXT,
-                label
-        ));
-    }
-
-    public void eventBookingNextClick(FlightBookingCartData flightBookingCartData, FlightSearchPassDataModel searchParam, String comboKey) {
-
-        List<Object> products = new ArrayList<>();
-
-        if (flightBookingCartData.getDepartureTrip() != null) {
-            products.addAll(constructEnhanceEcommerceProduct(flightBookingCartData.getDepartureTrip(), comboKey,
-                    searchParam.getFlightClass().getTitle(), flightBookingCartData.getReturnTrip() == null));
-            if (flightBookingCartData.getReturnTrip() != null) {
-                products.addAll(constructEnhanceEcommerceProduct(flightBookingCartData.getReturnTrip(), comboKey,
-                        searchParam.getFlightClass().getTitle(), false));
-            }
-        }
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, CHECKOUT_EVENT,
-                        EVENT_CATEGORY, GENERIC_CATEGORY,
-                        EVENT_ACTION, Category.BOOKING_NEXT,
-                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
-                                flightBookingCartData.getDepartureTrip().getDepartureAirport(),
-                                flightBookingCartData.getDepartureTrip().getArrivalAirport()),
-                        ECOMMERCE, DataLayer.mapOf(
-                                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
-                                "actionField", DataLayer.mapOf("step", 1,
-                                        "option", Category.BOOKING_NEXT),
-                                "products", DataLayer.listOf(
-                                        products.toArray(new Object[products.size()])
-                                )
-                        )
-                )
-        );
-    }
-
     public void eventCheckoutClick(FlightDetailModel departureTrip, FlightDetailModel returnTrip, FlightSearchPassDataModel searchParam, String comboKey) {
 
         List<Object> products = new ArrayList<>();
@@ -1048,8 +999,9 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventAddToCart(FlightClassModel flightClass, FlightBookingCartData cartData,
-                               int resultTotalPrice, FlightDetailModel departureViewModel, FlightDetailModel returnViewModel,
+    public void eventAddToCart(FlightClassModel flightClass,
+                               FlightDetailModel departureViewModel,
+                               FlightDetailModel returnViewModel,
                                String comboKey) {
 
         List<Object> products = new ArrayList<>();

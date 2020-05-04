@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel
+import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationTitleContentEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity
 

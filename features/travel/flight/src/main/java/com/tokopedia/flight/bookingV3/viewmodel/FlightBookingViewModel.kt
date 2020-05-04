@@ -8,10 +8,6 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
-import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
@@ -19,6 +15,9 @@ import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -368,7 +367,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         amenity.journeyId = mealMeta.journeyId
                         amenity.departureAirportId = mealMeta.departureId
                         amenity.arrivalAirportId = mealMeta.arrivalId
-                        amenity.type = Amenity.MEAL
+                        amenity.type = FlightBookingMapper.AMENITY_MEAL
                         amenity.key = mealMeta.key
                         amenity.itemId = meal.id
                         flightVerifyPassenger.amenities.add(amenity)
@@ -380,7 +379,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         amenity.journeyId = luggageMeta.journeyId
                         amenity.departureAirportId = luggageMeta.departureId
                         amenity.arrivalAirportId = luggageMeta.arrivalId
-                        amenity.type = Amenity.LUGGAGE
+                        amenity.type = FlightBookingMapper.AMENITY_LUGGAGE
                         amenity.key = luggageMeta.key
                         amenity.itemId = luggage.id
                         flightVerifyPassenger.amenities.add(amenity)

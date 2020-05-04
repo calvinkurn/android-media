@@ -10,10 +10,10 @@ import android.view.MenuItem;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.flight.bookingV2.presentation.adapter.viewholder.FlightBookingAmenityViewHolder;
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel;
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingAmenityViewHolder;
 import com.tokopedia.flight.passenger.view.fragment.FlightBookingAmenityFragment;
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel;
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel;
 
 import java.util.ArrayList;
 import java.util.List;

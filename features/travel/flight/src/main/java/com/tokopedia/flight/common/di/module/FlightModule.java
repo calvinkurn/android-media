@@ -13,8 +13,6 @@ import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
 import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
-import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
@@ -114,14 +112,11 @@ public class FlightModule {
     @FlightScope
     @Provides
     public FlightRepository provideFlightRepository(FlightClassesDataSource getFlightClassesUseCase,
-                                                    FlightCartDataSource flightCartDataSource,
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
-                                                    FlightCancellationCloudDataSource flightCancellationCloudDataSource,
-                                                    FlightBookingCartDataSource flightBookingCartDataSource) {
-        return new FlightRepositoryImpl(getFlightClassesUseCase, flightCartDataSource,
-                flightOrderDataSource, flightOrderMapper, flightCancellationCloudDataSource,
-                flightBookingCartDataSource);
+                                                    FlightCancellationCloudDataSource flightCancellationCloudDataSource) {
+        return new FlightRepositoryImpl(getFlightClassesUseCase, flightOrderDataSource,
+                flightOrderMapper, flightCancellationCloudDataSource);
     }
 
     @Provides

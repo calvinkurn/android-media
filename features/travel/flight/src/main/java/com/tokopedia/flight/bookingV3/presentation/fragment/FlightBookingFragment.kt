@@ -30,11 +30,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingErrorCodeMapper
+import com.tokopedia.flight.bookingV3.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPassengerAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPriceAdapter
@@ -48,6 +46,7 @@ import com.tokopedia.flight.common.util.*
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -310,7 +309,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun sendAddToCartTracking() {
         flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
-                FlightBookingCartData(), 0,
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
                 bookingViewModel.getFlightPriceModel().comboKey)

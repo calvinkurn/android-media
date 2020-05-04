@@ -12,10 +12,10 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.bookingV2.presentation.adapter.FlightAmenityAdapterTypeFactory;
-import com.tokopedia.flight.bookingV2.presentation.adapter.viewholder.FlightBookingAmenityViewHolder;
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel;
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
+import com.tokopedia.flight.passenger.view.adapter.FlightAmenityAdapterTypeFactory;
+import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingAmenityViewHolder;
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel;
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel;
 
 import java.util.ArrayList;
 import java.util.List;

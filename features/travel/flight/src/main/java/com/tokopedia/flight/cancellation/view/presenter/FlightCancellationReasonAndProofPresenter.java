@@ -7,14 +7,14 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;

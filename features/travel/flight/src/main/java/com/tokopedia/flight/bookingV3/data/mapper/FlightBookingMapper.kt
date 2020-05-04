@@ -2,11 +2,6 @@ package com.tokopedia.flight.bookingV3.data.mapper
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
-import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
@@ -14,6 +9,10 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -29,6 +28,9 @@ class FlightBookingMapper {
     companion object {
         private const val DEFAULT_IS_COUPON_ZERO = 0
         private const val DEFAULT_IS_COUPON_ONE = 1
+
+        const val AMENITY_LUGGAGE = 1
+        const val AMENITY_MEAL = 2
 
         fun mapToFlightCartView(flightCart: FlightCart, isRefreshCart: Boolean): FlightCartViewEntity {
             val journies: MutableList<FlightCartViewEntity.JourneySummary> = arrayListOf()
@@ -87,8 +89,8 @@ class FlightBookingMapper {
                 amenityMetaViewModel.journeyId = amenity.journeyId
                 amenityMetaViewModel.description = amenity.detail
                 amenityMetaViewModel.amenities = mapToFlightBookingAmenityViewModels(amenity)
-                if (amenity.type == Amenity.MEAL) mealMetaModels.add(amenityMetaViewModel)
-                else if (amenity.type == Amenity.LUGGAGE) luggageMetaModels.add(amenityMetaViewModel)
+                if (amenity.type == AMENITY_MEAL) mealMetaModels.add(amenityMetaViewModel)
+                else if (amenity.type == AMENITY_LUGGAGE) luggageMetaModels.add(amenityMetaViewModel)
             }
 
             val now = Calendar.getInstance()

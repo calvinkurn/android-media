@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
-import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailPassenger;
+import com.tokopedia.flight.detail.view.model.SimpleModel;
 import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus;
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger;
 
 import java.util.ArrayList;
 import java.util.List;

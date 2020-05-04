@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
-import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderPassengerAdapterTypeFactory;
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger;
 
 import java.util.List;
 

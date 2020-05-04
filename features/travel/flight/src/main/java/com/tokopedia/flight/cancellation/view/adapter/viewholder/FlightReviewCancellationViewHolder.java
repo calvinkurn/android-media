@@ -13,17 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.ADULT;
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.CHILDREN;
-import static com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger.INFANT;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.ADULT;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.CHILDREN;
+import static com.tokopedia.flight.passenger.constant.FlightBookingPassenger.INFANT;
 
 /**
  * @author by furqan on 29/03/18.

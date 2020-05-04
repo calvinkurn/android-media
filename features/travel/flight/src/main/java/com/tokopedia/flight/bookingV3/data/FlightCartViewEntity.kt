@@ -1,6 +1,6 @@
 package com.tokopedia.flight.bookingV3.data
 
-import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import java.util.*
 
 /**

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel
+import com.tokopedia.flight.detail.view.model.SimpleModel
 
 /**
  * @author by furqan on 02/09/2019
