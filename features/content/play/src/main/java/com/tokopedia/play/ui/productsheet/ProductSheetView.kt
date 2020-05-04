@@ -160,8 +160,8 @@ class ProductSheetView(
 
     internal fun showEmpty(partnerId: Long) {
         showContent(false)
-        globalError.gone()
-        clProductEmpty.visible()
+        globalError.hide()
+        clProductEmpty.show()
 
         btnProductEmpty.setOnClickListener {
             listener.onEmptyButtonClicked(partnerId)
@@ -174,7 +174,7 @@ class ProductSheetView(
             rvVoucherList.show()
 
             globalError.hide()
-            clProductEmpty.gone()
+            clProductEmpty.hide()
         } else {
             rvProductList.hide()
             rvVoucherList.hide()

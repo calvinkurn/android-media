@@ -272,7 +272,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
                         doShowToaster(
                                 bottomSheetType = data.bottomInsetsType,
                                 toasterType = Toaster.TYPE_ERROR,
-                                message = if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage
+                                message = if (data.errorMessage.isNotEmpty() && data.errorMessage.isNotBlank()) data.errorMessage else generalErrorMessage
                         )
                     }
                 }
