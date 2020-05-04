@@ -97,7 +97,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     private String[] CONTENT;
     private List<Fragment> fragmentList;
 
-    @DeepLink(ApplinkConst.SELLER_TRANSACTION)
+    // @DeepLink(ApplinkConst.SELLER_TRANSACTION)
     public static Intent getApplinkIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, CustomerAppSellerTransactionActivity.class)
@@ -121,7 +121,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
     public static Intent getIntentReadyToShip(Context context, Bundle extras) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
@@ -137,7 +137,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_SHIPPED)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_SHIPPED)
     public static Intent getIntentShipped(Context context, Bundle extras) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
@@ -154,7 +154,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         }
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_DELIVERED)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_DELIVERED)
     public static Intent getIntentDelivered(Context context, Bundle extras) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);

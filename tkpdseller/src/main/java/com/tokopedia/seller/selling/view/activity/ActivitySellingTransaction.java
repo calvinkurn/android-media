@@ -109,7 +109,7 @@ public class ActivitySellingTransaction extends BaseActivity
     private String[] CONTENT;
     private List<Fragment> fragmentList;
 
-    @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
+    // @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
     public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -129,7 +129,7 @@ public class ActivitySellingTransaction extends BaseActivity
         }
     }
 
-    @DeepLink(ApplinkConst.SELLER_NEW_ORDER)
+    // @DeepLink(ApplinkConst.SELLER_NEW_ORDER)
     public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -152,7 +152,7 @@ public class ActivitySellingTransaction extends BaseActivity
         }
     }
 
-    @DeepLink(ApplinkConst.SELLER_SHIPMENT)
+    // @DeepLink(ApplinkConst.SELLER_SHIPMENT)
     public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -174,7 +174,7 @@ public class ActivitySellingTransaction extends BaseActivity
         }
     }
 
-    @DeepLink(ApplinkConst.SELLER_STATUS)
+    // @DeepLink(ApplinkConst.SELLER_STATUS)
     public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -196,52 +196,52 @@ public class ActivitySellingTransaction extends BaseActivity
         }
     }
 
-    @DeepLink(ApplinkConst.SELLER_HISTORY)
+    // @DeepLink(ApplinkConst.SELLER_HISTORY)
     public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.HISTORY, EXTRA_KEY_ALL_ORDER, NO_FILTER);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_CANCELED)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_CANCELED)
     public static Intent getCallingIntentSellerCanceled(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.CANCELLED, EXTRA_KEY_CANCELLED, NO_FILTER);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_FINISHED)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_FINISHED)
     public static Intent getCallingIntentSellerFinished(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.FINISHED, EXTRA_KEY_FINISHED, NO_FILTER);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP)
     public static Intent getCallingIntentSellerWaitingPickup(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_PICKUP, NO_TAB_ACTIVE, EXTRA_ID_FILTER_WAITING_PICKUP);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_AWB)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_AWB)
     public static Intent getCallingIntentSellerWaitingAwb(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_AWB, NO_TAB_ACTIVE, EXTRA_ID_FILTER_WAITING_AWB);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_INVALID)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_INVALID)
     public static Intent getCallingIntentSellerAwbInvalid(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_INVALID, NO_TAB_ACTIVE, EXTRA_ID_FILTER_AWB_INVALID);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE)
     public static Intent getCallingIntentSellerAwbChange(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_CHANGE, NO_TAB_ACTIVE, EXTRA_ID_FILTER_AWB_CHANGE);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_RETUR)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_RETUR)
     public static Intent getCallingIntentSellerRetur(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.RETUR, NO_TAB_ACTIVE, EXTRA_ID_FILTER_RETUR);
     }
 
-    @DeepLink(ApplinkConst.SELLER_PURCHASE_COMPLAINT)
+    // @DeepLink(ApplinkConst.SELLER_PURCHASE_COMPLAINT)
     public static Intent getCallingIntentSellerComplaint(Context context, Bundle extras) {
         return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.COMPLAINT, NO_TAB_ACTIVE, EXTRA_ID_FILTER_COMPLAINT);
     }
 
-    @DeepLink(ApplinkConst.SellerApp.SALES)
+    // @DeepLink(ApplinkConst.SellerApp.SALES)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
