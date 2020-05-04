@@ -82,12 +82,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
         initInjector()
         setupBottomNav()
-        setupDefaultPage(savedInstanceState)
+        setupDefaultPage()
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeCurrentSelectedPageLiveData()
         setupStatusBar()
+        handleAppLink(intent)
     }
 
     override fun onResume() {
@@ -120,8 +121,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         statusBarCallback = callback
     }
 
-    private fun setupDefaultPage(savedInstanceState: Bundle?) {
-        if (null == savedInstanceState) {
+    private fun setupDefaultPage() {
+        if (intent?.data == null) {
             val homePage = PageFragment(FragmentType.HOME)
             sharedViewModel.setCurrentSelectedPage(homePage)
             showFragment(containerFragment)
