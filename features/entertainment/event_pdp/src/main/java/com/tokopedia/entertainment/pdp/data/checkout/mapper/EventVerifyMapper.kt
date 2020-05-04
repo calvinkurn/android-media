@@ -5,9 +5,9 @@ import com.tokopedia.promocheckout.common.domain.model.event.*
 
 object EventVerifyMapper {
 
-    fun getVerifyBody(name: String, email: String, groupID: Int, packageID: Int, scheduleID:Int,
-                      productID:Int, categoryId: Int, providerId:Int, quantity:Int, pricePerSeat:Int, totalPrice:Int, digitalProductID:Int,
-                      entityPessanggers: List<EntityPassengerVerify>, promocode:String): EventVerifyBody {
+    fun getVerifyBody(name: String, email: String, groupID: Int, packageID: Int, scheduleID: Int,
+                      productID: Int, categoryId: Int, providerId: Int, quantity: Int, pricePerSeat: Int, totalPrice: Int, digitalProductID: Int,
+                      entityPessanggers: List<EntityPassengerVerify>, promocode: String): EventVerifyBody {
         return EventVerifyBody(cartItems = listOf(CartItemVerify(
                 configuration = ConfigurationVerify(
                         price = totalPrice,
@@ -76,16 +76,18 @@ object EventVerifyMapper {
         )
     }
 
-    fun getEntityPessangerVerify(forms: List<Form>, mapPassenger : HashMap<String, String>) : List<EntityPassengerVerify>{
-        val list : MutableList<EntityPassengerVerify> = mutableListOf()
-        for (i in 0..forms.size-1){
-            forms[i].apply {
-             val pessanger =   EntityPassengerVerify(
-                        id = id.toInt(), productId = productId.toInt(),
-                    name = name, title =title,value = mapPassenger.getValue(name) ,validatorRegex = validatorRegex,
-                    elementType =elementType, required = required.toString(), errorMessage = errorMessage
-                )
-                list.add(pessanger)
+    fun getEntityPessangerVerify(forms: List<Form>, mapPassenger: HashMap<String, String>): List<EntityPassengerVerify> {
+        val list: MutableList<EntityPassengerVerify> = mutableListOf()
+        if (!mapPassenger.isNullOrEmpty() && !forms.isNullOrEmpty()) {
+            for (i in 0..forms.size - 1) {
+                forms[i].apply {
+                    val pessanger = EntityPassengerVerify(
+                            id = id.toInt(), productId = productId.toInt(),
+                            name = name, title = title, value = mapPassenger.getValue(name), validatorRegex = validatorRegex,
+                            elementType = elementType, required = required.toString(), errorMessage = errorMessage
+                    )
+                    list.add(pessanger)
+                }
             }
         }
         return list
