@@ -56,6 +56,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         super.onViewCreated(view, savedInstanceState)
 
         userSession = UserSession(context)
+        if (!userSession.isLoggedIn) {
+            activity?.finish()
+            return
+        }
 
         oldPasswordTextField = view.findViewById(R.id.wrapper_old)
         newPasswordTextField = view.findViewById(R.id.wrapper_new)
