@@ -491,7 +491,8 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun navigateToSearchPage(flightSearchData: FlightSearchPassDataModel) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
+        val newSearchEnabledStatus = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)
+        if (newSearchEnabledStatus) {
             startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
                     REQUEST_CODE_SEARCH)
         } else {
