@@ -1,7 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.dataview
 
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ChangeSection
+import com.tokopedia.settingnotif.usersetting.data.pojo.ChangeSection
 import com.tokopedia.settingnotif.usersetting.state.Email
 import com.tokopedia.settingnotif.usersetting.state.Phone
 

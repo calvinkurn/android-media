@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -81,7 +83,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -121,7 +127,7 @@ class PlayInteractionFragment :
             get() = job + dispatchers.main
     }
     private val job: Job = SupervisorJob()
-    
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -146,6 +152,8 @@ class PlayInteractionFragment :
 
     private val productSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
+
+    private lateinit var toolbarView: View
 
     private var channelId: String = ""
 
@@ -305,7 +313,9 @@ class PlayInteractionFragment :
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            if (it.state == PlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
+            if (it.state == PlayVideoState.Playing) {
+                PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
+            }
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -319,11 +329,8 @@ class PlayInteractionFragment :
 
     private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> {
-                    setChannelTitle(it.data.title)
-                }
-            }
+            if (it is Success) setChannelTitle(it.data.title)
+            triggerStartMonitoring()
         })
     }
 
@@ -499,6 +506,22 @@ class PlayInteractionFragment :
         }
     }
 
+    private lateinit var onToolbarGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
+
+    private fun triggerStartMonitoring() {
+        playFragment.startRenderMonitoring()
+
+        if (!this::onToolbarGlobalLayoutListener.isInitialized) {
+            onToolbarGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
+                override fun onGlobalLayout() {
+                    playFragment.stopRenderMonitoring()
+                    if (::toolbarView.isInitialized) toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+            if (::toolbarView.isInitialized) toolbarView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
+        }
+    }
+
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
         layoutManager = PlayInteractionLayoutManagerImpl(
@@ -534,7 +557,10 @@ class PlayInteractionFragment :
                     }
         }
 
-        return toolbarComponent.getContainerId()
+        val containerId = toolbarComponent.getContainerId()
+        toolbarView = container.findViewById(containerId)
+
+        return containerId
     }
 
     override fun onInitVideoControl(container: ViewGroup): Int {

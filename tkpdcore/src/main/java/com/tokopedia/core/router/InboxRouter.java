@@ -40,14 +40,6 @@ public class InboxRouter {
 
     /////////// INTENT
 
-    public static Intent getContactUsActivityIntent(Context context) {
-        return RouterUtils.getActivityIntent(context, INBOX_CONTACT_US_ACTIVITY);
-    }
-
-    public static Intent getInboxTicketActivityIntent(Context context) {
-        return RouterUtils.getActivityIntent(context, INBOX_TICKET_ACTIVITY);
-    }
-
     public static Class<?> getInboxMessageActivityClass() {
         Class<?> parentIndexHomeClass = null;
         try {

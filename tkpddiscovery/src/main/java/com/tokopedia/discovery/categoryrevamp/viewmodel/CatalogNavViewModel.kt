@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.SearchCatalog
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.CatalogUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.DynamicFilterUseCase
+import com.tokopedia.common_category.usecase.DynamicFilterUseCase
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail

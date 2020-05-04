@@ -13,7 +13,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
@@ -66,42 +66,42 @@ object AddEditAddressPresenterTest : Spek({
             }
         }
 
-//        Scenario("not success response from negative form") {
-//            val notSuccessResponse = AddAddressResponse(KeroAddAddress(
-//                    Data(isSuccess = 0)
-//            ))
-//            Given("not success answer") {
-//                every { saveUseCase.execute(any(), "1") } returns Observable.just(notSuccessResponse)
-//            }
-//            When("executed from negative form ") {
-//                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
-//            }
-//            Then("analytics simpan success is hit") {
-//                verify {
-//                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any())
-//                }
-//            }
-//            Then("view show success") {
-//                verify {
-//                    view.showError(null)
-//                }
-//            }
-//        }
+        Scenario("not success response from negative form") {
+            val notSuccessResponse = AddAddressResponse(KeroAddAddress(
+                    Data(isSuccess = 0)
+            ))
+            Given("not success answer") {
+                every { saveUseCase.execute(any(), any()) } returns Observable.just(notSuccessResponse)
+            }
+            When("executed from negative form ") {
+                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
+            }
+            Then("analytics simpan success is hit") {
+                verify {
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any())
+                }
+            }
+            Then("view show success") {
+                verify {
+                    view.showError(null)
+                }
+            }
+        }
 
-//        Scenario("error gql response") {
-//            val exception = MessageErrorException("hi")
-//            Given("error answer") {
-//                every { saveUseCase.execute(any(), "1") } returns Observable.error(exception)
-//            }
-//            When("executed") {
-//                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
-//            }
-//            Then("view shows error") {
-//                verify {
-//                    view.showError(exception)
-//                }
-//            }
-//        }
+        Scenario("error gql response") {
+            val exception = MessageErrorException("hi")
+            Given("error answer") {
+                every { saveUseCase.execute(any(), any()) } returns Observable.error(exception)
+            }
+            When("executed") {
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+            }
+            Then("view shows error") {
+                verify {
+                    view.showError(exception)
+                }
+            }
+        }
     }
 
     Feature("get zip code") {

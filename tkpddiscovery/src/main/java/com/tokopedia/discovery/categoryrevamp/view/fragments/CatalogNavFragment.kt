@@ -16,11 +16,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent

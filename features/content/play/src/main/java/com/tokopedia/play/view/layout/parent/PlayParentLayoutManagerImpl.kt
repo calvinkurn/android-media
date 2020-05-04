@@ -157,11 +157,9 @@ class PlayParentLayoutManagerImpl(
             if (paramsHeight != ViewGroup.LayoutParams.WRAP_CONTENT || paramsWidth != ViewGroup.LayoutParams.WRAP_CONTENT) {
                 flVideo.layoutParams = flVideo.layoutParams.apply {
                     height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    width = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
 
                 view.changeConstraint {
-                    connect(flVideo.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
                     clear(flVideo.id, ConstraintSet.BOTTOM)
                 }
             }
@@ -169,12 +167,10 @@ class PlayParentLayoutManagerImpl(
             if (paramsHeight != ConstraintLayout.LayoutParams.MATCH_CONSTRAINT || paramsWidth != ConstraintLayout.LayoutParams.MATCH_CONSTRAINT) {
                 flVideo.layoutParams = flVideo.layoutParams.apply {
                     height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
-                    width = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
                 }
 
                 view.changeConstraint {
-                    connect(flVideo.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-                    clear(flVideo.id, ConstraintSet.BOTTOM)
+                    connect(flVideo.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
                 }
             }
         }

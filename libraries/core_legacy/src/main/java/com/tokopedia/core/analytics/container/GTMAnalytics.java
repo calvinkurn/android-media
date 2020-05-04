@@ -23,6 +23,8 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -747,6 +749,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void sendScreen(String screenName, Map<String, String> customDimension) {
 
+        UserSessionInterface userSession = new UserSession(context);
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
@@ -761,9 +764,9 @@ public class GTMAnalytics extends ContextAnalytics {
             bundle.putString("userId", "");
         }
         bundle.putString("clientId", getClientIDString());
-        bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
-        if(!TextUtils.isEmpty(sessionHandler.getShopId())) {
-            bundle.putString("shopId", sessionHandler.getShopId());
+        bundle.putBoolean("isLoggedInStatus", userSession.isLoggedIn());
+        if(!TextUtils.isEmpty(userSession.getShopId())) {
+            bundle.putString("shopId", userSession.getShopId());
         }else{
             bundle.putString("shopId", "");
         }
@@ -888,14 +891,15 @@ public class GTMAnalytics extends ContextAnalytics {
     public void eventAuthenticate(Map<String, String> customDimension) {
         String afUniqueId = getAfUniqueId(context);
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        UserSessionInterface userSession = new UserSession(context);
         Map<String, Object> map = DataLayer.mapOf(
                 Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
-                        Authenticated.KEY_USER_SELLER, (sessionHandler.isUserHasShop() ? 1 : 0),
-                        Authenticated.KEY_USER_FULLNAME, sessionHandler.getLoginName(),
+                        Authenticated.KEY_USER_SELLER, (userSession.hasShop() ? 1 : 0),
+                        Authenticated.KEY_USER_FULLNAME, userSession.getName(),
                         Authenticated.KEY_USER_ID, sessionHandler.getGTMLoginID(),
-                        Authenticated.KEY_SHOP_ID, sessionHandler.getShopID(),
+                        Authenticated.KEY_SHOP_ID, userSession.getShopId(),
                         Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
-                        Authenticated.KEY_USER_EMAIL, sessionHandler.getEmail()
+                        Authenticated.KEY_USER_EMAIL, userSession.getEmail()
                 ),
                 Authenticated.ANDROID_ID, sessionHandler.getAndroidId(),
                 Authenticated.ADS_ID, sessionHandler.getAdsId(),
