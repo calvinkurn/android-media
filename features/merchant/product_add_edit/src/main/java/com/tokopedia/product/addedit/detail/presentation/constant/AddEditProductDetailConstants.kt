@@ -11,7 +11,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_DETAIL_EDIT = 3
         const val REQUEST_CODE_DESCRIPTION_EDIT = 4
         const val REQUEST_CODE_SHIPMENT_EDIT = 5
-        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 7
+        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 6
         const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
