@@ -155,6 +155,7 @@ import java.util.Map;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
@@ -171,9 +172,9 @@ public abstract class SellerRouterApplication extends MainApplication
         AbstractionRouter,
         ShopModuleRouter,
         ApplinkRouter,
-        NetworkRouter, TopChatRouter,
-        ContactUsModuleRouter, WithdrawRouter,
-        TopAdsWebViewRouter,
+        NetworkRouter,
+        ContactUsModuleRouter,
+        WithdrawRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -182,8 +183,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter {
-        MLPRouter,
+        ResolutionRouter ,
         SellerHomeRouter,
         LoginRouter {
 
@@ -643,6 +643,15 @@ public abstract class SellerRouterApplication extends MainApplication
     public void showForceLogoutTokenDialog(String response) {
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
+        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
+                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
+                ";response=" + response + ";request=" + request);
     }
 
     @Override
