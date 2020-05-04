@@ -22,6 +22,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
+import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
@@ -68,11 +73,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
-        private const val SELLER_HOME_CARD_TRACE = "seller_home_card"
-        private const val SELLER_HOME_LINE_GRAPH_TRACE = "seller_home_line_graph"
-        private const val SELLER_HOME_PROGRESS_TRACE = "seller_home_progress"
-        private const val SELLER_HOME_POST_LIST_TRACE = "seller_home_post_list"
-        private const val SELLER_HOME_CAROUSEL_TRACE = "seller_home_carousel"
 
     }
 
