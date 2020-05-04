@@ -28,11 +28,13 @@ import javax.inject.Named
 
 class RecommendationViewModel @Inject constructor(
         private val getRecommendationUseCase: GetRecommendationUseCase,
-        val addWishListUseCase: AddWishListUseCase,
-        val removeWishListUseCase: RemoveWishListUseCase,
-        val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         val userSession: UserSessionInterface,
         @Named(DispatcherModule.MAIN) val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+
+    var currentPage = 0
 
     val titleLiveData: MutableLiveData<RequestDataState<String>> = MutableLiveData()
 
@@ -44,9 +46,9 @@ class RecommendationViewModel @Inject constructor(
             val topAdsProductDef = try {
                 val data = getRecommendationUseCase
                         .createObservable(getRecommendationUseCase.getRecomParams(
-                                pageNumber = 1,
-                                xSource = "recom_widget",
-                                pageName = "thankyou_page",
+                                pageNumber = currentPage,
+                                xSource = X_SOURCE,
+                                pageName = PAGE_NAME,
                                 productIds = arrayListOf()
                         )).toBlocking()
                 Loaded(Success(data.first() ?: emptyList()))
@@ -122,6 +124,11 @@ class RecommendationViewModel @Inject constructor(
                 wishListCallback.invoke(true, null)
             }
         })
+    }
+
+    companion object {
+        const val X_SOURCE = "recom_widget"
+        const val PAGE_NAME = "thankyou_page"
     }
 
     override fun onCleared() {
