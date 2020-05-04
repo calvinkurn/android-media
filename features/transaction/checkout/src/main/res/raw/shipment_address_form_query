@@ -18,7 +18,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       donation_checkbox_status
       group_address {
         errors
-        # messages
+        messages
         user_address {
           address_id
           address_name
@@ -38,11 +38,11 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           latitude
           longitude
           corner_id
-          # is_corner
+          is_corner
         }
         group_shop {
           errors
-          # messages
+          messages
           shipping_id
           sp_id
           is_insurance
@@ -234,66 +234,66 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
         message
         page
       }
-      # campaign_timer {
-      #   description
-      #   show_timer
-      #   expired_timer_message {
-      #     button
-      #     description
-      #     title
-      #   }
-      #   timer_detail {
-      #     deduct_time
-      #     expired_duration
-      #     expired_time
-      #     server_time
-      #   }
-      # }
-      # addresses {
-      #   active
-      #   data {
-      #     default_address {
-      #       address_id
-      #       address_name
-      #       address
-      #       postal_code
-      #       phone
-      #       receiver_name
-      #       status
-      #       country
-      #       province_id
-      #       province_name
-      #       city_id
-      #       city_name
-      #       district_id
-      #       district_name
-      #       address_2
-      #       latitude
-      #       longitude
-      #       corner_id
-      #     }
-      #     trade_in_address {
-      #       address_id
-      #       address_name
-      #       address
-      #       postal_code
-      #       phone
-      #       receiver_name
-      #       status
-      #       country
-      #       province_id
-      #       province_name
-      #       city_id
-      #       city_name
-      #       district_id
-      #       district_name
-      #       address_2
-      #       latitude
-      #       longitude
-      #       corner_id
-      #     }
-      #   }
-      # }
+      campaign_timer {
+        description
+        show_timer
+        expired_timer_message {
+          button
+          description
+          title
+        }
+        timer_detail {
+          deduct_time
+          expired_duration
+          expired_time
+          server_time
+        }
+      }
+      addresses {
+        active
+        data {
+          default_address {
+            address_id
+            address_name
+            address
+            postal_code
+            phone
+            receiver_name
+            status
+            country
+            province_id
+            province_name
+            city_id
+            city_name
+            district_id
+            district_name
+            address_2
+            latitude
+            longitude
+            corner_id
+          }
+          trade_in_address {
+            address_id
+            address_name
+            address
+            postal_code
+            phone
+            receiver_name
+            status
+            country
+            province_id
+            province_name
+            city_id
+            city_name
+            district_id
+            district_name
+            address_2
+            latitude
+            longitude
+            corner_id
+          }
+        }
+      }
       disabled_features_detail {
         disabled_multi_address_message
       }
