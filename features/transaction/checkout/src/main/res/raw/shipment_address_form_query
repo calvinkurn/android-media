@@ -18,7 +18,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       donation_checkbox_status
       group_address {
         errors
-        messages
+        # messages
         user_address {
           address_id
           address_name
@@ -42,7 +42,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
         }
         group_shop {
           errors
-          messages
+          # messages
           shipping_id
           sp_id
           is_insurance
@@ -238,13 +238,13 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
         description
         show_timer
         expired_timer_message {
-          button
+          Button
           description
           title
         }
         timer_detail {
           deduct_time
-          expired_duration
+          expire_duration
           expired_time
           server_time
         }
@@ -252,7 +252,8 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       addresses {
         active
         data {
-          default_address {
+          key
+          value {
             address_id
             address_name
             address
@@ -271,26 +272,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             latitude
             longitude
             corner_id
-          }
-          trade_in_address {
-            address_id
-            address_name
-            address
-            postal_code
-            phone
-            receiver_name
-            status
-            country
-            province_id
-            province_name
-            city_id
-            city_name
-            district_id
-            district_name
-            address_2
-            latitude
-            longitude
-            corner_id
+            is_corner
+            is_primary
+            buyer_store_code
+            type
           }
         }
       }

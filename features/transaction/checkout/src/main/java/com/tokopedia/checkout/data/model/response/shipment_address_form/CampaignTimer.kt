@@ -26,7 +26,7 @@ data class ExpiredTimerMessage(
 data class TimerDetail(
         @SerializedName("deduct_time")
         var deductTime: String = "",
-        @SerializedName("expired_duration")
+        @SerializedName("expire_duration")
         var expiredDuration: Int = 0,
         @SerializedName("expired_time")
         var expiredTime: String = "",

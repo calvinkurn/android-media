@@ -135,10 +135,16 @@ public class ShipmentMapper implements IShipmentMapper {
             DataAddressData dataAddressData = new DataAddressData();
             if (addresses != null) {
                 if (addresses.getData() != null) {
-                    if (addresses.getData().getDefaultAddress() != null && addresses.getActive().equals(AddressesData.TRADE_IN_ADDRESS)) {
-                        com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
-                                addresses.getData().getDefaultAddress();
-                        UserAddress defaultAddressData = getUserAddress(defaultAddress);
+                    com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultTradeInAddress = null;
+                    for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
+                        if (dataAddress.getKey().equals(AddressesData.DEFAULT_ADDRESS)) {
+                            defaultTradeInAddress = dataAddress.getValue();
+                            break;
+                        }
+                    }
+
+                    if (defaultTradeInAddress != null && addresses.getActive().equals(AddressesData.TRADE_IN_ADDRESS)) {
+                        UserAddress defaultAddressData = getUserAddress(defaultTradeInAddress);
                         dataAddressData.setDefaultAddress(defaultAddressData);
                     } else if (shipmentAddressFormDataResponse.getIsMultiple() == 0) {
                         com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
@@ -147,10 +153,16 @@ public class ShipmentMapper implements IShipmentMapper {
                         dataAddressData.setDefaultAddress(defaultAddressData);
                     }
 
-                    if (addresses.getData().getTradeInAddress() != null) {
-                        com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInAddress =
-                                addresses.getData().getTradeInAddress();
-                        UserAddress tradeInAddressData = getUserAddress(tradeInAddress);
+                    com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDropOffAddress = null;
+                    for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
+                        if (dataAddress.getKey().equals(AddressesData.TRADE_IN_ADDRESS)) {
+                            tradeInDropOffAddress = dataAddress.getValue();
+                            break;
+                        }
+                    }
+
+                    if (tradeInDropOffAddress != null) {
+                        UserAddress tradeInAddressData = getUserAddress(tradeInDropOffAddress);
                         dataAddressData.setTradeInAddress(tradeInAddressData);
                     }
                 }

@@ -11,5 +11,5 @@ data class Addresses(
         val active: String?,
 
         @SerializedName("data")
-        val data: Data?
+        val data: List<Data>?
 )
