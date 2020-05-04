@@ -5,8 +5,8 @@ import kotlinx.coroutines.Dispatchers
 
 object CoroutineDispatchersProvider: CoroutineDispatchers {
     override val io: CoroutineDispatcher
-        get() = Dispatchers.Unconfined
+        get() = Dispatchers.IO
 
     override val main: CoroutineDispatcher
-        get() = Dispatchers.Unconfined
+        get() = Dispatchers.Main
 }
