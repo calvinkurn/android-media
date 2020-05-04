@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.cancellation.di
 
 import javax.inject.Scope
-import kotlin.annotation.Retention
 
 /**
  * @author by jessica on 27/04/20
@@ -9,5 +8,5 @@ import kotlin.annotation.Retention
 
 @MustBeDocumented
 @Scope
-@Retention
+@kotlin.annotation.Retention
 annotation class HotelCancellationScope

@@ -41,7 +41,7 @@
           "roomName": "Kamar deluxe double",
           "roomContent": "1 kamar, 1 tamu",
           "isRefundAble": true,
-          "isCCRequired": false,
+          "isCCRequired": false
         }
       ]
     },

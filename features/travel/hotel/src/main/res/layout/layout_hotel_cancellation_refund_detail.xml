@@ -9,6 +9,7 @@
     android:paddingBottom="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_payment_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -29,25 +30,27 @@
         tools:layout_height="@dimen/layout_lvl3" />
 
     <!--    margin top to be changed to 12dp-->
-    <View
+    <LinearLayout
         android:id="@+id/hotel_cancellation_refund_price_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
+        android:orientation="vertical"
         tools:background="@color/Neutral_N700_96"
         tools:layout_height="@dimen/layout_lvl2" />
 
     <!--    View garisgaris-->
 
-    <View
+    <LinearLayout
         android:id="@+id/hotel_cancellation_total_price_refund"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
+        android:orientation="vertical"
         tools:background="@color/Neutral_N700_96"
         tools:layout_height="@dimen/layout_lvl2" />
 
@@ -68,8 +71,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/layout_lvl2"
+        android:text="Lanjutkan"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         tools:text="Lanjutkan" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_page_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:gravity="center"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
+        tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
 </LinearLayout>

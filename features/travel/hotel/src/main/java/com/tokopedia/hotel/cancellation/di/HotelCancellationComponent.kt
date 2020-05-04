@@ -9,8 +9,8 @@ import dagger.Component
  */
 
 @HotelCancellationScope
-@Component(modules = [HotelCancellationModule::class, HotelCancellationViewModelModule::class],
-        dependencies = [HotelComponent::class])
+@Component(modules = [HotelCancellationModule::class, HotelCancellationViewModelModule::class], dependencies = [HotelComponent::class])
 interface HotelCancellationComponent {
-    fun inject(hotelCancellationFragment: HotelCancellationFragment)
+
+    fun injectl(hotelCancellationFragment: HotelCancellationFragment)
 }

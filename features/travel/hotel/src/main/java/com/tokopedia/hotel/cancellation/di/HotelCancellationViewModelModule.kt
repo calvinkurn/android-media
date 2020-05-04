@@ -15,10 +15,11 @@ import dagger.multibindings.IntoMap
 
 @Module
 @HotelCancellationScope
-abstract class HotelCancellationViewModelModule  {
+abstract class HotelCancellationViewModelModule {
 
-    @HotelCancellationScope
+
     @Binds
+    @HotelCancellationScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
