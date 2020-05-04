@@ -90,7 +90,7 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
         fun configureBackground() {
             view.setBackgroundColor(MethodChecker.getColor(view.context,
-                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.black
+                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_solid_black
                     else R.color.transparent
             ))
         }
