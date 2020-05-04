@@ -256,6 +256,7 @@ class HomeFragment : BaseDaggerFragment(),
     private var mLastClickTime = System.currentTimeMillis()
     private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
+    private var isOnRecylerViewLayoutAdded = false
 
 
     override fun onAttach(context: Context) {
@@ -699,15 +700,20 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
-        if (!data.isEmpty()) {
-            if (needToPerformanceMonitoring() && pageLoadTimeCallback != null) {
-                setOnRecyclerViewLayoutReady(isCache)
-            }
-            adapter!!.submitList(data)
-            if (isDataValid(data)) {
-                removeNetworkError()
+        if(!data.isEmpty()) {
+            if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback()!!.startRenderPerformanceMonitoring();
+                setOnRecyclerViewLayoutReady(isCache);
+                adapter!!.submitList(data);
+                adapter!!.notifyDataSetChanged();
             } else {
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                adapter!!.submitList(data);
+            }
+
+            if (isDataValid(data)) {
+                removeNetworkError();
+            } else {
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR);
             }
         }
     }
@@ -1039,6 +1045,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setOnRecyclerViewLayoutReady(isCache: Boolean) {
+        isOnRecylerViewLayoutAdded = true
         homeRecyclerView.viewTreeObserver?.let {
             it.addOnGlobalLayoutListener { object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -1696,7 +1703,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun needToPerformanceMonitoring(): Boolean {
-        return homePerformanceMonitoringListener != null
+        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded
     }
 
     private fun showToaster(message: String, typeToaster: Int) {
