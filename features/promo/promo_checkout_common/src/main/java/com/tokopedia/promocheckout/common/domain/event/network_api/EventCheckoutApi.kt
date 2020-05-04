@@ -12,4 +12,8 @@ interface EventCheckoutApi {
 
     @POST("v1/api/expresscart/verify")
     fun postVerify(@QueryMap book: Map<String, Boolean>, @Body eventVerifyBody: EventVerifyBody): Observable<EventVerifyResponse>
+
+    companion object{
+        const val BASE_URL_EVENT = "https://omscart-staging.tokopedia.com/"
+    }
 }

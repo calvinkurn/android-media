@@ -43,7 +43,7 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
     open fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
         startActivityForResult(PromoCheckoutDetailEventActivity.newInstance(
                 activity, promoCheckoutListModel?.code
-                ?: "", false, pageTracking), REQUEST_CODE_PROMO_DETAIL)
+                ?: "", false, eventVerifyBody), REQUEST_CODE_PROMO_DETAIL)
     }
 
     override fun loadData(page: Int) {

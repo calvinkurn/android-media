@@ -42,6 +42,9 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
+import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
+import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -209,8 +212,6 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             btn_event_checkout.isEnabled = isChecked
         }
 
-        val packages = getPackage(scheduleID, groupID, packetID, productDetailData)
-
         btn_event_checkout.setOnClickListener {
             view?.let {
                 val view = it
@@ -224,12 +225,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
 
-                            eventCheckoutViewModel.checkVerify(true,
-                                    getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
-                                            productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
-                                            amount, packages.salesPrice.toInt(), packages.salesPrice.toInt() * amount,
-                                            productDetailData.catalog.digitalProductId.toInt(),
-                                            getEntityPessangerVerify(productDetailData.forms, map), promoCode))
+                            eventCheckoutViewModel.checkVerify(true, getVerifyMapped(productDetailData))
                     }
                 }
             }
@@ -237,22 +233,14 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun renderPromo(productDetailData: ProductDetailData){
-        if (name.isEmpty()) name = userSessionInterface.name
-        if (email.isEmpty()) email = userSessionInterface.email
 
         ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
         ticker_event_checkout_promo.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickDetailPromo() {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_EVENT)
-                intent.putExtra(EXTRA_COUPON_ACTIVE,true)
-                intent.putExtra(PAGE_TRACKING,1)
-                intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
-                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
-                        productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
-                        amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
-                        getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
-                        productDetailData.catalog.digitalProductId.toInt(),
-                        getEntityPessangerVerify(productDetailData.forms, map), promoCode))
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_EVENT)
+                intent.putExtra(EXTRA_IS_USE,true)
+                intent.putExtra(EXTRA_KUPON_CODE, promoCode)
+                intent.putExtra(EXTRA_EVENT_VERIFY,getVerifyMapped(productDetailData))
 
                 startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
             }
@@ -262,12 +250,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 intent.putExtra(EXTRA_COUPON_ACTIVE,true)
                 intent.putExtra(PAGE_TRACKING,1)
                 intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
-                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
-                        productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
-                        amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
-                        getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
-                        productDetailData.catalog.digitalProductId.toInt(),
-                        getEntityPessangerVerify(productDetailData.forms, map), promoCode))
+                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyMapped(productDetailData))
                 startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
             }
 
@@ -411,6 +394,18 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
+
+    fun getVerifyMapped(productDetailData: ProductDetailData): EventVerifyBody{
+        if (name.isEmpty()) name = userSessionInterface.name
+        if (email.isEmpty()) email = userSessionInterface.email
+
+        return getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
+                productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
+                amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
+                getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
+                productDetailData.catalog.digitalProductId.toInt(),
+                getEntityPessangerVerify(productDetailData.forms, map), promoCode)
+    }
 
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"

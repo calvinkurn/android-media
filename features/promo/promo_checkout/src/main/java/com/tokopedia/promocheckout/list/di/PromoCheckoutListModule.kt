@@ -13,6 +13,7 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
+import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi.Companion.BASE_URL_EVENT
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
@@ -158,7 +159,7 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     fun provideApiService(gson: Gson, client: OkHttpClient): EventCheckoutApi {
         val retrofitBuilder = Retrofit.Builder()
-                .baseUrl("https://omscart-staging.tokopedia.com/")
+                .baseUrl(BASE_URL_EVENT)
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

@@ -16,6 +16,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseC
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
+import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi.Companion.BASE_URL_EVENT
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
@@ -142,7 +143,7 @@ class PromoCheckoutModule {
     @PromoCheckoutQualifier
     fun provideApiService(gson: Gson, client: OkHttpClient): EventCheckoutApi {
         val retrofitBuilder = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL_EVENT)
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -155,10 +156,6 @@ class PromoCheckoutModule {
     @PromoCheckoutQualifier
     fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
         return EventCheckRepositoryImpl(eventCheckoutApi)
-    }
-
-    companion object{
-        const val BASE_URL = "https://omscart-staging.tokopedia.com/"
     }
 
 }

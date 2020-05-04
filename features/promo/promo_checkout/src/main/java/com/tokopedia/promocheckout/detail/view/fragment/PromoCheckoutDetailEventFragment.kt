@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailEventActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailEventPresenter
@@ -17,12 +18,14 @@ class PromoCheckoutDetailEventFragment : BasePromoCheckoutDetailFragment() {
 
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
 
+    var eventVerify = EventVerifyBody()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
-        pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
+        eventVerify = arguments?.getParcelable(EXTRA_EVENT_VERIFY) ?:EventVerifyBody()
 
     }
 
@@ -61,20 +64,20 @@ class PromoCheckoutDetailEventFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickUse() {
-
+        promoCheckoutDetailEventPresenter.checkPromoCode(codeCoupon, false, eventVerify)
     }
 
     companion object{
-        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
-        val EXTRA_IS_USE = "EXTRA_IS_USE"
-        val PAGE_TRACKING = "PAGE_TRACKING"
+        const val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
+        const val EXTRA_IS_USE = "EXTRA_IS_USE"
+        const val EXTRA_EVENT_VERIFY = "EXTRA_EVENT_VERIFY"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, pageTracking: Int): PromoCheckoutDetailEventFragment {
+        fun createInstance(codeCoupon: String, isUse: Boolean, eventVerifyBody: EventVerifyBody): PromoCheckoutDetailEventFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailEventFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
-            bundle.putInt(PAGE_TRACKING, pageTracking)
+            bundle.putParcelable(EXTRA_EVENT_VERIFY, eventVerifyBody)
             promoCheckoutDetailFragment.arguments = bundle
             return promoCheckoutDetailFragment
         }
