@@ -232,15 +232,18 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     private fun initSellerMigrationTicker() {
-        topAdsSellerMigrationTicker.setHtmlDescription(getString(R.string.seller_migration_topads_ticker_description))
-        topAdsSellerMigrationTicker.setDescriptionClickEvent(object: TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                showSellerMigrationBottomSheet()
-            }
-            override fun onDismiss() {
-                // No op
-            }
-        })
+        topAdsSellerMigrationTicker.apply {
+            tickerTitle = getString(R.string.seller_migration_topads_ticker_title)
+            setHtmlDescription(getString(R.string.seller_migration_topads_ticker_description))
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    showSellerMigrationBottomSheet()
+                }
+                override fun onDismiss() {
+                    // No op
+                }
+            })
+        }
     }
 
     private fun showSellerMigrationBottomSheet() {

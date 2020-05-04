@@ -31,6 +31,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -40,7 +41,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -64,12 +64,11 @@ import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
-import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
-import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -179,7 +178,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initSellerMigrationTicker()
         prepareLayout()
         setListeners()
         setInitialValue()
@@ -187,6 +186,26 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFilter()
         observingStatusList()
         observingOrders()
+    }
+
+    private fun initSellerMigrationTicker() {
+        somListSellerMigrationTicker.tickerTitle = getString(R.string.seller_migration_order_ticker_title)
+        somListSellerMigrationTicker.setHtmlDescription(getString(R.string.seller_migration_order_ticker_content))
+        somListSellerMigrationTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(charSequence: CharSequence) {
+                openSellerMigrationBottomSheet()
+            }
+            override fun onDismiss() {
+                // No Op
+            }
+        })
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance(it)
+            sellerMigrationBottomSheet.show(childFragmentManager, "")
+        }
     }
 
     private fun prepareLayout() {

@@ -28,7 +28,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:titleText="@string/seller_migration_topads_ticker_title"
                     app:tickerType="announcement"/>
 
                 <include layout="@layout/partial_top_ads_shop_info" />

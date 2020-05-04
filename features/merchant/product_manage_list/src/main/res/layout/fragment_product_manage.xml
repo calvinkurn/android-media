@@ -26,7 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                app:titleText="@string/seller_migration_product_manage_ticker_title"
                 app:tickerType="announcement"/>
 
             <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim

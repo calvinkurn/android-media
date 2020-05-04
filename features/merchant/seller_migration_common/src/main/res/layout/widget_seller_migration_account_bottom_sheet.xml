@@ -23,7 +23,7 @@
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:text="@string/seller_migration_account_bottom_sheet_title"
+        android:text="@string/seller_migration_generic_bottom_sheet_title"
         android:gravity="center"
         android:maxLines="2"
         android:layout_alignParentEnd="true"
@@ -47,7 +47,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:text="@string/seller_migration_account_bottom_sheet_set_stock_description"
+        android:text="@string/seller_migration_generic_bottom_sheet_set_stock_description"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_alignTop="@id/account_seller_migration_set_stock_image"
@@ -71,7 +71,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:text="@string/seller_migration_account_bottom_sheet_reply_chat_description"
+        android:text="@string/seller_migration_generic_bottom_sheet_reply_chat_description"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_alignParentEnd="true"
@@ -95,7 +95,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:text="@string/seller_migration_account_bottom_sheet_promotion_and_ads_description"
+        android:text="@string/seller_migration_generic_bottom_sheet_promotion_and_ads_description"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="@dimen/layout_lvl1"

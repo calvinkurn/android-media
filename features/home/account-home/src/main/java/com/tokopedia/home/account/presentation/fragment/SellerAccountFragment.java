@@ -30,7 +30,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -105,6 +105,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
+        migrationTicker.setTickerTitle(getString(R.string.seller_migration_account_ticker_title));
         migrationTicker.setHtmlDescription(getString(R.string.seller_migration_account_ticker_content));
         migrationTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
@@ -279,8 +280,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     private void openSellerMigrationBottomSheet() {
         if(getContext() != null) {
-            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.
-                    createNewInstance(getContext());
+            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationGenericBottomSheet.Companion.createNewInstance(getContext());
             sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
         }
     }

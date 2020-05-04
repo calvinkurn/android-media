@@ -274,5 +274,6 @@
     <string name="dialog_receiver_name">Nama Penerima</string>
     <string name="et_empty_error">Tidak Boleh Kosong</string>
 
-
+    <string name="seller_migration_order_ticker_title">Lebih leluasa berjualan dengan Seller App</string>
+    <string name="seller_migration_order_ticker_content">Nikmati kendali penuh bertransaksi dengan semua fitur khusus penjual di SellerApp. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
 </resources>

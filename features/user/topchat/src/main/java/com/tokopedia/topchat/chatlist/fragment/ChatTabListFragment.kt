@@ -126,16 +126,18 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
     }
 
     private fun setupTicker() {
-        topChatSellerMigrationTicker.tickerTitle = getString(R.string.seller_migration_chat_ticker_title)
-        topChatSellerMigrationTicker.setHtmlDescription(getString(R.string.seller_migration_chat_ticker_description))
-        topChatSellerMigrationTicker.setDescriptionClickEvent(object: TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                openSellerMigrationBottomSheet()
-            }
-            override fun onDismiss() {
-                // No Op
-            }
-        })
+        topChatSellerMigrationTicker.apply {
+            tickerTitle = getString(R.string.seller_migration_chat_ticker_title)
+            setHtmlDescription(getString(R.string.seller_migration_chat_ticker_description))
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    openSellerMigrationBottomSheet()
+                }
+                override fun onDismiss() {
+                    // No Op
+                }
+            })
+        }
     }
 
     private fun showSellerMigrationTicker() {

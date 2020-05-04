@@ -4,10 +4,10 @@
     <string name="seller_migration_warning_title">Semua fitur penjual akan dialihkan pada:</string>
     <string name="seller_migration_warning_content">Juli 2020</string>
 
-    <string name="seller_migration_account_bottom_sheet_title">Berjualan jadi lebih mudah dengan Seller App</string>
-    <string name="seller_migration_account_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah.</string>
-    <string name="seller_migration_account_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja.</string>
-    <string name="seller_migration_account_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu.</string>
+    <string name="seller_migration_generic_bottom_sheet_title">Berjualan jadi lebih mudah dengan Seller App</string>
+    <string name="seller_migration_generic_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah.</string>
+    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja.</string>
+    <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu.</string>
 
     <string name="seller_migration_chat_bottom_sheet_title">Balas chat jadi lebih mudah dengan Seller App</string>
     <string name="seller_migration_chat_bottom_sheet_title_second_page">Akses cepat untuk menjawab pertanyaan pembeli </string>
