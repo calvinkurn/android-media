@@ -5,6 +5,7 @@ import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
+import com.tokopedia.logger.model.ScalyrConfig
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
@@ -13,10 +14,10 @@ import kotlinx.coroutines.delay
 import javax.crypto.SecretKey
 
 class LoggerRepository(private val logDao: LoggerDao,
-                       private val loggerCloudLogentriesDataSource: LoggerCloudDataSource<String>,
-                       private val loggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrEvent>,
+                       private val loggerCloudLogentriesDataSource: LoggerCloudDataSource<String, String>,
+                       private val loggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEvent>,
                        private val logentriesToken: Array<String>,
-                       private val scalyrToken: Array<String>,
+                       private val scalyrConfigs: List<ScalyrConfig>,
                        private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract {
 
@@ -27,14 +28,6 @@ class LoggerRepository(private val logDao: LoggerDao,
 
     override suspend fun getCount(): Int {
         return logDao.getCountAll()
-    }
-
-    suspend fun getHighPostPrio(entries: Int): List<Logger> {
-        return logDao.getHighPostPrio(entries)
-    }
-
-    suspend fun getLowPostPrio(entries: Int): List<Logger> {
-        return logDao.getLowPostPrio(entries)
     }
 
     override suspend fun deleteEntry(timeStamp: Long) {
@@ -61,7 +54,7 @@ class LoggerRepository(private val logDao: LoggerDao,
 
         var scalyrSendSuccess = false
         if (LogManager.scalyrEnabled) {
-            scalyrSendSuccess = sendScalyrLogToServer(scalyrToken[tokenIndex], logs)
+            scalyrSendSuccess = sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs)
         }
 
         if (LogManager.logentriesEnabled) {
@@ -87,13 +80,13 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudLogentriesDataSource.sendLogToServer(token, messageArray)
     }
 
-    suspend fun sendScalyrLogToServer(token: String, logs: List<Logger>): Boolean {
+    suspend fun sendScalyrLogToServer(config: ScalyrConfig, logs: List<Logger>): Boolean {
         if (logs.isEmpty()) {
             return true
         }
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         //make the timestamp equals to timestamp when hit the api
-        //covnert the milli to nano, based on scalyr requirement.
+        //convert the milli to nano, based on scalyr requirement.
         var ts = System.currentTimeMillis() * 1000000
         for (log in logs) {
             //to make sure each timestamp in each row is unique
@@ -101,7 +94,7 @@ class LoggerRepository(private val logDao: LoggerDao,
             val message = encryptor.decrypt(log.message, secretKey)
             scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
         }
-        return loggerCloudScalyrDataSource.sendLogToServer(token, scalyrEventList)
+        return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
     }
 
     fun truncate (str:String):String {

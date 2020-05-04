@@ -15,7 +15,7 @@ public class LoggerActivityLifecycleCallbacks implements Application.ActivityLif
         UserSession userSession = new UserSession(activity);
         if (!userId.equals(userSession.getUserId())) {
             userId = userSession.getUserId();
-            TimberWrapper.init(activity.getApplication());
+            TimberWrapper.initConfig(activity.getApplication());
         }
     }
 

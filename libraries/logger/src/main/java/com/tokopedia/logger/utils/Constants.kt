@@ -32,11 +32,6 @@ class Constants {
         const val SCALYR_SUCCESS_CODE = 200
         const val LOG_DEFAULT_ERROR_CODE = 404
 
-        const val SCALYR_PREF_NAME = "scalyr_sp"
-        const val SCALYR_SESSION_KEY = "session"
-        const val ANDROID_APP_VALUE = "androidApp"
-        const val SCALYR_PARSER = "androidAppParser"
-
         const val METHOD_POST = "POST"
     }
 }

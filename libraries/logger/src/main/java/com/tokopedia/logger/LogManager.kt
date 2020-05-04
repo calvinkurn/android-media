@@ -12,11 +12,11 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudLogentriesDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
+import com.tokopedia.logger.model.ScalyrConfig
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.LogSession
 import com.tokopedia.logger.utils.globalScopeLaunch
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -42,18 +42,11 @@ class LogManager(val application: Application) : CoroutineScope {
         CoroutineExceptionHandler { _, _ -> }
     }
 
-    fun setLogEntriesToken(tokenList: Array<String>) {
-        logentriesToken = tokenList
-    }
-
-    fun setLogScalyrToken(tokenList: Array<String>) {
-        scalyrToken = tokenList
-    }
-
     companion object {
         @JvmStatic
         var logentriesToken: Array<String> = arrayOf()
-        var scalyrToken: Array<String> = arrayOf()
+        @JvmStatic
+        var scalyrConfigList: List<ScalyrConfig> = mutableListOf()
         var scalyrEnabled: Boolean = false
         var logentriesEnabled: Boolean = true
         var isPrimaryLogentries: Boolean = true
@@ -74,12 +67,12 @@ class LogManager(val application: Application) : CoroutineScope {
                 val context = instance.application.applicationContext
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
                 val loggerCloudLogentriesDataSource = LoggerCloudLogentriesDataSource()
-                val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource(LogSession.getLogSession(context))
+                val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
                 val encryptor = AESEncryptorECB()
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
                 loggerRepository = LoggerRepository(logsDao,
                         loggerCloudLogentriesDataSource, loggerCloudScalyrDataSource,
-                        logentriesToken, scalyrToken,
+                        logentriesToken, scalyrConfigList,
                         encryptor, secretKey)
             }
             return loggerRepository

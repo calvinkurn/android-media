@@ -2,6 +2,7 @@ package com.tokopedia.logger.datasource.cloud
 
 import com.google.gson.Gson
 import com.tokopedia.logger.model.ScalyrBody
+import com.tokopedia.logger.model.ScalyrConfig
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrSessionInfo
 import com.tokopedia.logger.utils.Constants
@@ -11,16 +12,16 @@ import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class LoggerCloudScalyrDataSource(val session: String): LoggerCloudDataSource<ScalyrEvent>() {
+class LoggerCloudScalyrDataSource: LoggerCloudDataSource<ScalyrConfig, ScalyrEvent>() {
     companion object {
         private val gson = Gson()
     }
 
-    override suspend fun sendLogToServer(token: String, eventList: List<ScalyrEvent>): Boolean {
+    override suspend fun sendLogToServer(config: ScalyrConfig, eventList: List<ScalyrEvent>): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
-                errCode = openURL(token, eventList)
+                errCode = openURL(config, eventList)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -28,15 +29,15 @@ class LoggerCloudScalyrDataSource(val session: String): LoggerCloudDataSource<Sc
         return errCode == Constants.SCALYR_SUCCESS_CODE
     }
 
-    private fun openURL(token: String, scalyrEventList: List<ScalyrEvent>): Int {
+    private fun openURL(config: ScalyrConfig, scalyrEventList: List<ScalyrEvent>): Int {
         var urlConnection: HttpURLConnection? = null
         val url: URL
 
         var responseCode = Constants.LOG_DEFAULT_ERROR_CODE
 
         try {
-            val scalyrBody = ScalyrBody(token, session,
-                ScalyrSessionInfo(Constants.ANDROID_APP_VALUE, Constants.SCALYR_PARSER),
+            val scalyrBody = ScalyrBody(config.token, config.session,
+                ScalyrSessionInfo(config.source, config.parser),
                 scalyrEventList)
             url = URL(Constants.SCALYR_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection

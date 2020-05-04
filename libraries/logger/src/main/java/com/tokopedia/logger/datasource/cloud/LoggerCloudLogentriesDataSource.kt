@@ -7,7 +7,7 @@ import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class LoggerCloudLogentriesDataSource : LoggerCloudDataSource<String>() {
+class LoggerCloudLogentriesDataSource : LoggerCloudDataSource<String, String>() {
 
     override suspend fun sendLogToServer(token: String, eventList: List<String>): Boolean {
         var errCode = Constants.LOG_DEFAULT_ERROR_CODE

@@ -1,7 +1,7 @@
 package com.tokopedia.logger.datasource.cloud
 
-abstract class LoggerCloudDataSource<T> {
+abstract class LoggerCloudDataSource<T,U> {
 
-    abstract suspend fun sendLogToServer(token: String, eventList: List<T>): Boolean
+    abstract suspend fun sendLogToServer(config: T, eventList: List<U>): Boolean
 
 }
