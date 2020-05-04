@@ -1,10 +1,11 @@
-package com.tokopedia.product.addedit.description.presentation.model.youtube
+package com.tokopedia.youtube_common.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.product.addedit.description.presentation.model.youtube.Item
+import com.tokopedia.product.addedit.description.presentation.model.youtube.PageInfo
 
-data class YoutubeVideoModel(
+data class YoutubeVideoDetailModel(
         @SerializedName("kind")
         @Expose
         private val kind: String? = null,
