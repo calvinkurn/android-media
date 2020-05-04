@@ -14,7 +14,7 @@
 
                 <data
                     android:host="@string/host_sellerapp"
-                    android:path="@string/path_sellerapp_onboarding"
+                    android:path="@string/path_welcome"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

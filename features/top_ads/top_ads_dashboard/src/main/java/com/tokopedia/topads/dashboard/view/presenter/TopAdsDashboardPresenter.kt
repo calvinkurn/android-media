@@ -1,10 +1,14 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -49,6 +53,9 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             private val deleteTopAdsTotalAdUseCase: DeleteTopAdsTotalAdUseCase,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
+    var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
+    var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
+    val HIDDEN_TRIAL_FEATURE = 21
     val lastSelectionDatePickerIndex: Int
         get() = topAdsDatePickerInteractor.lastSelectionDatePickerIndex
 
@@ -250,6 +257,69 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     fun resetDate() {
         topAdsDatePickerInteractor.resetDate()
+    }
+
+    fun getExpiryDate(resources: Resources) {
+
+        val graphqlUseCase = GraphqlUseCase()
+        val shopId = userSession.shopId
+        val variables = mapOf<String, Any>("shopID" to shopId)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.query_hidden_trial_expiry_date), ExpiryDateResponse::class.java, variables, false)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
+                .setSessionIncluded(true)
+                .build())
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onNext(graphqlResponse: GraphqlResponse) {
+                val dateInfo = graphqlResponse.getData<ExpiryDateResponse>(ExpiryDateResponse::class.java)
+                expiryDateHiddenTrial.postValue(dateInfo.topAdsGetFreeDeposit.expiryDate)
+            }
+        })
+
+    }
+
+    fun getShopListHiddenTrial(resources: Resources) {
+
+        val graphqlUseCase = GraphqlUseCase()
+        val shopId = userSession.shopId
+        val variables = mapOf<String, Any>("shopID" to shopId)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.query_hidden_trial_shoplist), FreeTrialShopListResponse::class.java, variables, false)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
+                .setSessionIncluded(true)
+                .build())
+
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {
+                isShopWhiteListed.postValue(false)
+            }
+
+            override fun onNext(graphqlResponse: GraphqlResponse) {
+
+                val shopList = graphqlResponse.getData<FreeTrialShopListResponse>(FreeTrialShopListResponse::class.java)
+                var data = false
+                shopList.topAdsGetShopWhitelistedFeature.data.forEach lit@{
+                    if (it?.featureID == HIDDEN_TRIAL_FEATURE) {
+                        data = true
+                        return@lit
+                    }
+                }
+                isShopWhiteListed.postValue(data)
+            }
+        })
     }
     fun getAdsStatus(rawQuery: String){
         val graphqlUseCase = GraphqlUseCase()
