@@ -5,5 +5,4 @@ import com.tokopedia.home_component.model.ChannelModel
 
 interface HomeComponentListener {
     fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>)
-    fun onChannelImpressed(channelModel: ChannelModel, channelPosition: Int)
 }

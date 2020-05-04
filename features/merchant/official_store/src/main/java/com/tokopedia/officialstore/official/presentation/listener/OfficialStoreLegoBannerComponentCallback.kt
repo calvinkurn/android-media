@@ -31,14 +31,28 @@ class OfficialStoreLegoBannerComponentCallback(private val dcEventHandler: Dynam
     }
 
     override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
-        dcEventHandler.legoImpression(channelModel)
+
     }
 
     override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
-        dcEventHandler.legoImpression(channelModel)
+
     }
 
     override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
         dcEventHandler.legoImpression(channelModel)
     }
+
+    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
+        dcEventHandler.legoImpression(channelModel)
+    }
+
+    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+        dcEventHandler.legoImpression(channelModel)
+    }
+
+
 }

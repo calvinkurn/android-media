@@ -84,4 +84,16 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
     override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
 
     }
+
+    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
 }

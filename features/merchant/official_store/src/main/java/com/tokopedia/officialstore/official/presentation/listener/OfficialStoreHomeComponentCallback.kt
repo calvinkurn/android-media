@@ -8,8 +8,4 @@ class OfficialStoreHomeComponentCallback(): HomeComponentListener {
     override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
 
     }
-
-    override fun onChannelImpressed(channelModel: ChannelModel, channelPosition: Int) {
-
-    }
 }

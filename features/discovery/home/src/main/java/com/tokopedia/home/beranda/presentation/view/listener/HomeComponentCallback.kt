@@ -11,8 +11,4 @@ class HomeComponentCallback(val homeViewModel: HomeViewModel): HomeComponentList
     override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
         homeViewModel.getDynamicChannelData(visitable, channelModel, channelPosition)
     }
-
-    override fun onChannelImpressed(channelModel: ChannelModel, channelPosition: Int) {
-
-    }
 }
