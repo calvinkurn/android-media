@@ -153,6 +153,8 @@ class PlayInteractionFragment :
     private val productSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
 
+    private lateinit var toolbarView: View
+
     private var channelId: String = ""
 
     private val playFragment: PlayFragment
@@ -513,10 +515,10 @@ class PlayInteractionFragment :
             onToolbarGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
                     playFragment.stopRenderMonitoring()
-                    toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (::toolbarView.isInitialized) toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
-            toolbarView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
+            if (::toolbarView.isInitialized) toolbarView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
         }
     }
 
@@ -555,7 +557,10 @@ class PlayInteractionFragment :
                     }
         }
 
-        return toolbarComponent.getContainerId()
+        val containerId = toolbarComponent.getContainerId()
+        toolbarView = container.findViewById(containerId)
+
+        return containerId
     }
 
     override fun onInitVideoControl(container: ViewGroup): Int {

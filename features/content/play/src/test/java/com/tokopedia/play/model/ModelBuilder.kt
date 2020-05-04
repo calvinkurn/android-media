@@ -1192,13 +1192,15 @@ class ModelBuilder {
         channelType: PlayChannelType = PlayChannelType.Live,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap(),
         screenOrientation: ScreenOrientation = ScreenOrientation.Portrait,
-        videoOrientation: VideoOrientation = VideoOrientation.Vertical
+        videoOrientation: VideoOrientation = VideoOrientation.Vertical,
+        videoState: PlayVideoState = PlayVideoState.Playing
     ) = StateHelperUiModel(
             shouldShowPinned = shouldShowPinned,
             channelType = channelType,
             bottomInsets = bottomInsets,
             screenOrientation = screenOrientation,
-            videoOrientation = videoOrientation
+            videoOrientation = videoOrientation,
+            videoState = videoState
     )
 
     fun buildChannelInfoUiModel(
@@ -1334,10 +1336,12 @@ class ModelBuilder {
 
     fun buildProductSheetUiModel(
             title: String = "Yeaya",
+            partnerId: Long = 1234L,
             voucherList: List<PlayVoucherUiModel> = emptyList(),
             productList: List<PlayProductUiModel> = emptyList()
     ) = ProductSheetUiModel(
             title = title,
+            partnerId = partnerId,
             voucherList = voucherList,
             productList = productList
     )

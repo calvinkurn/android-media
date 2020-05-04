@@ -72,6 +72,8 @@
             tools:visibility="visible"
             />
 
+        <include layout="@layout/bottom_sheet_product_empty"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

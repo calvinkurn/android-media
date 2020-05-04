@@ -15,6 +15,8 @@ import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play.util.observer.PlayVideoUtilObserver
+import com.tokopedia.play.util.video.PlayVideoUtil
+import com.tokopedia.play.util.video.PlayVideoUtilImpl
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
@@ -44,7 +46,7 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayVideoUtilLifecycleObserver(): PlayVideoUtilObserver = PlayVideoUtilObserver(mContext)
+    fun providePlayVideoUtilLifecycleObserver(playVideoUtil: PlayVideoUtil): PlayVideoUtilObserver = PlayVideoUtilObserver(mContext, playVideoUtil)
 
     @PlayScope
     @Provides
@@ -132,5 +134,11 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     fun provideTrackingQueue(): TrackingQueue {
         return TrackingQueue(mContext)
+    }
+
+    @Provides
+    @PlayScope
+    fun providePlayVideoUtil(): PlayVideoUtil {
+        return PlayVideoUtilImpl(mContext)
     }
 }

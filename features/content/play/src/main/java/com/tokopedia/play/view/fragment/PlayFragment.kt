@@ -232,11 +232,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         destroyInsets(requireView())
         super.onDestroyView()
         if (::orientationManager.isInitialized) orientationManager.disable()
-        layoutManager.onDestroy()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         if (::layoutManager.isInitialized) layoutManager.onDestroy()
     }
 
@@ -482,6 +477,58 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
             dialog.setOverlayClose(false)
             dialog.show()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * Performance Monitoring
+     */
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_TRACE_PREPARE_PAGE,
+                PLAY_TRACE_REQUEST_NETWORK,
+                PLAY_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        pageMonitoring.stopMonitoring()
     }
 
     private fun hideKeyboard() {

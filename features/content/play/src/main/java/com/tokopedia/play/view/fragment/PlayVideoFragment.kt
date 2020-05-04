@@ -23,6 +23,7 @@ import com.tokopedia.play.ui.youtube.YouTubeComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManager
@@ -72,6 +73,9 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
 
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
+
+    @Inject
+    lateinit var playVideoUtil: PlayVideoUtil
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayVideoViewModel
@@ -196,7 +200,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     }
 
     override fun onInitVideo(container: ViewGroup): Int {
-        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers, playVideoUtil)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
                 .getContainerId()
     }

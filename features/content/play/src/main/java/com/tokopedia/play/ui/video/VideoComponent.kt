@@ -25,13 +25,12 @@ open class VideoComponent(
         container: ViewGroup,
         bus: EventBusFactory,
         scope: CoroutineScope,
-        dispatchers: CoroutineDispatcherProvider
+        dispatchers: CoroutineDispatcherProvider,
+        private val playVideoUtil: PlayVideoUtil
 ) : UIComponent<Unit> {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
-
-    private val playVideoUtil = PlayVideoUtil(container.context)
 
     init {
         scope.launch(dispatchers.immediate) {
