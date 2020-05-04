@@ -30,7 +30,7 @@ class TalkReplyViewHolder(view: View,
             showDisplayName(userName, userId)
             showDate(createTimeFormatted)
             showSellerLabelWithCondition(isSeller)
-            showAnswer(content, state.isMasked)
+            showAnswer(content, state.isMasked, maskedContent)
             showNumberOfLikesWithCondition(likeCount)
             if(attachedProductCount > 0) {
                 showAttachedProducts(attachedProducts)
@@ -83,9 +83,10 @@ class TalkReplyViewHolder(view: View,
         return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showAnswer(answer: String, isMasked: Boolean) {
+    private fun showAnswer(answer: String, isMasked: Boolean, maskedContent: String) {
         if(isMasked) {
             itemView.replyMessage.apply {
+                text = maskedContent
                 visibility = View.VISIBLE
                 isEnabled = false
             }
