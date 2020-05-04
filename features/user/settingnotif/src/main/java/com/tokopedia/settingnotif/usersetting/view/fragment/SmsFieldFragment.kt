@@ -3,12 +3,12 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
+import com.tokopedia.settingnotif.usersetting.data.pojo.SmsSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 
 class SmsFieldFragment: SettingFieldFragment() {
 
@@ -21,7 +21,7 @@ class SmsFieldFragment: SettingFieldFragment() {
         isRequestData = false
     }
 
-    override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
+    override fun onSuccessGetUserSetting(data: UserSettingDataView) {
         val pinnedData = arrayListOf<VisitableSettings>()
         if (userSession.phoneNumber.isEmpty()) {
             /*
@@ -43,6 +43,6 @@ class SmsFieldFragment: SettingFieldFragment() {
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_sms)
-    override fun getNotificationType() = SMS_TYPE
+    override fun getNotificationType() = TYPE_SMS
 
 }
