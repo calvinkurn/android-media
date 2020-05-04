@@ -259,7 +259,10 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             }
 
             override fun onResetPromoDiscount() {
-
+                promoCode = ""
+                setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                        "",
+                        "")
             }
         }
     }
