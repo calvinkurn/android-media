@@ -19,6 +19,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 
@@ -112,19 +113,22 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
 
         private fun setLegoImpressionListener(holder: LegoItemViewHolder) {
-            holder.itemView.addOnImpressionListener(channel) {
-                when (layout) {
-                    DynamicChannelLayout.LAYOUT_6_IMAGE -> {
-                        listener.onImpressionGridSixImage(channel, parentPosition)
-                    }
-                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
-                        listener.onImpressionGridThreeImage(channel, parentPosition)
-                    }
-                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
-                        listener.onImpressionGridFourImage(channel, parentPosition)
+            holder.itemView.addOnImpressionListener(channel, object: ViewHintListener {
+                override fun onViewHint() {
+                    when (layout) {
+                        DynamicChannelLayout.LAYOUT_6_IMAGE -> {
+                            listener.onImpressionGridSixImage(channel, parentPosition)
+                        }
+                        DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
+                            listener.onImpressionGridThreeImage(channel, parentPosition)
+                        }
+                        DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
+                            listener.onImpressionGridFourImage(channel, parentPosition)
+                        }
                     }
                 }
-            }
+
+            })
         }
 
         private fun setLegoClickListener(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
