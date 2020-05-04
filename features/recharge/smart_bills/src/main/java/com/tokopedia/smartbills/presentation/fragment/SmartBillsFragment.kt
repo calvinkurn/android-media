@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -29,7 +30,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.network.constant.TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
@@ -38,7 +38,6 @@ import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -77,6 +76,8 @@ class SmartBillsFragment : BaseDaggerFragment(),
         performanceMonitoring = PerformanceMonitoring.start(RECHARGE_SMART_BILLS_PAGE_PERFORMANCE)
 
         activity?.let {
+            (it as BaseSimpleActivity).updateTitle(getString(R.string.smart_bills_app_name))
+
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             viewModel = viewModelProvider.get(SmartBillsViewModel::class.java)
             sharedPrefs = it.getSharedPreferences(SMART_BILLS_PREF, Context.MODE_PRIVATE)
@@ -184,11 +185,10 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 }
 
                 // Setup ticker
-                ticker_smart_bills.setHtmlDescription(getString(R.string.smart_bills_ticker))
+                ticker_smart_bills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
                 ticker_smart_bills.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context,
-                                TokopediaUrl.Companion.getInstance().PULSA + PATH_SUBSCRIPTIONS)
+                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
                     }
 
                     override fun onDismiss() {
