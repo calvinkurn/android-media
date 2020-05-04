@@ -44,6 +44,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductDiscussionMostHelpfulViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductDiscussionErrorDataModel): Int {
+        return ProductDiscussionErrorViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductInfoDataModel): Int {
         return ProductInfoViewHolder.LAYOUT
     }
@@ -92,6 +96,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener)
+            ProductDiscussionErrorViewHolder.LAYOUT -> ProductDiscussionErrorViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)

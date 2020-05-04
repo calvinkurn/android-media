@@ -79,9 +79,9 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
     }
 
     fun setParams(questionId: String, shopId: String) {
-        val requestParams = RequestParams()
-        requestParams.putString(PARAM_QUESTION_ID, questionId)
-        requestParams.putString(PARAM_SHOP_ID, shopId)
-        setRequestParams(requestParams.parameters)
+        setRequestParams(RequestParams.create().apply {
+            putString(PARAM_QUESTION_ID, questionId)
+            putString(PARAM_SHOP_ID, shopId)
+        }.parameters)
     }
 }

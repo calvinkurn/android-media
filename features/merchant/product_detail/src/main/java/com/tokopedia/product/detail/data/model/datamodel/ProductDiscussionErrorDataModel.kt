@@ -1,14 +1,11 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class ProductDiscussionMostHelpfulDataModel(
+class ProductDiscussionErrorDataModel(
         val type: String = "",
-        val name: String = "",
-        val totalQuestion: Int,
-        val questions: List<Question>
+        val name:String = ""
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

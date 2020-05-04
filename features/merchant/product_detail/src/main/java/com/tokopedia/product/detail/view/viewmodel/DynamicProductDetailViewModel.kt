@@ -96,6 +96,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase,
                                                              private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
                                                              private val sendTopAdsUseCase: SendTopAdsUseCase,
+                                                             private val discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -726,6 +727,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun cancelEtalaseUseCase() {
         moveProductToEtalaseUseCase.cancelJobs()
+    }
+
+    fun getDiscussionMostHelpful(productId: String, shopId: String) {
+        launchCatchError(block =  {
+            val response = withContext(dispatcher.io()) {
+                discussionMostHelpfulUseCase.createRequestParams(productId, shopId)
+                discussionMostHelpfulUseCase.executeOnBackground()
+            }
+        }) {
+
+        }
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {

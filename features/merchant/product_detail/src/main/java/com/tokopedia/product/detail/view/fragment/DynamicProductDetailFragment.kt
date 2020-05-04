@@ -920,6 +920,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         disscussionClicked()
     }
 
+    override fun onDiscussionRefreshClicked() {
+        // call usecase again
+    }
+
+    override fun onDiscussionSendQuestionClicked(productId: String) {
+
+    }
+
     private fun disscussionClicked() {
         activity?.let {
             val intent = RouteManager.getIntent(
@@ -2752,6 +2760,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     ProductDetailConstant.REQUEST_CODE_LOGIN)
         }
+    }
+
+    private fun goToWriteActivity() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_TALK)
     }
 
     override fun showAlertUpcomingEnded() {

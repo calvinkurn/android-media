@@ -37,10 +37,12 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
     }
 
     fun setParams(productId: String, shopId: String) {
-        val requestParams = RequestParams()
-        requestParams.putString(PARAM_PRODUCT_ID, productId)
-        requestParams.putString(PARAM_SHOP_ID, shopId)
-        setRequestParams(requestParams.parameters)
+        setRequestParams(
+                RequestParams.create().apply {
+                    putString(PARAM_PRODUCT_ID, productId)
+                    putString(PARAM_SHOP_ID, shopId)
+                }.parameters
+        )
     }
 
 }

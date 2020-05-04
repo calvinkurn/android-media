@@ -73,13 +73,15 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
     }
 
     fun setParams(productId: String, shopId: String, page: Int, limit: Int, sortBy: String, category: String) {
-        val requestParams = RequestParams()
-        requestParams.putString(PARAM_PRODUCT_ID, productId)
-        requestParams.putString(PARAM_SHOP_ID, shopId)
-        requestParams.putInt(PARAM_PAGE, page)
-        requestParams.putInt(PARAM_LIMIT, limit)
-        requestParams.putString(PARAM_SORT, sortBy)
-        requestParams.putString(PARAM_CATEGORY, category)
-        setRequestParams(requestParams.parameters)
+        setRequestParams(
+                RequestParams().apply {
+                    putString(PARAM_PRODUCT_ID, productId)
+                    putString(PARAM_SHOP_ID, shopId)
+                    putInt(PARAM_PAGE, page)
+                    putInt(PARAM_LIMIT, limit)
+                    putString(PARAM_SORT, sortBy)
+                    putString(PARAM_CATEGORY, category)
+                }.parameters
+        )
     }
 }
