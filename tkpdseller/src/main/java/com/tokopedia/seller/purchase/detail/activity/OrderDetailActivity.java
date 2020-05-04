@@ -645,12 +645,15 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void trackShipment(String orderId, String trackingUrl) {
+        String routingAppLink;
+        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);
         String caller = (getExtraUserMode() == SELLER_MODE) ? "seller" : "";
-        Intent intent = RouteManager.getIntent(this, ApplinkConst.ORDER_TRACKING);
-        intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, orderId);
-        intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
-        intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_CALLER, caller);
-        startActivity(intent);
+
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, caller);
+        routingAppLink += uriBuilder.toString();
+        RouteManager.route(this, routingAppLink);
     }
 
     @Override

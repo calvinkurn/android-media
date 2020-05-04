@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -659,12 +658,12 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.ORDER_TRACKING).apply {
-            putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, buttonResp.url)
-            putExtra(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
-            putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, detailResponse.orderId.toString())
-        }
-        startActivity(intent)
+        var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse.orderId.toString())
+        val uriBuilder = Uri.Builder()
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, buttonResp.url)
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
+        routingAppLink += uriBuilder.toString()
+        RouteManager.route(context, routingAppLink)
     }
 
     private fun setActionRequestPickup() {
