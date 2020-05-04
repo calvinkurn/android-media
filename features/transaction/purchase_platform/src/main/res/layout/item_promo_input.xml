@@ -25,7 +25,7 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_apply_promo"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="@dimen/dp_110"
         android:layout_height="wrap_content"
         android:enabled="false"
         android:text="@string/label_button_apply_manual_input_promo"

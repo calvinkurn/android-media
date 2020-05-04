@@ -21,6 +21,7 @@
             android:paddingBottom="@dimen/dp_16">
 
             <RelativeLayout
+                android:id="@+id/layout_filter_pay_at_hotel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
@@ -48,16 +49,18 @@
             </RelativeLayout>
 
             <View
+                android:id="@+id/divider_layout_pay_at_hotel"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/divider_color" />
 
             <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/hotel_filter_rating_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/hotel_search_filter_star_title"
+                android:layout_marginTop="@dimen/layout_lvl2"
                 app:fontSize="small"
                 app:textViewTheme="lightPrimary"
                 app:weight="medium" />

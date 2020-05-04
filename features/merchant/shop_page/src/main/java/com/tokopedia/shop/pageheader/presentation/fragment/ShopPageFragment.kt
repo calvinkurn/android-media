@@ -24,6 +24,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
@@ -175,6 +176,7 @@ class ShopPageFragment :
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
 
+
     override fun onDestroy() {
         shopViewModel.shopInfoResp.removeObservers(this)
         shopViewModel.whiteListResp.removeObservers(this)
@@ -254,6 +256,7 @@ class ShopPageFragment :
                     onErrorGetShopInfo(result.throwable)
                 }
             }
+            stopPerformanceMonitoring()
         })
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
@@ -498,8 +501,12 @@ class ShopPageFragment :
 
     private fun redirectToShopSettingsPage() {
         context?.let { context ->
-            shopId?.let { shopId ->
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                shopId?.let { shopId ->
+                    startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                }
             }
         }
     }
@@ -551,9 +558,11 @@ class ShopPageFragment :
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
+
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
+
     }
 
     fun onBackPressed() {
@@ -676,7 +685,6 @@ class ShopPageFragment :
     }
 
     private fun onErrorGetShopInfo(e: Throwable?) {
-        stopPerformanceMonitoring()
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
@@ -774,7 +782,7 @@ class ShopPageFragment :
     }
 
     private fun stopPerformanceMonitoring() {
-        (activity as? ShopPageActivity)?.stopPerformanceMonitor()
+        (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
     fun refreshData() {

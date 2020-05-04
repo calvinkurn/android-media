@@ -47,6 +47,8 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
+import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
+import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.logger.utils.DataLogConfig;
@@ -110,6 +112,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private TextView vGoToApplinkDebugger;
     private TextView vGoToFpm;
+    private TextView vGoToCassava;
     private TextView vGoToAnalytics;
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
@@ -130,6 +133,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
+    private TextView tvFakeResponse;
 
     private Button requestFcmToken;
 
@@ -199,6 +203,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
         vGoToFpm = findViewById(R.id.goto_fpm);
+        vGoToCassava = findViewById(R.id.goto_cassava);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
         vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
@@ -244,6 +249,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
+
+        tvFakeResponse = findViewById(R.id.tv_fake_response);
 
     }
 
@@ -422,6 +429,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
+        vGoToCassava.setOnClickListener(v -> GtmLogger.getInstance(this).navigateToValidator());
         vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
         vGoToAnalyticsError.setOnClickListener(v -> {
             GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
@@ -497,6 +505,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         requestFcmToken.setOnClickListener(v -> {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
+        });
+
+        tvFakeResponse.setOnClickListener(v -> {
+            new FakeResponseActivityProvider().startActivity(this);
         });
     }
 

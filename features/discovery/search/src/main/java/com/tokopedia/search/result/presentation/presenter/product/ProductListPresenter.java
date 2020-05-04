@@ -586,9 +586,11 @@ final class ProductListPresenter
             enrichWithAdditionalParams(requestParams, additionalParams);
         }
 
+        getView().stopPreparePagePerformanceMonitoring();
+        getView().startNetworkRequestPerformanceMonitoring();
+
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
-
         searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter));
     }
 
@@ -645,6 +647,9 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
         if (isViewAttached()) {
+            getView().stopNetworkRequestPerformanceMonitoring();
+            getView().startRenderPerformanceMonitoring();
+
             if (isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
             } else {

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -13,7 +13,7 @@ import javax.inject.Inject
 class GetDynamicChannelsUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<HomeData>,
         private val homeDataMapper: HomeDataMapper
-) : UseCase<List<DynamicChannelViewModel>>(){
+) : UseCase<List<DynamicChannelDataModel>>(){
     private val params = RequestParams.create()
 
     init {
@@ -26,12 +26,12 @@ class GetDynamicChannelsUseCase @Inject constructor(
         params.putString(GROUP_IDS, groupIds)
     }
 
-    override suspend fun executeOnBackground(): List<DynamicChannelViewModel> {
+    override suspend fun executeOnBackground(): List<DynamicChannelDataModel> {
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
         val homeData = graphqlUseCase.executeOnBackground()
         val homeViewModel = homeDataMapper.mapToHomeViewModel(homeData, false)
-        return homeViewModel.list.filterIsInstance(DynamicChannelViewModel::class.java)
+        return homeViewModel.list.filterIsInstance(DynamicChannelDataModel::class.java)
     }
 
     companion object{

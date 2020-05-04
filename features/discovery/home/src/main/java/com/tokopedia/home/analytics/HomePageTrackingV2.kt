@@ -136,7 +136,7 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
-                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
+                            name = channel.promoName,
                             position = position.toString()
                     )
                 }
@@ -154,16 +154,19 @@ object HomePageTrackingV2 : BaseTracking() {
     }
 
     object RecommendationList{
-        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list"
-        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list"
-        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
-        private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
+        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION = "click add to cart on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all card on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_CLOSE_EVENT_ACTION = "click on close dynamic channel list carousel"
 
-        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
+        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String) = getBasicProductChannelView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
                 eventLabel = Label.NONE,
+                userId = userId,
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
                             name = grid.name,
@@ -186,13 +189,14 @@ object HomePageTrackingV2 : BaseTracking() {
                 channelId = channel.id
         )
 
-        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, userId: String) = getBasicProductChannelClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
                 eventLabel = grid.attribution,
                 channelId = channel.id,
                 campaignCode = channel.campaignCode,
+                userId = userId,
                 products = listOf(
                         Product(
                                 name = grid.name,
@@ -214,8 +218,8 @@ object HomePageTrackingV2 : BaseTracking() {
                 )
         )
 
-        fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
-            getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position))
+        fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, userId: String) {
+            getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position, userId))
         }
 
         private fun getRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
@@ -230,6 +234,53 @@ object HomePageTrackingV2 : BaseTracking() {
         fun sendRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels) {
             getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channel))
         }
+
+        fun getCloseClickOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, RECOMMENDATION_LIST_CLOSE_EVENT_ACTION,
+                Label.KEY, channel.header.name,
+                Screen.KEY, Screen.DEFAULT,
+                UserId.KEY, userId,
+                CurrentSite.KEY, CurrentSite.DEFAULT
+        )
+
+        fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
+                Event.KEY, Event.PRODUCT_ADD_TO_CART,
+                Category.KEY, Category.HOMEPAGE,
+                Label.KEY, channel.header.name,
+                Action.KEY,RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION,
+                Label.CHANNEL_LABEL, channel.header.name,
+                Label.CAMPAIGN_CODE, channel.campaignCode,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                UserId.KEY, userId,
+                Label.CHANNEL_LABEL, channel.id,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
+                    products = listOf(
+                            Product(
+                                    name = grid.name,
+                                    id = grid.id,
+                                    productPrice = convertRupiahToInt(grid.price).toString(),
+                                    brand = Value.NONE_OTHER,
+                                    category = Value.NONE_OTHER,
+                                    variant = Value.NONE_OTHER,
+                                    productPosition = (position + 1).toString(),
+                                    channelId = channel.id,
+                                    isFreeOngkir = grid.freeOngkir.isActive,
+                                    persoType = channel.persoType,
+                                    categoryId = channel.categoryID,
+                                    isTopAds = grid.isTopads,
+                                    quantity = quantity,
+                                    cartId = cartId
+                            )
+                    ),
+                    list = String.format(
+                            Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                    )
+                )
+
+        )
     }
 
     object MixLeft {

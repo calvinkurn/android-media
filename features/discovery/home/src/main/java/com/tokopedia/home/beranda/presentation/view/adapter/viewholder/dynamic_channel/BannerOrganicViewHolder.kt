@@ -22,7 +22,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.BannerItemAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
@@ -91,7 +91,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
-                if (payload == DynamicChannelViewModel.HOME_RV_BANNER_IMAGE_URL) {
+                if (payload == DynamicChannelDataModel.HOME_RV_BANNER_IMAGE_URL) {
                     channel.let {
                         mappingBanner(it.banner, it, it.banner.cta)
                         mappingCtaButton(it.banner.cta)

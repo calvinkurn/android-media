@@ -108,6 +108,9 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         verifyOrder {
             productListView.isAnyFilterActive
 
+            productListView.stopPreparePagePerformanceMonitoring()
+            productListView.startNetworkRequestPerformanceMonitoring()
+
             verifyShowError(productListView)
 
             productListView.logWarning(capture(slotSearchParameterErrorLog), exception)

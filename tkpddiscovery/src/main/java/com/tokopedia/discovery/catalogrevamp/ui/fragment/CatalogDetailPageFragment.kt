@@ -116,12 +116,14 @@ class CatalogDetailPageFragment : Fragment(),
         val catalogImageAdapter = CatalogImageAdapter(catalogImage, this)
         var previousPosition: Int = -1
         view_pager_intermediary.adapter = catalogImageAdapter
+        indicator_intermediary.setIndicator(catalogImage.size)
         view_pager_intermediary.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
 
             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
 
             override fun onPageSelected(position: Int) {
+                indicator_intermediary.setCurrentIndicator(position)
                 when {
                     previousPosition >= 0 -> when {
                         previousPosition > position -> CatalogDetailPageAnalytics.trackEventSwipeCatalogPicture(LEFT)
@@ -132,10 +134,6 @@ class CatalogDetailPageFragment : Fragment(),
             }
 
         })
-        indicator_intermediary.fillColor = MethodChecker.getColor(context, R.color.g_500)
-        indicator_intermediary.pageColor = MethodChecker.getColor(context, R.color.tp_ticker_indicator_default_color)
-        indicator_intermediary.setViewPager(view_pager_intermediary)
-        indicator_intermediary.notifyDataSetChanged()
         this.catalogImage = catalogImage
         if (catalogImage.size == 1)
             indicator_intermediary.hide()
@@ -175,9 +173,9 @@ class CatalogDetailPageFragment : Fragment(),
     private fun generateCatalogShareData(catalogUrl: String, catalogId: String): LinkerData {
         return LinkerData.Builder.getLinkerBuilder()
                 .setId(catalogId)
-                .setName(activity?.getString(com.tokopedia.core2.R.string.message_share_catalog))
+                .setName(getString(R.string.tkpd_discovery_message_share_catalog))
                 .setType(LinkerData.CATALOG_TYPE)
-                .setTextContent(activity?.getString(com.tokopedia.core2.R.string.share_text_content))
+                .setTextContent(getString(R.string.tkpd_discovery_share_text_content))
                 .setUri(catalogUrl)
                 .build()
     }
