@@ -45,6 +45,7 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_rating_product.*
+import kotlinx.android.synthetic.main.item_empty_state_list_rating_product.*
 import kotlinx.android.synthetic.main.item_search_rating_product.*
 import javax.inject.Inject
 
@@ -60,6 +61,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         val chipsPaddingRight = 8.toPx()
         val maxChipTextWidth = 116.toPx()
         private const val searchQuery = "search"
+        private const val MAX_LENGTH_SEARCH = 3
     }
 
     @Inject
@@ -98,6 +100,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     var chipsSortText: String? = ""
     var chipsFilterText: String? = ""
     var searchFilterText: String? = ""
+    var isEmptyFilter = false
+
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -172,7 +176,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
 
             else -> super.onActivityResult(requestCode, resultCode, data)
-
         }
     }
 
@@ -244,28 +247,42 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             iconListener = {
                 loadInitialData()
             }
+            searchBarTextField.afterTextChanged {
+                if(it.isEmpty()) {
+                    onSearchKeywordEmpty()
+                }
+            }
             searchBarIcon.setOnClickListener {
                 if (searchBarPlaceholder.isNotEmpty()) {
-                    searchFilterText = "$searchQuery="
-                    viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
-                    searchBarTextField.text.clear()
-                    searchBarPlaceholder = getString(R.string.product_search)
-                    loadInitialData()
+                    onSearchKeywordEmpty()
                 }
             }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     val query = searchBarRatingProduct?.searchBarTextField?.text.toString()
-                    searchFilterText = "$searchQuery=$query"
-                    viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
-                    searchBarPlaceholder = query
-                    loadInitialData()
+
+                    if(query.length < MAX_LENGTH_SEARCH) {
+                        showEmptyState()
+                        tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_keyword)
+                    } else {
+                        searchFilterText = "$searchQuery=$query"
+                        viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
+                        searchBarPlaceholder = query
+                        loadInitialData()
+                    }
                     return@setOnEditorActionListener true
                 }
                 return@setOnEditorActionListener false
             }
         }
+    }
 
+    private fun onSearchKeywordEmpty() {
+        searchFilterText = "$searchQuery="
+        viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
+        searchBarRatingProduct.searchBarTextField.text.clear()
+        searchBarRatingProduct.searchBarPlaceholder = getString(R.string.product_search)
+        loadInitialData()
     }
 
     private fun observeLiveData() {
@@ -329,13 +346,22 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
         swipeToRefreshReviewSeller?.isRefreshing = false
-        if (reviewProductList.isEmpty()) {
-            scrollView_emptyState_reviewSeller?.show()
-            emptyState_reviewProduct?.show()
+        if (reviewProductList.isEmpty() && isEmptyFilter) {
+            showEmptyState()
+            tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_filter)
+            isEmptyFilter = false
+        } else if(reviewProductList.isEmpty() && !isEmptyFilter) {
+            showEmptyState()
+            tvContentNoReviewsYet?.text = getString(R.string.content_no_reviews_yet)
         } else {
             reviewSellerAdapter.setProductListReviewData(reviewProductList)
             updateScrollListenerState(hasNextPage)
         }
+    }
+
+    private fun showEmptyState() {
+        scrollView_emptyState_reviewSeller?.show()
+        emptyState_reviewProduct?.show()
     }
 
     fun loadNextPage(page: Int) {
@@ -369,11 +395,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
             override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-
-
                 val countCoachMarkItem = coachMarkItems.size - 1
                 coachMark.enableSkip = (nextStep < countCoachMarkItem)
-
                 return false
             }
         })
@@ -548,7 +571,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         sortListUnify?.let { it ->
             it.onLoadFinish {
-                it.setSelectedFilterOrSort(sortListItemUnify, viewModelListReviewList?.positionFilter.orZero())
+                it.setSelectedFilterOrSort(sortListItemUnify, viewModelListReviewList?.positionSort.orZero())
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemSortClickedBottomSheet(position, sortListItemUnify, it)
                 }
@@ -569,6 +592,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
                                                filterListUnify: ListUnify) {
         try {
+            isEmptyFilter = true
             viewModelListReviewList?.positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
             reviewSellerAdapter.updateDatePeriod(ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
@@ -587,6 +611,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
         try {
+            isEmptyFilter = true
             viewModelListReviewList?.positionSort = position
             chipsSortText = sortListItemUnify[position].listTitleText
             chipsSort?.chip_text?.text = chipsSortText

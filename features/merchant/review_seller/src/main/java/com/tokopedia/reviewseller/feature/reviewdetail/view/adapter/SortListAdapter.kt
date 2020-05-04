@@ -9,7 +9,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiMode
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_chips.view.*
 
-class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener): RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
+class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
 
     var sortFilterListUiModel: List<SortItemUiModel>? = null
 
@@ -48,7 +48,7 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
         sortFilterListUiModel?.get(position)?.let { holder.bind(it) }
     }
 
-    class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener): RecyclerView.ViewHolder(itemView) {
+    class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.ViewHolder(itemView) {
         fun bind(data: SortItemUiModel) {
             with(itemView) {
                 chipsItem.apply {

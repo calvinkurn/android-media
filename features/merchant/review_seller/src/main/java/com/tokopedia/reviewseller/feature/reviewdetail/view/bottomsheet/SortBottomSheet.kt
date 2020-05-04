@@ -3,50 +3,38 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SortListAdapter
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicListAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicSortFilterListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
-import com.tokopedia.unifycomponents.ChipsUnify
 
-/**
- * Created by Yehezkiel on 27/04/20
- */
-class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?,
-                               listenerTopics: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit) :
-        BaseTopicsBottomSheet(mActivity, listenerTopics), TopicSortFilterListener.Topic, TopicSortFilterListener.Sort {
+class SortBottomSheet(private val mActivity: FragmentActivity?,
+                      listenerSort: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit) :
+        BaseTopicsBottomSheet(mActivity, listenerSort), TopicSortFilterListener.Sort {
 
     init {
         setAction(ACTION_TITLE) {
-            resetFilterClicked()
+            sortAdapter?.resetSortFilter()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        topicAdapter = TopicListAdapter(this)
         sortAdapter = SortListAdapter(this)
         setAdapter()
-        showDialog()
     }
 
     override fun setAdapter() {
+        tvTopicTitle?.hide()
+        rvTopicFilter?.hide()
         sortAdapter?.setSortFilter(sortTopicData)
         rvSortFilter?.adapter = sortAdapter
-
-        topicAdapter?.setTopicFilter(filterTopicData)
-        rvTopicFilter?.adapter = topicAdapter
     }
 
-    private fun resetFilterClicked() {
-        topicAdapter?.resetSortFilter()
-        sortAdapter?.resetSortFilter()
-    }
 
-    override fun onTopicClicked(chipType: String, adapterPosition: Int) {
-        val isSelected = chipType == ChipsUnify.TYPE_SELECTED
-        topicAdapter?.updateTopicFilter(isSelected, adapterPosition)
+    override fun setSortListData(items: List<SortItemUiModel>) {
+        super.sortTopicData = items
     }
 
     override fun onSortClicked(chipType: String, adapterPosition: Int) {

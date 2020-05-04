@@ -1,9 +1,12 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.toggle
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter.Companion.PAYLOAD_TOPIC_FILTER_REVIEW_COUNT
@@ -23,6 +26,7 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     }
 
     private val sortFilterTopics: SortFilter = view.findViewById(R.id.topicSortFilterTopic)
+    private val chipsSortFilter: ChipsUnify = view.findViewById(R.id.chipsSortFilter)
     private val resultFeedbackLabel: Typography = view.findViewById(R.id.resultFeedbackLabel)
 
     private var countSortFilter = 0
@@ -33,12 +37,24 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
             it.isSelected
         }
 
-        sortFilterTopics.apply {
-            sortFilterItems.removeAllViews()
-            addItem(dataItemSortFilter(element.sortFilterItemList))
-            indicatorCounter = countSortFilter
-            parentListener = {
-                fragmentListener.onParentTopicFilterClicked()
+        if(element.sortFilterItemList.size.isZero()) {
+            chipsSortFilter.apply {
+                chip_text.text = getString(R.string.sort_label)
+                chipImageResource = ContextCompat.getDrawable(itemView.context, R.drawable.ic_filter_icon)
+                setOnClickListener {
+                    toggle()
+                    fragmentListener.onSortTopicClicked(itemView)
+                }
+                show()
+            }
+        } else {
+            sortFilterTopics.apply {
+                sortFilterItems.removeAllViews()
+                addItem(dataItemSortFilter(element.sortFilterItemList))
+                indicatorCounter = countSortFilter
+                parentListener = {
+                    fragmentListener.onParentTopicFilterClicked()
+                }
             }
         }
         setReviewCount(element.countFeedback.orZero())

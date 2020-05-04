@@ -10,6 +10,7 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 interface SellerReviewDetailListener {
     fun onChildTopicFilterClicked(item: SortFilterItem, adapterPosition: Int)
     fun onParentTopicFilterClicked()
+    fun onSortTopicClicked(view: View)
 }
 
 interface ProductFeedbackDetailListener {
@@ -26,6 +27,10 @@ interface SellerRatingAndTopicListener {
 }
 
 interface TopicSortFilterListener {
-    fun onTopicClicked(chipType: String, adapterPosition: Int)
-    fun onSortClicked(chipType: String, adapterPosition: Int)
+    interface Topic {
+        fun onTopicClicked(chipType: String, adapterPosition: Int)
+    }
+    interface Sort {
+        fun onSortClicked(chipType: String, adapterPosition: Int)
+    }
 }
