@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.widget.downloadvoucher.DownloadVoucherBottomSheet
+import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
@@ -166,11 +168,18 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
             is EditQuota -> showEditQuotaBottomSheet()
+            is ViewDetail -> viewVoucherDetail()
             is ShareVoucher -> showShareBottomSheet(voucher)
             is EditPeriod -> showEditPeriodBottomSheet(voucher)
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
+        }
+    }
+
+    private fun viewVoucherDetail() {
+        activity?.let {
+            startActivity(Intent(it, VoucherDetailActivity::class.java))
         }
     }
 

@@ -1,0 +1,21 @@
+package com.tokopedia.vouchercreation.detail.view.adapter.factory
+
+import com.tokopedia.vouchercreation.detail.model.DividerUiModel
+import com.tokopedia.vouchercreation.detail.model.TipsUiModel
+import com.tokopedia.vouchercreation.detail.model.UsageProgressUiModel
+import com.tokopedia.vouchercreation.detail.model.VoucherHeaderUiModel
+
+/**
+ * Created By @ilhamsuaib on 30/04/20
+ */
+
+interface VoucherDetailAdapterFactory {
+
+    fun type(model: VoucherHeaderUiModel): Int
+
+    fun type(model: UsageProgressUiModel): Int
+
+    fun type(model: DividerUiModel): Int
+
+    fun type(model: TipsUiModel): Int
+}

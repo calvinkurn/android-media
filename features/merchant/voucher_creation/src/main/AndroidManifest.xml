@@ -45,7 +45,7 @@
         </activity>
 
         <activity
-            android:name=".detail.VoucherDetailActivity"
+            android:name=".detail.view.activity.VoucherDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>
