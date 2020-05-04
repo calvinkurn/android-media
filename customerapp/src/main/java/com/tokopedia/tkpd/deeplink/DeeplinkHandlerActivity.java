@@ -66,8 +66,6 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
