@@ -30,6 +30,8 @@ import timber.log.Timber;
 public class TimberWrapper {
     private static final String REGEX_ALPHA_NUMERIC = "[^a-zA-Z0-9]";
     private static final int PART_DEVICE_ID_LENGTH = 9;
+    private static final String APP_TYPE = "customerApp";
+    private static final int PRIORITY_LENGTH = 2;
 
     private static final String[] LOGENTRIES_TOKEN = new String[]{
             new String(new char[]{
@@ -42,18 +44,11 @@ public class TimberWrapper {
             }),
     };
 
-    private static final String[] SCALYR_TOKEN = new String[]{
-            new String(new char[]{
-                    48, 73, 89, 118, 95, 77, 81, 105, 88, 74, 97, 65, 97, 89, 89, 75, 71, 101, 56,
-                    48, 57, 117, 109, 49, 109, 77, 51, 75, 117, 106, 85, 69, 65, 89, 56, 65, 75,
-                    101, 70, 75, 97, 72, 122, 56, 45
-            }),
-            new String(new char[]{
-                    48, 115, 83, 66, 113, 56, 78, 110, 121, 89, 53, 114, 85, 56, 78, 56, 90, 104,
-                    110, 83, 110, 85, 74, 55, 103, 111, 53, 50, 85, 98, 76, 69, 71, 66, 98, 53,
-                    116, 102, 121, 77, 68, 77, 77, 119, 45
-            })
-    };
+    private static final String SCALYR_TOKEN = new String(new char[]{
+            48, 73, 89, 118, 95, 77, 81, 105, 88, 74, 97, 65, 97, 89, 89, 75, 71, 101, 56,
+            48, 57, 117, 109, 49, 109, 77, 51, 75, 117, 106, 85, 69, 65, 89, 56, 65, 75,
+            101, 70, 75, 97, 72, 122, 56, 45
+    });
 
     private static final String REMOTE_CONFIG_KEY_LOG = "android_customer_app_log_config";
 
@@ -104,16 +99,16 @@ public class TimberWrapper {
 
     private static List<ScalyrConfig> getScalyrConfigList(Context context) {
         List<ScalyrConfig> scalyrConfigList = new ArrayList<>();
-        for (int i = 0; i < SCALYR_TOKEN.length; i++) {
-            scalyrConfigList.add(getScalyrConfig(context, SCALYR_TOKEN[i], i+1));
+        for (int i = 0; i < PRIORITY_LENGTH; i++) {
+            scalyrConfigList.add(getScalyrConfig(context, i+1));
         }
         return scalyrConfigList;
     }
 
-    private static ScalyrConfig getScalyrConfig(Context context, String token, int priority) {
+    private static ScalyrConfig getScalyrConfig(Context context, int priority) {
         String session = ScalyrUtils.INSTANCE.getLogSession(context, priority);
-        String source = String.format("android-main-app-p%s", priority);
+        String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(token, session, source, parser);
+        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, APP_TYPE, GlobalConfig.DEBUG, priority);
     }
 }

@@ -29,7 +29,7 @@ public class DataLogConfig {
 
     @SerializedName("query_limits")
     @Expose
-    private List<Integer> queryLimits = new ArrayList<>(Arrays.asList(5, 5));
+    private List<Integer> queryLimits = new ArrayList<>(Arrays.asList(50, 50));
 
     public long getAppVersionMin() {
         return appVersionMin;

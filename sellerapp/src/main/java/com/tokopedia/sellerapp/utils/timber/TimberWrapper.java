@@ -31,6 +31,8 @@ public class TimberWrapper {
 
     private static final String REGEX_ALPHA_NUMERIC = "[^a-zA-Z0-9]";
     private static final int PART_DEVICE_ID_LENGTH = 9;
+    private static final String APP_TYPE = "sellerApp";
+    private static final int PRIORITY_LENGTH = 2;
 
     private static final String[] LOGENTRIES_TOKEN = new String[]{
             new String(new char[]{
@@ -43,18 +45,11 @@ public class TimberWrapper {
             }),
     };
 
-    private static final String[] SCALYR_TOKEN = new String[]{
-            new String(new char[]{
-                    48, 73, 89, 47, 83, 70, 70, 107, 72, 74, 50, 110, 98, 97, 112, 80, 78, 97, 100,
-                    76, 80, 84, 88, 113, 70, 115, 69, 82, 71, 69, 103, 49, 87, 66, 49, 121, 49,
-                    119, 120, 81, 53, 119, 51, 115, 45
-            }),
-            new String(new char[]{
-                    48, 90, 101, 74, 50, 115, 89, 53, 109, 110, 83, 49, 79, 118, 117, 115, 72, 66,
-                    113, 121, 72, 121, 90, 106, 74, 98, 53, 54, 48, 67, 95, 106, 86, 107, 76, 80,
-                    72, 97, 48, 67, 109, 70, 52, 103, 45
-            })
-    };
+    private static final String SCALYR_TOKEN = new String(new char[]{
+            48, 73, 89, 47, 83, 70, 70, 107, 72, 74, 50, 110, 98, 97, 112, 80, 78, 97, 100,
+            76, 80, 84, 88, 113, 70, 115, 69, 82, 71, 69, 103, 49, 87, 66, 49, 121, 49,
+            119, 120, 81, 53, 119, 51, 115, 45
+    });
 
     private static final String REMOTE_CONFIG_KEY_LOG = "android_seller_app_log_config";
 
@@ -73,7 +68,7 @@ public class TimberWrapper {
 
     public static void initByRemoteConfig(@NonNull Application application, @NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
-        boolean isDebug = false;
+        boolean isDebug = GlobalConfig.DEBUG;
         if (isDebug) {
             Timber.plant(new TimberDebugTree());
         } else {
@@ -105,16 +100,16 @@ public class TimberWrapper {
 
     private static List<ScalyrConfig> getScalyrConfigList(Context context) {
         List<ScalyrConfig> scalyrConfigList = new ArrayList<>();
-        for (int i = 0; i < SCALYR_TOKEN.length; i++) {
-            scalyrConfigList.add(getScalyrConfig(context, SCALYR_TOKEN[i], i+1));
+        for (int i = 0; i < PRIORITY_LENGTH; i++) {
+            scalyrConfigList.add(getScalyrConfig(context, i+1));
         }
         return scalyrConfigList;
     }
 
-    private static ScalyrConfig getScalyrConfig(Context context, String token, int priority) {
+    private static ScalyrConfig getScalyrConfig(Context context, int priority) {
         String session = ScalyrUtils.INSTANCE.getLogSession(context, priority);
-        String source = String.format("android-seller-app-p%s", priority);
+        String serverHost = String.format("android-seller-app-p%s", priority);
         String parser = String.format("android-seller-app-p%s-parser", priority);
-        return new ScalyrConfig(token, session, source, parser);
+        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, APP_TYPE, GlobalConfig.DEBUG, priority);
     }
 }

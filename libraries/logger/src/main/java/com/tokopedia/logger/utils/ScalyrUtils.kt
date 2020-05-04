@@ -11,12 +11,11 @@ object ScalyrUtils {
     fun getLogSession(context: Context, priority: Int): String {
         val sessionKey = SCALYR_SESSION_KEY + priority
         val sharedPreferences = context.getSharedPreferences(SCALYR_PREF_NAME, Context.MODE_PRIVATE)
-        val session = sharedPreferences.getString(sessionKey, "")
+        var session = sharedPreferences.getString(sessionKey, "")
         if (session == null || session.isEmpty()) {
-            val randomUUID = UUID.randomUUID().toString()
-            sharedPreferences.edit().putString(sessionKey, randomUUID).apply()
-            return randomUUID
+            session = UUID.randomUUID().toString()
+            sharedPreferences.edit().putString(sessionKey, session).apply()
         }
-        return ""
+        return session
     }
 }
