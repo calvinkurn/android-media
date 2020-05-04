@@ -13,6 +13,7 @@ import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -29,6 +30,7 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -66,6 +68,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
+        private const val SELLER_HOME_CARD_TRACE = "seller_home_card"
+        private const val SELLER_HOME_LINE_GRAPH_TRACE = "seller_home_line_graph"
+        private const val SELLER_HOME_PROGRESS_TRACE = "seller_home_progress"
+        private const val SELLER_HOME_POST_LIST_TRACE = "seller_home_post_list"
+        private const val SELLER_HOME_CAROUSEL_TRACE = "seller_home_carousel"
+
     }
 
     @Inject
@@ -93,6 +101,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var hasLoadProgressData = false
     private var hasLoadPostData = false
     private var hasLoadCarouselData = false
+    private var performanceMonitoringSellerHomeCard: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeLineGraph: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeProgress: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomePostList: PerformanceMonitoring? = null
+    private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
+
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -212,6 +226,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         if (hasLoadCardData) return
         hasLoadCardData = true
         val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(adapter.data)
+        performanceMonitoringSellerHomeCard = PerformanceMonitoring.start(SELLER_HOME_CARD_TRACE)
         sellerHomeViewModel.getCardWidgetData(dataKeys)
     }
 
@@ -219,6 +234,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         if (hasLoadLineGraphData) return
         hasLoadLineGraphData = true
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(adapter.data)
+        performanceMonitoringSellerHomeLineGraph = PerformanceMonitoring.start(SELLER_HOME_LINE_GRAPH_TRACE)
         sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
     }
 
@@ -226,6 +242,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         if (hasLoadProgressData) return
         hasLoadProgressData = true
         val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(adapter.data)
+        performanceMonitoringSellerHomeProgress = PerformanceMonitoring.start(SELLER_HOME_PROGRESS_TRACE)
         sellerHomeViewModel.getProgressWidgetData(dataKeys)
     }
 
@@ -233,6 +250,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         if (hasLoadPostData) return
         hasLoadPostData = true
         val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(adapter.data)
+        performanceMonitoringSellerHomePostList = PerformanceMonitoring.start(SELLER_HOME_POST_LIST_TRACE)
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
 
@@ -240,6 +258,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         if (hasLoadCarouselData) return
         hasLoadCarouselData = true
         val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(adapter.data)
+        performanceMonitoringSellerHomeCarousel = PerformanceMonitoring.start(SELLER_HOME_CAROUSEL_TRACE)
         sellerHomeViewModel.getCarouselWidgetData(dataKeys)
     }
 
@@ -321,10 +340,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 is Success -> setOnSuccessGetLayout(result.data)
                 is Fail -> setOnErrorGetLayout(result.throwable)
             }
+            stopPerformanceMonitoringSellerHomeLayout()
         })
 
         setProgressBarVisibility(true)
         sellerHomeViewModel.getWidgetLayout()
+    }
+
+    private fun stopPerformanceMonitoringSellerHomeLayout() {
+        (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
@@ -497,7 +521,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                     result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                 }
             }
+            stopSellerHomeFragmentWidgetPerformanceMonitoring(type)
         })
+    }
+
+    private fun stopSellerHomeFragmentWidgetPerformanceMonitoring(type: String) {
+        when(type){
+            WidgetType.CARD -> performanceMonitoringSellerHomeCard?.stopTrace()
+            WidgetType.LINE_GRAPH -> performanceMonitoringSellerHomeLineGraph?.stopTrace()
+            WidgetType.PROGRESS -> performanceMonitoringSellerHomeProgress?.stopTrace()
+            WidgetType.POST_LIST -> performanceMonitoringSellerHomePostList?.stopTrace()
+            WidgetType.CAROUSEL -> performanceMonitoringSellerHomeCarousel?.stopTrace()
+        }
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
