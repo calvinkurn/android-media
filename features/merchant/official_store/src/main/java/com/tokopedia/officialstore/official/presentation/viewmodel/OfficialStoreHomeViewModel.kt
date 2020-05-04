@@ -27,8 +27,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-//import kotlinx.coroutines.CoroutineDispatcher
-//import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -109,44 +107,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-//    fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
-////        launch {
-////            try {
-////                withContext(dispatchers.io()) {
-////                    val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-////                    val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-////                    _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
-////                }
-////            } catch (t: Throwable) {
-////                _productRecommendation.value = Fail(t)
-////            }
-////        }
-//        launchCatchError(block = {
-//            withContext(dispatchers.io()) {
-//                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-//                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-//                _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
-////                _productRecommendation.value = Success(dataProductResponse.first().get(0))
-////                _productRecommendation.postValue(getProductRecommendation(categoryId, pageNumber, pageName))
-//            }
-//        }) {
-//            _productRecommendation.value = Fail(it)
-//        }
-//    }
-
     fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
-//        launch {
-//            try {
-//                withContext(dispatchers.io()) {
-//                    val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-//                    val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-//                    _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
-//                }
-//            } catch (t: Throwable) {
-//                Fail(t)
-//            }
-//        }
-
         launch {
             try {
                 withContext(dispatchers.io()) {
@@ -203,24 +164,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         )
     }
 
-//    private suspend fun getOfficialStoreProductRecommendation(
-//            categoryId: String,
-//            pageNumber: Int
-//    ): Result<RecommendationWidget> {
-//        return withContext(dispatchers.io()) {
-//            try {
-//                val pageName = "official-store"
-//                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-//                val dataProduct = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-//                val recommendationWidget = dataProduct.first()[0]
-//
-//                Success(recommendationWidget)
-//            } catch (t: Throwable) {
-//                Fail(t)
-//            }
-//        }
-//    }
-
     private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {
         return withContext(dispatchers.io()) {
             try {
@@ -242,7 +185,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             try {
                 val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
                 val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-                // _productRecommendation.postValue(Success(dataProductResponse.first().get(0)))
                 Success(dataProductResponse.first().get(0))
             } catch (t: Throwable) {
                 Fail(t)
