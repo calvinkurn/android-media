@@ -15,6 +15,7 @@ import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.searchV4.data.FlightRouteDao
+import com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao
 import com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao
 import javax.inject.Inject
 
@@ -23,7 +24,8 @@ import javax.inject.Inject
  */
 open class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightJourneyDao: FlightJourneyDao,
-        private val flightRouteDao: FlightRouteDao) {
+        private val flightRouteDao: FlightRouteDao,
+        private val flightComboDao: FlightComboDao) {
 
     open suspend fun insertList(journeyAndRoutesList: List<JourneyAndRoutes>) {
         for (journey in journeyAndRoutesList) {
@@ -47,7 +49,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                 "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
 
         val query = buildQuery(sqlQuery, filterModel, flightSortOption)
-        val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
+        val filteredJourney = getFilteredJourneysByFilter(flightJourneyDao.findFilteredJourneys(query), filterModel)
         val facilityFilterList = getFacilityFilter(filterModel.facilityList)
 
         return getJourneyFilteredByFacility(filteredJourney, facilityFilterList).map {
@@ -67,6 +69,19 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             populateCompactJourneyAndRoutes(it)
         }.toList()
     }
+
+    private suspend fun getFilteredJourneysByFilter(filteredJourneys: List<JourneyAndRoutes>, filterModel: FlightFilterModel): List<JourneyAndRoutes> =
+            if (filterModel.isReturn && filterModel.isBestPairing && filterModel.journeyId.isNotEmpty()) {
+                val comboJourneys = flightComboDao.findCombosByOnwardJourneyId(filterModel.journeyId).map {
+                    it.returnJourneyId
+                }.toList()
+
+                filteredJourneys.filter {
+                    comboJourneys.contains(it.flightJourneyTable.id)
+                }
+            } else {
+                filteredJourneys
+            }
 
     private fun populateCompactJourneyAndRoutes(journeyAndRoutes: JourneyAndRoutes): JourneyAndRoutes {
         val journeyDepartureAirport = FlightAirportModel(journeyAndRoutes.flightJourneyTable.departureAirport,
