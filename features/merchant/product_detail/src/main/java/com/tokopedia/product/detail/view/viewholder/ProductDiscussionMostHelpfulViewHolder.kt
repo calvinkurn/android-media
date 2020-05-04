@@ -12,7 +12,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
 
-    override fun bind(element: ProductDiscussionMostHelpfulDataModel?) {
+    override fun bind(element: ProductDiscussionMostHelpfulDataModel) {
         TODO("Not yet implemented")
     }
 }

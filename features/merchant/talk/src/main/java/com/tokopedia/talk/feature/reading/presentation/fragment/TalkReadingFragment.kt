@@ -23,6 +23,7 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
+import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
@@ -43,6 +44,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
@@ -71,6 +73,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var productId: String = ""
     private var shopId: String = ""
@@ -127,6 +131,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onFinishChooseSort(sortOption: SortOption) {
+        TalkReadingTracking.eventClickSort(sortOption.id.name.toLowerCase(), userSession.userId, productId)
         viewModel.updateSelectedSort(sortOption)
     }
 
@@ -143,7 +148,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onCategorySelected(categoryName: String, chipType: String) {
-        selectUnselectCategory(categoryName, chipType == ChipsUnify.TYPE_SELECTED)
+        val isSelected = chipType == ChipsUnify.TYPE_SELECTED
+        if(isSelected) {
+            TalkReadingTracking.eventClickFilter(categoryName, userSession.userId, productId)
+        }
+        selectUnselectCategory(categoryName, isSelected)
     }
 
     override fun onCategoriesCleared() {
