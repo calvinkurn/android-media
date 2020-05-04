@@ -231,7 +231,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
             val coachMarkItems = arrayListOf<CoachMarkItem>()
             coachMarkItems.add(CoachMarkItem(
                     wrapper,
-                    "",
+                    getString(R.string.flight_search_coach_mark_change_title),
                     getString(R.string.flight_search_coach_mark_from_widget)
             ))
 
