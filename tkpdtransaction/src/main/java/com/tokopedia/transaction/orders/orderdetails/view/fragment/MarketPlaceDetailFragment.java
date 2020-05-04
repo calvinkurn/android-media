@@ -220,7 +220,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         invoiceView = view.findViewById(R.id.invoice);
         invoiceCopy = view.findViewById(R.id.iv_copy_invoice);
         dividerInvoice = view.findViewById(R.id.divider_invoice);
-        invoiceLayout = view.findViewById(R.id.ll_invoice);
+        invoiceLayout = view.findViewById(R.id.rl_invoice);
         statusLihat = view.findViewById(R.id.lihat_status);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
