@@ -12,6 +12,7 @@ import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
+import com.tokopedia.vouchercreation.create.view.enums.PromotionTextField
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
@@ -42,7 +43,8 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 minValue = PromotionTypeUiListStaticDataSource.MinValue.NOMINAL_AMOUNT,
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                onValueChanged = ::onTextFieldValueChanged)
 
 
     private val minimumPurchaseTextFieldModel =
@@ -52,7 +54,8 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 minValue = PromotionTypeUiListStaticDataSource.MinValue.PUCHASE_AMOUNT,
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                onValueChanged = ::onTextFieldValueChanged)
 
 
     private val voucherQuotaTextFieldModel =
@@ -75,7 +78,6 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                 isLastTextField = true)
-
 
     private val promotionExpenseEstimationUiModel by lazy {
         PromotionExpenseEstimationUiModel()
@@ -106,7 +108,10 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
 
     private val percentageCashbackTextFieldList by lazy {
         listOf(
-                discountAmountTextFieldModel
+                discountAmountTextFieldModel,
+                maximumDiscountTextFieldModel,
+                minimumPurchaseTextFieldModel,
+                voucherQuotaTextFieldModel
         )
     }
 
@@ -168,13 +173,13 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
 
     }
 
+    /**
+     * We need to know the index of text input fields inside the adapter as the layout size is volatile (ticker could be closed)
+     * The text field index is equal to total visitables adapter size minus the bottom section model size and the input field itself
+     */
     private fun onCashbackSelectedType(cashbackType: CashbackType) {
         view?.clearFocus()
-        val extraSize =
-                when(cashbackType) {
-                    CashbackType.RUPIAH -> INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
-                    CashbackType.PERCENTAGE -> INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
-                }
+        val extraSize = INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
         textFieldIndex = adapter.data.size - extraSize
         adapter.data.removeAt(textFieldIndex)
         when(cashbackType) {
@@ -186,5 +191,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
             }
         }
         adapter.notifyDataSetChanged()
+    }
+
+    private fun onTextFieldValueChanged(value: Int?, textFieldType: PromotionTextField) {
+
     }
 }

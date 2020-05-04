@@ -4,22 +4,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
+import com.tokopedia.vouchercreation.create.view.enums.PromotionTextField
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
+import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
+import javax.inject.Inject
 
 class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: () -> Unit = {}) = FreeDeliveryVoucherCreateFragment(onNextStep)
+
+
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+
+    private val viewModel by lazy {
+        viewModelProvider.get(FreeDeliveryVoucherCreateViewModel::class.java)
     }
 
     private val promoDescTickerModel by lazy {
@@ -33,7 +54,9 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 minValue = PromotionTypeUiListStaticDataSource.MinValue.NOMINAL_AMOUNT,
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                promotionTextFieldType = PromotionTextField.FreeDelivery.Amount,
+                onValueChanged = ::onTextFieldValueChanged)
     }
 
     private val minimumPurchaseTextFieldModel by lazy {
@@ -43,7 +66,9 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 minValue = PromotionTypeUiListStaticDataSource.MinValue.PUCHASE_AMOUNT,
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum)
+                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                promotionTextFieldType = PromotionTextField.FreeDelivery.MinimumPurchase,
+                onValueChanged = ::onTextFieldValueChanged)
     }
 
     private val voucherQuotaTextFieldModel by lazy {
@@ -54,15 +79,20 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                isLastTextField = true)
+                isLastTextField = true,
+                promotionTextFieldType = PromotionTextField.FreeDelivery.VoucherQuota,
+                onValueChanged = ::onTextFieldValueChanged)
     }
+
+    private val promotionExpenseEstimationUiModel =
+            PromotionExpenseEstimationUiModel()
 
     private val freeDeliveryTypeUiList = mutableListOf(
             promoDescTickerModel,
             freeDeliveryAmountTextFieldModel,
             minimumPurchaseTextFieldModel,
             voucherQuotaTextFieldModel,
-            PromotionExpenseEstimationUiModel(),
+            promotionExpenseEstimationUiModel,
             NextButtonUiModel(onNextStep)
     )
 
@@ -73,7 +103,10 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {}
@@ -93,12 +126,24 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
     }
 
     private fun setupView() {
+        viewLifecycleOwner.observe(viewModel.expensesExtimationLiveData) { value ->
+            promotionExpenseEstimationUiModel.estimationValue = value
+            adapter.run {
+                notifyItemChanged(data.indexOf(promotionExpenseEstimationUiModel))
+            }
+        }
         renderList(freeDeliveryTypeUiList)
     }
 
     private fun onDismissTicker() {
         adapter.data.remove(promoDescTickerModel)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun onTextFieldValueChanged(value: Int?, textFieldType: PromotionTextField) {
+        if (textFieldType is PromotionTextField.FreeDelivery) {
+            viewModel.addTextFieldValueToCalculation(value, textFieldType)
+        }
     }
 
 }

@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -29,7 +28,6 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
         itemView.textField?.run {
             setLabelStatic(true)
             setInputType(InputType.TYPE_CLASS_NUMBER)
-            textFieldInput.text.clear()
 
             element.labelRes?.let { labelRes ->
                 textFiedlLabelText.text = context.resources.getString(labelRes).toBlankOrString()
@@ -50,6 +48,8 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                         currentValue = number.toInt(),
                                         minValue = element.minValue,
                                         maxValue = element.maxValue)
+
+                                element.onValueChanged(number.toInt(), element.promotionTextFieldType)
                             }
                         })
                     }
@@ -60,11 +60,14 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
 
                     textFieldInput.addTextChangedListener(object : TextWatcher {
                         override fun afterTextChanged(s: Editable?) {
+                            val value = s.toString().toIntOrZero()
                             this@run.validateValue(
                                     textFieldType = VoucherTextFieldType.QUANTITY,
-                                    currentValue = s.toString().toIntOrZero(),
+                                    currentValue = value,
                                     minValue = element.minValue,
                                     maxValue = element.maxValue)
+
+                            element.onValueChanged(value, element.promotionTextFieldType)
                         }
 
                         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -79,11 +82,14 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     appendText(context.resources.getString(R.string.mvc_percent).toBlankOrString())
                     textFieldInput.addTextChangedListener(object : TextWatcher {
                         override fun afterTextChanged(s: Editable?) {
+                            val value = s.toString().toIntOrZero()
                             this@run.validateValue(
                                     textFieldType = VoucherTextFieldType.PERCENTAGE,
-                                    currentValue = s.toString().toIntOrZero(),
+                                    currentValue = value,
                                     minValue = element.minValue,
                                     maxValue = element.maxValue)
+                            element.onValueChanged(value, element.promotionTextFieldType)
+
                         }
 
                         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -91,9 +97,6 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                     })
                 }
-            }
-            if (element.isLastTextField) {
-                textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
             }
         }
     }
