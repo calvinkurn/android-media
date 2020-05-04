@@ -35,7 +35,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         }
         ticker.gone()
         setBankStatus(
-                isPrimary = (bankAccount.fsp == PRIMARY_ACCOUNT),
+                isPrimary = false,//(bankAccount.fsp == PRIMARY_ACCOUNT),
                 status = bankAccount.statusFraud,
                 copyWriting = bankAccount.copyWriting
         )
@@ -129,6 +129,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         hideShowIsiDataButton(showIsiDataButton)
         hideShowDeleteButton(showDeleteButton)
         hideShowPendingAccountTag(showPendingAccountButton)
+        hideShowDeleteButton(true)
     }
 
     private fun hideShowDeleteButton(isShow: Boolean) {
