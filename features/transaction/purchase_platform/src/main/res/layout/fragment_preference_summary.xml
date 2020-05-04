@@ -231,6 +231,41 @@
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/Neutral_N75"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail" />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+                android:id="@+id/cb_main_preference"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_main_preference"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Pilihan Utama"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintBottom_toBottomOf="@+id/cb_main_preference"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cb_main_preference"
+                app:layout_constraintTop_toTopOf="@+id/cb_main_preference"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_save"
                 android:layout_width="0dp"
@@ -240,14 +275,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
+                app:layout_constraintTop_toBottomOf="@+id/cb_main_preference"
                 app:layout_constraintVertical_bias="1" />
-
-            <!--        <androidx.constraintlayout.widget.Group-->
-            <!--            android:id="@+id/main_content"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            app:constraint_referenced_ids="tv_preference_name,tv_address_name,tv_address_receiver,tv_address_detail,btn_change_address,tv_shipping_name,tv_shipping_duration,btn_change_duration,iv_payment,tv_payment_name,tv_payment_detail,btn_change_payment,btn_save" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

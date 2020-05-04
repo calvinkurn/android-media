@@ -232,8 +232,11 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     private fun initViews() {
         buttonPreferenceListAction?.setOnClickListener {
             preferencelistAnalytics.eventAddPreferenceFromPurchaseSetting()
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + (adapter.itemCount + 1))
+            val profileNumber = adapter.itemCount + 1
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + profileNumber)
+                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, profileNumber > 1)
+            }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
         preferenceList?.adapter = adapter

@@ -50,4 +50,6 @@ interface PreferenceEditParent {
     fun showDeleteButton()
     fun hideDeleteButton()
     fun setDeleteButtonOnClickListener(onClick: () -> Unit)
+
+    fun getFromFlow(): Int
 }

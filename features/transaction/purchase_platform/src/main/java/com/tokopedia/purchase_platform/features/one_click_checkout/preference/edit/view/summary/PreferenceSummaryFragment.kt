@@ -34,6 +34,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -72,6 +73,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private var tvPaymentName: Typography? = null
     private var tvPaymentDetail: Typography? = null
     private var buttonChangePayment: Typography? = null
+
+    private var cbMainPreference: CheckboxUnify? = null
+    private var tvMainPreference: Typography? = null
 
     private var globalError: GlobalError? = null
 
@@ -229,6 +233,14 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         } else {
             tvPaymentDetail?.gone()
         }
+
+        val parent = activity
+        if (parent is PreferenceEditParent) {
+            if (!parent.getShouldShowDeleteButton() || data.status == 2) {
+                cbMainPreference?.gone()
+                tvMainPreference?.gone()
+            }
+        }
     }
 
     private fun handleError(throwable: Throwable) {
@@ -290,6 +302,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         tvPaymentDetail = view?.findViewById(R.id.tv_payment_detail)
         buttonChangePayment = view?.findViewById(R.id.btn_change_payment)
 
+        cbMainPreference = view?.findViewById(R.id.cb_main_preference)
+        tvMainPreference = view?.findViewById(R.id.tv_main_preference)
+
         globalError = view?.findViewById(R.id.global_error)
 
         mainContent?.gone()
@@ -325,9 +340,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 val parent = activity
                 if (parent is PreferenceEditParent) {
                     if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.getProfileId() > 0) {
-                        viewModel.updatePreference(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
+                        viewModel.updatePreference(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), cbMainPreference?.isChecked ?: false, parent.getFromFlow())
                     } else {
-                        viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
+                        viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), cbMainPreference?.isChecked ?: false, parent.getFromFlow())
                     }
                     preferenceListAnalytics.eventClickSimpanOnSummaryPurchaseSetting()
                 }
