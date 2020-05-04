@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.oldlist.constant
+package com.tokopedia.product.manage.feature.list.constant
 
 const val EVENT_ADD_PRODUCT = "clickAddProduct"
 const val CATEGORY_ADD_PRODUCT = "add product - new"

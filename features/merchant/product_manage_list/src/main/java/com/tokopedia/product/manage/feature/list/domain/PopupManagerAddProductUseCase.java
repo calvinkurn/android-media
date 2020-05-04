@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.oldlist.domain;
+package com.tokopedia.product.manage.feature.list.domain;
 
 import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.product.manage.oldlist.data.model.PopUpManagerViewModel;
+import com.tokopedia.product.manage.feature.list.data.model.PopUpManagerViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -14,8 +14,7 @@ import javax.inject.Named;
 
 import rx.Observable;
 
-import static com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.GQL_POPUP_NAME;
-
+import static com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.GQL_POPUP_NAME;
 
 public class PopupManagerAddProductUseCase extends UseCase<Boolean> {
 

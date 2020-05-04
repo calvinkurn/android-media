@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.oldlist.view.listener;
+package com.tokopedia.product.manage.feature.list.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 

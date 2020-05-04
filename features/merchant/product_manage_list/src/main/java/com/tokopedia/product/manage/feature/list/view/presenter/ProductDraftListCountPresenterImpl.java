@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.oldlist.view.presenter;
+package com.tokopedia.product.manage.feature.list.view.presenter;
 
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase;
-import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase;
+import com.tokopedia.product.manage.feature.list.domain.ClearAllDraftProductUseCase;
+import com.tokopedia.product.manage.feature.list.domain.FetchAllDraftProductCountUseCase;
 import com.tokopedia.usecase.RequestParams;
 import javax.inject.Inject;
 import rx.Subscriber;

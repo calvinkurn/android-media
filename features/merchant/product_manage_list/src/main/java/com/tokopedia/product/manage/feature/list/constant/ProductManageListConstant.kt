@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.oldlist.constant
+package com.tokopedia.product.manage.feature.list.constant
 
 object ProductManageListConstant {
 

@@ -1,7 +1,7 @@
-package com.tokopedia.product.manage.oldlist.view.presenter;
+package com.tokopedia.product.manage.feature.list.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.product.manage.oldlist.view.listener.ProductDraftListCountView;
+import com.tokopedia.product.manage.feature.list.view.listener.ProductDraftListCountView;
 
 /**
  * Created by User on 6/20/2017.

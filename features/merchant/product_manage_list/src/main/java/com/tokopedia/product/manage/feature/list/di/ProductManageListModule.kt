@@ -22,13 +22,13 @@ import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraft
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase
-import com.tokopedia.product.manage.oldlist.constant.GQL_FEATURED_PRODUCT
-import com.tokopedia.product.manage.oldlist.constant.GQL_UPDATE_PRODUCT
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
-import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenterImpl
+import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.domain.ClearAllDraftProductUseCase
+import com.tokopedia.product.manage.feature.list.domain.FetchAllDraftProductCountUseCase
+import com.tokopedia.product.manage.feature.list.view.presenter.ProductDraftListCountPresenter
+import com.tokopedia.product.manage.feature.list.view.presenter.ProductDraftListCountPresenterImpl
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
@@ -49,10 +49,10 @@ class ProductManageListModule {
     @Provides
     @ProductManageListScope
     fun providePresenterDraft(
-            fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
-            getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
-            clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
-            updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase
+        fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
+        getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
+        clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
+        updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase
     ): ProductDraftListCountPresenter {
         return ProductDraftListCountPresenterImpl(
                 fetchAllDraftProductCountUseCase,

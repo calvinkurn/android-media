@@ -1,7 +1,7 @@
-package com.tokopedia.product.manage.feature.list.utils
+package com.tokopedia.product.manage.feature.list.analytics
 
-import com.tokopedia.product.manage.feature.list.analytics.EventTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
+import com.tokopedia.product.manage.feature.list.constant.CLICK
 import com.tokopedia.track.TrackApp
 
 object ProductManageTracking {
@@ -25,6 +25,10 @@ object ProductManageTracking {
         ).dataTracking)
     }
 
+    fun eventDraftClick(label: String) {
+        eventProductManage(CLICK, label)
+    }
+
     fun eventAddProduct() {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ADD, "")
     }
@@ -43,10 +47,6 @@ object ProductManageTracking {
 
     fun eventEditStock(label: String) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_EDIT_STOCK, label)
-    }
-
-    fun eventComplete(label: String) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_COMPLETE, label)
     }
 
     fun eventInventory(tabName: String) {

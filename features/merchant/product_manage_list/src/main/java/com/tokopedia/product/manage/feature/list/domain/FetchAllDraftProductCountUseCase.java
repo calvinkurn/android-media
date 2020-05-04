@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.oldlist.domain;
+package com.tokopedia.product.manage.feature.list.domain;
 
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.usecase.RequestParams;
