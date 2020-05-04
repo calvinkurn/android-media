@@ -50,7 +50,6 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
