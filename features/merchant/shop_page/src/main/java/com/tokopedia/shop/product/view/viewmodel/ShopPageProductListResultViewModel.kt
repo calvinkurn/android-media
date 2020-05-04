@@ -64,9 +64,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun getEtalaseData(shopId: String) {
         launchCatchError(coroutineContext, block = {
-            val etalaseListDataResult = withContext(Dispatchers.IO) {
-                getShopEtalaseData(shopId)
-            }
+            val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId) }
             etalaseListData.postValue(Success(etalaseListDataResult))
         }) {
             etalaseListData.postValue(Fail(it))
