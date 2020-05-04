@@ -15,11 +15,7 @@ import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProdu
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
 import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
-import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
-import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
-import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl
@@ -29,7 +25,6 @@ import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftP
 import com.tokopedia.product.manage.oldlist.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
-import com.tokopedia.product.manage.oldlist.di.OldProductManageScope
 import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
