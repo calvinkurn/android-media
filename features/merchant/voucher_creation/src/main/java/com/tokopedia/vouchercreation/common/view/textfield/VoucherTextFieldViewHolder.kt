@@ -49,7 +49,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                         minValue = element.minValue,
                                         maxValue = element.maxValue)
 
-                                element.onValueChanged(number.toInt(), element.promotionTextFieldType)
+                                element.onValueChanged(number.toInt(), element.promotionTypeType)
                             }
                         })
                     }
@@ -67,7 +67,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                     minValue = element.minValue,
                                     maxValue = element.maxValue)
 
-                            element.onValueChanged(value, element.promotionTextFieldType)
+                            element.onValueChanged(value, element.promotionTypeType)
                         }
 
                         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -88,7 +88,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                     currentValue = value,
                                     minValue = element.minValue,
                                     maxValue = element.maxValue)
-                            element.onValueChanged(value, element.promotionTextFieldType)
+                            element.onValueChanged(value, element.promotionTypeType)
 
                         }
 

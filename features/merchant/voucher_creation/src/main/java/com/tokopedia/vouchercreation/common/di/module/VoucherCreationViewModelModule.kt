@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
+import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
@@ -40,4 +41,9 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(FreeDeliveryVoucherCreateViewModel::class)
     abstract fun provideFreeDeliveryVoucherCreateViewModel(freeDeliveryVoucherCreateViewModel: FreeDeliveryVoucherCreateViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CashbackVoucherCreateViewModel::class)
+    abstract fun provideCashbackVoucherCreateViewModel(cashbackVoucherCreateViewModel: CashbackVoucherCreateViewModel): ViewModel
 }

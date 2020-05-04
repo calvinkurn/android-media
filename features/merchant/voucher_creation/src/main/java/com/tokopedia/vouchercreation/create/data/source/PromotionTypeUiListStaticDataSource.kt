@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.data.source
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
+import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 
 object PromotionTypeUiListStaticDataSource {
@@ -31,6 +32,38 @@ object PromotionTypeUiListStaticDataSource {
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                     isLastTextField = true)
+    )
+
+    fun getCashbackRupiahTypeTextFieldList(onValueChanged: (Int?, PromotionType) -> Unit) = listOf(
+            VoucherTextFieldUiModel(
+                    type = VoucherTextFieldType.CURRENCY,
+                    labelRes = R.string.mvc_create_promo_type_cashback_textfield_discount_maximum,
+                    minValue = MinValue.NOMINAL_AMOUNT,
+                    maxValue = MaxValue.NOMINAL_AMOUNT,
+                    minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                    maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                    promotionTypeType = PromotionType.Cashback.Rupiah.MaximumDiscount,
+                    onValueChanged = onValueChanged),
+            VoucherTextFieldUiModel(
+                    type = VoucherTextFieldType.CURRENCY,
+                    labelRes = R.string.mvc_create_promo_type_textfield_minimum_purchase,
+                    minValue = MinValue.PUCHASE_AMOUNT,
+                    maxValue = MaxValue.PUCHASE_AMOUNT,
+                    minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                    maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                    promotionTypeType = PromotionType.Cashback.Rupiah.MinimumPurchase,
+                    onValueChanged = onValueChanged),
+            VoucherTextFieldUiModel(
+                    type = VoucherTextFieldType.QUANTITY,
+                    labelRes = R.string.mvc_create_promo_type_textfield_voucher_quota,
+                    minValue = MinValue.VOUCHER_QUOTA,
+                    maxValue = MaxValue.VOUCHER_QUOTA,
+                    minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
+                    maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
+                    isLastTextField = true,
+                    promotionTypeType = PromotionType.Cashback.Rupiah.VoucherQuota,
+                    onValueChanged = onValueChanged)
+
     )
 
     object MinValue {

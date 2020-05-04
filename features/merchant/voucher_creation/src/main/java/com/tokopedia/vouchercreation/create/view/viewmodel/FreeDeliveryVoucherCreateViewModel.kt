@@ -1,9 +1,11 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.vouchercreation.create.view.enums.PromotionTextField
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
@@ -12,39 +14,34 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    companion object {
-        private const val INITIAL_EXPENSE_ESTIMATION = 0
-    }
-
-    private val mExpensesExtimationLiveData = MutableLiveData<Int>()
-    val expensesExtimationLiveData: LiveData<Int>
-        get() = mExpensesExtimationLiveData
-
     private val mFreeDeliveryAmount = MutableLiveData<Int>()
     private val mMinimumPurchase = MutableLiveData<Int>()
     private val mVoucherQuota = MutableLiveData<Int>()
 
-    fun addTextFieldValueToCalculation(value: Int?, type: PromotionTextField.FreeDelivery) {
-        when(type) {
-            PromotionTextField.FreeDelivery.Amount -> {
-                mFreeDeliveryAmount.value = value
-            }
-            PromotionTextField.FreeDelivery.MinimumPurchase -> {
-                mMinimumPurchase.value = value
-            }
-            PromotionTextField.FreeDelivery.VoucherQuota -> {
-                mVoucherQuota.value = value
-            }
-        }
-        if (checkIfCanCalculate()) {
+    private val mExpensesExtimationLiveData = MediatorLiveData<Int>().apply {
+        addSource(mFreeDeliveryAmount) {
             calculateExpenseEstimation()
-        } else {
-            mExpensesExtimationLiveData.value = INITIAL_EXPENSE_ESTIMATION
+        }
+        addSource(mVoucherQuota) {
+            calculateExpenseEstimation()
         }
     }
+    val expensesExtimationLiveData: LiveData<Int>
+        get() = mExpensesExtimationLiveData
 
-    private fun checkIfCanCalculate() =
-            mFreeDeliveryAmount.value != null && mVoucherQuota.value != null
+    fun addTextFieldValueToCalculation(value: Int?, type: PromotionType.FreeDelivery) {
+        when(type) {
+            PromotionType.FreeDelivery.Amount -> {
+                mFreeDeliveryAmount.value = value.toZeroIfNull()
+            }
+            PromotionType.FreeDelivery.MinimumPurchase -> {
+                mMinimumPurchase.value = value.toZeroIfNull()
+            }
+            PromotionType.FreeDelivery.VoucherQuota -> {
+                mVoucherQuota.value = value.toZeroIfNull()
+            }
+        }
+    }
 
     private fun calculateExpenseEstimation() {
         mFreeDeliveryAmount.value?.let { amount ->

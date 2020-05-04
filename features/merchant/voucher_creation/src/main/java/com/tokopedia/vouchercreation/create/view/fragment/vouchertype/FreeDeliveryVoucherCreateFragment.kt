@@ -16,7 +16,7 @@ import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpen
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
-import com.tokopedia.vouchercreation.create.view.enums.PromotionTextField
+import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
@@ -55,7 +55,7 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionTextFieldType = PromotionTextField.FreeDelivery.Amount,
+                promotionTypeType = PromotionType.FreeDelivery.Amount,
                 onValueChanged = ::onTextFieldValueChanged)
     }
 
@@ -67,7 +67,7 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionTextFieldType = PromotionTextField.FreeDelivery.MinimumPurchase,
+                promotionTypeType = PromotionType.FreeDelivery.MinimumPurchase,
                 onValueChanged = ::onTextFieldValueChanged)
     }
 
@@ -80,7 +80,7 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                 isLastTextField = true,
-                promotionTextFieldType = PromotionTextField.FreeDelivery.VoucherQuota,
+                promotionTypeType = PromotionType.FreeDelivery.VoucherQuota,
                 onValueChanged = ::onTextFieldValueChanged)
     }
 
@@ -140,9 +140,9 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
         adapter.notifyDataSetChanged()
     }
 
-    private fun onTextFieldValueChanged(value: Int?, textFieldType: PromotionTextField) {
-        if (textFieldType is PromotionTextField.FreeDelivery) {
-            viewModel.addTextFieldValueToCalculation(value, textFieldType)
+    private fun onTextFieldValueChanged(value: Int?, typeType: PromotionType) {
+        if (typeType is PromotionType.FreeDelivery) {
+            viewModel.addTextFieldValueToCalculation(value, typeType)
         }
     }
 

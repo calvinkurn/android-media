@@ -22,11 +22,11 @@ class CashbackTypePickerViewHolder(itemView: View) : AbstractViewHolder<Cashback
     private val cashbackChipsList by lazy {
         listOf(
                 CashbackTypeChipUiModel(
-                        cashbackType = CashbackType.RUPIAH,
+                        cashbackType = CashbackType.Rupiah,
                         isActive = true
                 ),
                 CashbackTypeChipUiModel(
-                        cashbackType = CashbackType.PERCENTAGE,
+                        cashbackType = CashbackType.Percentage,
                         isActive = false
                 )
         )
