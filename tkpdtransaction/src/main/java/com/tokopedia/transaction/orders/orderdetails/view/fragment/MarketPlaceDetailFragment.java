@@ -790,10 +790,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Uri uri = Uri.parse(actionButton.getUri());
                         trackingUrl = uri.getQueryParameter("url");
                         Uri.Builder uriBuilder = new Uri.Builder();
+
                         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
                         routingAppLink += uriBuilder.toString();
                         RouteManager.route(getContext(), routingAppLink);
-
                     } else {
                         RouteManager.route(getContext(), actionButton.getUri());
                     }
