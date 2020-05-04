@@ -8,10 +8,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.util.changeConstraint
@@ -68,19 +66,37 @@ class VideoView(container: ViewGroup) : UIView(container) {
     }
 
     private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
-        pvVideo.resizeMode = if (videoOrientation.isHorizontal) {
-            when {
-                screenOrientation.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIT
-                else -> AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+
+        fun configureVideo() {
+            pvVideo.resizeMode = when {
+                !videoOrientation.isHorizontal -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                screenOrientation.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
+                else -> AspectRatioFrameLayout.RESIZE_MODE_FIT
             }
-        } else AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
-        val lParams = pvVideo.layoutParams as FrameLayout.LayoutParams
-        lParams.gravity =
-                if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) Gravity.NO_GRAVITY
-                else Gravity.CENTER
+            val lParams = pvVideo.layoutParams as FrameLayout.LayoutParams
+            lParams.gravity =
+                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) Gravity.NO_GRAVITY
+                    else Gravity.CENTER
 
-        pvVideo.layoutParams = lParams
+            lParams.height = if (videoOrientation is VideoOrientation.Horizontal && !screenOrientation.isLandscape) {
+                val heightRatioDouble = videoOrientation.heightRatio.toDouble()
+                (heightRatioDouble/videoOrientation.widthRatio * getScreenWidth()).toInt()
+            }
+            else FrameLayout.LayoutParams.WRAP_CONTENT
+
+            pvVideo.layoutParams = lParams
+        }
+
+        fun configureBackground() {
+            view.setBackgroundColor(MethodChecker.getColor(view.context,
+                    if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) R.color.play_solid_black
+                    else R.color.transparent
+            ))
+        }
+
+        configureVideo()
+        configureBackground()
     }
 
     private fun configureThumbnailLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {

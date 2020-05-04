@@ -11,8 +11,10 @@ sealed class VideoOrientation {
     object Vertical : VideoOrientation() {
         override val value: String = VERTICAL
     }
-    data class Horizontal(val aspectRatio: String) : VideoOrientation() {
+    data class Horizontal(val widthRatio: Int, val heightRatio: Int) : VideoOrientation() {
         override val value: String = HORIZONTAL
+
+        val aspectRatio = "$widthRatio:$heightRatio"
     }
     object Unknown : VideoOrientation() {
         override val value: String = UNKNOWN
@@ -29,7 +31,7 @@ sealed class VideoOrientation {
         fun getByValue(value: String): VideoOrientation {
             return when (value) {
                 VERTICAL -> Vertical
-                HORIZONTAL -> Horizontal("16:9") //for now only support 16:9
+                HORIZONTAL -> Horizontal(widthRatio = 16, heightRatio = 9) //for now only support 16:9
                 else -> Unknown
             }
         }
