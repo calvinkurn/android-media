@@ -20,6 +20,6 @@ class DynamicChannelViewModel(
         DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL -> DynamicChannelThematicViewHolder.LAYOUT
         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> DynamicChannelMixLeftViewHolder.LAYOUT
         DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> DynamicChannelMixTopViewHolder.LAYOUT
-        else -> throw Exception("Layout not supported!")
+        else -> DynamicChannelLegoViewHolder.LAYOUT
     }
 }
