@@ -21,6 +21,8 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.listener.ProductAddImageView
 import com.tokopedia.product.manage.item.main.base.view.presenter.ProductAddImagePresenter
 import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<ProductComponent>, ProductAddImageView {
     var tkpdProgressDialog: TkpdProgressDialog? = null
@@ -152,8 +154,9 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
     }
 
     private fun validateHasLoginAndShop(): Boolean {
-        if (SessionHandler.isV4Login(this)) {
-            if (!SessionHandler.isUserHasShop(this)) {
+        val userSession: UserSessionInterface = UserSession(context)
+        if (userSession.isLoggedIn) {
+            if (!userSession.hasShop()) {
                 finish()
                 CommonUtils.UniversalToast(baseContext, getString(R.string.title_no_shop))
                 return false

@@ -29,7 +29,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
@@ -67,6 +66,8 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
+import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
+import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
@@ -325,7 +326,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
                     if (getApplicationContext() instanceof TkpdCoreRouter) {
                         taskStackBuilder.addNextIntent(
-                                HomeRouter.getHomeActivityInterfaceRouter(this)
+                                ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
                         );
                         getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }

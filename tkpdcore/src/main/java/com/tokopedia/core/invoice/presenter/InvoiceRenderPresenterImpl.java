@@ -1,14 +1,15 @@
 package com.tokopedia.core.invoice.presenter;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
-import com.tkpd.library.utils.ConnectionDetector;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.invoice.interactor.InvoiceNetInteractor;
 import com.tokopedia.core.invoice.interactor.InvoiceNetInteractorImpl;
 import com.tokopedia.core.invoice.listener.InvoiceViewListener;
 import com.tokopedia.core.invoice.model.InvoiceRenderParam;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core2.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,6 @@ import java.util.Map;
 public class InvoiceRenderPresenterImpl implements InvoiceRenderPresenter {
     private final InvoiceViewListener viewListener;
     private final InvoiceNetInteractorImpl netInteractor;
-    private ConnectionDetector connectionDetector;
 
     public InvoiceRenderPresenterImpl(InvoiceViewListener viewListener) {
         this.viewListener = viewListener;
@@ -35,8 +35,7 @@ public class InvoiceRenderPresenterImpl implements InvoiceRenderPresenter {
         params.put("id", data.getId());
         params.put("recharge", data.getRecharge() + "");
         params.put("tkpd", data.getGoldMerchant() + "");
-        connectionDetector = new ConnectionDetector(context);
-        if(connectionDetector.isConnectingToInternet()) {
+        if(isConnectingToInternet(context)) {
             netInteractor.renderInvoice(context, AuthUtil.generateParams(context, params),
                     new InvoiceNetInteractor.OnRenderInvoice() {
                         @Override
@@ -73,6 +72,23 @@ public class InvoiceRenderPresenterImpl implements InvoiceRenderPresenter {
             viewListener.dismissProgress();
             viewListener.renderInvoiceError(context.getString(R.string.msg_no_connection));
         }
+    }
 
+    /**
+     * Checking for all possible internet providers
+     * **/
+    public boolean isConnectingToInternet(Context context){
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null)
+        {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null)
+                for (int i = 0; i < info.length; i++)
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
+                    {
+                        return true;
+                    }
+        }
+        return false;
     }
 }

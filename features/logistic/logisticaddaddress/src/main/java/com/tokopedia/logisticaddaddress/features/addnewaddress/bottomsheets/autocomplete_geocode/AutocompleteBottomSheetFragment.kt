@@ -18,9 +18,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
-import com.tokopedia.logisticaddaddress.utils.rxEditText
-import com.tokopedia.logisticaddaddress.utils.toCompositeSubs
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticdata.util.rxEditText
+import com.tokopedia.logisticdata.util.toCompositeSubs
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
