@@ -23,6 +23,14 @@ import javax.inject.Inject
 
 class RemoteService : Service() {
 
+    companion object {
+        const val KEY_NAME = "name"
+        const val KEY_EMAIL = "email"
+        const val KEY_SHOP_AVATAR = "shop_avatar"
+        const val KEY_SHOP_NAME = "shop_name"
+        const val KEY_PHONE = "phone_no"
+    }
+
     override fun onCreate() {
         super.onCreate()
         DaggerSeamlessLoginComponent.builder()
@@ -72,11 +80,11 @@ class RemoteService : Service() {
             val data = Bundle()
             if(userSession.isLoggedIn) {
                 data.apply {
-                    putString("name", userSession.name)
-                    putString("email", userSession.email)
-                    putString("shop_avatar", userSession.shopAvatar)
-                    putString("shop_name", userSession.shopName)
-                    putString("phone_no", userSession.phoneNumber)
+                    putString(KEY_NAME, userSession.name)
+                    putString(KEY_EMAIL, userSession.email)
+                    putString(KEY_SHOP_AVATAR, userSession.shopAvatar)
+                    putString(KEY_SHOP_NAME, userSession.shopName)
+                    putString(KEY_PHONE, userSession.phoneNumber)
                 }
             }else {
                 data.apply {

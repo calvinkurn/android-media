@@ -18,17 +18,4 @@ class SeamlessLoginUseCaseModule{
     @Provides
     fun provideGetKeyUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<GenerateKeyPojo> = GraphqlUseCase(graphqlRepository)
-//
-//    @Provides
-//    fun provideRegisterRequestGraphQlUseCase(graphqlRepository: GraphqlRepository)
-//            : GraphqlUseCase<RegisterRequestPojo> = GraphqlUseCase(graphqlRepository)
-//
-//    @Provides
-//    fun provideActivateUserGraphQlUseCase(graphqlRepository: GraphqlRepository)
-//            : GraphqlUseCase<ActivateUserPojo> = GraphqlUseCase(graphqlRepository)
-//
-//    @Provides
-//    fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {
-//        return DynamicBannerUseCase(graphqlUseCase)
-//    }
 }
