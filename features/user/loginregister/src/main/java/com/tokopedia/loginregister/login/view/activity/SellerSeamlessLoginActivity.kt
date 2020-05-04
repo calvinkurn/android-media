@@ -30,6 +30,15 @@ class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginRegi
         return SellerSeamlessLoginFragment.createInstance(bundle)
     }
 
+    override fun onBackPressed() {
+        if(fragment != null && fragment is SellerSeamlessLoginFragment){
+            (fragment as SellerSeamlessLoginFragment).onBackPressedFragment()
+            super.onBackPressed()
+        }else{
+            super.onBackPressed()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setWhiteStatusBarIfSellerApp()
