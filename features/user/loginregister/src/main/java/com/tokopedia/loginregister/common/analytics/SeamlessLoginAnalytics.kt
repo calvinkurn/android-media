@@ -50,7 +50,7 @@ class SeamlessLoginAnalytics {
 
         private val EVENT_CLICK_LOGIN = "clickLogin"
 
-        private val CATEGORY_LOGIN_PAGE_SELLER = "on click login - seller"
+        private val CATEGORY_LOGIN_PAGE_SELLER = "one click login - seller"
 
         private val ACTION_CLICK_ON_BUTTON_LOGIN = "click on masuk"
         private val ACTION_CLICK_ON_BUTTON_ANOTHER_ACCS = "click on masuk ke akun lain"
