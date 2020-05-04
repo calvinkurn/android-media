@@ -439,8 +439,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setupProductList() {
-        recycler_view.clearItemDecoration()
-        recycler_view.addItemDecoration(ProductListItemDecoration())
+        recycler_view.apply {
+            itemAnimator = null
+            clearItemDecoration()
+            addItemDecoration(ProductListItemDecoration())
+        }
     }
 
     private fun setupFiltersTab() {
