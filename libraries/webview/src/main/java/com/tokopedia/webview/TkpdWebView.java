@@ -36,6 +36,7 @@ import java.util.UUID;
 
 import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
 import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 
 /**
  * Created by nisie on 11/30/16.

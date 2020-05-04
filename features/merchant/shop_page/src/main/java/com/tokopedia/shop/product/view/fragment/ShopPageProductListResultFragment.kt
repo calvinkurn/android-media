@@ -61,6 +61,10 @@ import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewMo
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_DEFAULT
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_ZERO_PRODUCT
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SELECTED_ETALASE_ID
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SHOP_ID
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity

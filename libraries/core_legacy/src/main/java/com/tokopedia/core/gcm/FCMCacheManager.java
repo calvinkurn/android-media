@@ -28,11 +28,15 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import timber.log.Timber;
 
+import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_STORAGE;
+
 /**
  * @author by Herdi_WORK on 13.12.16.
  */
 
 public class FCMCacheManager {
+    public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
     public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
@@ -152,16 +156,20 @@ public class FCMCacheManager {
     }
 
     public static void storeRegId(String id, Context context) {
-        new UserSession(context).setDeviceId(id);
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        cache.putString(GCM_ID, id);
+        cache.applyEditor();
     }
 
     public static void storeFcmTimestamp(Context context) {
-        UserSession userSession = new UserSession(context);
-        userSession.setFcmTimestamp();
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
+        cache.applyEditor();
     }
 
     public static boolean isFcmExpired(Context context) {
-        long lastFCMUpdate = new UserSession(context).getFcmTimestamp();
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        long lastFCMUpdate = cache.getLong(GCM_ID_TIMESTAMP, 0);
         if (lastFCMUpdate <= 0) {
             FCMCacheManager.storeFcmTimestamp(context);
             return false;
@@ -197,14 +205,14 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationIdWithTemp(Context context) {
-        UserSession userSession = new UserSession(context);
-        String deviceId = userSession.getDeviceId();
-        if (TextUtils.isEmpty(deviceId)) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        if (cache.getString("gcm_id", "").equals("")) {
             String tempID = getTempFcmId();
-            userSession.setDeviceId(tempID);
+            cache.putString("gcm_id", tempID);
+            cache.applyEditor();
             return tempID;
         }
-        return deviceId;
+        return cache.getString("gcm_id", "");
     }
 
     public static void setDialogNotificationSetting(Context context) {
