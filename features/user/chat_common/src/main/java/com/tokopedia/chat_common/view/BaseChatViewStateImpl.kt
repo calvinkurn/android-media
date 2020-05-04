@@ -280,19 +280,19 @@ open class BaseChatViewStateImpl(
     }
 
     override fun onKeyboardOpened() {
-        showChatMenu()
-    }
-
-    override fun onKeyboardClosed() {
         hideChatMenu()
     }
 
-    private fun showChatMenu() {
+    override fun onKeyboardClosed() {
+        showChatMenu()
+    }
+
+    private fun hideChatMenu() {
         attachmentMenu.isKeyboardOpened = true
         attachmentMenu.hideMenu()
     }
 
-    private fun hideChatMenu() {
+    private fun showChatMenu() {
         attachmentMenu.isKeyboardOpened = false
         if (attachmentMenu.showDelayed) {
             attachmentMenu.showDelayed()
