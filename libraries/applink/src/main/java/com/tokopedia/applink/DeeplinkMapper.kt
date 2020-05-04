@@ -293,6 +293,7 @@ object DeeplinkMapper {
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
             ApplinkConst.BUYER_INFO -> ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
+            ApplinkConst.HAS_PASSWORD -> return ApplinkConstInternalGlobal.HAS_PASSWORD
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {
