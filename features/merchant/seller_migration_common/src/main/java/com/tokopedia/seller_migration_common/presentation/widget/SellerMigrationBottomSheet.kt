@@ -92,7 +92,12 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
 
     private fun goToSellerApp() {
         try {
-            this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+            val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
+            if(intent != null) {
+                this.activity?.startActivity(intent)
+            } else {
+                this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+            }
         } catch (anfe: ActivityNotFoundException) {
             this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
         }
