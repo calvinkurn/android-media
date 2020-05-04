@@ -40,6 +40,11 @@ public class GtmLogger {
                 }
 
                 @Override
+                public void navigateToValidator() {
+
+                }
+
+                @Override
                 public void enableNotification(boolean status) {
 
                 }
