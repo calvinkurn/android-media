@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import android.net.Uri
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
