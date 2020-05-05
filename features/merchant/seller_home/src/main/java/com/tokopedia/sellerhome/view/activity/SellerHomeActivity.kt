@@ -69,7 +69,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         OtherMenuFragment.createInstance()
     }
 
-    private var currentSelectedMenu = 0
+    @FragmentType
+    private var currentSelectedMenu = FragmentType.NONE
     private var canExitApp = false
     private var lastProductMangePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
