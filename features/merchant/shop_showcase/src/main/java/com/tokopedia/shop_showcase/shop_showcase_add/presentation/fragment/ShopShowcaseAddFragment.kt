@@ -190,7 +190,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             updateAppendedSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             updateDeletedProduct(showcaseAddAdapter, newDeletedProductList)
             showSelectedProductList()
-            showToaster(resources.getString(R.string.success_add_product, newSelectedProductList?.size.toString()))
+            newSelectedProductList?.filter {
+                it.isNewAppended
+            }?.apply {
+                showToaster(resources.getString(R.string.success_add_product, size.toString()))
+            }
         }
     }
 
@@ -291,19 +295,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         }
 
         /**
-         * Listener for user click action done on their keyboard
+         * Listener for showcase name textfield
          */
-//        textFieldShowcaseName?.textFieldInput?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-//            override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-//                if(actionId == EditorInfo.IME_ACTION_DONE) {
-//                    val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
-//                    validateShowcaseName(showcaseName, false)
-//                    return true
-//                }
-//                return false
-//            }
-//        })
-
         textFieldShowcaseName?.textFieldInput?.run {
             setOnEditorActionListener(object : TextView.OnEditorActionListener {
                 override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
