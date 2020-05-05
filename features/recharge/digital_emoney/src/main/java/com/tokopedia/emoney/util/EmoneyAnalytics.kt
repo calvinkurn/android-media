@@ -7,7 +7,7 @@ import kotlin.collections.HashMap
 class EmoneyAnalytics {
 
     private fun addComponentClickNFC(mapEvent: MutableMap<String, Any>, screenName: String, userId: String, irisSessionId: String) {
-        mapEvent[Param.LOGGED_IN_STATUS] = if (userId.isEmpty()) "true" else "false"
+        mapEvent[Param.LOGGED_IN_STATUS] = if (userId.isNotEmpty()) "true" else "false"
         mapEvent[Param.CURRENT_SITE] = Param.CURRENT_SITE_EMONEY
         mapEvent[Param.BUSINESS_UNIT] = Param.BUSINESS_UNIT_EMONEY
         mapEvent[Param.SESSION_IRIS] = irisSessionId
@@ -20,7 +20,7 @@ class EmoneyAnalytics {
     private fun addComponentOpenScreenNFC(screenName: String, userId: String, irisSessionId: String) {
         val mapEvent = HashMap<String, String>()
         mapEvent[Param.EVENT] = Screen.INITIAL_NFC
-        mapEvent[Param.LOGGED_IN_STATUS] = if (userId.isEmpty()) "true" else "false"
+        mapEvent[Param.LOGGED_IN_STATUS] = if (userId.isNotEmpty()) "true" else "false"
         mapEvent[Param.CURRENT_SITE] = Param.CURRENT_SITE_EMONEY
         mapEvent[Param.BUSINESS_UNIT] = Param.BUSINESS_UNIT_EMONEY
         mapEvent[Param.SESSION_IRIS] = irisSessionId
