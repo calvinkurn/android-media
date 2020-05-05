@@ -77,6 +77,7 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     private fun showDummyData() {
         val dummy = listOf(
                 VoucherHeaderUiModel(),
+                PromoPerformanceUiModel("Rp2.600.000", 30, 120),
                 UsageProgressUiModel(30),
                 DividerUiModel(8),
                 TipsUiModel("Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat tips & trik"),

@@ -23,9 +23,12 @@ class VoucherDetailAdapterFactoryImpl : BaseAdapterTypeFactory(), VoucherDetailA
 
     override fun type(model: InfoContainerUiModel): Int = InfoContainerViewHolder.RES_LAYOUT
 
+    override fun type(model: PromoPerformanceUiModel): Int = PromoPerformanceViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent)
+            PromoPerformanceViewHolder.RES_LAYOUT -> PromoPerformanceViewHolder(parent)
             UsageProgressViewHolder.RES_LAYOUT -> UsageProgressViewHolder(parent)
             DividerViewHolder.RES_LAYOUT -> DividerViewHolder(parent)
             TipsViewHolder.RES_LAYOUT -> TipsViewHolder(parent)
