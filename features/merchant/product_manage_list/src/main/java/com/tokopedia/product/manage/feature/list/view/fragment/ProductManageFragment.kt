@@ -1571,6 +1571,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val status = data.getVariantStatus()
 
         productManageListAdapter.updateStock(data.productId, stock, status)
+
+        filterTab?.getSelectedFilter()?.let {
+            filterProductListByStatus(it)
+            renderMultiSelectProduct()
+        }
     }
 
     private fun showErrorMessageToast(result: Fail) {
