@@ -88,7 +88,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         observeShopInfoLiveData()
         observeCurrentSelectedPageLiveData()
         setupStatusBar()
-        handleAppLink(intent)
     }
 
     override fun onResume() {
