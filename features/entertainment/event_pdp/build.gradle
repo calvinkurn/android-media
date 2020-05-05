@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.mapviewer)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
+    implementation project(rootProject.ext.libraries.oms)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

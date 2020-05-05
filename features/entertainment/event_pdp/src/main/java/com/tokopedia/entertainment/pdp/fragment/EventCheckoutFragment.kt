@@ -16,6 +16,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -39,6 +42,7 @@ import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.Schedule
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getSchedule
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPaymentMapper.getJsonMapper
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventVerifyMapper.getEntityPessangerVerify
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventVerifyMapper.getVerifyBody
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
@@ -48,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.oms.view.utils.Utils
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
 import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
@@ -160,10 +165,8 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                     taskStackBuilder.addNextIntent(intentHomeUmrah)
 
                     val checkoutResultData = PaymentPassData()
-                  //  checkoutResultData.queryString = it.data.checkoutGeneral.data.data.queryString
-                    checkoutResultData.redirectUrl = data.data.url
-                    checkoutResultData.transactionId = data.data.transactionId
-                            //  checkoutResultData.paymentId = it.data.checkoutGeneral.data.data.parameter.pid
+                     checkoutResultData.queryString = Utils.transform(getJsonMapper(data))
+                     checkoutResultData.redirectUrl = data.data.url
 
                     val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
                     val intent = RouteManager.getIntent(context, paymentCheckoutString)

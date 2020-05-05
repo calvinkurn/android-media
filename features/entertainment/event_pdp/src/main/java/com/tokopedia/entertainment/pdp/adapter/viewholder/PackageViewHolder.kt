@@ -113,7 +113,8 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                 itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
             } else {
                 itemView.clearFocus()
-                itemView.txtPilih_ticket.visibility = View.VISIBLE
+                itemView.txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isHabis) View.GONE else View.VISIBLE
+                itemView.txtHabis_ticket.visibility = if(items.scheduleStatusBahasa == items.isHabis) View.VISIBLE else View.GONE
                 itemView.greenDivider.visibility = View.GONE
                 itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_normal_bg)
                 itemView.quantityEditor.clearFocus()
