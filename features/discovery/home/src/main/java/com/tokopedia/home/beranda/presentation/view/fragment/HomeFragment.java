@@ -1317,19 +1317,15 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void addImpressionToTrackingQueue(List<Visitable> visitables) {
         if (visitables != null) {
-            List<Object> combinedTracking = new ArrayList<>();
             for (Visitable visitable : visitables) {
                 if(visitable instanceof HomeVisitable) {
                     HomeVisitable homeVisitable = (HomeVisitable) visitable;
                     if (homeVisitable.isTrackingCombined() && homeVisitable.getTrackingDataForCombination() != null) {
-                        combinedTracking.addAll(homeVisitable.getTrackingDataForCombination());
+                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, homeVisitable.getTrackingDataForCombination());
                     } else if (!homeVisitable.isTrackingCombined() && homeVisitable.getTrackingData() != null) {
                         HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.getTrackingData());
                     }
                 }
-            }
-            if (!combinedTracking.isEmpty()) {
-                HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking);
             }
         }
     }

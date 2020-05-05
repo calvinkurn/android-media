@@ -50,6 +50,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.dialog_score_verification.*
@@ -116,21 +117,25 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         renderInitialLayout()
         button_activate_root.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopPm()
-            if (getApprovalStatusPojo.kycProjectInfo.status == 1) {
+            if (getApprovalStatusPojo.kycProjectInfo.status == STATUS_VERIFIED) {
                 if (shopStatusModel.isPowerMerchantInactive()) {
-                    if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                        setupDialogScore()?.show()
-                        return@setOnClickListener
+                    context?.let {
+                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
+                        } else {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE)
+                        }
+                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
                     }
-                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
-                    startActivityForResult(intent, ACTIVATE_INTENT_CODE)
                 } else {
-                    if (shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
-                        setupDialogScore()?.show()
-                        return@setOnClickListener
+                    context?.let {
+                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
+                        } else {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND)
+                        }
+                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
                     }
-                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND) }
-                    startActivityForResult(intent, AUTOEXTEND_INTENT_CODE)
                 }
             } else {
                 setupDialogKyc()?.show()
@@ -225,33 +230,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setCanceledOnTouchOutside(true)
             dialog.setContentView(R.layout.dialog_kyc_verification)
             dialog.btn_submit_kyc.setOnClickListener {
-                clickSubmitKycBtn()
+                openTermsAndConditionKYC()
                 dialog.hide()
             }
             dialog.btn_close_kyc.setOnClickListener {
                 dialog.hide()
             }
 
-            return dialog
-        }
-        return null
-    }
-
-    private fun setupDialogScore(): Dialog? {
-        context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_score_verification)
-
-            dialog.btn_submit_score.setOnClickListener {
-                powerMerchantTracking.eventIncreaseScorePopUp()
-                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
-            }
-            dialog.btn_close_score.setOnClickListener {
-                dialog.hide()
-            }
             return dialog
         }
         return null
@@ -416,28 +401,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    private fun openKycPage() {
-        val intent = RouteManager.getIntent(activity, APPLINK_POWER_MERCHANT_KYC)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+    private fun openTermsAndConditionKYC() {
+        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_KYC) }
         startActivity(intent)
-    }
-
-    private fun openTnCPage() {
-        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
-        startActivity(intent)
-    }
-
-    private fun clickSubmitKycBtn() {
-        if (isKycStatusNotVerified()) {
-            openTnCPage()
-        } else {
-            openKycPage()
-        }
-    }
-
-    private fun isKycStatusNotVerified(): Boolean {
-        val kycStatus = getApprovalStatusPojo.kycProjectInfo.status
-        return kycStatus == KYCConstant.STATUS_NOT_VERIFIED
     }
 
     override fun showEmptyState(throwable: Throwable) {
