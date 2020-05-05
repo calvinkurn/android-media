@@ -3,18 +3,20 @@ package com.tokopedia.contactus.home.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
+import android.view.View;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import android.view.View;
 
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.home.view.fragment.BuyerPurchaseFragment;
 import com.tokopedia.contactus.home.view.fragment.SellerPurchaseFragment;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -75,7 +77,8 @@ public class BuyerPurchaseListActivity extends BaseSimpleActivity {
     }
 
     private void setupViewPager() {
-        if (SessionHandler.isUserHasShop(this)) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.hasShop()) {
             adapter.addFragment(BuyerPurchaseFragment.newInstance(), getString(R.string.pembelian));
             adapter.addFragment(SellerPurchaseFragment.newInstance(), getString(R.string.penjualan));
         } else {

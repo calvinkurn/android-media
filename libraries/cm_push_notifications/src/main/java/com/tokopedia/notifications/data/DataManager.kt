@@ -29,7 +29,8 @@ class DataManager @Inject constructor(
                 userTransId = notification?.userTransactionId,
                 recipientId = notification?.userId,
                 shopId = notification?.shopId,
-                blastId = notification?.blastId
+                blastId = notification?.blastId,
+                data = notification?.webHookParamData()
         )
         attributionUseCase.execute(params)
     }
