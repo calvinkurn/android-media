@@ -14,8 +14,8 @@ interface SellerReviewDetailListener {
 }
 
 interface ProductFeedbackDetailListener {
-    fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
-    fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, position: Int)
+    fun onOptionFeedbackClicked(view: View, title: String, feedbackId: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
+    fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int)
 }
 
 interface OverallRatingDetailListener {
@@ -23,7 +23,7 @@ interface OverallRatingDetailListener {
 }
 
 interface SellerRatingAndTopicListener {
-    fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int)
+    fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, ratingSelected: Int, adapterPosition: Int)
 }
 
 interface TopicSortFilterListener {

@@ -27,7 +27,10 @@ class RatingAndTopicDetailViewHolder(val view: View, val listener: SellerRatingA
 
             rating_checkbox.setOnCheckedChangeListener { _, isChecked ->
                 if (element.ratingLabel != 0 && element.ratingLabel != null && isChecked != element.ratingIsChecked) {
-                    listener.onRatingCheckBoxClicked(element.ratingLabel.orZero() to isChecked, adapterPosition)
+                    listener.onRatingCheckBoxClicked(
+                            element.ratingLabel.orZero() to isChecked,
+                            element.ratingLabel.orZero(),
+                            adapterPosition)
                 }
             }
 

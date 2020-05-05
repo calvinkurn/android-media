@@ -3,17 +3,22 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.reviewseller.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SortListAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicListAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicSortFilterListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created by Yehezkiel on 27/04/20
  */
-class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?,
+class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
+                               private val tracking: ProductReviewDetailTracking,
+                               private val userSession: UserSessionInterface,
+                               private val productID: Int,
                                listenerTopics: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit) :
         BaseTopicsBottomSheet(mActivity, listenerTopics), TopicSortFilterListener.Topic, TopicSortFilterListener.Sort {
 
@@ -46,10 +51,19 @@ class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?,
 
     override fun onTopicClicked(chipType: String, adapterPosition: Int) {
         val isSelected = chipType == ChipsUnify.TYPE_SELECTED
+        tracking.eventClickFilterOnBottomSheet(
+                userSession.shopId.orEmpty(),
+                productID.toString(),
+                topicAdapter?.sortFilterList?.getOrNull(adapterPosition)?.titleUnformated.orEmpty(),
+                isSelected.toString())
         topicAdapter?.updateTopicFilter(isSelected, adapterPosition)
     }
 
     override fun onSortClicked(chipType: String, adapterPosition: Int) {
+        tracking.eventClickSortOnBottomSheet(
+                userSession.shopId.orEmpty(),
+                productID.toString(),
+                sortAdapter?.sortFilterListUiModel?.getOrNull(adapterPosition)?.title.orEmpty())
         sortAdapter?.updatedSortFilter(adapterPosition)
     }
 }

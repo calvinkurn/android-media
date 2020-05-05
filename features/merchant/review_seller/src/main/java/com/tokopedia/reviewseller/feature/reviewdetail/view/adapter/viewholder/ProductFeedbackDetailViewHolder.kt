@@ -154,7 +154,8 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     private fun setBottomSheetFeedbackOption(element: FeedbackUiModel) {
         val optionDetailListItemUnify = SellerReviewProductDetailMapper.mapToItemUnifyListFeedback(view.context,
                 element.replyText?.isEmpty() ?: false)
-        productFeedbackDetailListener.onOptionFeedbackClicked(view, getString(R.string.option_menu_label), optionDetailListItemUnify,
+        productFeedbackDetailListener.onOptionFeedbackClicked(
+                view, getString(R.string.option_menu_label), element.feedbackID.toString(), optionDetailListItemUnify,
                 element.replyText?.isEmpty() ?: false)
     }
 
