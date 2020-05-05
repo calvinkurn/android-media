@@ -404,14 +404,14 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     }
 
     private fun slideDownCounter() {
-        productSelectedCounter?.animate()?.translationY(200f)
+        productSelectedCounter?.animate()?.translationY(250f)
         if(buttonBackToTop?.circleMainMenu?.visibility == View.VISIBLE)
-            buttonBackToTop?.animate()?.translationY(200f)
+            buttonBackToTop?.circleMainMenu?.hide()
     }
 
     private fun slideUpCounter() {
         productSelectedCounter?.animate()?.translationY(0f)
-        buttonBackToTop?.animate()?.translationY(0f)
+        buttonBackToTop?.circleMainMenu?.show()
     }
 
 }
