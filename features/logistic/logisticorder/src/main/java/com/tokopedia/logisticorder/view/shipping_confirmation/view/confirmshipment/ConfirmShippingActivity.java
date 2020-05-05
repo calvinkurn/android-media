@@ -378,7 +378,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
         LayoutInflater.from(this).inflate(R.layout.activity_confirm_shipping_logistic_module, frameLayout);
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         progressDialog.setCancelable(false);
 
         courierName = findViewById(R.id.courier_name);
