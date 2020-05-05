@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -200,8 +201,9 @@ class TransactionOrderProgressLayout : LinearLayout {
         productName?.text = MethodChecker.fromHtml(chatOrder.name)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderEstimation() {
-        estimateTitle?.text = chatOrder.label.title
+        estimateTitle?.text = chatOrder.label.title + ":"
         estimateValue?.text = chatOrder.label.value
     }
 
