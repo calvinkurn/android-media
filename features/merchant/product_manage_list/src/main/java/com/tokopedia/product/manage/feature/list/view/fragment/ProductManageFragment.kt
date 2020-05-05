@@ -65,10 +65,13 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
@@ -236,8 +239,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
         clearAllData()
-        resetSelectAllCheckBox()
-        clearSelectedProduct()
+        resetMultiSelect()
         disableMultiSelect()
         showLoadingProgress()
         clickStatusFilterTab(filter, viewHolder)
@@ -274,10 +276,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return if(showProductEmptyState()) {
-            ProductEmptyModel
-        } else {
-            SearchEmptyModel
+        return EmptyModel().apply {
+            if(showProductEmptyState()) {
+                contentRes = R.string.product_manage_list_empty_product
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_LIST_EMPTY_STATE
+            } else {
+                contentRes = R.string.product_manage_list_empty_search
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_SEARCH_EMPTY_STATE
+            }
         }
     }
 
@@ -582,25 +588,21 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
 
         getFiltersTab(withDelay = true)
-        getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
         Toaster.make(coordinatorLayout, getString(
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-        productManageListAdapter.updateCashback(setCashbackResult.productId, setCashbackResult.cashback)
-        if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.CashBackOnly)) {
+        productManageListAdapter.updateCashBack(setCashbackResult.productId, setCashbackResult.cashback)
+        val filterOptions = viewModel.selectedFilterAndSort.value?.filterOptions
+        if(filterOptions == listOf(FilterByCondition.CashBackOnly)) {
             filterProductListByCashback()
         }
     }
 
     private fun filterProductListByCashback() {
-        val productList = adapter.data.filter {
-            it.cashBack != 0
-        }
-        clearAllData()
-        showProductList(productList)
+        productManageListAdapter.filterProductList { it.cashBack != 0 }
     }
 
     private fun onSetCashbackLimitExceeded() {
@@ -795,7 +797,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
 
                 getFiltersTab(withDelay = true)
-                getProductList(isRefresh = true, withDelay = true)
             }
         }
 
@@ -825,19 +826,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun filterProductListByStatus(productStatus: ProductStatus?) {
-        val productList = adapter.data.filter {
-            it.status == productStatus
-        }
-        clearAllData()
-        showProductList(productList)
+        productManageListAdapter.filterProductList { it.status == productStatus }
     }
 
-    private fun filterProductListByFeatured(isFeatured: Boolean) {
-        val productList = adapter.data.filter {
-            it.isFeatured == isFeatured
-        }
-        clearAllData()
-        showProductList(productList)
+    private fun filterProductListByFeatured() {
+        productManageListAdapter.filterProductList { it.isFeatured == true }
     }
 
     override fun onSwipeRefresh() {
@@ -886,8 +879,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             isFeaturedProduct = true
         }
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
-        if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.FeaturedOnly)) {
-            filterProductListByFeatured(true)
+        val filterOptions = viewModel.selectedFilterAndSort.value?.filterOptions
+        if(filterOptions == listOf(FilterByCondition.FeaturedOnly)) {
+            filterProductListByFeatured()
             renderMultiSelectProduct()
         }
         hideLoadingProgress()
@@ -1446,21 +1440,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun observeMultiSelect() {
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
-            val productList = adapter.data.filterIsInstance<ProductViewModel>().map {
-                it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
-            }
-
             if(multiSelectEnabled) {
                 showMultiSelectView()
-                clearAllData()
             } else {
                 hideMultiSelectView()
-                resetProductList()
+                resetMultiSelect()
             }
 
             renderCheckedView()
-            showProductList(productList)
+            showHideProductCheckBox(multiSelectEnabled)
         }
+    }
+
+    private fun showHideProductCheckBox(multiSelectEnabled: Boolean) {
+        productManageListAdapter.setMultiSelectEnabled(multiSelectEnabled)
     }
 
     private fun showMultiSelectView() {
@@ -1479,12 +1472,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun resetProductList() {
         clearAllData()
         resetMultiSelect()
+        renderCheckedView()
     }
 
     private fun resetMultiSelect() {
         resetSelectAllCheckBox()
         clearSelectedProduct()
-        renderCheckedView()
     }
 
     private fun enableMultiSelect() {

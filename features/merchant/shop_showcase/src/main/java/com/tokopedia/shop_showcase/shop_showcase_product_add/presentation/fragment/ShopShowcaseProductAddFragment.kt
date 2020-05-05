@@ -62,6 +62,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
 
         const val SHOWCASE_PRODUCT_LIST = "product_list"
+        const val SHOWCASE_DELETED_LIST = "deleted_list"
     }
 
     @Inject
@@ -264,6 +265,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     private fun goBackToPreviewShowcase() {
         val previewShowcaseIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
         previewShowcaseIntent.putParcelableArrayListExtra(SHOWCASE_PRODUCT_LIST, showcaseProductListAdapter?.getSelectedProduct())
+        previewShowcaseIntent.putParcelableArrayListExtra(SHOWCASE_DELETED_LIST, showcaseProductListAdapter?.getDeletedProduct())
         activity?.setResult(Activity.RESULT_OK, previewShowcaseIntent)
         activity?.finish()
     }
@@ -329,12 +331,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
                     val productList: MutableList<ShowcaseProduct> = it.data.toMutableList()
                     val selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
-                    val appendedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.NEW_APPENDED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
-                    val isActionEdit = activity?.intent?.getBooleanExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, false)
+                    val excludedProduct = activity?.intent?.getParcelableArrayListExtra<ShowcaseProduct>(ShopShowcaseAddFragment.EXCLUDED_SHOWCASE_PRODUCT)
 
                     if(productList.size == 0 && !isLoadNextPage) {
                         showEmptyViewProductSearch(true)
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, selectedProductList!!, appendedProductList!!, isActionEdit!!)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, excludedProduct!!, selectedProductList!!)
                     } else {
                         showEmptyViewProductSearch(false)
                         productList.forEach { showcaseProduct->
@@ -343,7 +344,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                                     showcaseProduct.ishighlighted = true
                             }
                         }
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, selectedProductList!!, appendedProductList!!, isActionEdit!!)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, excludedProduct!!, selectedProductList!!)
                         if (isLoadNextPage)
                             scrollListener.updateStateAfterGetData()
                     }

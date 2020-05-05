@@ -54,7 +54,9 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
         return ImagePickerGalleryFragment.newInstance(
                 imagePickerBuilder.getGalleryType(),
                 imagePickerBuilder.supportMultipleSelection() ,
-                imagePickerBuilder.getMinResolution());
+                imagePickerBuilder.getMinResolution(),
+                imagePickerBuilder.getBelowMinResolutionErrorMessage(),
+                imagePickerBuilder.getImageTooLargeErrorMessage());
     }
 
     @SuppressLint("MissingPermission")
