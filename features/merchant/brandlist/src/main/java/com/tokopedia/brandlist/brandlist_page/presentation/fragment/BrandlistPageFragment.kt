@@ -92,6 +92,7 @@ class BrandlistPageFragment :
         category?.let {
             categoryName = it.title
         }
+        getAlphabeticalShopFilter()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -308,6 +309,15 @@ class BrandlistPageFragment :
                     brandlistTracking?.sendScreen(categoryName.toEmptyStringIfNull())
                 }
             }
+        }
+    }
+
+    private fun getAlphabeticalShopFilter() {
+        var c: Char
+        c = 'A'
+        while (c <= 'Z') {
+            println("getAlphabeticalShopFilter: $c")
+            ++c
         }
     }
 
