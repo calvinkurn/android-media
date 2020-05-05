@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.view.adapter.ProductDiscussionQuestionsAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful.view.*
+import kotlinx.android.synthetic.main.partial_dynamic_discussion_local_load.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_empty_state.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_single_question.view.*
 
@@ -22,18 +23,35 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     override fun bind(element: ProductDiscussionMostHelpfulDataModel) {
         with(element) {
             return when {
-                element.totalQuestion < 1 -> {
+                isShimmering -> {
+                    showShimmer()
+                    hideSingleQuestionLayout()
+                    hideEmptyState()
+                    hideLocalLoad()
+                }
+                totalQuestion < 1 -> {
                     showEmptyState()
+                    hideSingleQuestionLayout()
+                    hideLocalLoad()
+                    hideShimmer()
                 }
                 element.totalQuestion == 1 -> {
                     showTitle(element.totalQuestion)
-                    showSingleQuestion(questions.first())
-                    hideOtherPartialLayouts()
+                    showSingleQuestion(questions?.first())
+                    hideEmptyState()
+                    hideShimmer()
+                    hideLocalLoad()
+                }
+                questions == null -> {
+                    showLocalLoad()
                 }
                 else -> {
                     showTitle(element.totalQuestion)
                     showMultipleQuestions(questions)
-                    hideOtherPartialLayouts()
+                    hideSingleQuestionLayout()
+                    hideEmptyState()
+                    hideShimmer()
+                    hideLocalLoad()
                 }
             }
         }
@@ -49,34 +67,38 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showSingleQuestion(question: Question) {
-        itemView.productDiscussionMostHelpfulSingleQuestionLayout.apply {
-            visibility = View.VISIBLE
-            with(question) {
-                productDetailDiscussionSingleQuestion.text = question.content
-                productDetailDiscussionSingleQuestionChevron.setOnClickListener {
-                    listener.goToTalkReading()
+    private fun showSingleQuestion(question: Question?) {
+        question?.let {
+            itemView.productDiscussionMostHelpfulSingleQuestionLayout.apply {
+                visibility = View.VISIBLE
+                with(it) {
+                    productDetailDiscussionSingleQuestion.text = question.content
+                    productDetailDiscussionSingleQuestionChevron.setOnClickListener {
+                        listener.goToTalkReading()
+                    }
+                    if(totalAnswer == 0) {
+                        showNoAnswersText()
+                        return
+                    }
+                    showProfilePicture(answer.userThumbnail, answer.userId)
+                    showDisplayName(answer.userName, answer.userId)
+                    showSellerLabelWithCondition(answer.isSeller)
+                    showDate(answer.createTimeFormatted)
+                    showAnswer(answer.content)
+                    showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
+                    showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
                 }
-                if(totalAnswer == 0) {
-                    showNoAnswersText()
-                    return
-                }
-                showProfilePicture(answer.userThumbnail, answer.userId)
-                showDisplayName(answer.userName, answer.userId)
-                showSellerLabelWithCondition(answer.isSeller)
-                showDate(answer.createTimeFormatted)
-                showAnswer(answer.content)
-                showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
-                showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
             }
         }
     }
 
-    private fun showMultipleQuestions(questions: List<Question>) {
-        val questionsAdapter = ProductDiscussionQuestionsAdapter(questions, listener)
-        itemView.productDiscussionMostHelpfulQuestions.apply {
-            adapter = questionsAdapter
-            visibility = View.VISIBLE
+    private fun showMultipleQuestions(questions: List<Question>?) {
+        questions?.let {
+            val questionsAdapter = ProductDiscussionQuestionsAdapter(it, listener)
+            itemView.productDiscussionMostHelpfulQuestions.apply {
+                adapter = questionsAdapter
+                visibility = View.VISIBLE
+            }
         }
     }
 
@@ -183,11 +205,37 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun hideOtherPartialLayouts() {
+    private fun showLocalLoad() {
         itemView.apply {
-            productDiscussionMostHelpfulSingleQuestionLayout.visibility = View.GONE
-            productDiscussionMostHelpfulEmptyLayout.visibility = View.GONE
+            productDiscussionLocalLoadLayout.visibility = View.VISIBLE
+            productDetailDiscussionLocalLoad.apply {
+                title?.text = getString(R.string.product_detail_discussion_local_load_title)
+                description?.text = getString(R.string.product_detail_discussion_local_load_description)
+                refreshBtn?.setOnClickListener {
+                    listener.onDiscussionRefreshClicked()
+                }
+            }
         }
+    }
+
+    private fun showShimmer() {
+        itemView.productDiscussionShimmerLayout.visibility = View.VISIBLE
+    }
+
+    private fun hideSingleQuestionLayout() {
+        itemView.productDiscussionMostHelpfulSingleQuestionLayout.visibility = View.GONE
+    }
+
+    private fun hideEmptyState() {
+        itemView.productDiscussionMostHelpfulEmptyLayout.visibility = View.GONE
+    }
+
+    private fun hideShimmer() {
+        itemView.productDiscussionShimmerLayout.visibility = View.GONE
+    }
+
+    private fun hideLocalLoad() {
+        itemView.productDiscussionLocalLoadLayout.visibility = View.GONE
     }
 
 }

@@ -227,6 +227,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             productDiscussionMostHelpfulMap?.run {
                 questions = it.discussionMostHelpful.questions
                 totalQuestion = it.discussionMostHelpful.totalQuestion
+                isShimmering = false
             }
 
             productMostHelpfulMap?.run {

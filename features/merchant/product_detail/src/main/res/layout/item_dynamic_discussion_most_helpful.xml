@@ -64,6 +64,20 @@
         android:paddingEnd="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <include layout="@layout/partial_dynamic_discussion_shimmer"
+        android:id="@+id/productDiscussionShimmerLayout"
+        android:visibility="gone"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <include layout="@layout/partial_dynamic_discussion_local_load"
+        android:id="@+id/productDiscussionLocalLoadLayout"
+        android:visibility="gone"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <View
         android:id="@+id/talk_bottom_separator"
         android:layout_width="match_parent"

@@ -127,6 +127,13 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyDiscussion(productDiscussionMostHelpfulDataModel: ProductDiscussionMostHelpfulDataModel?) {
+        productDiscussionMostHelpfulDataModel?.let {
+            val indexOfDiscussion = list.indexOf(it)
+            notifyItemChanged(indexOfDiscussion)
+        }
+    }
+
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
         if (holder is ProductRecommendationViewHolder) {

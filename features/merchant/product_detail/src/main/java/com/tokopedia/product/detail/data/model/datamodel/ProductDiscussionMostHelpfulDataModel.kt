@@ -8,7 +8,8 @@ data class ProductDiscussionMostHelpfulDataModel(
         val type: String = "",
         val name: String = "",
         var totalQuestion: Int = 0,
-        var questions: List<Question> = listOf()
+        var questions: List<Question>? = null,
+        var isShimmering: Boolean = true
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

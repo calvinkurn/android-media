@@ -9,5 +9,5 @@ data class DiscussionMostHelpful(
         val totalQuestion: Int = 0,
         @SerializedName("question")
         @Expose
-        val questions: List<Question> = listOf()
+        val questions: List<Question>? = null
 )

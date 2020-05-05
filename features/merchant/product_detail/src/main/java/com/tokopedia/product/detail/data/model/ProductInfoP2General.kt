@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.model.spesification.ProductSpecificatio
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.variant_common.model.ProductVariantCommon
 
 data class ProductInfoP2General(
