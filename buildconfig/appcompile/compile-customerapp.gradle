@@ -149,6 +149,7 @@ include "features:promo:promo_checkout_common"
 include "features:promo:promo_gamification_common"
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
+include "features:promo:promotions_target"
 
 include "features:top_ads:top_ads_autoads"
 include "features:top_ads:top_ads_create"

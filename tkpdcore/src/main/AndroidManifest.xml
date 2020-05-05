@@ -118,9 +118,6 @@
             android:label="@string/title_activity_maintenance_page"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.invoice.activity.InvoiceRendererActivity"
-            android:label="@string/title_activity_download_invoice" />
-        <activity
             android:name="com.tokopedia.core.tracking.activity.TrackingActivity"
             android:label="Tracking"
             android:screenOrientation="portrait" />
@@ -136,13 +133,6 @@
                 <data android:scheme="launch.TermPrivacy" />
             </intent-filter>
         </activity>
-
-        <!-- ======================================================= -->
-        <!-- RECEIVERS REGISTRY -->
-        <!-- ======================================================= -->
-        <activity
-            android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
-            android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
 
