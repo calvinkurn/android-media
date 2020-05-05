@@ -1,11 +1,11 @@
 package com.tokopedia.core.analytics;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -422,13 +422,13 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventDigitalEventTracking(Context context, String action, String label) {
-        Log.d("EVENTSGA", action + " - " + label);
+        UserSessionInterface userSession = new UserSession(context);
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
                 action,
                 label
-        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
+        ).setUserId(userSession.getUserId()).getEvent());
     }
 
 }

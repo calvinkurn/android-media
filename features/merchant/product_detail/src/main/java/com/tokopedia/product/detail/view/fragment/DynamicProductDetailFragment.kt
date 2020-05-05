@@ -2308,7 +2308,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             DynamicProductDetailTracking.Click.eventClickApplyLeasing(
                     viewModel.getDynamicProductInfoP1,
-                    viewModel.generateVariantString()
+                    generateVariantString()
             )
 
             val urlApplyLeasingWithProductId = String.format(
@@ -2392,7 +2392,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         product.basic.shopID, "",
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
-                viewModel.putChatProductInfoTo(intent, product.basic.productID, product)
+                VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData)
                 startActivity(intent)
             }
         })
@@ -2456,7 +2456,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun gotoCart() {
         activity?.let {
-            DynamicProductDetailTracking.Click.eventCartToolbarClicked(viewModel.generateVariantString(),
+            DynamicProductDetailTracking.Click.eventCartToolbarClicked(generateVariantString(),
                     viewModel.getDynamicProductInfoP1)
             doActionOrLogin({
                 startActivity(RouteManager.getIntent(it, ApplinkConst.CART))

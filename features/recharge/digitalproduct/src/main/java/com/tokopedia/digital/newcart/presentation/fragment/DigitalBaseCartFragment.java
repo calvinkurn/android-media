@@ -257,6 +257,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         }
         return new PromoDigitalModel(
                 Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
+                getCategoryName(),
+                getOperatorName(),
                 getProductId(),
                 cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
                 price
@@ -271,6 +273,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     private String getCategoryName() {
         return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getCategoryName());
+    }
+
+    private String getOperatorName() {
+        return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getOperatorName());
     }
 
     @Override
