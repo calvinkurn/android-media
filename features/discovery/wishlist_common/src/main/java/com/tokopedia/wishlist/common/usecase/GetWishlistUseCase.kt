@@ -31,7 +31,7 @@ class GetWishlistUseCase @Inject constructor(private val context: Context) : Use
 
     override fun createObservable(requestParams: RequestParams): Observable<GetWishlistResponse> {
         val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, R.raw.query_get_wishlist),
+                GraphqlHelper.loadRawString(context.resources, R.raw.get_wishlist_query),
                 GetWishlistResponse::class.java,
                 requestParams.parameters
         )
