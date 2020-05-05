@@ -39,7 +39,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.product.manage.feature.stockreminder.view.activity.StockReminderActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter>
