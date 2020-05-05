@@ -1568,12 +1568,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun updateVariantStock(data: EditVariantResult) {
         val stock = data.countVariantStock()
-
-        val status = if(data.isVariantActive()) {
-            ACTIVE
-        } else {
-            INACTIVE
-        }
+        val status = data.getVariantStatus()
 
         productManageListAdapter.updateStock(data.productId, stock, status)
     }
