@@ -291,7 +291,7 @@ public class TopChatAnalytics {
                 products,
                 Category.CHAT_DETAIL,
                 Action.CLICK_PRODUCT_IMAGE,
-                Name.EVENT_NAME_PRODUCT_CLICK,
+                ProductListClickBundler.KEY,
                 null,
                 null,
                 null
