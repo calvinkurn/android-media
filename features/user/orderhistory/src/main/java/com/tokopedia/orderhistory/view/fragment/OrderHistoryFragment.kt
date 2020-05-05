@@ -37,8 +37,6 @@ import javax.inject.Inject
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
         OrderHistoryViewHolder.Listener, WishListActionListener {
 
-    private val screenName = "order_history"
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
@@ -88,7 +86,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         renderList(data.products, data.hasNext)
     }
 
-    override fun getScreenName(): String = screenName
+    override fun getScreenName(): String = name
 
     override fun initInjector() {
         getComponent(OrderHistoryComponent::class.java).inject(this)
@@ -196,6 +194,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     companion object {
+        private const val name = "order_history"
         private const val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
         fun createInstance(extra: Bundle?): OrderHistoryFragment {
             return OrderHistoryFragment().apply {
