@@ -106,8 +106,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
      */
     private suspend fun getCloudResponse(requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         try {
-            val counter = requests.size
-            for (i in 0 until counter) {
+            for (i in 0 until requests.size) {
                 if (requests[i].isNoCache) {
                     continue
                 }
