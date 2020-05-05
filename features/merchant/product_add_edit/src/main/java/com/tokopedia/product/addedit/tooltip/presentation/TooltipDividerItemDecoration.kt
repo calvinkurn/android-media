@@ -6,8 +6,8 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class ImageDividerItemDecoration(
-        private val drawable: Drawable,
+class TooltipDividerItemDecoration(
+        private val drawable: Drawable?,
         private val drawOnLastItem: Boolean = true,
         private val paddingLeft: Int = 0,
         private val paddingRight: Int = 0,
@@ -15,6 +15,7 @@ class ImageDividerItemDecoration(
         private val paddingTop: Int = 0) : RecyclerView.ItemDecoration() {
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        if (drawable == null) return
         val dividerLeft = paddingLeft + parent.paddingLeft
         val dividerRight = parent.width - paddingRight - parent.paddingRight
 
@@ -39,8 +40,8 @@ class ImageDividerItemDecoration(
             val childPosition = getChildAdapterPosition(view)
             adapter?.run {
                 if (childPosition in 0 until itemCount) {
-                    outRect.top = this@ImageDividerItemDecoration.paddingTop
-                    outRect.bottom = this@ImageDividerItemDecoration.paddingBottom
+                    outRect.top = this@TooltipDividerItemDecoration.paddingTop
+                    outRect.bottom = this@TooltipDividerItemDecoration.paddingBottom
                 }
             }
         }
