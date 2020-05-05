@@ -21,8 +21,6 @@ import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureResponse
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.data.model.talk.Talk
-import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -124,12 +122,8 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val helpfulReviewRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_MOST_HELPFUL_REVIEW], Review.Response::class.java,
                 helpfulReviewParams)
 
-        val latestTalkParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId)
-        val latestTalkRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_LATEST_TALK],
-                TalkList.Response::class.java, latestTalkParams)
-
-        val discussionMostHelpfulParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
-            ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
+        val discussionMostHelpfulParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString(),
+            ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString())
         val discussionMostHelpfulRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL],
             DiscussionMostHelpfulResponseWrapper::class.java, discussionMostHelpfulParams)
 
@@ -153,7 +147,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
 
         val requests = mutableListOf(ratingRequest, wishlistCountRequest, voucherRequest,
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
-                helpfulReviewRequest, latestTalkRequest, discussionMostHelpfulRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
+                helpfulReviewRequest, discussionMostHelpfulRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
 
         if (isVariant) {
             requests.add(variantRequest)
@@ -203,11 +197,6 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
             if (gqlResponse.getError(Review.Response::class.java)?.isNotEmpty() != true)
                 productInfoP2.helpfulReviews = gqlResponse.getData<Review.Response>(Review.Response::class.java)
                         .productMostHelpfulReviewQuery.list
-
-            if (gqlResponse.getError(TalkList.Response::class.java)?.isNotEmpty() != true) {
-                productInfoP2.latestTalk = gqlResponse.getData<TalkList.Response>(TalkList.Response::class.java)
-                        .result.data.talks.firstOrNull() ?: Talk()
-            }
 
             if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)?.isNotEmpty() != true) {
                 productInfoP2.discussionMostHelpful = gqlResponse.getData<DiscussionMostHelpfulResponseWrapper>(DiscussionMostHelpfulResponseWrapper::class.java).discussionMostHelpful

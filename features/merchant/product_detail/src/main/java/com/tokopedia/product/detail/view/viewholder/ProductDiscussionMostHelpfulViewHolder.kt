@@ -26,12 +26,14 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     showEmptyState()
                 }
                 element.totalQuestion == 1 -> {
-                    showTitle(element.totalQuestion.toString())
+                    showTitle(element.totalQuestion)
                     showSingleQuestion(questions.first())
+                    hideOtherPartialLayouts()
                 }
                 else -> {
-                    showTitle(element.totalQuestion.toString())
+                    showTitle(element.totalQuestion)
                     showMultipleQuestions(questions)
+                    hideOtherPartialLayouts()
                 }
             }
         }
@@ -78,12 +80,14 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showTitle(totalQuestion: String) {
+    private fun showTitle(totalQuestion: Int) {
         itemView.apply {
-            productDiscussionMostHelpfulTitle.text = getString(R.string.product_detail_discussion_title, totalQuestion)
+            productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
+            productDiscussionMostHelpfulTitle.visibility = View.VISIBLE
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
                 listener.goToTalkReading()
             }
+            productDiscussionMostHelpfulSeeAll.visibility = View.VISIBLE
         }
     }
 
@@ -176,6 +180,13 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
             productDetailDiscussionSingleQuestionDate.visibility = View.GONE
             productDetailDiscussionSingleQuestionAttachedSeeOtherAnswers.visibility = View.GONE
             productDetailDiscussionSingleQuestionSellerLabel.visibility = View.GONE
+        }
+    }
+
+    private fun hideOtherPartialLayouts() {
+        itemView.apply {
+            productDiscussionMostHelpfulSingleQuestionLayout.visibility = View.GONE
+            productDiscussionMostHelpfulEmptyLayout.visibility = View.GONE
         }
     }
 

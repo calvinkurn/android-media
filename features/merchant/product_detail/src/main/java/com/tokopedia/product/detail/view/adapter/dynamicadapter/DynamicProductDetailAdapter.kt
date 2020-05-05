@@ -77,12 +77,6 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun removeDiscussionSection(data: ProductDiscussionDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
     fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
         data?.let {
             clearElement(it)

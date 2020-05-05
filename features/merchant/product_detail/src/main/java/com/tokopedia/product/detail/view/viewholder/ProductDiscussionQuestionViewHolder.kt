@@ -41,14 +41,15 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         itemView.productDetailDiscussionTotalAnswer.apply {
             text = itemView.context.getString(R.string.product_detail_discussion_total_answers, answer)
             visibility = View.VISIBLE
-
         }
     }
 
     private fun showAnswerThumbnail(userThumbnail: String) {
-        itemView.productDetailDiscussionProfilePicture.apply {
-            loadImage(userThumbnail)
-            visibility = View.VISIBLE
+        if(userThumbnail.isNotEmpty()) {
+            itemView.productDetailDiscussionProfilePicture.apply {
+                loadImage(userThumbnail)
+                visibility = View.VISIBLE
+            }
         }
     }
 }

@@ -7,8 +7,8 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductDiscussionMostHelpfulDataModel(
         val type: String = "",
         val name: String = "",
-        val totalQuestion: Int,
-        val questions: List<Question>
+        var totalQuestion: Int = 0,
+        var questions: List<Question> = listOf()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
