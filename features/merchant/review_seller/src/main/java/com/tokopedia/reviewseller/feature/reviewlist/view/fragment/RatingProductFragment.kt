@@ -30,6 +30,7 @@ import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
+import com.tokopedia.reviewseller.feature.reviewlist.analytics.ProductReviewTracking
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
@@ -44,6 +45,7 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.item_empty_state_list_rating_product.*
 import kotlinx.android.synthetic.main.item_search_rating_product.*
@@ -67,6 +69,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModelListReviewList: SellerReviewListViewModel? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracking: ProductReviewTracking
 
     private var linearLayoutManager: LinearLayoutManager? = null
 
@@ -125,6 +133,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
@@ -247,6 +256,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             iconListener = {
                 loadInitialData()
             }
+            searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+                if(hasFocus) tracking.eventClickSearchBar(userSession.shopId.orEmpty())
+            }
             searchBarTextField.afterTextChanged {
                 if(it.isEmpty()) {
                     onSearchKeywordEmpty()
@@ -260,6 +272,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     val query = searchBarRatingProduct?.searchBarTextField?.text.toString()
+
+                    tracking.eventSubmitSearchBar(userSession.shopId.orEmpty(), query)
 
                     if(query.length < MAX_LENGTH_SEARCH) {
                         showEmptyState()
@@ -336,6 +350,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             globalError_reviewSeller?.show()
 
             globalError_reviewSeller.setActionClickListener {
+                tracking.eventClickRetryError(userSession.shopId.orEmpty(), throwable.message.orEmpty())
                 loadInitialData()
             }
         } else {
@@ -360,11 +375,13 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun showEmptyState() {
+        rvRatingProduct?.hide()
         scrollView_emptyState_reviewSeller?.show()
         emptyState_reviewProduct?.show()
     }
 
     fun loadNextPage(page: Int) {
+        tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList?.getNextProductReviewList(
                 sortBy = viewModelListReviewList?.sortBy.orEmpty(),
                 filterBy = viewModelListReviewList?.filterAllText.orEmpty(),
@@ -516,7 +533,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    override fun onItemProductReviewClicked(productId: Int) {
+    override fun onItemProductReviewClicked(productId: Int, position: Int) {
+        tracking.eventClickItemRatingProduct(
+                shopId = userSession.shopId.orEmpty(),
+                productId = productId.toString(),
+                productPosition = position.toString())
         startActivityForResult(Intent(context, SellerReviewDetailActivity::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
             putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
@@ -524,6 +545,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
+        tracking.eventClickFilterRatingProduct(userSession.shopId.orEmpty())
 
         bottomSheetFilter?.apply {
             setOnDismissListener {
@@ -557,6 +579,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun initBottomSheetSort(sortListItemUnify: ArrayList<ListItemUnify>, title: String) {
+        tracking.eventClickSortRatingProduct(userSession.shopId.orEmpty())
 
         bottomSheetSort?.apply {
             setOnDismissListener {
@@ -595,10 +618,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             isEmptyFilter = true
             viewModelListReviewList?.positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
+            tracking.eventClickFilterBottomSheet(userSession.shopId.orEmpty(), chipsFilterText.orEmpty())
             reviewSellerAdapter.updateDatePeriod(ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
-            chipsFilter?.apply {
-                chip_text.text = chipsFilterText
-            }
+            chipsFilter?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelListReviewList?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
             viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
@@ -614,6 +636,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             isEmptyFilter = true
             viewModelListReviewList?.positionSort = position
             chipsSortText = sortListItemUnify[position].listTitleText
+            tracking.eventClickSortBottomSheet(userSession.shopId.orEmpty(), chipsSortText.orEmpty())
             chipsSort?.chip_text?.text = chipsSortText
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             viewModelListReviewList?.sortBy =

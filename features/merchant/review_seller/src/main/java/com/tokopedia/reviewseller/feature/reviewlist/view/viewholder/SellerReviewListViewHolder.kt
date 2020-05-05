@@ -31,11 +31,11 @@ class SellerReviewListViewHolder(itemView: View,
         tgReviewCount.text = String.format(getString(R.string.period_seller_review), element.reviewCount.toString())
 
         itemView.setOnClickListener {
-            listenerSellerReview.onItemProductReviewClicked(element.productID.orZero())
+            listenerSellerReview.onItemProductReviewClicked(element.productID.orZero(), adapterPosition)
         }
     }
 
     interface SellerReviewListListener {
-        fun onItemProductReviewClicked(productId: Int)
+        fun onItemProductReviewClicked(productId: Int, position: Int)
     }
 }

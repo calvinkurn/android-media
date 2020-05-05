@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.*
+import com.tokopedia.reviewseller.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.reviewseller.feature.reviewdetail.di.scope.ReviewDetailScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -12,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import javax.inject.Named
 
 @ReviewDetailScope
 @Module(includes = [ReviewProductDetailViewModelModule::class])
@@ -51,4 +51,11 @@ class ReviewProductDetailModule {
     fun getProductFeedbackFilter(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_feedback_filter)
     }
+
+    @ReviewDetailScope
+    @Provides
+    fun provideProductReviewDetailTracking(): ProductReviewDetailTracking {
+        return ProductReviewDetailTracking()
+    }
+
 }

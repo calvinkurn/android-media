@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.*
+import com.tokopedia.reviewseller.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.*
@@ -43,6 +44,7 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
@@ -64,6 +66,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModelProductReviewDetail: ProductReviewDetailViewModel? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracking: ProductReviewDetailTracking
 
     private var linearLayoutManager: LinearLayoutManager? = null
     private val reviewSellerDetailAdapter by lazy { SellerReviewDetailAdapter(sellerReviewDetailTypeFactory) }
@@ -108,14 +116,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             }
         }
         super.onCreate(savedInstanceState)
+        tracking.sendScreenDetail(userSession.shopId.orEmpty(), productID.toString())
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         viewModelProductReviewDetail = ViewModelProvider(this, viewModelFactory).get(ProductReviewDetailViewModel::class.java)
-        iniFilterData()
+        initFilterData()
     }
 
-    private fun iniFilterData() {
+    private fun initFilterData() {
         val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
-
         viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterBundle)
         viewModelProductReviewDetail?.positionFilterPeriod = ReviewSellerUtil.getDateChipFilterPosition(filterDetailList, chipFilterBundle)
     }
@@ -198,7 +206,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_option_product_detail -> {
-                clickOptionFeedbackDetail()
+                clickOptionMenuDetail()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -238,7 +246,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    private fun clickOptionFeedbackDetail() {
+    private fun clickOptionMenuDetail() {
+        tracking.eventClickOptionMenuDetail(userSession.shopId.orEmpty(), productID.toString())
+
         val optionMenuList = context?.let { SellerReviewProductDetailMapper.mapToItemUnifyMenuOption(it) }
         optionMenuList?.let { optionFeedbackDetailUnify?.setData(it) }
 
@@ -254,6 +264,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
                         0 -> {
+                            tracking.eventClickOptionEditProduct(userSession.shopId.orEmpty(), productID.toString())
                             RouteManager.route(context, ApplinkConst.PRODUCT_EDIT, productID.toString())
                         }
                     }
@@ -365,6 +376,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
+        tracking.eventClickTimeFilter(userSession.shopId.orEmpty(), productID.toString())
         bottomSheetPeriodDetail?.apply {
             setTitle(title)
             setOnDismissListener {
@@ -399,6 +411,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>, filterListUnify: ListUnify) {
         try {
+            tracking.eventClickApplyTimeFilter(
+                    userSession.shopId.orEmpty(),
+                    productID.toString(),
+                    filterListItemUnify[position].listTitleText)
+
             if (position == viewModelProductReviewDetail?.positionFilterPeriod) return
             setIntentResultChipDate(filterListItemUnify[position].listTitleText, position)
             viewModelProductReviewDetail?.positionFilterPeriod = position
@@ -436,8 +453,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetMenuDetail?.setChild(viewMenu)
     }
 
-    override fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
+    override fun onOptionFeedbackClicked(view: View, title: String, feedbackId: String,
+                                         optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
 
+        tracking.eventClickOptionFeedbackReview(
+                userSession.shopId.orEmpty(),
+                productID.toString(),
+                feedbackId
+        )
         optionFeedbackDetailUnify?.setData(optionDetailListItemUnify)
 
         bottomSheetOptionFeedback?.apply {
@@ -445,6 +468,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
+                tracking.eventClickCloseFeedbackOptionBottomSheet(
+                        userSession.shopId.orEmpty(),
+                        productID.toString(),
+                        feedbackId
+                )
                 dismiss()
             }
         }
@@ -459,6 +487,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                             }
                         }
                         1 -> {
+                            tracking.eventClickReportOnBottomSheet(userSession.shopId.orEmpty(),
+                                    productID.toString(),
+                                    feedbackId)
                             RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
                         }
                     }
@@ -471,8 +502,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, position: Int) {
+    override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int) {
         context?.run {
+            tracking.eventClickImagePreviewSlider(
+                    feedbackId,
+                    thumbnailsUrl.getOrNull(position).orEmpty(),
+                    position.toString())
             startActivity(ImagePreviewSliderActivity.getCallingIntent(
                     context = this,
                     title = toolbarTitle,
@@ -487,14 +522,23 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
      * Listener Section
      */
     override fun onChildTopicFilterClicked(item: SortFilterItem, adapterPosition: Int) {
-        val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
         val updatedState = item.type == ChipsUnify.TYPE_SELECTED
+        tracking.eventClickFilterTopicSelected(
+                userSession.shopId.orEmpty(),
+                productID.toString(),
+                item.title.toString(),
+                updatedState.toString())
+        val getTopicsFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<TopicUiModel>().firstOrNull()
         reviewSellerDetailAdapter.updateFilterTopic(adapterPosition, item.title.toString(), updatedState, getTopicsFilterFromAdapter)
         viewModelProductReviewDetail?.setFilterTopicDataText(getTopicsFilterFromAdapter?.sortFilterItemList)
     }
 
     override fun onParentTopicFilterClicked() {
-        val bottomSheet = PopularTopicsBottomSheet(activity,  ::onTopicsClicked)
+        tracking.eventClickSortOrFilterTopics(
+                userSession.shopId.orEmpty(),
+                productID.toString())
+
+        val bottomSheet = PopularTopicsBottomSheet(activity, tracking, userSession, productID, ::onTopicsClicked)
         viewModelProductReviewDetail?.filterTopicData?.let { bottomSheet.setTopicListData(it) }
         viewModelProductReviewDetail?.sortTopicData?.let { bottomSheet.setSortListData(it) }
         bottomSheet.showDialog()
@@ -509,7 +553,13 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheet.showDialog()
     }
 
-    override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int) {
+    override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, ratingSelected: Int, adapterPosition: Int) {
+        tracking.eventClickStarFilter(
+                shopId = userSession.shopId.orEmpty(),
+                productId = productID.toString(),
+                starSelected = ratingSelected.toString(),
+                isActive = ratingAndState.second.toString()
+        )
         val getRatingFilterFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()
         val getSelectedCheckbox = getRatingFilterFromAdapter?.ratingBarList?.getOrNull(adapterPosition)
         if (getSelectedCheckbox?.ratingIsChecked != ratingAndState.second && getSelectedCheckbox != null) {

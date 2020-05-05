@@ -13,7 +13,7 @@
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/review_period_filter_chips"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:centerText="true"
         app:chipSize="medium"
@@ -25,7 +25,7 @@
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/review_sort_chips"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
