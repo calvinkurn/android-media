@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.fragment.vouchertype
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,9 @@ import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpen
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
 import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
+import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel
@@ -25,13 +28,15 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
 import javax.inject.Inject
 
-class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
+class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
+                                        private val viewContext: Context,
+                                        private val onOpenBottomSheet: (CreateVoucherBottomSheetType) -> Unit): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNextStep: () -> Unit = {}) = FreeDeliveryVoucherCreateFragment(onNextStep)
-
-
+        fun createInstance(onNextStep: () -> Unit = {},
+                           context: Context,
+                           onOpenBottomSheet: (CreateVoucherBottomSheetType) -> Unit = {}) = FreeDeliveryVoucherCreateFragment(onNextStep, context, onOpenBottomSheet)
     }
 
     @Inject
@@ -47,6 +52,12 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
 
     private val promoDescTickerModel by lazy {
         PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_free_deliv_ticker, ::onDismissTicker)
+    }
+
+    private val freeDeliveryExpenseInfoBottomSheetField by lazy {
+        GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
+            setTitle(viewContext.resources?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
+        }
     }
 
     private val freeDeliveryAmountTextFieldModel by lazy {
@@ -100,7 +111,9 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
     }
 
     private val promotionExpenseEstimationUiModel =
-            PromotionExpenseEstimationUiModel()
+            PromotionExpenseEstimationUiModel(
+                    onTooltipClicked = ::onTooltipClicked
+            )
 
     private val freeDeliveryTypeUiList = mutableListOf(
             promoDescTickerModel,
@@ -180,6 +193,10 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
         (type as? PromotionType.FreeDelivery)?.let {
             viewModel.addErrorPair(isError, errorMessage.toBlankOrString(), it)
         }
+    }
+
+    private fun onTooltipClicked() {
+        freeDeliveryExpenseInfoBottomSheetField.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
     }
 
 }

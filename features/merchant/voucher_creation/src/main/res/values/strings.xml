@@ -101,8 +101,8 @@
     <string name="mvc_create_promo_type_bottomsheet_minimum_purchase">Minimum Pembelian</string>
     <string name="mvc_create_promo_type_bottomsheet_cashback">Cashback</string>
     <string name="mvc_create_promo_type_bottomsheet_discount">Potongan Harga</string>
-    <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; %s</string>
-    <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga <b>lebih besar dari %s</b> untuk menarik lebih banyak calon pembeli.</string>
+    <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; Rp%s</string>
+    <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga &lt;b>lebih besar dari Rp%s&lt;/b> untuk menarik lebih banyak calon pembeli.</string>
     <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
     <string name="mvc_no_active_voucher">Gak ada voucher aktif</string>
     <string name="mvc_list_empty_state_description">Yuk, gunakan Voucher Toko untuk meningkatkan peluang penjualan tokomu.</string>

@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.fragment.vouchertype
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,19 +20,24 @@ import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiMod
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.CashbackExpenseInfoBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackPercentageInfoUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import javax.inject.Inject
 
-class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
+class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
+                                    private val viewContext: Context) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNextStep: () -> Unit = {}) = CashbackVoucherCreateFragment(onNextStep)
+        fun createInstance(onNextStep: () -> Unit = {},
+                           context: Context) = CashbackVoucherCreateFragment(onNextStep, context)
 
         private const val INPUT_FIELD_ADAPTER_SIZE = 1
     }
@@ -53,6 +59,16 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
 
     private val cashbackTypePickerModel by lazy {
         CashbackTypePickerUiModel(::onCashbackSelectedType)
+    }
+
+    private val rupiahExpenseBottomSheet by lazy {
+        GeneralExpensesInfoBottomSheetFragment.createInstance(viewContext).apply {
+            setTitle(bottomSheetViewTitle.toBlankOrString())
+        }
+    }
+    
+    private val percentageExpenseBottomSheet by lazy {
+        CashbackExpenseInfoBottomSheetFragment.createInstance(viewContext, ::getCashbackInfo)
     }
 
     private val rupiahMaximumDiscountTextFieldModel =
@@ -147,7 +163,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                 onSetErrorMessage = ::onSetErrorMessage)
 
     private val promotionExpenseEstimationUiModel by lazy {
-        PromotionExpenseEstimationUiModel()
+        PromotionExpenseEstimationUiModel(
+                onTooltipClicked = ::onTooltipClicked
+        )
     }
 
     private val nextButtonUiModel by lazy {
@@ -194,6 +212,11 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     }
 
     private var textFieldIndex = topSectionUiModelList.size - 1
+
+    private var cashbackPercentageInfoUiModel =
+            CashbackPercentageInfoUiModel(0,0,0)
+
+    private var activeCashbackType: CashbackType = CashbackType.Rupiah
 
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 
@@ -259,6 +282,12 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
                     voucherTextFieldUiModel.currentErrorPair = errorPairList[index]
                 }
             }
+            observe(viewModel.cashbackPercentageInfoUiModelLiveData) { uiModel ->
+                cashbackPercentageInfoUiModel = uiModel
+            }
+            observe(viewModel.cashbackTypeData) { type ->
+                activeCashbackType = type
+            }
         }
     }
 
@@ -311,4 +340,17 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
             viewModel.addErrorPair(isError, errorMessage.toBlankOrString(), it)
         }
     }
+
+    private fun onTooltipClicked() {
+        when(activeCashbackType) {
+            CashbackType.Rupiah -> {
+                rupiahExpenseBottomSheet.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
+            }
+            CashbackType.Percentage -> {
+                percentageExpenseBottomSheet.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
+            }
+        }
+    }
+
+    private fun getCashbackInfo(): CashbackPercentageInfoUiModel = cashbackPercentageInfoUiModel
 }

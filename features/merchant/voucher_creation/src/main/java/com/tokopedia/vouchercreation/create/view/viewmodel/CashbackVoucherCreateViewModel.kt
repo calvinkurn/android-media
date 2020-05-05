@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackPercentageInfoUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
@@ -51,6 +52,10 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     val percentageErrorPairList : LiveData<Array<Pair<Boolean, String>?>>
         get() = mPercentageErrorPairList
 
+    private val mCashbackTypeLiveData = MutableLiveData<CashbackType>()
+    val cashbackTypeData: LiveData<CashbackType>
+        get() = mCashbackTypeLiveData
+
     private val mExpenseEstimationLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
         addSource(mActiveCashbackPromoTypeLiveData) { cashbackType ->
             value = when(cashbackType) {
@@ -86,6 +91,31 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     val expenseEstimationLiveData: LiveData<Int>
         get() = mExpenseEstimationLiveData
 
+    private val mTresholdValueLiveData = MediatorLiveData<Int>().apply {
+        addSource(mPercentageMinimumPurchaseLiveData) { minimumPurchase ->
+            mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                val percentValue = minimumPurchase.toDouble() * percentage / 100
+                value = percentValue.toInt()
+            }
+        }
+        addSource(mPercentageDiscountAmountLiveData) { percentage ->
+            mPercentageMinimumPurchaseLiveData.value?.let { minimumPurchase ->
+                val percentValue = minimumPurchase.toDouble() * percentage / 100
+                value = percentValue.toInt()
+            }
+        }
+    }
+
+    private val mCashbackPercentageInfoUiModelLiveData = MediatorLiveData<CashbackPercentageInfoUiModel>().apply {
+        addSource(mTresholdValueLiveData) {
+            value = CashbackPercentageInfoUiModel(
+                    mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
+                    mPercentageDiscountAmountLiveData.value.toZeroIfNull(),
+                    mTresholdValueLiveData.value.toZeroIfNull())
+        }
+    }
+    val cashbackPercentageInfoUiModelLiveData : LiveData<CashbackPercentageInfoUiModel>
+        get() = mCashbackPercentageInfoUiModelLiveData
 
     fun addTextFieldValueToCalculation(value: Int?, type: PromotionType.Cashback) {
         when(type) {
@@ -140,6 +170,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     }
 
     fun changeCashbackType(cashbackType: CashbackType) {
+        mCashbackTypeLiveData.value = cashbackType
         when(cashbackType) {
             CashbackType.Rupiah -> {
                 mRupiahValueList.value = arrayOf(
@@ -179,13 +210,9 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     }
 
     fun checkPercentageMaximumDiscount(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {
-        mPercentageDiscountAmountLiveData.value?.let { percentage ->
-            mPercentageMinimumPurchaseLiveData.value?. let { minimumPurchase ->
-                val percentValue = minimumPurchase.toDouble() * percentage / 100
-                val thresholdValue = percentValue.toInt()
-                val fullErrorMessage = "$errorMessage${CurrencyFormatHelper.convertToRupiah(thresholdValue.toString())}"
-                return Pair(currentValue > thresholdValue, fullErrorMessage)
-            }
+        mTresholdValueLiveData.value?.let { thresholdValue ->
+            val fullErrorMessage = "$errorMessage${CurrencyFormatHelper.convertToRupiah(thresholdValue.toString())}"
+            return Pair(currentValue > thresholdValue, fullErrorMessage)
         }
         return Pair(true, "")
     }

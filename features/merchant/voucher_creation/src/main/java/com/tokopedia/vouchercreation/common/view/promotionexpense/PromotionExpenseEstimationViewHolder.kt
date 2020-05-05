@@ -27,6 +27,9 @@ class PromotionExpenseEstimationViewHolder(itemView: View): AbstractViewHolder<P
                     } else {
                         View.GONE
                     }
+            estimationTooltip?.setOnClickListener {
+                element.onTooltipClicked()
+            }
             tvMvcExpense?.text = String.format(
                     context.resources.getString(R.string.mvc_rp_value),
                     CurrencyFormatHelper.convertToRupiah(element.estimationValue.toString()).toBlankOrString()).toBlankOrString()

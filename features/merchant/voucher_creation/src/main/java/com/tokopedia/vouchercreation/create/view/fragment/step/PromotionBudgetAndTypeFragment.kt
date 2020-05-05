@@ -1,8 +1,11 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
@@ -20,12 +23,18 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
         PromotionTypeInputUiModel()
     }
 
+    private val generalExpensesInfoBottomSheetFragment by lazy {
+        GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
+            setTitle(context?.resources?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
+        }
+    }
+
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onBeforeShowBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun getAdapterTypeFactory(): PromotionTypeBudgetAdapterTypeFactory = PromotionTypeBudgetAdapterTypeFactory(this)
@@ -42,6 +51,13 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
 
     override fun setupView() {
         super.setupView()
+        setupBottomSheet()
+    }
+
+    private fun setupBottomSheet() {
+        context?.run {
+            addBottomSheetView(CreateVoucherBottomSheetType.GENERAL_EXPENSE_INFO, generalExpensesInfoBottomSheetFragment)
+        }
     }
 
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =

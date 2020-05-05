@@ -1,6 +1,8 @@
 package com.tokopedia.vouchercreation.create.data.source
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTipsItemTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.BasicVoucherTipsItemUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.DottedVoucherTipsItemUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.ImageVoucherTipsItemUiModel
@@ -72,5 +74,22 @@ object TipsAndTrickStaticDataSource {
                                             descRes = R.string.mvc_create_tips_estimation
                                     )
                             ))
+            )
+
+    fun getFreeDeliveryExpenseUiModelList(): List<Visitable<VoucherTipsItemTypeFactory>> =
+            arrayListOf(
+                    DottedVoucherTipsItemUiModel(
+                            descRes = R.string.mvc_create_tips_desc_max_estimation_1
+                    ),
+                    DottedVoucherTipsItemUiModel(
+                            descRes = R.string.mvc_create_tips_desc_max_estimation_2
+                    ),
+                    DottedVoucherTipsItemUiModel(
+                            descRes = R.string.mvc_create_tips_desc_max_estimation_3
+                    ),
+                    BasicVoucherTipsItemUiModel(
+                            titleRes = R.string.mvc_create_tips_calculation,
+                            descRes = R.string.mvc_create_tips_estimation
+                    )
             )
 }
