@@ -126,7 +126,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     lateinit var userSession: UserSessionInterface
 
     private var source: String = ""
-    private var isAutoLogin: Boolean = false
+    protected var isAutoLogin: Boolean = false
+    protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
 
@@ -310,11 +311,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun showSmartLock() {
-        val intent = Intent(activity, SmartLockActivity::class.java)
-        val bundle = Bundle()
-        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_SMART_LOCK)
+        if(isEnableSmartLock) {
+            val intent = Intent(activity, SmartLockActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_SMART_LOCK)
+        }
     }
 
 

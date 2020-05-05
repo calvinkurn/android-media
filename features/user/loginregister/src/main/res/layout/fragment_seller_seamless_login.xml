@@ -11,10 +11,11 @@
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/seller_seamless_main_view"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

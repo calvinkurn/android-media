@@ -29,6 +29,12 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isEnableSmartLock = false
+        isAutoLogin = false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
