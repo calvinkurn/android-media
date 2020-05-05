@@ -33,6 +33,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/productDetailDiscussionEmptyButton"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"

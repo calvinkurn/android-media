@@ -924,8 +924,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         // call usecase again
     }
 
-    override fun onDiscussionSendQuestionClicked(productId: String) {
+    override fun onDiscussionSendQuestionClicked() {
 
+    }
+
+    override fun goToTalkReading() {
+        // go to talk reading
+    }
+
+    override fun onUserDetailsClicked(userId: String) {
+        goToProfileActivity(userId)
     }
 
     private fun disscussionClicked() {
@@ -2764,6 +2772,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun goToWriteActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_TALK)
+    }
+
+    private fun goToProfileActivity(userId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
+        startActivity(intent)
     }
 
     override fun showAlertUpcomingEnded() {

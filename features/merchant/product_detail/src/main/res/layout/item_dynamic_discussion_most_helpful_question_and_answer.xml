@@ -13,22 +13,44 @@
         android:maxLines="2"
         android:ellipsize="end"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionSingleQuestionChevron"
+        app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionQuestionChevron"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/productDetailDiscussionSingleQuestionChevron"
+        android:id="@+id/productDetailDiscussionQuestionChevron"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow_right_info"/>
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/productDetailDiscussionProfilePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:unify_image_type="circle"
+        app:layout_constraintStart_toStartOf="@id/productDetailDiscussionQuestion"
+        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionQuestion"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/productDetailDiscussioneQuestionAttachedNoAnswers"
+        android:id="@+id/productDetailDiscussionTotalAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toTopOf="@id/productDetailDiscussionProfilePicture"
+        app:layout_constraintBottom_toBottomOf="@id/productDetailDiscussionProfilePicture"
+        app:layout_constraintStart_toEndOf="@id/productDetailDiscussionProfilePicture" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productDetailDiscussionQuestionNoAnswers"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
         android:text="@string/product_detail_discussion_no_answers"
         android:enabled="false"

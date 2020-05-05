@@ -219,8 +219,7 @@
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 
     // Discussion Most Helpful
-    <string name="product_detail_discussion_title">Forum Tanya-Jawab (%d)</string>
-    <string name="product_detail_discussion_empty_title">Forum Tanya-Jawab</string>
+    <string name="product_detail_discussion_title">Q&amp;A (%d)</string>
     <string name="product_detail_discussion_see_all">Lihat Semua</string>
     <string name="product_detail_discussion_no_answers">Belum ada jawaban</string>
     <string name="product_detail_discussion_other_answers">Lihat %d jawaban lainnya</string>
