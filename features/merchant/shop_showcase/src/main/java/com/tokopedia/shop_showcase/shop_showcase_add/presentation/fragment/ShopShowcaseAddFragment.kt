@@ -223,18 +223,16 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun showDeleteCounter(firstDeletedItem: ShowcaseProduct) {
-        if(isActionEdit) {
-            ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
-            productCounterText?.text = context?.resources?.getString(
-                    R.string.deleted_product_counter_text,
-                    showcaseAddAdapter?.getDeletedProductList()?.size.toString()
-            )
-            undoDeleteProductButton?.setOnClickListener {
-                showcaseAddAdapter?.undoDeleteSelectedProduct()
-                showSelectedProductList()
-            }
-            productCounter?.visibility = View.VISIBLE
+        ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
+        productCounterText?.text = context?.resources?.getString(
+                R.string.deleted_product_counter_text,
+                showcaseAddAdapter?.getDeletedProductList()?.size.toString()
+        )
+        undoDeleteProductButton?.setOnClickListener {
+            showcaseAddAdapter?.undoDeleteSelectedProduct()
+            showSelectedProductList()
         }
+        productCounter?.visibility = View.VISIBLE
     }
 
     override fun hideDeleteCounter() {
@@ -408,7 +406,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         activity?.also {
             val deletedProductSize = showcaseAddAdapter?.getDeletedProductList()?.size
             deletedProductSize?.let { size ->
-                if(size > 0 && isActionEdit && productCounter?.visibility == viewVisible) {
+                if(size > 0 && productCounter?.visibility == viewVisible) {
                     val confirmDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                     confirmDialog.apply {
                         setTitle(getString(R.string.text_confirm_dialog_title))
