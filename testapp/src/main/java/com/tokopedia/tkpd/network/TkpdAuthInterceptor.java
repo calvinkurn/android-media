@@ -348,7 +348,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
+            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             networkRouter.doRelogin(newAccessToken);
 
             if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {

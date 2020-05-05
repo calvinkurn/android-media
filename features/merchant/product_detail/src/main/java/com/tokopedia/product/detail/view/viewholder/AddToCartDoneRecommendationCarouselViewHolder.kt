@@ -213,7 +213,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         fun bind(recommendation: RecommendationItem){
             itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(
                     recommendation.imageUrl,
-                    8f
+                    16f
             )
             if(!itemView.hasOnClickListeners()){
                 itemView.setOnClickListener {
