@@ -301,7 +301,7 @@ class AddToCartDoneBottomSheet :
             if(!addToCartButton.isLoading){
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(recommendation)
-                productDetailTracking.eventAddToCartRecommendationClick(
+                productDetailTracking.eventAddToCartRecommendationATCClick(
                         recommendation,
                         recommendation.position,
                         addToCartDoneViewModel.isLoggedIn(),
