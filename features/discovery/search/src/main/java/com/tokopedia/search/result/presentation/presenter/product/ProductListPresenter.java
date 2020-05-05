@@ -51,7 +51,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -403,7 +402,6 @@ final class ProductListPresenter
 
             @Override
             public void onNext(SearchProductModel searchProductModel) {
-                randomThrowError();
                 loadMoreDataSubscriberOnNextIfViewAttached(searchParameter, searchProductModel);
             }
 
@@ -417,14 +415,6 @@ final class ProductListPresenter
                 loadMoreDataSubscriberOnErrorIfViewAttached(searchParameter, error);
             }
         };
-    }
-
-    private void randomThrowError() {
-        boolean willThrowError = Math.random() > 0.7;
-
-        if (willThrowError) {
-            throw new RuntimeException("Purposely throw error");
-        }
     }
 
     private void loadMoreDataSubscriberOnStartIfViewAttached() {
@@ -659,8 +649,6 @@ final class ProductListPresenter
         if (isViewAttached()) {
             getView().stopNetworkRequestPerformanceMonitoring();
             getView().startRenderPerformanceMonitoring();
-
-            randomThrowError();
 
             if (isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
