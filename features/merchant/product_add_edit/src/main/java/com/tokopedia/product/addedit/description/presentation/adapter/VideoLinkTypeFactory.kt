@@ -68,9 +68,9 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 isFirstLoaded = false
             } else {
                 itemView.textFieldUrl.apply {
-                    textFieldInput.removeTextChangedListener(textWatcher)
+                    textAreaInput.removeTextChangedListener(textWatcher)
                     replaceTextAndRestoreCursorPosition(element.inputUrl)
-                    textFieldInput.addTextChangedListener(textWatcher)
+                    textAreaInput.addTextChangedListener(textWatcher)
                     requestFocus()
                 }
             }
