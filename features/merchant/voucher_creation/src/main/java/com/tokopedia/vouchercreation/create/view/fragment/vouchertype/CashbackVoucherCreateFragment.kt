@@ -162,7 +162,6 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit) : BaseListFragment<V
     }
 
     private val rupiahCashbackTextFieldList =
-//        PromotionTypeUiListStaticDataSource.getCashbackRupiahTypeTextFieldList(::onTextFieldValueChanged)
         listOf(
                 rupiahMaximumDiscountTextFieldModel,
                 rupiahMinimumPurchaseTextFieldModel,

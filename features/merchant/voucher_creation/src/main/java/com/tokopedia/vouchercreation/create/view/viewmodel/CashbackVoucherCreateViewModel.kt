@@ -175,7 +175,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         mRupiahMaximumDiscountLiveData.value?.let { threshold ->
             return Pair(currentValue >= threshold, errorMessage)
         }
-        return Pair(false, "")
+        return Pair(true, "")
     }
 
     fun checkPercentageMaximumDiscount(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {
@@ -187,7 +187,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                 return Pair(currentValue > thresholdValue, fullErrorMessage)
             }
         }
-        return Pair(false, "")
+        return Pair(true, "")
     }
 
 }

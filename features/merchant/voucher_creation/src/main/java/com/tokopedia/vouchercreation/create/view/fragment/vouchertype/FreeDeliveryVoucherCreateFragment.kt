@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
@@ -19,6 +20,7 @@ import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStati
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
 import javax.inject.Inject
@@ -56,7 +58,8 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                 promotionType = PromotionType.FreeDelivery.Amount,
-                onValueChanged = ::onTextFieldValueChanged)
+                onValueChanged = ::onTextFieldValueChanged,
+                onSetErrorMessage = ::onSetErrorMessage)
     }
 
     private val minimumPurchaseTextFieldModel by lazy {
@@ -68,7 +71,8 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                 promotionType = PromotionType.FreeDelivery.MinimumPurchase,
-                onValueChanged = ::onTextFieldValueChanged)
+                onValueChanged = ::onTextFieldValueChanged,
+                onSetErrorMessage = ::onSetErrorMessage)
     }
 
     private val voucherQuotaTextFieldModel by lazy {
@@ -80,7 +84,19 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
                 minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                 maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                 promotionType = PromotionType.FreeDelivery.VoucherQuota,
-                onValueChanged = ::onTextFieldValueChanged)
+                onValueChanged = ::onTextFieldValueChanged,
+                onSetErrorMessage = ::onSetErrorMessage)
+    }
+
+    private val freeDeliveryTextFieldsList =
+            listOf(
+                    freeDeliveryAmountTextFieldModel,
+                    minimumPurchaseTextFieldModel,
+                    voucherQuotaTextFieldModel
+            )
+
+    private val freeDeliveryTextFieldsUiModel by lazy {
+        PromotionTypeInputListUiModel(freeDeliveryTextFieldsList)
     }
 
     private val promotionExpenseEstimationUiModel =
@@ -88,9 +104,7 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
 
     private val freeDeliveryTypeUiList = mutableListOf(
             promoDescTickerModel,
-            freeDeliveryAmountTextFieldModel,
-            minimumPurchaseTextFieldModel,
-            voucherQuotaTextFieldModel,
+            freeDeliveryTextFieldsUiModel,
             promotionExpenseEstimationUiModel,
             NextButtonUiModel(onNextStep)
     )
@@ -121,17 +135,34 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
 
     override fun onResume() {
         super.onResume()
+        viewModel.refreshTextFieldValue()
         adapter.notifyDataSetChanged()
     }
 
     private fun setupView() {
-        viewLifecycleOwner.observe(viewModel.expensesExtimationLiveData) { value ->
-            promotionExpenseEstimationUiModel.estimationValue = value
-            adapter.run {
-                notifyItemChanged(data.indexOf(promotionExpenseEstimationUiModel))
+        observeLiveData()
+        renderList(freeDeliveryTypeUiList)
+    }
+
+    private fun observeLiveData() {
+        viewLifecycleOwner.run {
+            observe(viewModel.expensesExtimationLiveData) { value ->
+                promotionExpenseEstimationUiModel.estimationValue = value
+                adapter.run {
+                    notifyItemChanged(data.indexOf(promotionExpenseEstimationUiModel))
+                }
+            }
+            observe(viewModel.valueListLiveData) { valueList ->
+                freeDeliveryTextFieldsList.forEachIndexed { index, voucherTextFieldUiModel ->
+                    voucherTextFieldUiModel.currentValue = valueList[index]
+                }
+            }
+            observe(viewModel.errorPairListLiveData) { errorPairList ->
+                freeDeliveryTextFieldsList.forEachIndexed { index, voucherTextFieldUiModel ->
+                    voucherTextFieldUiModel.currentErrorPair = errorPairList[index]
+                }
             }
         }
-        renderList(freeDeliveryTypeUiList)
     }
 
     private fun onDismissTicker() {
@@ -142,6 +173,12 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit): BaseListFragmen
     private fun onTextFieldValueChanged(value: Int?, typeType: PromotionType) {
         if (typeType is PromotionType.FreeDelivery) {
             viewModel.addTextFieldValueToCalculation(value, typeType)
+        }
+    }
+
+    private fun onSetErrorMessage(isError: Boolean, errorMessage: String?, type: PromotionType) {
+        (type as? PromotionType.FreeDelivery)?.let {
+            viewModel.addErrorPair(isError, errorMessage.toBlankOrString(), it)
         }
     }
 

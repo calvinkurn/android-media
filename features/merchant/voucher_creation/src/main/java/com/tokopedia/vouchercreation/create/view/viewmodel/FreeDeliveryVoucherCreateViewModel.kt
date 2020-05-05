@@ -14,38 +14,76 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val mFreeDeliveryAmount = MutableLiveData<Int>()
-    private val mMinimumPurchase = MutableLiveData<Int>()
-    private val mVoucherQuota = MutableLiveData<Int>()
+    private val mFreeDeliveryAmountLiveData = MutableLiveData<Int>()
+    private val mMinimumPurchaseLiveData = MutableLiveData<Int>()
+    private val mVoucherQuotaLiveData = MutableLiveData<Int>()
+
+    private val mFreeDeliveryAmountErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+    private val mMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+    private val mVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
+
+    private val mValueListLiveData = MutableLiveData<Array<Int>>()
+    val valueListLiveData : LiveData<Array<Int>>
+        get() = mValueListLiveData
+    private val mErrorPairListLiveData = MutableLiveData<Array<Pair<Boolean, String>?>>()
+    val errorPairListLiveData : LiveData<Array<Pair<Boolean, String>?>>
+        get() = mErrorPairListLiveData
 
     private val mExpensesExtimationLiveData = MediatorLiveData<Int>().apply {
-        addSource(mFreeDeliveryAmount) {
+        addSource(mFreeDeliveryAmountLiveData) {
             calculateExpenseEstimation()
         }
-        addSource(mVoucherQuota) {
+        addSource(mVoucherQuotaLiveData) {
             calculateExpenseEstimation()
         }
     }
     val expensesExtimationLiveData: LiveData<Int>
         get() = mExpensesExtimationLiveData
 
+    fun refreshTextFieldValue() {
+        mValueListLiveData.value = arrayOf(
+                mFreeDeliveryAmountLiveData.value.toZeroIfNull(),
+                mMinimumPurchaseLiveData.value.toZeroIfNull(),
+                mVoucherQuotaLiveData.value.toZeroIfNull()
+        )
+        mErrorPairListLiveData.value = arrayOf(
+                mFreeDeliveryAmountErrorPairLiveData.value,
+                mMinimumPurchaseErrorPairLiveData.value,
+                mVoucherQuotaErrorPairLiveData.value
+        )
+    }
+
     fun addTextFieldValueToCalculation(value: Int?, type: PromotionType.FreeDelivery) {
         when(type) {
             PromotionType.FreeDelivery.Amount -> {
-                mFreeDeliveryAmount.value = value.toZeroIfNull()
+                mFreeDeliveryAmountLiveData.value = value.toZeroIfNull()
             }
             PromotionType.FreeDelivery.MinimumPurchase -> {
-                mMinimumPurchase.value = value.toZeroIfNull()
+                mMinimumPurchaseLiveData.value = value.toZeroIfNull()
             }
             PromotionType.FreeDelivery.VoucherQuota -> {
-                mVoucherQuota.value = value.toZeroIfNull()
+                mVoucherQuotaLiveData.value = value.toZeroIfNull()
+            }
+        }
+    }
+
+    fun addErrorPair(isError: Boolean, errorMessage: String, type: PromotionType.FreeDelivery) {
+        when(type) {
+            PromotionType.FreeDelivery.Amount -> {
+                mFreeDeliveryAmountErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.FreeDelivery.MinimumPurchase -> {
+                mMinimumPurchaseErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+            PromotionType.FreeDelivery.VoucherQuota -> {
+                mVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
             }
         }
     }
 
     private fun calculateExpenseEstimation() {
-        mFreeDeliveryAmount.value?.let { amount ->
-            mVoucherQuota.value?.let { quota ->
+        mFreeDeliveryAmountLiveData.value?.let { amount ->
+            mVoucherQuotaLiveData.value?.let { quota ->
                 mExpensesExtimationLiveData.value = amount * quota
             }
         }
