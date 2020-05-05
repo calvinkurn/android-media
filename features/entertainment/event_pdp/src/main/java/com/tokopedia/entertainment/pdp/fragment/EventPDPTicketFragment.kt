@@ -1,5 +1,7 @@
 package com.tokopedia.entertainment.pdp.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -179,12 +181,13 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
 
     private fun setupPilihTicketButton(){
         pilihTicketBtn.setOnClickListener {
-            if(!userSession.isLoggedIn) {
+            if(userSession.isLoggedIn) {
+                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP,
+                        viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
+            } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
             }
-            startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP,
-                    viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
         }
     }
 
@@ -192,6 +195,18 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         if(startDate.isNotBlank() && endDate.isNotBlank()){
             activity?.loaderUbah?.visibility = if(state) View.GONE else View.VISIBLE
             activity?.txtUbah?.visibility = if(state) View.VISIBLE else View.GONE
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_LOGIN -> context?.let{
+                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP,
+                            viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
+                }
+            }
         }
     }
 
