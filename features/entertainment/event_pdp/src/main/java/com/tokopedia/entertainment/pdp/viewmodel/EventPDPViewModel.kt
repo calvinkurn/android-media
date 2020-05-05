@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
-import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
-import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
-import com.tokopedia.entertainment.pdp.data.Facilities
-import com.tokopedia.entertainment.pdp.data.SectionData
+import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.*
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
@@ -173,11 +170,14 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     private fun mapperLocationDetail(result: EventPDPContentCombined): EventPDPLocationDetailEntity {
         var section = SectionData()
+        var outlet = Outlet()
         val sectionsData = result.eventContentByIds.eventContentById.data.sectionData
-        val outlet = result.eventProductDetailEntity.EventProductDetail.productDetailData.outlets[0]
-        for (i in sectionsData.indices) {
-            if (sectionsData[i].section.equals(SECTION_LOCATION))
-                section = sectionsData[i]
+        if(result.eventProductDetailEntity.EventProductDetail.productDetailData.outlets.isNotEmpty()) {
+            outlet = result.eventProductDetailEntity.EventProductDetail.productDetailData.outlets[0]
+            for (i in sectionsData.indices) {
+                if (sectionsData[i].section.equals(SECTION_LOCATION))
+                    section = sectionsData[i]
+            }
         }
         return EventPDPLocationDetailEntity(outlet, section)
     }

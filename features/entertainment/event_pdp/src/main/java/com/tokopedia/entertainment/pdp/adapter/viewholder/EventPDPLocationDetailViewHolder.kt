@@ -28,6 +28,8 @@ class EventPDPLocationDetailViewHolder(view: View, val onBindItemListener: OnBin
                     widget_event_pdp_maps.setOnClickListener {
                         onBindItemListener.seeLocationDetail(element.outlet)
                     }
+                } else{
+                    widget_event_pdp_maps.gone()
                 }
 
                 if (!element.sectionData.section.isNullOrEmpty()) {

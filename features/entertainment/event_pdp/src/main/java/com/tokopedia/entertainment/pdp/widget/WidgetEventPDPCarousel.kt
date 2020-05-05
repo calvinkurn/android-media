@@ -11,7 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.pdp.R
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
+import kotlinx.android.synthetic.main.widget_event_pdp_carousel.*
+import kotlinx.android.synthetic.main.widget_event_pdp_carousel.view.*
 
 
 class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
@@ -47,6 +52,9 @@ class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
     }
 
     fun buildView() {
+        shimmering_image.gone()
+        event_pdp_indicator_banner_container.show()
+        viewpager_event_pdp.show()
         visibility = View.VISIBLE
         indicatorBannerContainer.visibility = View.VISIBLE
 
@@ -98,6 +106,12 @@ class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
         imageUrls.clear()
         imageUrls.addAll(images)
         imageViewPagerAdapter?.addImages(images)
+    }
+
+    fun shimmering(){
+        shimmering_image.show()
+        event_pdp_indicator_banner_container.invisible()
+        viewpager_event_pdp.invisible()
     }
 
     fun resizeIndicator(id: Int, size: Int): GradientDrawable{

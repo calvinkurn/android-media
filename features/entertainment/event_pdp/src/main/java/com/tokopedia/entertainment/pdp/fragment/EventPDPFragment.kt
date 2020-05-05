@@ -60,6 +60,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.*
 import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import kotlinx.android.synthetic.main.widget_event_pdp_carousel.*
 import kotlinx.android.synthetic.main.widget_event_pdp_tab_section.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -162,6 +163,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        carousel_event_pdp.shimmering()
         requestData()
     }
 
@@ -170,7 +172,6 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         loadTab(productDetailData)
         loadCalendar(context, productDetailData)
         loadPrice(productDetailData)
-
     }
 
     private fun loadMedia(productDetailData: ProductDetailData) {
@@ -411,6 +412,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun shareLink() {
         share(productDetailData)
     }
+
 
     companion object {
 
