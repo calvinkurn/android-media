@@ -16,8 +16,8 @@ import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
-import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginQueryConstant
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -218,8 +218,8 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     fun registerCheck(id: String) {
-        rawQueries[SeamlessLoginQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
-            val params = mapOf(SeamlessLoginQueryConstant.PARAM_ID to id)
+        rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
+            val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
 
             registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
             registerCheckUseCase.setRequestParams(params)
@@ -237,14 +237,14 @@ class RegisterInitialViewModel @Inject constructor(
             fullname: String,
             validateToken: String
     ) {
-        rawQueries[SeamlessLoginQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
+        rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
             val params = mapOf(
-                    SeamlessLoginQueryConstant.PARAM_EMAIL to email,
-                    SeamlessLoginQueryConstant.PARAM_PASSWORD to password,
-                    SeamlessLoginQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
-                    SeamlessLoginQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
-                    SeamlessLoginQueryConstant.PARAM_FULLNAME to fullname,
-                    SeamlessLoginQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
+                    RegisterInitialQueryConstant.PARAM_EMAIL to email,
+                    RegisterInitialQueryConstant.PARAM_PASSWORD to password,
+                    RegisterInitialQueryConstant.PARAM_OS_TYPE to OS_TYPE_ANDROID,
+                    RegisterInitialQueryConstant.PARAM_REG_TYPE to REG_TYPE_EMAIL,
+                    RegisterInitialQueryConstant.PARAM_FULLNAME to fullname,
+                    RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
             )
 
             userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
@@ -262,10 +262,10 @@ class RegisterInitialViewModel @Inject constructor(
             email: String,
             validateToken: String
     ) {
-        rawQueries[SeamlessLoginQueryConstant.MUTATION_ACTIVATE_USER]?.let { query ->
+        rawQueries[RegisterInitialQueryConstant.MUTATION_ACTIVATE_USER]?.let { query ->
             val params = mapOf(
-                    SeamlessLoginQueryConstant.PARAM_EMAIL to email,
-                    SeamlessLoginQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
+                    RegisterInitialQueryConstant.PARAM_EMAIL to email,
+                    RegisterInitialQueryConstant.PARAM_VALIDATE_TOKEN to validateToken
             )
 
             userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
