@@ -26,7 +26,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgres
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 class TransactionOrderProgressLayout : LinearLayout {
 
@@ -146,6 +145,7 @@ class TransactionOrderProgressLayout : LinearLayout {
             renderEstimation()
             renderActionButton()
         } else {
+            unbindClickStatus()
             hideDescription()
             renderCloseStateChangerButton()
             bindClickCloseState()
@@ -312,6 +312,10 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun showDescription() {
         descriptionContainer?.show()
+    }
+
+    private fun unbindClickStatus() {
+        status?.setOnClickListener(null)
     }
 
     private fun hideDescription() {
