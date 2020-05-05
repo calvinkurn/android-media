@@ -16,7 +16,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
@@ -24,6 +26,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgres
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 class TransactionOrderProgressLayout : LinearLayout {
 
@@ -212,9 +215,19 @@ class TransactionOrderProgressLayout : LinearLayout {
             actionBtn?.text = chatOrder.button.label
             actionBtn?.setOnClickListener {
                 analytics?.eventClickCtaButton(chatOrder)
+                if (handleTrackClick()) return@setOnClickListener
                 RouteManager.route(context, chatOrder.button.uri)
             }
         }
+    }
+
+    private fun handleTrackClick(): Boolean {
+        if (chatOrder.button.label.equals("lacak", ignoreCase = true)) {
+            val uri = UriUtil.buildUri(ApplinkConst.ORDER_TRACKING, chatOrder.orderId)
+            RouteManager.route(context, uri)
+            return true
+        }
+        return false
     }
 
     private fun renderCloseStateChangerButton() {
