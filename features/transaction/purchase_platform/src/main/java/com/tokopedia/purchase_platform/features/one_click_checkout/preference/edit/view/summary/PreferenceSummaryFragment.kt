@@ -19,6 +19,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
@@ -197,7 +198,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         } else {
             tvPreferenceName?.gone()
 
-            buttonSavePreference?.isEnabled = viewModel.isDataChanged()
+            buttonSavePreference?.isEnabled = (viewModel.isDataChanged() || (cbMainPreference?.isVisible ?: false && cbMainPreference?.isChecked ?: false))
         }
 
         val addressModel = data.addressModel
@@ -239,6 +240,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             if (!parent.getShouldShowDeleteButton() || data.status == 2) {
                 cbMainPreference?.gone()
                 tvMainPreference?.gone()
+            }
+        }
+
+        if (cbMainPreference?.isVisible == true) {
+            cbMainPreference?.setOnCheckedChangeListener { _, isChecked ->
+                buttonSavePreference?.isEnabled = viewModel.isDataChanged() || isChecked
             }
         }
     }
@@ -340,9 +347,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 val parent = activity
                 if (parent is PreferenceEditParent) {
                     if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.getProfileId() > 0) {
-                        viewModel.updatePreference(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), cbMainPreference?.isChecked ?: false, parent.getFromFlow())
+                        viewModel.updatePreference(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), isDefaultProfileChecked(cbMainPreference), parent.getFromFlow())
                     } else {
-                        viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), cbMainPreference?.isChecked ?: false, parent.getFromFlow())
+                        viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery(), isDefaultProfileChecked(cbMainPreference), parent.getFromFlow())
                     }
                     preferenceListAnalytics.eventClickSimpanOnSummaryPurchaseSetting()
                 }
@@ -427,6 +434,16 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun isDefaultProfileChecked(checkBox: CheckboxUnify?): Boolean {
+        if (checkBox != null) {
+            if (checkBox.isVisible) {
+                return checkBox.isChecked
+            }
+            return true
+        }
+        return false
     }
 
     override fun getScreenName(): String {

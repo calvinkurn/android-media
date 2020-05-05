@@ -155,16 +155,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         return _shippingParam
     }
 
-    override fun setListShopShipment(listShopShipment: ArrayList<ShopShipment>?) {
-        _listShopShipment = listShopShipment
-    }
-
     override fun getListShopShipment(): ArrayList<ShopShipment>? {
         return _listShopShipment
-    }
-
-    override fun setShouldShowDeleteButton(shouldShowDeleteButton: Boolean) {
-        _should_show_delete_button = shouldShowDeleteButton
     }
 
     override fun getShouldShowDeleteButton(): Boolean {

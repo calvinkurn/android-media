@@ -27,10 +27,8 @@ interface PreferenceEditParent {
     fun setShippingParam(shippingParam: ShippingParam)
     fun getShippingParam(): ShippingParam?
 
-    fun setListShopShipment(listShopShipment: ArrayList<ShopShipment>?)
     fun getListShopShipment(): ArrayList<ShopShipment>?
 
-    fun setShouldShowDeleteButton(shouldShowDeleteButton: Boolean)
     fun getShouldShowDeleteButton(): Boolean
 
     fun setHeaderTitle(title: String)
