@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.common.analytics;
 
 
-import com.tokopedia.abstraction.processor.ProductClicksBundler;
-import com.tokopedia.abstraction.processor.model.Product;
+import com.tokopedia.abstraction.processor.ProductListClickBundler;
+import com.tokopedia.abstraction.processor.ProductListClickProduct;
+import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
+import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
@@ -257,14 +259,16 @@ public class TopChatAnalytics {
         ));
     }
 
+    public static final int PRODUCT_INDEX = 1;
+
     // #AP6
     public void eventClickProductThumbnailEE(
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
 
-        ArrayList<Product> products = new ArrayList<>();
-        Product topChatProduct = new Product(
+        ArrayList<ProductListClickProduct> products = new ArrayList<>();
+        ProductListClickProduct topChatProduct = new ProductListClickProduct(
                 product.getIdString(),
                 product.getProductName(),
                 product.getCategory(),
@@ -273,18 +277,20 @@ public class TopChatAnalytics {
                 product.getPriceInt(),
                 null,
                 "/chat",
-                0
+                PRODUCT_INDEX
         );
         products.add(topChatProduct);
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductClicksBundler.KEY, ProductClicksBundler.getBundle(
+                ProductListClickBundler.KEY, ProductListClickBundler.getBundle(
                         getField(String.valueOf(product.getBlastId())),
                         products,
                         Category.CHAT_DETAIL,
                         Action.CLICK_PRODUCT_IMAGE,
                         Name.EVENT_NAME_PRODUCT_CLICK,
-                        user.getUserId()
+                        null,
+                        null,
+                        null
                 )
         );
     }
@@ -295,28 +301,31 @@ public class TopChatAnalytics {
             @NotNull UserSessionInterface user
     ) {
 
-        ArrayList<Product> products = new ArrayList<>();
-        Product product1 = new Product(
+        ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
+        ProductListImpressionProduct product1 = new ProductListImpressionProduct(
                 product.getIdString(),
                 product.getProductName(),
+                null,
                 product.getCategory(),
                 product.getVariants().toString(),
+                product.getPriceInt() + 0.0,
                 null,
-                product.getPriceInt(),
-                null,
+                PRODUCT_INDEX,
                 getField(String.valueOf(product.getBlastId())),
-                0
+                getField(String.valueOf(product.getBlastId()))
         );
         products.add(product1);
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductClicksBundler.KEY, ProductClicksBundler.getBundle(
+                ProductListImpressionBundler.KEY, ProductListImpressionBundler.getBundle(
                         getField(String.valueOf(product.getBlastId())),
                         products,
+                        null,
+                        Name.EVENT_NAME_PRODUCT_PREVIEW,
                         Category.CHAT_DETAIL,
                         Action.VIEW_PRODUCT_PREVIEW,
-                        Name.EVENT_NAME_PRODUCT_PREVIEW,
-                        user.getUserId()
+                        null,
+                        null
                 )
         );
     }
