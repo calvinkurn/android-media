@@ -147,14 +147,6 @@ class AddToCartDoneBottomSheet :
             if(result is Success){
                 stateAtcView.visible()
                 addToCartButton.hide()
-                dialog?.run{
-                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
-                    Toaster.make(findViewById(android.R.id.content),
-                            getString(R.string.atc_done_add_product_success),
-                            Snackbar.LENGTH_LONG,
-                            Toaster.TYPE_ERROR
-                    )
-                }
             } else if(result is Fail){
                 dialog?.run{
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
@@ -305,8 +297,8 @@ class AddToCartDoneBottomSheet :
         discountPercentage.text = recommendation.discountPercentage
         slashedPrice.text = recommendation.slashedPrice
         price.text = recommendation.price
-        if(!addToCartButton.hasOnClickListeners()) {
-            addToCartButton.setOnClickListener {
+        addToCartButton.setOnClickListener {
+            if(!addToCartButton.isLoading){
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(recommendation)
             }
