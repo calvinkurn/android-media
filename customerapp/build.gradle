@@ -414,7 +414,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.promotionsTarget)
     implementation project(rootProject.ext.features.findNative)
-    implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
     if (rootProject.ext.debugToolsEnabled) {
