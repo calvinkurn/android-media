@@ -60,6 +60,8 @@ class TransactionOrderProgressLayout : LinearLayout {
         initBindView()
     }
 
+    fun shouldRefreshOnStart(): Boolean = chatOrder.isCtaFinish
+
     fun renderIfExist() {
         canBeRendered = true
         render(this.listener, this.chatOrder)

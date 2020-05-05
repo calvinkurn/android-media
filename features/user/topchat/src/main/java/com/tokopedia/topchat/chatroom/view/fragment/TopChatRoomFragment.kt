@@ -159,6 +159,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         loadInitialData()
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (orderProgress?.shouldRefreshOnStart() == true) {
+            presenter.getOrderProgress(messageId)
+        }
+    }
+
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
                 view,

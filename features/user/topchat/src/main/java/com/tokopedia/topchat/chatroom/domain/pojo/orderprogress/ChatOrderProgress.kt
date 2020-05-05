@@ -30,6 +30,7 @@ data class ChatOrderProgress(
         val uri: String = ""
 ) {
 
+    val isCtaFinish: Boolean get() = button.key == ctaFinishOrder
     val hasActionButton: Boolean get() = button.key.isNotEmpty()
     val ctaType: String get() {
         return when (button.key) {
