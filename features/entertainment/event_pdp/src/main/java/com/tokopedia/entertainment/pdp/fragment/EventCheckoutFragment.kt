@@ -250,7 +250,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
 
         btn_event_checkout.setOnClickListener {
-            progressDialog.show()
+
             view?.let {
                 val view = it
                 context?.let {
@@ -259,11 +259,10 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                     } else if (forms.isEmpty()) {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                     } else {
-
+                        progressDialog.show()
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
-
-                            eventCheckoutViewModel.checkVerify(true, getVerifyMapped(productDetailData))
+                        eventCheckoutViewModel.checkVerify(true, getVerifyMapped(productDetailData))
                     }
                 }
             }
