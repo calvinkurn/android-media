@@ -224,7 +224,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun handleTrackClick(): Boolean {
-        if (chatOrder.button.label.equals("lacak", ignoreCase = true)) {
+        if (chatOrder.isCtaTrack) {
             val uri = UriUtil.buildUri(ApplinkConst.ORDER_TRACKING, chatOrder.orderId)
             RouteManager.route(context, uri)
             return true
