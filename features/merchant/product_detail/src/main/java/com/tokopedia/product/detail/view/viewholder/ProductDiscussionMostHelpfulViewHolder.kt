@@ -23,13 +23,16 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     override fun bind(element: ProductDiscussionMostHelpfulDataModel) {
         with(element) {
             return when {
+                questions == null -> {
+                    showLocalLoad()
+                }
                 isShimmering -> {
                     showShimmer()
                     hideSingleQuestionLayout()
                     hideEmptyState()
                     hideLocalLoad()
                 }
-                totalQuestion < 1 -> {
+                (totalQuestion < 1 && element.questions?.isEmpty() == true) -> {
                     showEmptyState()
                     hideSingleQuestionLayout()
                     hideLocalLoad()
@@ -41,9 +44,6 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideEmptyState()
                     hideShimmer()
                     hideLocalLoad()
-                }
-                questions == null -> {
-                    showLocalLoad()
                 }
                 else -> {
                     showTitle(element.totalQuestion)
