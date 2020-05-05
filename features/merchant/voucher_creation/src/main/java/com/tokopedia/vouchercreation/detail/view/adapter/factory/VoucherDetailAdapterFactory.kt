@@ -1,9 +1,6 @@
 package com.tokopedia.vouchercreation.detail.view.adapter.factory
 
-import com.tokopedia.vouchercreation.detail.model.DividerUiModel
-import com.tokopedia.vouchercreation.detail.model.TipsUiModel
-import com.tokopedia.vouchercreation.detail.model.UsageProgressUiModel
-import com.tokopedia.vouchercreation.detail.model.VoucherHeaderUiModel
+import com.tokopedia.vouchercreation.detail.model.*
 
 /**
  * Created By @ilhamsuaib on 30/04/20
@@ -18,4 +15,6 @@ interface VoucherDetailAdapterFactory {
     fun type(model: DividerUiModel): Int
 
     fun type(model: TipsUiModel): Int
+
+    fun type(model: InfoContainerUiModel): Int
 }

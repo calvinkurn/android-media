@@ -80,6 +80,23 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                 UsageProgressUiModel(30),
                 DividerUiModel(8),
                 TipsUiModel("Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat tips & trik"),
+                DividerUiModel(8),
+                InfoContainerUiModel("Info voucher", listOf(
+                        SubInfoItemUiModel("Target Voucher", "Khusus"),
+                        SubInfoItemUiModel("Nama Voucher", "Voucher Hura Test Doang"),
+                        SubInfoItemUiModel("Kode Promo", "TESTDOANG", true)
+                )),
+                DividerUiModel(2),
+                InfoContainerUiModel("Keuntungan voucher", listOf(
+                        SubInfoItemUiModel("Tipe Voucher", "Cashback"),
+                        SubInfoItemUiModel("Nominal Diskon", "10%"),
+                        SubInfoItemUiModel("Kuota", "100"),
+                        SubInfoItemUiModel("Syarat Pembelian", "Min. pembelian Rp50.000 - Max. potongan Rp20.000")
+                )),
+                DividerUiModel(2),
+                InfoContainerUiModel("Periode tampil", listOf(
+                        SubInfoItemUiModel("Periode", "17 Jan 2020, 08:30 WIB - 17 Feb 2020, 22:00 WIB")
+                )),
                 DividerUiModel(8)
         )
         renderList(dummy)
