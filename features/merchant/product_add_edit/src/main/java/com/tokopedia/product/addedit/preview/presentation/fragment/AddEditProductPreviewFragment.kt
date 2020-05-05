@@ -911,7 +911,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
             this.belowMinResolutionErrorMessage = getString(R.string.error_image_under_x_resolution, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION)
             this.imageTooLargeErrorMessage = getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
-            this.isRecheckSizeAfterResize = true
+            this.isRecheckSizeAfterResize = false
         }
 
         val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
