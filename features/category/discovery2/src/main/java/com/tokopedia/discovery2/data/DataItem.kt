@@ -27,7 +27,7 @@ data class DataItem(
         val filter: String? = "",
 
         @SerializedName("filter_value")
-        val filterValue: Int? = 0,
+        val filterValue: String? = "",
 
         @SerializedName("isSelected")
         var isSelected: Boolean = false,
@@ -68,7 +68,7 @@ data class DataItem(
         @SerializedName("applinks", alternate = ["applink"])
         var applinks: String? = "",
 
-        @SerializedName("name")
+        @SerializedName("name", alternate = ["text"])
         var name: String? = "",
 
         @SerializedName("action")
@@ -104,7 +104,7 @@ data class DataItem(
         @SerializedName("alternate_background_url_mobile")
         val alternateBackgroundUrlMobile: String? = "",
 
-        @SerializedName("box_color")
+        @SerializedName("box_color", alternate = ["background_color"])
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
@@ -113,10 +113,13 @@ data class DataItem(
         @field:SerializedName("button_text")
         var buttonText: String? = "",
 
+        @field:SerializedName("creative_name")
+        var creativeName: String? = "",
+
         @SerializedName("title")
         val title: String? = "",
 
-        @SerializedName("thumbnail_url_mobile")
+        @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
         val thumbnailUrlMobile: String? = "",
 
         @SerializedName("points_str")
@@ -129,7 +132,7 @@ data class DataItem(
         val discountPercentageStr: String? = "",
 
         @SerializedName("points_slash")
-        val pointsSlash: Int? = 0,
+        val pointsSlash: String? = "",
 
         @SerializedName("slug")
         val slug: String? = "",
@@ -140,7 +143,7 @@ data class DataItem(
         @field:SerializedName("price_format")
         var priceFormat: String? = "",
 
-        @field:SerializedName("image_click_url")
+        @field:SerializedName("image_click_url", alternate = ["url"])
         var imageClickUrl: String? = "",
 
         @SerializedName("size_mobile")
@@ -150,18 +153,31 @@ data class DataItem(
         var background: String? = "",
 
         @SerializedName("video_id")
-        val videoId: String? = ""
+        val videoId: String? = "",
+
+        @SerializedName("category_rows")
+        val categoryRows: List<DataItem>? = ArrayList(),
+
+        @SerializedName("type")
+        val type: String = "",
+
+        @SerializedName("categoryLabel")
+        val categoryLabel: String = "",
+
+        @SerializedName("ID")
+        val id: String? = "",
+
+        @SerializedName("shop_id")
+        val shopId: String? = ""
 
 ) {
     val leftMargin: Int
         get() {
-            if (leftMarginMobile != null && !leftMarginMobile.isEmpty()) leftMarginMobile.toInt()
-            return 0
+            return leftMarginMobile?.toIntOrNull() ?: 0
         }
 
     val rightMargin: Int
         get() {
-            if (rightMarginMobile != null && !rightMarginMobile.isEmpty()) rightMarginMobile.toInt()
-            return 0
+            return rightMarginMobile?.toIntOrNull() ?: 0
         }
 }

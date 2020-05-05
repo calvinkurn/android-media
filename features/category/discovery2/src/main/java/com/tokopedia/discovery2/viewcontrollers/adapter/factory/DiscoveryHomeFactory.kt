@@ -32,6 +32,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chip
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -77,7 +81,6 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ProductCardCarousel, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.BrandRecommendation, ::BrandRecommendationViewHolder, ::BrandRecommendationViewModel)
             initializeComponent(ComponentsList.BrandRecommendationItem, ::BrandRecommendationItemViewHolder, ::BrandRecommendationItemViewModel)
-            initializeComponent(ComponentsList.CustomTopChat, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.ComingSoonTabs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.ProductCardRevamp, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.BreadCrumbs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
@@ -89,6 +92,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.TabsItem, ::TabsItemViewHolder, ::TabsItemViewModel)
             initializeComponent(ComponentsList.ChipsFilter, ::ChipsFilterViewHolder, ::ChipsFilterViewModel)
             initializeComponent(ComponentsList.ChipsFilterItem, ::ChipsFilterItemViewHolder, ::ChipsFilterItemViewModel)
+            initializeComponent(ComponentsList.DynamicCategory, ::DynamicCategoryViewHolder, ::DynamicCategoryViewModel)
+            initializeComponent(ComponentsList.DynamicCategoryItem, ::DynamicCategoryItemViewHolder, ::DynamicCategoryItemViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {

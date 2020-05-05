@@ -39,11 +39,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     }
 
     private fun setUpObservers() {
-        if (!tabsViewModel.getListDataLiveData().hasActiveObservers()) {
-            tabsViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer {
-                tabsRecyclerViewAdapter.setDataList(it)
-            })
-        }
+        tabsViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            tabsRecyclerViewAdapter.setDataList(it)
+        })
     }
 
 }

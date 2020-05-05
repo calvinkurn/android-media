@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -12,24 +12,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class ChipsFilterViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
-
-    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+class DynamicCategoryViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+    private val componentData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {
-        componentData.value = components
         components.data?.let {
-            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.ChipsFilterItem.componentName)
+            componentData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.DynamicCategoryItem.componentName)
         }
     }
 
-    fun getComponentLiveData(): LiveData<ComponentsItem> {
+    fun getComponentLiveData(): LiveData<ArrayList<ComponentsItem>> {
         return componentData
-    }
-
-    fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> {
-        return listData
     }
 
     override fun initDaggerInject() {

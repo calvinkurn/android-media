@@ -38,4 +38,6 @@ enum class ComponentNames(val componentName: String) {
     ChipsFilterItem("chips_filter_item"),
     Tabs("tabs"),
     TabsItem("tabs_item"),
+    DynamicCategory("dynamic_category"),
+    DynamicCategoryItem("dynamic_category_item")
 }

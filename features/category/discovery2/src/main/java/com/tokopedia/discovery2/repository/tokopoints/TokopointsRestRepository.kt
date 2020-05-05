@@ -18,10 +18,9 @@ class TokopointsRestRepository @Inject constructor() : BaseRepository(), Tokopoi
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,
                 queryParamterMap)
-        val discoveryDataMapper = DiscoveryDataMapper()
         val discoveryResponse = response?.getData() as DataResponse<DiscoveryResponse>
 
 
-        return discoveryDataMapper.mapListToComponentList(discoveryResponse.data.component?.data!! , "tokopoints_item")
+        return DiscoveryDataMapper.mapListToComponentList(discoveryResponse.data.component?.data!! , "tokopoints_item")
     }
 }
