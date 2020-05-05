@@ -19,7 +19,7 @@ class EmoneyAnalytics {
 
     private fun addComponentOpenScreenNFC(screenName: String, userId: String, irisSessionId: String) {
         val mapEvent = HashMap<String, String>()
-        mapEvent[Param.EVENT] = Screen.INITIAL_NFC
+        mapEvent[Param.EVENT] = Event.OPEN_SCREEN
         mapEvent[Param.LOGGED_IN_STATUS] = if (userId.isNotEmpty()) "true" else "false"
         mapEvent[Param.CURRENT_SITE] = Param.CURRENT_SITE_EMONEY
         mapEvent[Param.BUSINESS_UNIT] = Param.BUSINESS_UNIT_EMONEY
@@ -56,7 +56,7 @@ class EmoneyAnalytics {
                 Category.DIGITAL_NFC,
                 action,
                 "$category - $operator")
-        addComponentClickNFC(map, userId, "${screenName}-${operator}", irisSessionId)
+        addComponentClickNFC(map,"${screenName}-${operator}", userId, irisSessionId)
     }
 
     fun clickTopupEmoney(category: String, operator:String, userId: String, irisSessionId: String) {
@@ -65,7 +65,7 @@ class EmoneyAnalytics {
                 Category.DIGITAL_NFC,
                 Action.CLICK_TOPUP,
                 "$category - $operator")
-        addComponentClickNFC(map, userId, "${Screen.SUCCESS_NFC}-$operator", irisSessionId)
+        addComponentClickNFC(map, "${Screen.SUCCESS_NFC}-$operator", userId, irisSessionId)
     }
 
     fun clickTryAgainTapEmoney(category: String, operator: String, userId: String, irisSessionId: String) {
@@ -74,7 +74,7 @@ class EmoneyAnalytics {
                 Category.DIGITAL_NFC,
                 Action.CLICK_TRY_AGAIN,
                 "$category - $operator")
-        addComponentClickNFC(map, userId, "${Screen.FAILED_NFC}-$operator", irisSessionId)
+        addComponentClickNFC(map, "${Screen.FAILED_NFC}-$operator", userId, irisSessionId)
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -160,10 +160,10 @@ class EmoneyAnalytics {
 
     interface Screen {
         companion object {
-            const val INITIAL_NFC = "/initial-nfc-page-"
-            const val READING_NFC = "/reading-card-nfc-"
-            const val SUCCESS_NFC = "/success-cek-saldo-nfc-"
-            const val FAILED_NFC = "/failed-cek-saldo-nfc-"
+            const val INITIAL_NFC = "/initial-nfc-page"
+            const val READING_NFC = "/reading-card-nfc"
+            const val SUCCESS_NFC = "/success-cek-saldo-nfc"
+            const val FAILED_NFC = "/failed-cek-saldo-nfc"
         }
     }
 
