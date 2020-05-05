@@ -1,13 +1,10 @@
 package com.tokopedia.product.detail.view.viewmodel
 
-import android.content.Intent
-import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -16,8 +13,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
@@ -37,7 +32,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataMode
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
@@ -557,55 +551,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    fun putChatProductInfoTo(
-            intent: Intent?,
-            productId: String?,
-            productInfo: DynamicProductInfoP1?
-    ) {
-        if (intent == null || productId == null) return
-        val variants = mapSelectedProductVariants(productId)
-        val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
-        val productName = productInfo?.getProductName ?: ""
-        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
-        val priceBefore = if (priceBeforeInt > 0) {
-            priceBeforeInt.getCurrencyFormatted()
-        } else {
-            ""
-        }
-        val dropPercentage = productInfo?.dropPercentage ?: ""
-        val productUrl = productInfo?.basic?.url ?: ""
-        val isActive = productInfo?.basic?.isActive() ?: true
-        val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
-        val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""
-        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
-        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
-        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
-        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
-        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
-        val productPreview = ProductPreview(
-                productId,
-                productImageUrl,
-                productName,
-                productPrice,
-                productColorVariantId,
-                productColorVariant,
-                productColorHexVariant,
-                productSizeVariantId,
-                productSizeVariant,
-                productUrl,
-                productFsIsActive,
-                productFsImageUrl,
-                priceBefore,
-                priceBeforeInt,
-                dropPercentage,
-                isActive
-        )
-        val productPreviews = listOf(productPreview)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
-        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
-    }
-
     fun loadRecommendation() {
         launch {
             if (!GlobalConfig.isSellerApp()) {
@@ -702,15 +647,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 })
     }
 
-    fun generateVariantString(): String {
-        return try {
-            p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
-                    ?: ""
-        } catch (e: Throwable) {
-            ""
-        }
-    }
-
     fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, source: String) {
         launchCatchError(block = {
             toggleNotifyMeUseCase.createParams(campaignId, productId, notifyMeAction, source)
@@ -728,14 +664,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun cancelEtalaseUseCase() {
         moveProductToEtalaseUseCase.cancelJobs()
-    }
-
-    private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {
-        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
-    }
-
-    private fun getProductVariant(): ProductVariantCommon? {
-        return p2General.value?.variantResp
     }
 
     private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,

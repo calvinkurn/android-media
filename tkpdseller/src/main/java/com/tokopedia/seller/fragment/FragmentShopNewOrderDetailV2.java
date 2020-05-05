@@ -10,10 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,28 +20,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
@@ -121,16 +117,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     @Override
     public void showProgress() {
         progressDialog.showDialog();
-    }
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-        progressDialog.dismiss();
     }
 
     @Override
@@ -497,10 +483,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void actionOpenBuyer() {
-        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
-            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                    .getTopProfileIntent(getActivity(), userId));
-        }
+        startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, userId));
     }
 
 

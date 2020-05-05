@@ -195,6 +195,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)

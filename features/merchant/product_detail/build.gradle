@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
 android {
     sourceSets.each {
@@ -9,13 +8,6 @@ android {
     }
 
     testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
         }
@@ -37,12 +29,12 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 dependencies {
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -134,8 +126,6 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.json
     testImplementation rootProject.ext.miscDependencies.coroutineCore
