@@ -68,9 +68,9 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 isFirstLoaded = false
             } else {
                 itemView.textFieldUrl.apply {
-                    textAreaInput.removeTextChangedListener(textWatcher)
+                    textFieldInput.removeTextChangedListener(textWatcher)
                     replaceTextAndRestoreCursorPosition(element.inputUrl)
-                    textAreaInput.addTextChangedListener(textWatcher)
+                    textFieldInput.addTextChangedListener(textWatcher)
                     requestFocus()
                 }
             }
@@ -103,6 +103,8 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                     textFieldUrl.isError = false
                     textFieldUrl.textAreaMessage = ""
                 }
+
+                cardThumbnail.setOnClickListener { listener?.onThumbnailClicked(inputUrl) }
             }
         }
 
@@ -114,5 +116,6 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     interface VideoLinkListener {
         fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int)
         fun onTextChanged(url: String, position: Int)
+        fun onThumbnailClicked(url: String)
     }
 }

@@ -51,7 +51,7 @@ fun TextFieldUnify?.setModeToNumberInput() {
     })
 }
 
-fun TextAreaUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.textAreaInput?.run {
+fun TextFieldUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.textFieldInput?.run {
     val cursorPosition = selectionEnd.orZero()
     setText(text)
     setSelection(cursorPosition.coerceAtMost(text.length))

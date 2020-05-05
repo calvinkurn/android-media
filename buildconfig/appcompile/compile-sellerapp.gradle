@@ -157,6 +157,7 @@ include "features:user:stickylogin"
 include "features:user:seamless_login"
 include "features:user:kyc_centralized"
 include "features:user:profilecommon"
+include "features:user:liveness"
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"
