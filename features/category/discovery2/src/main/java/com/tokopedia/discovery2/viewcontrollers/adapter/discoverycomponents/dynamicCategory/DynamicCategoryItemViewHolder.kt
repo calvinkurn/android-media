@@ -24,12 +24,12 @@ class DynamicCategoryItemViewHolder(itemView: View, private val fragment: Fragme
 
     private fun setUpObservers() {
         dynamicCategoryItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            val itemData = it.data?.get(0)
-            ImageHandler.loadImageWithoutPlaceholder(dynamicCategorySingleItemIcon, itemData?.thumbnailUrlMobile,
-                    R.drawable.status_no_result)
-            setClick(itemData?.applinks)
-            dynamicCategorySingleItemTitle.setTextAndCheckShow(itemData?.name)
-
+            it.data?.firstOrNull()?.let {itemData ->
+                ImageHandler.loadImageWithoutPlaceholder(dynamicCategorySingleItemIcon, itemData.thumbnailUrlMobile,
+                        R.drawable.status_no_result)
+                setClick(itemData.applinks)
+                dynamicCategorySingleItemTitle.setTextAndCheckShow(itemData.name)
+            }
         })
     }
 

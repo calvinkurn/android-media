@@ -33,15 +33,16 @@ class DynamicCategoryViewHolder(itemView: View, private val fragment: Fragment) 
                         LayoutInflater.from(fragment.context).inflate(R.layout.dynamic_category_item_layout, dynamicCategoryParent, false)
                 val dynamicCategoryHeader: Typography = dynamicCategoryView.findViewById(R.id.dynamic_category_title)
                 val dynamicCategoryRecyclerView: RecyclerView = dynamicCategoryView.findViewById(R.id.dynamic_category_recyclerView)
-                val dynamicCategoryRowData = data.data?.get(0)
-                dynamicCategoryRowData?.title?.let {
-                    dynamicCategoryHeader.text = it
-                }
-                val categoryRowItems = dynamicCategoryRowData?.categoryRows?.let { DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.DynamicCategoryItem.componentName) }
-                dynamicCategoryRecyclerView.apply {
-                    adapter = DiscoveryRecycleAdapter(fragment)
-                    layoutManager = GridLayoutManager(fragment.context, 4)
-                    (adapter as DiscoveryRecycleAdapter).setDataList(categoryRowItems)
+                data.data?.firstOrNull()?.let { dynamicCategoryRowData ->
+                    dynamicCategoryHeader.text = dynamicCategoryRowData.title
+                    val categoryRowItems = dynamicCategoryRowData.categoryRows?.let {
+                        DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.DynamicCategoryItem.componentName)
+                    }
+                    dynamicCategoryRecyclerView.apply {
+                        adapter = DiscoveryRecycleAdapter(fragment)
+                        layoutManager = GridLayoutManager(fragment.context, 4)
+                        (adapter as DiscoveryRecycleAdapter).setDataList(categoryRowItems)
+                    }
                 }
                 dynamicCategoryParent.addView(dynamicCategoryView)
             }

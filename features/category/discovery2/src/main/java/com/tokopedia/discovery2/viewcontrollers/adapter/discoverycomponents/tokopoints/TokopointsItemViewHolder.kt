@@ -30,7 +30,7 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
             initView()
             couponTitleTv.text = item.title
             ImageHandler.LoadImage(bannerImageView, item.thumbnailUrlMobile)
-            if (item.pointsSlash != null && item.pointsSlash.toIntOrZero() > 0 && item.pointsSlashStr?.isNotEmpty()!!) {
+            if (item.pointsSlash.toIntOrZero() > 0 && (item.pointsSlashStr?:"").isNotEmpty()) {
                 slashedPriceTv.text = item.pointsSlashStr
                 pointsValueTv.text = item.pointsStr
 
