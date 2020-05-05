@@ -108,7 +108,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
                             hideProgressBar()
                 } else if (taskId == getKeyTaskId) {
                     seamlessViewModel.loginSeamless(bundle.getString(SeamlessSellerConstant.KEY_TOKEN))
-                } else onErrorLoginToken(null)
+                } else moveToNormalLogin()
             }  else moveToNormalLogin()
         }else moveToNormalLogin()
     }
