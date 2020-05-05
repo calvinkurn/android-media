@@ -107,13 +107,12 @@ class OrderHistoryViewHolder(
     }
 
     private fun bindFreeShipping(product: Product) {
-        // TODO: impl free shipping later
-//        if (product.hasFreeShipping) {
-//            freeShipping?.show()
-//            ImageHandler.loadImageRounded2(itemView.context, freeShipping, product.getFreeShippingImageUrl())
-//        } else {
-//            freeShipping?.hide()
-//        }
+        if (product.hasFreeShipping) {
+            freeShipping?.show()
+            ImageHandler.loadImageRounded2(itemView.context, freeShipping, product.freeShipping.imageUrl)
+        } else {
+            freeShipping?.hide()
+        }
     }
 
     private fun bindClickBuyAgain(product: Product) {
