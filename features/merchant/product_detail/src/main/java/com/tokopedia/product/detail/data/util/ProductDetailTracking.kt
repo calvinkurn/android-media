@@ -450,6 +450,40 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
+    fun eventAddToCartRecommendationATCClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+        val valueLoginOrNotLogin = if (!isSessionActive)
+            " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
+        else ""
+        val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
+                product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+        val actionValuePostfix = if (!isSessionActive)
+            " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
+        else
+            ""
+
+        val data = DataLayer.mapOf(
+                KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
+                KEY_CATEGORY, ProductTrackingConstant.Category.PDP_AFTER_ATC,
+                KEY_ACTION, ProductTrackingConstant.Action.TOPADS_ATC_CLICK + actionValuePostfix,
+                KEY_LABEL, pageTitle,
+                KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.ADD, DataLayer.mapOf(
+                ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
+                PRODUCTS, DataLayer.listOf(
+                DataLayer.mapOf(
+                        PROMO_NAME, product.name,
+                        ID, product.productId.toString(),
+                        PRICE, removeCurrencyPrice(product.price),
+                        BRAND, DEFAULT_VALUE,
+                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
+                        VARIANT, DEFAULT_VALUE,
+                        PROMO_POSITION, position,
+                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                )
+        ))
+        ))
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
+    }
+
     fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val listValue = LIST_DEFAULT + pageName +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "") +
@@ -831,7 +865,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 }
             }
 
-            sendEvent(eventName, mutableMap)
+            sendEvent(eventName, mutableMap as Map<String, Any>?)
         }
     }
 

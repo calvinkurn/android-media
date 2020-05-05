@@ -301,6 +301,13 @@ class AddToCartDoneBottomSheet :
             if(!addToCartButton.isLoading){
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(recommendation)
+                productDetailTracking.eventAddToCartRecommendationClick(
+                        recommendation,
+                        recommendation.position,
+                        addToCartDoneViewModel.isLoggedIn(),
+                        recommendation.pageName,
+                        recommendation.header
+                )
             }
         }
     }
