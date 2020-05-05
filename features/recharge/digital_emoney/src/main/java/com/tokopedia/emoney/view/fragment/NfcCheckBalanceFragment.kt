@@ -40,6 +40,7 @@ import com.tokopedia.emoney.view.compoundview.NFCDisabledView
 import com.tokopedia.emoney.view.compoundview.TapETollCardView
 import com.tokopedia.emoney.viewmodel.BrizziBalanceViewModel
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.GraphqlHelper
@@ -57,6 +58,9 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     private lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
     private lateinit var brizziBalanceViewModel: BrizziBalanceViewModel
 
+    private var statusCloseBtn = "";
+    private var operatorName = "";
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
     @Inject
@@ -68,6 +72,10 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     @Inject
     lateinit var brizziInstance: Brizzi
 
+    private val irisSessionId by lazy {
+        context?.let { IrisSession(it).getSessionId() } ?: ""
+    }
+
     override fun getScreenName(): String {
         return ""
     }
@@ -78,6 +86,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        statusCloseBtn = INITIAL_CLOSE_BTN
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
@@ -87,6 +96,29 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     fun setOnNewIntent(intent: Intent) {
         processTagIntent(intent)
+    }
+
+    fun sendTrackingCloseButton() {
+        if (statusCloseBtn.isNotEmpty()) {
+            var action = ""
+            var screenName = ""
+            when (statusCloseBtn) {
+                INITIAL_CLOSE_BTN -> {
+                    action = EmoneyAnalytics.Action.CLICK_CLOSE_INITAL_PAGE
+                    screenName = EmoneyAnalytics.Screen.INITIAL_NFC
+                }
+                SUCCESS_CLOSE_BTN -> {
+                    action = EmoneyAnalytics.Action.SUCCESS_CLICK_CLOSE_PAGE
+                    screenName = EmoneyAnalytics.Screen.SUCCESS_NFC
+                }
+                FAILED_CLOSE_BTN  -> {
+                    action = EmoneyAnalytics.Action.FAILED_CLICK_CLOSE_PAGE
+                    screenName = EmoneyAnalytics.Screen.FAILED_NFC
+                }
+            }
+            emoneyAnalytics.clickBtnCloseCheckSaldoNFC(action, screenName, ETOLL_CATEGORY_ID,
+                    operatorName, userSession.userId, irisSessionId)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,7 +133,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         view_update_balance_result.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
-                emoneyAnalytics.onClickTopupEmoney(getOperatorName(issuerId))
+                emoneyAnalytics.clickTopupEmoney(ETOLL_CATEGORY_ID, getOperatorName(issuerId), userSession.userId, irisSessionId)
 
                 val passData = DigitalCategoryDetailPassData.Builder()
                         .categoryId(ETOLL_CATEGORY_ID)
@@ -130,7 +162,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         view_tap_emoney_card.setListener(object : TapETollCardView.OnTapEtoll {
             override fun tryAgainTopup(issuerId: Int) {
-                emoneyAnalytics.onClickTryAgainTapEmoney(getOperatorName(issuerId))
+                emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, getOperatorName(issuerId), userSession.userId, irisSessionId)
             }
         })
 
@@ -140,6 +172,8 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
                 navigateToNFCSettings()
             }
         })
+
+        emoneyAnalytics.openScreenNFC(operatorName, userSession.userId, irisSessionId)
     }
 
     override fun initInjector() {
@@ -280,6 +314,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     private fun showError(errorMessage: String) {
+        statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking()
         if (view_update_balance_result.visibility == View.VISIBLE) {
             view_update_balance_result.showError(errorMessage)
@@ -288,18 +323,26 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
             view_tap_emoney_card.showInitialState()
             view_tap_emoney_card.showErrorState(errorMessage)
         }
+        emoneyAnalytics.openScreenFailedReadCardNFC(operatorName, userSession.userId, irisSessionId)
     }
 
     private fun showErrorDeviceUnsupported(errorMessage: String) {
+        statusCloseBtn = FAILED_CLOSE_BTN
         view_tap_emoney_card.visibility = View.VISIBLE
         view_tap_emoney_card.showErrorDeviceUnsupportedState(errorMessage)
+        emoneyAnalytics.openScreenFailedReadCardNFC(operatorName, userSession.userId, irisSessionId)
     }
 
     private fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
-        emoneyAnalytics.onShowLastBalance()
+        emoneyInquiry.attributesEmoneyInquiry?.let { operatorName = getOperatorName(it.issuer_id) }
         view_tap_emoney_card.visibility = View.GONE
         view_update_balance_result.visibility = View.VISIBLE
         view_update_balance_result.showCardInfoFromApi(emoneyInquiry)
+
+        statusCloseBtn = SUCCESS_CLOSE_BTN
+        emoneyAnalytics.onShowLastBalance()
+        emoneyAnalytics.openScreenSuccessReadCardNFC(operatorName, userSession.userId, irisSessionId)
+
         activity?.let { activity ->
             emoneyInquiry.error?.let {
                 NetworkErrorHelper.showGreenCloseSnackbar(activity, it.title)
@@ -317,6 +360,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
+        emoneyAnalytics.openScreenReadingCardNFC(operatorName, userSession.userId, irisSessionId)
         if (view_update_balance_result.visibility == View.VISIBLE) {
             view_update_balance_result.showLoading()
         } else {
@@ -454,6 +498,10 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
         const val OPERATOR_NAME_BRIZZI = "brizzi"
 
         private val ETOLL_CATEGORY_ID = "34"
+
+        private const val INITIAL_CLOSE_BTN = "initial";
+        private const val SUCCESS_CLOSE_BTN = "success";
+        private const val FAILED_CLOSE_BTN = "failed";
 
         fun newInstance(): Fragment {
             return NfcCheckBalanceFragment()
