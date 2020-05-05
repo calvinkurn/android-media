@@ -64,8 +64,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     private Context context;
 
-    private boolean isAllowGenerateAddress;
-
     private boolean hasLocation;
     private LocationPass locationPass;
 
@@ -89,7 +87,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
                 .addConnectionCallbacks(googleMapFragment)
                 .addOnConnectionFailedListener(googleMapFragment)
                 .build();
-        this.isAllowGenerateAddress = true;
     }
 
     @Override
@@ -112,39 +109,12 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     }
 
     @Override
-    public void onGoogleApiConnected(Bundle bundle) {
-
-    }
-
-    private void getNewLocation() {
-        checkLocationSettings();
+    public LocationPass getUpdateLocation() {
+        return locationPass;
     }
 
     private void getExistingLocation() {
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
-    }
-
-    private void checkLocationSettings() {
-        LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-
-        locationSettingsRequest.setAlwaysShow(true);
-
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi
-                        .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
-
-        view.checkLocationSettings(result);
-    }
-
-    @Override
-    public void onGoogleApiSuspended(int cause) {
-
-    }
-
-    @Override
-    public void onGoogleApiFailed(ConnectionResult connectionResult) {
-
     }
 
     @Override
@@ -166,8 +136,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     }
 
     @SuppressLint("MissingPermission")
-    @Override
-    public LatLng getLastLocation() {
+    private LatLng getLastLocation() {
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
@@ -208,11 +177,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         if (googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         }
-    }
-
-    @Override
-    public void initDefaultLocation() {
-        view.moveMap(DEFAULT_LATLNG_JAKARTA);
     }
 
     @Override
@@ -257,13 +221,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         this.locationPass = locationPass;
     }
 
-    private void saveLatLng(LatLng target) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, CACHE_LATITUDE_LONGITUDE);
-        cache.putString(CACHE_LATITUDE, String.valueOf(target.latitude));
-        cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
-        cache.applyEditor();
-    }
-
     @Override
     public void prepareAutoCompleteView() {
         view.initAutoCompleteAdapter(retrofitInteractor.getCompositeSubscription(),
@@ -289,7 +246,16 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     @Override
     public void onMapReady() {
         if (!hasLocation) {
-            getNewLocation();
+            LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest);
+
+            locationSettingsRequest.setAlwaysShow(true);
+
+            PendingResult<LocationSettingsResult> result =
+                    LocationServices.SettingsApi
+                            .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
+
+            view.checkLocationSettings(result);
         } else {
             getExistingLocation();
         }
@@ -310,19 +276,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         retrofitInteractor.generateLatLng(
                 AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 latLongListener());
-    }
-
-    @Override
-    public void onSubmitPointer(Activity activity) {
-        if (isAllowGenerateAddress) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-            Intent intent = new Intent();
-            intent.putExtras(bundle);
-            intent.putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-            activity.setResult(Activity.RESULT_OK, intent);
-            activity.finish();
-        }
     }
 
     @Override

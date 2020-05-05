@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
 import com.tokopedia.travelhomepage.destination.presentation.adapter.TravelDestinationCityRecommendationAdapter
 import kotlinx.android.synthetic.main.layout_travel_destination_recommendation.view.*
 
@@ -19,11 +19,11 @@ import kotlinx.android.synthetic.main.layout_travel_destination_recommendation.v
 
 class TravelDestinationCityRecommendationViewHolder(itemView: View, private val onViewHolderBindListener: OnViewHolderBindListener,
                                                     private val actionListener: ActionListener)
-    : AbstractViewHolder<TravelDestinationSectionViewModel>(itemView) {
+    : AbstractViewHolder<TravelDestinationSectionModel>(itemView) {
 
     lateinit var recommendationAdapter: TravelDestinationCityRecommendationAdapter
 
-    override fun bind(element: TravelDestinationSectionViewModel) {
+    override fun bind(element: TravelDestinationSectionModel) {
         if (element.isLoaded) {
             if (element.isSuccess && element.list.isNotEmpty()) {
                 with(itemView) {

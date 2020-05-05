@@ -5,11 +5,10 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 interface TopChatViewState : BaseChatViewState {
-
-    fun showErrorWebSocket(b: Boolean)
 
     fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
 
@@ -26,8 +25,6 @@ interface TopChatViewState : BaseChatViewState {
 
     fun focusOnReply()
 
-    fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel)
-
-    fun sendAnalyticsClickATC(element: ProductAttachmentViewModel)
+    fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel
 
 }

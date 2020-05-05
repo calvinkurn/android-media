@@ -4,17 +4,19 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.domain.model.SearchProfileModel
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
 import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.search.result.presentation.model.ProfileRecommendationTitleViewModel
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
+import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -45,9 +47,22 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
     override fun initInjector() {
         val component = DaggerProfileListPresenterComponent.builder()
             .baseAppComponent(view?.getBaseAppComponent())
+            .searchContextModule(createSearchContextModule())
             .build()
 
         component.inject(this)
+    }
+
+    @Deprecated("Very ugly hack. It is only intended for hotfix to reduce number of file changed")
+    private fun createSearchContextModule(): SearchContextModule? {
+        return view?.let {
+            if (it is ProfileListFragment) {
+                it.activity?.let { activity ->
+                    SearchContextModule(activity)
+                }
+            }
+            else null
+        }
     }
 
     override fun getNextPage(): Int {

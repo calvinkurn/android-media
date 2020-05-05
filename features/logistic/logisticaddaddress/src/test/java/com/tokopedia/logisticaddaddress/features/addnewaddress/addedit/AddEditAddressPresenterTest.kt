@@ -1,93 +1,105 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
-import android.content.Context
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
+import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
+import com.tokopedia.logisticaddaddress.domain.model.add_address.Data
+import com.tokopedia.logisticaddaddress.domain.model.add_address.KeroAddAddress
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictItem
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictZipcodes
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.KeroDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressResponseUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
-import rx.Subscriber
 
 object AddEditAddressPresenterTest : Spek({
 
     val saveUseCase: AddAddressUseCase = mockk(relaxUnitFun = true)
     val zipUseCase: GetZipCodeUseCase = mockk(relaxUnitFun = true)
-    val mapper: AddAddressMapper = mockk()
-    val context: Context = mockk()
-    val view: AddEditAddressListener = mockk(relaxed = true)
+    val districtUseCase: GetDistrictUseCase = mockk(relaxUnitFun = true)
+    val autoCompleteUseCase: AutoCompleteUseCase = mockk(relaxUnitFun = true)
+    val view: AddEditView = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
-    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess() } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess() } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any()) } just Runs
 
     lateinit var presenter: AddEditAddressPresenter
 
     beforeEachTest {
-        presenter = AddEditAddressPresenter(context, saveUseCase, zipUseCase, mapper)
+        presenter = AddEditAddressPresenter(saveUseCase, zipUseCase,
+                districtUseCase, autoCompleteUseCase)
         presenter.attachView(view)
     }
 
     Feature("save address") {
+        val model = SaveAddressDataModel()
         Scenario("success from positive form") {
-            val successGql = GraphqlResponse(mapOf(), mapOf(), false)
-            val successAnswer = AddAddressResponseUiModel(
-                    data = AddAddressDataUiModel(123, 1),
-                    status = "OK"
-            )
-            val model = SaveAddressDataModel()
+            val successGql = AddAddressResponse(KeroAddAddress(
+                    Data(isSuccess = 1, addrId = 99)
+            ))
             Given("success answer") {
-                every { saveUseCase.execute(any(), any()) } answers {
-                    secondArg<Subscriber<GraphqlResponse>>().onNext(successGql)
-                }
-                every { mapper.map(successGql) } returns successAnswer
+                every { saveUseCase.execute(any(), "1") } returns Observable.just(successGql)
             }
             When("executed from positive form") {
                 presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess()
+                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any())
                 }
             }
             Then("view show success") {
+                assertEquals(successGql.keroAddAddress.data.addrId, model.id)
                 verify { view.onSuccessAddAddress(model) }
             }
         }
 
-        Scenario("error from negative form") {
-            val successGql = GraphqlResponse(mapOf(), mapOf(), false)
-            val failAnswer = AddAddressResponseUiModel(
-                    data = AddAddressDataUiModel(0, 0),
-                    status = "OK"
-            )
-            val model = SaveAddressDataModel()
+        Scenario("not success response from negative form") {
+            val notSuccessResponse = AddAddressResponse(KeroAddAddress(
+                    Data(isSuccess = 0)
+            ))
             Given("not success answer") {
-                every { saveUseCase.execute(any(), any()) } answers {
-                    secondArg<Subscriber<GraphqlResponse>>().onNext(successGql)
-                }
-                every { mapper.map(successGql) } returns failAnswer
+                every { saveUseCase.execute(any(), any()) } returns Observable.just(notSuccessResponse)
             }
             When("executed from negative form ") {
                 presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any())
                 }
             }
             Then("view show success") {
-                verify { view.showError(any()) }
+                verify {
+                    view.showError(null)
+                }
+            }
+        }
+
+        Scenario("error gql response") {
+            val exception = MessageErrorException("hi")
+            Given("error answer") {
+                every { saveUseCase.execute(any(), any()) } returns Observable.error(exception)
+            }
+            When("executed") {
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+            }
+            Then("view shows error") {
+                verify {
+                    view.showError(exception)
+                }
             }
         }
     }
@@ -129,15 +141,42 @@ object AddEditAddressPresenterTest : Spek({
         }
     }
 
+    Feature("get autocomplete") {
+        Scenario("positive") {
+            val givenPlaceId = "1"
+            val givenLat = 0.3131
+            val givenLong = 9.3232
+            val successModel = listOf(
+                    SuggestedPlace(placeId = givenPlaceId)
+            )
+            val successDistrict = GetDistrictDataUiModel(
+                    latitude = givenLat.toString(), longitude = givenLong.toString())
+            Given("returns positive") {
+                every { autoCompleteUseCase.execute(any()) } returns Observable.just(successModel)
+                every { districtUseCase.execute(any()) } returns Observable.just(successDistrict)
+            }
+            When("executed") {
+                presenter.getAutoComplete("")
+            }
+            Then("view moves map") {
+                verify {
+                    view.moveMap(givenLat, givenLong)
+                }
+            }
+        }
+    }
+
     Feature("detach") {
         Scenario("detached") {
             When("detached") {
                 presenter.detachView()
             }
-            Then("all usecases unsubscribed") {
-                verifyOrder {
+            Then("all use cases unsubscribed") {
+                verify {
                     saveUseCase.unsubscribe()
                     zipUseCase.unsubscribe()
+                    autoCompleteUseCase.unsubscribe()
+                    districtUseCase.unsubscribe()
                 }
             }
         }

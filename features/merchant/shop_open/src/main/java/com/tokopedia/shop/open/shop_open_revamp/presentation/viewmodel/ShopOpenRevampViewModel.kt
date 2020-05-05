@@ -31,6 +31,7 @@ class ShopOpenRevampViewModel @Inject constructor(
         const val QUESTIONS = "questions"
         const val QUESTION_ID = "questionID"
         const val CHOICES = "choices"
+        const val DELAY_TIMER = 400L
     }
     
 
@@ -75,7 +76,7 @@ class ShopOpenRevampViewModel @Inject constructor(
 
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                delay(700)
+                delay(DELAY_TIMER)
 
                 if (currentShopName != shopName) {
                     return@withContext
@@ -87,7 +88,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                     _checkShopNameResponse.postValue(Success(validateShopNameResult))
                 }
             }
-        }) {
+         }) {
             _checkShopNameResponse.value = Fail(it)
         }
     }
@@ -224,7 +225,7 @@ class ShopOpenRevampViewModel @Inject constructor(
 
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                delay(700)
+                delay(DELAY_TIMER)
 
                 if (currentShopDomain != domain) {
                     return@withContext

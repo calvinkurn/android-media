@@ -26,4 +26,6 @@
     <dimen name="dp_128">128dp</dimen>
     <dimen name="text_size_xxxlarge">30sp</dimen>
     <dimen name="padding_detail">15dp</dimen>
+    <dimen name="message_corner">12dp</dimen>
+    <dimen name="message_width">300dp</dimen>
 </resources>

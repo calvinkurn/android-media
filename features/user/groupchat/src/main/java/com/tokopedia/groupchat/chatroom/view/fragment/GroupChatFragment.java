@@ -313,6 +313,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getUserId(),
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
+                                        false,
+                                        false,
                                         false);
                         ((GroupChatActivity) getActivity()).sendViaWebSocket(pendingChatViewModel);
                     }
@@ -604,7 +606,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         userSession.getUserId(),
                         userSession.getName(),
                         userSession.getProfilePicture(),
-                        false);
+                        false,
+                        false,
+                        true);
 
         ((GroupChatActivity) getActivity()).sendViaWebSocket(pendingChatViewModel);
     }

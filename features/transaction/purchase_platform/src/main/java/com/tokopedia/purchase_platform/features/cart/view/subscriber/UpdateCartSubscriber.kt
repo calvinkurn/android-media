@@ -13,32 +13,37 @@ import rx.Subscriber
  */
 
 class UpdateCartSubscriber(private val view: ICartListView?,
-                           private val presenter: ICartListPresenter?) : Subscriber<UpdateCartData>() {
+                           private val presenter: ICartListPresenter?,
+                           private val fireAndForget: Boolean) : Subscriber<UpdateCartData>() {
 
     override fun onCompleted() {
 
     }
 
     override fun onError(e: Throwable) {
-        view?.let {
-            e.printStackTrace()
-            it.hideProgressLoading()
-            it.renderErrorToShipmentForm(e)
+        if (!fireAndForget) {
+            view?.let {
+                e.printStackTrace()
+                it.hideProgressLoading()
+                it.renderErrorToShipmentForm(e)
+            }
         }
     }
 
     override fun onNext(data: UpdateCartData) {
-        view?.let {
-            it.hideProgressLoading()
-            if (!data.isSuccess) {
-                it.renderErrorToShipmentForm(data.message ?: "")
-            } else {
-                val checklistCondition = getChecklistCondition()
-                val cartItemDataList = it.getAllSelectedCartDataList()
-                cartItemDataList?.let { data ->
-                    it.renderToShipmentFormSuccess(
-                            presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
-                            data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
+        if (!fireAndForget) {
+            view?.let {
+                it.hideProgressLoading()
+                if (!data.isSuccess) {
+                    it.renderErrorToShipmentForm(data.message ?: "")
+                } else {
+                    val checklistCondition = getChecklistCondition()
+                    val cartItemDataList = it.getAllSelectedCartDataList()
+                    cartItemDataList?.let { data ->
+                        it.renderToShipmentFormSuccess(
+                                presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1) ?: hashMapOf(),
+                                data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
+                    }
                 }
             }
         }
@@ -96,7 +101,8 @@ class UpdateCartSubscriber(private val view: ICartListView?,
         var totalAmount = 0.0
         val maximalTotalAmountEligible = 1000000.0
         for (cartItemData in cartItemDataList) {
-            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity ?: 0) ?: 0.toDouble()
+            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity
+                    ?: 0) ?: 0.toDouble()
             totalAmount += itemPriceAmount
             if (cartItemData.originData?.isCod == false) return false
         }

@@ -2,7 +2,7 @@ package com.tokopedia.transaction.orders.orderdetails.view;
 
 import javax.inject.Inject;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -38,9 +38,11 @@ public class OrderListAnalytics {
     private static final String EVENT_ACTION_CLICK_HELP = "click disini for help";
     private static final String EVENT_ACTION_LIHAT_INVOICE = "click lihat on invoice";
     private static final String EVENT_ACTION_LIHAT_STATUS = "click lihat on status order";
+    private static final String EVENT_ACTION_CLICK_SHOP_NAME = "click shop name";
     private static final String EVENT_TICKER_CLICK_ACTION = "click see more on ticker";
     private static final String EVENT_TICKER_CLICK_LINK_ACTION = "click link on ticker";
     private static final String EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice";
+    private static final String EVENT_ACTION_TULIS_REVIEW = "click button tulis review";
     private static final String TEVENT_TICKER_CLOSE_ACTION = "click x on ticker";
 
     private static final String SEARCH_EVENT_ACTION = "submit search";
@@ -120,6 +122,8 @@ public class OrderListAnalytics {
     private static final String TICKER_EVENT_ACTION = "view ticker";
     private static final String TICKER_EVENT_NAME = "viewPurchaseList";
 
+    private static final String ORDER_LIST = "/orderlist";
+
     @Inject
     public OrderListAnalytics() {
     }
@@ -137,6 +141,10 @@ public class OrderListAnalytics {
         sendGtmDataDetails(EVENT_ACTION_DOWNLOAD_INVOICE, eventLabel);
     }
 
+    public void sendTulisReviewEventData(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_TULIS_REVIEW, eventLabel);
+    }
+
     public void sendHelpEventData(String eventLabel) {
         sendGtmDataDetails(EVENT_ACTION_CLICK_HELP, eventLabel);
     }
@@ -147,6 +155,10 @@ public class OrderListAnalytics {
 
     public void sendLihatStatusClick(String eventLabel) {
         sendGtmDataDetails(EVENT_ACTION_LIHAT_STATUS, eventLabel);
+    }
+
+    public void sendClickShopName(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_CLICK_SHOP_NAME, eventLabel);
     }
 
     public void sendDateFilterClickEvent() {
@@ -274,7 +286,7 @@ public class OrderListAnalytics {
     }
 
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel, String statusCode) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -302,7 +314,7 @@ public class OrderListAnalytics {
                     break;
                 }
             product.put(KEY_DIMENSION_45, cartId);
-            product.put(KEY_DIMENSION_40, NONE);
+            product.put(KEY_DIMENSION_40, ORDER_LIST + " - " + statusCode);
             product.put(KEY_DIMENSION_38, NONE);
             products.add(product);
         }
@@ -572,17 +584,18 @@ public class OrderListAnalytics {
                         CURRENCY_CODE, IDR,
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, "/order list "+status,
-                                        PRODUCTS, DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        NAME, items.getTitle(),
-                                                        ID, items.getId(),
-                                                        PRICE, items.getPrice(),
-                                                        KEY_CATEGORY, NONE,
-                                                        BRAND, NONE,
-                                                        VARIANT, NONE,
-                                                        POSITION, position + 1
-                                                )))))));
+                                        LIST, "/order list "+status),
+
+                                PRODUCTS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                NAME, items.getTitle(),
+                                                ID, items.getId(),
+                                                PRICE, items.getUnformattedPrice(),
+                                                KEY_CATEGORY, NONE,
+                                                BRAND, NONE,
+                                                VARIANT, NONE,
+                                                POSITION, position + 1
+                                        ))))));
 
     }
 }

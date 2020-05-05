@@ -3,51 +3,41 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.BannerItemAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.ProductItemViewHolder
-import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener,
-                              countDownListener: CountDownView.CountDownListener,
                               private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
-    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener) {
+    : DynamicChannelViewHolder(itemView, homeCategoryListener) {
 
     override fun getViewHolderClassName(): String {
         return BannerOrganicViewHolder::class.java.simpleName
@@ -58,35 +48,35 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     private var adapter: BannerItemAdapter? = null
-    val CTA_MODE_MAIN = "main"
-    val CTA_MODE_TRANSACTION = "transaction"
-    val CTA_MODE_INVERTED = "inverted"
-    val CTA_MODE_DISABLED = "disabled"
-    val CTA_MODE_ALTERNATE = "alternate"
 
-    val CTA_TYPE_FILLED = "filled"
-    val CTA_TYPE_GHOST = "ghost"
-    val CTA_TYPE_TEXT = "text_only"
-
-    val BLUE = "blue"
-    val YELLOW = "yellow"
-    val RED = "red"
-    val GREEN = "green"
-
-    var bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
-    var bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
-    var bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
-    var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
-    var backgroundBanner = itemView.findViewById<ContainerUnify>(R.id.backgroundBanner)
-    val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
+    private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
+    private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
+    private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
+    private val bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
+    private val backgroundBanner = itemView.findViewById<ContainerUnify>(R.id.backgroundBanner)
+    private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
 
     companion object {
-        val TYPE_CAROUSEL = "carousel"
-        val TYPE_NON_CAROUSEL = "non carousel"
+        const val TYPE_CAROUSEL = "carousel"
+        const val TYPE_NON_CAROUSEL = "non carousel"
+        const val CTA_MODE_MAIN = "main"
+        const val CTA_MODE_TRANSACTION = "transaction"
+        const val CTA_MODE_INVERTED = "inverted"
+        const val CTA_MODE_DISABLED = "disabled"
+        const val CTA_MODE_ALTERNATE = "alternate"
+
+        const val CTA_TYPE_FILLED = "filled"
+        const val CTA_TYPE_GHOST = "ghost"
+        const val CTA_TYPE_TEXT = "text_only"
+
+        const val BLUE = "blue"
+        const val YELLOW = "yellow"
+        const val RED = "red"
+        const val GREEN = "green"
         @LayoutRes
         val LAYOUT = R.layout.home_dc_banner_recyclerview
-        val DEFAULT_BANNER_MIX_SPAN_COUNT = 3
+        const val DEFAULT_BANNER_MIX_SPAN_COUNT = 3
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -94,6 +84,25 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         mappingBackgroundContainerUnify(channel)
         valuateRecyclerViewDecoration(channel)
         mappingView(channel)
+    }
+
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        val blankSpaceConfig = computeBlankSpaceConfig(channel)
+
+        if (payloads.isNotEmpty()) {
+            payloads.forEach { payload->
+                if (payload == DynamicChannelDataModel.HOME_RV_BANNER_IMAGE_URL) {
+                    channel.let {
+                        mappingBanner(it.banner, it, it.banner.cta)
+                        mappingCtaButton(it.banner.cta)
+                    }
+                }
+            }
+        }
+        channel.let {channel->
+            val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
+            mappingGrid(channel, visitables)
+        }
     }
 
     private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
@@ -115,7 +124,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 recyclerView.layoutParams = param
             }
             DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
-                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(BannerOrganicDecoration())
+                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
                 recyclerView.layoutManager = LinearLayoutManager(
                         itemView.context,
                         LinearLayoutManager.HORIZONTAL,
@@ -190,29 +199,6 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        val channel = element?.channel
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
-
-        if (payloads.isNotEmpty()) {
-            payloads.forEach { payload->
-                if (payload == DynamicChannelViewModel.HOME_RV_BANNER_IMAGE_URL) {
-                    channel?.let {
-                        mappingBanner(it.banner, it, it.banner.cta)
-                        mappingCtaButton(it.banner.cta)
-                    }
-                }
-            }
-        }
-        element?.let {
-            channel?.let {channel->
-                val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
-                mappingGrid(channel, visitables)
-            }
-        }
-    }
-
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
                                              blankSpaceConfig: BlankSpaceConfig): MutableList<Visitable<BannerMixTypeFactory>> {
         val visitables: MutableList<Visitable<BannerMixTypeFactory>> = channel.grids.map {
@@ -244,7 +230,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
         clipboard.primaryClip = clipData
 
-        Toaster.showNormal(view.parent as ViewGroup,
+        Toaster.make(view.parent as ViewGroup,
                 getString(R.string.discovery_home_toaster_coupon_copied),
                 Snackbar.LENGTH_LONG)
     }

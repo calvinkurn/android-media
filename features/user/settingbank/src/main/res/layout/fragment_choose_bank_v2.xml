@@ -15,7 +15,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:siv_search_icon="@drawable/ic_system_action_search_grayscale_24"
         app:siv_search_hint="@string/sbank_bank_search_hint" />
 
     <androidx.recyclerview.widget.RecyclerView

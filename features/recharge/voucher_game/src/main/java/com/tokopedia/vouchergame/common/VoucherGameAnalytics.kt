@@ -1,6 +1,6 @@
 package com.tokopedia.vouchergame.common
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

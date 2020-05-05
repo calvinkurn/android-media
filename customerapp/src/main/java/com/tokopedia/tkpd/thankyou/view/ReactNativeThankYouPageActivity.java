@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import android.view.KeyEvent;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
@@ -50,8 +50,8 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     private static final String GL_THANK_YOU_PAGE = "gl_thank_you_page";
     private static final String PAGE_TITLE = "Thank You";
 
-    private static final String CACHE_THANK_YOU_PAGE = "CACHE_THANK_YOU_PAGE";
-    private static final String CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE = "CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE";
+    public static final String CACHE_THANK_YOU_PAGE = "CACHE_THANK_YOU_PAGE";
+    public static final String CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE = "CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE";
 
     private ReactInstanceManager reactInstanceManager;
     private static final String SAVED_VERSION = "SAVED_VERSION";
@@ -254,32 +254,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    public Intent getInboxReputationIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Fragment getReputationHistoryFragment() {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getShopPageIntent(Context context, String shopId) {
-        return null;
-    }
-
-    @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return null;
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String reviewUserId) {
         return null;
     }
 

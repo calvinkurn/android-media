@@ -4,19 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.notifcenter.data.entity.NotificationEntity
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateFilter
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
-import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
-import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
 import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.subscriber.GetNotificationTotalUnreadSubscriber
+import com.tokopedia.notifcenter.presentation.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -55,7 +55,7 @@ class NotificationTransactionViewModel @Inject constructor(
     private val _infoNotification = MediatorLiveData<NotificationEntity>()
     val infoNotification: LiveData<NotificationEntity> get() = _infoNotification
 
-    private val _filterNotification = MediatorLiveData<NotificationFilterSectionViewBean>()
+    private val _filterNotification = MutableLiveData<NotificationFilterSectionViewBean>()
     val filterNotification: LiveData<NotificationFilterSectionViewBean> get() = _filterNotification
 
     private val _markAllNotification = MutableLiveData<Boolean>()
@@ -82,10 +82,6 @@ class NotificationTransactionViewModel @Inject constructor(
     var filterNotificationParams = NotificationFilterUseCase.params()
 
     init {
-        _filterNotification.addSource(_infoNotification) {
-            getNotificationFilter()
-        }
-
         _notification.addSource(_filterNotification) {
             getTotalUnreadNotification()
             getNotification(_lastNotificationId.value?: "")

@@ -23,11 +23,12 @@
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:background="@drawable/umrah_bg_pdp_travel_agent" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_widget_umrah_pdp_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tg_widget_umrah_pdp_item_title"

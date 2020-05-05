@@ -1,8 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -11,7 +9,6 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
@@ -20,8 +17,12 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComp
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
+import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
+import com.tokopedia.logisticdata.util.rxEditText
+import com.tokopedia.logisticdata.util.toCompositeSubs
+import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 /**
@@ -32,6 +33,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentSearch: String = ""
+    private var actionListener: ActionListener? = null
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var rlCurrentLocation: RelativeLayout
@@ -42,8 +44,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var mDisabledGps: View
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
-    private lateinit var actionListener: ActionListener
     private lateinit var icCloseBtn: ImageView
+    private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
 
     @Inject
     lateinit var presenter: AutocompleteBottomSheetPresenter
@@ -75,6 +77,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             initInjector()
         }
         setViewListener()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeSubs.clear()
     }
 
     private fun prepareLayout(view: View) {
@@ -125,30 +132,27 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         etSearch.run {
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi(eventLabel = LOGISTIC_LABEL)
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(true)
             }
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                               after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                           count: Int) {
-                    if (s.isNotEmpty()) {
+            rxEditText(this).subscribe(object : Subscriber<String>() {
+                override fun onNext(t: String) {
+                    if (t.isNotEmpty()) {
                         icCloseBtn.visibility = View.VISIBLE
-                        val input = "$s"
                         setListenerClearBtn()
-                        handler.postDelayed({
-                            loadAutocomplete(input)
-                        }, 500)
+                        loadAutocomplete(t)
                     } else {
                         icCloseBtn.visibility = View.GONE
                     }
                 }
 
-                override fun afterTextChanged(s: Editable) {
+                override fun onCompleted() {
+                    // no op
                 }
-            })
+
+                override fun onError(e: Throwable?) {
+                    // no op
+                }
+            }).toCompositeSubs(compositeSubs)
 
             isFocusableInTouchMode = true
             isFocusable = true
@@ -157,8 +161,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
 
         rlCurrentLocation.setOnClickListener {
-            actionListener.useCurrentLocation()
-            dismiss()
+            actionListener?.useCurrentLocation()
+            hideKeyboardAndDismiss()
         }
     }
 
@@ -182,7 +186,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(eventLabel = LOGISTIC_LABEL)
-            onCloseButtonClick()
+            hideKeyboardAndDismiss()
         }
     }
 
@@ -208,8 +212,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     private fun loadAutocomplete(input: String) {
         showLoadingList()
-
-        presenter.clearCacheAutocomplete()
         presenter.getAutocomplete(input)
     }
 
@@ -231,28 +233,22 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
     }
 
-    override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
+    override fun onSuccessGetAutocomplete(suggestedPlaces: List<SuggestedPlace>) {
         llLoading.visibility = View.GONE
         llSubtitle.visibility = View.GONE
         rvPoiList.visibility = View.VISIBLE
         mDisabledGps.visibility = View.GONE
-        if (dataUiModel.listPredictions.isNotEmpty()) {
+        if (suggestedPlaces.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
-            adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
-            adapter.notifyDataSetChanged()
+            adapter.addAutoComplete(suggestedPlaces)
         }
-    }
-
-    override fun onPause() {
-        KeyboardHandler.hideSoftKeyboard(activity)
-        super.onPause()
     }
 
     override fun onPoiListClicked(placeId: String) {
         placeId.run {
-            actionListener.onGetPlaceId(placeId)
-            dismiss()
+            actionListener?.onGetPlaceId(placeId)
+            hideKeyboardAndDismiss()
         }
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(eventLabel = LOGISTIC_LABEL)
     }
@@ -262,6 +258,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }
+        dismiss()
+    }
+
+    /**
+     * Hiding keyboard is called before the dismiss in each of necessary funnel, calling it onDismiss
+     * won't work probably due to some API changes from Google
+     */
+    private fun hideKeyboardAndDismiss() {
+        AddNewAddressUtils.hideKeyboard(etSearch, context)
         dismiss()
     }
 

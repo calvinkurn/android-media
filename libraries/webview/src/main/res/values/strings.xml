@@ -11,6 +11,7 @@
 
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="webview_home_navigation_text">Home</string>
-    <string name="webview_help_menu_text">Bantuan</string>
+    <string name="webview_help_menu_text">Tokopedia Care</string>
     <string name="webview_rationale_need_location">Akses lokasi diperlukan untuk menggunakan fitur ini. Perbolehkan?</string>
+    <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
 </resources>

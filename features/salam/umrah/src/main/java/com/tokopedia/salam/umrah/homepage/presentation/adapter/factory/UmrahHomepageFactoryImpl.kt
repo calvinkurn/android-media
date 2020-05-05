@@ -68,7 +68,7 @@ class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener, v
                 UmrahHomepageCategoryFeaturedViewHolder(view, onBindListener, adapterFeaturedCategory)
             }
             UmrahHomepagePartnerTravelsViewHolder.LAYOUT ->{
-                val adapter = UmrahHomepagePartnerTravelAdapter()
+                val adapter = UmrahHomepagePartnerTravelAdapter(onBindListener)
                 UmrahHomepagePartnerTravelsViewHolder(view,onBindListener, adapter)
             }
             else -> super.createViewHolder(view, type)

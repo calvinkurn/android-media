@@ -1,6 +1,5 @@
 package com.tokopedia.events;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -10,15 +9,7 @@ public interface EventModuleRouter {
 
     Interceptor getChuckerInterceptor();
 
-    Intent getLoginIntent(Context context);
-
-    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
-
-    String getUserPhoneNumber();
-
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
-
-    void shareEvent(Context context, String uri, String name, String imageUrl, String desktopUrl);
 
     Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(Context context, String platform, String category, String defaultSelectedTab);
 

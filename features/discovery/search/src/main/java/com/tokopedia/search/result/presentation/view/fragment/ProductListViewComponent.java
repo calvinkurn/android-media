@@ -1,16 +1,34 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.search.di.module.AdvertisingLocalCacheHandlerModule;
+import com.tokopedia.search.di.module.GraphqlRepositoryModule;
+import com.tokopedia.search.di.module.RecommendationModule;
+import com.tokopedia.search.di.module.RemoteConfigModule;
+import com.tokopedia.search.di.module.ResourcesModule;
+import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
+import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
+import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
+import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule;
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
 
 import dagger.Component;
 
 @SearchScope
 @Component(modules = {
-        ProductListPresenterModule.class,
-        UserSessionModule.class
+        SearchContextModule.class,
+        RemoteConfigModule.class,
+        RecommendationModule.class,
+        UserSessionModule.class,
+        SearchProductUseCaseModule.class,
+        GetDynamicFilterGqlUseCaseModule.class,
+        SearchLocalCacheHandlerModule.class,
+        ResourcesModule.class,
+        GraphqlRepositoryModule.class,
+        AdvertisingLocalCacheHandlerModule.class,
+        ProductListPresenterModule.class
 }, dependencies = BaseAppComponent.class)
 public interface ProductListViewComponent {
 

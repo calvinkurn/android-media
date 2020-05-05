@@ -9,6 +9,8 @@ import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFac
  * Created by resakemal on 26/11/19.
  */
 class VoucherGameProduct(var position: Int = 0,
-                         var selected: Boolean = false): CatalogProduct(), Visitable<VoucherGameDetailAdapterFactory> {
+                         var selected: Boolean = false,
+                         id: String = "0",
+                         attributes: Attributes = Attributes()): CatalogProduct(id, attributes), Visitable<VoucherGameDetailAdapterFactory> {
         override fun type(typeFactory: VoucherGameDetailAdapterFactory) = typeFactory.type(this)
 }

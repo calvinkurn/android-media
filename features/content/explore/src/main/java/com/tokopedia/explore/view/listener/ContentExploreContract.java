@@ -75,5 +75,7 @@ public interface ContentExploreContract {
         void trackAffiliate(String url);
 
         void appendImpressionTracking(@NotNull String url);
+
+        void onPullToRefreshTriggered();
     }
 }

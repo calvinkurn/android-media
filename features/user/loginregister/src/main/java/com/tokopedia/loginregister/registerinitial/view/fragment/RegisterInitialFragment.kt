@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -17,7 +18,6 @@ import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -27,24 +27,27 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.data.DynamicBannerConstant
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
@@ -63,7 +66,6 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -80,6 +82,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_initial_register.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -92,6 +95,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private lateinit var optionTitle: TextView
     private lateinit var separator: View
     private lateinit var partialRegisterInputView: PartialRegisterInputView
+    private lateinit var emailPhoneEditText: AutoCompleteTextView
     private lateinit var registerButton: LoginTextView
     private lateinit var loginButton: TextView
     private lateinit var container: ScrollView
@@ -101,7 +105,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private lateinit var socmedButton: ButtonCompat
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var socmedButtonsContainer: LinearLayout
-
+    private lateinit var sharedPrefs: SharedPreferences
 
     private var phoneNumber: String? = ""
     private var source: String = ""
@@ -210,6 +214,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         optionTitle = view.findViewById(R.id.register_option_title)
         separator = view.findViewById(R.id.separator)
         partialRegisterInputView = view.findViewById(R.id.register_input_view)
+        emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         registerButton = view.findViewById(R.id.register)
         socmedButton = view.findViewById(R.id.socmed_btn)
         loginButton = view.findViewById(R.id.login_button)
@@ -280,37 +285,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
 
-        if (!GlobalConfig.isSellerApp()) {
-            if (isShowBanner) {
-                context?.let {
-                    registerAnalytics.eventViewBanner()
-                    ImageHandler.LoadImage(bannerRegister, BANNER_REGISTER_URL)
-                    bannerRegister.visibility = View.VISIBLE
-                }
-            } else if (isFromAtc() && isShowTicker) {
-                tickerAnnouncement.visibility = View.VISIBLE
-                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
-                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
-                })
-                tickerAnnouncement.setOnClickListener {
-                    registerAnalytics.trackClickTicker()
-                }
-            } else {
-                registerInitialViewModel.getTickerInfo()
-            }
-        }
-
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+
+        if (!GlobalConfig.isSellerApp()) {
+            if (isShowBanner) {
+                registerInitialViewModel.getDynamicBannerData(DynamicBannerConstant.Page.REGISTER)
+            } else {
+                showTicker()
+            }
+        }
 
     }
 
@@ -459,6 +445,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(this, Observer {
             if (it != null) onGoToSecurityQuestionAfterRelogin()
         })
+
+        registerInitialViewModel.dynamicBannerResponse.observe(this, Observer {
+            when(it) {
+                is Success -> setDynamicBannerView(it.data)
+                is Fail -> {
+                    bannerRegister.hide()
+                    showTicker()
+                }
+            }
+        })
     }
 
     private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>) {
@@ -491,18 +487,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onFailedGetProvider(throwable: Throwable) {
         dismissLoadingDiscover()
-
-        ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-            override fun onForbidden() {
-                onGoToForbiddenPage()
-            }
-
-            override fun onError(errorMessage: String) {
-                NetworkErrorHelper.createSnackbarWithAction(activity,
-                        errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
-                loginButton.isEnabled = false
-            }
-        }, throwable, context)
+        val forbiddenMessage = context?.getString(
+                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (errorMessage == forbiddenMessage){
+            onGoToForbiddenPage()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity,
+                    errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
+            loginButton.isEnabled = false
+        }
     }
 
     private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData) {
@@ -652,7 +646,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
-        val messageError = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+        val messageError = ErrorHandler.getErrorMessage(context, throwable)
         registerAnalytics.trackFailedClickSignUpButton(messageError)
         partialRegisterInputView.onErrorValidate(messageError)
         phoneNumber = ""
@@ -665,7 +659,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedActivateUser(throwable: Throwable) {
-        throwable.message?.let { onErrorRegister(com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)) }
+        throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
     }
 
     //Flow should not be possible
@@ -1085,7 +1079,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onSuccessRegister() {
         activity?.let {
-            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
+            registerAnalytics.trackSuccessRegister(
+                    userSession.loginMethod,
+                    userSession.userId.toIntOrZero(),
+                    userSession.name,
+                    userSession.email,
+                    userSession.phoneNumber,
+                    userSession.isGoldMerchant,
+                    userSession.shopId,
+                    userSession.shopName
+            )
 
             if (isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
@@ -1094,9 +1097,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
             it.setResult(Activity.RESULT_OK)
             it.finish()
+
+            saveFirstInstallTime()
         }
-
-
     }
 
     private fun isFromAccount(): Boolean = source == SOURCE_ACCOUNT
@@ -1162,31 +1165,45 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
     }
 
-    @SuppressLint("MissingPermission", "HardwareIds")
+    @SuppressLint("MissingPermission", "HardwareIds", "PrivateResource")
     fun getPhoneNumber() {
         activity?.let {
-            val phoneNumbers = arrayListOf<String>()
+            if(permissionCheckerHelper.hasPermission(it, arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE))) {
+                val phoneNumbers = arrayListOf<String>()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
-                    for (info in subscription.activeSubscriptionInfoList) {
-                        if (!info.number.isNullOrEmpty() &&
-                                PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                                PartialRegisterInputUtils.isValidPhone(info.number))
-                            phoneNumbers.add(info.number)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                    if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
+                        for (info in subscription.activeSubscriptionInfoList) {
+                            if (!info.number.isNullOrEmpty() &&
+                                    PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                                    PartialRegisterInputUtils.isValidPhone(info.number))
+                                phoneNumbers.add(info.number)
+                        }
                     }
+                } else {
+                    val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
+                    if (!telephony.line1Number.isNullOrEmpty() &&
+                            PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
+                        phoneNumbers.add(telephony.line1Number)
                 }
-            } else {
-                val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
-                if (!telephony.line1Number.isNullOrEmpty() &&
-                        PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                        PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
-                    phoneNumbers.add(telephony.line1Number)
-            }
 
-            if (phoneNumbers.isNotEmpty())
-                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
+                if (phoneNumbers.isNotEmpty())
+                    partialRegisterInputView.setAdapterInputEmailPhone(
+                            ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers)
+                    ) { v, hasFocus ->
+                        activity?.isFinishing?.let { isFinishing ->
+                            if(!isFinishing) {
+                                if (hasFocus && this::emailPhoneEditText.isInitialized) {
+                                    emailPhoneEditText.showDropDown()
+                                } else {
+                                    emailPhoneEditText.dismissDropDown()
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 
@@ -1212,6 +1229,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 
+    private fun saveFirstInstallTime() {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putLong(
+                    KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+        }
+    }
+
     private fun <T, K, R> LiveData<T>.combineWith(
             liveData: LiveData<K>,
             block: (T?, K?) -> R
@@ -1224,6 +1250,50 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             result.value = block.invoke(this.value, liveData.value)
         }
         return result
+    }
+
+    private fun showTicker() {
+        if (!GlobalConfig.isSellerApp()) {
+            if (isFromAtc() && isShowTicker) {
+                tickerAnnouncement.visibility = View.VISIBLE
+                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
+                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
+                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+                })
+                tickerAnnouncement.setOnClickListener {
+                    registerAnalytics.trackClickTicker()
+                }
+            } else {
+                registerInitialViewModel.getTickerInfo()
+            }
+        }
+    }
+
+    private fun setDynamicBannerView(dynamicBannerDataModel: DynamicBannerDataModel) {
+        if (dynamicBannerDataModel.banner.isEnable) {
+            context?.let {
+                ImageUtils.loadImage(
+                        imageView = bannerRegister,
+                        url = dynamicBannerDataModel.banner.imgUrl,
+                        imageLoaded = {
+                            if (it) {
+                                bannerRegister.show()
+                                registerAnalytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
+                            } else {
+                                bannerRegister.hide()
+                                showTicker()
+                            }
+                        })
+            }
+        } else {
+            showTicker()
+        }
     }
 
     override fun onDestroy() {
@@ -1242,6 +1312,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.goToSecurityQuestion.removeObservers(this)
         registerInitialViewModel.goToActivationPageAfterRelogin.removeObservers(this)
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.removeObservers(this)
+        registerInitialViewModel.dynamicBannerResponse.removeObservers(this)
         combineLoginTokenAndValidateToken.removeObservers(this)
         registerInitialViewModel.flush()
     }
@@ -1279,6 +1350,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
+
+        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 

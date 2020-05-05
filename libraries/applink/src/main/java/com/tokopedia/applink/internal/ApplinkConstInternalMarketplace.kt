@@ -46,10 +46,20 @@ object ApplinkConstInternalMarketplace {
     // CartAddressChoiceActivity
     @JvmField
     val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
+    // PreferenceListActivity
+    @JvmField
+    val PREFERENCE_LIST = "$INTERNAL_MARKETPLACE/preference-list"
+    // PreferenceEditActivity
+    @JvmField
+    val PREFERENCE_EDIT = "$INTERNAL_MARKETPLACE/preference-edit"
+    // OrderSummaryPageActivity
+    @JvmField
+    val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
     // ProductDetailActivity
     @JvmField
     val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"
+    // CategoryPickerActivity
     @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
     @JvmField
@@ -72,6 +82,14 @@ object ApplinkConstInternalMarketplace {
     // ReviewProductActivity, "x_prd_nm" = productName
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
+
+    // StockReminderActivity
+    @JvmField
+    val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
+
+    // SetCashbackActivity
+    @JvmField
+    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/{productName}/"
 
     // CreateReviewActivity
     @JvmField
@@ -104,6 +122,15 @@ object ApplinkConstInternalMarketplace {
     //ShopPageActivity
     @JvmField
     val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
+
+    @JvmField
+    val SHOP_PAGE_HOME = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/home"
+
+    @JvmField
+    val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
 
     //ReviewShopInfoActiviy
     @JvmField
@@ -175,6 +202,8 @@ object ApplinkConstInternalMarketplace {
     //Report Product
     @JvmField
     val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
+    @JvmField
+    val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
     // ShopScoreDetailActivity
     @JvmField
@@ -187,6 +216,12 @@ object ApplinkConstInternalMarketplace {
     // NotificationActivity
     @JvmField
     val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
 
     // PowerMerchantSubscribeActivity
     @JvmField
@@ -205,7 +240,48 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
 
+    // DashboardActivity
+    @JvmField
+    val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
+
+    // EtalaseDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/etalase-dynamic-picker
+    @JvmField
+    val ETALASE_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/etalase-dynamic-picker"
+
+
+    // CategoryDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/category-dynamic-picker
+    @JvmField
+    val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/category-dynamic-picker"
+    // ActivitySellingTransaction
+    @JvmField
+    val SELLING_TRANSACTION = "$INTERNAL_MARKETPLACE/selling-transaction/{tab_position}/"
+
+    // ProductDraftListActivity
+    @JvmField
+    val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
+
+    // GMStatisticDashboardActivity
+    @JvmField
+    val GOLD_MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-statistic-dashboard"
+
+    //MitraToppersDashboardActivity
+    @JvmField
+    val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
+
+    //GMFeaturedProductActivity
+    @JvmField
+    val GOLD_MERCHANT_FEATURED_PRODUCT = "$INTERNAL_MARKETPLACE/gold-merchant-featured-product"
+
+    //SellerInfoActivity
+    @JvmField
+    val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
+
     @JvmField
     val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
+    @JvmField
+    val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
 }

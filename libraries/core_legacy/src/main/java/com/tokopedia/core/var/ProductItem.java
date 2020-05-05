@@ -3,7 +3,6 @@ package com.tokopedia.core.var;
 import android.os.Parcelable;
 import android.text.Spanned;
 
-import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.entity.topads.TopAds;
@@ -11,8 +10,6 @@ import com.tokopedia.core.network.entity.topads.TopAds;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tkpd.library.utils.legacy.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * Created by Nathania on 4/06/15.
@@ -538,18 +535,5 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
 
     public String getTrackerAttribution() {
         return trackerAttribution;
-    }
-
-    public Object getProductAsObjectDataLayerForWishlistClick(int position, boolean isFreeOngkir) {
-        return DataLayer.mapOf(
-                "name", getName(),
-                "id", getId(),
-                "price", Integer.toString(convertRupiahToInt(getPrice())),
-                "brand", DEFAULT_VALUE_NONE_OTHER,
-                "category", DEFAULT_VALUE_NONE_OTHER,
-                "variant", DEFAULT_VALUE_NONE_OTHER,
-                "position", Integer.toString(position),
-                "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other"
-        );
     }
 }

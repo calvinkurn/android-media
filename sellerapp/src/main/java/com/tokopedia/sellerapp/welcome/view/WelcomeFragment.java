@@ -1,11 +1,8 @@
 package com.tokopedia.sellerapp.welcome.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -20,23 +17,25 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
+import com.tokopedia.sellerapp.welcome.widget.LoginTextView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -66,6 +65,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     Snackbar snackbar;
     WelcomeFragmentPresenter presenter;
 
+    private UserSessionInterface userSession;
     LocalCacheHandler isNotFirstRun;
     Spannable spannable;
 
@@ -79,7 +79,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         fragment.setArguments(bundle);
         return fragment;
     }
-
 
     @Override
     protected String getScreenName() {
@@ -123,7 +122,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         background = view.findViewById(R.id.background);
         login = view.findViewById(R.id.login);
         register = view.findViewById(R.id.register);
-        linearLayout = view.findViewById(R.id.linearLayout);
+        linearLayout = view.findViewById(R.id.parent);
         progressBar = view.findViewById(R.id.progress_login);
         titleView = view.findViewById(R.id.title_view);
         containerProvider = view.findViewById(R.id.container_provider);
@@ -140,8 +139,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
             @Override
             public void onClick(View v) {
                 if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getLoginIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, REQUEST_LOGIN);
                 }
             }
@@ -159,8 +157,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getRegisterIntent
-                        (getActivity());
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CREATE_SHOP);
                 startActivityForResult(intent, REQUEST_REGISTER);
             }
 
@@ -191,21 +188,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         presenter.destroyView();
-    }
-
-    @Override
-    public void addProgressbar() {
-        ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
-        int lastPos = containerProvider.getChildCount() - 1;
-        if (containerProvider != null && !(containerProvider.getChildAt(lastPos) instanceof ProgressBar))
-            containerProvider.addView(pb, containerProvider.getChildCount());
-    }
-
-    @Override
-    public void removeProgressBar() {
-        int lastPos = containerProvider.getChildCount() - 1;
-        if (containerProvider != null && containerProvider.getChildAt(lastPos) instanceof ProgressBar)
-            containerProvider.removeViewAt(containerProvider.getChildCount() - 1);
     }
 
     @Override
@@ -317,11 +299,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         }
     }
 
-    @Override
-    public void showError(String string) {
-        SnackbarManager.make(getActivity(), string, Snackbar.LENGTH_LONG).show();
-    }
-
     public boolean checkHasNoProvider() {
         for (int i = 0; i < containerProvider.getChildCount(); i++) {
             if (containerProvider.getChildAt(i) instanceof LoginTextView) {
@@ -375,9 +352,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == REQUEST_LOGIN
-                || requestCode == REQUEST_REGISTER)
-                && resultCode == Activity.RESULT_OK) {
+        if (getUserSession().isLoggedIn()) {
             onSuccessLogin();
         }
     }
@@ -385,8 +360,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     private void onSuccessLogin() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
             Intent intent;
-            if (SessionHandler.isUserHasShop(getActivity())) {
-                intent = SellerAppRouter.getSellerHomeActivity(getActivity());
+            if (getUserSession().hasShop() && getActivity() != null) {
+                intent = ((TkpdCoreRouter) getActivity().getApplication()).getHomeIntent(getActivity());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                         .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             } else {
@@ -394,9 +369,14 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
-            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_FEED);
             startActivity(intent);
         }
+    }
+
+    private UserSessionInterface getUserSession() {
+        if (userSession == null) {
+            userSession = new UserSession(getActivity());
+        }
+        return userSession;
     }
 }

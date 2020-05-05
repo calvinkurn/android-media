@@ -254,7 +254,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             override fun onProgressChanged(view: WebView, newProgress: Int) {
                 //  progressBar.setProgress(newProgress);
                 if (newProgress == 100) {
-                    progressBar.visibility = View.GONE
+                    progressBar?.visibility = View.GONE
                 }
                 super.onProgressChanged(view, newProgress)
             }

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,6 +14,8 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -26,46 +29,57 @@ import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.timber.UserIdChangeCallback;
 import com.tokopedia.tkpd.timber.UserIdSubscriber;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.tkpd.utils.DeviceUtil;
-import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -77,14 +91,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
-
-import com.tokopedia.weaver.WeaveInterface;
-import com.tokopedia.weaver.Weaver;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
-import org.jetbrains.annotations.NotNull;
 
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
@@ -106,6 +113,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
+    GratificationSubscriber gratificationSubscriber;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -124,33 +132,83 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
 
+        FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        initReact();
         createAndCallPreSeq();
-
         super.onCreate();
 
         initGqlNWClient();
         createAndCallPostSeq();
         createAndCallFontLoad();
+
         ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
             }
         });
+        registerActivityLifecycleCallbacks(shakeSubscriber);
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                if(activity != null && Build.VERSION.SDK_INT >= 21 && BetaInterceptor.Companion.isBeta(activity))
+                {
+                    Window window = activity.getWindow();
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.setStatusBarColor(getResources().getColor(android.R.color.holo_red_dark));
+                }
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
+
         UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
             @Override
             public void onUserIdChanged() {
                 TimberWrapper.init(ConsumerMainApplication.this);
             }
         });
-        registerActivityLifecycleCallbacks(shakeSubscriber);
         registerActivityLifecycleCallbacks(userIdSubscriber);
+
+        NFCSubscriber nfcSubscriber = new NFCSubscriber();
+        registerActivityLifecycleCallbacks(nfcSubscriber);
+
+        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
+
+        initBlockCanary();
     }
 
     private void createAndCallPreSeq(){
@@ -199,7 +257,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @NotNull
     private Boolean executePreCreateSequence(){
-        UIBlockDebugger.init(ConsumerMainApplication.this);
+        initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         PersistentCacheManager.init(ConsumerMainApplication.this);
         return true;
@@ -221,7 +279,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
+        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         generateConsumerAppNetworkKeys();
     }
 
@@ -258,8 +316,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         TimberWrapper.init(ConsumerMainApplication.this);
         initializeAbTestVariant();
-        GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
-        registerActivityLifecycleCallbacks(subscriber);
+        gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
+        registerActivityLifecycleCallbacks(gratificationSubscriber);
         return true;
     }
 
@@ -298,6 +356,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public void onLowMemory() {
         super.onLowMemory();
         CoreLegacyDbFlowDatabase.reset();
+    }
+
+    public void initBlockCanary(){
+        BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -344,7 +406,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             FirebaseApp.initializeApp(this);
             FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -353,7 +415,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
         Long current = new Date().getTime();
-
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -435,7 +496,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initReact() {
-        SoLoader.init(this, false);
+        SoLoader.init(ConsumerMainApplication.this, false);
     }
 
     private void initCacheApi() {
@@ -459,28 +520,36 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public boolean checkAppSignature() {
         try {
             PackageInfo info;
+            boolean signatureValid = false;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
                 if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
-                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
-                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-                } else {
-                    return false;
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 }
             } else {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
                 if (null != info && info.signatures.length > 0) {
-                    byte[] rawCertJava = info.signatures[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
-
-                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-                } else {
-                    return false;
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 }
             }
+            if (!signatureValid) {
+                Timber.w("P1#APP_SIGNATURE_FAILED#'certJava!=certNative'");
+            }
+            return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
             return false;
         }
     }
@@ -525,7 +594,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             sb.append("\n");
         } catch (CertificateException e) {
-            // e.printStackTrace();
+
         }
         return sb.toString();
     }
@@ -548,5 +617,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
+    }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+        super.onNewIntent(context, intent);
+        if(gratificationSubscriber != null){
+            if(context instanceof Activity) {
+                gratificationSubscriber.onNewIntent((Activity) context, intent);
+            }
+        }
     }
 }

@@ -209,6 +209,8 @@
     <string name="shop_page_setting_product">Produk</string>
     <string name="shop_page_setting_action_display_products">Lihat daftar produk</string>
     <string name="shop_page_setting_action_edit_etalage">Tambah dan ubah etalase</string>
+    <string name="shop_page_product_no_upload_product">Agar tidak dinonaktifkan, tambah produk sebelum 90 hari</string>
+    <string name="shop_page_product_action_no_upload_product">Oke</string>
     <!-- support -->
     <string name="shop_page_setting_support">Bantuan</string>
     <string name="shop_page_setting_support_center">Pusat Bantuan</string>
@@ -219,5 +221,10 @@
     <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
     <string name="shop_page_setting_action_edit_location">Tambah dan ubah lokasi toko</string>
     <string name="shop_page_setting_action_manage_shipping_service">Atur layanan pengiriman</string>
+    <string name="video_component_tag">video_container</string>
+    <string name="close_youtube">Close</string>
+    <string name="video_not_found">Video tidak ditemukan</string>
+
+    <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
 
 </resources>

@@ -3,6 +3,7 @@ package com.tokopedia.salam.umrah.common.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.salam.umrah.R
@@ -25,7 +26,7 @@ class UmrahItemWidget @JvmOverloads constructor(context: Context, attrs: Attribu
         if (::umrahItemWidgetModel.isInitialized) {
             hideLoading()
 
-            if(umrahItemWidgetModel.imageUri!="") iv_widget_umrah_pdp_item.loadImageCircle(umrahItemWidgetModel.imageUri)
+            if(umrahItemWidgetModel.imageUri!="") iv_widget_umrah_pdp_item.loadImage(umrahItemWidgetModel.imageUri)
             else {
                 iv_widget_umrah_pdp_item.loadImageDrawable(umrahItemWidgetModel.imageDrawable)
                 umrah_pdp_item_circle_bg.visibility = View.GONE
@@ -37,7 +38,7 @@ class UmrahItemWidget @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    fun setPermissionPdp(){
+    fun setPermissionTravel(){
         tg_widget_umrah_pdp_item_desc.text = resources.getString(R.string.umrah_pdp_permission_number,umrahItemWidgetModel.desc)
         tg_widget_umrah_pdp_item_title.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
         tg_widget_umrah_pdp_item_title.setWeight(2)

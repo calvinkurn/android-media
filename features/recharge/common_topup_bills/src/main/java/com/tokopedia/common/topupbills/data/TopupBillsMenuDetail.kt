@@ -9,17 +9,20 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsMenuDetail(
         @SerializedName("catalog")
         @Expose
-        val catalog: TopupBillsCatalog,
+        val catalog: TopupBillsCatalog = TopupBillsCatalog(),
         @SerializedName("recommendations")
         @Expose
-        val recommendations: List<TopupBillsRecommendation>,
+        val recommendations: List<TopupBillsRecommendation> = listOf(),
         @SerializedName("promos")
         @Expose
-        val promos: List<TopupBillsPromo>,
+        val promos: List<TopupBillsPromo> = listOf(),
         @SerializedName("tickers")
         @Expose
-        val tickers: List<TopupBillsTicker>,
+        val tickers: List<TopupBillsTicker> = listOf(),
         @SerializedName("banners")
         @Expose
-        val banners: List<TopupBillsBanner>
+        val banners: List<TopupBillsBanner> = listOf(),
+        @SerializedName("express_checkout")
+        @Expose
+        val isExpressCheckout: Boolean = false
 )

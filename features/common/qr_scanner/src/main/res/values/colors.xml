@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="qr_scanner_tkpd_main_green_70">#b342b549</color>
+    <color name="qr_scanner_tkpd_main_green">#42b549</color>
+    <color name="qr_scanner_black_54">#8a000000</color>
+    <color name="qr_scanner_medium_green">#42b549</color>
+    <color name="qr_scanner_white">#FFFFFF</color>
+    <color name="qr_scanner_black_36">#5b000000</color>
+</resources>

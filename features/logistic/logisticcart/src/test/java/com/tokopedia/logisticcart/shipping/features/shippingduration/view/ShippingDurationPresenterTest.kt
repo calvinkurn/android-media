@@ -174,8 +174,8 @@ object ShippingDurationPresenterTest : Spek({
     Feature("get courier item data") {
 
         Scenario("on callled trigger courier converter") {
-            val courierModelWithOneRecc: List<ShippingCourierViewModel> = listOf(
-                    ShippingCourierViewModel().apply {
+            val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
+                    ShippingCourierUiModel().apply {
                         productData = ProductData().apply {
                             isRecommend = true
                         }
@@ -194,8 +194,8 @@ object ShippingDurationPresenterTest : Spek({
         }
 
         Scenario("on called return null") {
-            val courierWithNoRecc: List<ShippingCourierViewModel> = listOf(
-                    ShippingCourierViewModel().apply {
+            val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
+                    ShippingCourierUiModel().apply {
                         productData = ProductData()
                     }
             )
@@ -214,8 +214,8 @@ object ShippingDurationPresenterTest : Spek({
     Feature("get courier item data with id") {
         Scenario("on called trigger courier converter") {
             val spId = 24
-            val courierModelWithId: List<ShippingCourierViewModel> = listOf(
-                    ShippingCourierViewModel().apply {
+            val courierModelWithId: List<ShippingCourierUiModel> = listOf(
+                    ShippingCourierUiModel().apply {
                         productData = ProductData().apply {
                             shipperProductId = spId
                         }
@@ -235,8 +235,8 @@ object ShippingDurationPresenterTest : Spek({
 
         Scenario("on called return null") {
             val sId = 38
-            val courierModelNoId: List<ShippingCourierViewModel> = listOf(
-                ShippingCourierViewModel().apply {
+            val courierModelNoId: List<ShippingCourierUiModel> = listOf(
+                ShippingCourierUiModel().apply {
                     productData = ProductData().apply {
                         shipperProductId = 24
                     }

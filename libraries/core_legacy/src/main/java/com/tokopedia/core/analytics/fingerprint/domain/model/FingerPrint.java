@@ -1,5 +1,10 @@
 package com.tokopedia.core.analytics.fingerprint.domain.model;
 
+import android.text.TextUtils;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Created by Herdi_WORK on 20.06.17.
  */
@@ -30,7 +35,7 @@ public class FingerPrint {
     private String packageName;
     private String androidId;
     private boolean isx86;
-    private int appsCount;
+    private String pid;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -57,7 +62,11 @@ public class FingerPrint {
         androidId = fingerPrintBuilder.androidId;
         isx86 = fingerPrintBuilder.isx86;
         packageName = fingerPrintBuilder.packageName;
-        appsCount = fingerPrintBuilder.appsCount;
+        if (TextUtils.isEmpty(fingerPrintBuilder.imei)) {
+            pid = "";
+        } else {
+            pid = fingerPrintBuilder.imei;
+        }
     }
 
     public static class FingerPrintBuilder {
@@ -85,7 +94,7 @@ public class FingerPrint {
         private String androidId;
         private boolean isx86;
         private String packageName;
-        private int appsCount;
+        private String imei;
 
         public FingerPrintBuilder() {
 
@@ -211,8 +220,8 @@ public class FingerPrint {
             return this;
         }
 
-        public FingerPrintBuilder appsCount(int appsCount) {
-            this.appsCount = appsCount;
+        public FingerPrintBuilder imei(String imei) {
+            this.imei = imei;
             return this;
         }
 

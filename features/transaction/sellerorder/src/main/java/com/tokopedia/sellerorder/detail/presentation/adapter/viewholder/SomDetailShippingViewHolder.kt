@@ -24,13 +24,15 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             itemView.tv_receiver_phone.text = item.dataObject.receiverPhone
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
+            itemView.tv_receiver_province.text = item.dataObject.receiverProvince
 
             itemView.copy_address_btn.apply {
                 setOnClickListener {
                     actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
                             "\n" + item.dataObject.receiverPhone +
                             "\n" + item.dataObject.receiverStreet +
-                            "\n" + item.dataObject.receiverDistrict))
+                            "\n" + item.dataObject.receiverDistrict +
+                            "\n" + item.dataObject.receiverProvince))
                 }
             }
 

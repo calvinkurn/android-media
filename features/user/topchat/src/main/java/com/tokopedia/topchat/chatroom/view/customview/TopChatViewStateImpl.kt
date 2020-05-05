@@ -58,10 +58,10 @@ class TopChatViewStateImpl(
         AttachmentPreviewAdapter.AttachmentPreviewListener {
 
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
-    private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
+    private var headerMenuButton: ImageButton = toolbar.findViewById(com.tokopedia.chat_common.R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: FrameLayout = view.findViewById(R.id.cl_attachment_preview)
-    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
+    private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
+    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -73,10 +73,23 @@ class TopChatViewStateImpl(
 
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
     override fun getOnlineIndicatorResource() = R.drawable.ic_topchat_status_indicator_online
+    override fun getRecyclerViewId() = R.id.recycler_view
+    override fun getProgressId() = R.id.progress
+    override fun getNewCommentId() = R.id.new_comment
+    override fun getReplyBoxId() = R.id.reply_box
+    override fun getActionBoxId() = R.id.add_comment_area
+    override fun getSendButtonId() = R.id.send_but
+    override fun getNotifierId() = R.id.notifier
+    override fun getChatMenuId() = R.id.iv_chat_menu
+    override fun getAttachmentMenuId() = R.id.rv_attachment_menu
+    override fun getRootViewId() = R.id.main
+    override fun getAttachmentMenuContainer() = R.id.rv_attachment_menu_container
 
     init {
         initView()
     }
+
+    override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
 
     override fun initView() {
         super.initView()
@@ -88,11 +101,6 @@ class TopChatViewStateImpl(
             }
         }
 
-        sendButton.setOnClickListener {
-            sendListener.onSendClicked(replyEditText.text.toString(),
-                    SendableViewModel.generateStartTime())
-        }
-
         templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(templateListener))
         templateRecyclerView.setHasFixedSize(true)
         templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
@@ -101,6 +109,11 @@ class TopChatViewStateImpl(
 
         initProductPreviewLayout()
         initHeaderLayout()
+    }
+
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        getAdapter().addHeaderDateIfDifferent(visitable)
+        super.onReceiveMessageEvent(visitable)
     }
 
     private fun initHeaderLayout() {
@@ -187,15 +200,15 @@ class TopChatViewStateImpl(
     }
 
     private fun bindBadge(chatRoom: ChatroomViewModel) {
-        val badgeView = toolbar.findViewById<ImageView>(R.id.ivBadge)
+        val badgeView = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.ivBadge)
         badgeView?.shouldShowWithAction(chatRoom.hasBadge()) {
             ImageHandler.loadImageWithoutPlaceholder(badgeView, chatRoom.badgeUrl)
         }
     }
 
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
-        val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
-        val onlineStats = toolbar.findViewById<View>(R.id.online_status)
+        val onlineDesc = toolbar.findViewById<TextView>(com.tokopedia.chat_common.R.id.subtitle)
+        val onlineStats = toolbar.findViewById<View>(com.tokopedia.chat_common.R.id.online_status)
         val lastOnlineTimeStamp = getShopLastTimeOnlineTimeStamp(viewModel)
 
         if (isOfficialStore(viewModel)) {
@@ -215,7 +228,7 @@ class TopChatViewStateImpl(
 
     private fun getOnlineDescStatus(context: Context, viewModel: ChatroomViewModel): String {
         return if (viewModel.headerModel.isOnline) {
-            context.getString(R.string.online)
+            context.getString(com.tokopedia.chat_common.R.string.online)
         } else {
             ChatTimeConverter.getRelativeDate(view.context, getShopLastTimeOnlineTimeStamp(viewModel))
         }
@@ -387,7 +400,7 @@ class TopChatViewStateImpl(
             }
         }
         val blockString = String.format(
-                chatBlockLayout.context.getString(R.string.chat_blocked_text),
+                chatBlockLayout.context.getString(com.tokopedia.chat_common.R.string.chat_blocked_text),
                 category,
                 opponentName,
                 Utils.getDateTime(blockedStatus.blockedUntil))
@@ -410,20 +423,20 @@ class TopChatViewStateImpl(
     private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
         myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
         myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
-        myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
+        myAlertDialog.setBtnOk(view.context.getString(R.string.topchat_chat_delete_confirm))
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
-        myAlertDialog.setBtnCancel(view.context.getString(R.string.cancel))
+        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.imagepicker.R.string.cancel))
         myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
         myAlertDialog.show()
     }
 
-    override fun showErrorWebSocket(b: Boolean) {
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
         notifier.visibility = View.VISIBLE
         val title = notifier.findViewById<TextView>(R.id.title)
         val action = notifier.findViewById<View>(R.id.action)
-        if (b) {
+        if (isWebSocketError) {
             title.setText(R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 
@@ -467,28 +480,4 @@ class TopChatViewStateImpl(
         replyEditText.requestFocus()
     }
 
-    override fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel) {
-        analytics.eventClickBuyProductAttachment(
-                element.blastId.toString(),
-                element.productName,
-                element.productId.toString(),
-                element.productPrice,
-                1,
-                element.shopId.toString(),
-                chatRoomViewModel.headerModel.name
-        )
-    }
-
-    override fun sendAnalyticsClickATC(element: ProductAttachmentViewModel) {
-        analytics.eventClickAddToCartProductAttachment(
-                element.blastId.toString(),
-                element.productName,
-                element.productId.toString(),
-                element.productPrice,
-                1,
-                element.shopId.toString(),
-                chatRoomViewModel.headerModel.name
-        )
-    }
 }
-

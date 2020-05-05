@@ -4,6 +4,9 @@
     <string name="sellerapp_scheme" translatable="false">sellerapp</string>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
+    <!--Base DF-->
+    <string name="onboarding_sellerapp_name">OnBoarding</string>
+
     <!--Product Page-->
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
@@ -42,4 +45,10 @@
 
     <string name="user_identification_common_title">Verifikasi Data Diri</string>
     <string name="talk_title">Diskusi Produk</string>
+
+    <string name="title_topchat">Chat</string>
+
+
+    <string name="fingerprint_onboarding">Daftar Fingerprint</string>
+
 </resources>

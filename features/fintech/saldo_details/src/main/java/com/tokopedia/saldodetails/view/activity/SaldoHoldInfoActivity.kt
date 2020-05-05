@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -21,6 +23,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
+import com.tokopedia.saldodetails.utils.CurrencyUtils
 import com.tokopedia.saldodetails.view.fragment.SaldoHoldInfoFragment
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
@@ -37,8 +40,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     var viewPager: ViewPager? = null
     var arrayListSeller: ArrayList<SaldoHoldInfoItem>? = null
     var arrayListBuyer: ArrayList<SaldoHoldInfoItem>? = null
-    var sellerAmount: Double? = 0.0
-    var buyerAmount: Double? = 0.0
+    var sellerAmount: Long = 0
+    var buyerAmount: Long = 0
     var item: ArrayList<SaldoHistoryTabItem>? = null
     lateinit var tabLayout: Tabs
     lateinit var helpdialog: CloseableBottomSheetDialog
@@ -51,21 +54,28 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
     companion object {
         val TAG: String = SaldoHoldInfoItem::class.java.simpleName
+        val SALDOHOLD_FINTECH_PLT = "saldoholdfintech_plt"
+        val SALDOHOLD_FINTECH_PLT_PREPARE_METRICS = "saldoholdfintech_plt_prepare_metrics"
+        val SALDOHOLD_FINTECH_PLT_NETWORK_METRICS = "saldoholdfintech_plt_network_metrics"
+        val SALDOHOLD_FINTECH_PLT_RENDER_METRICS = "saldoholdfintech_plt_render_metrics"
     }
+
+    private val performanceInterface by lazy { PageLoadTimePerformanceCallback(SALDOHOLD_FINTECH_PLT_PREPARE_METRICS, SALDOHOLD_FINTECH_PLT_NETWORK_METRICS, SALDOHOLD_FINTECH_PLT_RENDER_METRICS) as PageLoadTimePerformanceInterface }
 
     @Inject
     lateinit var saldoInfoPresenter: SaldoHoldInfoPresenter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceInterface.startMonitoring()
+        performanceInterface.stopPreparePagePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.saldo_hold_info_tabview)
-        SaldoDetailsComponentInstance.getComponent(application).inject(this)
+        SaldoDetailsComponentInstance.getComponent(this).inject(this)
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
         viewPager = findViewById(R.id.view_pager_saldo_info_type)
         saldoInfoPresenter.attachView(this)
         clearFrgmentManger()
-        saldoInfoPresenter.getSaldoHoldInfo()
         top_bar_close_button.setOnClickListener {
             onBackPressed()
         }
@@ -73,22 +83,27 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         btn_bantuan.setOnClickListener {
             initBottomSheet()
         }
+        performanceInterface.stopPreparePagePerformanceMonitoring()
+        performanceInterface.startNetworkRequestPerformanceMonitoring()
+        saldoInfoPresenter.getSaldoHoldInfo()
     }
 
     private fun clearFrgmentManger() {
-         supportFragmentManager.fragments.forEach {
+        supportFragmentManager.fragments.forEach {
             supportFragmentManager.beginTransaction().remove(it).commit()
         }
 
     }
 
     override fun getComponent(): SaldoDetailsComponent {
-        return SaldoDetailsComponentInstance.getComponent(application)
+        return SaldoDetailsComponentInstance.getComponent(this)
     }
 
     override fun getNewFragment(): Fragment? = null
 
     override fun renderSaldoHoldInfo(saldoHoldDepositHistory: SaldoHoldDepositHistory?) {
+        performanceInterface.stopNetworkRequestPerformanceMonitoring()
+        performanceInterface.startRenderPerformanceMonitoring()
         saldoHoldDepositHistory?.let {
 
             tv_valueTotalSaldoHold.text = it.totalFmt
@@ -99,12 +114,14 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
             sellerListSize?.let {
                 for (i in 0 until it) {
-                    sellerAmount = arrayListSeller?.get(i)?.amountFmt?.removeRP()?.let { it1 -> sellerAmount?.plus(it1) }
+                    sellerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListSeller?.get(i)?.amountFmt
+                            ?: "0").let { it1 -> sellerAmount.plus(it1) }
                 }
             }
             buyerListSize?.let {
                 for (i in 0 until it) {
-                    buyerAmount = arrayListBuyer?.get(i)?.amountFmt?.removeRP()?.let { it1 -> buyerAmount?.plus(it1) }
+                    buyerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListBuyer?.get(i)?.amountFmt
+                            ?: "0").let { it1 -> buyerAmount.plus(it1) }
                 }
             }
             isTickerShow = it.tickerMessageIsshow
@@ -121,7 +138,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         setUpViewPager(sellerListSize, buyerListSize)
         initViewPagerAdapter()
         showLayout()
-
+        performanceInterface.stopRenderPerformanceMonitoring()
     }
 
     private fun setUpViewPager(sellerListSize: Int?, buyerListSize: Int?) {
@@ -133,9 +150,10 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             saveInstanceCacheManagerBuyer.apply {
                 put(KEY_TYPE, VALUE_BUYER_TYPE)
                 put(TAG, arrayListBuyer)
-                buyerAmount?.let {
+                buyerAmount.let {
                     put(SALDO_BUYER_AMOUNT, it)
                 }
+                put(SaldoHoldInfoFragment.TRANSACTION_TYPE, SaldoHoldInfoFragment.FOR_BUYER)
                 this.id?.let {
                     bundleBuyer.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
                 }
@@ -153,9 +171,10 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             saveInstanceCacheManagerSeller.apply {
                 put(KEY_TYPE, VALUE_SELLER_TYPE)
                 put(TAG, arrayListSeller)
-                sellerAmount?.let {
+                sellerAmount.let {
                     put(SALDO_SELLER_AMOUNT, it)
                 }
+                put(SaldoHoldInfoFragment.TRANSACTION_TYPE, SaldoHoldInfoFragment.FOR_SELLER)
                 this.id?.let {
                     bundleSeller.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
                 }
@@ -193,7 +212,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
                 put(TAG, arrayListSeller)
                 sellerAmount?.let {
                     put(SALDO_SELLER_AMOUNT, it)
-                    bundleSeller.putInt("SELLER_TYPE", 0)
+                    bundleSeller.putInt("SELLER_ll_containerTYPE", 0)
 
                 }
                 this.id?.let {
@@ -240,6 +259,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     }
 
     override fun showErrorView() {
+        performanceInterface.stopNetworkRequestPerformanceMonitoring()
         container_cl.visibility = View.GONE
         viewflipper_container.displayedChild = 1
         globalerror.setType(5)
@@ -259,11 +279,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     override fun onDestroy() {
         super.onDestroy()
         saldoInfoPresenter.detachView()
+        performanceInterface.stopMonitoring()
+
     }
 
 }
-
-private fun String?.removeRP(): Double? {
-    return this?.substring(2)?.trim()?.toDouble()?.times(1000)
-}
-

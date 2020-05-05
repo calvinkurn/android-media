@@ -4,13 +4,11 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
-import com.tokopedia.shop.analytic.model.ListTitleTypeDef;
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef;
-import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel;
+import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
@@ -29,83 +27,174 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         super(trackingQueue);
     }
 
-    private List<Object> createProductListMap(List<ShopProductViewModel> shopProductViewModelList,
-                                              @ListTitleTypeDef String listTitle, String etalaseName,
-                                              String attribution, int productPositionStart,
-                                              @TrackShopTypeDef String shopTypeDef,
-                                              String shopId, String shopName, boolean isActiveFreeOngkir) {
+    private List<Object> createProductListMap(
+            List<ShopProductViewModel> shopProductViewModelList,
+            String selectedEtalaseName,
+            String etalaseName,
+            int productPosition,
+            String shopTypeDef,
+            String loginNonLoginString,
+            String shopId,
+            String shopRef
+    ) {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < shopProductViewModelList.size(); i++) {
             ShopProductViewModel viewModel = shopProductViewModelList.get(i);
-            list.add(
-                    DataLayer.mapOf(
-                            NAME, viewModel.getName(),
-                            ID, viewModel.getId(),
-                            PRICE, formatPrice(viewModel.getDisplayedPrice()),
-                            BRAND, NONE,
-                            CATEGORY, NONE,
-                            VARIANT, NONE,
-                            LIST, joinDash(SHOPPAGE, listTitle, etalaseName),
-                            POSITION, productPositionStart + i + 1,
-                            SHOP_TYPE, shopTypeDef,
-                            SHOP_ID, shopId,
-                            SHOP_NAME, shopName,
-                            PAGE_TYPE, SHOPPAGE,
-                            ATTRIBUTION, attribution,
-                            DIMENSION83, isActiveFreeOngkir ? FREE_ONGKIR : NONE_OR_OTHER
-                    )
-            );
+            HashMap<String, Object> event = new HashMap<>(DataLayer.mapOf(
+                    NAME, viewModel.getName(),
+                    ID, viewModel.getId(),
+                    PRICE, formatPrice(viewModel.getDisplayedPrice()),
+                    BRAND, NONE,
+                    CATEGORY, NONE,
+                    VARIANT, NONE,
+                    LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString),
+                    POSITION, productPosition,
+                    DIMENSION_81, shopTypeDef,
+                    DIMENSION_79, shopId,
+                    SHOP_REF, shopRef
+            ));
+            list.add(event);
         }
-
         return list;
     }
 
-    private HashMap<String, Object> createProductImpressionMap(String event, String category, String action, String label,
-                                                               CustomDimensionShopPageAttribution customDimensionShopPage,
-                                                               List<ShopProductViewModel> shopProductViewModelList,
-                                                               @ListTitleTypeDef String listTitle, String listName,
-                                                               int productPositionStart,
-                                                               String shopId, String shopName, boolean isActiveFreeOngkir) {
+    private List<Object> createProductListSearchResultMap(
+            List<ShopProductViewModel> shopProductViewModelList,
+            String selectedEtalaseName,
+            String etalaseName,
+            int productPosition,
+            String shopTypeDef,
+            String loginNonLoginString,
+            String shopId,
+            String shopRef
+    ) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < shopProductViewModelList.size(); i++) {
+            ShopProductViewModel viewModel = shopProductViewModelList.get(i);
+            HashMap<String, Object> event = new HashMap<>(DataLayer.mapOf(
+                    NAME, viewModel.getName(),
+                    ID, viewModel.getId(),
+                    PRICE, formatPrice(viewModel.getDisplayedPrice()),
+                    BRAND, NONE,
+                    CATEGORY, NONE,
+                    VARIANT, NONE,
+                    LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseName, etalaseName), loginNonLoginString, SEARCH_RESULT),
+                    POSITION, productPosition,
+                    DIMENSION_81, shopTypeDef,
+                    DIMENSION_79, shopId,
+                    SHOP_REF, shopRef
+            ));
+            list.add(event);
+        }
+        return list;
+    }
+
+    private HashMap<String, Object> createProductImpressionMap(
+            String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
+            CustomDimensionShopPageAttribution customDimensionShopPage,
+            ShopProductViewModel shopProductViewModel,
+            String selectedEtalaseChipName, String etalaseName,
+            int productPositionStart,
+            String shopId
+    ) {
+        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
+        shopProductViewModelArrayList.add(shopProductViewModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
                 IMPRESSIONS,
-                createProductListMap(shopProductViewModelList, listTitle, listName,
-                        customDimensionShopPage.attribution,
+                createProductListMap(
+                        shopProductViewModelArrayList,
+                        selectedEtalaseChipName,
+                        etalaseName,
                         productPositionStart,
-                        customDimensionShopPage.shopType, shopId, shopName, isActiveFreeOngkir)));
+                        customDimensionShopPage.shopType,
+                        loginNonLoginString,
+                        shopId,
+                        customDimensionShopPage.shopRef
+                )));
         return eventMap;
     }
 
-    private HashMap<String, Object> createProductClickMap(String event, String category, String action, String label,
+    private HashMap<String, Object> createProductImpressionSearchResultMap(
+            String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
+            CustomDimensionShopPageAttribution customDimensionShopPage,
+            ShopProductViewModel shopProductViewModel,
+            String selectedEtalaseChipName, String etalaseName,
+            int productPositionStart,
+            String shopId
+    ) {
+        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
+        shopProductViewModelArrayList.add(shopProductViewModel);
+        HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                CURRENCY_CODE, IDR,
+                IMPRESSIONS,
+                createProductListSearchResultMap(
+                        shopProductViewModelArrayList,
+                        selectedEtalaseChipName,
+                        etalaseName,
+                        productPositionStart,
+                        customDimensionShopPage.shopType,
+                        loginNonLoginString,
+                        shopId,
+                        customDimensionShopPage.shopRef
+                )));
+        return eventMap;
+    }
+
+    private HashMap<String, Object> createProductClickMap(String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
                                                           CustomDimensionShopPageAttribution customDimensionShopPage,
                                                           ShopProductViewModel shopProductViewModel,
-                                                          @ListTitleTypeDef String listTitle, String etalaseName,
+                                                          String selectedEtalaseChipName, String etalaseName,
                                                           int productPositionStart,
-                                                          String shopId, String shopName, boolean isActiveFreeOngkir) {
+                                                          String shopId) {
         ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
         shopProductViewModelArrayList.add(shopProductViewModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
         eventMap.put(ECOMMERCE, DataLayer.mapOf(
                 CLICK,
                 DataLayer.mapOf(
-                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, listTitle, etalaseName)),
-                        PRODUCTS, createProductListMap(shopProductViewModelArrayList, listTitle, etalaseName,
-                                customDimensionShopPage.attribution,
+                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseChipName, etalaseName), loginNonLoginString)),
+                        PRODUCTS, createProductListMap(
+                                shopProductViewModelArrayList,
+                                selectedEtalaseChipName,
+                                etalaseName,
                                 productPositionStart,
                                 customDimensionShopPage.shopType,
-                                shopId, shopName, isActiveFreeOngkir))
+                                loginNonLoginString,
+                                shopId,
+                                customDimensionShopPage.shopRef
+                        ))
         ));
         return eventMap;
     }
 
-    private String formatPrice(String displayedPrice) {
-        if (!TextUtils.isEmpty(displayedPrice)) {
-            displayedPrice = displayedPrice.replaceAll("[^\\d]", "");
-            return displayedPrice;
-        } else {
-            return "";
-        }
+    private HashMap<String, Object> createProductClickSearchResultMap(String event, boolean isOwner, String category, String loginNonLoginString, String action, String label,
+                                                                      CustomDimensionShopPageAttribution customDimensionShopPage,
+                                                                      ShopProductViewModel shopProductViewModel,
+                                                                      String selectedEtalaseChipName, String etalaseName,
+                                                                      int productPositionStart,
+                                                                      String shopId) {
+        ArrayList<ShopProductViewModel> shopProductViewModelArrayList = new ArrayList<>();
+        shopProductViewModelArrayList.add(shopProductViewModel);
+        HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                CLICK,
+                DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(LIST, joinDash(SHOPPAGE, shopId, getProductEtalaseEvent(selectedEtalaseChipName, etalaseName), loginNonLoginString, SEARCH_RESULT)),
+                        PRODUCTS, createProductListSearchResultMap(
+                                shopProductViewModelArrayList,
+                                selectedEtalaseChipName,
+                                etalaseName,
+                                productPositionStart,
+                                customDimensionShopPage.shopType,
+                                loginNonLoginString,
+                                shopId,
+                                customDimensionShopPage.shopRef
+                        ))
+        ));
+        return eventMap;
     }
 
     @NonNull
@@ -119,7 +208,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     public void clickFollowUnfollowShop(boolean isFollow,
                                         CustomDimensionShopPage customDimensionShopPage) {
         String followUnfollow = isFollow ? FOLLOW : UNFOLLOW;
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
                 joinSpace(CLICK, followUnfollow),
                 "",
@@ -134,82 +223,138 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 customDimensionShopPage);
     }
 
-    public void followFromZeroFollower(CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
-                SHOP_PAGE_BUYER,
-                joinDash(TOP_SECTION, CLICK),
-                CLICK_FOLLOW_FROM_ZERO_FOLLOWER,
-                customDimensionShopPage);
+    public void clickProduct(
+            boolean isOwner,
+            boolean isLogin,
+            String selectedEtalaseChipName,
+            String etalaseSection,
+            CustomDimensionShopPageAttribution customDimensionShopPage,
+            ShopProductViewModel shopProductViewModel,
+            int productPosStart,
+            String shopId
+    ) {
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        Map<String, Object> event = createProductClickMap(
+                PRODUCT_CLICK,
+                isOwner,
+                getShopPageCategory(isOwner),
+                loginNonLoginString,
+                joinDash(CLICK_PRODUCT, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString),
+                shopProductViewModel.getId(),
+                customDimensionShopPage,
+                shopProductViewModel,
+                selectedEtalaseChipName, etalaseSection,
+                productPosStart,
+                shopId
+        );
+        sendDataLayerEvent(event);
     }
 
-    public void impressionFollowFromZeroFollower(CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(VIEW_SHOP_PAGE,
-                SHOP_PAGE_BUYER,
-                joinDash(TOP_SECTION, IMPRESSION),
-                IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER,
-                customDimensionShopPage);
+    public void clickProductSearchResult(
+            boolean isOwner,
+            boolean isLogin,
+            String selectedEtalaseChipName,
+            String etalaseSection,
+            CustomDimensionShopPageAttribution customDimensionShopPage,
+            ShopProductViewModel shopProductViewModel,
+            int productPosStart,
+            String shopId
+    ) {
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        Map<String, Object> event = createProductClickSearchResultMap(
+                PRODUCT_CLICK,
+                isOwner,
+                getShopPageCategory(isOwner),
+                loginNonLoginString,
+                joinDash(CLICK_PRODUCT, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString, SEARCH_RESULT),
+                shopProductViewModel.getId(),
+                customDimensionShopPage,
+                shopProductViewModel,
+                selectedEtalaseChipName, etalaseSection,
+                productPosStart,
+                shopId
+        );
+        sendDataLayerEvent(event);
     }
 
-    public void clickProduct(boolean isOwner,
-                             @ListTitleTypeDef String listType,
-                             String sectionName,
-                             CustomDimensionShopPageAttribution customDimensionShopPage,
-                             ShopProductViewModel shopProductViewModel,
-                             int productPosStart,
-                             String shopId, String shopName, boolean isActiveFreeOngkir) {
-        if (isOwner) {
-            sendEvent(CLICK_SHOP_PAGE,
-                    SHOP_PAGE_SELLER,
-                    joinDash(joinSpace(listType, sectionName), CLICK),
-                    CLICK_PRODUCT_PICTURE,
-                    customDimensionShopPage);
-        } else {
-            sendDataLayerEvent(
-                    createProductClickMap(PRODUCT_CLICK,
-                            SHOP_PAGE_BUYER,
-                            joinDash(joinSpace(listType, sectionName), CLICK),
-                            CLICK_PRODUCT_PICTURE,
-                            customDimensionShopPage,
-                            shopProductViewModel,
-                            listType, sectionName,
-                            productPosStart, shopId, shopName, isActiveFreeOngkir));
-        }
+    public void impressionProductList(
+            boolean isOwner,
+            boolean isLogin,
+            String selectedEtalaseChipName,
+            String etalaseSection,
+            CustomDimensionShopPageAttribution customDimensionShopPage,
+            ShopProductViewModel shopProductViewModel,
+            int productPosStart,
+            String shopId
+    ) {
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        Map<String, Object> event = createProductImpressionMap(
+                PRODUCT_VIEW,
+                isOwner,
+                getShopPageCategory(isOwner),
+                loginNonLoginString,
+                joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString),
+                "",
+                customDimensionShopPage,
+                shopProductViewModel,
+                selectedEtalaseChipName, etalaseSection,
+                productPosStart,
+                shopId
+        );
+        sendDataLayerEvent(event);
     }
 
-    public void impressionProductList(boolean isOwner,
-                                      @ListTitleTypeDef String listType,
-                                      String sectionName,
-                                      CustomDimensionShopPageAttribution customDimensionShopPage,
-                                      List<ShopProductViewModel> shopProductViewModelList,
-                                      int productPosStart,
-                                      String shopId, String shopName, boolean isActiveFreeOngkir) {
-        if (isOwner) {
-            sendEvent(VIEW_SHOP_PAGE,
-                    SHOP_PAGE_SELLER,
-                    joinDash(joinSpace(listType, sectionName), IMPRESSION),
-                    IMPRESSION_OF_PRODUCT_LIST,
-                    customDimensionShopPage);
-        } else {
-            sendDataLayerEvent(
-                    createProductImpressionMap(PRODUCT_VIEW,
-                            SHOP_PAGE_BUYER,
-                            joinDash(joinSpace(listType, sectionName), IMPRESSION),
-                            IMPRESSION_OF_PRODUCT_LIST,
-                            customDimensionShopPage,
-                            shopProductViewModelList,
-                            listType, sectionName,
-                            productPosStart, shopId, shopName, isActiveFreeOngkir));
-        }
+    public void impressionProductListSearchResult(
+            boolean isOwner,
+            boolean isLogin,
+            String selectedEtalaseChipName,
+            String etalaseSection,
+            CustomDimensionShopPageAttribution customDimensionShopPage,
+            ShopProductViewModel shopProductViewModel,
+            int productPosStart,
+            String shopId
+    ) {
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        Map<String, Object> event = createProductImpressionSearchResultMap(
+                PRODUCT_VIEW,
+                isOwner,
+                getShopPageCategory(isOwner),
+                loginNonLoginString,
+                joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString, SEARCH_RESULT),
+                "",
+                customDimensionShopPage,
+                shopProductViewModel,
+                selectedEtalaseChipName, etalaseSection,
+                productPosStart,
+                shopId
+        );
+        sendDataLayerEvent(event);
     }
 
     public void clickWishlist(boolean isAdd,
-                              @ListTitleTypeDef String listType,
+                              boolean isLogin,
+                              String selectedEtalaseName,
                               String sectionName,
                               CustomDimensionShopPageProduct customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseEvent = joinDash(getProductEtalaseEvent(selectedEtalaseName, sectionName), loginNonLoginString);
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 SHOP_PAGE_BUYER,
-                joinDash(joinSpace(listType, sectionName), CLICK),
-                joinDash(CLICK_WISHLIST, isAdd ? ADD : REMOVE),
+                joinDash(joinSpace(isAdd ? ADD : REMOVE, WISHLIST), etalaseEvent),
+                customDimensionShopPage.productId,
+                customDimensionShopPage);
+    }
+
+    public void clickWishlistProductResultPage(boolean isAdd,
+                                               boolean isLogin,
+                                               String selectedEtalaseName,
+                                               CustomDimensionShopPageProduct customDimensionShopPage) {
+        String loginNonLoginString = isLogin ? LOGIN : NON_LOGIN;
+        String etalaseEvent = joinDash(getProductEtalaseEvent(selectedEtalaseName, ""), loginNonLoginString, SEARCH_RESULT);
+        sendGeneralEvent(CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                joinDash(joinSpace(isAdd ? ADD : REMOVE, WISHLIST), etalaseEvent),
+                customDimensionShopPage.productId,
                 customDimensionShopPage);
     }
 
@@ -219,7 +364,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     }
 
     public void clickSearch(boolean isOwner, CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(
+        sendGeneralEvent(
                 CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 CLICK_SEARCH,
@@ -262,7 +407,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
     public void clickMoreMenuChip(boolean isOwner,
                                   String selectedEtalaseName,
                                   CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 CLICK_SHOWCASE_LIST,
                 String.format(ETALASE_X, selectedEtalaseName),
@@ -300,5 +445,30 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 joinSpace(SEARCH, joinDash(keyword, productResultLabel)),
                 customDimensionShopPage
         );
+    }
+
+    public void clickAddEtalase(CustomDimensionShopPage customDimensionShopPage) {
+        sendGeneralEvent(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_SELLER,
+                CLICK_ADD_ETALASE_BUTTON,
+                "",
+                customDimensionShopPage
+        );
+    }
+
+    private String getProductEtalaseEvent(
+            String selectedEtalaseChipName,
+            String etalaseSection
+    ) {
+        String etalaseEventEtalaseSectionEmpty = String.format(
+                SELECTED_ETALASE_CHIP,
+                selectedEtalaseChipName
+        );
+        String etalaseEventEtalaseSectionNotEmpty = joinDash(
+                String.format(SELECTED_ETALASE_CHIP, selectedEtalaseChipName),
+                String.format(ETALASE_SECTION, etalaseSection)
+        );
+        return etalaseSection.isEmpty() ? etalaseEventEtalaseSectionEmpty : etalaseEventEtalaseSectionNotEmpty;
     }
 }

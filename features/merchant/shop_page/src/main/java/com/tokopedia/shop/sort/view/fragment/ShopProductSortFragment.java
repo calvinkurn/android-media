@@ -125,6 +125,6 @@ public class ShopProductSortFragment extends BaseListFragment<ShopProductSortMod
 
     @Override
     public void onItemClicked(ShopProductSortModel filterModel) {
-        shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue());
+        shopFilterFragmentListener.select(filterModel.getKey(), filterModel.getValue(), filterModel.getName());
     }
 }

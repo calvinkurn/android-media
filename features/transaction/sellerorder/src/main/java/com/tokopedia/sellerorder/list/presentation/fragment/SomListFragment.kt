@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,10 +21,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
@@ -33,18 +32,20 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
@@ -62,8 +63,10 @@ import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
+import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
+import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -150,7 +153,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(SomListComponent::class.java).inject(this)
+        activity?.let {
+            DaggerSomListComponent.builder()
+                    .somComponent(SomComponentInstance.getSomComponent(it.application))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -162,6 +170,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         loadTicker()
         loadFilterList()
+        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -284,18 +293,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             })
-
         }
     }
 
     private fun setListeners() {
         search_input_view?.setListener(this)
         search_input_view?.setResetListener(this)
-        search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
+        search_input_view?.searchTextView?.setOnClickListener {
+            SomAnalytics.eventClickSearchBar()
+            search_input_view?.searchTextView?.isCursorVisible = true
+        }
 
         filter_action_button?.setOnClickListener {
-            SomAnalytics.eventClickFilterButtonOnOrderList()
-            val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
+            SomAnalytics.eventClickFilterButtonOnOrderList(tabActive)
+            val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder, tabActive) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
         }
     }
@@ -308,7 +319,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun loadTicker() {
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
         somListViewModel.loadTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker))
     }
 
@@ -332,7 +342,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (filterStatusId != 0) {
                         loadFilterStatusList()
                     } else {
-                        somListItemAdapter.removeAll()
                         nextOrderId = 0
                         loadOrderList(nextOrderId)
                     }
@@ -383,7 +392,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}", Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}", Ticker.TYPE_ANNOUNCEMENT, true, it.tickerId))
                         indexTicker++
                     }
                 }
@@ -393,28 +402,38 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                            SomAnalytics.eventClickSeeMoreOnTicker()
+                            SomAnalytics.eventClickSeeMoreOnTicker(itemData.toString())
+                        }
+                    })
+                    ticker_info?.setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                        override fun onDismiss() {
+                            SomAnalytics.eventClickXOnTicker(listTickerData.first().itemData.toString())
                         }
 
                     })
                     ticker_info?.addPagerView(adapter, listTickerData)
+                    SomAnalytics.eventViewTicker(listTickerData.first().itemData.toString())
                 }
             } else {
                 tickerList.first().let {
+                    SomAnalytics.eventViewTicker("${it.tickerId}")
                     ticker_info?.setHtmlDescription(it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}")
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                            SomAnalytics.eventClickSeeMoreOnTicker()
+                            SomAnalytics.eventClickSeeMoreOnTicker("${it.tickerId}")
                         }
 
-                        override fun onDismiss() {}
+                        override fun onDismiss() {
+                            SomAnalytics.eventClickXOnTicker("${it.tickerId}")
+                        }
 
                     })
                 }
             }
-            SomAnalytics.eventViewTicker()
         } else {
             ticker_info?.visibility = View.GONE
         }
@@ -507,7 +526,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                 renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
                             }
                         } else {
-                            renderCekPeluang()
+                            renderEmptyOrderList()
                             showCoachMarkProductsEmpty()
                         }
                     }
@@ -525,22 +544,21 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
-            somListItemAdapter.somItemList = orderList.orders.toMutableList()
+            somListItemAdapter.addList(orderList.orders)
         } else {
-            somListItemAdapter.addItems(orderList.orders)
+            somListItemAdapter.appendList(orderList.orders)
             scrollListener.updateStateAfterGetData()
         }
-        somListItemAdapter.notifyDataSetChanged()
     }
 
-    private fun showCoachMarkProducts(){
-        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+    private fun showCoachMarkProducts() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
         }
     }
 
-    private fun showCoachMarkProductsEmpty(){
-        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+    private fun showCoachMarkProductsEmpty() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
         }
     }
@@ -571,17 +589,16 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun renderCekPeluang() {
+    private fun renderEmptyOrderList() {
         refreshHandler?.finishRefresh()
         order_list_rv.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
-        desc_empty?.text = getString(R.string.empty_peluang_desc)
-        btn_cek_peluang?.visibility = View.VISIBLE
-        btn_cek_peluang?.setOnClickListener {
-            eventClickButtonPeluangInEmptyState(tabActive)
-            startActivity(RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY))
-        }
+
+        // Peluang Feature has been removed, thus we set text to empty and button is gone
+        desc_empty?.text = ""
+        btn_cek_peluang?.visibility = View.GONE
+        SomAnalytics.eventViewEmptyState(tabActive)
     }
 
     override fun onSearchReset() {}
@@ -604,7 +621,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
         onLoadMore = false
-        somListItemAdapter.removeAll()
         nextOrderId = 0
         loadOrderList(nextOrderId)
         loadFilterList()
@@ -615,6 +631,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
             }
         } else filter_action_button?.rightIconDrawable = null
+        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
     }
 
     private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {
@@ -657,13 +674,18 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
                         refreshThenShowToasterOk(resultConfirmShippingMsg)
                     }
-                }
-            }
-        } else if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
-                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
-                    refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
+                    data.hasExtra(RESULT_SET_DELIVERED) -> {
+                        val msg = data.getStringExtra(RESULT_SET_DELIVERED)
+                        refreshThenShowToasterOk(msg)
+                    }
+                    data.hasExtra(RESULT_SET_DELIVERED) -> {
+                        val msg = data.getStringExtra(RESULT_SET_DELIVERED)
+                        refreshThenShowToasterOk(msg)
+                    }
+                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP)  ->  {
+                        val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+                        refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
+                    }
                 }
             }
         }
@@ -683,5 +705,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_DETAIL)
         }
+    }
+
+    fun onChatIconClicked() {
+        var orderStatusName = tabActive
+        if (orderStatusName.isEmpty()) orderStatusName = STATUS_ALL_ORDER
+        SomAnalytics.eventClickChatIconOnOrderList(orderStatusName)
     }
 }

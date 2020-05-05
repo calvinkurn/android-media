@@ -16,8 +16,6 @@ class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDi
 
     val textWatcherState = MutableLiveData<TextWatcherState>()
 
-    private lateinit var textWatcher: TextWatcher
-
     private var job: Job? = Job()
 
     private var currentBank: Bank? = null
@@ -27,8 +25,6 @@ class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDi
     }
 
     fun getTextWatcher(): TextWatcher {
-        if (::textWatcher.isInitialized)
-            return textWatcher
         return object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 currentBank?.let {
@@ -65,18 +61,15 @@ class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDi
 
         return when (numberStr.length) {
             0 -> OnTextChanged(isCheckEnable = false, clearAccountHolderName = true,
-                    isAddBankButtonEnable = false,
-                    newAccountNumber = numberStr, isTextUpdateRequired = false)
+                    isAddBankButtonEnable = false)
             in 1..bankType.count -> OnTextChanged(isCheckEnable = true, clearAccountHolderName = true,
-                    isAddBankButtonEnable = false,
-                    newAccountNumber = numberStr, isTextUpdateRequired = false)
+                    isAddBankButtonEnable = false)
             else -> OnTextChanged(isCheckEnable = true, clearAccountHolderName = true,
-                    isAddBankButtonEnable = false,
-                    newAccountNumber = numberStr.substring(0, bankType.count), isTextUpdateRequired = true)
+                    isAddBankButtonEnable = false)
         }
     }
 
-    private fun getBankTypeFromAbbreviation(abbreviation: String): BankAccountNumber = when (abbreviation.toUpperCase()) {
+    internal fun getBankTypeFromAbbreviation(abbreviation: String): BankAccountNumber = when (abbreviation.toUpperCase()) {
         BankAccountNumber.BRI.abbrevation.toUpperCase() -> BankAccountNumber.BRI
         BankAccountNumber.BCA.abbrevation.toUpperCase() -> BankAccountNumber.BCA
         BankAccountNumber.Mandiri.abbrevation.toUpperCase() -> BankAccountNumber.Mandiri

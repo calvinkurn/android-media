@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -34,10 +26,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -50,6 +51,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.DropShipper;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityPessenger;
+import com.tokopedia.transaction.orders.orderdetails.data.Header;
 import com.tokopedia.transaction.orders.orderdetails.data.Invoice;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
@@ -59,7 +61,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListwebViewActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
@@ -68,7 +69,9 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -79,6 +82,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.ORDER_LIST_URL_ENCODING;
 
@@ -252,15 +257,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if(!presenter.isValidUrl(invoice.invoiceUrl())){
+        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        invoice.invoiceUrl()));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
             }
         });
     }
@@ -396,13 +399,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     }
                     RouteManager.route(getActivity(), newUri);
                 } else if (uri != null && !uri.equals("")) {
-                    try {
-                        startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
-                                .getWebviewActivityWithIntent(getContext(), URLEncoder.encode(
-                                        uri, ORDER_LIST_URL_ENCODING)));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
                 }
             }
         };
@@ -423,8 +420,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 itemsList.add(item);
             }
         }
-        for(Items item : itemsList){
-            if(!item.getMetaData().isEmpty()) {
+        for (Items item : itemsList) {
+            if (!item.getMetaData().isEmpty()) {
                 metadataEmpty = false;
                 break;
             }
@@ -496,7 +493,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             public void onClick(View v) {
                 if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON)) {
                     presenter.setActionButton(actionButtons, null, 0, false);
-                } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)){
+                } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                     RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
                 }
             }
@@ -602,7 +599,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                             });
                         }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);
-                    } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)){
+                    } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                         RouteManager.route(getContext(), actionButton.getBody().getAppURL());
                     }
                 }
@@ -615,7 +612,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             userInfo.setVisibility(View.VISIBLE);
             dividerUserInfo.setVisibility(View.VISIBLE);
             userInfo.removeAllViews();
-            for (EntityPessenger entityPessenger: metaDataInfo.getEntityPessengers()) {
+            for (EntityPessenger entityPessenger : metaDataInfo.getEntityPessengers()) {
                 DoubleTextView doubleTextView = new DoubleTextView(getContext(), LinearLayout.VERTICAL);
                 doubleTextView.setTopText(entityPessenger.getTitle());
                 doubleTextView.setTopTextColor(ContextCompat.getColor(getContext(), R.color.subtitle_gray_color));
@@ -632,8 +629,49 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         }
     }
 
-    @Override
-    public void openShowQRFragment(ActionButton actionButton, Items item) {
+    private void showDealsQR(ActionButton actionButton) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.deals_qr_code_layout, mainView, false);
+
+        BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setTitle(getString(R.string.text_redeem_voucher));
+        bottomSheetUnify.setCloseClickListener(v -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        ImageView qrCode = view.findViewById(R.id.qrCode);
+        Typography voucherNo = view.findViewById(R.id.redeem_dialog_voucher_code);
+        Typography poweredBy = view.findViewById(R.id.redeem_dialog_shop_name);
+        Typography poweredByPrefix = view.findViewById(R.id.redeem_dialog_powered_by);
+
+        Header header = actionButton.getHeaderObject();
+
+        if (!header.getStatusLabel().isEmpty()) {
+            Typography disableText = view.findViewById(R.id.redeem_dialog_expired_text);
+            View expiredOverlay = view.findViewById(R.id.redeem_dialog_expired_view);
+            expiredOverlay.setVisibility(View.VISIBLE);
+            disableText.setVisibility(View.VISIBLE);
+            disableText.setText(header.getStatusLabel());
+        }
+
+        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
+
+        if (actionButton.getHeaderObject() != null) {
+            poweredBy.setText(header.getPoweredBy());
+            voucherNo.setText(header.getVoucherCodes());
+
+            if (header.getPoweredBy().isEmpty()) {
+                poweredBy.setVisibility(View.GONE);
+                poweredByPrefix.setVisibility(View.GONE);
+            }
+        }
+        if (getActivity() != null) {
+            bottomSheetUnify.setChild(view);
+            bottomSheetUnify.show(getActivity().getSupportFragmentManager(), "");
+        }
+    }
+
+    private void showEventQR(ActionButton actionButton, Items item) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
         Dialog dialog = new Dialog(getContext());
         dialog.setCanceledOnTouchOutside(false);
@@ -643,7 +681,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
-
         dialog.getWindow().setAttributes(lp);
         View v = dialog.getWindow().getDecorView();
         v.setBackgroundResource(android.R.color.transparent);
@@ -651,26 +688,31 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         ImageView qrCode = view.findViewById(R.id.qrCode);
         LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
         TextView closeButton = view.findViewById(R.id.redeem_ticket);
-
         ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
 
         if (!TextUtils.isEmpty(item.getTrackingNumber())) {
             String[] voucherCodes = item.getTrackingNumber().split(",");
             int size = voucherCodes.length;
-            if (size > 0 ) {
+            if (size > 0) {
                 voucherCodeLayout.setVisibility(View.VISIBLE);
-            }
-            for (int i = 0; i < size; i++) {
-                BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], i, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes.length);
-                bookingCodeView.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_input_text_area));
-                voucherCodeLayout.addView(bookingCodeView);
+                for (int i = 0; i < size; i++) {
+                    BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], i, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes.length);
+                    bookingCodeView.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_input_text_area));
+                    voucherCodeLayout.addView(bookingCodeView);
+                }
             }
         }
-
-        closeButton.setOnClickListener(v1->{
-            dialog.dismiss();
-        });
+        closeButton.setOnClickListener(v1 -> dialog.dismiss());
         dialog.show();
+    }
+
+    @Override
+    public void openShowQRFragment(ActionButton actionButton, Items item) {
+        if (item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals) || item.getCategoryID() == ItemsAdapter.DEALS_CATEGORY_ID) {
+            showDealsQR(actionButton);
+        } else {
+            showEventQR(actionButton, item);
+        }
     }
 
     @Override

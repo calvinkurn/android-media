@@ -17,7 +17,6 @@
             android:id="@+id/iv_article"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Green_G500"
             android:scaleType="fitXY"/>
     </androidx.cardview.widget.CardView>
 

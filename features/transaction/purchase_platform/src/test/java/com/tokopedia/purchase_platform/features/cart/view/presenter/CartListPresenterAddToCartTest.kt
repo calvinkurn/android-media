@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.view.presenter
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
@@ -16,6 +17,7 @@ import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
@@ -38,7 +40,8 @@ object CartListPresenterAddToCartTest : Spek({
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
-    val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase = mockk()
+    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
+    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription = CompositeSubscription()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
@@ -53,19 +56,22 @@ object CartListPresenterAddToCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("add to cart") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, compositeSubscription, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
-                    seamlessLoginUsecase, TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartListUseCase,
+                    updateCartUseCase, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                    updateInsuranceProductDataUsecase, seamlessLoginUsecase,
+                    updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+                    validateUsePromoRevampUseCase, TestSchedulers
             )
         }
 
@@ -89,6 +95,7 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
@@ -145,6 +152,7 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
@@ -219,6 +227,7 @@ object CartListPresenterAddToCartTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 

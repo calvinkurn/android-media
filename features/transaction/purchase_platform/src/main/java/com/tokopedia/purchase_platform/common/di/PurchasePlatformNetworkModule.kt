@@ -95,7 +95,9 @@ class PurchasePlatformNetworkModule {
 
     @Provides
     @PurchasePlatformAkamaiQualifier
-    fun provideCartAkamaiApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+    fun provideCartAkamaiApiOkHttpClient(
+            @ApplicationContext context: Context,
+            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
                                    cartApiInterceptor: CartApiInterceptor,
                                    okHttpRetryPolicy: OkHttpRetryPolicy,
                                    fingerprintInterceptor: FingerprintInterceptor,
@@ -113,8 +115,8 @@ class PurchasePlatformNetworkModule {
                     chain.proceed(newRequest.build())
                 }
                 .addInterceptor(cartApiInterceptor)
-        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, false)) {
-            builder.addInterceptor(AkamaiBotInterceptor())
+        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, true)) {
+            builder.addInterceptor(AkamaiBotInterceptor(context))
         }
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)

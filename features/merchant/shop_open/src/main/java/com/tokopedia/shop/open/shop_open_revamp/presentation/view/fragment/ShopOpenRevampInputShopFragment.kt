@@ -24,11 +24,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
-import com.tokopedia.shop.open.shop_open_revamp.common.ExitDialog
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.common.TermsAndConditionsLink.URL_PRIVACY_POLICY
 import com.tokopedia.shop.open.shop_open_revamp.common.TermsAndConditionsLink.URL_TNC
@@ -40,7 +40,6 @@ import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInter
 import com.tokopedia.shop.open.shop_open_revamp.listener.InputShopInterface
 import com.tokopedia.shop.open.shop_open_revamp.presentation.adapter.ShopOpenRevampShopsSuggestionAdapter
 import com.tokopedia.shop.open.shop_open_revamp.presentation.viewmodel.ShopOpenRevampViewModel
-import com.tokopedia.shop.open.view.activity.ShopOpenWebViewActivity
 import com.tokopedia.shop.open.view.watcher.AfterTextWatcher
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -67,7 +66,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private val MIN_SHOP_NAME_LENGTH = 3
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
-    lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var txtInputShopName: TextFieldUnify
     private lateinit var txtInputDomainName: TextFieldUnify
     private lateinit var txtTermsAndConditions: TextView
@@ -77,6 +75,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampShopsSuggestionAdapter? = null
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+    private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var isValidShopName = false
     private var isValidDomainName = false
     private var shopNameValue = ""
@@ -112,14 +111,9 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         txtInputShopName.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 if (s.toString().length < MIN_SHOP_NAME_LENGTH) {
-                    isValidShopName = false
-                    txtInputShopName.setError(true)
-                    txtInputShopName.setMessage(getString(R.string.open_shop_revamp_error_shop_name_too_short))
                     shopNameValue = s.toString()
-                    btnShopRegistration.isEnabled = false
+                    validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
                 } else if (s.toString().length >= MIN_SHOP_NAME_LENGTH && s.isNotEmpty()) {
-                    txtInputShopName.setError(false)
-                    txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
                     shopNameValue = s.toString()
                     viewModel.checkShopName(shopNameValue)
                 }
@@ -133,10 +127,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 adapter?.selectedPosition = DEFAULT_SELECTED_POSITION
                 adapter?.notifyDataSetChanged()
                 if (domainInputStr.length < MIN_SHOP_NAME_LENGTH) {
-                    isValidDomainName = false
-                    txtInputDomainName.setError(true)
                     domainNameValue = domainInputStr.toString()
-                    txtInputDomainName.setMessage(getString(R.string.open_shop_revamp_error_domain_too_short))
+                    validateDomainName(true, getString(R.string.open_shop_revamp_error_domain_too_short))
                 } else if (domainInputStr.isNotEmpty() && domainInputStr.length >= MIN_SHOP_NAME_LENGTH) {
                     txtInputDomainName.setMessage("")
                     domainNameValue = domainInputStr.toString()
@@ -173,7 +165,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         }
         btnBack.setOnClickListener {
             shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
-            showExitDialog()
+            fragmentNavigationInterface?.showExitDialog()
         }
 
         observeShopNameValidationData()
@@ -235,21 +227,37 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (!it.data.validateDomainShopName.isValid) {
                         val errorMesssage = it.data.validateDomainShopName.error.message
-                        isValidShopName = false
-                        txtInputShopName.setError(true)
-                        txtInputShopName.setMessage(errorMesssage)
-                        btnShopRegistration.isEnabled = false
+                        if (shopNameValue.length < MIN_SHOP_NAME_LENGTH) {
+                            validateShopName(true, getString(R.string.open_shop_revamp_error_shop_name_too_short))
+                        } else {
+                            validateShopName(true, errorMesssage)
+                        }
                     } else {
-                        isValidShopName = true
+                        validateShopName(false, getString(R.string.open_shop_revamp_default_hint_input_shop))
                         viewModel.getDomainShopNameSuggestions(shopNameValue)
-                        txtInputShopName.setError(false)
-                        btnShopRegistration.isEnabled = true
-                        txtInputShopName.setMessage(getString(R.string.open_shop_revamp_default_hint_input_shop))
                     }
                 }
                 is Fail -> {
-                    txtInputShopName.setError(true)
-                    txtInputShopName.setMessage((it as Success).data.validateDomainShopName.error.message)
+                    validateShopName(true, (it as Success).data.validateDomainShopName.error.message)
+                }
+            }
+        })
+    }
+
+    private fun observeDomainNameValidationData() {
+        viewModel.checkDomainNameResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    if (!it.data.validateDomainShopName.isValid) {
+                        val errorMessage = it.data.validateDomainShopName.error.message
+                        validateDomainName(true, errorMessage)
+                    } else {
+                        isValidDomainName = true
+                        validateDomainName(false, "")
+                    }
+                }
+                is Fail -> {
+                    validateDomainName(true, (it as Success).data.validateDomainShopName.error.message)
                 }
             }
         })
@@ -259,15 +267,18 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         viewModel.createShopOpenResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val isSuccess = true
                     val _shopId = it.data.createShop.createdId
                     val _isSuccess = it.data.createShop.success
                     val _message = it.data.createShop.message
+                    var isSuccess = false
                     if (_shopId.isNotEmpty() && _isSuccess) {
+                        isSuccess = true
                         userSession.shopId = _shopId
-                        fragmentNavigationInterface.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
+                        fragmentNavigationInterface?.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
                         shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                     } else {
+                        isSuccess = false
+                        shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                         if (_message.isNotEmpty()) {
                             showErrorResponse(_message)
                         } else {
@@ -279,29 +290,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     val isSuccess = false
                     showErrorNetwork(it.throwable)
                     shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
-                }
-            }
-        })
-    }
-
-
-    private fun observeDomainNameValidationData() {
-        viewModel.checkDomainNameResponse.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    if (!it.data.validateDomainShopName.isValid) {
-                        val errorMessage = it.data.validateDomainShopName.error.message
-                        isValidDomainName = false
-                        txtInputDomainName.setError(true)
-                        txtInputDomainName.setMessage(errorMessage)
-                        btnShopRegistration.isEnabled = false
-                    } else {
-                        isValidDomainName = true
-                        btnShopRegistration.isEnabled = true
-                    }
-                }
-                is Fail -> {
-                    showErrorNetwork(it.throwable)
                 }
             }
         })
@@ -333,29 +321,49 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showErrorResponse(message: String) {
-        view?.let {
-            Toaster.showError(it, message, Snackbar.LENGTH_LONG)
+    private fun validateShopName(isError: Boolean, hintMessage: String) {
+        if (isError) {
+            isValidShopName = false
+            txtInputShopName.setError(true)
+            txtInputShopName.setMessage(hintMessage)
+            btnShopRegistration.isEnabled = false
+        } else {
+            isValidShopName = true
+            txtInputShopName.setError(false)
+            txtInputShopName.setMessage(hintMessage)
+            validateButtonShopRegistration()
         }
     }
 
-    private fun showExitDialog() {
-        activity?.also {
-            var exitDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            exitDialog.apply {
-                setTitle(ExitDialog.TITLE)
-                setDescription(ExitDialog.DESCRIPTION)
-                setPrimaryCTAText("Batal")
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                }
-                setSecondaryCTAText("Keluar")
-                setSecondaryCTAClickListener {
-                    this.dismiss()
-                    activity?.finish()
-                }
-                show()
-            }
+    private fun validateDomainName(isError: Boolean, hintMessage: String) {
+        if (isError) {
+            isValidDomainName = false
+            txtInputDomainName.setError(true)
+            txtInputDomainName.setMessage(hintMessage)
+            btnShopRegistration.isEnabled = false
+        } else {
+            isValidDomainName = true
+            txtInputDomainName.setError(false)
+            txtInputDomainName.setMessage("")
+            validateButtonShopRegistration()
+        }
+    }
+
+    private fun validateButtonShopRegistration() {
+        if (shopNameValue.isEmpty() || domainNameValue.isEmpty()) return
+        val shopNameLastCharacter = shopNameValue.get(shopNameValue.length - 1)
+        val domainNameLastCharacter = domainNameValue.get(domainNameValue.length - 1)
+        if (isValidShopName &&
+                isValidDomainName &&
+                !shopNameLastCharacter.equals(" ") &&
+                !domainNameLastCharacter.equals(" ")) {
+            btnShopRegistration.isEnabled = true
+        }
+    }
+
+    private fun showErrorResponse(message: String) {
+        view?.let {
+            Toaster.showError(it, message, Snackbar.LENGTH_LONG)
         }
     }
 
@@ -395,11 +403,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     } else {
                         shopOpenRevampTracking?.clickTextPrivacyPolicy()
                     }
-                    val intent = ShopOpenWebViewActivity.newInstance(activity!!, url, title)
-                    startActivity(intent)
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, url)
                 }
-
-
             }
         }
     }

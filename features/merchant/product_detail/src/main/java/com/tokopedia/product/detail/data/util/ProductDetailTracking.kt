@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
 import android.text.TextUtils
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager

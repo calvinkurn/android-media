@@ -47,7 +47,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -173,7 +173,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         showLoadingBar()
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
-        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -190,7 +190,11 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
 
             REQUEST_CODE_ADD_EMAIL -> {
-                activity?.recreate()
+                if (resultCode == Activity.RESULT_OK) {
+                    activity?.recreate()
+                } else {
+                    activity?.finish()
+                }
             }
 
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> {
@@ -501,7 +505,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                             intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
                             intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                             intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, true)
-                            requestCode = REQUST_CODE_PROMO_LIST
+                            requestCode = REQUEST_CODE_PROMO_LIST
                         }
                         intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
                         startActivityForResult(intent, requestCode)

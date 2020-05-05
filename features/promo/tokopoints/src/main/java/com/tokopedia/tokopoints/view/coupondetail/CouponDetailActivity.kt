@@ -17,6 +17,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 
 class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent> {
@@ -53,6 +54,7 @@ class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleC
         return DaggerTokopointBundleComponent.builder()
                 .bundleModule(BundleModule(bundle ?: Bundle()))
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .tokopointsQueryModule(TokopointsQueryModule(this))
                 .build()
     }
 

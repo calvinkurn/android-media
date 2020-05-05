@@ -4,12 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.talkdetails.view.fragment.TalkDetailsFragment
@@ -29,7 +26,35 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         return fragment
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        addExtrasIfFromAppLink()
+        super.onCreate(savedInstanceState)
+    }
+
+    private fun addExtrasIfFromAppLink() {
+        val uri = intent.data ?: return
+        val threadId = uri.lastPathSegment ?: ""
+        val shopId = uri.getQueryParameter(APPLINK_SHOP_ID) ?: ""
+        val commentId = uri.getQueryParameter(APPLINK_COMMENT_ID) ?: ""
+        val source = uri.getQueryParameter(SOURCE) ?: ""
+        if (threadId.isNotEmpty()) {
+            intent.putExtra(THREAD_TALK_ID, threadId)
+        }
+        if (shopId.isNotEmpty()) {
+            intent.putExtra(SHOP_ID, shopId)
+        }
+        if (commentId.isNotEmpty()) {
+            intent.putExtra(COMMENT_ID, commentId)
+        }
+        if (source.isNotEmpty()) {
+            intent.putExtra(SOURCE, source)
+        }
+    }
+
     companion object {
+        const val APPLINK_SHOP_ID = "shop_id"
+        const val APPLINK_COMMENT_ID = "comment_id"
+
         const val THREAD_TALK_ID = "THREAD_TALK_ID"
         const val COMMENT_ID = "COMMENT_ID"
         const val SHOP_ID = "SHOP_ID"

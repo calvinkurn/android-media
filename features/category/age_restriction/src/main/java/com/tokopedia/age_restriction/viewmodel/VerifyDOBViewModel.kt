@@ -1,32 +1,22 @@
 package com.tokopedia.age_restriction.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
+import com.tokopedia.age_restriction.usecase.UpdateUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
+import javax.inject.Inject
 
 private const val minimumAdultAge = 21
-class VerifyDOBViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
+class VerifyDOBViewModel @Inject constructor(private val updateUserDobUseCase: UpdateUserDobUseCase) : BaseARViewModel() {
 
     val userIsAdult = MutableLiveData<Boolean>()
     val userNotAdult = MutableLiveData<Boolean>()
 
-    lateinit var response: UserDOBUpdateResponse
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
-
-    fun updateUserDoB(query: String, bdayDD: String, bdayMM: String, bdayYY: String) {
+    fun updateUserDoB(bdayDD: String, bdayMM: String, bdayYY: String) {
         progBarVisibility.value = true
         launchCatchError(block = {
-            response = getRepo()?.getGQLData(query, UserDOBUpdateResponse::class.java,
-                    generateDOBRequestparam(bdayDD, bdayMM, bdayYY)) as UserDOBUpdateResponse
+            val response = updateUserDobUseCase.getData(bdayDD,bdayMM,bdayYY)
             checkIfAdult(response)
         }, onError = {
             it.printStackTrace()
@@ -50,13 +40,4 @@ class VerifyDOBViewModel(application: Application) : BaseViewModel(application),
                 userNotAdult.value = true
         }
     }
-
-    fun generateDOBRequestparam(bdayDD: String, bdayMM: String, bdayYY: String) =
-            HashMap<String, Any>().apply {
-                put("bdayDD", bdayDD)
-                put("bdayMM", bdayMM)
-                put("bdayYY", bdayYY)
-            }
-
-    fun getRepo() = repository
 }

@@ -186,7 +186,6 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_rupiah">Rp</string>
     <string name="title_rupiah_empty">Rp - </string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
-    <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
     <string name="dialog_delete_wholesale_title">Hapus Grosir?</string>
     <string name="dialog_add_wholesale_title">Tambah Harga Grosir?</string>
@@ -2095,7 +2094,7 @@ di Tokopedia Sekarang!</string>
     <string name="album_name_all">Semua Media</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
     <string name="webview_home_navigation_text">Home</string>
-    <string name="webview_help_menu_text">Bantuan</string>
+    <string name="webview_help_menu_text">Tokopedia Care</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>

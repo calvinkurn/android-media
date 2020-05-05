@@ -8,9 +8,9 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:gravity="center"
-        android:padding="@dimen/dp_24"
+        android:padding="@dimen/spacing_lvl5"
         android:text="@string/empty_state_search_chat"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />

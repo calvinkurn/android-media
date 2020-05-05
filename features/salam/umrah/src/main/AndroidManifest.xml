@@ -113,6 +113,45 @@
             android:name=".checkout.presentation.activity.UmrahCheckoutContactDataActivity"
             android:label="@string/umrah_checkout_contact_title_activity"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".travel.presentation.activity.UmrahTravelActivity"
+            android:label="@string/umrah_travel_agent_title"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umroh_travel_agen_path"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".travel.presentation.activity.UmrahTravelListActivity"
+            android:label="@string/umrah_travel_agent_title"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/umrah_host_s"
+                    android:pathPattern="@string/umroh_travel_agen_list"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name=".travel.presentation.activity.UmrahYoutubePlayerActivity"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

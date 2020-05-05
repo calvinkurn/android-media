@@ -7,9 +7,10 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import java.lang.reflect.Type
+import javax.inject.Inject
 
-open class RepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,
-                          private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
+open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore: GraphqlCloudDataStore,
+                                              private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
@@ -33,7 +34,7 @@ open class RepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataSto
                     responseCloud?.let {
                         responseCache.originalResponse.addAll(it.originalResponse)
                     }
-                    GraphqlResponseInternal(responseCache.originalResponse, cacheStrategy.isSessionIncluded, responseCache.indexOfEmptyCached)
+                    GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     graphqlCloudDataStore.getResponse(requests, cacheStrategy)

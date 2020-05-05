@@ -1,8 +1,9 @@
 package com.tokopedia.promocheckout.analytics
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
-import com.google.android.gms.tagmanager.DataLayer
 
 class PromoCheckoutAnalytics {
 
@@ -30,6 +31,17 @@ class PromoCheckoutAnalytics {
     val KEY_EVENT_CATEGORY_PROFILE_VALUE = "phone number verification"
     val KEY_EVENT_ACTION_PROFILE_VALUE = "click on button verifikasi"
     val KEY_EVENT_ACTION_PROFILE_VALUE_BATAL = "click on button batal"
+
+    private val KEY_CATEGORY_DIGITAL_LAST_SEEN_BANNER = "digital - banner ticker"
+    private val KEY_CATEGORY_DIGITAL_MY_COUPON = "digital - coupon ticker"
+    private val KEY_CATEGORY_DIGITAL_COUPON_DETAIL = "kupon milik saya - coupon detail"
+    private val KEY_ACTION_DIGITAL_CLICK_BANNER = "click banner ticker"
+    private val KEY_ACTION_DIGITAL_CLICK_COUPON = "click coupon ticker"
+    private val KEY_ACTION_DIGITAL_CLICK_COUPON_DETAIL = "click gunakan"
+    private val KEY_EVENT_DIGITAL_CLICK_COUPON = "clickCoupon"
+    private val KEY_EVENT_DIGITAL_CLICK_BANNER = "clickBanner"
+    private val KEY_USER_ID = "userId"
+
 
     companion object {
         val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
@@ -107,6 +119,36 @@ class PromoCheckoutAnalytics {
                 KEY_EVENT_CATEGORY, KEY_EVENT_CATEGORY_PROFILE_VALUE,
                 KEY_EVENT_ACTION, KEY_EVENT_ACTION_PROFILE_VALUE_BATAL)
         tracker.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun clickDigitalLastSeenPromo(promocode: String?, userId: String) {
+        val map = TrackAppUtils.gtmData(
+                KEY_EVENT_DIGITAL_CLICK_BANNER,
+                KEY_CATEGORY_DIGITAL_LAST_SEEN_BANNER,
+                KEY_ACTION_DIGITAL_CLICK_BANNER,
+                promocode)
+        map[KEY_USER_ID] = userId
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun clickDigitalMyPromo(category: String, operator: String, userId: String) {
+        val map = TrackAppUtils.gtmData(
+                KEY_EVENT_DIGITAL_CLICK_COUPON,
+                KEY_CATEGORY_DIGITAL_MY_COUPON,
+                KEY_ACTION_DIGITAL_CLICK_COUPON,
+                "$category - $operator")
+        map[KEY_USER_ID] = userId
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun clickUseDigitalMyPromo(couponName: String, userId: String) {
+        val map = TrackAppUtils.gtmData(
+                KEY_EVENT_DIGITAL_CLICK_COUPON,
+                KEY_CATEGORY_DIGITAL_COUPON_DETAIL,
+                KEY_ACTION_DIGITAL_CLICK_COUPON_DETAIL,
+                couponName)
+        map[KEY_USER_ID] = userId
+        getTracker().sendGeneralEvent(map)
     }
 
 }

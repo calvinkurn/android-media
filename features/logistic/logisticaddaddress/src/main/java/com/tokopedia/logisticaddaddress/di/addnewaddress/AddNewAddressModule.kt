@@ -4,9 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
-import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
@@ -26,22 +24,21 @@ class AddNewAddressModule {
     @AddNewAddressScope
     fun providePinpointMapPresenter(
             getDistrictUseCase: GetDistrictUseCase,
-            getDistrictMapper: GetDistrictMapper,
             revGeocodeUseCase: RevGeocodeUseCase,
             districtBoundaryUseCase: DistrictBoundaryUseCase,
             districtBoundaryMapper: DistrictBoundaryMapper): PinpointMapPresenter {
-        return PinpointMapPresenter(getDistrictUseCase, getDistrictMapper, revGeocodeUseCase,
+        return PinpointMapPresenter(getDistrictUseCase, revGeocodeUseCase,
                 districtBoundaryUseCase, districtBoundaryMapper)
     }
 
     @Provides
     @AddNewAddressScope
     fun provideAddEditAddressPresenter(
-            @ApplicationContext context: Context,
             addAddressUseCase: AddAddressUseCase,
             zipCodeUseCase: GetZipCodeUseCase,
-            addAddressMapper: AddAddressMapper): AddEditAddressPresenter {
-        return AddEditAddressPresenter(context, addAddressUseCase, zipCodeUseCase, addAddressMapper)
+            getDistrictUseCase: GetDistrictUseCase,
+            autoCompleteUseCase: AutoCompleteUseCase): AddEditAddressPresenter {
+        return AddEditAddressPresenter(addAddressUseCase, zipCodeUseCase, getDistrictUseCase, autoCompleteUseCase)
     }
 
     @Provides

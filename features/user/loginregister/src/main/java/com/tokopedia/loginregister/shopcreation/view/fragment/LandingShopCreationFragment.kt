@@ -1,7 +1,9 @@
 package com.tokopedia.loginregister.shopcreation.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,10 +20,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
+import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
@@ -49,6 +54,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private lateinit var loading: LoaderUnify
     private lateinit var mainView: View
     private lateinit var baseView: View
+    private lateinit var sharedPrefs: SharedPreferences
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -120,6 +126,17 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onBackPressed(): Boolean {
         shopCreationAnalytics.eventClickBackLanding()
+        if (GlobalConfig.isSellerApp()) {
+            activity?.let {
+                if (userSession.isLoggedIn) {
+                    RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
+                    it.finish()
+                } else {
+                    RouteManager.route(it, ApplinkConstInternalSellerapp.WELCOME)
+                    it.finish()
+                }
+            }
+        }
         return true
     }
 
@@ -218,6 +235,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 userSession.name.isEmpty()) {
             goToNameShopCreation()
         } else {
+            saveFirstInstallTime()
             if (userSession.hasShop())
                 shopCreationViewModel.getShopInfo(userSession.shopId.toIntOrZero())
             else goToShopName()
@@ -306,6 +324,15 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
+    private fun saveFirstInstallTime() {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putLong(
+                    KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+        }
+    }
+
     companion object {
 
         private const val REQUEST_CODE_NAME_SHOP_CREATION = 100
@@ -314,6 +341,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+
+        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         fun createInstance(bundle: Bundle): LandingShopCreationFragment {
             val fragment = LandingShopCreationFragment()

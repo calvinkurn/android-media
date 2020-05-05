@@ -46,6 +46,8 @@ import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,7 +177,8 @@ public class EventReviewTicketPresenter
     public void getProfile() {
         mView.showProgressBar();
         email = Utils.getUserSession(mView.getActivity()).getEmail();
-        number = ((EventModuleRouter) mView.getActivity().getApplication()).getUserPhoneNumber();
+        UserSessionInterface userSession = new UserSession(mView.getActivity());
+        number = userSession.getPhoneNumber();
         mView.setEmailID(email);
         mView.setPhoneNumber(number);
         autoApplyCoupon();
@@ -604,7 +607,11 @@ public class EventReviewTicketPresenter
         String jsonResponse = saveInstanceCacheManager.get(EXTRA_VERIFY_RESPONSE,String.class);
         if (!StringUtils.isBlank(jsonResponse))
             this.verifiedSeatResponse = (JsonObject) new JsonParser().parse(jsonResponse);
-        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel, this.eventsDetailsViewModel.getCustomText1());
-        getAndInitForms();
+        if(checkoutData!=null &&  eventsDetailsViewModel!=null) {
+            mView.renderFromPackageVM(checkoutData, selectedSeatViewModel, this.eventsDetailsViewModel.getCustomText1());
+            getAndInitForms();
+        } else {
+            mView.showErrorRenderFromPackage();
+        }
     }
 }

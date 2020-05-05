@@ -15,14 +15,16 @@
     <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
+    <string name="path_liveness_detection">/liveness-detection</string>
+
     <string name="path_landing_shop_creation">/landing-shop-creation</string>
     <string name="path_phone_shop_creation">/phone-shop-creation</string>
     <string name="path_name_shop_creation">/name-shop-creation</string>
     <string name="path_inbox_talk">/inbox-talk</string>
-    <string name="path_product_talk">/product-talk</string>
-    <string name="path_detail_talk">/detail-talk</string>
+    <string name="path_product_talk">/product-talk/.*\\/</string>
+    <string name="path_detail_talk">/detail-talk/.*\\/</string>
     <string name="path_add_talk">/add-talk</string>
-    <string name="path_shop_talk">/shop-talk</string>
+    <string name="path_shop_talk">/shop-talk/.*\\/</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
     <string name="path_change_name">/change-name</string>
@@ -55,4 +57,12 @@
     <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
     <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
+
+    <string name="path_chat">/topchat</string>
+    <string name="path_chat_room" translatable="false">/topchat/.*\</string>
+
+
+    <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
+    <string name="path_manage_notification">/manage-notification</string>
+
 </resources>

@@ -26,6 +26,8 @@ data class PlayChannel(
         val description: String = "",
         @SerializedName("cover_url")
         val coverUrl: String = "",
+        @SerializedName("is_show_total_view")
+        val isShowTotalView: Boolean = false,
         @SerializedName("total_view_formatted")
         val totalView: String = "",
         @SerializedName("moderator_id")
@@ -47,5 +49,7 @@ data class VideoStream(
 
 data class Config(
         @SerializedName("stream_url")
-        val streamUrl: String = ""
+        val streamUrl: String = "",
+        @SerializedName("is_auto_play")
+        val isAutoPlay: Boolean = true
 )

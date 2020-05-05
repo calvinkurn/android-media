@@ -2,7 +2,7 @@ package com.tokopedia.logisticcart.datamock
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.FileUtils
+import com.tokopedia.logisticcart.FileUtils
 import com.tokopedia.logisticcart.cod.model.CodResponse
 import com.tokopedia.logisticcart.shipping.model.*
 

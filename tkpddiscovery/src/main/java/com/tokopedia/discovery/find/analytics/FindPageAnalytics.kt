@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.find.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -115,7 +115,7 @@ class FindPageAnalytics {
     }
 
     fun eventProductClick(product: ProductsItem, findNavScreenName: String) {
-        val productListName = getProductListName(product, findNavScreenName)
+        val productListName = "$EVENT_FIND_VALUE/$findNavScreenName"
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_PRODUCT_CLICK_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_FIND_VALUE,
@@ -124,17 +124,18 @@ class FindPageAnalytics {
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CLICK, DataLayer.mapOf(
                 KEY_ACTION_FIELD, DataLayer.mapOf(
-                KEY_LIST, productListName,
-                KEY_PRODUCTS, DataLayer.mapOf(
-                KEY_NAME, product.name,
-                KEY_ID, product.id?.toString() ?: "",
-                KEY_PRICE, getItemPriceInNumber(product.price),
-                KEY_BRAND, "",
-                KEY_CATEGORY, product.categoryBreadcrumb + " / " + product.category,
-                KEY_VARIANT, "",
-                KEY_LIST, productListName,
-                KEY_POSITION, product.adapter_position + 1
-        )))))
+                KEY_LIST, productListName),
+                KEY_PRODUCTS, DataLayer.listOf(
+                DataLayer.mapOf(
+                        KEY_NAME, product.name,
+                        KEY_ID, product.id?.toString() ?: "",
+                        KEY_PRICE, getItemPriceInNumber(product.price),
+                        KEY_BRAND, "",
+                        KEY_CATEGORY, "${product.categoryBreadcrumb}/${product.category}",
+                        KEY_VARIANT, "",
+                        KEY_LIST, productListName,
+                        KEY_POSITION, product.adapter_position + 1
+                )))))
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 

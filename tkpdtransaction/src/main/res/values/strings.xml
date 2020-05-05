@@ -357,7 +357,7 @@ Anda di sini.</string>
     <string name="user_label">Data Pemegang E-tiket</string>
     <string name="booking_code_title">Kode Booking:</string>
     <string name="btn_redeem_ticket">Tutup</string>
-    <string name="voucher_code_title">Kode voucher:</string>
+    <string name="voucher_code_title">Kode Booking :</string>
     <string name="voucher_code_title_deals">Voucher Deals</string>
     <string name="redeem_deals_btn">Redeem</string>
     <string name="event_ticket_voucher_multiple">x E-Tiket</string>
@@ -384,6 +384,9 @@ Anda di sini.</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil tersalin</string>
 
+    <string name="redeem_dialog_powered_by">Powered by  </string>
+    <string name="redeem_dialog_voucher_code">Kode Voucher</string>
+
 
     <string name="tkpdtransaction_filter_terapkan">Terapkan</string>
     <string name="tkpdtransaction_filter_sampai">Sampai</string>
@@ -405,5 +408,10 @@ Anda di sini.</string>
     <string name="month_10">Okt</string>
     <string name="month_11">Nov</string>
     <string name="month_12">Des</string>
+    <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="lihat_order_detail">Lihat Order Detail</string>
+    <string name="label_shop_title">Toko: </string>
+    <string name="invoice_label">invoice</string>
+    <string name="invoice_copied">Kode invoice telah tersalin</string>
 
 </resources>

@@ -1,6 +1,9 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import android.content.Context;
+
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -13,15 +16,17 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
+import com.tokopedia.iris.util.ConstantKt;
 
 
 /**
  * @author anggaprasetiyo on 18/05/18.
  */
 public class CheckoutAnalyticsCart extends TransactionAnalytics {
+    IrisSession irisSession;
 
-    public CheckoutAnalyticsCart() {
-
+    public CheckoutAnalyticsCart(Context context) {
+        irisSession = new IrisSession(context);
     }
 
     @Deprecated
@@ -312,6 +317,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
 
     private void sendEnhancedECommerce(Map<String, Object> cartMap, String eventLabel) {
+
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.CART,
@@ -320,6 +326,8 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.E_COMMERCE, cartMap,
                 Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        dataLayer.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
+
         sendEnhancedEcommerce(dataLayer);
     }
 

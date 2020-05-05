@@ -1,15 +1,14 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification
 
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.presentation.adapter.NotifCenterProductRecomAdapter
-import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.adapter.NotifCenterProductRecomAdapter
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.widget.ProductRecomNotificationItemDecoration
 
@@ -21,7 +20,6 @@ class ProductRecomNotificationViewHolder(
     private val rvRecommendation = itemView.findViewById<RecyclerView>(R.id.rv_recommendation)
     private val decoration = ProductRecomNotificationItemDecoration()
     private val layoutAdapter = NotifCenterProductRecomAdapter(listener)
-    private val SPAN_COUNT = 4
 
     init {
         with(rvRecommendation) {
@@ -38,6 +36,7 @@ class ProductRecomNotificationViewHolder(
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         layoutAdapter.updateProductRecommendation(element.products)
         layoutAdapter.updateTotalProductCount(element.totalProduct)
+        layoutAdapter.updateDataNotification(element.dataNotification)
 
         val seenProducts = layoutAdapter.getSeenProductRecommendation()
         listener.getAnalytic().trackImpressionProductRecommendation(seenProducts)
@@ -48,35 +47,13 @@ class ProductRecomNotificationViewHolder(
             val context = it.context
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            RouteManager.route(
-                    context,
-                    ApplinkConst.RECOMMENDATION_PAGE,
-                    getLastShowedProductId(element),
-                    NotificationItemViewBean.SOURCE
-            )
-        }
-    }
-
-    private fun getLastShowedProductId(element: NotificationItemViewBean): String {
-        val products = element.products
-        val lastItemPosition = products.size - 1
-        val lastMaxSeenPosition = NotifCenterProductRecomAdapter.MAX_ITEM - 1
-        val lastPosition = if (products.size >= NotifCenterProductRecomAdapter.MAX_ITEM) {
-            lastMaxSeenPosition
-        } else {
-            lastItemPosition
-        }
-
-        return if (lastPosition >= 0) {
-            element.products[lastPosition].productId
-        } else {
-            "0"
+            RouteManager.route(context, element.dataNotification.appLink)
         }
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_notification_update_product_recommendation
+        private const val SPAN_COUNT = 4
+        @LayoutRes val LAYOUT = R.layout.item_notification_update_product_recommendation
     }
 
 }

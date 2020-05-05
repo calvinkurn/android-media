@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -18,6 +19,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
+
+import com.tokopedia.iris.util.*
 
 /**
  * @author by nisie on 10/2/18.
@@ -25,42 +29,60 @@ import javax.inject.Inject
  *
  * https://docs.google.com/spreadsheets/d/1F3IQYqqG62aSxNbeFvrxyy-Pu--ZrShh8ewMKELeKj4/edit?ts=5cca711b#gid=910823048
  */
-class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInterface) {
+class LoginRegisterAnalytics @Inject constructor(
+        val userSession: UserSessionInterface,
+        val irisSession: IrisSession
+) {
 
     fun trackScreen(activity: Activity, screenName: String) {
         Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                 + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                 + " | " + Build.TAGS)
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+
+        val hashMap = mutableMapOf<String, String>()
+        hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, hashMap)
     }
 
     //#3
     fun trackClickOnNext(inputText: String) {
 
         val hashMap: Map<String, Any>
-
         when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
-                    EVENT_CLICK_LOGIN,
-                    CATEGORY_LOGIN_PAGE,
-                    String.format("click on button selanjutnya - %s", "email"),
-                    "click"
-            )
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> {
+                hashMap = TrackAppUtils.gtmData(
+                        EVENT_CLICK_LOGIN,
+                        CATEGORY_LOGIN_PAGE,
+                        String.format("click on button selanjutnya - %s", "email"),
+                        "click"
+                )
+
+                if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+                    hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+                }
+            }
             Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
                     EVENT_CLICK_LOGIN,
                     CATEGORY_LOGIN_PAGE,
                     "enter login phone number",
                     "click"
             )
-            else -> hashMap = TrackAppUtils.gtmData(
-                    EVENT_CLICK_LOGIN,
-                    CATEGORY_LOGIN_PAGE,
-                    String.format("click on button selanjutnya - %s", "unknown"),
-                    "click"
-            )
+            else -> {
+                hashMap = TrackAppUtils.gtmData(
+                        EVENT_CLICK_LOGIN,
+                        CATEGORY_LOGIN_PAGE,
+                        String.format("click on button selanjutnya - %s", "unknown"),
+                        "click"
+                )
+
+                if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+                    hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+                }
+            }
         }
 
         hashMap["user_id"] = userSession.userId
+
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
 
     }
@@ -71,24 +93,34 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         val hashMap: Map<String, Any>
 
         when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
-                    EVENT_CLICK_LOGIN,
-                    CATEGORY_LOGIN_PAGE,
-                    String.format("click on button selanjutnya - %s", "email"),
-                    String.format("failed - %s", errorMessage)
-            )
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> {
+                hashMap = TrackAppUtils.gtmData(
+                        EVENT_CLICK_LOGIN,
+                        CATEGORY_LOGIN_PAGE,
+                        String.format("click on button selanjutnya - %s", "email"),
+                        String.format("failed - %s", errorMessage)
+                )
+
+
+            }
             Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
                     EVENT_CLICK_LOGIN,
                     CATEGORY_LOGIN_PAGE,
                     "enter login phone number",
                     String.format("failed - %s", errorMessage)
             )
-            else -> hashMap = TrackAppUtils.gtmData(
-                    EVENT_CLICK_LOGIN,
-                    CATEGORY_LOGIN_PAGE,
-                    String.format("click on button selanjutnya - %s", "unknown"),
-                    String.format("failed - %s", errorMessage)
-            )
+            else -> {
+                hashMap = TrackAppUtils.gtmData(
+                        EVENT_CLICK_LOGIN,
+                        CATEGORY_LOGIN_PAGE,
+                        String.format("click on button selanjutnya - %s", "unknown"),
+                        String.format("failed - %s", errorMessage)
+                )
+
+                if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+                    hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+                }
+            }
         }
 
         hashMap["user_id"] = userSession.userId
@@ -101,24 +133,36 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         val hashMap: Map<String, Any>
 
         when {
-            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
-                    EVENT_CLICK_LOGIN,
-                    CATEGORY_LOGIN_PAGE,
-                    String.format("click on button selanjutnya - %s", "email"),
-                    "success"
-            )
+            Patterns.EMAIL_ADDRESS.matcher(inputText).matches() -> {
+                hashMap = TrackAppUtils.gtmData(
+                        EVENT_CLICK_LOGIN,
+                        CATEGORY_LOGIN_PAGE,
+                        String.format("click on button selanjutnya - %s", "email"),
+                        "success"
+                )
+
+                if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+                    hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+                }
+            }
             Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
                     EVENT_CLICK_LOGIN,
                     CATEGORY_LOGIN_PAGE,
                     "enter login phone number",
                     "success"
             )
-            else -> hashMap = TrackAppUtils.gtmData(
-                    EVENT_CLICK_LOGIN,
-                    CATEGORY_LOGIN_PAGE,
-                    String.format("click on button selanjutnya - %s", "unknown"),
-                    "success"
-            )
+            else -> {
+                hashMap = TrackAppUtils.gtmData(
+                        EVENT_CLICK_LOGIN,
+                        CATEGORY_LOGIN_PAGE,
+                        String.format("click on button selanjutnya - %s", "unknown"),
+                        "success"
+                )
+
+                if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+                    hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+                }
+            }
         }
         hashMap["user_id"] = userSession.userId
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
@@ -196,12 +240,18 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#11
     fun eventClickLoginEmailButton(applicationContext: Context) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button masuk",
                 "click"
-        ))
+        )
+
+        if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+            hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+        }
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
 
         val map = HashMap<String, Any>()
         TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN,
@@ -227,12 +277,18 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#11
     fun trackClickOnLoginButtonSuccess() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button masuk",
                 "success"
-        ))
+        )
+
+        if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+            hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+        }
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
     }
 
     //#12
@@ -500,7 +556,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
         sendBranchRegisterEvent(email)
 
     }
@@ -656,12 +711,18 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     private fun onErrorLoginWithEmail(errorMessage: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 "click on button masuk",
                 String.format("failed - %s", errorMessage)
-        ))
+        )
+
+        if(!hashMap.containsKey(KEY_SESSION_IRIS)){
+            hashMap[KEY_SESSION_IRIS] = irisSession.getSessionId()
+        }
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
     }
 
     fun eventClickTicker() {
@@ -727,12 +788,12 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventViewBanner() {
+    fun eventViewBanner(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_VIEW_LOGIN_IRIS,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_VIEW_BANNER,
-                LABEL_BEBAS_ONGKIR
+                label
         ))
     }
 

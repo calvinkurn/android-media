@@ -3,7 +3,7 @@ package com.tokopedia.loyalty.view.presenter;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -107,9 +107,7 @@ public class PromoListPresenter implements IPromoListPresenter {
                     "name", "promo list - P" + String.valueOf(page) + " - " + categoryName,
                     "creative", promoData.getThumbnailImage(),
                     "position", String.valueOf(i + 1),
-                    "promo_id", "0",
-                    "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
-            );
+                    "promo_id", "0"));
         }
 
         promoTrackingUtil.eventImpressionPromoList(view.getActivityContext(), dataLayerSinglePromoCodeList, "");

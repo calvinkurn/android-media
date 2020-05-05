@@ -14,11 +14,35 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_notification"
                     android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_notification_buyer_info"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_notification_buyer_info_id"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.activity.NotificationSellerActivity"
+            android:exported="true"
+            android:label="@string/title_seller_info"
+            android:theme="@style/Theme.Green"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/path_sellerapp_notification"/>
             </intent-filter>
         </activity>
     </application>

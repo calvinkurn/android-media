@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterSectionViewBean
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
+import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.NotificationUpdateFilterSectionItemViewHolder
-import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterSectionViewBean
-import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -22,7 +23,7 @@ import kotlin.collections.HashMap
 
 class NotificationUpdateFilterAdapter(
         private val notificationUpdateTypeFactory: NotificationUpdateFilterSectionTypeFactoryImpl,
-        private val listener: FilterAdapterListener,
+        private val listener: NotificationFilterListener,
         private val userSession: UserSessionInterface
 ) : BaseListAdapter<Visitable<*>,
         BaseAdapterTypeFactory>(notificationUpdateTypeFactory),
@@ -32,11 +33,6 @@ class NotificationUpdateFilterAdapter(
     private val filterTypePosition = HashMap<String, Int>()
     private val filterTypeId = HashMap<String, Int>()
     private var data: ArrayList<NotificationUpdateFilterViewBean> = arrayListOf()
-
-    interface FilterAdapterListener {
-        fun updateFilter(filter: HashMap<String, Int>)
-        fun sentFilterAnalytic(analyticData: String)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val view = onCreateViewItem(parent, viewType)

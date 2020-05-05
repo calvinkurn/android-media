@@ -17,10 +17,8 @@ import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
@@ -61,7 +59,14 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
+        WeaveInterface remoteConfigWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
     }
 
     @Override
@@ -96,7 +101,6 @@ public abstract class MainApplication extends MainRouterApplication{
         instance = this;
         userSession = new UserSession(this);
         initCrashlytics();
-        initBranch();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -106,8 +110,11 @@ public abstract class MainApplication extends MainRouterApplication{
 
         locationUtils = new LocationUtils(this);
         locationUtils.initLocationBackground();
+        initBranch();
         NotificationUtils.setNotificationChannel(this);
-
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
         createAndCallBgWork();
     }
 
@@ -126,8 +133,10 @@ public abstract class MainApplication extends MainRouterApplication{
     @NotNull
     private Boolean executeInBackground(){
         TooLargeTool.startLogging(MainApplication.this);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
         init();
-        upgradeSecurityProvider();
         return true;
     }
 
@@ -159,6 +168,8 @@ public abstract class MainApplication extends MainRouterApplication{
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
             Crashlytics.setUserIdentifier(userSession.getUserId());
+            Crashlytics.setUserEmail(userSession.getEmail());
+            Crashlytics.setUserName(userSession.getName());
         }
     }
 
@@ -192,16 +203,6 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return SellerAppRouter.getSellerHomeActivity(context);
-    }
-
-    @Override
-    public IAppNotificationReceiver getAppNotificationReceiver() {
-        return SellerAppRouter.getAppNotificationReceiver();
-    }
-
-    @Override
     public Class<?> getInboxMessageActivityClass() {
         return InboxRouter.getInboxMessageActivityClass();
     }
@@ -224,10 +225,5 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public Intent getActivitySellingTransactionListReal(Context mContext) {
         return SellerRouter.getActivitySellingTransactionList(mContext);
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
     }
 }

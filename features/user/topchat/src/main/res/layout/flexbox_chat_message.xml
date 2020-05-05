@@ -29,8 +29,8 @@
 
         <ImageView
             android:id="@+id/ivCheckMark"
-            android:layout_width="@dimen/topchat_14dp"
-            android:layout_height="@dimen/topchat_14dp"
+            android:layout_width="@dimen/dp_topchat_14"
+            android:layout_height="@dimen/dp_topchat_14"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
             android:layout_marginRight="@dimen/spacing_lvl1"

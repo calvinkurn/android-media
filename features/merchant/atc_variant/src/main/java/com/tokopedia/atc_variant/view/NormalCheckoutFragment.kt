@@ -45,6 +45,7 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -86,6 +87,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
+    var irisSession = ""
 
     var loadingProgressDialog: AlertDialog? = null
     val fragmentViewModel: FragmentViewModel by lazy {
@@ -198,6 +200,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     .inject(this@NormalCheckoutFragment)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
+            irisSession = context?.let {
+                IrisSession(it).getSessionId()
+            } ?: ""
         }
     }
 
@@ -809,6 +814,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
@@ -849,6 +855,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyTradeIn(
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
@@ -896,6 +903,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
 
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,

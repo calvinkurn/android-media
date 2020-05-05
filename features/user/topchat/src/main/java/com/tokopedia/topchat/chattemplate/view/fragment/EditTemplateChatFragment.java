@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -27,11 +28,12 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
+import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
+import com.tokopedia.topchat.chattemplate.di.TemplateChatModule;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
 import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.common.util.Events;
 
 import java.util.List;
@@ -140,7 +142,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                     }
 
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(com.tokopedia.imagepicker.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
@@ -236,11 +238,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     public void canProceed(boolean can, TextView proceed) {
         proceed.setEnabled(can);
         if (can) {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN);
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white));
         } else {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_300), PorterDuff.Mode.SRC_IN);
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_500));
         }
     }
 
@@ -256,13 +258,15 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                     .getBaseAppComponent();
             DaggerTemplateChatComponent daggerTemplateChatComponent =
                     (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                            .baseAppComponent(appComponent).build();
+                            .baseAppComponent(appComponent)
+                            .templateChatModule(new TemplateChatModule(getContext()))
+                            .build();
             daggerTemplateChatComponent.inject(this);
         }
     }
 
     @Override
-    public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
+    public void onResult(EditTemplateUiModel editTemplateViewModel, int index, String s) {
         analytics.eventClickTemplate();
         Intent intent = new Intent();
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
@@ -273,7 +277,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onResult(EditTemplateViewModel editTemplateViewModel, int index) {
+    public void onResult(EditTemplateUiModel editTemplateViewModel, int index) {
         Intent intent = new Intent();
         intent.putExtra(TemplateChatFragment.INDEX_RESULT, index);
         intent.putExtra(TemplateChatFragment.MODE_RESULT, TemplateChatFragment.DELETE);

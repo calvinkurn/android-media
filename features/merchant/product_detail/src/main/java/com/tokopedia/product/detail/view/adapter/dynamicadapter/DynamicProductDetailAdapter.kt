@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
@@ -13,22 +14,44 @@ class DynamicProductDetailAdapter(
         val listener: DynamicProductDetailListener
 ) : BaseListAdapter<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(adapterTypeFactory) {
 
-    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int) {
-        snapshotData?.let{
+    fun notifySnapshot(snapshotData: ProductSnapshotDataModel?) {
+        snapshotData?.let {
             val indexOfSnapshot = list.indexOf(it)
-            notifyItemChanged(indexOfSnapshot, payload)
+            notifyItemChanged(indexOfSnapshot)
+        }
+    }
+
+    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int? = null) {
+        snapshotData?.let {
+            val indexOfSnapshot = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfSnapshot, payload)
+            } else {
+                notifyItemChanged(indexOfSnapshot)
+            }
         }
     }
 
     fun notifyShopInfo(shopInfoData: ProductShopInfoDataModel?, payload: Int) {
-        shopInfoData?.let{
+        shopInfoData?.let {
             val indexOfShopInfo = list.indexOf(shopInfoData)
             notifyItemChanged(indexOfShopInfo, payload)
         }
     }
 
+    fun notifyGeneralInfo(generalInfo: ProductGeneralInfoDataModel?, payload: Int? = null) {
+        generalInfo?.let {
+            val indexOfGeneralInfo = list.indexOf(generalInfo)
+            if (payload != null) {
+                notifyItemChanged(indexOfGeneralInfo, payload)
+            } else {
+                notifyItemChanged(indexOfGeneralInfo)
+            }
+        }
+    }
+
     fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel?) {
-        shipingInfo?.let{
+        shipingInfo?.let {
             val indexOfShipingInfo = list.indexOf(it)
             notifyItemChanged(indexOfShipingInfo)
         }
@@ -72,7 +95,7 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun removeMerchantVoucherSection(data : ProductMerchantVoucherDataModel?) {
+    fun removeMerchantVoucherSection(data: ProductMerchantVoucherDataModel?) {
         data?.let {
             clearElement(it)
         }
@@ -83,6 +106,30 @@ class DynamicProductDetailAdapter(
             list.indexOf(data)
         } else {
             0
+        }
+    }
+
+    fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
+
+    fun notifyVariantSection(data: VariantDataModel?, payload: Int?) {
+        data?.let {
+            val indexOfVariant = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfVariant, payload)
+            } else {
+                notifyItemChanged(indexOfVariant)
+            }
+        }
+    }
+
+    fun notifyNotifyMe(notifyMeData: ProductNotifyMeDataModel?, payload: Int?) {
+        notifyMeData?.let{
+            val indexOfNotifyMe = list.indexOf(notifyMeData)
+            if (payload != null) {
+                notifyItemChanged(indexOfNotifyMe, payload)
+            } else {
+                notifyItemChanged(indexOfNotifyMe)
+            }
         }
     }
 

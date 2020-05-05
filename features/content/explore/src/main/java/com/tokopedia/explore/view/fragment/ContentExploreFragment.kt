@@ -393,6 +393,7 @@ class ContentExploreFragment :
     }
 
     override fun onRefresh() {
+        presenter.onPullToRefreshTriggered()
         presenter.updateCursor("")
         presenter.getExploreData(true)
     }

@@ -3,9 +3,7 @@ package com.tokopedia.settingbank.banklist.v2.view.viewState
 sealed class TextWatcherState
 data class OnTextChanged(val isCheckEnable: Boolean,
                          val clearAccountHolderName: Boolean,
-                         val isAddBankButtonEnable: Boolean,
-                         val newAccountNumber: String?,
-                         val isTextUpdateRequired: Boolean) : TextWatcherState()
+                         val isAddBankButtonEnable: Boolean) : TextWatcherState()
 
 object OnNOBankSelected : TextWatcherState()
 

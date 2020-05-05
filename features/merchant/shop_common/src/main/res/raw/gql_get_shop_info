@@ -20,6 +20,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
             }
             closedInfo{
                 closedNote
+                reason
                 until
             }
             createInfo{
@@ -80,6 +81,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
                 phone
                 fax
             }
+            shopHomeType
         }
     }
 }

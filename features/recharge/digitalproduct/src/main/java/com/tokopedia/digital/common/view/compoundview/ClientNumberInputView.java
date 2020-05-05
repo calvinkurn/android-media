@@ -42,7 +42,7 @@ public class ClientNumberInputView extends LinearLayout {
     private Button btnClear;
     private ImageView imgOperator;
     private Button btnContactPicker;
-    private Button btnCameraPicker;
+    private ImageView btnCameraPicker;
     private RelativeLayout pulsaFramelayout;
     private TextView tvErrorClientNumber;
 

@@ -3,8 +3,8 @@
     android:shape="oval">
     <solid android:color="#BFBFBF" />
     <size
-        android:width="@dimen/topchat_14dp"
-        android:height="@dimen/topchat_14dp" />
+        android:width="@dimen/dp_topchat_14"
+        android:height="@dimen/dp_topchat_14" />
     <stroke
         android:width="@dimen/chatcommon_3dp"
         android:color="@color/white" />

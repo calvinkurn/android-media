@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;
@@ -38,12 +38,15 @@ public class FeedAnalytics {
 
     private static final String PRODUCT_VIEW = "productView";
     private static final String PRODUCT_CLICK = "productClick";
+    private static final String POST_CLICK_VALUE = "click new post";
 
     private static final String DASH = " - ";
     private static final String SINGLE = "single";
     private static final String MULTIPLE = "multiple";
     private static final String FORMAT_2_VALUE = "%s - %s";
     private static final String FORMAT_4_VALUE = "%s - %s - %s - %s";
+
+    private static final String POST_FORMAT_4_VALUE = "post - %s - %s - %s - %s";
 
     //region Content Feed
     private static final String CONTENT_FEED = "content feed";
@@ -419,7 +422,7 @@ public class FeedAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
                         "click",
-                        String.format(FORMAT_4_VALUE,activityName, mediaType, postId, recomId),
+                        String.format(POST_FORMAT_4_VALUE,activityName, mediaType, postId, recomId),
                         promotionList,
                         userId
                 )
@@ -548,6 +551,17 @@ public class FeedAnalytics {
                                 product,
                                 "/feed detail - product list"
                         )
+                )
+        );
+    }
+
+    public void eventNewPostClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, EVENT_CLICK_FEED,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_ACTION, POST_CLICK_VALUE,
+                        EVENT_LABEL, ""
                 )
         );
     }

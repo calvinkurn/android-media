@@ -2,7 +2,9 @@ package com.tokopedia.shop.analytic;
 
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import androidx.annotation.Nullable;
+
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -16,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
@@ -51,6 +52,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW;
@@ -60,6 +62,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SORT_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.USE_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
@@ -139,6 +142,8 @@ public class ShopPageTracking {
             if (customDimensionShopPage instanceof CustomDimensionShopPageProduct) {
                 eventMap.put(ShopPageTrackingConstant.PRODUCT_ID,
                         ((CustomDimensionShopPageProduct) customDimensionShopPage).productId);
+                eventMap.put(ShopPageTrackingConstant.SHOP_REF,
+                        ((CustomDimensionShopPageProduct) customDimensionShopPage).shopRef);
             }
         }
         return eventMap;
@@ -167,9 +172,12 @@ public class ShopPageTracking {
         return TextUtils.join(" ", s);
     }
 
-    public void sendScreenShopPage(String shopId) {
+    public void sendScreenShopPage(String shopId, String shopType) {
         String screenName = joinDash(SHOPPAGE, shopId);
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
+        Map<String,String> customDimension = new HashMap<>();
+        customDimension.put(SHOP_TYPE, shopType);
+        customDimension.put(PAGE_TYPE, SHOPPAGE);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName,customDimension);
     }
 
     public void clickManageShop(CustomDimensionShopPage customDimensionShopPage) {
@@ -276,7 +284,7 @@ public class ShopPageTracking {
                               String keyword,
                               boolean hasResult,
                               CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 joinDash(SEARCH_BAR, CLICK),
                 joinDash(joinSpace(SEARCH, keyword), hasResult ? SEARCH_RESULT : NO_SEARCH_RESULT),
@@ -286,7 +294,7 @@ public class ShopPageTracking {
     public void clickEtalaseChip(boolean isOwner,
                                  String etalaseName,
                                  CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 String.format(CLICK_SHOWCASE_X, etalaseName),
                 "",
@@ -305,7 +313,7 @@ public class ShopPageTracking {
 
     public void clickSort(boolean isOwner,
                           CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
+        sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 CLICK_SORT,
                 "",
@@ -327,14 +335,6 @@ public class ShopPageTracking {
                 SHOP_PAGE_BUYER,
                 CLICK_VIEW_ALL,
                 "",
-                customDimensionShopPage);
-    }
-
-    public void clickZeroProduct(CustomDimensionShopPage customDimensionShopPage) {
-        sendEvent(CLICK_SHOP_PAGE,
-                SHOP_PAGE_SELLER,
-                joinDash(MANAGE_PRODUCT, CLICK),
-                CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT,
                 customDimensionShopPage);
     }
 
@@ -479,5 +479,14 @@ public class ShopPageTracking {
                 String.format(CLICK_SORT_BY, sortName),
                 customDimensionShopPage
         );
+    }
+
+    protected String formatPrice(String displayedPrice) {
+        if (!TextUtils.isEmpty(displayedPrice)) {
+            displayedPrice = displayedPrice.replaceAll("[^\\d]", "");
+            return displayedPrice;
+        } else {
+            return "";
+        }
     }
 }

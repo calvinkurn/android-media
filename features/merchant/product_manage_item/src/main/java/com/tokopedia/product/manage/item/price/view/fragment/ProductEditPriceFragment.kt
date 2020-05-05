@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -132,7 +133,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun showDataPrice(productPrice: ProductPrice){
         selectedCurrencyType = productPrice.currencyType
         setPriceTextChangedListener()
-        counterEditText.textFieldInput.setText(productPrice.price.toString())
+        counterEditText.textFieldInput.setText(String.format("%.0f", productPrice.price))
         counterEditText.setError(false)
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
@@ -253,7 +254,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 }
                 val view = activity!!.currentFocus
                 if (view != null) {
-                    CommonUtils.hideSoftKeyboard(view)
+                    KeyboardHandler.hideSoftKeyboard(activity)
                     view.clearFocus()
                 }
             })

@@ -1,23 +1,27 @@
 package com.tokopedia.home.beranda.domain.model
 
-import com.google.android.gms.tagmanager.DataLayer
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tkpd.library.utils.CurrencyFormatHelper
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
+import kotlin.collections.ArrayList
 
-class DynamicHomeChannel(
+data class DynamicHomeChannel(
     @Expose
     @SerializedName("channels")
     var channels: List<Channels> = listOf()
 ) {
 
 
-    class Channels(
+    data class Channels(
             @Expose
             @SerializedName("id")
             val id: String = "",
+            @Expose
+            @SerializedName("group_id")
+            val groupId: String = "",
             @Expose
             @SerializedName("galaxy_attribution")
             val galaxyAttribution: String = "",
@@ -45,9 +49,17 @@ class DynamicHomeChannel(
             @Expose
             @SerializedName("type")
             val type: String = "",
-            @Expose
             @SerializedName("showPromoBadge")
             val showPromoBadge: Boolean = false,
+            @Expose
+            @SerializedName("categoryID")
+            val categoryID: String = "",
+            @Expose
+            @SerializedName("perso_type")
+            val persoType: String = "",
+            @Expose
+            @SerializedName("campaignCode")
+            val campaignCode: String = "",
             @Expose
             @SerializedName("header")
             val header: Header = Header(),
@@ -57,7 +69,9 @@ class DynamicHomeChannel(
             @SerializedName("promoName")
             var promoName: String = "",
             @SerializedName("homeAttribution")
-            private val homeAttribution: String = ""
+            val homeAttribution: String = "",
+            @SerializedName("has_close_button")
+            val hasCloseButton: Boolean = false
     ) : ImpressHolder() {
 
         private var position: Int = 0
@@ -80,13 +94,15 @@ class DynamicHomeChannel(
                                     "list", "/ - p1 - dynamic channel mix - product - $headerName - $type",
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
-                                    "dimension84", channelId
+                                    "dimension84", channelId,
+                                    "dimension96", persoType+ "_" + categoryID
                             )
                     )
                 }
             }
             return list
         }
+
 
         fun getEnhanceClickSprintSaleLegoHomePage(position: Int): Map<String, Any> {
             return DataLayer.mapOf(
@@ -95,6 +111,7 @@ class DynamicHomeChannel(
                     "eventAction", "click on lego product",
                     "eventLabel", header.name,
                     channelId, id,
+                    campaignCodeLabel, campaignCode,
                     "ecommerce", DataLayer.mapOf(
                     "currencyCode", "IDR",
                     "click", DataLayer.mapOf(
@@ -102,41 +119,12 @@ class DynamicHomeChannel(
                     "products", DataLayer.listOf(
                     DataLayer.mapOf(
                             "name", grids[position].name,
-                            "id", grids[position].id,
+                            "id",  grids[position].id,
                             "price", CurrencyFormatHelper.convertRupiahToInt(grids[position].price).toString(),
                             "list", "/ - p1 - lego product - " + header.name,
-                            "position", (position + 1).toString()),
-                            "dimension84", id
-            )
-            )
-            ),
-                    "attribution", getHomeAttribution(position + 1, grids[position].id)
-            )
-        }
-
-        fun getEnhanceClickSprintSaleHomePage(position: Int, countDown: String?, isFreeOngkir: Boolean): Map<String, Any> {
-            return DataLayer.mapOf(
-                    "event", "productClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "sprint sale click",
-                    "eventLabel", countDown,
-                    channelId, id,
-                    "ecommerce", DataLayer.mapOf(
-                    "currencyCode", "IDR",
-                    "click", DataLayer.mapOf(
-                    "actionField", DataLayer.mapOf("list", "/ - p1 - sprint sale"),
-                    "products", DataLayer.listOf(
-                    DataLayer.mapOf(
-                            "name", grids[position].name,
-                            "id", grids[position].id,
-                            "price", CurrencyFormatHelper.convertRupiahToInt(
-                            grids[position].price
-                    ).toString(),
-                            "list", "/ - p1 - sprint sale",
                             "position", (position + 1).toString(),
-                            "dimension38", getHomeAttribution(position + 1, grids[position].id),
-                            "dimension83", if (isFreeOngkir) "bebas ongkir" else "none/other"
-                    )
+                            "dimension84", id,
+                            "dimension96", persoType+ "_" + categoryID)
             )
             )
             ),
@@ -192,7 +180,7 @@ class DynamicHomeChannel(
                 val grid: Grid = grids[i]
                 list.add(
                         DataLayer.mapOf(
-                                "id", id + "_" + grid.id,
+                                "id", id + "_" + grid.id+ "_" + persoType+ "_" + categoryID,
                                 "name", promoName,
                                 "creative", grid.attribution,
                                 "creative_url", grid.imageUrl,
@@ -288,7 +276,8 @@ class DynamicHomeChannel(
                                     "list", "/ - p1 - lego product - " + header.name,
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
-                                    "dimension84", id
+                                    "dimension84", id,
+                                    "dimension96", persoType+ "_" + categoryID
                             )
                     )
                 }
@@ -368,7 +357,7 @@ class DynamicHomeChannel(
                     "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
                     DataLayer.mapOf(
-                            "id", grid.id,
+                            "id", id + "_" + grid.id+ "_" + persoType+ "_" + categoryID,
                             "name", promoName,
                             "creative", grid.attribution,
                             "creative_url", grid.imageUrl,
@@ -409,6 +398,7 @@ class DynamicHomeChannel(
                     "eventAction", "click on product dynamic channel mix",
                     "eventLabel", header.name,
                     channelId, id,
+                    campaignCodeLabel, campaignCode,
                     "ecommerce", DataLayer.mapOf(
                     "currencyCode", "IDR",
                     "click", DataLayer.mapOf(
@@ -426,7 +416,8 @@ class DynamicHomeChannel(
                             "position", (gridPosition + 1).toString(),
                             "attribution", getHomeAttribution(gridPosition + 1, grids[gridPosition].id),
                             "dimension83", if (isFreeOngkir) "bebas ongkir" else "none/other",
-                            "dimension84", id
+                            "dimension84", id,
+                            "dimension96", persoType+ "_" + categoryID
                     )
             )
             )
@@ -464,11 +455,12 @@ class DynamicHomeChannel(
                     channelId, id,
                     "eventLabel", header.name,
                     "channelId", id,
+                    "campaignCode", campaignCode,
                     "ecommerce", DataLayer.mapOf(
                     "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
                     DataLayer.mapOf(
-                            "id", banner.id,
+                            "id", id + "_" + banner.id + "_" + persoType + "_" + categoryID,
                             "name", "/ - p1 - dynamic channel mix - banner - " + header.name,
                             "creative", banner.attribution,
                             "creative_url", banner.imageUrl,
@@ -491,7 +483,7 @@ class DynamicHomeChannel(
                         "promoView", DataLayer.mapOf(
                         "promotions", DataLayer.listOf(
                         DataLayer.mapOf(
-                                "id", id + "_" + banner.id,
+                                "id", id + "_" + banner.id + "_" + persoType + "_" + categoryID,
                                 "name", promoName,
                                 "creative", banner.attribution,
                                 "creative_url", banner.imageUrl,
@@ -531,7 +523,14 @@ class DynamicHomeChannel(
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_BANNER: String = "play_widget"
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
+            const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
+            const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
+            const val LAYOUT_MIX_LEFT: String = "left_carousel"
+            const val LAYOUT_MIX_TOP: String = "top_carousel"
+            const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
+            const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val channelId: String = "channelId"
+            const val campaignCodeLabel: String = "campaignCode"
         }
     }
 
@@ -559,10 +558,19 @@ class DynamicHomeChannel(
             val attribution: String = ""
     )
 
-    class Grid(
+    data class Grid(
             @Expose
             @SerializedName("id")
             val id: String = "",
+            @Expose
+            @SerializedName("warehouseID")
+            val warehouseId: String = "",
+            @Expose
+            @SerializedName("minOrder")
+            val minOrder: Int = 0,
+            @Expose
+            @SerializedName("shop")
+            val shop: Shop = Shop(),
             @Expose
             @SerializedName("price")
             val price: String = "0",
@@ -603,17 +611,32 @@ class DynamicHomeChannel(
             @SerializedName("productClickUrl")
             val productClickUrl: String = "",
             @Expose
+            @SerializedName("isTopads")
+            val isTopads: Boolean = false,
+            @Expose
             @SerializedName("freeOngkir")
-            val freeOngkir: FreeOngkir = FreeOngkir()
+            val freeOngkir: FreeOngkir = FreeOngkir(),
+            @Expose
+            @SerializedName("productViewCountFormatted")
+            val productViewCountFormatted: String = "",
+            @Expose
+            @SerializedName("isOutOfStock")
+            val isOutOfStock: Boolean = false,
+            @Expose
+            @SerializedName("labelGroup")
+            val labelGroup: Array<LabelGroup> = arrayOf()
     )
 
-    class Header(
+    data class Header(
             @Expose
             @SerializedName("id")
             val id: String = "",
             @Expose
             @SerializedName("name")
             val name: String = "",
+            @Expose
+            @SerializedName("subtitle")
+            val subtitle: String = "",
             @Expose
             @SerializedName("expiredTime")
             val expiredTime: String = "",
@@ -637,7 +660,7 @@ class DynamicHomeChannel(
             val textColor: String = ""
     )
 
-    class Banner(
+    data class Banner(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -647,6 +670,9 @@ class DynamicHomeChannel(
             @Expose
             @SerializedName("description")
             val description: String = "",
+            @Expose
+            @SerializedName("back_color")
+            val backColor: String = "",
             @Expose
             @SerializedName("cta")
             val cta: CtaData = CtaData(),
@@ -664,10 +690,12 @@ class DynamicHomeChannel(
             val imageUrl: String = "",
             @Expose
             @SerializedName("attribution")
-            val attribution: String = ""
+            val attribution: String = "",
+            @SerializedName("gradient_color")
+            val gradientColor: ArrayList<String> = arrayListOf("#ffffff")
     ) : ImpressHolder()
 
-    class CtaData(
+    data class CtaData(
             @Expose
             @SerializedName("type")
             val type: String = "",
@@ -680,5 +708,11 @@ class DynamicHomeChannel(
             @Expose
             @SerializedName("coupon_code")
             val couponCode: String = ""
+    )
+
+    data class Shop(
+        @Expose
+        @SerializedName("shopID")
+        val shopId: String = ""
     )
 }

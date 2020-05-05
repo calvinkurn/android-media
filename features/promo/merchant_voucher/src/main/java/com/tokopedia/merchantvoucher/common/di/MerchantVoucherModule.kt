@@ -21,8 +21,8 @@ class MerchantVoucherModule {
 
     @Provides
     @MerchantVoucherScope
-    fun checkoutAnalyticsCartPage(): CheckoutAnalyticsCart {
-        return CheckoutAnalyticsCart()
+    fun checkoutAnalyticsCartPage(@ApplicationContext context: Context): CheckoutAnalyticsCart {
+        return CheckoutAnalyticsCart(context)
     }
 
     @Provides

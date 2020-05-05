@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
@@ -34,22 +35,20 @@ open class VideoControlComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.VideoPropertyChanged -> {
-                                uiView.run {
-                                    if (it.videoProp.type.isLive) uiView.hide()
-                                    else if (it.videoProp.type.isVod) uiView.show()
-                                }
-                            }
                             is ScreenStateEvent.SetVideo -> {
                                 uiView.setPlayer(it.videoPlayer)
                             }
                             is ScreenStateEvent.VideoStreamChanged -> {
-                                if (it.videoStream.channelType.isLive) uiView.hide()
-                                else if (it.videoStream.channelType.isVod) uiView.show()
+                                if (it.videoStream.channelType.isVod && !it.stateHelper.bottomInsets.isAnyShown) uiView.show()
+                                else uiView.hide()
                             }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
+                            }
+                            is ScreenStateEvent.BottomInsetsChanged -> {
+                                if (!it.isAnyShown && it.stateHelper.channelType.isVod) uiView.show()
+                                else uiView.hide()
                             }
                         }
                     }

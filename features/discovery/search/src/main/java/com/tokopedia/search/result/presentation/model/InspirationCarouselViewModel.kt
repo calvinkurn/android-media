@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.model
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
@@ -19,7 +19,8 @@ class InspirationCarouselViewModel(
             var title: String = "",
             var url: String = "",
             var applink: String = "",
-            var product: List<Product> = listOf()
+            var product: List<Product> = listOf(),
+            var inspirationCarouselType: String = ""
     ){
         class Product(
             var id: String = "",
@@ -31,7 +32,8 @@ class InspirationCarouselViewModel(
             var countReview: Int = 0,
             var url: String = "",
             var applink: String = "",
-            var optionPosition: Int = 0
+            var optionPosition: Int = 0,
+            var inspirationCarouselType: String = ""
         ){
             fun getProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(

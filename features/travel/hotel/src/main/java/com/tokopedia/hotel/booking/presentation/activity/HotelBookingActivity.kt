@@ -48,7 +48,12 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
         dialog.show()
     }
 
+    override fun getScreenName(): String = HOTEL_BOOKING_SCREEN_NAME
+
     companion object {
+
+        const val HOTEL_BOOKING_SCREEN_NAME = "/hotel/bookingroom"
+        
         fun getCallingIntent(context: Context, cartId: String, destinationType: String, destinationName: String, roomCount: Int, guestCount: Int): Intent =
                 Intent(context, HotelBookingActivity::class.java)
                         .putExtra(HotelBookingFragment.ARG_CART_ID, cartId)

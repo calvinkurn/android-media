@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName
 data class UmrahSearchProductDataParam(
         @SerializedName("categorySlugName")
         var categorySlugName: String = "",
+        @SerializedName("travelAgentSlugName")
+        var travelAgentSlugName: String = "",
         @SerializedName("departurePeriod")
         var departurePeriod: String = "",
         @SerializedName("priceMin")

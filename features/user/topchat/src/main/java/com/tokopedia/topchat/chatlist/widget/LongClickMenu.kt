@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
-import com.tkpd.library.ui.view.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
@@ -31,28 +31,15 @@ class LongClickMenu : BottomSheetUnify() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         changeCloseButtonColour()
-        removeContainerPadding()
-        addMarginCloseButton()
     }
 
     private fun changeCloseButtonColour() {
         context?.let { ctx ->
-            val color = ContextCompat.getColor(ctx, R.color.Neutral_N400)
+            val color = ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Neutral_N400)
             bottomSheetClose.drawable?.apply {
                 mutate()
                 setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             }
-        }
-    }
-
-    private fun removeContainerPadding() {
-        bottomSheetWrapper.setPadding(0,0,0,0)
-    }
-
-    private fun addMarginCloseButton() {
-        val horizontalMargin = 16.toPx()
-        (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
-            setMargins(horizontalMargin, 0, horizontalMargin, 0)
         }
     }
 

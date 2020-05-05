@@ -64,7 +64,8 @@
                         android:id="@+id/ticker_recharge_general_product_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:tickerType="announcement" />
+                        app:tickerType="announcement"
+                        android:visibility="gone" />
 
                     <com.tokopedia.unifycomponents.UnifyButton
                         android:id="@+id/recharge_general_enquiry_button"

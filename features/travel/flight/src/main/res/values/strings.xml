@@ -15,7 +15,7 @@
 
     <string name="flight_title_promo">Promo</string>
     <string name="flight_title_transaction_list">Daftar Transaksi</string>
-    <string name="flight_title_help">Bantuan</string>
+    <string name="flight_title_help">Tokopedia Care</string>
     <string name="search_flight">Search Flight</string>
     <string name="flight_label_city">%1$s, %2$s</string>
     <string name="flight_label_airport">%1$s - %2$s</string>
@@ -45,9 +45,14 @@
     <string name="flight_search_filter_duration_max_label">Durasi Minimum</string>
     <string name="flight_search_filter_duration_min_label">Durasi Maksimum</string>
     <string name="flight_search_filter_transit">Transit</string>
-    <string name="flight_search_filter_airplane">Maskapai Penerbangan</string>
+    <string name="flight_search_filter_airplane">Maskapai penerbangan</string>
+    <string name="flight_search_filter_facility">Fasilitas</string>
     <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
+    <string name="flight_search_filter_arrival_time">Waktu Tiba</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
+    <string name="flight_search_filter_ticket_price_label">Harga tiket</string>
+    <string name="flight_search_filter_baggage_label">Gratis Bagasi</string>
+    <string name="flight_search_filter_meal_label">In-flight Meal</string>
     <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
     <string name="flight_labe_all_airport">Semua Bandara</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
@@ -68,14 +73,19 @@
     <string name="departure_0600_to_1200">06:00 – 12:00</string>
     <string name="departure_1200_to_1800">12:00 – 18:00</string>
     <string name="departure_1800_to_2400">18:00 – 24:00</string>
+    <string name="departure_0000_to_0600_with_desc">Dini Hari (00:00 – 06:00)</string>
+    <string name="departure_0600_to_1200_with_desc">Pagi (06:00 – 12:00)</string>
+    <string name="departure_1200_to_1800_with_desc">Siang (12:00 – 18:00)</string>
+    <string name="departure_1800_to_2400_with_desc">Malam (18:00 – 24:00)</string>
     <string name="direct">Langsung</string>
     <string name="one_trasit">1 Transit</string>
     <string name="two_transit">2 Transit</string>
+    <string name="one_transit_without_1">Transit</string>
+    <string name="two_plus_transit">2+ Transit</string>
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
     <string name="non_refundable">Non-refundable</string>
     <string name="partial_refundable">Partial Refundable</string>
-    <string name="flight_search_filter_label">Filter</string>
     <string name="flight_search_sort_label">Urutkan</string>
     <string name="flight_search_sort_title">Urutkan</string>
     <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terpagi</string>
@@ -84,15 +94,17 @@
     <string name="flight_search_sort_item_latest_arrival">Waktu Tiba Termalam</string>
     <string name="flight_search_sort_item_shortest_duration">Durasi Terpendek</string>
     <string name="flight_search_sort_item_longest_duration">Durasi Terlama</string>
+    <string name="flight_search_sort_shortest_duration">Perjalanan Tercepat</string>
     <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
     <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
-    <string name="filter">Filter</string>
-    <string name="reset">Reset</string>
+    <string name="flight_search_sort_dialog_title">Urutkan berdasarkan</string>
+    <string name="flight_filter_label">Filter</string>
+    <string name="flight_reset_label">Reset</string>
     <string name="airline">Maskapai Penerbangan</string>
     <string name="refundable_policy">Kebijakan Pengembalian</string>
     <string name="transit">Transit</string>
     <string name="start_from_x">Mulai dari %1$s</string>
-    <string name="flight_there_has_x_flights">Terdapat %1$d penerbangan</string>
+    <string name="flight_there_has_x_flights">Lihat %1$d Penerbangan</string>
     <string name="flight_save_x_flights">Simpan (%1$d penerbangan)</string>
     <string name="flight_save">Simpan</string>
     <string name="flight_label_choose_button">Pilih</string>
@@ -134,7 +146,6 @@
     <string name="flight_booking_transit_trip_card">Transit</string>
     <string name="flight_booking_directly_trip_card">Langsung</string>
     <string name="flight_booking_transit_with_value_trip_cart">%d Transit</string>
-    <string name="flight_title_menu_reset">Reset</string>
     <string name="flight_booking_phone_code_label">(+%1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
@@ -489,4 +500,16 @@
     <string name="flight_min_date_label">Pergi</string>
     <string name="flight_max_date_label">Pulang</string>
     <string name="flight_calendar_lowest_fare_price_color">#42b549</string>
+    <string name="flight_rupiah_label">Rp</string>
+    <string name="flight_filter_lowest_price_label">Terendah</string>
+    <string name="flight_filter_highest_price_label">Tertinggi</string>
+
+    <string name="flight_search_origin_label">Asal</string>
+    <string name="flight_search_departure_label">Berangkat</string>
+    <string name="flight_search_return_label">Pulang</string>
+    <string name="flight_search_passenger_label">Jumlah Penumpang</string>
+
+    <string name="flight_change_search_label">Ubah pencarian</string>
+    <string name="flight_search_coach_mark_change_title">Ganti Pencarian</string>
+    <string name="flight_search_coach_mark_change_description">Tidak menemukan penerbangan yang sesuai? Klik disini untuk mengganti pencarian yang sesuai.</string>
 </resources>

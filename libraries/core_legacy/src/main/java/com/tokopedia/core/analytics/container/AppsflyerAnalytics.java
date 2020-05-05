@@ -19,8 +19,15 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -56,25 +63,27 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext())
                 .legacySessionHandler();
-
-        final String userID = sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000";
+        UserSessionInterface userSession = new UserSession(context);
+        final String userID = userSession.isLoggedIn() ? sessionHandler.getLoginID() : "00000";
 
 
         Timber.d("Appsflyer login userid " + userID);
-
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
+
             @Override
-            public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
+            public void onConversionDataSuccess(Map<String, Object> conversionData) {
                 if (isAppsflyerCallbackHandled) return;
                 isAppsflyerCallbackHandled = true;
 
                 try {
-                    //get first launch and deeplink
-                    String isFirstLaunch = conversionData.get("is_first_launch");
-                    String deeplink = conversionData.get("af_dp");
+                    String isFirstLaunch = null;
+                    String deeplink = null;
+                    if (conversionData.containsKey("is_first_launch"))
+                        isFirstLaunch = (String) conversionData.get("is_first_launch");
+                    if (conversionData.containsKey("af_dp"))
+                        deeplink = (String) conversionData.get("af_dp");
 
                     if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
-                        //open deeplink
                         setDefferedDeeplinkPathIfExists(deeplink);
                     }
                 } catch (ActivityNotFoundException ex) {
@@ -83,8 +92,8 @@ public class AppsflyerAnalytics extends ContextAnalytics {
             }
 
             @Override
-            public void onInstallConversionFailure(String s) {
-                // @TODO
+            public void onConversionDataFail(String s) {
+
             }
 
             @Override
@@ -94,7 +103,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
 
             @Override
             public void onAttributionFailure(String s) {
-                // @TODO
+
             }
         };
 
@@ -161,15 +170,22 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     public void initAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {
-        AppsFlyerLib.getInstance().init(key, conversionListener, getContext());
-        initAppsFlyer(key, userID);
+        WeaveInterface appsFlyerInitWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeInitAppsFlyer(key, userID, conversionListener);
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsFlyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_CREATE_APPSFLYER, context);
     }
 
-    public void initAppsFlyer(String key, String userID) {
+    @NotNull
+    private boolean executeInitAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {
+        AppsFlyerLib.getInstance().init(key, conversionListener, getContext());
         AppsFlyerLib.getInstance().setCurrencyCode("IDR");
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
-        AppsFlyerLib.getInstance().setGCMProjectNumber(GCM_PROJECT_NUMBER);
         if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
             AppsFlyerLib.getInstance().setPreinstallAttribution(
                     com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
@@ -178,6 +194,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
             );
         }
         AppsFlyerLib.getInstance().startTracking(getContext(), key);
+        return true;
     }
 
     public void sendEvent(String eventName, Map<String, Object> eventValue) {

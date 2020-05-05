@@ -2,7 +2,6 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -24,8 +23,7 @@ internal class SearchShopViewModelFactory(
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val searchLocalCacheHandler: SearchLocalCacheHandler,
-        private val userSession: UserSessionInterface,
-        private val localCacheHandler: LocalCacheHandler
+        private val userSession: UserSessionInterface
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -48,8 +46,7 @@ internal class SearchShopViewModelFactory(
                 shopTotalCountViewModelMapper,
                 shopViewModelMapper,
                 searchLocalCacheHandler,
-                userSession,
-                localCacheHandler
+                userSession
         )
     }
 }

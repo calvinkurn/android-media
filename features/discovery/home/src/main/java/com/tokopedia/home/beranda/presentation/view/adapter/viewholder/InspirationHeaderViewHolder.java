@@ -6,9 +6,9 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.InspirationHeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.InspirationHeaderDataModel;
 
-public class InspirationHeaderViewHolder extends AbstractViewHolder<InspirationHeaderViewModel> {
+public class InspirationHeaderViewHolder extends AbstractViewHolder<InspirationHeaderDataModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inspiration_header;
@@ -21,7 +21,7 @@ public class InspirationHeaderViewHolder extends AbstractViewHolder<InspirationH
     }
 
     @Override
-    public void bind(InspirationHeaderViewModel element) {
+    public void bind(InspirationHeaderDataModel element) {
         titleView.setText(element.getTitle());
     }
 }

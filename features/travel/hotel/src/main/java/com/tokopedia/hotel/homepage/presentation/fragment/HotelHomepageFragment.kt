@@ -72,12 +72,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
         }
 
-
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
             hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
                     ?: HotelHomepageModel()
         } else if (arguments != null && arguments?.containsKey(EXTRA_PARAM_TYPE) == true) {
-            hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
+            hotelHomepageModel.locId = arguments?.getLong(EXTRA_PARAM_ID) ?: 4712
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
             hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT, 1) ?: 1
@@ -99,7 +98,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -188,7 +186,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                 } else {
                     onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                            data.getIntExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
                             data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
                 }
             }
@@ -204,35 +202,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun initView() {
-        val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
-        val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
-        val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
-
-        if (hotelHomepageModel.checkInDate.isBlank() && hotelHomepageModel.checkOutDate.isBlank()) {
-            hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
-            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-            hotelHomepageModel.nightCounter = countRoomDuration()
-        } else if (hotelHomepageModel.checkInDate.isBlank()) {
-            val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)
-            val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
-            hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
-            hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayBeforeCheckOut)
-            hotelHomepageModel.nightCounter = countRoomDuration()
-
-        } else if (hotelHomepageModel.checkOutDate.isBlank()) {
-            val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate)
-            val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
-            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
-            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterCheckIn)
-            hotelHomepageModel.nightCounter = countRoomDuration()
-        }
-
+        checkCheckInAndCheckOutDate()
         tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
         tv_hotel_homepage_checkin_date.setOnClickListener { configAndRenderCheckInDate() }
         tv_hotel_homepage_checkout_date.setOnClickListener { configAndRenderCheckOutDate() }
@@ -241,6 +211,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
         tv_hotel_homepage_all_promo.setOnClickListener { RouteManager.route(context, ApplinkConst.PROMO_LIST) }
 
         renderView()
+    }
+
+    private fun checkCheckInAndCheckOutDate() {
+        val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+        hotelHomepageModel.checkInDate = updatedCheckInCheckOutDate.first
+        hotelHomepageModel.checkOutDate = updatedCheckInCheckOutDate.second
+        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+        hotelHomepageModel.nightCounter = countRoomDuration()
     }
 
     private fun renderView() {
@@ -253,6 +232,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChangeClicked() {
+        trackingHotelUtil.hotelClickChangeDestination()
         context?.run {
             startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
@@ -323,7 +303,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
+    private fun onDestinationChanged(name: String, destinationId: Long, type: String) {
         trackingHotelUtil.hotelSelectDestination(type, name)
 
         hotelHomepageModel.locName = name
@@ -488,10 +468,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
-        fun getInstance(id: Int, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
+        fun getInstance(id: Long, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
                     it.arguments = Bundle().apply {
-                        putInt(EXTRA_PARAM_ID, id)
+                        putLong(EXTRA_PARAM_ID, id)
                         putString(EXTRA_PARAM_NAME, name)
                         putString(EXTRA_PARAM_TYPE, type)
                         if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)

@@ -68,7 +68,7 @@ public class ShopProductOfficialStoreUtils {
                     // Pointing specific page on apps will be break the page
                     page = params.get(URL_QUERY_PAGE);
                     activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword, id,
-                            "", params.get(URL_QUERY_SORT)));
+                            "", params.get(URL_QUERY_SORT), ""));
                     break;
                 case URL_PATH_PRODUCT:
                     String productId = uri.getLastPathSegment();
@@ -82,7 +82,7 @@ public class ShopProductOfficialStoreUtils {
                     // Pointing specific page on apps will be break the page
                     page = uri.getLastPathSegment();
                     activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword,
-                            null, "", params.get(URL_QUERY_SORT)));
+                            null, "", params.get(URL_QUERY_SORT), ""));
                     break;
             }
         } else {
@@ -93,7 +93,7 @@ public class ShopProductOfficialStoreUtils {
             }
             page = params.get(URL_QUERY_PAGE);
             activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword,
-                    null, "", params.get(URL_QUERY_SORT)));
+                    null, "", params.get(URL_QUERY_SORT), ""));
         }
     }
 
