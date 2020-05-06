@@ -230,4 +230,12 @@
     <string name="title_inbox_chat">Chat</string>
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
     <string name="title_talk_discuss">Diskusi</string>
+
+    <string name="title_activity_manage_product">Daftar Produk</string>
+    <string name="product_manage_set_cashback">Cashback</string>
+    <string name="filter_expand_activity">Expand</string>
+    <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
+    <string name="create_group">Buat Group Iklan</string>
+    <string name="creat_ad">Buat Iklan Produk</string>
+
 </resources>

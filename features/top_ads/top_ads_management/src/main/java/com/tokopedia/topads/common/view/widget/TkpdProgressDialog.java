@@ -9,7 +9,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.topads.R;
+
 
 /**
  * Do not use dialog, consult to unify team

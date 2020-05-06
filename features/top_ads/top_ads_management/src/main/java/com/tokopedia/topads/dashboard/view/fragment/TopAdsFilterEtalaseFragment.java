@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.Etalase;
@@ -16,6 +15,7 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBin
 import com.tokopedia.topads.dashboard.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsEtalaseListPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,8 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
     private int selectedEtalaseId;
     private String shopId;
+    private String userId;
+    private String deviceId;
 
     public static TopAdsFilterEtalaseFragment createInstance(int etalaseID) {
         TopAdsFilterEtalaseFragment fragment = new TopAdsFilterEtalaseFragment();
@@ -48,12 +50,14 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = new SessionHandler(getActivity()).getShopID();
+        shopId = new UserSession(getActivity()).getShopId();
+        userId = new UserSession(getActivity()).getUserId();
+        deviceId = new UserSession(getActivity()).getDeviceId();
         RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
-                presenter.populateEtalaseList(shopId);
+                presenter.populateEtalaseList(shopId, userId, deviceId);
             }
         });
         adapter.setRetryView(topAdsRetryDataBinder);
@@ -159,7 +163,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     @Override
     public void onResume() {
         super.onResume();
-        presenter.populateEtalaseList(shopId);
+        presenter.populateEtalaseList(shopId, userId, deviceId);
     }
 
     @Override

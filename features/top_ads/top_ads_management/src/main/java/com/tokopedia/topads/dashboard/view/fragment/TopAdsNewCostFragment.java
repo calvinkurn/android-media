@@ -12,10 +12,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;

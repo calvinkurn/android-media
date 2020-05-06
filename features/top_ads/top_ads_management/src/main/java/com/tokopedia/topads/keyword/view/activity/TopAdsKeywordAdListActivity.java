@@ -8,20 +8,23 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAdListFragment;
+import com.tokopedia.topads.keyword.view.listener.GlobalMainTabSelectedListener;
 
 import java.util.ArrayList;
 
@@ -29,7 +32,7 @@ import java.util.ArrayList;
  * Created by hadi.putra on 11/05/18.
  */
 
-public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasComponent<TopAdsComponent>,
+public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasComponent<BaseAppComponent>,
         TopAdsBaseListFragment.OnAdListFragmentListener, TopAdsKeywordAdListFragment.GroupTopAdsListener {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
@@ -83,8 +86,8 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
     }
 
     @Override
-    public TopAdsComponent getComponent() {
-        return TopAdsComponentInstance.getComponent(getApplication());
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 
     private TopAdsKeywordAdListFragment getTopAdsBaseKeywordListFragment() {

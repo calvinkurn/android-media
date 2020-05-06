@@ -9,6 +9,7 @@ ext {
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
             commonTradein                   : ":features:common:common_tradein",
+            hotlist                         : ":features:discovery2:hotlist",
 
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",

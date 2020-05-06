@@ -9,9 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListNewGroupFragment;
@@ -25,7 +26,7 @@ import java.util.List;
  * Created by zulfikarrahman on 8/7/17.
  */
 
-public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity<TopAdsCreatePromoNewGroupModel> implements HasComponent<AppComponent> {
+public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity<TopAdsCreatePromoNewGroupModel> implements HasComponent<BaseAppComponent> {
     private List<Fragment> fragmentList;
 
     @NonNull
@@ -79,7 +80,7 @@ public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity<TopAd
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }

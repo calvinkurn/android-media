@@ -50,7 +50,7 @@ include "features:entertainment:digital_deals"
 include "features:digital:digital_browse"
 
 include "features:salam:umrah"
-
+include "features:discovery2:hotlist"
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'
