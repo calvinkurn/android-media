@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.design.component.BottomSheets.BottomSheetsState
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -204,8 +205,8 @@ class AddToCartDoneBottomSheet :
             val screenHeight = displaymetrics.heightPixels
             val maxHeight = (screenHeight * 0.90f).toInt()
             val params = parent.layoutParams
-            params.height = maxHeight
-            parent.layoutParams = params
+//            params.height = maxHeight
+//            parent.layoutParams = params
         }
     }
 
