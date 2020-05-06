@@ -135,6 +135,9 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var sendTopAdsUseCase: SendTopAdsUseCase
 
+    @RelaxedMockK
+    lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -151,7 +154,7 @@ class DynamicProductDetailViewModelTest {
 
     private val viewModel by lazy {
         DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3RateEstimateUseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, discussionMostHelpfulUseCase, userSessionInterface)
     }
 
     //=========================================VARIABLE SECTION======================================//
