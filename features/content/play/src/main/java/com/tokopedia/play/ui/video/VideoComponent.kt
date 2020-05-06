@@ -38,7 +38,7 @@ open class VideoComponent(
                         when (it) {
                             is ScreenStateEvent.Init -> {
                                 uiView.setOrientation(it.screenOrientation, it.stateHelper.videoOrientation)
-                                uiView.hide()
+                                uiView.show()
                                 if (it.stateHelper.videoState == PlayVideoState.Ended) showEndImage()
                             }
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
@@ -74,11 +74,9 @@ open class VideoComponent(
     private fun handleVideoStateChanged(state: PlayVideoState) {
         when (state) {
             PlayVideoState.Playing, PlayVideoState.Pause -> {
-                uiView.show()
                 uiView.showThumbnail(null)
             }
             PlayVideoState.Ended -> {
-                uiView.show()
                 uiView.getCurrentBitmap()?.let { saveEndImage(it) }
             }
         }
