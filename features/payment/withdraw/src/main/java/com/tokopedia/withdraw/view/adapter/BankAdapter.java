@@ -2,8 +2,10 @@ package com.tokopedia.withdraw.view.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,6 @@ import com.tokopedia.withdraw.view.listener.WithdrawContract;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -29,15 +30,12 @@ import java.util.List;
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
     private static final int DEFAULT_BANK_ID = 1;
-    WithdrawAnalytics analytics;
+    private WithdrawAnalytics analytics;
 
-    public static final int REFUND = 0;
-    public static final int PENGHASILAN = 1;
-    public static final int MAX_BANK_DISPLAY_COUNT = 3;
+    private static final int MAX_BANK_DISPLAY_COUNT = 3;
 
-    private int currentTab = 0;
 
-    int selectedItem;
+    private int selectedItem;
 
     public interface OnBankClickListener {
 
@@ -48,15 +46,23 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     private final List<BankAccount> masterBankList;
 
     private int isEmpty = 0;
-    private WithdrawContract.View context;
-    private String selectedBankId;
+     private WithdrawContract.View context;
+    private BankAccountAdapterCallback callback;
     private OnBankClickListener listener;
     private BankAccount accountButton;
 
     public BankAdapter(WithdrawContract.View context, List<BankAccount> listBank, WithdrawAnalytics analytics) {
         this.context = context;
         this.listBank = listBank;
-        this.selectedBankId = "";
+        this.selectedItem = -1;
+        this.accountButton = new BankAccount();
+        this.masterBankList = new ArrayList<>();
+        this.analytics = analytics;
+    }
+
+    public BankAdapter(List<BankAccount> listBank, WithdrawAnalytics analytics, BankAccountAdapterCallback callback) {
+        this.callback = callback;
+        this.listBank = listBank;
         this.selectedItem = -1;
         this.accountButton = new BankAccount();
         this.masterBankList = new ArrayList<>();
@@ -72,7 +78,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         masterBankList.clear();
         masterBankList.addAll(listBank);
         Collections.sort(masterBankList, (o1, o2) -> {
-            if (o1.getIsDefaultBank() < o2.getIsDefaultBank()) {
+            if (o1.isDefaultBank() < o2.isDefaultBank()) {
                 return 1;
             }
             return 0;
@@ -89,28 +95,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
 
-    public void addItem(BankAccount bankViewModel) {
-        this.listBank.remove(accountButton);
-        this.listBank.add(bankViewModel);
-        this.listBank.add(accountButton);
-        notifyItemRangeChanged(listBank.size() - 1, 2);
-    }
-
-    public List<BankAccount> getListBank() {
-        return listBank;
-    }
-
-    public boolean hasSelectedItem() {
-        return selectedItem != -1;
-    }
-
-    public void showEmpty() {
-        this.isEmpty = 1;
-    }
-
-    public void removeEmpty() {
-        this.isEmpty = 0;
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView text;
@@ -160,7 +144,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     }
 
     public void setCurrentTab(int currentTab) {
-        this.currentTab = currentTab;
         notifyDataSetChanged();
     }
 
@@ -169,12 +152,12 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
         switch (holder.getItemViewType()) {
             case 1:
-                if (listBank.size()-1 < 3) {
-                    holder.text.setText(context.getStringResource(R.string.title_add_account_bank));
-                } else if (listBank.size()-1 == 3) {
-                    holder.text.setText(context.getStringResource(R.string.title_set_account_bank));
+                if (listBank.size() - 1 < 3) {
+                    holder.text.setText(holder.itemView.getContext().getString(R.string.title_add_account_bank));
+                } else if (listBank.size() - 1 == 3) {
+                    holder.text.setText(holder.itemView.getContext().getString(R.string.title_set_account_bank));
                 } else {
-                    holder.text.setText(context.getStringResource(R.string.title_set_rekening_utama));
+                    holder.text.setText(holder.itemView.getContext().getString(R.string.title_set_rekening_utama));
                 }
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -182,9 +165,9 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                     public void onClick(View v) {
                         if (listBank.size() < 4) {
                             analytics.eventClickAddAccount();
-                            context.goToAddBank();
+                            callback.openAddBankAccount();
                         } else {
-                            context.goToSettingBank();
+                            callback.openBankAccountSetting();
                         }
 
                     }
@@ -241,14 +224,14 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         }
     }
 
-    public void changeItemSelected(int position) {
+    private void changeItemSelected(int position) {
         if (selectedItem >= 0 && selectedItem < listBank.size()) {
             listBank.get(selectedItem).setChecked(false);
         }
         listBank.get(position).setChecked(true);
         selectedItem = position;
         notifyItemRangeChanged(0, listBank.size());
-        this.context.itemSelected();
+        callback.onBankAccountChanged();
     }
 
     @Override
@@ -260,7 +243,6 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         this.listener = listener;
     }
 
-
     public BankAccount getSelectedBank() {
         if (selectedItem < 0) {
             return null;
@@ -271,7 +253,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     public void setDefault() {
         if (listBank.size() > 0) {
             for (int i = 0; i < listBank.size(); i++) {
-                if (DEFAULT_BANK_ID == listBank.get(i).getIsDefaultBank()) {
+                if (DEFAULT_BANK_ID == listBank.get(i).isDefaultBank()) {
                     selectedItem = i;
                     listBank.get(selectedItem).setChecked(true);
                     break;
@@ -330,6 +312,16 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
             }
             return oldItem.equals(newItem);
         }
+    }
+
+    public interface BankAccountAdapterCallback {
+        Context getContext();
+
+        void onBankAccountChanged();
+
+        void openAddBankAccount();
+
+        void openBankAccountSetting();
     }
 
 }

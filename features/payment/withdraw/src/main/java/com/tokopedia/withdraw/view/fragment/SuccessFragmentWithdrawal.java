@@ -24,7 +24,6 @@ import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 
-import java.util.Objects;
 
 import javax.inject.Inject;
 

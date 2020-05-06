@@ -14,7 +14,6 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -56,8 +55,14 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    
+
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
 }
+
 
 project.ext {
     artifactId = "withdraw"

@@ -73,6 +73,7 @@
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_8"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/tv_rekeningTitle"
         app:layout_constraintTop_toTopOf="@+id/tv_rekeningTitle" />
 

@@ -3,7 +3,7 @@ package com.tokopedia.withdraw.domain.usecase;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.withdraw.domain.model.premiumAccount.GqlCheckPremiumAccountResponse;
+import com.tokopedia.withdraw.domain.model.premiumAccount.GqlRekeningPremiumResponse;
 
 import javax.inject.Inject;
 
@@ -30,7 +30,7 @@ public class GqlCheckPremiumAccountUseCase {
         graphqlUseCase.clearRequest();
         setRequesting(true);
         GraphqlRequest graphqlRequestForUsable = new GraphqlRequest(query,
-                GqlCheckPremiumAccountResponse.class);
+                GqlRekeningPremiumResponse.class);
         graphqlUseCase.addRequest(graphqlRequestForUsable);
         graphqlUseCase.execute(subscriber);
     }

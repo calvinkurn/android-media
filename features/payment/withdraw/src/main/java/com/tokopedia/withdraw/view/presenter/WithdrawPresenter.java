@@ -8,7 +8,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.domain.model.BaseFormSubmitResponse;
 import com.tokopedia.withdraw.domain.model.GqlGetBankDataResponse;
-import com.tokopedia.withdraw.domain.model.premiumAccount.GqlCheckPremiumAccountResponse;
+import com.tokopedia.withdraw.domain.model.premiumAccount.GqlRekeningPremiumResponse;
 import com.tokopedia.withdraw.domain.model.validatePopUp.GqlGetValidatePopUpResponse;
 import com.tokopedia.withdraw.domain.usecase.GqlCheckPremiumAccountUseCase;
 import com.tokopedia.withdraw.domain.usecase.GqlGetBankDataUseCase;
@@ -115,7 +115,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
                 if (isViewAttached()) {
                     GqlGetValidatePopUpResponse response = graphqlResponse.getData(GqlGetValidatePopUpResponse.class);
                     if (response != null) {
-                        getView().showConfirmationDialog(response.getValidatePopUpWithdrawal());
+                        //getView().showConfirmationDialog(response.validatePopUpWithdrawal);
                     }
                     getView().hideLoading();
                 }
@@ -145,7 +145,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (isViewAttached()) {
-                    GqlCheckPremiumAccountResponse responseData = graphqlResponse.getData(GqlCheckPremiumAccountResponse.class);
+                    GqlRekeningPremiumResponse responseData = graphqlResponse.getData(GqlRekeningPremiumResponse.class);
                     if (responseData != null) {
                         getView().showCheckProgramData(responseData.getCheckEligible());
                     }

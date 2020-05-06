@@ -19,6 +19,7 @@ import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
@@ -27,6 +28,7 @@ import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.WithdrawalFragmentCallback;
+import com.tokopedia.withdraw.view.fragment.SaldoWithdrawalFragment;
 import com.tokopedia.withdraw.view.fragment.SuccessFragmentWithdrawal;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 
@@ -39,7 +41,7 @@ import javax.inject.Inject;
  *
  * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal
  */
-public class WithdrawActivity extends BaseSimpleActivity implements WithdrawalFragmentCallback {
+public class WithdrawActivity extends BaseSimpleActivity implements WithdrawalFragmentCallback, HasComponent<WithdrawComponent> {
 
 
     public static final String IS_SELLER = "is_seller";
@@ -66,11 +68,7 @@ public class WithdrawActivity extends BaseSimpleActivity implements WithdrawalFr
     }
 
     private void initInjector() {
-        WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
-
-        withdrawComponent.inject(this);
+        getComponent().inject(this);
     }
 
     @Override
@@ -113,7 +111,7 @@ public class WithdrawActivity extends BaseSimpleActivity implements WithdrawalFr
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
-        return WithdrawFragment.createInstance(bundle);
+        return SaldoWithdrawalFragment.getFragmentInstance(bundle);
     }
 
     public static Intent getCallingIntent(Context context, boolean isSeller) {
@@ -147,5 +145,12 @@ public class WithdrawActivity extends BaseSimpleActivity implements WithdrawalFr
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.parent_view, SuccessFragmentWithdrawal.getInstance(bundle), TAG_SUCCESS_FRAGMENT);
         fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public WithdrawComponent getComponent() {
+        return DaggerWithdrawComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
     }
 }

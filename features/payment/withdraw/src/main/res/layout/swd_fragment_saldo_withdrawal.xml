@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/tickerLayout"
+        layout="@layout/layout_holdwithdrawl_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/layoutRekeningWidget"
+        layout="@layout/swd_layout_premium_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tickerLayout" />
+
+    <com.tokopedia.design.component.Tabs
+        android:id="@+id/tabSaldoWithdrawal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingBottom="@dimen/dp_0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutRekeningWidget"
+        app:tabIndicatorColor="@color/tkpd_main_green"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/tkpd_main_green"
+        app:tabTextColor="@color/black_38" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPagerSaldoWithdrawal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabSaldoWithdrawal" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

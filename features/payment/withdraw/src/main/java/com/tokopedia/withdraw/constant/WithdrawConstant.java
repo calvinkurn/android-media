@@ -24,6 +24,7 @@ public class WithdrawConstant {
         String MESSAGE = "message";
         String AMOUNT = "amount";
     }
+
     public interface ResultCode{
         int GOTO_SALDO_DETAIL_PAGE = 101;
         int GOTO_TOKOPEDIA_HOME_PAGE = 102;

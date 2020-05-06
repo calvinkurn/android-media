@@ -1,4 +1,4 @@
-package com.tokopedia.withdraw.di;
+package com.tokopedia.withdraw.di.scope;
 
 import javax.inject.Scope;
 
