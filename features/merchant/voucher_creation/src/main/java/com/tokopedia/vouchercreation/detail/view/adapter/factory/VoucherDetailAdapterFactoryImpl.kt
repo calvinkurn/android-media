@@ -5,13 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.detail.model.*
+import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.viewholder.*
 
 /**
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailAdapterFactoryImpl : BaseAdapterTypeFactory(), VoucherDetailAdapterFactory {
+class VoucherDetailAdapterFactoryImpl(
+        private val voucherDetailListener: VoucherDetailListener
+) : BaseAdapterTypeFactory(), VoucherDetailAdapterFactory {
 
     override fun type(model: VoucherHeaderUiModel): Int = HeaderViewHolder.RES_LAYOUT
 
@@ -25,6 +28,8 @@ class VoucherDetailAdapterFactoryImpl : BaseAdapterTypeFactory(), VoucherDetailA
 
     override fun type(model: PromoPerformanceUiModel): Int = PromoPerformanceViewHolder.RES_LAYOUT
 
+    override fun type(model: FooterButtonUiModel): Int = FooterButtonViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent)
@@ -33,6 +38,9 @@ class VoucherDetailAdapterFactoryImpl : BaseAdapterTypeFactory(), VoucherDetailA
             DividerViewHolder.RES_LAYOUT -> DividerViewHolder(parent)
             TipsViewHolder.RES_LAYOUT -> TipsViewHolder(parent)
             InfoContainerViewHolder.RES_LAYOUT -> InfoContainerViewHolder(parent)
+            FooterButtonViewHolder.RES_LAYOUT -> FooterButtonViewHolder(parent) {
+                voucherDetailListener.onFooterButtonClickListener()
+            }
             else -> super.createViewHolder(parent, type)
         }
     }

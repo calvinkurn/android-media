@@ -78,7 +78,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/mvc_total_spending"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.70"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMvcPromoPerformanceTitle"
         app:typographyType="body_3" />

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.detail.model.*
+import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
@@ -16,7 +17,8 @@ import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDetailAdapterFactoryImpl>() {
+class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDetailAdapterFactoryImpl>(),
+        VoucherDetailListener {
 
     companion object {
         fun newInstance(): VoucherDetailFragment = VoucherDetailFragment()
@@ -44,7 +46,7 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     override fun getRecyclerViewResourceId(): Int = R.id.rvMvcVoucherDetail
 
     override fun getAdapterTypeFactory(): VoucherDetailAdapterFactoryImpl {
-        return VoucherDetailAdapterFactoryImpl()
+        return VoucherDetailAdapterFactoryImpl(this)
     }
 
     override fun getScreenName(): String = this::class.java.simpleName
@@ -58,6 +60,10 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     }
 
     override fun loadData(page: Int) {
+
+    }
+
+    override fun onFooterButtonClickListener() {
 
     }
 
@@ -98,7 +104,8 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                 InfoContainerUiModel("Periode tampil", listOf(
                         SubInfoItemUiModel("Periode", "17 Jan 2020, 08:30 WIB - 17 Feb 2020, 22:00 WIB")
                 )),
-                DividerUiModel(8)
+                DividerUiModel(8),
+                FooterButtonUiModel("Bagikan Voucher", "")
         )
         renderList(dummy)
     }

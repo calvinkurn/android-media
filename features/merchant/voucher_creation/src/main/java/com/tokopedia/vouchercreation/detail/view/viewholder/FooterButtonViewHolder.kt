@@ -11,7 +11,10 @@ import kotlinx.android.synthetic.main.item_mvc_footer_button.view.*
  * Created By @ilhamsuaib on 05/05/20
  */
 
-class FooterButtonViewHolder(itemView: View?) : AbstractViewHolder<FooterButtonUiModel>(itemView) {
+class FooterButtonViewHolder(
+        itemView: View?,
+        private val onCtaClick: () -> Unit
+) : AbstractViewHolder<FooterButtonUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,7 +25,7 @@ class FooterButtonViewHolder(itemView: View?) : AbstractViewHolder<FooterButtonU
         with(itemView) {
             btnMvcFooterCta.text = element.ctaText
             btnMvcFooterCta.setOnClickListener {
-
+                onCtaClick()
             }
         }
     }
