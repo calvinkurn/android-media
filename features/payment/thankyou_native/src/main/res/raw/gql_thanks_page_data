@@ -1,5 +1,8 @@
 query ThanksPageData($paymentID : Int!, $merchant: String!){
   thanksPageData(paymentID: $paymentID, merchant: $merchant){
+    current_site
+    business_unit
+    bebas_ongkir_dimension
     merchant_code
     profile_code
     payment_id

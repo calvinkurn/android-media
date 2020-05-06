@@ -255,7 +255,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:gravity="center"
-                android:text="@string/thank_instant_payment_check_order"
+                android:text="@string/thank_processing_payment_check_order"
                 android:textColor="@color/black_54"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -20,17 +20,20 @@ class ThankYouPageAnalytics {
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
-    fun sendThankYouPageData(thanksPageData: ThanksPageData) {
-        this.thanksPageData = thanksPageData
-        thanksPageData.shopOrder.forEach { shopOrder ->
-            val data = getParentTrackingNode(thanksPageData)
-            data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
-            data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
-            data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
-            data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
-            analyticTracker.sendEnhanceEcommerceEvent(data)
-        }
+    private val lock = Any()
 
+    fun sendThankYouPageData(thanksPageData: ThanksPageData) {
+        synchronized(lock) {
+            this.thanksPageData = thanksPageData
+            thanksPageData.shopOrder.forEach { shopOrder ->
+                val data = getParentTrackingNode(thanksPageData)
+                data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
+                data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
+                data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
+                data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
+                analyticTracker.sendEnhanceEcommerceEvent(data)
+            }
+        }
     }
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData): MutableMap<String, Any> {
@@ -41,7 +44,9 @@ class ThankYouPageAnalytics {
                 ParentTrackingKey.KEY_EVENT_LABEL to "",
                 ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
                 ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
-                ParentTrackingKey.KEY_PAYMENT_TYPE to thanksPageData.paymentType
+                ParentTrackingKey.KEY_PAYMENT_TYPE to thanksPageData.paymentType,
+                ParentTrackingKey.KEY_CURRENT_SITE to thanksPageData.currentSite,
+                ParentTrackingKey.KEY_BUSINESS_UNIT to thanksPageData.businessUnit
         )
     }
 
@@ -77,6 +82,7 @@ class ThankYouPageAnalytics {
             productNodeMap[ProductNodeTrackingKey.KEY_CATEGORY] = item.category
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
             productNodeMap[ProductNodeTrackingKey.KEY_QUANTITY] = item.quantity
+            productNodeMap[ProductNodeTrackingKey.KEY_DIMENSION83] = thanksPageData.bebasOngkirDimension
             productNodeList.add(productNodeMap)
         }
         return productNodeList
@@ -180,6 +186,8 @@ object ParentTrackingKey {
     val KEY_SHOP_TYPE = "shopType"
     val KEY_LOGISTIC_TYPE = "logistic_type"
     val KEY_ECOMMERCE = "ecommerce"
+    val KEY_CURRENT_SITE = "currentSite"
+    val KEY_BUSINESS_UNIT = "businessUnit"
 }
 
 object ECommerceNodeTrackingKey {
@@ -209,4 +217,5 @@ object ProductNodeTrackingKey {
     val KEY_CATEGORY = "category"
     val KEY_VARIANT = "variant"
     val KEY_QUANTITY = "quantity"
+    val KEY_DIMENSION83 = "dimension83"
 }

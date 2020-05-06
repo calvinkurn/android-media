@@ -48,7 +48,15 @@ data class ThanksPageData(
         @SerializedName("payment_details")
         val paymentDetails: ArrayList<PaymentDetail>?,
         @SerializedName("order_amount_str")
-        val orderAmountStr: String
+        val orderAmountStr: String,
+        @SerializedName("current_site")
+        val currentSite: String,
+        @SerializedName("business_unit")
+        val businessUnit: String,
+        @SerializedName("bebas_ongkir_dimension")
+        val bebasOngkirDimension: String
+
+
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -69,6 +77,9 @@ data class ThanksPageData(
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
             parcel.createTypedArrayList(PaymentDetail) ?: arrayListOf(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -91,6 +102,9 @@ data class ThanksPageData(
         parcel.writeTypedList(paymentDeductions?.let { it } ?: run { arrayListOf<PaymentItem>() })
         parcel.writeTypedList(paymentDetails?.let { it } ?: run { arrayListOf<PaymentDetail>() })
         parcel.writeString(orderAmountStr)
+        parcel.writeString(currentSite)
+        parcel.writeString(businessUnit)
+        parcel.writeString(bebasOngkirDimension)
     }
 
     override fun describeContents(): Int {

@@ -10,8 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.PaymentPageMapper
-import com.tokopedia.thankyou_native.helper.PaymentStatusMapper
+import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.dialog.CloseableBottomSheetFragment
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
@@ -40,14 +39,27 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         RouteManager.route(context, thanksPageData.howToPay)
     }
 
-    fun showPaymentStatusDialog(dialogOrigin: DialogOrigin?, thanksPageData: ThanksPageData) {
+    fun showPaymentStatusDialog(isTimerFinished: Boolean, dialogOrigin: DialogOrigin?,
+                                thanksPageData: ThanksPageData) {
+        var paymentStatus = PaymentStatusMapper
+                .getPaymentStatusByInt(thanksPageData.paymentStatus)
+
+        if (isTimerFinished && !isPaymentVerified(paymentStatus))
+            paymentStatus = PaymentExpired
+
         context?.let {
             if (!::dialogHelper.isInitialized)
                 dialogHelper = DialogHelper(it, this)
             dialogOrigin?.let { dialogOrigin ->
-                dialogHelper.showPaymentStatusDialog(dialogOrigin,
-                        PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus))
+                dialogHelper.showPaymentStatusDialog(dialogOrigin, paymentStatus)
             }
+        }
+    }
+
+    private fun isPaymentVerified(paymentStatus: PaymentStatus?): Boolean {
+        return when (paymentStatus) {
+            is PaymentVerified -> true
+            else -> false
         }
     }
 
