@@ -52,7 +52,6 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
             setInputType(InputType.TYPE_CLASS_NUMBER)
             getFirstIcon().setOnClickListener {
                 quickEditPriceTextField.textFieldInput.text.clear()
-                hideError()
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
