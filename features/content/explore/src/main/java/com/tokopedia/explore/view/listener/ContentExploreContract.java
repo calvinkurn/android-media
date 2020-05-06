@@ -46,7 +46,7 @@ public interface ContentExploreContract {
 
         void showEmpty();
 
-        void goToKolPostDetail(@NotNull int postId, @NotNull String name);
+        void goToKolPostDetail(@NotNull int postId, @NotNull String name, int recomId);
 
         void addExploreItemCoachmark(android.view.View view);
 
@@ -75,5 +75,7 @@ public interface ContentExploreContract {
         void trackAffiliate(String url);
 
         void appendImpressionTracking(@NotNull String url);
+
+        void onPullToRefreshTriggered();
     }
 }

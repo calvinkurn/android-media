@@ -14,9 +14,15 @@ data class Shop(@SerializedName("id")
                 val logoUrl: String? = "",
                 @SerializedName("imageUrl")
                 val imageUrl: String? = "",
+                @SerializedName("featuredBrandId")
+                val featuredBrandId: String? = "",
                 @SerializedName("additionalInformation")
-                val additionalInformation: String? = "") : Parcelable {
+                val additionalInformation: String? = "",
+                @SerializedName("campaignCode")
+                val campaignCode: String? = "") : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -30,7 +36,9 @@ data class Shop(@SerializedName("id")
         parcel.writeString(url)
         parcel.writeString(logoUrl)
         parcel.writeString(imageUrl)
+        parcel.writeString(featuredBrandId)
         parcel.writeString(additionalInformation)
+        parcel.writeString(campaignCode)
     }
 
     override fun describeContents(): Int {

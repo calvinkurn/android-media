@@ -37,6 +37,12 @@ data class RatesModel (
         val error: Error = Error()
 ){
 
+    fun getMinimumShippingPrice(): Int? = services.map { it.rangePrice.minPrice }.min()
+
+    fun getServicesSize(): Int {
+        return services.size
+    }
+
     data class RatesTextModel (
         @SerializedName("text_min_price")
         @Expose

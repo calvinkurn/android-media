@@ -2,9 +2,8 @@ package com.tokopedia.core.gcm.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.core.network.legacy.core.OkHttpFactory;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -27,10 +26,6 @@ public abstract class BaseService<T> {
 
     public BaseService() {
         initApiService(createRetrofitInstance(getBaseUrl()));
-    }
-
-    public BaseService(String overrideUrl) {
-        initApiService(createRetrofitInstance(overrideUrl));
     }
 
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {

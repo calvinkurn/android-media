@@ -21,7 +21,7 @@ class ProductTalkTitleViewHolder(val v: View) :
 
     override fun bind(element: ProductTalkTitleViewModel) {
         productName.text = element.name
-        ImageHandler.loadImage(itemView.context, productImage, element.avatar, R.drawable.loading_page)
+        ImageHandler.loadImage(itemView.context, productImage, element.avatar, com.tokopedia.design.R.drawable.loading_page)
         productPrice.text = element.price
 
     }

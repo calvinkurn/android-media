@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.core.base.di.qualifier.ApplicationContext
 import com.tokopedia.tkpd.tkpdreputation.R
 import dagger.Module
 import dagger.Provides

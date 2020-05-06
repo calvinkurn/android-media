@@ -2,7 +2,7 @@ package com.tokopedia.search.result.shop.presentation.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.*
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
@@ -12,7 +12,8 @@ internal data class ShopViewModel(
         val searchUrl: String = "",
         val paging: Paging = Paging(),
         val tabName: String = "",
-        val shopItemList: List<ShopItem> = listOf()
+        val shopItemList: List<ShopItem> = listOf(),
+        val recommendationShopItemList: List<ShopItem> = listOf()
 ): Parcelable {
 
     val hasNextPage = paging.uriNext != ""
@@ -68,7 +69,8 @@ internal data class ShopViewModel(
             val reputationImageUri: String = "",
             val reputationScore: Int = 0,
             val isOfficial: Boolean = false,
-            val gaKey: String = ""
+            val gaKey: String = "",
+            val isRecommendation: Boolean = false
     ) : Parcelable, Visitable<ShopListTypeFactory> {
 
         var position: Int = 0
@@ -90,6 +92,15 @@ internal data class ShopViewModel(
             )
         }
 
+        fun getShopRecommendationAsObjectDataLayer(): Any {
+            return DataLayer.mapOf(
+                    "id", id,
+                    "name", "/search result - shop - alternative",
+                    "creative", name,
+                    "position", position
+            )
+        }
+
         override fun type(typeFactory: ShopListTypeFactory?): Int {
             return typeFactory?.type(this) ?: 0
         }
@@ -105,7 +116,8 @@ internal data class ShopViewModel(
                 val applink: String = "",
                 val price: Int = 0,
                 val priceFormat: String = "",
-                val imageUrl: String = ""
+                val imageUrl: String = "",
+                val isRecommendation: Boolean = false
         ) : Parcelable {
 
             var position: Int = 0
@@ -132,6 +144,33 @@ internal data class ShopViewModel(
                         "category", "none / other",
                         "variant", "none / other",
                         "position", position
+                )
+            }
+
+            fun getShopRecommendationProductPreviewAsObjectDataLayerList(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "list", "/searchproduct - shop product list",
+                        "position", position
+                )
+            }
+
+            fun getShopRecommendationProductPreviewAsObjectDataLayer(): Any {
+                return DataLayer.mapOf(
+                        "name", name,
+                        "id", id,
+                        "price", price,
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "list", "/searchproduct - shop product list",
+                        "position", position,
+                        "attribution", "none / other"
                 )
             }
 

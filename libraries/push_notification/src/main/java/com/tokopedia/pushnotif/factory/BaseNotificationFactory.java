@@ -70,7 +70,7 @@ public abstract class BaseNotificationFactory {
         if (GlobalConfig.isSellerApp()) {
             return R.mipmap.ic_big_notif_seller;
         } else {
-            return R.mipmap.ic_launcher;
+            return com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp;
         }
     }
 

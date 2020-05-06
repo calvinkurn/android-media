@@ -1,17 +1,12 @@
 package com.tokopedia.shop.product.util;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.shop.product.view.activity.SimpleWebViewActivity;
 
@@ -20,6 +15,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * Created by nathan on 3/5/18.
@@ -71,7 +68,7 @@ public class ShopProductOfficialStoreUtils {
                     // Pointing specific page on apps will be break the page
                     page = params.get(URL_QUERY_PAGE);
                     activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword, id,
-                            "", params.get(URL_QUERY_SORT)));
+                            "", params.get(URL_QUERY_SORT), ""));
                     break;
                 case URL_PATH_PRODUCT:
                     String productId = uri.getLastPathSegment();
@@ -85,7 +82,7 @@ public class ShopProductOfficialStoreUtils {
                     // Pointing specific page on apps will be break the page
                     page = uri.getLastPathSegment();
                     activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword,
-                            null, "", params.get(URL_QUERY_SORT)));
+                            null, "", params.get(URL_QUERY_SORT), ""));
                     break;
             }
         } else {
@@ -96,7 +93,7 @@ public class ShopProductOfficialStoreUtils {
             }
             page = params.get(URL_QUERY_PAGE);
             activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword,
-                    null, "", params.get(URL_QUERY_SORT)));
+                    null, "", params.get(URL_QUERY_SORT), ""));
         }
     }
 
@@ -152,7 +149,7 @@ public class ShopProductOfficialStoreUtils {
     }
 
     private static void openWebView(Activity activity, String url) {
-        CommonUtils.dumper(url);
+        Timber.d(url);
         activity.startActivity(SimpleWebViewActivity.createIntent(activity, url));
     }
 }

@@ -1,20 +1,23 @@
 package com.tokopedia.purchase_platform.common.di
 
 import android.content.Context
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
-import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.authentication.AuthHelper.Companion.getUserAgent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
 import com.tokopedia.purchase_platform.common.data.api.CartResponseConverter
 import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.AKAMAI_CART_ENABLE
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -39,8 +42,8 @@ class PurchasePlatformNetworkModule {
     }
 
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @Provides
@@ -64,13 +67,12 @@ class PurchasePlatformNetworkModule {
                                    cartApiInterceptor: CartApiInterceptor,
                                    okHttpRetryPolicy: OkHttpRetryPolicy,
                                    fingerprintInterceptor: FingerprintInterceptor,
-                                   chuckInterceptor: ChuckInterceptor): OkHttpClient {
+                                   chuckInterceptor: ChuckerInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(AkamaiBotInterceptor())
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor { chain ->
                     val newRequest = chain.request().newBuilder()
@@ -86,8 +88,59 @@ class PurchasePlatformNetworkModule {
     }
 
     @Provides
+    @PurchasePlatformAkamaiQualifier
+    fun provideAkamaiRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    @PurchasePlatformAkamaiQualifier
+    fun provideCartAkamaiApiOkHttpClient(
+            @ApplicationContext context: Context,
+            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                                   cartApiInterceptor: CartApiInterceptor,
+                                   okHttpRetryPolicy: OkHttpRetryPolicy,
+                                   fingerprintInterceptor: FingerprintInterceptor,
+                                   chuckInterceptor: ChuckerInterceptor,
+                                   @PurchasePlatformAkamaiQualifier remoteConfig: RemoteConfig): OkHttpClient {
+
+        val builder = OkHttpClient.Builder()
+                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor { chain ->
+                    val newRequest = chain.request().newBuilder()
+                    newRequest.addHeader("User-Agent", getUserAgent())
+                    chain.proceed(newRequest.build())
+                }
+                .addInterceptor(cartApiInterceptor)
+        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, true)) {
+            builder.addInterceptor(AkamaiBotInterceptor(context))
+        }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor)
+        }
+        return builder.build()
+    }
+
+    @Provides
     @PurchasePlatformQualifier
     fun provideCartApiRetrofit(@PurchasePlatformQualifier okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl(TokopediaUrl.getInstance().API)
+                .addConverterFactory(CartResponseConverter.create())
+                .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(okHttpClient)
+                .build()
+    }
+
+    @Provides
+    @PurchasePlatformAkamaiQualifier
+    fun provideCartAkamaiApiRetrofit(@PurchasePlatformAkamaiQualifier okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(TokopediaUrl.getInstance().API)
                 .addConverterFactory(CartResponseConverter.create())

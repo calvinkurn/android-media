@@ -39,6 +39,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(ChangeNameViewModel::class.java) }
 
     private var oldName: String = ""
+    private var chancesChangeName: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -53,20 +54,29 @@ class ChangeNameFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         oldName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+        chancesChangeName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initListener()
-        initObserver()
 
         if (oldName.isNotEmpty()) {
-            changeNameTextName?.setText(oldName)
+            changeNameTextName?.textFieldInput?.setText(oldName)
+            changeNameTextName?.textFieldInput?.text?.length?.let {
+                changeNameTextName?.textFieldInput?.setSelection(it)
+            }
         }
+
+        activity?.getString(R.string.change_name_note, chancesChangeName)?.let {
+            changeNameHint -> changeNameTextNote?.text = changeNameHint
+        }
+
+        initObserver()
+        initListener()
     }
 
     private fun initListener() {
-        changeNameTextName?.addTextChangedListener(object : TextWatcher {
+        changeNameTextName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -74,16 +84,21 @@ class ChangeNameFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s != null) {
                     when {
-                        s.isEmpty() || s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
-                            if (s.length < MINIMUM_LENGTH) {
-                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
-                            } else if (s.length > MAXIMUM_LENGTH) {
-                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_long_35)))
+                        s.isEmpty() || s == "" -> activity?.let {
+                            changeNameTextMessage?.run {
+                                text = getString(R.string.change_name_visible_on_another_user)
+                                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                                changeNameButtonSave?.isEnabled = false
+                            }
+                        }
+                        s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
+                            when {
+                                s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_min_3)))
+                                s.length > MAXIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_max_35)))
                             }
                             changeNameButtonSave?.isEnabled = false
                         }
                         s.toString() == oldName -> {
-                            onErrorChangeName(Throwable(resources.getString(R.string.error_name_same_with_previous)))
                             changeNameButtonSave?.isEnabled = false
                         }
                         else -> {
@@ -105,10 +120,10 @@ class ChangeNameFragment : BaseDaggerFragment() {
         })
 
         changeNameButtonSave?.setOnClickListener {
-            val fullName = changeNameTextName?.text
+            val fullName = changeNameTextName?.textFieldInput?.text
             if (fullName != null) {
                 showLoading()
-                viewModel.changePublicName(changeNameTextName?.text.toString())
+                viewModel.changePublicName(changeNameTextName?.textFieldInput?.text.toString())
             } else {
                 onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
             }

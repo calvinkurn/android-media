@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * Created by Ade Fulki on 2019-08-30.
@@ -17,8 +18,10 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 class PinCompleteActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+        return DaggerProfileCompletionSettingComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+                    .build()
     }
 
     override fun getNewFragment(): Fragment {

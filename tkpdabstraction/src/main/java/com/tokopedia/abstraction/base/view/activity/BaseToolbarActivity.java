@@ -40,14 +40,18 @@ abstract class BaseToolbarActivity extends BaseActivity {
     protected void setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_600));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.tkpdabstraction_green_600));
         }
     }
 
     private void setupActionBarHomeIndicatorIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.design.R.drawable.ic_close_default));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, getCloseButton()));
         }
+    }
+
+    protected int getCloseButton() {
+        return  com.tokopedia.resources.common.R.drawable.ic_system_close_default;
     }
 
     protected boolean isShowCloseButton() {

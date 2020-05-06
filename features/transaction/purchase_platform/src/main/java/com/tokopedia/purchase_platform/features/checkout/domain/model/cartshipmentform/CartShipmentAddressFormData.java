@@ -4,12 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PotentialGainedPointsData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +38,17 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean useCourierRecommendation;
     private boolean isHidingCourier;
     private boolean isBlackbox;
-    private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
-    private AutoApplyData autoApplyData;
     private EgoldAttributeModel egoldAttributes;
     private AutoApplyStackData autoApplyStackData;
     private GlobalCouponAttrData globalCouponAttrData;
     private boolean isIneligbilePromoDialogEnabled;
     private TickerData tickerData;
+    private AddressesData addressesData;
+    private DisabledFeaturesDetailData disabledFeaturesDetailData;
+    private CampaignTimerUi campaignTimerUi;
+    private LastApplyUiModel lastApplyData;
+    private PotentialGainedPointsData potentialGainedPointsData;
+    private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
 
     public boolean isHasError() {
         return hasError;
@@ -165,22 +170,6 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.isBlackbox = blackbox;
     }
 
-    public CartPromoSuggestionHolderData getCartPromoSuggestionHolderData() {
-        return cartPromoSuggestionHolderData;
-    }
-
-    public void setCartPromoSuggestionHolderData(CartPromoSuggestionHolderData cartPromoSuggestionHolderData) {
-        this.cartPromoSuggestionHolderData = cartPromoSuggestionHolderData;
-    }
-
-    public AutoApplyData getAutoApplyData() {
-        return autoApplyData;
-    }
-
-    public void setAutoApplyData(AutoApplyData autoApplyData) {
-        this.autoApplyData = autoApplyData;
-    }
-
     public AutoApplyStackData getAutoApplyStackData() {
         return autoApplyStackData;
     }
@@ -245,6 +234,48 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.tickerData = tickerData;
     }
 
+    public AddressesData getAddressesData() {
+        return addressesData;
+    }
+
+    public void setAddressesData(AddressesData addressesData) {
+        this.addressesData = addressesData;
+    }
+
+    public DisabledFeaturesDetailData getDisabledFeaturesDetailData() {
+        return disabledFeaturesDetailData;
+    }
+
+    public void setDisabledFeaturesDetailData(DisabledFeaturesDetailData disabledFeaturesDetailData) {
+        this.disabledFeaturesDetailData = disabledFeaturesDetailData;
+    }
+
+    public CampaignTimerUi getCampaignTimerUi() {
+        return campaignTimerUi;
+    }
+
+    public void setCampaignTimerUi(CampaignTimerUi campaignTimerUi) {
+        this.campaignTimerUi = campaignTimerUi;
+    }
+
+    public LastApplyUiModel getLastApplyData() { return lastApplyData; }
+
+    public void setLastApplyData(LastApplyUiModel lastApplyUIModel) { this.lastApplyData = lastApplyUIModel; }
+
+    public PotentialGainedPointsData getPotentialGainedPointsData() { return potentialGainedPointsData; }
+
+    public void setPotentialGainedPointsData(PotentialGainedPointsData potentialGainedPointsData) {
+        this.potentialGainedPointsData = potentialGainedPointsData;
+    }
+
+    public PromoCheckoutErrorDefault getPromoCheckoutErrorDefault() {
+        return promoCheckoutErrorDefault;
+    }
+
+    public void setPromoCheckoutErrorDefault(PromoCheckoutErrorDefault promoCheckoutErrorDefault) {
+        this.promoCheckoutErrorDefault = promoCheckoutErrorDefault;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -265,12 +296,16 @@ public class CartShipmentAddressFormData implements Parcelable {
         donation = in.readParcelable(Donation.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
         isHidingCourier = in.readByte() != 0;
-        cartPromoSuggestionHolderData = in.readParcelable(CartPromoSuggestionHolderData.class.getClassLoader());
-        autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
         autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
         isIneligbilePromoDialogEnabled = in.readByte() != 0;
         tickerData = in.readParcelable(TickerData.class.getClassLoader());
+        addressesData = in.readParcelable(AddressesData.class.getClassLoader());
+        disabledFeaturesDetailData = in.readParcelable(DisabledFeaturesDetailData.class.getClassLoader());
+        campaignTimerUi = in.readParcelable(CampaignTimerUi.class.getClassLoader());
+        lastApplyData = in.readParcelable(LastApplyUiModel.class.getClassLoader());
+        potentialGainedPointsData = in.readParcelable(PotentialGainedPointsData.class.getClassLoader());
+        promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
     }
 
     @Override
@@ -291,12 +326,16 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(donation, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
-        dest.writeParcelable(cartPromoSuggestionHolderData, flags);
-        dest.writeParcelable(autoApplyData, flags);
         dest.writeParcelable(egoldAttributes, flags);
         dest.writeParcelable(autoApplyStackData, flags);
         dest.writeByte((byte) (isIneligbilePromoDialogEnabled ? 1 : 0));
         dest.writeParcelable(tickerData, flags);
+        dest.writeParcelable(addressesData, flags);
+        dest.writeParcelable(disabledFeaturesDetailData, flags);
+        dest.writeParcelable(campaignTimerUi, flags);
+        dest.writeParcelable(lastApplyData, flags);
+        dest.writeParcelable(potentialGainedPointsData, flags);
+        dest.writeParcelable(promoCheckoutErrorDefault, flags);
     }
 
     @Override

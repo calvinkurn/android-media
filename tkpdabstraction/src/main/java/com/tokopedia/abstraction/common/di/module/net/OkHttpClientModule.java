@@ -1,7 +1,7 @@
 package com.tokopedia.abstraction.common.di.module.net;
 
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import dagger.Module;
 import dagger.Provides;

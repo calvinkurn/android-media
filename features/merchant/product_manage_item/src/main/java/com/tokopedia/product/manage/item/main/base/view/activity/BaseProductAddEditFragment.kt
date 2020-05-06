@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.crashlytics.android.Crashlytics
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -27,6 +28,7 @@ import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.product.manage.item.BuildConfig
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.category.view.activity.ProductEditCategoryActivity
@@ -61,6 +63,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
+import java.lang.Exception
 import javax.inject.Inject
 
 abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : ProductAddView> : BaseDaggerFragment(),
@@ -85,7 +88,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     protected abstract var addEditPageType: AddEditPageType
     private var listenerOnAddEditFragmentCreated: ListenerOnAddEditFragmentCreated? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ListenerOnAddEditFragmentCreated)
             listenerOnAddEditFragmentCreated = context
@@ -98,7 +101,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        presenter.getShopInfo()
+        presenter.getShopInfo(addEditPageType)
 
         savedInstanceState?.run {
             if (containsKey(EXTRA_IS_OFFICIAL_STORE)) {
@@ -332,18 +335,18 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         } else {
             CommonUtils.UniversalToast(activity, getString(R.string.product_draft_product_has_been_saved_as_draft))
         }
-        val intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
+        redirectToProductManagePage()
         activity?.finish()
     }
 
     override fun onErrorStoreProductToDraftWhenUpload(errorMessage: String?) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, getString(R.string.title_try_again)) {
-            saveDraft(currentProductAddViewModel?.isDataValid(this) == true)
-        }.showRetrySnackbar()
         if (addEditPageType == AddEditPageType.ADD)
             eventServerValidationAddProduct(userSessionInterface.shopId, errorMessage ?: "")
+        logException(errorMessage ?: "")
+        CommonUtils.UniversalToast(activity, getString(R.string.upload_product_waiting))
+        startUploadProductServiceWithoutSaveToDraft()
+        redirectToProductManagePage()
+        activity?.finish()
     }
 
     override fun onErrorStoreProductToDraftWhenBackPressed(errorMessage: String?) {
@@ -366,10 +369,40 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         startUploadProductService(productId)
     }
 
+    private fun logException(error: String) {
+        try {
+            if (!BuildConfig.DEBUG) {
+                val errorMessage = String.format(
+                        getString(R.string.save_product_error_custom_exception_format),
+                        userSessionInterface.userId,
+                        userSessionInterface.email,
+                        error
+                )
+                Crashlytics.logException(Exception(errorMessage))
+            }
+        } catch (ex: IllegalStateException) {
+            ex.printStackTrace()
+        }
+    }
+
     override fun getProductDraftId() = 0L
+
+    private fun redirectToProductManagePage(){
+        val intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        startActivity(intent)
+    }
 
     private fun startUploadProductService(productId: Long) {
         activity?.startService(UploadProductService.getIntent(activity, productId, isAddStatus()))
+    }
+
+    private fun startUploadProductServiceWithoutSaveToDraft() {
+        currentProductAddViewModel?.let {
+            cacheManager.put(PRODUCT_VIEW_MODEL, it.convertToProductViewModel())
+            activity?.startService(UploadProductService.getIntentUploadProductWithoutSaveToDraft(activity, isAddStatus(), cacheManager.id))
+        }
     }
 
     protected fun populateView(currentProductViewModel: ProductAddViewModel?) {
@@ -419,13 +452,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewWeightLogisticProduct.setSubTitle("")
         }
         if (currentProductViewModel.productStock?.isActive == true) {
-            if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0) {
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
-            } else {
-                labelViewStockProduct.setContent(getString(R.string.label_always_available))
-            }
+            labelViewStockProduct.setContent(getString(R.string.label_always_active))
         } else {
-            labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
+            labelViewStockProduct.setContent(getString(R.string.label_always_nonactive))
         }
 
         if (currentProductViewModel.productVariantByCatModelList.size > 0 && currentProductViewModel.productVariantViewModel?.hasSelectedVariant() == true) {
@@ -471,7 +500,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 currentProductAddViewModel?.productStock?.stockCount = DEFAULT_PARENT_STOCK_IF_VARIANT
             } else {
                 currentProductAddViewModel?.productStock?.isActive = (stockType == StockTypeDef.TYPE_ACTIVE)
-                currentProductAddViewModel?.productStock?.stockCount = 0
             }
         }
         currentProductAddViewModel?.productVariantViewModel = productVariantViewModel
@@ -538,6 +566,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1)
                     putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2)
                     putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, hasWholesale)
+                    putExtra(ProductExtraConstant.EXTRA_IS_ADD, isAddStatus())
                     startActivityForResult(this, REQUEST_CODE_VARIANT)
                 }
             }
@@ -709,5 +738,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         const val EXTRA_IS_FREE_RETURN = "EXTRA_IS_FREE_RETURN"
 
         const val SAVED_PRODUCT_VIEW_MODEL = "svd_prd_model"
+        const val PRODUCT_VIEW_MODEL = "prd_model"
+
     }
 }

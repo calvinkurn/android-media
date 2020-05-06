@@ -10,6 +10,8 @@ interface OrderListTypeFactory {
 
     fun type(viewModel: EmptyStateOrderListViewModel): Int
 
+    fun type(viewModel: EmptyStateMarketPlaceFilterViewModel): Int
+
     fun type(viewModel: OrderListRecomTitleViewModel): Int
 
     fun type(viewModel: OrderListViewModel): Int

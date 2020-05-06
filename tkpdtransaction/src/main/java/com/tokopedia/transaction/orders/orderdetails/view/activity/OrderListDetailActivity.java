@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
@@ -42,10 +41,10 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     String upstream = null;
 
 
-    @DeepLink({TransactionAppLink.ORDER_DETAIL,
-            TransactionAppLink.ORDER_OMS_DETAIL,
-            TransactionAppLink.ORDER_MARKETPLACE_DETAIL,
-            TransactionAppLink.ORDER_OMS_DETAIL_UPSTREAM
+    @DeepLink({ApplinkConst.Transaction.ORDER_DETAIL,
+            ApplinkConst.Transaction.ORDER_OMS_DETAIL,
+            ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL,
+            ApplinkConst.Transaction.ORDER_OMS_DETAIL_UPSTREAM
     })
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();

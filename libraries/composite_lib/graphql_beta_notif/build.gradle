@@ -1,0 +1,11 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+project.ext {
+    artifactId = 'beta.notif'
+    groupId = 'com.tokopedia.graphql'
+    versionName = "0.0.6"
+    artifactName = "graphql_beta_notif-debug"
+}
+
+apply from: '../publish_local.gradle'

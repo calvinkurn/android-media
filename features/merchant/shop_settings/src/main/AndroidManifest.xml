@@ -2,7 +2,7 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.shop.settings">
 
-    <application android:label="@string/app_name">
+    <application>
         <activity
             android:name=".basicinfo.view.activity.ShopSettingsInfoActivity"
             android:label="@string/shop_settings_manage_shop_info"
@@ -29,8 +29,20 @@
         <activity
             android:name=".basicinfo.view.activity.ShopEditScheduleActivity"
             android:label="@string/shop_settings_shop_status"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_edit_schedule"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".address.view.ShopSettingsAddressActivity"

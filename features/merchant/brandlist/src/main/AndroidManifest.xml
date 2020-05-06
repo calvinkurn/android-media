@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.brandlist">
+
+    <application>
+
+        <activity
+            android:name=".brandlist_category.presentation.activity.BrandlistActivity"
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_merchant"
+                    android:pathPattern="@string/path_brandlist"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".brandlist_search.presentation.activity.BrandlistSearchActivity"
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_merchant"
+                    android:path="/official-store/brand-search"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

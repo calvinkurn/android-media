@@ -4,11 +4,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
-import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import javax.inject.Inject
 
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
@@ -23,12 +23,21 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
+//    override fun initDaggerInject() {
+//        DaggerDiscoveryComponent.builder()
+//                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+//                .build()
+//                .inject(this)
+//    }
+
+
+    override fun initInject() {
+                DaggerDiscoveryComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
+
 
     override fun getNewFragment(): Fragment? {
         return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment)
@@ -48,33 +57,6 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelFactory
-    }
-
-    override fun getMenuRes(): Int {
-        return -1
-    }
-
-    override fun getRootView(): View? {
-        return null
-    }
-
-    override fun showProgressBar() {
-    }
-
-    override fun hideProgressBar() {
-    }
-
-
-    override fun getTncFragmentInstance(TncResId: Int): Fragment? {
-        return null
-    }
-
-    override fun getBottomSheetLayoutRes(): Int {
-        return 0
-    }
-
-    override fun doNeedReattach(): Boolean {
-        return false
     }
 
 }

@@ -3,7 +3,7 @@ package com.tokopedia.wishlist.common.data.interceptor;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;

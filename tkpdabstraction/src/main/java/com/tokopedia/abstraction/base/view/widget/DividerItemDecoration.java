@@ -3,6 +3,8 @@ package com.tokopedia.abstraction.base.view.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+
+import androidx.annotation.DimenRes;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
@@ -31,7 +33,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         int left = usePaddingLeft?
-                parent.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16)
+                parent.getContext().getResources().getDimensionPixelOffset(getDimenPaddingLeft())
                 : 0;
         int right = parent.getWidth() - parent.getPaddingRight();
 
@@ -56,5 +58,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     protected boolean shouldDrawOnLastItem() {
         return false;
+    }
+
+    @DimenRes
+    protected int getDimenPaddingLeft() {
+        return R.dimen.dp_16;
     }
 }

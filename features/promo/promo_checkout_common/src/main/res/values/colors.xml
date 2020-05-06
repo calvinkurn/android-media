@@ -5,5 +5,6 @@
     <color name="orange_halfactive_coupon">#FF8B00</color>
     <color name="red_error_coupon">#FF5C84</color>
     <color name="promo_checkout_grey_nonactive_text">#42000000</color>
+    <color name="promo_checkout_background">#f3f4f5</color>
 
 </resources>

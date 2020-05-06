@@ -18,7 +18,7 @@ class TopChatUrl {
         val WEBSOCKET_URL = TokopediaUrl.getInstance().WS_CHAT
         val CONNECT_WEBSOCKET = "/connect"
         val BASE_URL = TokopediaUrl.getInstance().CHAT
-        val SECURITY_INFO_URL = TokopediaUrl.getInstance().WEB + "panduan-keamanan"
+        val SECURITY_INFO_URL = TokopediaUrl.getInstance().WEB + "panduan-keamanan/"
 
     }
 }

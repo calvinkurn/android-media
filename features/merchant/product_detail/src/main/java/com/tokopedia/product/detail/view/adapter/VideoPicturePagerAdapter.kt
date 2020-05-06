@@ -1,24 +1,27 @@
 package com.tokopedia.product.detail.view.adapter
 
-import android.content.Context
+import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.collection.SparseArrayCompat
-import android.view.View
-import android.view.ViewGroup
-import com.tokopedia.product.detail.common.data.model.product.Media
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 
-class VideoPicturePagerAdapter(val context: Context,
-                               private val media: MutableList<Media> = mutableListOf(),
-                               val urlTemp: String? = null,
-                               val onPictureClickListener: ((Int) -> Unit)?,
-                               val fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+class VideoPicturePagerAdapter(var media: List<ProductMediaDataModel>,
+                               private val onPictureClickListener: ((Int) -> Unit)?,
+                               fragmentManager: FragmentManager,
+                               private val componentTrackData: ComponentTrackDataModel,
+                               private val onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)?,
+                               val lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private val registeredFragment = SparseArrayCompat<Fragment>()
+    private var mediaId = media.map { it.hashCode().toLong() }
 
-    override fun getItem(position: Int): Fragment {
+    override fun getItemCount(): Int = media.size
+
+    override fun createFragment(position: Int): Fragment {
         val mediaItem = media[position]
         val urlMedia = if (mediaItem.type == "image") {
             mediaItem.urlOriginal
@@ -27,22 +30,24 @@ class VideoPicturePagerAdapter(val context: Context,
         }
         val f = VideoPictureFragment.createInstance(urlMedia, mediaItem.type, position)
         f.onPictureClickListener = onPictureClickListener
+        f.onPictureClickTrackListener = onPictureClickTrackListener
+        f.componentTrackDataModel = componentTrackData
+        registeredFragment.put(position, f)
         return f
     }
 
-    override fun getCount(): Int = media.size
+    override fun getItemId(position: Int): Long = mediaId[position].hashCode().toLong()
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val o = super.instantiateItem(container, position)
-        registeredFragment.put(position, o as Fragment)
-        return o
-    }
-
-    override fun destroyItem(container: View, position: Int, `object`: Any) {
-        registeredFragment.remove(position)
-        super.destroyItem(container, position, `object`)
-    }
+    override fun containsItem(itemId: Long): Boolean = mediaId.contains(itemId)
 
     fun getRegisteredFragment(pos: Int): Fragment? = registeredFragment.get(pos)
+
+    fun setData(data: List<ProductMediaDataModel>) {
+        media = data
+        mediaId = media.map {
+            it.hashCode().toLong()
+        }
+        notifyItemChanged(0)
+    }
 
 }

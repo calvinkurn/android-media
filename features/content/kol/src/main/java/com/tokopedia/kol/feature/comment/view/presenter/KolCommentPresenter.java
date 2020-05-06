@@ -13,13 +13,13 @@ import com.tokopedia.kol.feature.comment.view.subscriber.DeleteKolCommentSubscri
 import com.tokopedia.kol.feature.comment.view.subscriber.GetKolCommentFirstTimeSubscriber;
 import com.tokopedia.kol.feature.comment.view.subscriber.GetKolCommentSubscriber;
 import com.tokopedia.kol.feature.comment.view.subscriber.SendKolCommentSubscriber;
-import com.tokopedia.kotlin.extensions.view.UtilExtKt;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author by nisie on 10/31/17.
@@ -108,7 +108,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
 
                         @Override
                         public void onError(Throwable e) {
-                            UtilExtKt.debugTrace(e);
+                            Timber.d(e);
                         }
 
                         @Override

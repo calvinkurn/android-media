@@ -47,4 +47,7 @@ class ShopSearchProductViewModel @Inject constructor(
             _shopSearchProductResult.value = Fail(it)
         }
     }
+
+    fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
+
 }

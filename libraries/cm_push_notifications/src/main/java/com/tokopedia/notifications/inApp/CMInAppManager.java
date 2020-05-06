@@ -11,13 +11,14 @@ import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
-import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
+import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
@@ -25,6 +26,9 @@ import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 
 
 /**
@@ -40,6 +44,9 @@ public class CMInAppManager implements CmInAppListener {
 
     CmInAppListener cmInAppListener;
 
+    final Object lock = new Object();
+
+    public long cmInAppEndTimeInterval = HOURS_24_IN_MILLIS * 7;
 
     public static CMInAppManager getInstance() {
         return inAppManager;
@@ -52,6 +59,8 @@ public class CMInAppManager implements CmInAppListener {
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
+        cmInAppEndTimeInterval = ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
+                KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
         RulesManager.initRuleEngine(application);
         initInAppManager();
     }
@@ -76,23 +85,26 @@ public class CMInAppManager implements CmInAppListener {
         DataProvider dataProvider = new DataProvider() {
             @Override
             public void notificationsDataResult(List<CMInApp> inAppDataList) {
-                if (canShowInApp(inAppDataList)) {
-                    final CMInApp cmInApp = ViewEngine.getInstance(application)
-                            .createView(getCurrentActivity(), inAppDataList.get(0));
-                    if (cmInApp == null)
-                        return;
-                    Activity activity = getCurrentActivity();
-                    if (activity == null)
-                        return;
-                    View inAppViewPrev = activity.findViewById(R.id.mainContainer);
-                    if (null != inAppViewPrev)//In-App view already present on Activity
-                        return;
-                    FrameLayout root = (FrameLayout) activity.getWindow()
-                            .getDecorView()
-                            .findViewById(android.R.id.content)
-                            .getRootView();
-                    root.addView(cmInApp.getCmInAppView());
-                    dataConsumed(cmInApp);
+                synchronized (lock) {
+                    if (canShowInApp(inAppDataList)) {
+                        if (getCurrentActivity() == null)
+                            return;
+                        Activity activity = getCurrentActivity();
+                        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
+                        CMInApp cmInApp = inAppDataList.get(0);
+                        final View view = viewEngine.createView(cmInApp);
+                        if (view == null)
+                            return;
+                        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
+                        if (null != inAppViewPrev)//In-App view already present on Activity
+                            return;
+                        FrameLayout root = (FrameLayout) activity.getWindow()
+                                .getDecorView()
+                                .findViewById(android.R.id.content)
+                                .getRootView();
+                        root.addView(view);
+                        dataConsumed(cmInApp);
+                    }
                 }
             }
         };
@@ -141,10 +153,6 @@ public class CMInAppManager implements CmInAppListener {
         RulesManager.getInstance().dataConsumed(id);
     }
 
-    private void putDataToStore(CMInApp inAppData) {
-        RepositoryManager.getInstance().getStorageProvider().putDataToStore(inAppData);
-    }
-
     public void viewDismissed(long id) {
         RulesManager.getInstance().viewDismissed(id);
     }
@@ -153,8 +161,8 @@ public class CMInAppManager implements CmInAppListener {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                cmInApp.currentTime = System.currentTimeMillis();
-                putDataToStore(cmInApp);
+                if (currentActivity != null && currentActivity.get() != null)
+                    new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
             }
         } catch (Exception e) {
         }
@@ -211,7 +219,6 @@ public class CMInAppManager implements CmInAppListener {
     @Override
     public void onCMInAppClosed(CMInApp cmInApp) {
         sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DISMISSED, null);
-
     }
 
     @Override
@@ -219,4 +226,3 @@ public class CMInAppManager implements CmInAppListener {
         RulesManager.getInstance().dataInflateError(inApp.id);
     }
 }
-

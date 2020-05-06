@@ -12,10 +12,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 
 import java.util.ArrayList;
@@ -95,11 +94,7 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 			
 			@Override
 			public void onClick(View v) {
-//				context.startActivity(
-//						ProductDetailRouter.createInstanceProductDetailInfoActivity(
-//								context, getProductDataToPass(data)
-//						)
-//				);
+
 			}
 		});
 		return convertView;

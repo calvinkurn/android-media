@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,7 +38,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
 
     fun getDiscoveryData() {
-        progBarVisibility.value = true
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
@@ -89,7 +88,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
-        val queryMap = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
+        val queryMap:MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
         launchCatchError(
                 block = {
                     val customTopChatResponse = customTopChatUseCase.getCustomTopChatMessageId(queryMap)

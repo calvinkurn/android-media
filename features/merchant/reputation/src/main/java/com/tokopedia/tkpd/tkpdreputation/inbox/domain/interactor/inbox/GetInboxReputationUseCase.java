@@ -1,15 +1,11 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox;
 
 import android.text.TextUtils;
-
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import rx.Observable;
 
 /**
@@ -40,10 +36,8 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
 
     protected ReputationRepository reputationRepository;
 
-    public GetInboxReputationUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetInboxReputationUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
 
     }
@@ -107,4 +101,6 @@ public class GetInboxReputationUseCase extends UseCase<InboxReputationDomain> {
                 return ROLE_BUYER;
         }
     }
+
+
 }

@@ -1,0 +1,11 @@
+mutation register_check ($id: String!){
+    registerCheck(id: $id) {
+        isExist
+        isPending
+        status
+        registerType
+        userID
+        view
+        errors
+    }
+}

@@ -1,0 +1,6 @@
+mutation AcceptOrder($input:OrderAcceptRequest!) {
+    accept_order(input:$input){
+        success,
+        message
+     }
+}

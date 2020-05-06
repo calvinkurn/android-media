@@ -26,9 +26,7 @@ class ChatSettingViewModel @Inject constructor(
         get() = _chatSettings
 
     init {
-        getChatSettingUseCase.get(
-                onSuccessGetChatSetting(),
-                onErrorGetChatSetting())
+        getChatSettingUseCase.get(onSuccessGetChatSetting(), onErrorGetChatSetting())
     }
 
     fun filterSettings(filter: (setting: ChatSetting) -> Boolean, chatSettings: List<ChatSetting>): List<ChatSetting> {

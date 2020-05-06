@@ -3,10 +3,7 @@
     package="com.tokopedia.topads.auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <application
-        android:allowBackup="true"
-        tools:replace="android:label"
-        android:label="@string/auto_ads_app_name">
+    <application>
         <activity
             android:name=".view.activity.AutoAdsRouteActivity"
             android:label="" >
@@ -19,6 +16,21 @@
                     android:scheme="@string/sellerapp_scheme"
                     android:host="@string/host_topads"
                     android:path="@string/path_topads_autoads"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.CreateAutoAdsActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/auto_ads_creation" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/sellerapp_scheme"
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_autoads_create"/>
             </intent-filter>
         </activity>
         <activity

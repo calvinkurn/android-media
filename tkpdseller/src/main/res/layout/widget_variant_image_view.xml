@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_vvs"
-        tools:src="@mipmap/ic_launcher" />
+        tools:src="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/iv_plus"
@@ -35,7 +35,7 @@
         android:layout_gravity="bottom"
         android:background="@color/tkpd_yellow_status"
         android:gravity="center"
-        android:text="@string/product_variant_stock_empty"
+        android:text="@string/product_variant_stock_nonactive"
         android:visibility="gone"
         tools:visibility="visible" />
 </FrameLayout>

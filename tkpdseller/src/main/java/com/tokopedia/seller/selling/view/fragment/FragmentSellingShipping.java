@@ -35,6 +35,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core2.R;
@@ -109,11 +110,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_shop_shipping_confirmation;
-    }
-
-    @Override
-    public int getFragmentId() {
-        return 0;
     }
 
     public void requestBarcodeScanner(int pos) {
@@ -415,6 +411,16 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
     @Override
+    public void addRetryMessage(String message) {
+        adapter.addRetryMessage(message);
+    }
+
+    @Override
+    public void removeRetryMessage() {
+        adapter.removeRetryMessage();
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         initRefreshView();
         initView();
@@ -567,10 +573,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         if (!progressDialog.isProgress()) {
             progressDialog.showDialog();
         }
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
     }
 
     @Override

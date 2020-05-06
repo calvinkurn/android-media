@@ -1,14 +1,14 @@
 package com.tokopedia.oms.scrooge;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,15 +17,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.oms.R;
 
 import java.io.ByteArrayOutputStream;
+
+import timber.log.Timber;
 
 public class ScroogeActivity extends AppCompatActivity implements FilePickerInterface {
     //callbacks URL's
@@ -124,7 +128,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         webview.setWebViewClient(new WebViewClient() {
             public synchronized void onPageStarted(WebView inView, String inUrl, Bitmap inFavicon) {
                 super.onPageStarted(inView, inUrl, inFavicon);
-                CommonUtils.dumper("ScroogeActivity :: onPageStarted url " + inUrl);
+                Timber.d("ScroogeActivity :: onPageStarted url " + inUrl);
 
                 try {
                     setProgressBarIndeterminateVisibility(true);
@@ -136,24 +140,37 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
             public synchronized void onPageFinished(WebView inView, String inUrl) {
                 super.onPageFinished(inView, inUrl);
-                CommonUtils.dumper("ScroogeActivity :: onPageFinished url " + inUrl);
+                Timber.d("ScroogeActivity :: onPageFinished url " + inUrl);
             }
 
-            public synchronized void onReceivedError(WebView inView, int iniErrorCode, String inDescription, String inFailingUrl) {
-                super.onReceivedError(inView, iniErrorCode, inDescription, inFailingUrl);
-                CommonUtils.dumper("ScroogeActivity :: Error occured while loading url " + inFailingUrl);
+            public synchronized void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                Timber.d("ScroogeActivity :: Error occured while loading url " + failingUrl);
+                Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description);
                 Intent responseIntent = new Intent();
-                responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, inDescription);
+                responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, description);
                 setResult(ScroogePGUtil.RESULT_CODE_RECIEVED_ERROR, responseIntent);
                 finish();
             }
 
-            public synchronized void onReceivedSslError(WebView inView, SslErrorHandler inHandler, SslError inError) {
-                CommonUtils.dumper("ScroogeActivity :: SSL Error occured " + inError.toString());
-                CommonUtils.dumper("ScroogeActivity :: SSL Handler is " + inHandler);
-                if (inHandler != null) {
-                    inHandler.proceed();
-                }
+            public synchronized void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+                super.onReceivedSslError(view, handler, error);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage(R.string.cs_notification_error_ssl_cert_invalid);
+                builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handler.proceed();
+                    }
+                });
+                builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        handler.cancel();
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.show();
             }
 
             @Override
@@ -193,8 +210,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                     return true;
                 } else {
-                    super.shouldOverrideUrlLoading(view, url);
-                    returnVal = true;
+                    returnVal = false;
                 }
 
                 return returnVal;

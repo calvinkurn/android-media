@@ -3,7 +3,8 @@
 
     <string name="button_save">Simpan</string>
 
-    <string name="title_activity_change_password">Ubah Kata Sandi</string>
+    <string name="change_password_app_name">Ubah Kata Sandi</string>
+    <string name="password">Kata Sandi</string>
 
     <string name="insert_old_password">Masukkan Kata Sandi Lama</string>
     <string name="insert_new_password">Masukkan Kata Sandi Baru</string>

@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
@@ -35,11 +34,11 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
         val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
 
         val data: ProductRevGetForm? = response.getData(ProductRevGetForm::class.java)
-        val error: List<GraphqlError> = response.getError(GraphqlError::class.java) ?: listOf()
+        val error= response.getError(ProductRevGetForm::class.java)
 
         if (data == null) {
             throw RuntimeException()
-        } else if (error.isNotEmpty() && error.first().message.isNotEmpty()) {
+        } else if (error != null && error.isNotEmpty() && error.first().message.isNotEmpty()) {
             throw MessageErrorException(error.first().message)
         }
 

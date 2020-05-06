@@ -12,7 +12,7 @@ import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 interface PromoCheckoutDetailContract {
     interface View : CustomerView{
         fun onErroGetDetail(e: Throwable)
-        fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel)
+        fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel?)
         fun onSuccessCheckPromo(data: DataUiModel)
         fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel)
         fun onErrorCheckPromo(e: Throwable)
@@ -26,7 +26,7 @@ interface PromoCheckoutDetailContract {
     }
 
     interface Presenter : CustomerPresenter<View>{
-        fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?)
+        fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean/*, promo: Promo?*/)
         fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean)
         fun cancelPromo(codeCoupon: String)
     }

@@ -38,7 +38,7 @@ public class TrackApp {
     private static final Class<?>[] CONTEXT_ANALYTICS_CONSTRUCTOR_SIGNATURE =
             new Class[]{Context.class};
   
-    private final Application context;
+    final Application context;
 
     private final AtomicBoolean deleted = new AtomicBoolean();
 

@@ -30,7 +30,7 @@ class PlayImageAnnouncementViewHolder(itemView: View, var listener: ChatroomCont
     private val content: ImageView
 
     init {
-        message = itemView.findViewById(com.tokopedia.design.R.id.text)
+        message = itemView.findViewById(R.id.text)
         content = itemView.findViewById(R.id.content_image)
     }
 

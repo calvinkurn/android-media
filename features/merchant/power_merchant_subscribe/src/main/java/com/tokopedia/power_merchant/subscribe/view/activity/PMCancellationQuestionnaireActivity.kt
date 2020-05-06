@@ -65,13 +65,27 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
             return Intent(context, PMCancellationQuestionnaireActivity::class.java)
         }
     }
-
     override fun getListFragment(): MutableList<Fragment> {
         return listFragment
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_pm_cancellation_questionnaire
+    }
+
+    /**
+     * DF PURPOSE
+     */
+    override fun getProgressBar(): Int {
+        return R.id.stepper_progress_pm
+    }
+
+    override fun getParentView(): Int {
+        return R.id.parent_view_pm
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbarPm
     }
 
     private fun generateFragment() {
@@ -301,15 +315,18 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
                         .listQuestionnaireAnswer[currentPosition - 1].answers[0].toIntOrZero()
                 powerMerchantTracking.eventPMCancellationClickNextQuestionButtonFirstPage(rating)
             }
-            else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage()
+            else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage(
+                    pmCancellationQuestionnaireStepperModel
+                            .listQuestionnaireAnswer[currentPosition - 1].question
+            )
         }
     }
 
     private fun sendClickBackButtonTrackingEvent() {
         when {
             isFirstPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonFirstPage()
-            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonMiddlePage()
-            else -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
+            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
+            else -> powerMerchantTracking.eventPMCancellationClickBackButtonMiddlePage()
         }
     }
 

@@ -1,11 +1,11 @@
 package com.tokopedia.gm.common.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.GMCommonUrl
@@ -22,6 +22,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Named
+import com.chuckerteam.chucker.api.RetentionManager
+import com.chuckerteam.chucker.api.ChuckerCollector
 
 /**
  * @author by milhamj on 12/06/19.
@@ -31,8 +33,16 @@ class GmCommonModule {
 
     @GmCommonQualifier
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        val collector = ChuckerCollector(
+                context = context,
+                showNotification = GlobalConfig.isAllowDebuggingTools()
+        )
+
+        return ChuckerInterceptor(
+                context = context,
+                collector = collector
+        )
     }
 
     @GmCommonQualifier
@@ -59,7 +69,7 @@ class GmCommonModule {
 
     @GmCommonQualifier
     @Provides
-    fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckInterceptor,
+    fun provideOkHttpClient(@GmCommonQualifier chuckInterceptor: ChuckerInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             @GmCommonQualifier tkpdAuthInterceptor: TkpdAuthInterceptor,
                             powerMerchantSubscribeInterceptor: PowerMerchantSubscribeInterceptor): OkHttpClient {

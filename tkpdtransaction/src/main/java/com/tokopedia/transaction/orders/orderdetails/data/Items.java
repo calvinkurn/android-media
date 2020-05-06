@@ -10,6 +10,18 @@ public class Items {
     @Expose
     private int categoryID;
 
+    @SerializedName("categoryL1")
+    @Expose
+    private int categoryL1;
+    @SerializedName("categoryL2")
+    @Expose
+    private int categoryL2;
+
+    @SerializedName("categoryL3")
+    @Expose
+    private int categoryL3;
+
+
     @SerializedName("id")
     @Expose
     private int id;
@@ -28,6 +40,10 @@ public class Items {
     @SerializedName("price")
     @Expose
     private String price;
+
+    @SerializedName("unformattedPrice")
+    @Expose
+    private String unformattedPrice;
 
     @SerializedName("freeShipping")
     private FreeShipping freeShipping;
@@ -187,6 +203,18 @@ public class Items {
         isActionButtonLoaded = actionButtonLoaded;
     }
 
+    public int getCategoryL1() {
+        return categoryL1;
+    }
+
+    public int getCategoryL2() {
+        return categoryL2;
+    }
+
+    public int getCategoryL3() {
+        return categoryL3;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -209,6 +237,14 @@ public class Items {
 
     public void setTotalPrice(String totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getUnformattedPrice() {
+        return unformattedPrice;
+    }
+
+    public void setUnformattedPrice(String unformattedPrice) {
+        this.unformattedPrice = unformattedPrice;
     }
 
     public String getWeight() {

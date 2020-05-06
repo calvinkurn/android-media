@@ -3,26 +3,23 @@ package com.tokopedia.product.detail.view.widget
 import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.bottomsheet.BottomSheetViewPager
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.view.adapter.InstallmentDataPagerAdapter
 import com.tokopedia.product.detail.view.fragment.FtPdpInstallmentCalculationFragment
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
-import java.util.*
 
 class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
@@ -38,6 +35,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     private var heightWrappingViewPager: BottomSheetViewPager? = null
     internal var ftInstallmentItemList: MutableList<FtInstallmentListItem> = ArrayList()
 
+    private var installmentDataId: String = ""
     private var installmentData: FinancingDataResponse = FinancingDataResponse()
     private var productPrice: Float = 0f
     private var isOfficialStore: Boolean = false
@@ -110,9 +108,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             val params = (inflatedView.getParent() as View).layoutParams
             inflatedView.measure(0, 0)
             val displayMetrics = DisplayMetrics()
-            activity?.let {
-                it.windowManager.defaultDisplay.getMetrics(displayMetrics)
-            }
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
             val screenHeight = displayMetrics.heightPixels
 
             if (bottomSheetBehavior != null)
@@ -134,13 +130,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun getNonCreditInstallmentFragment(): Fragment? {
-        return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
+        return FtPdpInstallmentCalculationFragment.createInstance(context, productPrice,
                 installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
                 installmentData.ftInstallmentCalculation.data.nonCreditCardInstallmentData)
     }
 
     private fun getCreditInstallmentFragment(): Fragment? {
-        return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
+        return FtPdpInstallmentCalculationFragment.createInstance(context, productPrice,
                 installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
                 installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
     }
@@ -160,7 +156,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun getArgumentsData() {
         arguments?.let {
-            installmentData = it.getParcelable(KEY_PDP_FINANCING_DATA) ?: FinancingDataResponse()
+            installmentDataId = it.getString(KEY_PDP_FINANCING_DATA) ?: ""
+
+            val cacheManager = SaveInstanceCacheManager(context!!, installmentDataId)
+            installmentData = cacheManager.get(
+                    FinancingDataResponse::class.java.simpleName,
+                    FinancingDataResponse::class.java
+            ) ?: FinancingDataResponse()
             productPrice = it.getFloat(KEY_PDP_PRODUCT_PRICE)
             isOfficialStore = it.getBoolean(KEY_PDP_IS_OFFICIAL)
         }

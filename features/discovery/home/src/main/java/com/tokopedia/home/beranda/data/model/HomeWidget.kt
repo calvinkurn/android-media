@@ -4,9 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 class HomeWidget(
@@ -34,6 +32,36 @@ class HomeWidget(
             @Expose
             @SerializedName("errors")
             val errors: List<GraphqlError> = listOf()
+    )
+
+    data class PopularKeyword(
+            @SerializedName("mobile_url")
+            @Expose
+            val url: String = "",
+            @SerializedName("image_url")
+            @Expose
+            val imageUrl: String = "",
+            @SerializedName("keyword")
+            @Expose
+            val keyword: String = "",
+            @SerializedName("product_count")
+            @Expose
+            val productCountInt: Int = 0,
+            @SerializedName("product_count_formatted")
+            @Expose
+            val productCount: String = ""
+    )
+
+    data class PopularKeywordQuery(
+            @Expose
+            @SerializedName("popular_keywords")
+            val data: PopularKeywordList = PopularKeywordList()
+    )
+
+    data class PopularKeywordList(
+            @Expose
+            @SerializedName("keywords")
+            val keywords: List<PopularKeyword> = listOf()
     )
 
     data class TabItem(
@@ -73,17 +101,14 @@ class HomeWidget(
             @SerializedName("back_color")
             @Expose
             val backColor: String)
-    {
-
-    }
 
     class ContentItemTab(
             @SerializedName("id")
             @Expose
-            val id: Int,
+            val contentId: Int = -1,
             @SerializedName("name")
             @Expose
-            val name: String = "",
+            val contentName: String = "",
             @SerializedName("image_url")
             @Expose
             val imageUrl: String = "",
@@ -110,7 +135,7 @@ class HomeWidget(
             val tagName: String = "",
             @SerializedName("tag_type")
             @Expose
-            val tagType: Int,
+            val tagType: Int = -1,
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -122,12 +147,8 @@ class HomeWidget(
             val pricePrefix: String = "",
             @SerializedName("template_id")
             @Expose
-            val templateId: Int
-    ): ImpressHolder(), Visitable<BusinessWidgetTypeFactory> {
-
-        override fun type(typeFactory: BusinessWidgetTypeFactory?): Int {
-            return typeFactory!!.type(this)
-        }
+            val templateId: Int = -1
+    ): ImpressHolder() {
 
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),
@@ -148,8 +169,8 @@ class HomeWidget(
         )
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(id)
-            parcel.writeString(name)
+            parcel.writeInt(contentId)
+            parcel.writeString(contentName)
             parcel.writeString(imageUrl)
             parcel.writeString(url)
             parcel.writeString(applink)

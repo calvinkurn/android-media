@@ -2,12 +2,14 @@ package com.tokopedia.inbox.rescenter.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.rescenter.network.ResolutionApi;
 import com.tokopedia.inbox.rescenter.network.ResolutionErrorInterceptor;
@@ -36,8 +38,12 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools());
+
+        return new ChuckerInterceptor(
+                context, collector);
     }
 
     @ResolutionScope
@@ -69,7 +75,7 @@ public class ResolutionModule {
 
     @ResolutionScope
     @Provides
-    public OkHttpClient provideOkHttpClient(ChuckInterceptor chuckInterceptor,
+    public OkHttpClient provideOkHttpClient(ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @ApplicationContext Context context) {

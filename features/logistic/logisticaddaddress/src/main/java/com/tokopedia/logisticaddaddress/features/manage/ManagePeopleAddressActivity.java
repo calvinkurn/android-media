@@ -14,7 +14,7 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 
-import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_MANAGE_ADDRESS;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.SCREEN_MANAGE_ADDRESS;
 
 public class ManagePeopleAddressActivity extends BaseSimpleActivity
         implements MPAddressActivityListener, ManagePeopleAddressReceiver.Receiver, ManagePeopleAddressActivityPresenter {

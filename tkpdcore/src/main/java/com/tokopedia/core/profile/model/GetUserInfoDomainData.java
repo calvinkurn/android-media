@@ -1,9 +1,5 @@
 package com.tokopedia.core.profile.model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,7 +8,6 @@ import java.util.List;
 
 public class GetUserInfoDomainData {
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
     private int userId;
     private String fullName;
     private String firstName;
@@ -155,9 +150,6 @@ public class GetUserInfoDomainData {
         this.phoneVerified = phoneVerified;
     }
 
-    public List<Integer> getRoles() {
-        return roles;
-    }
 
     public void setRoles(List<Integer> roles) {
         this.roles = roles;
@@ -169,10 +161,6 @@ public class GetUserInfoDomainData {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
-    }
-
-    public String getClientId() {
-        return clientId;
     }
 
     public void setClientId(String clientId) {
@@ -187,56 +175,8 @@ public class GetUserInfoDomainData {
         this.completion = completion;
     }
 
-    public int getBdayYear() {
-        try {
-            Date date = simpleDateFormat.parse(getBday());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return calendar.get(Calendar.YEAR);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public int getBdayMonth() {
-        try {
-            Date date = simpleDateFormat.parse(getBday());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return calendar.get(Calendar.MONTH) + 1;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public int getBdayDay() {
-        try {
-            Date date = simpleDateFormat.parse(getBday());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return calendar.get(Calendar.DAY_OF_MONTH);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
 
     public void setCreatePasswordList(List<String> createPasswordList) {
         this.createPasswordList = createPasswordList;
-    }
-
-    public List<String> getCreatePasswordList() {
-        return createPasswordList;
     }
 }

@@ -5,10 +5,10 @@ import android.text.TextUtils;
 
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
-import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
+import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -39,14 +39,15 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     private AddAddressContract.View mView;
     private AddressRepository networkInteractor;
     private UserSessionInterface userSession;
-    private AutofillUseCase autofillUseCase;
+    private RevGeocodeUseCase revGeocodeUseCase;
 
     @Inject
-    public AddAddressPresenterImpl(UserSessionInterface userSession, AddressRepository addressRepository,
-                                   AutofillUseCase autofillUseCase) {
+    public AddAddressPresenterImpl(UserSessionInterface userSession,
+                                   AddressRepository addressRepository,
+                                   RevGeocodeUseCase revGeocodeUseCase) {
         this.networkInteractor = addressRepository;
         this.userSession = userSession;
-        this.autofillUseCase = autofillUseCase;
+        this.revGeocodeUseCase = revGeocodeUseCase;
     }
 
     @Override
@@ -76,8 +77,8 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void requestReverseGeoCode(Context context, Destination destination) {
         String keyword = String.format("%s,%s", destination.getLatitude(), destination.getLongitude());
-        autofillUseCase.execute(keyword)
-                .subscribe(new Subscriber<AutofillResponseUiModel>() {
+        revGeocodeUseCase.execute(keyword)
+                .subscribe(new Subscriber<KeroMapsAutofill>() {
                     @Override
                     public void onCompleted() {
 
@@ -89,9 +90,9 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(AutofillResponseUiModel autofillResponseUiModel) {
+                    public void onNext(KeroMapsAutofill keroMapsAutofill) {
                         mView.setPinpointAddress(
-                                autofillResponseUiModel.getData().getFormattedAddress());
+                                keroMapsAutofill.getData().getFormattedAddress());
                     }
                 });
     }

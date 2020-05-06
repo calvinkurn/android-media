@@ -1,0 +1,37 @@
+[{
+	"data": {
+		"playGetLiveDynamicChannels": {
+			"header": {
+				"process_time": 0.005083
+			},
+			"data": {
+				"channels": [{
+					"partner_type": 1,
+					"partner_id": "7307032",
+					"channel_id": "2276",
+					"title": "TEST VOD yes product + no voucher",
+					"description": "",
+					"cover_url": "https://ecs7.tokopedia.net/img/cache/1400/attachment/2020/3/11/1583912916447/1583912916447_107da15f-3da0-4b31-aa93-722027f2660a.png",
+					"is_show_total_view": true,
+					"total_view_formatted": "3.5k",
+					"moderator_id": "",
+					"moderator_name": "os tactical",
+					"moderator_thumb_url": "https://www.tokopedia.com/ostactical",
+					"slug": "testbadak",
+					"video_stream": {
+						"orientation": "horizontal",
+						"type": "vod",
+						"is_live": false,
+						"config": {
+							"youtube_id": "",
+							"livestream_id": "",
+							"stream_url": "https://vod.tokopedia.com/view/adaptive.m3u8?id=11d2c7e3bb404949a8538d9e61e439a2",
+							"is_playback": false,
+							"is_auto_play": false
+						}
+					}
+				}]
+			}
+		}
+	}
+}]

@@ -39,21 +39,21 @@ class OfficialStoreCategoriesUseCaseTest {
         MockKAnnotations.init(this)
     }
 
-    @Test
-    fun testExecuteBackground() {
-        runBlocking {
-            coEvery {
-                graphqlUseCase.executeOnBackground()
-            } returns createMockGraphqlSuccessResponse()
-            val response = officialStoreCategoriesUseCase.executeOnBackground()
-            coVerify {
-                graphqlUseCase.clearRequest()
-                graphqlUseCase.addRequest(any())
-                graphqlUseCase.executeOnBackground()
-            }
-            assertNotNull(response)
-        }
-    }
+//    @Test
+//    fun testExecuteBackground() {
+//        runBlocking {
+//            coEvery {
+//                graphqlUseCase.executeOnBackground()
+//            } returns createMockGraphqlSuccessResponse()
+//            val response = officialStoreCategoriesUseCase.executeOnBackground()
+//            coVerify {
+//                graphqlUseCase.clearRequest()
+//                graphqlUseCase.addRequest(any())
+//                graphqlUseCase.executeOnBackground()
+//            }
+//            assertNotNull(response)
+//        }
+//    }
 
     private fun createMockGraphqlSuccessResponse(): GraphqlResponse {
         val result = HashMap<Type, Any>()

@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.onboarding.view.subscriber
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliate.feature.onboarding.data.pojo.usernamesuggestion.GetUsernameSuggestionData
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract
 import com.tokopedia.graphql.data.model.GraphqlResponse

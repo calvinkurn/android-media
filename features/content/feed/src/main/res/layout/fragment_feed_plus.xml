@@ -53,7 +53,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/you_have_new_feed"
                 android:textColor="@color/font_black_secondary_54"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/sp_12" />
         </LinearLayout>
 
     </RelativeLayout>

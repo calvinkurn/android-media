@@ -1,8 +1,8 @@
 package com.tokopedia.discovery2.repository.customtopchat
 
+import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.customtopchatdatamodel.CustomChatResponse
-import com.tokopedia.tradein_common.repository.BaseRepository
 import javax.inject.Inject
 
 open class CustomTopChatGqlRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), CustomTopChatRepository {

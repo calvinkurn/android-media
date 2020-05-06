@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.banklist.domain.mapper
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.banklist.domain.pojo.SetDefaultBankAccountPojo
 import retrofit2.Response

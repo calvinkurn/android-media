@@ -53,7 +53,7 @@ class StickyLoginTracking {
 
         object EVENT {
             const val CLICK_HOME_PAGE = "clickHomepage"
-            const val VIEW_HOME_PAGE = "viewHomepage"
+            const val VIEW_HOME_PAGE = "viewHomepageIris"
 
             const val CLICK_PDP = "clickPDP"
             const val VIEW_PDP = "viewPDP"

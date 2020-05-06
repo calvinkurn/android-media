@@ -1,12 +1,10 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
-import android.content.res.TypedArray
 import androidx.annotation.AttrRes
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RatingBar
-import android.widget.TextView
 
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R

@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
-    <com.tokopedia.salam.umrah.common.presentation.widget.MyUmrahWidget
+    <com.tokopedia.salam.umrah.common.presentation.widget.UmrahMyUmrahWidget
         android:id="@+id/my_umrah_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/my_umrah_widget"
         >
 
-        <com.tokopedia.salam.umrah.common.presentation.widget.CustomTicketView
+        <com.tokopedia.salam.umrah.common.presentation.widget.UmrahCustomTicketView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_alignBottom="@+id/divider1"
@@ -50,13 +50,13 @@
             app:borderColor="@color/grey_200"
             app:borderWidth="1dp"
             app:cornerRadius="4dp"
-            app:cornerType="roundedscallop"
+            app:umrahCornerType="roundedscallop"
             app:scallopRadius="8dp"
             app:showBorder="true"
             app:showTopShadow="true"
             app:ticketElevation="4dp" />
 
-        <com.tokopedia.salam.umrah.common.presentation.widget.CustomTicketView
+        <com.tokopedia.salam.umrah.common.presentation.widget.UmrahCustomTicketView
             android:id="@+id/customView2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -65,7 +65,7 @@
             app:borderColor="@color/grey_200"
             app:borderWidth="1dp"
             app:cornerRadius="4dp"
-            app:cornerType="scalloprounded"
+            app:umrahCornerType="scalloprounded"
             app:scallopRadius="8dp"
             app:showBorder="false"
             app:showBottomShadow="true"

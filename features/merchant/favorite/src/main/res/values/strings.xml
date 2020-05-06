@@ -1,0 +1,9 @@
+<resources>
+    <string name="msg_empty_wishlist">Empty wishlist</string>
+    <string name="title_favorite_page">Favorit</string>
+    <string name="msg_network_error">Terjadi kesalahan koneksi, silahkan coba lagi </string>
+    <string name="shop_reccomendation">Rekomendasi Toko</string>
+    <string name="home_fav_store">Home - Fav Store Page</string>
+    <string name="wishlist_empty_title">Wishlist masih kosong</string>
+    <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
+</resources>

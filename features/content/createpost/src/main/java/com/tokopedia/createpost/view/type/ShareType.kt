@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.kotlin.extensions.view.toCompactAmountString
+import com.tokopedia.kotlin.extensions.view.toAmountString
 
 private typealias ShareSubtitleGenerator = (Context, Int) -> String?
 
@@ -27,7 +27,7 @@ sealed class ShareType(
                     true,
                     true,
                     { ctx, subtitleRes ->
-                        if (totalPerson != null) ctx.getString(subtitleRes, totalPerson.toCompactAmountString())
+                        if (totalPerson != null) ctx.getString(subtitleRes, totalPerson.toAmountString())
                         else null
                     }
             )

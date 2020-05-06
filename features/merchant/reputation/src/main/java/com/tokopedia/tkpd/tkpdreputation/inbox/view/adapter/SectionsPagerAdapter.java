@@ -5,10 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import android.text.TextUtils;
-
-import com.tokopedia.core2.R;
-import com.tokopedia.core.app.MainApplication;
-
 import java.util.List;
 
 /**

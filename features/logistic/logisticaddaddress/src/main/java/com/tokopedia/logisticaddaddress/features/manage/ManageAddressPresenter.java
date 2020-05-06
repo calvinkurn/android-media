@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.manage;
 
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
-import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressUiModel;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetAddressUseCase;
@@ -85,12 +85,12 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
             public void onNext(GetPeopleAddress getPeopleAddress) {
                 mToken = getPeopleAddress.getToken();
                 mView.setIsEmptyAddress(getPeopleAddress.getList().size() == 0);
-                List<AddressViewModel> addressViewModelList =
+                List<AddressUiModel> addressUiModelList =
                         AddressViewModelMapper.convertToViewModel(getPeopleAddress.getList());
                 boolean hasNext = false;
                 if (getPeopleAddress.getPaging() != null)
                     hasNext = PagingHandler.CheckHasNext(getPeopleAddress.getPaging().getUriNext());
-                mView.showData(addressViewModelList, hasNext);
+                mView.showData(addressUiModelList, hasNext);
                 if (page == 1 && query.isEmpty()) {
                     mView.stopPerformanceMonitoring();
                 }

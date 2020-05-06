@@ -13,7 +13,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class GenerateHostActService extends AuthService<GeneratedHostActApi> {
-    private static final String TAG = GenerateHostActService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

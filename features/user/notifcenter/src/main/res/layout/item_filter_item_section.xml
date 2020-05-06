@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/chips_item"
+        style="@style/TextView.Small.BlackSecondary"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/notifcenter_bg_filter_green_border"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_6"
+        android:textColor="@color/Green_G500"
+        tools:text="superstar" />
+
+</FrameLayout>

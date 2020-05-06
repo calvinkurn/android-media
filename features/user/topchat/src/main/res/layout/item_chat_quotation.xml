@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_topchat_15"
+    android:paddingTop="@dimen/dp_topchat_1"
+    android:paddingRight="@dimen/dp_topchat_15"
+    android:paddingBottom="@dimen/chatcommon_1dp">
+
+    <LinearLayout
+        android:id="@+id/llChatHeaderContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/item_chatcommon_chat_header" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/quotationAttachmentContainer"
+        layout="@layout/topchat_quotation_attachment"
+        android:layout_width="@dimen/dp_topchat_240"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llChatHeaderContainer" />
+</RelativeLayout>

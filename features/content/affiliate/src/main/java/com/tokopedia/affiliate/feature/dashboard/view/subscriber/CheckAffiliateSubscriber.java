@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract;
 

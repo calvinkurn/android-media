@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -48,6 +47,7 @@ import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.OrderFilter;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
@@ -56,6 +56,7 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseL
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomTitleViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListViewModel;
+import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -64,9 +65,13 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -74,6 +79,11 @@ import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
+
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_ASK_SELLER;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_BUY_AGAIN;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_SUBMIT_CANCELLATION;
 
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
 
@@ -168,7 +178,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     visitables.add(new OrderListRecomTitleViewModel(recomTitle));
                 }
                 visitables.addAll(getRecommendationVisitables(recommendationWidget));
-                getView().addData(visitables, true);
+                getView().addData(visitables, true, false);
             }
         });
     }
@@ -209,9 +219,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
-
-        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            variables.put(OrderCategory.KEY_LABEL, orderCategory);
+        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)|| orderCategory.equalsIgnoreCase(OrderCategory.DIGITAL)) {
+          variables.put(OrderCategory.KEY_LABEL, orderCategory);
             variables.put(OrderCategory.PAGE, page);
             variables.put(OrderCategory.PER_PAGE, PER_PAGE_COUNT);
             variables.put(SEARCH, getView().getSearchedString());
@@ -234,6 +243,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         getOrderListUseCase = new GraphqlUseCase();
         getOrderListUseCase.clearRequest();
         getOrderListUseCase.addRequest(graphqlRequest);
+        getOrderListUseCase.addRequest(getorderFiltergqlRequest());
 
         getOrderListUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -243,7 +253,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error =" + e.toString());
+                    Timber.d("error =" + e.toString());
                     getView().removeProgressBarView();
                     getView().displayLoadMore(false);
                     getView().unregisterScrollListener();
@@ -258,26 +268,53 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     return;
                 getView().removeProgressBarView();
                 getView().displayLoadMore(false);
+                long elapsedDays = 0;
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                long secondsInMilli = 1000;
+                long time;
+                long daysInMilli = secondsInMilli * 60 * 60 * 24;
+                try {
+                    if (getView().getEndDate() != null && getView().getStartDate() != null) {
+                        Date date2 = format.parse(getView().getEndDate());
+                        Date date1 = format.parse(getView().getStartDate());
+                        time = date2.getTime() - date1.getTime();
+                        elapsedDays = time / daysInMilli;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 if (response != null) {
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
                         orderList.addAll(getOrderListVisitables(data));
-                        getView().addData(getOrderListVisitables(data), false);
+                        getView().addData(getOrderListVisitables(data), false, typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL);
                         getView().setLastOrderId(data.orders().get(0).getOrderId());
                         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                             checkBomSurveyEligibility();
                         }
                     } else {
                         getView().unregisterScrollListener();
-                        getView().renderEmptyList(typeRequest);
+                        getView().renderEmptyList(typeRequest,elapsedDays);
+                    }
+
+                    OrderFilter orderFilter = response.getData(OrderFilter.class);
+                    if (orderFilter != null && orderFilter != null) {
+                        getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
                     }
                 } else {
                     getView().unregisterScrollListener();
-                    getView().renderEmptyList(typeRequest);
+                    getView().renderEmptyList(typeRequest,elapsedDays);
                 }
 
             }
         });
+    }
+
+    private GraphqlRequest getorderFiltergqlRequest() {
+        GraphqlRequest orderfiltergqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.bomorderfilter), OrderFilter.class);
+        return orderfiltergqlRequest;
     }
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
@@ -438,11 +475,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         int productId = 0;
         int shopId = 0;
         String externalSource = "";
+        String clickUrl = "";
         if (productModel instanceof OrderListRecomViewModel) {
             OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
             productId = orderListRecomViewModel.getRecommendationItem().getProductId();
             shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
             externalSource = "recommendation_list";
+            clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
+        }
+
+        if(!clickUrl.isEmpty()) {
+            getView().sendATCTrackingUrl(clickUrl);
         }
         AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
         addToCartRequestParams.setProductId(productId);
@@ -631,7 +674,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     } else {
                         getView().showFailureMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, false, "");
+                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, false, "", getStatus().status());
                 }
 
             }
@@ -675,7 +718,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper("error occured" + e);
+                    Timber.d("error occured" + e);
                     getView().displayLoadMore(false);
                 }
             }
@@ -696,14 +739,14 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     private void handleActionButtonClick(String buttonLabel) {
         switch (buttonLabel) {
-            case "beli lagi":
+            case ACTION_BUY_AGAIN:
                 buyAgainItem();
                 break;
-            case "tanya penjual":
+            case ACTION_ASK_SELLER:
                 getView().startSellerAndAddInvoice();
                 orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
                 break;
-            case "ajukan pembatalan":
+            case ACTION_SUBMIT_CANCELLATION:
                 getView().requestCancelOrder(getStatus());
                 orderListAnalytics.sendActionButtonClickEventList("", "");
                 break;
@@ -807,7 +850,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                             @Override
                                             public void onError(Throwable e) {
                                                 if (getView() != null && getView().getAppContext() != null) {
-                                                    CommonUtils.dumper(e.getStackTrace());
+                                                    Timber.d(e);
                                                     getView().showFailureMessage(e.getMessage());
                                                     getView().displayLoadMore(false);
                                                     getView().finishOrderDetail();
@@ -859,7 +902,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             @Override
             public void onError(Throwable e) {
                 if (getView() != null && getView().getAppContext() != null) {
-                    CommonUtils.dumper(e.getStackTrace());
+                    Timber.d(e);
                     getView().displayLoadMore(false);
                     getView().showFailureMessage(e.getMessage());
                     getView().finishOrderDetail();

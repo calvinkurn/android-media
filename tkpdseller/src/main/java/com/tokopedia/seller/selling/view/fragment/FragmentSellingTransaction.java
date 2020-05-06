@@ -6,14 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,37 +20,45 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core2.R;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.tracking.activity.TrackingActivity;
-import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionImpl;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.TransactionViewHolder;
 import com.tokopedia.transaction.common.TransactionRouter;
 
-import org.parceler.Parcels;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
@@ -134,10 +134,18 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     private void setDate() {
         try {
-            startDate.setText(DateFormatUtils.getStringDateAfter(-30));
-            endDate.setText(DateFormatUtils.getStringDateAfter(0));
+            startDate.setText(getStringDateAfter(-30));
+            endDate.setText(getStringDateAfter(0));
         } catch (NullPointerException e) {
         }
+    }
+
+    private static String getStringDateAfter(int count) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_YEAR, count);
+        Date newDate = calendar.getTime();
+        return new SimpleDateFormat("dd/MM/yyyy").format(newDate);
     }
 
     private DatePickerV2.OnDatePickerV2Listener onStartPicked() {
@@ -145,11 +153,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onDatePicked(DatePickerV2.Date date) {
                 startDate.setText(date.getDate());
-            }
-
-            @Override
-            public void onCancel() {
-
             }
         };
     }
@@ -159,11 +162,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onDatePicked(DatePickerV2.Date date) {
                 endDate.setText(date.getDate());
-            }
-
-            @Override
-            public void onCancel() {
-
             }
         };
     }
@@ -202,16 +200,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     private String getFilter(int pos) {
         String[] filterValue = getResources().getStringArray(R.array.transaction_filter_type_ppl_value);
         return filterValue[pos];
-    }
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-
     }
 
     @Override
@@ -418,6 +406,16 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     @Override
     public void addRetry() {
         adapter.setIsRetry(true);
+    }
+
+    @Override
+    public void addRetryMessage(String message) {
+        adapter.addRetryMessage(message);
+    }
+
+    @Override
+    public void removeRetryMessage() {
+        adapter.removeRetryMessage();
     }
 
     @Override

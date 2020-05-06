@@ -54,6 +54,10 @@ public interface ShippingView extends BaseView {
 
     void addRetry();
 
+    void addRetryMessage(String message);
+
+    void removeRetryMessage();
+
     void setListener();
 
     void setAdapter();

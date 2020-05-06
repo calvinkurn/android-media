@@ -1,6 +1,6 @@
 package com.tokopedia.topads.group.view.presenter;
 
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;

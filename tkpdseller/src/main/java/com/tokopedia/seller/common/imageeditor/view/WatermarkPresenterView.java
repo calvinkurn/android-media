@@ -1,6 +1,6 @@
 package com.tokopedia.seller.common.imageeditor.view;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 /**

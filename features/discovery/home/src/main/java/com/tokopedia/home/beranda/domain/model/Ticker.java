@@ -14,11 +14,7 @@ import java.util.ArrayList;
 public class Ticker {
     @SerializedName("tickers")
     @Expose
-    ArrayList<Tickers> tickers;
-
-    @SerializedName("meta")
-    @Expose
-    Meta meta;
+    ArrayList<Tickers> tickers = new ArrayList<>();
 
     public ArrayList<Tickers> getTickers() {
         return tickers;
@@ -28,19 +24,10 @@ public class Ticker {
         this.tickers = tickers;
     }
 
-    public Meta getMeta() {
-        return meta;
-    }
-
-    public void setMeta(Meta meta) {
-        this.meta = meta;
-    }
-
     @Override
     public String toString() {
         return "Ticker{" +
                 "data=" + tickers +
-                ", meta=" + meta +
                 '}';
     }
 
@@ -68,10 +55,6 @@ public class Ticker {
         @SerializedName("message")
         @Expose
         String message;
-
-        @SerializedName("title")
-        @Expose
-        String title;
 
         @SerializedName("layout")
         @Expose
@@ -145,9 +128,8 @@ public class Ticker {
             this.id = id;
         }
 
-        public Spanned getMessage() {
-            String str = message.replaceAll("<p>(.*?)</p>", "$1");
-            return MethodChecker.fromHtml(str);
+        public String getMessage() {
+            return message;
         }
 
         public String getMessage2() {
@@ -156,14 +138,6 @@ public class Ticker {
 
         public void setMessage(String message) {
             this.message = message;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
         }
 
         public String getLayout() { return layout; }
@@ -235,7 +209,6 @@ public class Ticker {
                     ", expireTime='" + expireTime + '\'' +
                     ", id='" + id + '\'' +
                     ", message='" + message + '\'' +
-                    ", title='" + title + '\'' +
                     ", layout='" + layout + '\'' +
                     ", target='" + target + '\'' +
                     ", device='" + device + '\'' +
@@ -244,27 +217,6 @@ public class Ticker {
                     ", ticker_type='" + ticker_type + '\'' +
                     ", color='" + color + '\'' +
                     ", status='" + status + '\'' +
-                    '}';
-        }
-    }
-
-    public static class Meta {
-        @SerializedName("total_data")
-        @Expose
-        String totalData;
-
-        public String getTotalData() {
-            return totalData;
-        }
-
-        public void setTotalData(String totalData) {
-            this.totalData = totalData;
-        }
-
-        @Override
-        public String toString() {
-            return "Meta{" +
-                    "totalData='" + totalData + '\'' +
                     '}';
         }
     }

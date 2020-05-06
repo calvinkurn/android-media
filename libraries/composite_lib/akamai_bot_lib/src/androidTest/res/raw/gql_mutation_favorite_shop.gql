@@ -1,0 +1,6 @@
+mutation followShop($input: ParamFollowShop!) {
+  followShop(input:$input){
+    success
+    message
+  }
+}

@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import android.view.*
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
@@ -33,6 +34,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
                 .productComponent(getComponent(ProductComponent::class.java))
+                .categoryPickerModule(CategoryPickerModule(requireActivity().applicationContext))
                 .productEditCategoryCatalogModule(ProductEditCategoryCatalogModule())
                 .build()
                 .inject(this)
@@ -75,8 +77,10 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
         categoryCatalogSection?.visibility = if (productName.name.isNotEmpty()) View.VISIBLE else View.GONE
         if(!flagReset){
             this.productName = productName
-            presenter.onProductNameChange(productName.name)
             name = productName.name
+            if(name.isNotEmpty()) {
+                presenter.onProductNameChange(name)
+            }
             validateData()
             resetCategoryCatalog()
         }

@@ -84,7 +84,6 @@
     <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli.\n\nPembatalan akan dikenakan penalti reputasi -10</string>
     <string name="action_agree">Setuju</string>
     <string name="action_back">Kembali</string>
-    <string name="title_opportunity_detail">Peluang Baru</string>
     <string name="cashback">Cashback :</string>
     <string name="cashback_for_buyer">Cashback Untuk Pembeli:</string>
     <string name="respond_deadline">Batas Respon:</string>
@@ -95,7 +94,6 @@
     <string name="title_supported_shipping">Dukungan Pengiriman</string>
     <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
     <string name="action_sort">Urutkan</string>
-    <string name="take_opportunity">Ambil Peluang</string>
     <string name="delete_opportunity">Hapus Peluang</string>
     <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
     <string name="appwidget_text">EXAMPLE</string>
@@ -220,12 +218,14 @@
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
     <string name="choose_shop_picture">Pilih Gambar Toko</string>
+    <string name="opportunity_desc_message">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
+    <string name="btn_check_opportunity">Cek Peluang</string>
 
     <string name="sticker_shop_link">https://tokopedia.com/%s</string>
     <string name="sticker_cashback">Cashback %1$d%%</string>
     <string name="catalog">Katalog</string>
     <string name="primary">Utama</string>
-    <string name="title_activity_seller_center">Seller Center</string>
+    <string name="title_activity_seller_center">Pusat Seller</string>
     <string name="title_seller_tx_ready_to_ship">Siap Dikirim</string>
     <string name="title_seller_tx_shipped">Sedang Dikirim</string>
     <string name="title_seller_tx_delivered">Sampai Tujuan</string>
@@ -374,5 +374,11 @@
     <string name="request_pickup_info_label_3">Tidak perlu memberikan ongkir ke kurir</string>
     <string name="request_pickup_info_icon">Icon info confirm request pickup</string>
     <string name="request_pickup_info_button">Request Pick-Up</string>
+
+    <string name="transaction_buy_page">Transaction - Buy page</string>
+    <string name="transaction_sell_page">Transaction - Sell page</string>
+
+    <string name="error_field_required">Harus diisi</string>
+    <string name="action_sign_in_short">Masuk</string>
 
 </resources>

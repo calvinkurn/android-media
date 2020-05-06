@@ -13,4 +13,12 @@
     <declare-styleable name="ExpandingLineView">
         <attr name="lineColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="TokopediaPlayView">
+        <attr format="enum" name="show_play_buffering">
+            <enum name="never" value="0"/>
+            <enum name="when_playing" value="1"/>
+            <enum name="always" value="2"/>
+        </attr>
+    </declare-styleable>
 </resources>

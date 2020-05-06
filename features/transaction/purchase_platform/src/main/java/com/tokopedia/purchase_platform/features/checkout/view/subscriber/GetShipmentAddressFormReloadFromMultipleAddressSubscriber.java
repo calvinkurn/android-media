@@ -63,9 +63,9 @@ public class GetShipmentAddressFormReloadFromMultipleAddressSubscriber extends S
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 RecipientAddressModel newRecipientAddressModel =
-                        view.getShipmentDataConverter().getRecipientAddressModel(cartShipmentAddressFormData);
+                        shipmentPresenter.getShipmentDataConverter().getRecipientAddressModel(cartShipmentAddressFormData);
                 List<ShipmentCartItemModel> shipmentCartItemModelList =
-                        view.getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData);
+                        shipmentPresenter.getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData, false);
                 if (shipmentPresenter.checkAddressHasChanged(oldRecipientAddressModel, newRecipientAddressModel) ||
                         shipmentPresenter.checkShipmentItemHasChanged(oldShipmentCartItemModels, shipmentCartItemModelList)) {
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);

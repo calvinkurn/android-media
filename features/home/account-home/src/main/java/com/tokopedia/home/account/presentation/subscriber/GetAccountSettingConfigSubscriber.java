@@ -3,9 +3,10 @@ package com.tokopedia.home.account.presentation.subscriber;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.presentation.AccountSetting;
@@ -36,22 +37,8 @@ public class GetAccountSettingConfigSubscriber extends BaseAccountSubscriber<Gra
     }
 
     @Override
-    protected void showErrorMessage(Throwable e) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            e.printStackTrace();
-        }
-        String errorMessage = ErrorHandler.getErrorMessage(context, e);
-
-        if (e instanceof UnknownHostException
-                || e instanceof SocketTimeoutException) {
-            view.showErrorNoConnection();
-        } else {
-            view.showError(errorMessage);
-        }
-
-        if (errorMessage.contains(context.getString(R.string.default_request_error_unknown))) {
-            view.logUnknownError(e);
-        }
+    String getErrorCode() {
+        return AccountConstants.ErrorCodes.ERROR_CODE_ACCOUNT_SETTING_CONFIG;
     }
 
     @Override

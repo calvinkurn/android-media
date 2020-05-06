@@ -47,12 +47,16 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
     }
     items {
       categoryID
+      categoryL1
+      categoryL2
+      categoryL3
       id
       imageUrl
       category
       title
       quantity
       price
+      unformattedPrice
       promotionAmount
       metaData
       description

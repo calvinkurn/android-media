@@ -1,8 +1,0 @@
-query hotlistDetail($productKey: String!) {
-  hotlistDetail(productKey: $productKey) {
-   queries{
-        filterKey
-        filterValue
-      }
-  }
-}

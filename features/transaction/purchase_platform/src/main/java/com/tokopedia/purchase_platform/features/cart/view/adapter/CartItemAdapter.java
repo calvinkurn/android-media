@@ -6,9 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartItemViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +34,14 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        return CartItemViewHolder.TYPE_VIEW_ITEM_CART;
+        return CartItemViewHolder.Companion.getTYPE_VIEW_ITEM_CART();
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(CartItemViewHolder.TYPE_VIEW_ITEM_CART, parent, false);
+                .inflate(CartItemViewHolder.Companion.getTYPE_VIEW_ITEM_CART(), parent, false);
         return new CartItemViewHolder(view, compositeSubscription, actionListener);
     }
 
@@ -100,8 +99,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition);
 
-        void onCartItemRemarkEditChange(CartItemData cartItemData, String remark, int position, int parentPosition);
-
         void onCartItemAfterErrorChecked();
 
         void onCartItemQuantityInputFormClicked(String qty);
@@ -125,5 +122,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemShowTickerOutOfStock(String productId);
 
         void onCartItemSimilarProductUrlClicked(String similarProductUrl);
+
+        CompositeSubscription onGetCompositeSubscriber();
+
+        void onCartItemQuantityChangedThenHitUpdateCartAndValidateUse();
     }
 }
