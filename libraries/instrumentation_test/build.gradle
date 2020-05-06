@@ -108,6 +108,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation 'androidx.test:monitor:1.1.1'
 }
 
 project.ext {
