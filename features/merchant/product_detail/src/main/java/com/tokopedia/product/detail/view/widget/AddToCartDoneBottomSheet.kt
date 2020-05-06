@@ -181,7 +181,6 @@ class AddToCartDoneBottomSheet :
                     )
                 }
             }
-            configBottomSheetHeight()
         })
     }
 
@@ -194,19 +193,6 @@ class AddToCartDoneBottomSheet :
                     getString(R.string.title_try_again),
                     onClickListener
             )
-        }
-    }
-
-    private fun configBottomSheetHeight() {
-        dialog?.run {
-            val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
-            val displaymetrics = DisplayMetrics()
-            activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
-            val screenHeight = displaymetrics.heightPixels
-            val maxHeight = (screenHeight * 0.90f).toInt()
-            val params = parent.layoutParams
-//            params.height = maxHeight
-//            parent.layoutParams = params
         }
     }
 
