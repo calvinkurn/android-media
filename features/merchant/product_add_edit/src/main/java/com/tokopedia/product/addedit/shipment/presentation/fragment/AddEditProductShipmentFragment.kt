@@ -12,11 +12,8 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
-import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.common.util.setModeToNumberInput
-import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
