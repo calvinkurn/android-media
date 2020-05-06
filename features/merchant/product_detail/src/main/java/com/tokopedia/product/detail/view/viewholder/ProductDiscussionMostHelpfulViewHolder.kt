@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.view.adapter.ProductDiscussionQuestionsAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful.view.*
+import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful_question_and_answer.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_local_load.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_empty_state.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_single_question.view.*
@@ -28,18 +29,21 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideSingleQuestionLayout()
                     hideEmptyState()
                     hideShimmer()
+                    hideMultipleQuestionAndTitle()
                 }
                 isShimmering -> {
                     showShimmer()
                     hideSingleQuestionLayout()
                     hideEmptyState()
                     hideLocalLoad()
+                    hideMultipleQuestionAndTitle()
                 }
                 (totalQuestion < 1 && element.questions?.isEmpty() == true) -> {
                     showEmptyState()
                     hideSingleQuestionLayout()
                     hideLocalLoad()
                     hideShimmer()
+                    hideMultipleQuestionAndTitle()
                 }
                 element.totalQuestion == 1 -> {
                     showTitle(element.totalQuestion)
@@ -47,6 +51,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideEmptyState()
                     hideShimmer()
                     hideLocalLoad()
+                    hideMultipleQuestionAndTitle()
                 }
                 else -> {
                     showTitle(element.totalQuestion)
@@ -218,6 +223,14 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     listener.onDiscussionRefreshClicked()
                 }
             }
+        }
+    }
+
+    private fun hideMultipleQuestionAndTitle() {
+        itemView.apply {
+            productDiscussionMostHelpfulQuestions.visibility = View.GONE
+            productDiscussionMostHelpfulTitle.visibility = View.GONE
+            productDiscussionMostHelpfulSeeAll.visibility = View.GONE
         }
     }
 
