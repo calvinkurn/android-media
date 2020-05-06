@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:padding="@dimen/layout_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -45,8 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/product_detail_discussion_empty_button"
-        android:layout_marginEnd="@dimen/layout_lvl7"
-        android:layout_marginRight="@dimen/layout_lvl7"
+        android:layout_marginEnd="@dimen/layout_lvl6"
+        android:layout_marginRight="@dimen/layout_lvl6"
         app:layout_constraintTop_toBottomOf="@id/product_detail_discussion_empty_description"
         app:unifyButtonVariant="ghost"
         app:layout_constraintStart_toStartOf="parent"

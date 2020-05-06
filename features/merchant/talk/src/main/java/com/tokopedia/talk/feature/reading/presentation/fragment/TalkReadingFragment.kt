@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -61,6 +62,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
+        const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty.png"
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
@@ -241,6 +243,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showPageEmpty() {
+        reading_image_error.loadImage(TALK_READING_EMPTY_IMAGE_URL)
         addFloatingActionButton.hide()
         pageEmpty.visibility = View.VISIBLE
         readingEmptyAskButton.setOnClickListener {

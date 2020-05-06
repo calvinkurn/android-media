@@ -9,7 +9,6 @@ import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.view.adapter.ProductDiscussionQuestionsAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful.view.*
-import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful_question_and_answer.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_local_load.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_empty_state.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_single_question.view.*
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_si
 class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
-        const val EMPTY_TALK_URL = ""
+        private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_pdp_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
 
@@ -71,7 +70,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
             productDetailDiscussionEmptyButton.setOnClickListener {
                 listener.onDiscussionSendQuestionClicked()
             }
-            productDetailDiscussionEmptyImage.loadImage(EMPTY_TALK_URL)
+            productDetailDiscussionEmptyImage.loadImage(EMPTY_TALK_IMAGE_URL)
         }
     }
 
