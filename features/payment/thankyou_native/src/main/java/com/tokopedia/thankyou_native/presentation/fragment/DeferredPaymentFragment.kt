@@ -256,7 +256,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
         loading_layout.gone()
         thanksPageData = data
-        showPaymentStatusDialog(isTimerExpired(data), dialogOrigin, thanksPageData)
+        showPaymentStatusDialog(isTimerExpired(data), thanksPageData)
     }
 
     private fun isTimerExpired(thanksPageData: ThanksPageData): Boolean {
