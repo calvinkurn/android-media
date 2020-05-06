@@ -28,6 +28,8 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 @Deprecated
 /**
@@ -79,12 +81,6 @@ public class SessionHandler {
 
     public SessionHandler(Context context) {
         this.context = context;
-    }
-
-    public static String getTempLoginSession(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString("temp_login_id", "");
-
     }
 
     /**
@@ -172,9 +168,10 @@ public class SessionHandler {
     }
 
     private static void logoutInstagram(Context context) {
+        UserSessionInterface userSession = new UserSession(context);
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, INSTAGRAM_CACHE_KEY);
         localCacheHandler.clearCache(INSTAGRAM_CACHE_KEY);
-        if (isV4Login(context) && context instanceof AppCompatActivity) {
+        if (userSession.isLoggedIn() && context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).setContentView(R.layout.activity_webview_general);
             WebView webView = (WebView) ((AppCompatActivity) context).findViewById(R.id.webview);
             WebSettings ws = webView.getSettings();
@@ -298,21 +295,6 @@ public class SessionHandler {
         edit.apply();
     }
 
-    /**
-     * replacement of isLogin for v$ Login
-     *
-     * @param context
-     * @return
-     */
-    public static boolean isV4Login(Context context) {
-        String u_id = null;
-        boolean isLogin = false;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_id = sharedPrefs.getString(LOGIN_ID, null);
-        isLogin = sharedPrefs.getBoolean(IS_LOGIN, false);
-        return isLogin && u_id != null;
-    }
-
     @SuppressWarnings("unused")
     public static String getUserAvatarUri(Context context) {
         String avatar_uri = null;
@@ -349,11 +331,6 @@ public class SessionHandler {
         cache.applyEditor();
     }
 
-    public static String getPhoneNumber() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
-        return cache.getString(PHONE_NUMBER, "");
-    }
-
     public static void setPhoneNumber(String userPhone) {
         LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
         cache.putString(PHONE_NUMBER, userPhone);
@@ -373,26 +350,6 @@ public class SessionHandler {
     public static String getRefreshTokenIV(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(REFRESH_TOKEN_KEY, KEY_IV);
-    }
-
-    public static boolean isUserHasShop(Context context) {
-        String shopID = SessionHandler.getShopID(context);
-        return isShopIdValid(shopID);
-    }
-
-    private static boolean isShopIdValid(String shopId) {
-        return !TextUtils.isEmpty(shopId) && !DEFAULT_EMPTY_SHOP_ID.equals(shopId);
-    }
-
-    public static String getAccessToken(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
-    }
-
-    public String getShopName() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        String shopName = sharedPrefs.getString(SHOP_NAME, "");
-        return shopName;
     }
 
     public void setShopId(String shopId) {
@@ -423,11 +380,6 @@ public class SessionHandler {
         return sharedPrefs.getString(TEMP_EMAIL, "");
     }
 
-    public String getEmail() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(EMAIL, "");
-    }
-
     public void setEmail(String email) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
@@ -443,11 +395,6 @@ public class SessionHandler {
     public String getAuthRefreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(REFRESH_TOKEN, "").trim();
-    }
-
-    public boolean isUserHasShop() {
-        String shopID = getShopID();
-        return isShopIdValid(shopID);
     }
 
     public void setLoginSession(boolean isLogin, String u_id, String u_name, String shop_id, boolean isMsisdnVerified, String shopName) {
@@ -486,19 +433,8 @@ public class SessionHandler {
         clearUserData();
     }
 
-    public boolean isV4Login() {
-        return isV4Login(context);
-    }
-
     public String getLoginID() {
         return getLoginID(context);
-    }
-
-    public String getLoginName() {
-        String u_name = null;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_name = sharedPrefs.getString(FULL_NAME, null);
-        return u_name;
     }
 
     @SuppressWarnings("unused")
@@ -587,11 +523,6 @@ public class SessionHandler {
         cache.applyEditor();
     }
 
-    public String getProfilePicture() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(PROFILE_PICTURE, "");
-    }
-
     public void setProfilePicture(String profilePicture) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
@@ -610,10 +541,5 @@ public class SessionHandler {
         LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
         cache.putBoolean(HAS_PASSWORD, hasPassword);
         cache.applyEditor();
-    }
-
-    public boolean isHasPassword() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getBoolean(HAS_PASSWORD, true);
     }
 }

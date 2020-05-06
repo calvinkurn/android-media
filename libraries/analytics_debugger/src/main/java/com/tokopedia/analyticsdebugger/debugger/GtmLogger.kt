@@ -3,7 +3,6 @@ package com.tokopedia.analyticsdebugger.debugger
 import android.content.Context
 import android.text.TextUtils
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -13,6 +12,7 @@ import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDeb
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
+import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
 
 import java.net.URLDecoder
 
@@ -87,6 +87,10 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
         context.startActivity(AnalyticsGtmErrorDebuggerActivity.newInstance(context))
     }
 
+    override fun navigateToValidator() {
+        context.startActivity(MainValidatorActivity.newInstance(context))
+    }
+
     override fun enableNotification(isEnabled: Boolean) {
         cache.putBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, isEnabled)
         cache.applyEditor()
@@ -150,6 +154,10 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 }
 
                 override fun openErrorActivity() {
+
+                }
+
+                override fun navigateToValidator() {
 
                 }
 
