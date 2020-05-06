@@ -15,10 +15,10 @@ class DialogHelper(val context: Context, val listener: OnDialogRedirectListener)
 
     private var dialogUnify: DialogUnify? = null
 
-    internal fun showPaymentStatusDialog(dialogOrigin: DialogOrigin, paymentStatus: PaymentStatus?) {
+    internal fun showPaymentStatusDialog(paymentStatus: PaymentStatus?) {
         cancelDialog()
         when (paymentStatus) {
-            is PaymentVerified -> showPaymentSuccessDialog(dialogOrigin)
+            is PaymentVerified -> showPaymentSuccessDialog()
             is PaymentExpired -> showPaymentTimeExpired()
             is PaymentWaiting -> showPaymentWaitingDialog()
             is PaymentCancelled -> showPaymentFailedDialog()
@@ -35,16 +35,9 @@ class DialogHelper(val context: Context, val listener: OnDialogRedirectListener)
                  R.string.thank_exit_page,R.string.thank_cancel, { gotoPaymentWaitingPage() },{ cancelDialog() })
     }
 
-    private fun showPaymentSuccessDialog(dialogOrigin: DialogOrigin) {
-        when (dialogOrigin) {
-            OriginOnBackPress -> showTwoActionDialog(R.string.thank_exit_this_page, R.string.thank_payment_success_back_press,
-                    R.string.thank_exit_page, R.string.thank_cancel, { gotoPaymentWaitingPage() }, { cancelDialog() })
-            OriginCheckStatusButton -> showSingleActionDialog(R.string.thank_payment_success, R.string.thank_payment_success_description,
-                    R.string.thank_see_transaction_list) { gotoOrderList() }
-            OriginTimerFinished -> showSingleActionDialog(R.string.thank_payment_success, R.string.thank_payment_success_description,
-                    R.string.thank_see_transaction_list) { gotoOrderList() }
-
-        }
+    private fun showPaymentSuccessDialog() {
+        showSingleActionDialog(R.string.thank_payment_success, R.string.thank_payment_success_description,
+                R.string.thank_see_transaction_list) { gotoOrderList() }
     }
 
     private fun showPaymentTimeExpired() {

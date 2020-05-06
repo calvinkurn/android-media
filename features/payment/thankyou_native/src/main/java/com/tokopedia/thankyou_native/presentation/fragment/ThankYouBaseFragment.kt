@@ -39,7 +39,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         RouteManager.route(context, thanksPageData.howToPay)
     }
 
-    fun showPaymentStatusDialog(isTimerFinished: Boolean, dialogOrigin: DialogOrigin?,
+    fun showPaymentStatusDialog(isTimerFinished: Boolean,
                                 thanksPageData: ThanksPageData) {
         var paymentStatus = PaymentStatusMapper
                 .getPaymentStatusByInt(thanksPageData.paymentStatus)
@@ -50,9 +50,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         context?.let {
             if (!::dialogHelper.isInitialized)
                 dialogHelper = DialogHelper(it, this)
-            dialogOrigin?.let { dialogOrigin ->
-                dialogHelper.showPaymentStatusDialog(dialogOrigin, paymentStatus)
-            }
+            dialogHelper.showPaymentStatusDialog(paymentStatus)
         }
     }
 

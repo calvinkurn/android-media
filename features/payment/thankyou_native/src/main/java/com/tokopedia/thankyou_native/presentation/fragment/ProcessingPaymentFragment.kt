@@ -152,7 +152,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
         loading_layout.gone()
         thanksPageData = data
-        showPaymentStatusDialog(dialogOrigin, thanksPageData)
+        showPaymentStatusDialog(false, thanksPageData)
     }
 
     internal fun onBackPressed(): Boolean {
