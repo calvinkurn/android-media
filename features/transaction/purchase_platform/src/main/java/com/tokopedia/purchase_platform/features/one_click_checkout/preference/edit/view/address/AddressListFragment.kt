@@ -319,7 +319,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun goToPickLocation(requestCode: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-        intent.putExtra(EXTRA_IS_FULL_FLOW, true)
+        intent.putExtra(EXTRA_IS_FULL_FLOW, false)
         intent.putExtra(KERO_TOKEN, viewModel.token)
         startActivityForResult(intent, requestCode)
     }
