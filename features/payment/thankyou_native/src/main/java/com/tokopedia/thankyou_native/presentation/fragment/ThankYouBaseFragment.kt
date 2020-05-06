@@ -99,7 +99,15 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             val list: List<String> = getThankPageData().shopOrder.map {
                 it.orderId
             }
-            RouteManager.route(context, ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL, list[0])
+
+            val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
+            val orderListListIntent = RouteManager.getIntent(context, ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL, list[0])
+            orderListListIntent?.let {
+                TaskStackBuilder.create(context)
+                        .addNextIntent(homeIntent)
+                        .addNextIntent(orderListListIntent)
+                        .startActivities()
+            }
             activity?.finish()
         } catch (e: Exception) {
         }

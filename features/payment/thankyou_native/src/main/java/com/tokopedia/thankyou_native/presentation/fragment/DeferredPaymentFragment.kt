@@ -260,7 +260,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     private fun isTimerExpired(thanksPageData: ThanksPageData): Boolean {
-        if (thanksPageData.expireTimeUnix * 1000L >= System.currentTimeMillis())
+        if (thanksPageData.expireTimeUnix * 1000L <= System.currentTimeMillis())
             return true
         return false
     }
