@@ -30,7 +30,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -77,6 +78,9 @@ import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_PLT_NETWORK_METRICS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_PLT_PREPARE_METRICS;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_PLT_RENDER_METRICS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_SECOND_POSITION;
@@ -126,7 +130,7 @@ public class SearchActivity extends BaseActivity
     @Nullable
     SearchShopViewModel searchShopViewModel;
 
-    private PerformanceMonitoring performanceMonitoring;
+    private PageLoadTimePerformanceInterface pageLoadTimePerformanceMonitoring;
     private SearchParameter searchParameter;
 
     @Override
@@ -145,7 +149,19 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void startPerformanceMonitoring() {
-        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
+        pageLoadTimePerformanceMonitoring = new PageLoadTimePerformanceCallback(
+                SEARCH_RESULT_PLT_PREPARE_METRICS,
+                SEARCH_RESULT_PLT_NETWORK_METRICS,
+                SEARCH_RESULT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        );
+
+        pageLoadTimePerformanceMonitoring.startMonitoring(SEARCH_RESULT_TRACE);
+        pageLoadTimePerformanceMonitoring.startPreparePagePerformanceMonitoring();
     }
 
     private void setStatusBarColor() {
@@ -799,10 +815,52 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
+    public void startPreparePagePerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring.startPreparePagePerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void stopPreparePagePerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring.stopPreparePagePerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void startNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring.startNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void stopNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring.stopNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void startRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring.startRenderPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void stopRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring.stopRenderPerformanceMonitoring();
+        }
+    }
+
+    @Override
     public void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-            performanceMonitoring = null;
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring.stopMonitoring();
+            pageLoadTimePerformanceMonitoring = null;
         }
     }
 }

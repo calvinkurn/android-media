@@ -28,8 +28,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
     private var _preferenceIndex = ""
     private var _profileId = 0
-    private var _addressId = -1
-    private var _shippingId = -1
+    private var _addressId = 0
+    private var _shippingId = 0
     private var _gatewayCode = ""
     private var _paymentQuery = ""
     private var _shippingParam: ShippingParam? = null
@@ -62,14 +62,11 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
         _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
-        _addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
-        _shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
-        _gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _should_show_delete_button = intent.getBooleanExtra(EXTRA_SHOW_DELETE_BUTTON, true)
 
-        if (_addressId == -1 || _shippingId == -1 || _gatewayCode.isBlank() || _profileId == 0) {
+        if (_profileId == 0) {
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
             supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()

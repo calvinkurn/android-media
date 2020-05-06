@@ -7,12 +7,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
@@ -34,12 +35,13 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ReviewUITest {
+class ReviewUITest : BaseWidgetUiTest(){
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -47,25 +49,6 @@ class ReviewUITest {
     @Rule
     @JvmField
     val taskExecutorRule = InstantTaskExecutorRule()
-
-    private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
-    private val dismissHomeReviewUseCase = mockk<DismissHomeReviewUseCase>(relaxed = true)
-    private val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)
-    private val getKeywordSearchUseCase = mockk<GetKeywordSearchUseCase>(relaxed = true)
-    private val getRecommendationTabUseCase = mockk<GetRecommendationTabUseCase>(relaxed = true)
-    private val getHomeTokopointsDataUseCase = mockk<GetHomeTokopointsDataUseCase>(relaxed = true)
-    private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase> (relaxed = true)
-    private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase> (relaxed = true)
-    private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase> (relaxed = true)
-    private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
-    private val getSendGeolocationInfoUseCase = mockk<SendGeolocationInfoUseCase> (relaxed = true)
-    private val getStickyLoginUseCase = mockk<StickyLoginUseCase> (relaxed = true)
-    private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab> (relaxed = true)
-    private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
-    private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
-    private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
-    private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
-    private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
 
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
@@ -98,7 +81,7 @@ class ReviewUITest {
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(CONTAINER)).check(matches(isDisplayed()))
+        onView(allOf(withId(CONTAINER), withEffectiveVisibility(Visibility.VISIBLE))).check(matches(isDisplayed()))
         onView(withId(LOADING)).check(matches(isDisplayed()))
     }
 
@@ -151,43 +134,10 @@ class ReviewUITest {
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(CONTAINER)).check(matches(isDisplayed()))
+        onView(allOf(withId(CONTAINER), withEffectiveVisibility(Visibility.VISIBLE))).check(matches(isDisplayed()))
         onView(withId(CLOSE_REVIEW)).check(matches(isDisplayed()))
         onView(withId(CLOSE_REVIEW)).perform(click())
         Thread.sleep(1000)
-        onView(withId(CONTAINER)).check(doesNotExist())
+        onView(allOf(withId(CONTAINER), withEffectiveVisibility(Visibility.VISIBLE))).check(doesNotExist())
     }
-
-    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
-        return object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
-                if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return viewModel as T
-                }
-                throw IllegalArgumentException("Unknown view model class " + viewModelClass)
-            }
-        }
-    }
-
-    private fun reInitViewModel() = HomeViewModel(
-            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
-            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-            getBusinessWidgetTab = getBusinessWidgetTab,
-            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
-            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-            getKeywordSearchUseCase = getKeywordSearchUseCase,
-            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
-            getRecommendationTabUseCase = getRecommendationTabUseCase,
-            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-            homeDispatcher = TestDispatcherProvider(),
-            homeUseCase = getHomeUseCase,
-            popularKeywordUseCase = getPopularKeywordUseCase,
-            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
-            userSession = userSessionInterface,
-            sendTopAdsUseCase = sendTopAdsUseCase
-    )
 }

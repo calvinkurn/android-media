@@ -52,6 +52,7 @@ query getProductVariant($productID:String!, $option: pdpGetProductVariantReqOpti
         isAppsOnly
       }
       stock {
+        stock
         isLimitedStock
         stockWording
         stockWordingHTML

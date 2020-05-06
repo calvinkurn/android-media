@@ -254,6 +254,7 @@ class ShopPageFragment :
                     onErrorGetShopInfo(result.throwable)
                 }
             }
+            stopPerformanceMonitoring()
         })
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
@@ -676,11 +677,10 @@ class ShopPageFragment :
     }
 
     private fun onErrorGetShopInfo(e: Throwable?) {
-        stopPerformanceMonitoring()
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
-            errorButton.setOnClickListener { getShopInfo() }
+            errorButton.setOnClickListener { getShopInfo(true) }
             swipeToRefresh.isRefreshing = false
         }
     }
@@ -774,7 +774,7 @@ class ShopPageFragment :
     }
 
     private fun stopPerformanceMonitoring() {
-        (activity as? ShopPageActivity)?.stopPerformanceMonitor()
+        (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
     fun refreshData() {

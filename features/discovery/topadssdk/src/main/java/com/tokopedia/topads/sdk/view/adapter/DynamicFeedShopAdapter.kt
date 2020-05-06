@@ -1,7 +1,5 @@
 package com.tokopedia.topads.sdk.view.adapter
 
-import android.os.Build
-import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -11,10 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.gm.resource.GMConstant.getGMDrawableResource
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Shop
@@ -97,7 +98,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                         loadImageOrDefault(ivImageMiddle, imageProductList[1].imageUrl)
                     }
                     if (imageProductList.size > 2) {
-                        loadImageOrDefault(ivImageMiddle, imageProductList[2].imageUrl)
+                        loadImageOrDefault(ivImageRight, imageProductList[2].imageUrl)
                     }
                     shop.isLoaded = true
                 }
@@ -117,13 +118,11 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
         private fun initListener(data: Data) {
             itemView.setOnClickListener { itemClickListener.onShopItemClicked(adapterPosition, data) }
             btnFollow.setOnClickListener {
-                if (data.isFavorit) {
-                    itemClickListener.onShopItemClicked(adapterPosition, data)
-                } else {
-                    itemClickListener.onAddFavorite(adapterPosition, data)
+                if (!data.isFavorit) {
                     btnFollow.buttonCompatType = ButtonCompat.SECONDARY
                     btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
                 }
+                itemClickListener.onAddFavorite(adapterPosition, data)
             }
         }
 
@@ -139,11 +138,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
 
         private fun fromHtml(string: String?): Spanned {
             val str = string ?: ""
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                Html.fromHtml(str)
-            }
+            return MethodChecker.fromHtml(str)
         }
 
         private fun bindFavorite(data: Data) {
@@ -160,14 +155,14 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
             val layoutParams = tvName.layoutParams as ViewGroup.MarginLayoutParams
             when {
                 shop.isShop_is_official -> {
-                    ivBadge.visibility = View.VISIBLE
+                    ivBadge.show()
                     ivBadge.setImageDrawable(
                             ImageLoader.getDrawable(ivBadge.context, R.drawable.ic_badge_shop_official)
                     )
                     layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_4).toInt()
                 }
                 shop.isGoldShopBadge -> {
-                    ivBadge.visibility = View.VISIBLE
+                    ivBadge.show()
                     ivBadge.setImageDrawable(
                             ImageLoader.getDrawable(
                                     ivBadge.context,
@@ -177,7 +172,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                     layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_4).toInt()
                 }
                 else -> {
-                    ivBadge.visibility = View.GONE
+                    ivBadge.hide()
                     layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_0).toInt()
                 }
             }

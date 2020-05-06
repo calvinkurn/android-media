@@ -681,6 +681,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 .inject(this)
     }
 
+    override fun onGetListErrorWithExistingData(throwable: Throwable?) {
+        clearCache()
+        super.onGetListErrorWithExistingData(throwable)
+    }
+
+    override fun onRetryClicked() {
+        clearCache()
+        super.onRetryClicked()
+    }
+
     override fun loadInitialData() {
         shopId?.let {
             isLoadingNewProductData = true
@@ -1132,7 +1142,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun stopPerformanceMonitoring(){
-        (activity as? ShopPageActivity)?.stopPerformanceMonitor()
+        (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
     }
 
     fun clearCache() {
