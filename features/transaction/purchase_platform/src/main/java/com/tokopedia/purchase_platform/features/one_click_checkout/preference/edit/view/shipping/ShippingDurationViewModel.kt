@@ -8,14 +8,14 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.ShippingNoPriceResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.shipping.ShippingNoPriceResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetShippingDurationUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.ShippingDurationModelMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.ShippingDurationModelWithPriceMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModelNoPrice
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModelNoPrice
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ShippingListModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,7 +64,7 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         }
     }
 
-    private fun mapTomodel(responses: ShippingNoPriceResponse): ShippingListModel{
+    private fun mapTomodel(responses: ShippingNoPriceResponse): ShippingListModel {
         return mapper.convertToDomainModel(responses)
     }
 
@@ -107,7 +107,7 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         }
     }
 
-    private fun mapTomodelPrice(responses: ShippingRecommendationData): ShippingListModel{
+    private fun mapTomodelPrice(responses: ShippingRecommendationData): ShippingListModel {
         return mapperPrice.convertToDomainModelWithPrice(responses)
     }
 

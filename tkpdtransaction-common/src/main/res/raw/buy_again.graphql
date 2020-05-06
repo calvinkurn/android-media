@@ -6,6 +6,7 @@ mutation add_to_cart_multi($param: [AddToCartMultiParam]) {
       success
       messages
       data {
+        cart_id
         product_id
         quantity
         notes

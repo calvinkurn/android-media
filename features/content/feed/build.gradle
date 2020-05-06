@@ -103,6 +103,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.testDependencies.json
 
     implementation rootProject.ext.networkDependencies.glide
     implementation(rootProject.ext.miscDependencies.ucrop) {

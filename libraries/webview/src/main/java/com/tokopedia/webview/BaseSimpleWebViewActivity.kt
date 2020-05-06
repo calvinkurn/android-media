@@ -19,6 +19,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import java.lang.Exception
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -30,9 +31,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
-        if (!::url.isInitialized || url.isEmpty()) {
-            finish()
-        }
         super.onCreate(savedInstanceState)
         setupToolbar()
     }
@@ -99,7 +97,16 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1) {
+        reloadWebViewIfNeeded()
+    }
+
+    private fun reloadWebViewIfNeeded(){
+        val needReload = try {
+            PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
+        } catch (e:Exception) {
+            false
+        }
+        if (needReload) {
             PersistentCacheManager.instance.put(KEY_CACHE_RELOAD_WEBVIEW, 0)
             val f: Fragment? = fragment
             if (f is BaseSessionWebViewFragment) {
@@ -202,7 +209,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return taskStackBuilder
         }
 
-        @DeepLink(ApplinkConst.WEBVIEW)
+        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW)
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(

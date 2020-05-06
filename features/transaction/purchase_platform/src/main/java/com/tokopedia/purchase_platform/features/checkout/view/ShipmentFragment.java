@@ -509,7 +509,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size()) {
                 if (lastApplyUiModel != null && !lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
-                    PromoRevampAnalytics.INSTANCE.eventCartViewPromoChanged(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
+                    PromoRevampAnalytics.INSTANCE.eventCartViewPromoMessage(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
                 }
                 shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel);
             }
@@ -1343,6 +1343,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 doUpdateButtonPromoCheckout(promoUiModel);
+                shipmentPresenter.setValidateUsePromoRevampUiModel(null);
                 shipmentAdapter.checkHasSelectAllCourier(false);
             }
         }
@@ -1398,7 +1399,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void updatePromoTrackingData(List<TrackingDetailsItem> trackingDetailsItems) {
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
+        List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
+        if (dataList == null) return;
+        for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 if (trackingDetailsItems.size() > 0) {
                     for (TrackingDetailsItem trackingDetailsItem : trackingDetailsItems) {
@@ -1689,6 +1692,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId) {
         checkoutAnalyticsCourierSelection.eventViewInformationAndWarningTickerInCheckout(tickerId);
+    }
+
+    @Override
+    public void sendAnalyticsViewPromoAfterAdjustItem(String msg) {
+        checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg);
     }
 
     @Override
@@ -2424,8 +2432,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCourierPromoCanceled(String shipperName, String promoCode) {
         if (shipmentAdapter.isCourierPromoStillExist()) {
-//            shipmentAdapter.cancelAutoApplyCoupon("");
-//            onRemovePromoCode(promoCode);
             showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
         }
     }

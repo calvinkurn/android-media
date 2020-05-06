@@ -174,6 +174,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
         } else if (element.orderQuantity > element.maxOrderQuantity) {
             error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_MAX_QTY)
         }
         if (element.orderQuantity <= element.minOrderQuantity) {
             btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_disabled)
