@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_recom.util.Response
+import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -13,7 +14,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
@@ -27,12 +27,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-        @Named("singleProductRecommendation") private val recommendationProductQuery: String,
-        @Named("Main") val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher){
+        @Named("Main") dispatcher: RecommendationDispatcher
+) : BaseViewModel(dispatcher.getMainDispatcher()){
 
     internal val recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()
-    private var hasNextPage = true
 
     fun getSimilarProductRecommendation(page: Int = 1, queryParam: String, productId: String){
         if(page == 1 && recommendationItem.value != null) recommendationItem.value = null

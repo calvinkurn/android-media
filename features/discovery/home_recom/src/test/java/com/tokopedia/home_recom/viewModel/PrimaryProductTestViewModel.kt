@@ -59,7 +59,7 @@ class PrimaryProductTestViewModel {
 
     @Before
     fun setup(){
-        viewModel = PrimaryProductViewModel(mock(), mock(), addWishListUseCase, removeWishListUseCase, addToCartUseCase, Dispatchers.Unconfined)
+        viewModel = PrimaryProductViewModel(mock(), mock(), addWishListUseCase, removeWishListUseCase, addToCartUseCase, "", Dispatchers.Unconfined)
     }
 
     @Test
