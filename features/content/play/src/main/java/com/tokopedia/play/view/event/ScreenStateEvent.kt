@@ -63,6 +63,11 @@ sealed class ScreenStateEvent : ComponentEvent {
      * Immersive
      */
     data class ImmersiveStateChanged(val shouldImmersive: Boolean) : ScreenStateEvent()
+    /**
+     * Global Error
+     */
+    object ShowGlobalError : ScreenStateEvent()
+
 
     object OnNoMoreAction : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()

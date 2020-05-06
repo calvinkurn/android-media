@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
@@ -24,14 +25,8 @@ import com.tokopedia.unifycomponents.dpToPx
  * Created by jegul on 17/04/20
  */
 class PlayParentLayoutManagerImpl(
-        context: Context,
-        private val screenOrientation: ScreenOrientation,
-        private val ivClose: ImageView,
-        private val flVideo: FrameLayout,
-        private val flInteraction: FrameLayout,
-        private val flBottomSheet: FrameLayout,
-        private val flYouTube: FrameLayout,
-        private val flGlobalError: FrameLayout
+        container: ViewGroup,
+        viewInitializer: PlayParentViewInitializer
 ) : PlayParentLayoutManager {
 
     companion object {
@@ -41,8 +36,20 @@ class PlayParentLayoutManagerImpl(
         private const val NO_TRANSLATION = 0f
     }
 
-    private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
-    private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    @IdRes private val buttonCloseId = viewInitializer.onInitCloseButton(container)
+    @IdRes private val videoFragmentId = viewInitializer.onInitVideoFragment(container)
+    @IdRes private val interactionFragmentId = viewInitializer.onInitUserInteractionFragment(container)
+    @IdRes private val bottomSheetFragmentId = viewInitializer.onInitBottomSheetFragment(container)
+    @IdRes private val youTubeFragmentId = viewInitializer.onInitYouTubeFragment(container)
+    @IdRes private val errorFragmentId = viewInitializer.onInitErrorFragment(container)
+
+    private val flVideo = container.findViewById<View>(videoFragmentId)
+    private val flYouTube = container.findViewById<View>(youTubeFragmentId)
+    private val flInteraction = container.findViewById<View>(interactionFragmentId)
+    private val ivClose = container.findViewById<View>(buttonCloseId)
+
+    private val offset12 = container.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
+    private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private var isVideoAlreadyReady = false
 
@@ -83,9 +90,6 @@ class PlayParentLayoutManagerImpl(
         }
     }
 
-    override fun onVideoStreamChanged(view: View) {
-    }
-
     override fun onVideoStateChanged(view: View, videoState: PlayVideoState, videoOrientation: VideoOrientation) {
         if (videoState in arrayOf(PlayVideoState.Playing, PlayVideoState.Pause, PlayVideoState.Ended) && !isVideoAlreadyReady) {
             reconfigureLayout(view, videoOrientation)
@@ -93,7 +97,7 @@ class PlayParentLayoutManagerImpl(
         }
     }
 
-    override fun onVideoTopBoundsChanged(view: View, videoPlayer: VideoPlayerUiModel, videoOrientation: VideoOrientation, topBounds: Int) {
+    override fun onVideoTopBoundsChanged(view: View, videoPlayer: VideoPlayerUiModel, screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation, topBounds: Int) {
         val topBoundsWithOffset = topBounds + offset16
         val shouldConfigureMargin = topBoundsWithOffset != this.topBounds
 

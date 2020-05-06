@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -94,7 +93,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayInteractionFragment :
+class PlayUserInteractionFragment :
         BaseDaggerFragment(),
         PlayInteractionViewInitializer,
         PlayMoreActionBottomSheet.Listener,
@@ -113,8 +112,8 @@ class PlayInteractionFragment :
         private const val FADE_DURATION = 200L
         private const val FADE_TRANSITION_DELAY = 3000L
 
-        fun newInstance(channelId: String): PlayInteractionFragment {
-            return PlayInteractionFragment().apply {
+        fun newInstance(channelId: String): PlayUserInteractionFragment {
+            return PlayUserInteractionFragment().apply {
                 val bundle = Bundle()
                 bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
                 arguments = bundle
@@ -670,7 +669,7 @@ class PlayInteractionFragment :
                                         channelType = playViewModel.channelType,
                                         screenOrientation = playViewModel.screenOrientation
                                 )
-                                if (playViewModel.screenOrientation.isLandscape && this@PlayInteractionFragment.container.hasAlpha) this@PlayInteractionFragment.container.performClick()
+                                if (playViewModel.screenOrientation.isLandscape && this@PlayUserInteractionFragment.container.hasAlpha) this@PlayUserInteractionFragment.container.performClick()
                                 else triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
                             }
                         }
