@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -42,7 +41,7 @@ import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.atc_variant.view.viewmodel.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.design.component.ToasterError
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
@@ -518,11 +517,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             ErrorHandler.getErrorMessage(context, throwable)
         }
         activity?.run {
-            val snackbar = ToasterError.make(findViewById(android.R.id.content), message)
-            if (onRetry != null) {
-                snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
-            }
-            snackbar.show()
+            Toaster.make(view!!, message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener {
+                onRetry?.invoke(it)
+            })
         }
     }
 
@@ -1293,8 +1290,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     override fun getScreenName(): String? = null
 
     override fun showToasterError(message: String?) {
-        ToasterError.make(view, message
-                ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, message ?: getString(R.string.default_request_error_unknown),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun navigateCheckoutToThankYouPage(appLink: String) {

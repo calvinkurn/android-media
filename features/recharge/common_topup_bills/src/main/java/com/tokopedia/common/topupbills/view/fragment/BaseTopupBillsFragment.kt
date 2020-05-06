@@ -295,6 +295,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     private fun getPromoDigitalModel(): PromoDigitalModel {
         val promoModel = PromoDigitalModel()
+        promoModel.categoryName = categoryName
+        promoModel.operatorName = operatorName
         promoModel.categoryId = if (categoryId > 0) categoryId else 0
         promoModel.productId = if (productId > 0) productId else 0
         promoModel.price = price.toLong()
@@ -361,7 +363,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     fun checkVoucher() {
         promoTicker?.toggleLoading(true)
         topupBillsViewModel.checkVoucher(promoCode,
-                PromoDigitalModel(categoryId, productId, price = price.toLong())
+                PromoDigitalModel(categoryId, categoryName, operatorName, productId, price = price.toLong())
         )
     }
 

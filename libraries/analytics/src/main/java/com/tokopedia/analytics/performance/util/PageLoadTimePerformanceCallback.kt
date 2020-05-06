@@ -50,7 +50,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun stopPreparePagePerformanceMonitoring() {
-        if (!isPrepareDone) {
+        if (!isPrepareDone && preparePageDuration != 0L) {
             preparePageDuration = System.currentTimeMillis() - preparePageDuration
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
@@ -62,7 +62,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun stopNetworkRequestPerformanceMonitoring() {
-        if (!isNetworkDone) {
+        if (!isNetworkDone && requestNetworkDuration != 0L) {
             requestNetworkDuration = System.currentTimeMillis() - requestNetworkDuration
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
@@ -74,7 +74,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun stopRenderPerformanceMonitoring() {
-        if (!isRenderDone) {
+        if (!isRenderDone && renderDuration != 0L) {
             renderDuration = System.currentTimeMillis() - renderDuration
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true

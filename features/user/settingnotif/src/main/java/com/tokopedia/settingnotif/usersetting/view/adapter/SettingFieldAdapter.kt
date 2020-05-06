@@ -5,12 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.SellerSection
+import com.tokopedia.settingnotif.usersetting.data.pojo.SettingSections
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
-
-typealias ItemAdapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>
 
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         private val notificationType: String,
@@ -22,6 +22,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
     interface SettingFieldAdapterListener {
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+        fun updateSettingState(setting: ParentSetting?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
@@ -32,7 +33,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     override fun updateSettingView(positions: List<Int>) {
         if (positions.isEmpty()) return
         if (positions.size == 1) {
-            notifySinglePosition(positions[0])
+            notifySinglePosition(positions.first())
         } else if (positions.size > 1) {
             notifyRangedPosition(positions)
         }
@@ -60,6 +61,12 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         return null
     }
 
+    private inline fun getParentSettingByIndex(index: Int, get: (setting: ParentSetting?) -> Unit) {
+        if (visitables[index] is ParentSetting) {
+            get(visitables[index] as ParentSetting)
+        }
+    }
+
     override fun getNotificationType(): String {
         return notificationType
     }
@@ -68,8 +75,72 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
     }
 
-    fun removeNotificationPermission() {
-        visitables.removeFirst { it is NotificationActivation }
+    override fun updateParentSettingLastState(position: Int) {
+        // this is will used for update temporary state
+        getParentSettingByIndex(position) {
+            settingFieldAdapterListener.updateSettingState(it)
+        }
+    }
+
+    private fun removeFirstPinnedActivation() {
+        visitables.removeFirst {
+            it is NotificationActivation
+        }
+    }
+
+    fun removePinnedActivation() {
+        removeFirstPinnedActivation()
+        notifyDataSetChanged()
+    }
+
+    fun addPinnedActivation(pinned: NotificationActivation) {
+        val indexPinned = 0
+        removeFirstPinnedActivation()
+        addElement(indexPinned, pinned)
+    }
+
+    fun enableSwitchComponent(temporaryList: List<ParentSetting>) {
+        if (temporaryList.isEmpty()) return
+        if (visitables == temporaryList) return
+
+        // setting section
+        visitableFilter<SettingSections>().map {
+            it.isEnabled = true
+        }
+
+        // seller section
+        visitableFilter<SellerSection>().map {
+            it.isEnabled = true
+        }
+
+        // notification setting handler
+        visitableFilter<ParentSetting>()
+                .zip(temporaryList)
+                .forEach {
+                    val currentItem = it.first
+                    val lastConfigItem = it.second
+                    currentItem.status = lastConfigItem.status
+                    currentItem.isEnabled = true
+                }
+
+        notifyDataSetChanged()
+    }
+
+    private inline fun <reified T> visitableFilter(): List<T> {
+        return visitables.filterIsInstance<T>()
+    }
+
+    fun disableSwitchComponent() {
+        visitables.forEach {
+            when (it) {
+                is SettingSections -> it.isEnabled = false
+                is SellerSection -> it.isEnabled = false
+                is ParentSetting -> {
+                    it.isEnabled = false
+                    it.status = false
+                }
+            }
+        }
         notifyDataSetChanged()
     }
 

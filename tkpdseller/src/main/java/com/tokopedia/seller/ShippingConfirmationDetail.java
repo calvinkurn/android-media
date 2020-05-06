@@ -16,18 +16,16 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core2.R;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
@@ -46,6 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 public class
 ShippingConfirmationDetail extends TActivity {
@@ -298,11 +299,6 @@ ShippingConfirmationDetail extends TActivity {
 
         ListViewHelper.getListViewSize(ProductListView);
 
-//		OrderLast orderLast = orderData.getOrderLast();
-//		if(CommonUtils.checkNullForZeroJson(orderLast.getLastSellerStatus()) ){
-//			LastStatus.setText(getString(R.string.title_last_status) + "\n" + orderLast.getLastSellerStatus());
-//		}
-
         List<OrderHistory> orderHistories = orderData.getOrderHistory();
         for (OrderHistory orderHistory : orderHistories) {
             ShippingConfirmDetModel.DataHistory dataHistory = new ShippingConfirmDetModel.DataHistory();
@@ -322,125 +318,15 @@ ShippingConfirmationDetail extends TActivity {
         shippingConfirmDetModel.OrderId = OrderId;
     }
 
-
-//	private void setDataToView() {
-//		try {
-//			JSONObject order = new JSONObject(getIntent().getExtras().getString("order"));
-//			JSONObject payment = new JSONObject(order.getString("payment"));
-//			JSONObject customer = new JSONObject(order.getString("customer"));
-//			JSONObject orderdata = new JSONObject(order.getString("order"));
-//			JSONObject destination = new JSONObject(order.getString("dest"));
-//			JSONObject shipping = new JSONObject(order.getString("shipping"));
-//			JSONObject shop = new JSONObject(order.getString("shop"));
-//			PaymentMethod.setText(MethodChecker.fromHtml(getString(R.string.title_payment_method) + " : <b>"+ payment.getString("pg_name")+"</b>"));
-//			Invoice.setText(orderdata.getString("invoice"));
-//			BuyerName.setText(customer.getString("cust_name"));
-//			if (!orderdata.isNull("dropship_name")) {
-//				SenderName.setText(orderdata.getString("dropship_name"));
-//				SenderPhone.setText(orderdata.getString("dropship_telp"));
-//				SenderForm.setVisibility(View.VISIBLE);
-//			} else {
-//				SenderForm.setVisibility(View.GONE);
-//			}
-//			BuyerName.setOnClickListener(new OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//
-//					Intent intent = new Intent(ShippingConfirmationDetail.this, People.class);
-//					Bundle bundle = new Bundle();
-//					bundle.putString(USER_ID, UserID);
-//					intent.putExtras(bundle);
-//					startActivity(intent);
-//				}
-//			});
-//			AdditionalCost.setText(orderdata.getString("ttl_add_fee_idr"));
-//			ShippingCost.setText(orderdata.getString("shipping_price"));
-//			Quantity.setText(orderdata.getString("quantity") + " item (" + orderdata.getString("total_weight") + " kg)");
-//			GrandTotal.setText(orderdata.getString("open_amt_idr"));
-//			Destination.setText(shipping.getString("shipping_name") + " - " + shipping.getString("shipping_product"));
-//			String phoneTokopedia;
-//			if(destination.getString("phone").equals(PHONE_TOKOPEDIA)) {
-//				phoneTokopedia = getString(R.string.title_phone_tokopedia) + " : " +destination.getString("phone");
-//			} else  {
-//				phoneTokopedia = getString(R.string.title_phone) + " : " +destination.getString("phone");
-//			}
-//
-//			String destinationDetail = MethodChecker.fromHtml(destination.getString("receiver_name") + "<br>" + destination.getString("address_name").replace("<br/>", "\n").replace("<br>", "\n")
-//					+ "<br>" + destination.getString("district") + " " + destination.getString("city") + ", " + destination.getString("postal")
-//					+ "<br>" + destination.getString("province") + "<br>" + phoneTokopedia).toString();
-//			String shippingID = shipping.getString("shipping_id");
-//			String pickupAddress = MethodChecker.fromHtml(shop.optString("addr_street", ""))
-//					+ "\n" + MethodChecker.fromHtml(shop.optString("city", "")).toString() + ", " + MethodChecker.fromHtml(shop.optString("postal_code", ""))
-//					+ "\n" + shop.optString("province")
-//					+ "\n" + getString(R.string.title_phone) + ":" + shop.optString("phone", "");
-//			pickupLocationDetail.setText(pickupAddress);
-//			if (shippingID.equals("10")) {
-//				viewDefaultDestination.setVisibility(View.GONE);
-//				viewPickupLocationCourier.setVisibility(View.VISIBLE);
-//			} else {
-//				viewDefaultDestination.setVisibility(View.VISIBLE);
-//				viewPickupLocationCourier.setVisibility(View.GONE);
-//			}
-//			DestinationDetail.setText(destinationDetail);
-//			deliveryLocationDetail.setText(destinationDetail);
-//			JSONArray productList = new JSONArray(order.getString("products"));
-//			OrderId = orderdata.getString("order_id");
-//			JSONObject product;
-//			Deadline.setText(payment.getString("shipping_due_date"));
-//			for(int i=0; i<productList.length();i++){
-//				product = new JSONObject(productList.getString(i));
-//				ProductId.add(product.getString("order_dtl_id"));
-//				ImageUrlList.add(product.getString("product_pic"));
-//				NameList.add(product.getString("product_name"));
-//				PriceList.add(product.getString("product_price"));
-//				ProductUrlList.add(product.getString("product_url"));
-//				ProductIdList.add(product.getString("product_id"));
-//				TtlOrderList.add(product.getString("deliver_qty"));
-//				TtlPriceList.add(product.getString("subtotal_price_idr"));
-//				MessageList.add(product.getString("notes"));
-//			}
-//			ProductAdapter.notifyDataSetChanged();
-//			JSONObject Last = new JSONObject(order.getString("last"));
-//			if(Last.isNull("seller_state"))
-//				LastStatus.setText(getString(R.string.title_last_status) + "\n" + Last.getString("seller_state"));
-//			JSONArray StatusList = new JSONArray(order.getString("order_history"));
-//			JSONObject Status;
-//			for(int i=0; i<StatusList.length(); i++){
-//				Status = new JSONObject(StatusList.getString(i));
-//				ActorList.add(Status.getString("action_by"));
-//				DateList.add(Status.getString("status_date"));
-//				StateList.add(Status.getString("state_buyer").replace("<br>", "\n").replace("<br/>", "\n"));
-//				CommentList.add(Status.getString("comments"));
-//			}
-////			if(getIntent().getExtras().getString("permission").equals("0")){
-////				ConfirmButton.setVisibility(View.GONE);
-////				CancelButton.setVisibility(View.GONE);
-////			}
-//			OrderAdapter.notifyDataSetChanged();
-//			ListViewHelper.getListViewSize(ProductListView);
-//			ListViewHelper.getListViewSize(OrderStatus);
-//		} catch (Exception e) {
-//
-//			e.printStackTrace();
-//		}
-//	}
-
     public void invoiceClick() {
-        AppUtils.InvoiceDialog(ShippingConfirmationDetail.this, invoice_uri, invoice_pdf, Invoice.getText().toString());
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalOrder.INVOICE);
+        intent.putExtra(KEY_URL, invoice_uri);
+        intent.putExtra(KEY_TITLE, "Invoice");
+        startActivity(intent);
     }
 
     public void onBuyerClick() {
-        if (this.getApplicationContext() instanceof SellerModuleRouter) {
-            startActivity(((SellerModuleRouter) this.getApplicationContext())
-                    .getTopProfileIntent(this,
-                            userId));
-        }
-    }
-
-    private void Loading() {
-        mProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        mProgressDialog.showDialog();
+        startActivity(RouteManager.getIntent(this, ApplinkConst.PROFILE, userId));
     }
 
     @Override
@@ -462,14 +348,5 @@ ShippingConfirmationDetail extends TActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private ProductPass getProductDataToPass(ShippingConfirmDetModel.Data data) {
-        return ProductPass.Builder.aProductPass()
-                .setProductPrice(data.PriceList)
-                .setProductId(data.ProductIdList)
-                .setProductName(data.NameList)
-                .setProductImage(data.ImageUrlList)
-                .build();
     }
 }

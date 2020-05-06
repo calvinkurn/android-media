@@ -41,9 +41,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.utils.getLatLng
-import com.tokopedia.logisticaddaddress.utils.rxPinPoint
-import com.tokopedia.logisticaddaddress.utils.toCompositeSubs
+import com.tokopedia.logisticdata.util.getLatLng
+import com.tokopedia.logisticdata.util.rxPinPoint
+import com.tokopedia.logisticdata.util.toCompositeSubs
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.response.Data

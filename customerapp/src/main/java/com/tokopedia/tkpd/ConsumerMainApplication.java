@@ -57,6 +57,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -78,7 +79,6 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
-import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 
 import org.jetbrains.annotations.NotNull;
 

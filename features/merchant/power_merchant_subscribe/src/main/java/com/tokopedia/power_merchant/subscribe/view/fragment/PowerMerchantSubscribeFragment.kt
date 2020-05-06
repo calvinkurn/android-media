@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -24,8 +25,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -46,6 +45,7 @@ import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHold
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
@@ -205,20 +205,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun showToasterError(throwable: Throwable) {
         activity?.run {
-            ToasterError.make(findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(this, throwable),
-                    ToasterError.LENGTH_LONG).setAction(R.string.error_cancellation_tryagain) {
-                cancelMembership()
-            }
-                    .show()
+            Toaster.make(view!!, ErrorHandler.getErrorMessage(this, throwable),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.error_cancellation_tryagain),
+                    View.OnClickListener { cancelMembership() })
         }
     }
 
     private fun showToasterCancellationSuccess() {
         isSuccessCancellationPm = false
         activity?.let {
-            ToasterNormal.showClose(it,
-                    getString(R.string.pm_cancellation_success))
+            Toaster.make(view!!, getString(R.string.pm_cancellation_success), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 
