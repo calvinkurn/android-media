@@ -11,12 +11,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
-import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.common.util.setModeToNumberInput
-import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -283,12 +280,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     private fun submitInputEdit() {
         if (validateInputWeight(tfWeightAmount.getText())) {
-            val shipmentInputModel = ShipmentInputModel(
-                    tfWeightAmount.getTextIntOrZero(),
-                    selectedWeightPosition,
-                    switchInsurance?.isChecked == true
-            )
-            productInputModel?.shipmentInputModel = shipmentInputModel
+            inputAllDataInInputDraftModel()
             val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
 

@@ -9,11 +9,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -21,7 +19,6 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -43,31 +40,21 @@ Step to submit add product:
 open class AddEditProductAddService : AddEditProductBaseService() {
     protected var productDraftId = 0L
     protected var productInputModel: ProductInputModel = ProductInputModel()
-    protected var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
-    protected var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
-    protected var detailInputModel: DetailInputModel = DetailInputModel()
-    protected var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
 
     companion object {
-        fun startService(context: Context, cacheManagerId: String?) {
+        fun startService(context: Context, cacheId: String) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
-                putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                putExtra(AddEditProductUploadConstant.EXTRA_CACHE_ID, cacheId)
             }
             enqueueWork(context, AddEditProductAddService::class.java, JOB_ID, work)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
-        val cacheManagerId = intent.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
-        SaveInstanceCacheManager(this, cacheManagerId).run {
-            productInputModel =  get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
-        }
-        productInputModel.let {
-            shipmentInputModel = it.shipmentInputModel
-            descriptionInputModel = it.descriptionInputModel
-            detailInputModel = it.detailInputModel
-            variantInputModel = it.variantInputModel
-        }
+        val cacheId = intent.getStringExtra(AddEditProductUploadConstant.EXTRA_CACHE_ID) ?: ""
+
+        val saveInstanceCacheManager = SaveInstanceCacheManager(this, cacheId)
+        productInputModel = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
         // (1)
         saveProductToDraft()
     }
@@ -75,11 +62,18 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     private fun saveProductToDraft() {
         launch {
             saveProductDraftUseCase.params = SaveProductDraftUseCase
-                    .createRequestParams(mapProductInputModelDetailToDraft(productInputModel),
-                            productInputModel.draftId, false)
+                    .createRequestParams(
+                            mapProductInputModelDetailToDraft(productInputModel),
+                            productInputModel.draftId,
+                            false
+                    )
+
             productDraftId = withContext(Dispatchers.IO){
                 saveProductDraftUseCase.executeOnBackground()
             }
+
+            val detailInputModel = productInputModel.detailInputModel
+            val variantInputModel = productInputModel.variantInputModel
             // (2)
             uploadProductImages(
                     filterPathOnly(detailInputModel.imageUrlOrPathList),
@@ -137,10 +131,10 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 uploadIdList,
                 variantOptionUploadId,
                 sizeChartId,
-                detailInputModel,
-                descriptionInputModel,
-                shipmentInputModel,
-                variantInputModel)
+                productInputModel.detailInputModel,
+                productInputModel.descriptionInputModel,
+                productInputModel.shipmentInputModel,
+                productInputModel.variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
@@ -151,12 +145,13 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
             ProductAddShippingTracking.clickFinish(shopId, true)
-        }, onError = {
-            it.message?.let { errorMessage ->
-                delay(NOTIFICATION_CHANGE_DELAY)
-                setUploadProductDataError(errorMessage)
-                ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
-            }
+        }, onError = { throwable ->
+            delay(NOTIFICATION_CHANGE_DELAY)
+            val errorMessage = getErrorMessage(throwable)
+            setUploadProductDataError(errorMessage)
+            ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
+
+            logError(productAddUseCase.params, throwable)
         })
     }
 

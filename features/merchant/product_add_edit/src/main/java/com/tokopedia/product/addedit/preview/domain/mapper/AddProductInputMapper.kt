@@ -65,7 +65,7 @@ class AddProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                ProductEtalase(), // TODO product etalase not implemented yet
+                ProductEtalase(),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
@@ -78,8 +78,7 @@ class AddProductInputMapper @Inject constructor() {
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String,
                                 variantOptionUploadId: List<String>): Variant? {
-        if (variantInputModel.variantOptionParent.size == 0 &&
-                variantInputModel.productVariant.size == 0) {
+        if (variantInputModel.productVariant.size == 0) {
             return null
         }
 
