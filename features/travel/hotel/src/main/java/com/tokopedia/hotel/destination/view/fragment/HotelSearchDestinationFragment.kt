@@ -17,11 +17,9 @@ import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
-import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
-import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_TYPE
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
@@ -76,8 +74,7 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_hotel_search_destination, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_hotel_search_destination, container, false)
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = 0
@@ -94,8 +91,6 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
         intent.putExtra(HOTEL_DESTINATION_SEARCH_TYPE, searchDestination.searchType)
         intent.putExtra(HOTEL_DESTINATION_SEARCH_ID, searchDestination.searchId)
         intent.putExtra(HOTEL_DESTINATION_NAME, searchDestination.name)
-        intent.putExtra(HOTEL_DESTINATION_ID, searchDestination.id)
-        intent.putExtra(HOTEL_DESTINATION_TYPE, searchDestination.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

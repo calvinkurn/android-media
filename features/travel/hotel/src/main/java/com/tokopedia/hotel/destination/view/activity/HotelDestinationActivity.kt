@@ -19,8 +19,7 @@ import kotlinx.coroutines.*
  * @author by jessica on 25/03/19
  */
 
-class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
-        SearchInputView.ResetListener {
+class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener {
 
     var isSearching: Boolean = false
 
@@ -57,7 +56,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         search_input_view.searchImageView.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
         search_input_view.closeImageButton.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
         search_input_view.setListener(this)
-        search_input_view.setResetListener(this)
     }
 
     fun initInjector() {
@@ -108,10 +106,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
             (supportFragmentManager.findFragmentById(R.id.parent_view) as HotelSearchDestinationFragment).onSearchQueryChange(text)
     }
 
-    override fun onSearchReset() {
-        //delete search query
-    }
-
     override fun onBackPressed() {
         finish()
         overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,
@@ -123,9 +117,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         const val DEFAULT_DELAY_MS = 500
         const val DEFAULT_MIN_CHARACTER = 2
 
-        const val HOTEL_DESTINATION_ID = "destinationID"
         const val HOTEL_DESTINATION_NAME = "name"
-        const val HOTEL_DESTINATION_TYPE = "type"
         const val HOTEL_DESTINATION_SEARCH_TYPE = "search_type"
         const val HOTEL_DESTINATION_SEARCH_ID = "search_id"
         const val HOTEL_CURRENT_LOCATION_LANG = "lang"

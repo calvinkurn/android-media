@@ -63,14 +63,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         searchResultviewModel = viewModelProvider.get(HotelSearchResultViewModel::class.java)
         arguments?.let {
             val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
-            searchResultviewModel.initSearchParam(hotelSearchModel.id,
-                    hotelSearchModel.type,
-                    hotelSearchModel.lat,
-                    hotelSearchModel.long,
-                    hotelSearchModel.checkIn,
-                    hotelSearchModel.checkOut,
-                    hotelSearchModel.room,
-                    hotelSearchModel.adult)
+            searchResultviewModel.initSearchParam(hotelSearchModel)
             searchDestinationName = hotelSearchModel.name
             searchDestinationType = hotelSearchModel.type
         }
