@@ -253,10 +253,8 @@ class AddToCartDoneRecommendationCarouselViewHolder(
             val pageTranslationX = nextItemVisiblePx + currentItemHorizontalMarginPx
             page.apply {
                 page.translationX = -pageTranslationX * position
-                // Next line scales the item's height. You can remove it if you don't want this effect
                 page.scaleY = 1 - (0.25f * abs(position))
-                // If you want a fading effect uncomment the next line:
-                 page.alpha = 0.25f + (1 - abs(position))
+                page.alpha = 0.25f + (1 - abs(position))
             }
             when {
                 position < -1 ->
