@@ -11,7 +11,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.model.ScalyrConfig;
 import com.tokopedia.logger.utils.DataLogConfig;
-import com.tokopedia.logger.utils.ScalyrUtils;
+import com.tokopedia.logger.utils.LoggerUtils;
 import com.tokopedia.logger.utils.TimberReportingTree;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -28,8 +28,6 @@ import timber.log.Timber;
  * TimberWrapper.init(application);
  */
 public class TimberWrapper {
-    private static final String REGEX_ALPHA_NUMERIC = "[^a-zA-Z0-9]";
-    private static final int PART_DEVICE_ID_LENGTH = 9;
     private static final String APP_TYPE = "customerApp";
     private static final int PRIORITY_LENGTH = 2;
 
@@ -61,11 +59,11 @@ public class TimberWrapper {
         initConfig(application);
     }
 
-    public static void initConfig(@NonNull Application application){
-        initByRemoteConfig(application, new FirebaseRemoteConfigImpl(application));
+    public static void initConfig(@NonNull Context context){
+        initByRemoteConfig(context, new FirebaseRemoteConfigImpl(context));
     }
 
-    public static void initByRemoteConfig(@NonNull Application application, @NonNull RemoteConfig remoteConfig){
+    public static void initByRemoteConfig(@NonNull Context context, @NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
         boolean isDebug = GlobalConfig.DEBUG;
         if (isDebug) {
@@ -75,10 +73,10 @@ public class TimberWrapper {
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
                 if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
-                    UserSession userSession = new UserSession(application);
+                    UserSession userSession = new UserSession(context);
                     TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
                     timberReportingTree.setUserId(userSession.getUserId());
-                    timberReportingTree.setPartDeviceId(getPartDeviceId(userSession.getDeviceId()));
+                    timberReportingTree.setPartDeviceId(LoggerUtils.INSTANCE.getPartDeviceId(context));
                     timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
@@ -87,14 +85,6 @@ public class TimberWrapper {
                 }
             }
         }
-    }
-
-    private static String getPartDeviceId(String deviceId) {
-        deviceId = deviceId.replaceAll(REGEX_ALPHA_NUMERIC, "");
-        if (deviceId.length() > PART_DEVICE_ID_LENGTH) {
-            deviceId = deviceId.substring(deviceId.length() - PART_DEVICE_ID_LENGTH);
-        }
-        return deviceId;
     }
 
     private static List<ScalyrConfig> getScalyrConfigList(Context context) {
@@ -106,7 +96,7 @@ public class TimberWrapper {
     }
 
     private static ScalyrConfig getScalyrConfig(Context context, int priority) {
-        String session = ScalyrUtils.INSTANCE.getLogSession(context, priority);
+        String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
         return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, APP_TYPE, GlobalConfig.DEBUG, priority);
