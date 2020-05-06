@@ -12,7 +12,6 @@ import android.os.Bundle;
  */
 @Deprecated
 public abstract class BasePresenterActivity<P> extends TActivity {
-    private static final String TAG = BasePresenterActivity.class.getSimpleName();
 
     protected P presenter;
     protected boolean isAfterRotate;

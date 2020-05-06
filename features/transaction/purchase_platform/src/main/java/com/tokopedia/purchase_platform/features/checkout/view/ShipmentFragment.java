@@ -39,8 +39,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -122,7 +120,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDat
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.dialog.ExpiredTimeDialog;
-import com.tokopedia.utils.time.TimeHelper;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -140,7 +137,9 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.valid
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.time.TimeHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -643,10 +642,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
-            ToasterNormal.make(getView(), message, BaseToaster.LENGTH_SHORT)
-                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), view -> {
-
-                    }).show();
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL, getString(R.string.label_action_snackbar_close), v->{});
         }
     }
 
@@ -2766,7 +2763,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onFailedClearPromoStack(boolean ignoreAPIResponse) {
         shipmentPresenter.setCouponStateChanged(true);
         if (!ignoreAPIResponse) {
-            ToasterError.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi", ToasterError.LENGTH_SHORT).show();
+            Toaster.INSTANCE.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi",
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,"", v->{});
         }
     }
 

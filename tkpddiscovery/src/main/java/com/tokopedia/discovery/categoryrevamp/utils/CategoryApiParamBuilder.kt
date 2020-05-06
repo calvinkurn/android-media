@@ -1,9 +1,10 @@
 package com.tokopedia.discovery.categoryrevamp.utils
 
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
+import com.tokopedia.common_category.util.ParamMapToUrl
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 
