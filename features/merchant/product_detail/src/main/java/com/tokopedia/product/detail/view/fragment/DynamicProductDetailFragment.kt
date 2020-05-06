@@ -490,6 +490,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.onVariantClickedData.removeObservers(this)
         viewModel.toggleTeaserNotifyMe.removeObservers(this)
         viewModel.addToCartLiveData.removeObservers(this)
+        viewModel.discussionMostHelpful.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -922,7 +923,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDiscussionRefreshClicked() {
-        // call usecase again
+        viewModel.getDynamicProductInfoP1?.basic?.let {
+            viewModel.getDiscussionMostHelpful(it.productID, it.shopID)
+        }
     }
 
     override fun onDiscussionSendQuestionClicked() {
@@ -1001,6 +1004,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeAddToCart()
         observeInitialVariantData()
         observeonVariantClickedData()
+        observeDiscussionData()
+    }
+
+    private fun observeDiscussionData() {
+        viewLifecycleOwner.observe(viewModel.discussionMostHelpful) { data ->
+            data.doSuccessOrFail({
+                pdpHashMapUtil?.updateDiscussionData(it.data.discussionMostHelpful)
+                dynamicAdapter.notifyDiscussion(pdpHashMapUtil?.productDiscussionMostHelpfulMap)
+            }, {
+                // Ask about error handling
+            })
+        }
     }
 
     private fun observeImageVariantPartialyChanged() {

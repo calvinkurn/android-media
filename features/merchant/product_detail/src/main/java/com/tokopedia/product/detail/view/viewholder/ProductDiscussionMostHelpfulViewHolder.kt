@@ -25,6 +25,9 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
             return when {
                 questions == null -> {
                     showLocalLoad()
+                    hideSingleQuestionLayout()
+                    hideEmptyState()
+                    hideShimmer()
                 }
                 isShimmering -> {
                     showShimmer()

@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
+import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -273,6 +274,14 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateImageAfterClickVariant(it: MutableList<Media>) {
         snapShotMap?.run {
             media = DynamicProductDetailMapper.convertMediaToDataModel(it)
+        }
+    }
+
+    fun updateDiscussionData(discussionMostHelpful: DiscussionMostHelpful) {
+        productDiscussionMostHelpfulMap?.run {
+            questions = discussionMostHelpful.questions
+            totalQuestion = discussionMostHelpful.totalQuestion
+            isShimmering = false
         }
     }
 

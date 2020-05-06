@@ -19,8 +19,8 @@ class DiscussionMostHelpfulUseCase @Inject constructor(query: String,
     fun createRequestParams(productId: String, shopId: String) {
         setRequestParams(RequestParams.create().apply {
             with(ProductDetailCommonConstant) {
-                putString(PRODUCT_ID_PARAM, productId)
-                putString(SHOP_ID_PARAM, shopId)
+                putString(PARAM_PRODUCT_ID, productId)
+                putString(PARAM_SHOP_ID, shopId)
             }
         }.parameters)
     }
