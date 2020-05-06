@@ -10,7 +10,7 @@
     <string name="flight_search_date_departure_title">Tanggal Pergi</string>
     <string name="flight_search_date_arrival_title">Tanggal Pulang</string>
     <string name="flight_search_passenger_title">Penumpang</string>
-    <string name="flight_search_passenger_class_title">Kelas</string>
+    <string name="flight_search_passenger_class_title">Kelas Penerbangan</string>
     <string name="flight_search_search_ticket">Cari Tiket</string>
 
     <string name="flight_title_promo">Promo</string>
