@@ -1,14 +1,14 @@
 <resources>
     <string name="seller_migration_bottom_sheet_button">Gunakan Seller App</string>
     <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan menggunakan Seller App &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
-    <string name="seller_migration_warning">Semua fitur penjual akan dialihkan pada <b>Juli 2020</b></string>
+    <string name="seller_migration_warning">Semua fitur penjual akan dialihkan pada <b>Juli 2020.</b></string>
 
     <string name="seller_migration_generic_ticker_title">Lebih leluasa berjualan dengan Tokopedia Seller</string>
     <string name="seller_migration_generic_ticker_content">Nikmati kendali penuh bertransaksi dengan semua fitur khusus penjual di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="seller_migration_generic_bottom_sheet_title">Berjualan jadi lebih mudah dengan aplikasi Tokopedia Seller</string>
     <string name="seller_migration_generic_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah.</string>
-    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja. Semua fitur penjual akan dialihkan pada <b>Juli 2020.</b></string>
-    <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu. Semua fitur penjual akan dialihkan pada <b>Juli 2020.</b></string>
+    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja.</string>
+    <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu.</string>
 
     <string name="seller_migration_chat_ticker_title">Cepat balas chat di Tokopedia Seller</string>
     <string name="seller_migration_chat_ticker_description">Kelola chat dari pembeli hanya di aplikasi Tokopedia Seller versi baru. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>

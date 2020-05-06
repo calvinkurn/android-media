@@ -61,7 +61,6 @@
         android:id="@+id/account_seller_migration_chat_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/account_seller_migration_set_stock_image"
         android:layout_alignStart="@id/account_seller_migration_set_stock_image"
         android:layout_alignLeft="@id/account_seller_migration_set_stock_image"
         android:layout_alignTop="@id/seller_migration_chat_info"
@@ -110,7 +109,7 @@
 
     <include layout="@layout/partial_seller_migration_warning"
         android:id="@+id/account_seller_warning"
-        android:layout_below="@id/account_seller_migration_promo_image"
+        android:layout_below="@id/seller_migration_promotion_info"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/layout_lvl2" />
