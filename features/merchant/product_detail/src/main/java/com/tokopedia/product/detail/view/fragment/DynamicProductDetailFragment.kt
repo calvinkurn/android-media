@@ -1223,7 +1223,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-//                showAddToCartDoneBottomSheet()
+                showAddToCartDoneBottomSheet()
             }
             ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId

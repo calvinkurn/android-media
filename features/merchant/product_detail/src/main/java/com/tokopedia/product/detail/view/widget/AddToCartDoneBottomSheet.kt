@@ -26,6 +26,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
@@ -234,7 +235,7 @@ class AddToCartDoneBottomSheet :
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         if (item.isTopAds) ImpresionTask().execute(item.clickUrl)
-        productDetailTracking.eventAddToCartRecommendationClick(
+        DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
                 item,
                 item.position,
                 addToCartDoneViewModel.isLoggedIn(),

@@ -107,18 +107,21 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         }
     }
 
+    private fun configViewVisibility(recommendation: RecommendationItem){
+        productName.show()
+        shopLocation.show()
+        reviewCount.show()
+        ratingCount.show()
+        freeOngkirImage.visibility = if (recommendation.isFreeOngkirActive) View.VISIBLE else View.GONE
+        shopBadges.visibility = if (recommendation.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
+        ticker.visibility = if (model?.shopId != -1) View.VISIBLE else View.GONE
+    }
+
     private fun configDetailRecommendation(position: Int){
         model?.let { model ->
             currentPosition = position
             val recommendation = model.recommendationWidget.recommendationItemList[position]
-            productName.show()
-            shopLocation.show()
-            reviewCount.show()
-            ratingCount.show()
-            freeOngkirImage.visibility = if (recommendation.isFreeOngkirActive) View.VISIBLE else View.GONE
-            shopBadges.visibility = if (recommendation.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
-            ticker.visibility = if (model.shopId != -1) View.VISIBLE else View.GONE
-
+            configViewVisibility(recommendation)
             when {
                 previousPosition == -1 -> {
                     setRecommendationItemToView(recommendation)
