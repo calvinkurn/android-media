@@ -127,6 +127,9 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
             }
 
             Then("assert tracking click add to cart event should contain original product as object data layer") {
@@ -198,6 +201,9 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
             }
 
             Then("assert tracking click add to cart event should be null") {
@@ -271,6 +277,9 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
             }
 
             Then("assert tracking click add to cart event should be null") {

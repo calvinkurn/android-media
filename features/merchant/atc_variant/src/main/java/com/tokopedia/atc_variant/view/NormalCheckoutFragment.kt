@@ -1079,6 +1079,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
             addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
             addToCartOcsRequestParams.isTradeIn = isTradeIn == 1
+            addToCartOcsRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartOcsRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartOcsRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartOcsRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         } else {
@@ -1094,6 +1097,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartRequestParams.attribution = trackerAttribution ?: ""
             addToCartRequestParams.listTracker = trackerListName ?: ""
             addToCartRequestParams.warehouseId = selectedWarehouseId
+            addToCartRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         }
@@ -1104,11 +1110,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         addToCartDataModel?.run {
             if (addToCartDataModel.status == "OK" && addToCartDataModel.data.success == 1) {
                 //success checkout
-                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                        selectedProductInfo?.basic?.price.toString(),
-                        quantity,
-                        selectedProductInfo?.basic?.name ?: "",
-                        selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
             } else if (addToCartDataModel.errorReporter.eligible) {
                 onFinishError(addToCartDataModel)

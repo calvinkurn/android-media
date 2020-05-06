@@ -73,6 +73,7 @@ import com.tokopedia.tkpd.timber.UserIdChangeCallback;
 import com.tokopedia.tkpd.timber.UserIdSubscriber;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
+import com.tokopedia.tkpd.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
@@ -207,7 +208,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks(nfcSubscriber);
 
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
-
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         initBlockCanary();
     }
 

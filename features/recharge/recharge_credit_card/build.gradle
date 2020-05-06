@@ -56,7 +56,6 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
-    testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     if (rootProject.ext.debugToolsEnabled) {
