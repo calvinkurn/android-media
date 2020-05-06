@@ -75,7 +75,6 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(toolbarMvcVoucherDetail)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
             activity.supportActionBar?.title = "Voucher Hura Test Doang"
         }
     }

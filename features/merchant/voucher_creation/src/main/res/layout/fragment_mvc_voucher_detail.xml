@@ -14,7 +14,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarMvcVoucherDetail"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:theme="?toolbarTheme" />
     </com.google.android.material.appbar.AppBarLayout>
