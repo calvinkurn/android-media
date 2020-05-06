@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.widget
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.BottomSheets.BottomSheetsState
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -136,7 +134,7 @@ class AddToCartDoneBottomSheet :
 
     private fun initAdapter() {
         val factory = AddToCartDoneTypeFactory(this, this)
-        atcDoneAdapter = AddToCartDoneAdapter(recyclerView, factory)
+        atcDoneAdapter = AddToCartDoneAdapter(factory)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.animation= null
         recyclerView.adapter = atcDoneAdapter
