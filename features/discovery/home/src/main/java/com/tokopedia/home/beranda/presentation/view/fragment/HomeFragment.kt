@@ -234,8 +234,8 @@ class HomeFragment : BaseDaggerFragment(),
     private lateinit var homeMainToolbar: HomeMainToolbar
     private lateinit var statusBarBackground: View
     private lateinit var tickerDetail: TickerDetail
-    private lateinit var homeSnackbar: Snackbar
     private lateinit var sharedPrefs: SharedPreferences
+    private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
@@ -1541,6 +1541,7 @@ class HomeFragment : BaseDaggerFragment(),
     private fun getSnackbar(text: String, duration: Int): Snackbar {
         if (homeSnackbar != null) {
             homeSnackbar!!.dismiss()
+            homeSnackbar = null
         }
         homeSnackbar = Snackbar.make(root, text, duration)
         return homeSnackbar!!
