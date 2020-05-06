@@ -23,6 +23,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -35,8 +36,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
@@ -53,6 +52,7 @@ import com.tokopedia.shop.open.view.holder.OpenShopAddressViewHolder;
 import com.tokopedia.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 import com.tokopedia.shop.open.view.watcher.AfterTextWatcher;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -361,11 +361,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     private void errorToast(String message) {
-        ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(com.tokopedia.abstraction.R.string.title_ok, v -> {
-                    //no op
-                })
-                .show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_ok), v->{});
     }
 
     @Override
@@ -453,11 +450,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onErrorCreateShop(String message) {
         hideSubmitLoading();
-        ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(com.tokopedia.abstraction.R.string.title_ok, v -> {
-
-                })
-                .show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_ok), v->{});
     }
 
     @Override

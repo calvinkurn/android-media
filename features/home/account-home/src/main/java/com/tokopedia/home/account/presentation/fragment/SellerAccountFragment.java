@@ -3,19 +3,20 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
@@ -35,6 +36,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifycomponents.Toaster;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -191,9 +193,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void showError(String message) {
         if (getView() != null && getUserVisibleHint()) {
-            ToasterError.make(getView(), message)
-                    .setAction(getString(R.string.title_try_again), view -> getData())
-                    .show();
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.title_try_again), v -> getData());
         }
 
         fpmSeller.stopTrace();
@@ -203,9 +204,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void showError(Throwable e, String errorCode) {
         if (getView() != null && getContext() != null && getUserVisibleHint()) {
             String message = String.format("%s (%s)", ErrorHandler.getErrorMessage(getActivity(), e), errorCode);
-            ToasterError.make(getView(), message)
-                    .setAction(getString(R.string.title_try_again), view -> getData())
-                    .show();
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.title_try_again), v -> getData());
         }
         AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.getUserId(), userSession.getEmail(), errorCode);
         fpmSeller.stopTrace();
