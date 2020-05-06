@@ -56,6 +56,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter.clearAllElements()
+        showLoading()
     }
 
     override fun getLayout(): Int = R.layout.fragment_flight_search_return
