@@ -9,9 +9,7 @@
         android:id="@+id/sellerMigrationBottomSheetTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl3"
-        android:layout_marginEnd="@dimen/layout_lvl3"
-        android:maxLines="2"
+        android:maxLines="3"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -40,8 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/seller_migration_warning_card"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2">
 
         <com.tokopedia.carousel.CarouselUnify
@@ -63,8 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/image_or_carousel_layout"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
         app:typographyType="body_2"
         app:typographyWeight="reguler"/>
 

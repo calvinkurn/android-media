@@ -189,8 +189,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun initSellerMigrationTicker() {
-        somListSellerMigrationTicker.tickerTitle = getString(R.string.seller_migration_order_ticker_title)
-        somListSellerMigrationTicker.setHtmlDescription(getString(R.string.seller_migration_order_ticker_content))
+        somListSellerMigrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
+        somListSellerMigrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
         somListSellerMigrationTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(charSequence: CharSequence) {
                 openSellerMigrationBottomSheet()

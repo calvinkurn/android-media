@@ -107,8 +107,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
-        migrationTicker.setTickerTitle(getString(R.string.seller_migration_account_ticker_title));
-        migrationTicker.setHtmlDescription(getString(R.string.seller_migration_account_ticker_content));
+        migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title));
+        migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
         migrationTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {

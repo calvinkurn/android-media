@@ -233,8 +233,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
 
     private fun initSellerMigrationTicker() {
         topAdsSellerMigrationTicker.apply {
-            tickerTitle = getString(R.string.seller_migration_topads_ticker_title)
-            setHtmlDescription(getString(R.string.seller_migration_topads_ticker_description))
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_title)
+            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_description))
             setDescriptionClickEvent(object: TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     showSellerMigrationBottomSheet()

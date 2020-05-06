@@ -157,7 +157,4 @@ yang ditemukan</string>
     <string name="action_wishlist">Tambah ke Wishlist</string>
     <string name="cta_topchat_success_atw">Lihat</string>
     <string name="title_topchat_empty_stock">Stok habis</string>
-
-    <string name="seller_migration_chat_ticker_title">Balas chat lebih cepat di Seller App</string>
-    <string name="seller_migration_chat_ticker_description">Kelola chat dari pembeli hanya di Seller App versi baru. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
 </resources>

@@ -385,8 +385,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun setupTicker() {
         productManageSellerMigrationTicker.apply {
-            tickerTitle = getString(R.string.seller_migration_product_manage_ticker_title)
-            setHtmlDescription(getString(R.string.seller_migration_product_manage_ticker_content))
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_title)
+            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_content))
             setDescriptionClickEvent(object: TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openSellerMigrationBottomSheet()

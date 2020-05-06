@@ -127,8 +127,8 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     private fun setupTicker() {
         topChatSellerMigrationTicker.apply {
-            tickerTitle = getString(R.string.seller_migration_chat_ticker_title)
-            setHtmlDescription(getString(R.string.seller_migration_chat_ticker_description))
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
+            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
             setDescriptionClickEvent(object: TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openSellerMigrationBottomSheet()
