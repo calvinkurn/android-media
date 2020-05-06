@@ -40,7 +40,7 @@ import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
+import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
