@@ -58,9 +58,9 @@ class TrackingMapper {
                     row.put(DEVICE_ID, item.deviceId)
                     row.put(USER_ID, item.userId)
                     if (item.appVersion.isEmpty()) {
-                        row.put(APP_VERSION, GlobalConfig.VERSION_NAME)
+                        row.put(APP_VERSION, ANDROID_DASH + GlobalConfig.VERSION_NAME + " " + ANDROID_PREV_VERSION_SUFFIX)
                     } else {
-                        row.put(APP_VERSION, item.appVersion)
+                        row.put(APP_VERSION, ANDROID_DASH + item.appVersion)
                     }
                     if (event.length() > 0) {
                         row.put(EVENT_DATA, event)
@@ -80,6 +80,8 @@ class TrackingMapper {
         const val USER_ID = "user_id"
         const val EVENT_DATA = "event_data"
         const val APP_VERSION = "app_version"
+        const val ANDROID_DASH = "android-"
+        const val ANDROID_PREV_VERSION_SUFFIX = "before"
 
         fun reformatEvent(event: String, sessionId: String): JSONObject {
             return try {
