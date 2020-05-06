@@ -83,7 +83,6 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun onVideoStateChanged(view: View, videoState: PlayVideoState, videoOrientation: VideoOrientation) {
-        reconfigureLayout(view, videoOrientation)
     }
 
     override fun onVideoTopBoundsChanged(view: View, videoOrientation: VideoOrientation, topBounds: Int) {
