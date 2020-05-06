@@ -28,21 +28,24 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideSingleQuestionLayout()
                     hideEmptyState()
                     hideShimmer()
-                    hideMultipleQuestionAndTitle()
+                    hideMultipleQuestion()
+                    hideTitle()
                 }
                 isShimmering -> {
                     showShimmer()
                     hideSingleQuestionLayout()
                     hideEmptyState()
                     hideLocalLoad()
-                    hideMultipleQuestionAndTitle()
+                    hideMultipleQuestion()
+                    hideTitle()
                 }
                 (totalQuestion < 1 && element.questions?.isEmpty() == true) -> {
                     showEmptyState()
                     hideSingleQuestionLayout()
                     hideLocalLoad()
                     hideShimmer()
-                    hideMultipleQuestionAndTitle()
+                    hideTitle()
+                    hideMultipleQuestion()
                 }
                 element.totalQuestion == 1 -> {
                     showTitle(element.totalQuestion)
@@ -50,7 +53,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideEmptyState()
                     hideShimmer()
                     hideLocalLoad()
-                    hideMultipleQuestionAndTitle()
+                    hideMultipleQuestion()
                 }
                 else -> {
                     showTitle(element.totalQuestion)
@@ -225,9 +228,12 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun hideMultipleQuestionAndTitle() {
+    private fun hideMultipleQuestion() {
+        itemView.productDiscussionMostHelpfulQuestions.visibility = View.GONE
+    }
+
+    private fun hideTitle() {
         itemView.apply {
-            productDiscussionMostHelpfulQuestions.visibility = View.GONE
             productDiscussionMostHelpfulTitle.visibility = View.GONE
             productDiscussionMostHelpfulSeeAll.visibility = View.GONE
         }

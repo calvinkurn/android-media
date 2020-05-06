@@ -5,11 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white">
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/talk_top_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@color/grey_separator"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productDiscussionMostHelpfulTitle"
@@ -52,34 +53,46 @@
 
     <include layout="@layout/partial_dynamic_discussion_most_helpful_single_question"
         android:id="@+id/productDiscussionMostHelpfulSingleQuestionLayout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:visibility="gone"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_goneMarginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle"
-        app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
+        app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator" />
 
     <include layout="@layout/partial_dynamic_discussion_most_helpful_empty_state"
         android:id="@+id/productDiscussionMostHelpfulEmptyLayout"
         android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_goneMarginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
         app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
 
     <include layout="@layout/partial_dynamic_discussion_shimmer"
         android:id="@+id/productDiscussionShimmerLayout"
         android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_goneMarginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
         app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
 
     <include layout="@layout/partial_dynamic_discussion_local_load"
         android:id="@+id/productDiscussionLocalLoadLayout"
         android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_goneMarginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
         app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/talk_bottom_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:background="@color/grey_separator"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,11 +13,6 @@ import kotlinx.android.synthetic.main.widget_talk_reply_header.view.*
 
 class TalkReplyHeader : BaseCustomView {
 
-    companion object {
-        const val FOLLOWING_TEXT = "Following"
-        const val UNFOLLOWED_TEXT = "Follow"
-    }
-
     constructor(context: Context): super(context) {
         init()
     }
@@ -49,12 +44,12 @@ class TalkReplyHeader : BaseCustomView {
     }
 
     fun setButtonToFollowed() {
-        replyHeaderFollowButton.text = FOLLOWING_TEXT
+        replyHeaderFollowButton.text = context.getString(R.string.reply_header_following_chip)
         replyHeaderFollowButton.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     fun setButtonToUnfollowed() {
-        replyHeaderFollowButton.text = UNFOLLOWED_TEXT
+        replyHeaderFollowButton.text = context.getString(R.string.reply_header_follow_chip)
         replyHeaderFollowButton.buttonType = UnifyButton.Type.MAIN
     }
 
