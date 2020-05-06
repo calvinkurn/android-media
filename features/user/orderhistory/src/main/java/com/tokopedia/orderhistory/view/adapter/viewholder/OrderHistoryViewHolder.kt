@@ -24,6 +24,7 @@ class OrderHistoryViewHolder(
         fun onClickBuyAgain(product: Product)
         fun onClickAddToWishList(product: Product)
         fun onClickCardProduct(product: Product)
+        fun trackSeenProduct(product: Product, position: Int)
     }
 
     private var thumbnail: ImageView? = itemView?.findViewById(R.id.iv_thumbnail)
@@ -47,6 +48,7 @@ class OrderHistoryViewHolder(
         bindPrice(product)
         bindFreeShipping(product)
         bindCtaButton(product)
+        listener?.trackSeenProduct(product, adapterPosition)
     }
 
     private fun bindCardClick(product: Product) {
