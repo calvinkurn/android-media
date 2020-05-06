@@ -281,15 +281,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if ((rv_event_pdp.layoutManager
-                                as LinearLayoutManager).findLastCompletelyVisibleItemPosition() == (rv_event_pdp.layoutManager
-                                as LinearLayoutManager).itemCount - 1) {
-                    widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                            as LinearLayoutManager).itemCount - 1)
-                } else {
                     widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
                             as LinearLayoutManager).findFirstVisibleItemPosition())
-                }
             }
         })
     }

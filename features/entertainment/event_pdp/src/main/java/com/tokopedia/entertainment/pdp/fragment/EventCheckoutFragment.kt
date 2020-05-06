@@ -142,6 +142,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             it?.let {
                 val error = it
                 view?.let {
+                    progressDialog.dismiss()
                     Toaster.make(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
             }

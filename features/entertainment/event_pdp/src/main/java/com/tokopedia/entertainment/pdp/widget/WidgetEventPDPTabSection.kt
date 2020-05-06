@@ -18,6 +18,7 @@ class WidgetEventPDPTabSection @JvmOverloads constructor(context: Context, attrs
 
     init {
         View.inflate(context, R.layout.widget_event_pdp_tab_section, this)
+        tab_widget.customTabMode = TabLayout.MODE_SCROLLABLE
         tab_widget.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.select()

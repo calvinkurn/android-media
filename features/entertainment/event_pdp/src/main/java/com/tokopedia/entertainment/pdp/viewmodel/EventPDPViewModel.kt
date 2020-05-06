@@ -214,7 +214,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         const val typeFacilities = 2
 
         const val SECTION_ABOUT = "Tentang Kegiatan Ini"
-        const val SECTION_LOCATION = "Gimana cara ke sana?"
+        const val SECTION_LOCATION = "Gimana cara ke sana sih?"
         const val SECTION_INFORMATION = "Informasi Penting "
 
     }
