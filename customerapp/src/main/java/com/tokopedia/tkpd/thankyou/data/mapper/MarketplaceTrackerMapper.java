@@ -184,7 +184,11 @@ public class MarketplaceTrackerMapper implements Func1<PaymentGraphql, Boolean> 
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
-        purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
+        if (paymentData.getPaymentFeatures() != null && paymentData.getPaymentFeatures().contains(PurchaseTracking.EVENT_LABEL_OCC)) {
+            purchase.setEventLabel(PurchaseTracking.EVENT_LABEL_OCC);
+        } else {
+            purchase.setEventLabel(PurchaseTracking.EVENT_LABEL_REGULAR_CHECKOUT);
+        }
         purchase.setShopType(checkShopTypeForMarketplace(shopTypes.get(position)));
         purchase.setEventAction(generateEventAction(checkShopTypeForMarketplace(shopTypes.get(position)), paymentType));
         purchase.setShopId(getShopId(orderData));
