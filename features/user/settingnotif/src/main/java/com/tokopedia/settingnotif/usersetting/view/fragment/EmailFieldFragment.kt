@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.SettingSections
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationEmail
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
@@ -80,7 +82,7 @@ class EmailFieldFragment: SettingFieldFragment() {
     override fun getScreenName() = getString(R.string.settingnotif_email)
     override fun getNotificationType() = TYPE_EMAIL
 
-    private fun removeBuyerNotificationSetting(items: List<Data>): List<Data> {
+    private fun removeBuyerNotificationSetting(items: List<Visitable<SettingFieldTypeFactory>>): List<Visitable<SettingFieldTypeFactory>> {
         var include = true
         return ArrayList(items.filter { setting ->
             if (setting is SettingSections && setting.title == BUYING_TRANSACTION_SECTION_TITLE) {
