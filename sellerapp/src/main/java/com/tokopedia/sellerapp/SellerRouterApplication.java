@@ -31,14 +31,13 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
@@ -85,6 +84,7 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
@@ -109,6 +109,8 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -130,14 +132,12 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, TopAdsModuleRouter,
-        IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
+        TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter,
         ShopModuleRouter,
         ApplinkRouter,
-        NetworkRouter, TopChatRouter,
-        ContactUsModuleRouter, WithdrawRouter,
-        TopAdsWebViewRouter,
+        NetworkRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -145,7 +145,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter {
+        ResolutionRouter,
         SellerHomeRouter {
 
     protected RemoteConfig remoteConfig;
@@ -247,9 +247,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
+        UserSessionInterface userSession = new UserSession(context);
         Intent intent = new Intent(context, WelcomeActivity.class);
-        if (SessionHandler.isV4Login(context)) {
-            if (SessionHandler.isUserHasShop(context)) {
+        if (userSession.isLoggedIn()) {
+            if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
             } else {
                 return intent;
@@ -265,8 +266,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
-        if (SessionHandler.isV4Login(context)) {
+    public Class<?> getHomeClass() {
+        UserSessionInterface userSession = new UserSession(context);
+        if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
             return WelcomeActivity.class;
@@ -296,21 +298,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isSupportedDelegateDeepLink(String appLinks) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLinks);
-    }
-
-    @Override
-    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.putExtras(bundle);
-        intent.setData(Uri.parse(applinks));
-        deepLinkDelegate.dispatchFrom(activity, intent);
-    }
-
-    @Override
-    public boolean getEnableFingerprintPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_SELLERAPP);
     }
 
     @Override
@@ -441,7 +428,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
-        Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
+        Intent intent = getSplashScreenIntent(this);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -584,9 +571,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
     }
@@ -704,5 +688,16 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getChatListFragment() {
         return ChatTabListFragment.create();
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
+    }
+
+    @Override
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return new AppNotificationReceiver();
     }
 }

@@ -22,6 +22,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.util.fadeShow
@@ -208,8 +209,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
 
         onProductImpression()
-        onClickAddToCart(productDataModel.productDetailData.id, productDataModel.productDetailData.shop.id, productDataModel.productDetailData.minOrder)
-        onClickBuyNow(productDataModel.productDetailData.id, productDataModel.productDetailData.shop.id, productDataModel.productDetailData.minOrder)
+        onClickAddToCart(productDataModel.productDetailData)
+        onClickBuyNow(productDataModel.productDetailData)
         onClickProductCard(productDataModel.productDetailData.id.toString())
         onClickWishlist(productDataModel.productDetailData.id.toString())
     }
@@ -270,12 +271,12 @@ class ProductInfoFragment : BaseDaggerFragment() {
     /**
      * [onClickAddToCart] it will handle click add to cart
      */
-    private fun onClickAddToCart(productId: Int, shopId: Int, minOrder: Int){
+    private fun onClickAddToCart(productDetailData: ProductDetailData){
         add_to_cart?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
                 add_to_cart?.isEnabled = false
                 addToCart(
-                        productId, shopId, minOrder,
+                        productDetailData,
                         success = { result ->
                             recommendationItem.cartId = result[CART_ID].toString()
                             RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref, internalRef)
@@ -307,12 +308,12 @@ class ProductInfoFragment : BaseDaggerFragment() {
     /**
      * [onClickBuyNow] it will handle click buy now
      */
-    private fun onClickBuyNow(productId: Int, shopId: Int, minOrder: Int){
+    private fun onClickBuyNow(productDetailData: ProductDetailData){
         buy_now?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()){
                 buy_now?.isEnabled = false
                 addToCart(
-                        productId, shopId, minOrder,
+                        productDetailData,
                         success = { result ->
                             buy_now?.isEnabled = true
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
@@ -367,18 +368,19 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * @param error error calback
      */
     private fun addToCart(
-            productId: Int,
-            shopId: Int,
-            minOrder: Int,
+            productDetailData: ProductDetailData,
             success: (Map<String, Any>) -> Unit,
             error: (Throwable) -> Unit
     ){
         val addToCartRequestParams = AddToCartRequestParams()
-        addToCartRequestParams.productId = productId.toLong()
-        addToCartRequestParams.shopId = shopId
-        addToCartRequestParams.quantity = minOrder
+        addToCartRequestParams.productId = productDetailData.id.toLong()
+        addToCartRequestParams.shopId = productDetailData.shop.id
+        addToCartRequestParams.quantity = productDetailData.minOrder
         addToCartRequestParams.notes = ""
         addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_DISCOVERY
+        addToCartRequestParams.productName = productDetailData.name
+        addToCartRequestParams.category = productDetailData.categoryBreadcrumbs
+        addToCartRequestParams.price = productDetailData.price
 
         primaryProductViewModel.addToCart(addToCartRequestParams, success, error)
     }

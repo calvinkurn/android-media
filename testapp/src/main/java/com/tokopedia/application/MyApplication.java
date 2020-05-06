@@ -100,6 +100,7 @@ public class MyApplication extends BaseMainApplication
         }
     }
 
+
     private void upgradeSecurityProvider() {
         try {
             ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {

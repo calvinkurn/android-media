@@ -639,10 +639,11 @@ class TopChatRoomPresenter @Inject constructor(
         if (resultProducts.isNotEmpty()) clearAttachmentPreview()
         for (resultProduct in resultProducts) {
             val productPreview = ProductPreview(
-                    resultProduct.productId.toString(),
-                    resultProduct.productImageThumbnail,
-                    resultProduct.name,
-                    resultProduct.price
+                    id = resultProduct.productId.toString(),
+                    imageUrl = resultProduct.productImageThumbnail,
+                    name = resultProduct.name,
+                    price = resultProduct.price,
+                    url = resultProduct.productUrl
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)

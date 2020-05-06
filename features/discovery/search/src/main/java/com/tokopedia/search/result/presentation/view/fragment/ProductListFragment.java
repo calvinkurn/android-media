@@ -83,6 +83,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
+import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
@@ -1649,15 +1650,7 @@ public class ProductListFragment
 
     @Override
     public void logWarning(String message, @Nullable Throwable throwable) {
-        Timber.w("P2#DISCOVERY_SEARCH_ERROR#%s;error=%s", message, getStackTrace(throwable));
-    }
-
-    private String getStackTrace(@Nullable Throwable throwable) {
-        if (throwable != null) {
-            return ExceptionUtils.getStackTrace(throwable);
-        }
-
-        return "";
+        new SearchLogger().logWarning(message, throwable);
     }
 
     @Override
