@@ -43,10 +43,6 @@ public class RouterUtils {
         return intent;
     }
 
-    public static Fragment getFragment(Context context, String className) {
-        return Fragment.instantiate(context, className);
-    }
-
     public static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);
     }

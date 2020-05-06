@@ -30,6 +30,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     private var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     private var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
     private val findNavParamBuilder: FindNavParamBuilder by lazy { FindNavParamBuilder() }
+    private var isQuerySafe: Boolean = false
     private val jobs = SupervisorJob()
 
     @Inject
@@ -56,20 +57,25 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     private fun handleDataForSearchProduct(searchProduct: SearchProduct) {
         if (checkForBannedData(searchProduct)) {
-            val list = ArrayList<String>()
-            searchProduct.errorMessage?.let {
-                list.add(it)
-            }
-            searchProduct.liteUrl?.let {
-                list.add(it)
-            }
-            mBannedData.value = Success(list)
+            mBannedData.value = Success(getBannedDataValue(searchProduct))
         } else {
+            isQuerySafe = (searchProduct.isQuerySafe ?: true)
             searchProduct.products.let { productList ->
                 mProductList.value = Success((productList) as List<ProductsItem>)
             }
             setProductCountValue(searchProduct)
         }
+    }
+
+    private fun getBannedDataValue(searchProduct: SearchProduct): ArrayList<String> {
+        val list = ArrayList<String>()
+        searchProduct.errorMessage?.let {
+            list.add(it)
+        }
+        searchProduct.liteUrl?.let {
+            list.add(it)
+        }
+        return list
     }
 
     private fun setProductCountValue(searchProduct: SearchProduct) {
@@ -135,7 +141,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return mProductList
     }
 
-    fun getProductCountLiveData(): MutableLiveData<List<String>> {
+    fun getProductCountLiveData(): LiveData<List<String>> {
         return mProductCount
     }
 
@@ -153,5 +159,9 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     fun getRelatedLinkListLiveData(): LiveData<Result<List<RelatedLinkData>>> {
         return mRelatedLinkList
+    }
+
+    fun checkForAdultData(): Boolean {
+        return isQuerySafe
     }
 }

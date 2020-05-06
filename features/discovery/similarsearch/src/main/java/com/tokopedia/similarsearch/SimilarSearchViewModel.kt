@@ -310,7 +310,10 @@ internal class SimilarSearchViewModel(
         return AddToCartRequestParams(
                 productId = originalProduct.id.toLong(),
                 shopId = originalProduct.shop.id,
-                quantity = originalProduct.minOrder
+                quantity = originalProduct.minOrder,
+                productName = originalProduct.name,
+                category = originalProduct.categoryName,
+                price = originalProduct.price
         )
     }
 
