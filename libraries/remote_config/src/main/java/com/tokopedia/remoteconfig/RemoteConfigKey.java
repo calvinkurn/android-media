@@ -182,10 +182,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
 
-    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_seller_app_enable_old_product_manage";
-
-
-
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
 

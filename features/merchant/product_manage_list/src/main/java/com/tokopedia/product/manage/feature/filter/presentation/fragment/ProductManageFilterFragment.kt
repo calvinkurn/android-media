@@ -28,7 +28,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.Produc
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
