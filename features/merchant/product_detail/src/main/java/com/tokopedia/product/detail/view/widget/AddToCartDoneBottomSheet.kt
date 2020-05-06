@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.widget
 
 import android.app.Dialog
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -282,6 +283,7 @@ class AddToCartDoneBottomSheet :
         headerPrice.visibility = if(!recommendation.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
         discountPercentage.text = recommendation.discountPercentage
         slashedPrice.text = recommendation.slashedPrice
+        slashedPrice.paintFlags = slashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         price.text = recommendation.price
         addToCartButton.setOnClickListener {
             if(!addToCartButton.isLoading){
