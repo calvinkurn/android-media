@@ -18,25 +18,11 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold"/>
 
-    <include layout="@layout/partial_seller_migration_warning_card"
-        android:id="@+id/seller_migration_warning_card"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/sellerMigrationBottomSheetTitle"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
-
     <RelativeLayout
         android:id="@+id/image_or_carousel_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/seller_migration_warning_card"
+        android:layout_below="@id/sellerMigrationBottomSheetTitle"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/layout_lvl2">
 
