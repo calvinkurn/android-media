@@ -133,9 +133,10 @@
         }
       ],
       "footer": {
-          "desc": "Ingin reschedule atau ubah pesanan ? Atau butuh bantuan lebih lanjut ? Kunjungi <hyperlink>Pusat Bantuan</hyperlink>",
+          "desc": "Ingin reschedule atau ubah pesanan ? Atau butuh bantuan lebih lanjut ? <hyperlink>Pusat Bantuan</hyperlink> Kunjungi <hyperlink>Pelajari lagi</hyperlink>",
           "links": [
-                "https://tokopedia.com/help?invoice_id=XXX&amp;product=HOTEL"
+                "https://tokopedia.com/help?invoice_id=XXX&amp;product=HOTEL",
+                "https://tokopedia.com/help?invoice_id=XXX&amp;product=HOTEL dua"
           ]
       }
     },

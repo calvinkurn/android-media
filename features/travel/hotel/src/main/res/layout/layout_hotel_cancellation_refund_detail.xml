@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/layout_lvl3"
-    android:paddingBottom="@dimen/layout_lvl2">
+    android:paddingTop="@dimen/layout_lvl3">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hotel_cancellation_payment_title"
@@ -27,7 +26,9 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
-        tools:layout_height="@dimen/layout_lvl3" />
+        tools:layout_height="@dimen/layout_lvl3"
+        app:tickerType="announcement"
+        app:closeButtonVisibility="gone"/>
 
     <!--    margin top to be changed to 12dp-->
     <LinearLayout
@@ -42,6 +43,12 @@
         tools:layout_height="@dimen/layout_lvl2" />
 
     <!--    View garisgaris-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:background="@drawable/bg_dash_stroke_hotel"
+        android:layout_marginTop="@dimen/layout_lvl2"/>
 
     <LinearLayout
         android:id="@+id/hotel_cancellation_total_price_refund"
@@ -61,30 +68,7 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl1"
         android:textColor="@color/Neutral_N700_68"
         app:typographyType="body_3"
         tools:text="Refund tidak tersedia untuk pesanan ini" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/hotel_cancellation_button_next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/layout_lvl2"
-        android:text="Lanjutkan"
-        app:unifyButtonSize="large"
-        app:unifyButtonType="main"
-        tools:text="Lanjutkan" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/hotel_cancellation_page_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        android:gravity="center"
-        android:textColor="@color/Neutral_N700_68"
-        app:typographyType="body_3"
-        tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
 </LinearLayout>

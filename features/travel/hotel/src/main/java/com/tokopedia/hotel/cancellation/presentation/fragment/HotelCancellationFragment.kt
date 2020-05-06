@@ -1,14 +1,17 @@
 package com.tokopedia.hotel.cancellation.presentation.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -18,6 +21,7 @@ import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationRefundDetailWidget
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -27,6 +31,8 @@ import kotlinx.android.synthetic.main.fragment_hotel_cancellation.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_refund_detail.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_summary.*
 import kotlinx.android.synthetic.main.widget_hotel_cancellation_policy.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -60,7 +66,7 @@ class HotelCancellationFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(HotelCancellationComponent::class.java).injectl(this)
+        getComponent(HotelCancellationComponent::class.java).inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -97,7 +103,7 @@ class HotelCancellationFragment : BaseDaggerFragment() {
             hotel_cancellation_ticker_refund_info.setHtmlDescription(it.desc)
             hotel_cancellation_ticker_refund_info.isClickable = it.isClickable
             hotel_cancellation_ticker_refund_info.tickerShape = Ticker.SHAPE_LOOSE
-            hotel_cancellation_ticker_refund_info.tickerType = Ticker.TYPE_INFORMATION
+            hotel_cancellation_ticker_refund_info.tickerType = Ticker.TYPE_ANNOUNCEMENT
         }
 
         hotelCancellationModel.payment.let {
@@ -120,11 +126,55 @@ class HotelCancellationFragment : BaseDaggerFragment() {
                     hotel_cancellation_total_price_refund.addView(widget)
                 }
             }
-
-            hotel_cancellation_refund_additional_text.text = it.footer.desc
+            val spannable = createHyperlinkText(it.footer.desc, it.footer.links)
+            hotel_cancellation_refund_additional_text.highlightColor = Color.TRANSPARENT
+            hotel_cancellation_refund_additional_text.movementMethod = LinkMovementMethod.getInstance()
+            hotel_cancellation_refund_additional_text.setText(spannable, TextView.BufferType.SPANNABLE)
         }
 
-        hotel_cancellation_page_footer.text = hotelCancellationModel.footer.desc
+        hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
+        hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
+        hotel_cancellation_page_footer.setText(createHyperlinkText(hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
+
+        hotel_cancellation_button_next.setOnClickListener {
+            (activity as HotelCancellationActivity).showCancellationReasonFragment()
+        }
+    }
+
+    private fun createHyperlinkText(htmlText: String = "", urls: List<String> = listOf()): SpannableString {
+
+        var htmlTextCopy = htmlText
+        val text = TextHtmlUtils.getTextFromHtml(htmlTextCopy)
+        val spannableString = SpannableString(text)
+
+        val matcherHyperlinkOpenTag: Matcher = Pattern.compile("<hyperlink>").matcher(htmlTextCopy)
+        htmlTextCopy = htmlTextCopy.replace("</hyperlink>", "<hhyperlink>")
+        val matcherHyperlinkCloseTag: Matcher = Pattern.compile("<hhyperlink>").matcher(htmlTextCopy)
+        val posOpenTags: MutableList<Int> = mutableListOf()
+        val posCloseTags: MutableList<Int> = mutableListOf()
+        while (matcherHyperlinkOpenTag.find()) {
+            posOpenTags.add(matcherHyperlinkOpenTag.start())
+        }
+        while (matcherHyperlinkCloseTag.find()) {
+            posCloseTags.add(matcherHyperlinkCloseTag.start())
+        }
+
+        for ((index, tag) in posOpenTags.withIndex()) {
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    RouteManager.route(context, urls[index])
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Green_G500) // specific color for this link
+                }
+            }, tag - (index * ("<hyperlink></hyperlink>".length)),
+                    posCloseTags[index] - ((index * ("<hyperlink></hyperlink>".length)) + "<hyperlink>".length),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return spannableString
     }
 
 }

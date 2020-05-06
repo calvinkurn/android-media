@@ -29,7 +29,7 @@ class HotelCancellationPolicyAdapter: RecyclerView.Adapter<HotelCancellationPoli
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position], position == itemCount - 1)
+        holder.bind(items[position], position == itemCount - 1, itemCount == 1)
     }
 
     fun updatePolicy(policies: List<HotelCancellationModel.CancelPolicy.Policy>) {
@@ -38,7 +38,7 @@ class HotelCancellationPolicyAdapter: RecyclerView.Adapter<HotelCancellationPoli
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        fun bind(item: HotelCancellationModel.CancelPolicy.Policy, isLastItem: Boolean) {
+        fun bind(item: HotelCancellationModel.CancelPolicy.Policy, isLastItem: Boolean, isOnlyOneItem: Boolean) {
             with(itemView) {
                 hotel_cancellation_policy_item_title.text = item.title
                 hotel_cancellation_policy_item_title.setLineSpacing(0f, 0f)
@@ -52,7 +52,7 @@ class HotelCancellationPolicyAdapter: RecyclerView.Adapter<HotelCancellationPoli
                     hotel_cancellation_policy_item_desc.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 }
 
-                if (isLastItem) hotel_cancellation_refund_connecting_line.hide()
+                if (isOnlyOneItem || isLastItem) hotel_cancellation_refund_connecting_line.hide()
             }
         }
     }
