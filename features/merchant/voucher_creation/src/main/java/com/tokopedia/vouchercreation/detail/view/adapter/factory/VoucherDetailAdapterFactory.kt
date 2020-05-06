@@ -21,4 +21,6 @@ interface VoucherDetailAdapterFactory {
     fun type(model: PromoPerformanceUiModel): Int
 
     fun type(model: FooterButtonUiModel): Int
+
+    fun type(model: FooterUiModel): Int
 }

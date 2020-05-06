@@ -105,7 +105,8 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                         SubInfoItemUiModel("Periode", "17 Jan 2020, 08:30 WIB - 17 Feb 2020, 22:00 WIB")
                 )),
                 DividerUiModel(8),
-                FooterButtonUiModel("Bagikan Voucher", "")
+                FooterButtonUiModel("Bagikan Voucher", ""),
+                FooterUiModel("Untuk menghentikan promosi, klik <font color=\"#03AC0E\"><b>disini</b></font>")
         )
         renderList(dummy)
     }

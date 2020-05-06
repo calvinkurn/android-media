@@ -30,6 +30,8 @@ class VoucherDetailAdapterFactoryImpl(
 
     override fun type(model: FooterButtonUiModel): Int = FooterButtonViewHolder.RES_LAYOUT
 
+    override fun type(model: FooterUiModel): Int = FooterViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent)
@@ -41,6 +43,7 @@ class VoucherDetailAdapterFactoryImpl(
             FooterButtonViewHolder.RES_LAYOUT -> FooterButtonViewHolder(parent) {
                 voucherDetailListener.onFooterButtonClickListener()
             }
+            FooterViewHolder.RES_LAYOUT -> FooterViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
