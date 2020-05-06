@@ -15,7 +15,11 @@ data class AddToCartRequestParams(
         var ucParams: String = "",
         var warehouseId: Int = 0,
         var atcFromExternalSource: String = "",
-        var isSCP: Boolean = false
+        var isSCP: Boolean = false,
+        // appflyer analytics data
+        var productName: String = "",
+        var category: String = "",
+        var price: String = ""
 ) {
     companion object {
         val ATC_FROM_WISHLIST = "wishlist_list"

@@ -720,12 +720,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                             getArguments().getString(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya penjual")) {
-                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
-                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
                                 } else {
                                     if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
+                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
                                         startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
                                     } else
                                         RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
@@ -742,6 +739,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
                                 RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
                             } else {
+                                if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
+                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
+                                }
                                 dialog.dismiss();
                             }
                         }
