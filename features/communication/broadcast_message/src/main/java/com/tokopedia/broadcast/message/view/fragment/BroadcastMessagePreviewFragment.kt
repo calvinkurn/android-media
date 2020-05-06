@@ -8,11 +8,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
@@ -23,17 +24,15 @@ import com.tokopedia.broadcast.message.data.model.BlastMessageResponse
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessagePreviewView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessagePreviewPresenter
 import com.tokopedia.broadcast.message.view.widget.PreviewProductWidget
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_broadcast_message_preview.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
-class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePreviewView {
+class BroadcastMessagePreviewFragment : BaseDaggerFragment(), BroadcastMessagePreviewView {
     @Inject
     lateinit var presenter: BroadcastMessagePreviewPresenter
     private val texViewMenu: TextView? by lazy { activity?.findViewById(R.id.texViewMenu) as? TextView }
@@ -81,13 +80,15 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
             }
         }
         mutationModel?.let { setupPreview(it) }
-        scroll_view.post { ObjectAnimator.ofInt(scroll_view, "scrollY",  container_screen.height)
-                .setDuration(3000).start(); }
+        scroll_view.post {
+            ObjectAnimator.ofInt(scroll_view, "scrollY", container_screen.height)
+                    .setDuration(3000).start();
+        }
     }
 
     private fun setupPreview(model: BlastMessageMutation) {
         ImageHandler.LoadImage(image, model.imagePath)
-        if (model.hasProducts && context != null){
+        if (model.hasProducts && context != null) {
             model.productsPayload.forEach {
                 val tmpViewProduct = PreviewProductWidget(context!!)
                 tmpViewProduct.setupBubble()
@@ -107,9 +108,9 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
 
     private fun submitMessage() {
         TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, "")
-        mutationModel?.let {presenter.sendBlastMessage(it)}
+                BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
+                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, "")
+        mutationModel?.let { presenter.sendBlastMessage(it) }
     }
 
     override fun onDestroyView() {
@@ -127,10 +128,12 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
 
     override fun onErrorSubmitBlastMessage(t: Throwable?) {
         if (view == null || context == null) return
-        ToasterError.make(view, ErrorHandler.getErrorMessage(context!!, t), BaseToaster.LENGTH_LONG)
-                .setAction(R.string.retry){
-                    presenter.sendBlastMessage(mutationModel!!)
-                }.show()
+        view?.let {
+            Toaster.make(it, ErrorHandler.getErrorMessage(context!!, t), Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR, getString(R.string.retry), View.OnClickListener {
+                presenter.sendBlastMessage(mutationModel!!)
+            })
+        }
     }
 
     override fun onSuccessSubmitBlastMessage(result: BlastMessageResponse) {

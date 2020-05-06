@@ -13,7 +13,7 @@ import org.junit.Test;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        Assert.assertNull(JsonObjectConverter.INSTANCE.toJsonObject(null));
+        Assert.assertNull(JsonObjectConverter.Companion.getInstances().toJsonObject(null));
     }
 
 }

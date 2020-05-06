@@ -34,7 +34,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.config.GlobalConfig;
@@ -122,16 +121,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_shipping_status;
-    }
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-
     }
 
     @Override
@@ -271,9 +260,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                if (GlobalConfig.isSellerApp()) {
-                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
-                }
                 presenter.onRefreshView();
             }
         };

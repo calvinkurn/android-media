@@ -10,7 +10,6 @@ import com.google.gson.annotations.SerializedName;
  * Created by Angga.Prasetiyo on 21/04/2016.
  */
 public class OrderHistory implements Parcelable {
-    private static final String TAG = OrderHistory.class.getSimpleName();
 
     @SerializedName("history_status_date")
     @Expose

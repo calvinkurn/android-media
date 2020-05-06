@@ -4,15 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.R
 import com.tokopedia.talk.addtalk.di.DaggerAddTalkComponent
@@ -24,6 +23,7 @@ import com.tokopedia.talk.addtalk.view.adapter.QuickReplyTypeFactoryImpl
 import com.tokopedia.talk.addtalk.view.listener.AddTalkContract
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.layout_talk_add.*
 import javax.inject.Inject
 
@@ -121,13 +121,14 @@ class AddTalkFragment : BaseDaggerFragment(),
     override fun onErrorCreateTalk(throwable: Throwable?) {
         send_progress.visibility = View.GONE
 
-        if (throwable is MessageErrorException) {
-            ToasterError.make(view, throwable.message, Snackbar.LENGTH_LONG).show()
-        } else {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable)
-                    ?: "", Snackbar.LENGTH_LONG).show()
+        view?.let {
+            if (throwable is MessageErrorException) {
+                Toaster.make(it, throwable.message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            } else {
+                Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable)
+                        ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
         }
-
     }
 
     override fun onSuccessCreateTalk(productId: String) {
