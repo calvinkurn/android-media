@@ -26,9 +26,9 @@ data class ParamLocation(
 
         @SerializedName("searchType")
         @Expose
-        val searchType: String = "",
+        var searchType: String = "",
 
         @SerializedName("searchID")
         @Expose
-        val searchId: String= ""
+        var searchId: String= ""
 )
