@@ -25,7 +25,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
         )
 
         newRequest.addHeader("X-acf-sensor-data",
-                if (!akamaiValue.isNotEmpty()) akamaiValue else "")
+                if (akamaiValue.isNotEmpty()) akamaiValue else "")
 
         val response = chain.proceed(newRequest.build())
 
