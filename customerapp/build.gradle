@@ -400,6 +400,7 @@ dependencies {
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.categoryLevels)
     implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.libraries.inappupdate)
@@ -415,7 +416,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.promotionsTarget)
     implementation project(rootProject.ext.features.findNative)
-    implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
     if (rootProject.ext.debugToolsEnabled) {

@@ -17,7 +17,9 @@ import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.constant.DeeplinkConstant;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -41,7 +43,6 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity;
-import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
@@ -778,12 +779,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openCategory(String uriData, Bundle bundle) {
-        URLParser urlParser = new URLParser(uriData);
-        if (!urlParser.getParamKeyValueMap().isEmpty()) {
-            context.startActivity(CategoryNavActivity.getCategoryIntentWithFilter(context,uriData));
-        } else {
-            RouteManager.route(context, bundle, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
+        Uri uri = Uri.parse(uriData);
+        String deeplink = "";
+        deeplink = DeeplinkConstant.SCHEME_TOKOPEDIA + ":/" + uri.getPath();
+        if (uri.getQuery() != null) {
+            deeplink =  deeplink+"?"+uri.getQuery();
         }
+        RouteManager.route(context, deeplink);
     }
 
     private void openBrowseProduct(List<String> linkSegment, Uri uriData, Bundle defaultBundle) {
@@ -802,7 +804,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(defaultBundle);
             context.startActivity(intent);
         } else {
-            context.startActivity(CategoryNavActivity.getCategoryIntentWithDepartmentId(context,departmentId));
+           String deeplink =  UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId);
+            RouteManager.route(context,deeplink);
         }
     }
 
