@@ -3,6 +3,7 @@ package com.tokopedia.test.application
 /**
  * @author ricoharisin .
  */
+import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -16,13 +17,13 @@ class TestRepeatRule : TestRule {
             base: Statement,
             description: Description
     ): Statement {
-        //val args = InstrumentationRegistry.getArguments()!!
-        val repeatTestCount = 10
+        val args = InstrumentationRegistry.getArguments()
+        val repeatTestCount =
+                if (args.getString("repeatTestCount") != null) args.getString("repeatTestCount").toInt() else 1
         return if (repeatTestCount > 1) {
             object : Statement() {
                 override fun evaluate() {
                     for (i in 1..repeatTestCount) {
-                        //Timber.d("Repeating test, iteration %d of %d", i, repeatTestCount)
                         base.evaluate()
                     }
                 }
