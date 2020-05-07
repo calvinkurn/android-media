@@ -10,6 +10,7 @@ import android.text.TextUtils
 import androidx.annotation.NonNull
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.promotionstarget.data.CouponGratificationParams
+import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.components.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetComponent
@@ -24,17 +25,22 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
+/*
+* It has 2 flows, newer and older
+* for the newer, a tag is added as NEW_FLOW
+* */
 class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
 
     @Inject
     lateinit var presenter: DialogManagerPresenter
+
     @Inject
     lateinit var claimGratificationUseCase: ClaimPopGratificationUseCase
 
-    private var job:Job? = null
+    private var job: Job? = null
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
-    private var scope:CoroutineScope? =null
+    private var scope: CoroutineScope? = null
     private var weakOldClaimCouponApi: WeakReference<ClaimCouponApi>? = null
 
     companion object {
@@ -178,11 +184,26 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                 val childJob = launch {
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
                     val canShowDialog = response.popGratification?.isShow
+                    val isAutoClaim = response.popGratification?.isAutoClaim
+
                     if (canShowDialog != null && canShowDialog) {
-                        val couponDetail = presenter.composeApi(response)
-                        withContext(Dispatchers.Main) {
-                            if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
-                                show(weakActivity, response, couponDetail, gratificationData, intent)
+                        if (isAutoClaim != null && isAutoClaim) {
+                            //NEW FLOW
+                            val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
+                            val claimPopGratificationResponse = presenter.claimGratification(claimPayload)
+                            val couponDetail = presenter.composeApi(claimPopGratificationResponse.popGratificationClaim?.popGratificationBenefits)
+                            withContext(Dispatchers.Main) {
+                                if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
+//                                    showNewLoggedIn(weakActivity, response, couponDetail, gratificationData, intent)
+                                }
+                            }
+                        } else {
+                            //OLD FLOW
+                            val couponDetail = presenter.composeApi(response.popGratification.popGratificationBenefits)
+                            withContext(Dispatchers.Main) {
+                                if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
+                                    showOld(weakActivity, response, couponDetail, gratificationData, intent)
+                                }
                             }
                         }
                     }
@@ -192,27 +213,50 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    private fun show(weakActivity: WeakReference<Activity>,
-                     data: GetPopGratificationResponse,
-                     couponDetailResponse: GetCouponDetailResponse,
-                     gratificationData: GratificationData,
-                     intent: Intent) {
+    private fun showNewLoggedIn(weakActivity: WeakReference<Activity>,
+                                couponDetailResponse: GetCouponDetailResponse,
+                                gratificationData: GratificationData,
+                                intent: Intent) {
+
+        val dialog = TargetPromotionsDialog(this)
+//        dialog.show(activity,
+//                TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON,
+//                data,
+//                couponDetailResponse,
+//                gratificationData,
+//                claimApi,
+//                autoHitActionButton)
+    }
+
+    private fun showNonLoggedIn(weakActivity: WeakReference<Activity>){
+        val dialog = TargetPromotionsDialog(this)
+        if(weakActivity.get()!=null) {
+            val activity = weakActivity.get()!!
+//            dialog.show(activity)
+        }
+    }
+
+    private fun showOld(weakActivity: WeakReference<Activity>,
+                        data: GetPopGratificationResponse,
+                        couponDetailResponse: GetCouponDetailResponse,
+                        gratificationData: GratificationData,
+                        intent: Intent) {
         val dialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
             val autoHitActionButton = intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
 
-            var claimApi: ClaimCouponApi?=null
+            var claimApi: ClaimCouponApi? = null
             if (autoHitActionButton && weakOldClaimCouponApi?.get() != null) {
                 claimApi = weakOldClaimCouponApi?.get()!!
             } else {
-                if(scope!=null) {
+                if (scope != null) {
                     claimApi = ClaimCouponApi(scope!!, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase)
                     weakOldClaimCouponApi?.clear()
                     weakOldClaimCouponApi = WeakReference(claimApi)
                 }
             }
-            if(claimApi!=null) {
+            if (claimApi != null) {
                 val bottomSheetDialog = dialog.show(activity,
                         TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON,
                         data,
@@ -241,22 +285,24 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         mapOfDialogs.clear()
     }
 
-    private fun initSafeScope(){
+    private fun initSafeScope() {
         try {
-            if(scope == null){
-                if(job!=null) {
+            if (scope == null) {
+                if (job != null) {
                     scope = CoroutineScope(job!!)
                 }
             }
-        }catch (th:Throwable){ }
+        } catch (th: Throwable) {
+        }
     }
 
-    private fun initSafeJob(){
+    private fun initSafeJob() {
         try {
-            if(job == null){
+            if (job == null) {
                 job = SupervisorJob()
             }
-        }catch (th:Throwable){ }
+        } catch (th: Throwable) {
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.promotionstarget.data.claim
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.promotionstarget.data.GratificationDataContract
+import com.tokopedia.promotionstarget.data.pop.PopGratificationBenefitsItem
 
 class ClaimPopGratificationResponse(@SerializedName("popGratificationClaim")
                                     val popGratificationClaim: PopGratificationClaim? = null) : GratificationDataContract
@@ -31,6 +32,9 @@ data class PopGratificationClaim(
 
         @SerializedName("popGratificationActionButton")
         val popGratificationActionButton: PopGratificationActionButton? = null,
+
+        @SerializedName("popGratificationBenefits")
+        val popGratificationBenefits: List<PopGratificationBenefitsItem?>? = null,
 
         @SerializedName("imageUrl")
         val imageUrl: String? = null,

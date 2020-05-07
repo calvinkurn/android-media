@@ -151,6 +151,10 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         return R.layout.dialog_target_promotions
     }
 
+    fun showNonLoggedInUi(context: Context){
+
+    }
+
     fun show(activityContext: Context,
              couponUiType: TargetPromotionsCouponType,
              data: GratificationDataContract,
