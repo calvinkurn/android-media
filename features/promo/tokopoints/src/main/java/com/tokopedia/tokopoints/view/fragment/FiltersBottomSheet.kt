@@ -44,19 +44,21 @@ class FiltersBottomSheet : BottomSheetUnify() {
                 return@OnClickListener
             }
             if (lastCheckedPosition != Int.MIN_VALUE) {
-                if (lastSavedPosition != Int.MIN_VALUE) mFilterDetails!![lastSavedPosition]!!.isSelected = false
+                if (lastSavedPosition != Int.MIN_VALUE) {
+                    mFilterDetails?.get(lastSavedPosition)?.isSelected = false
+                }
                 lastSavedPosition = lastCheckedPosition
-                onSaveFilterCallback!!.onSaveFilter(mFilterDetails!![lastSavedPosition], lastSavedPosition)
-                mFilterDetails!![lastSavedPosition]!!.isSelected = true
-            } else onSaveFilterCallback!!.onSaveFilter(null, lastSavedPosition)
+                onSaveFilterCallback?.onSaveFilter(mFilterDetails?.get(lastSavedPosition), lastSavedPosition)
+                mFilterDetails?.get(lastSavedPosition)?.isSelected = true
+            } else onSaveFilterCallback?.onSaveFilter(null, lastSavedPosition)
             dismiss()
             AnalyticsTrackerUtil.sendEvent(activity,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_SAVE_FILTER,
-                    mFilterDetails!![lastSavedPosition]!!.text)
+                    mFilterDetails?.get(lastSavedPosition)?.text)
         })
-        rvFilters.adapter = FiltersAdapter(mFilterDetails)
+        rvFilters.adapter = mFilterDetails?.let { FiltersAdapter(it) }
     }
 
     fun setData(filterDetails: List<CatalogFilterPointRange?>?, onSaveFilterCallback: OnSaveFilterCallback?) {
@@ -64,30 +66,27 @@ class FiltersBottomSheet : BottomSheetUnify() {
         this.onSaveFilterCallback = onSaveFilterCallback
     }
 
-    inner class FiltersAdapter(private val mFilterDetails: List<CatalogFilterPointRange?>?) : RecyclerView.Adapter<FiltersAdapter.ViewHolder>() {
+    inner class FiltersAdapter(private val mFilterDetails: List<CatalogFilterPointRange?>) : RecyclerView.Adapter<FiltersAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = View.inflate(parent.context, R.layout.item_catalog_filters, null)
             return ViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            if (!TextUtils.isEmpty(mFilterDetails?.get(position)?.text)) holder.radioButton.text = mFilterDetails?.get(position)?.text
+            if (!TextUtils.isEmpty(mFilterDetails[position]?.text)) holder.radioButton.text = mFilterDetails[position]?.text
             if (fromInitView) {
-                holder.radioButton.isChecked = mFilterDetails?.get(position)?.isSelected ?: false
+                holder.radioButton.isChecked = mFilterDetails[position]?.isSelected ?: false
             } else {
                 holder.radioButton.isChecked = position == lastCheckedPosition
             }
         }
 
-        override fun getItemCount(): Int {
-            return mFilterDetails!!.size
-        }
+        override fun getItemCount()=mFilterDetails.size
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            var radioButton: RadioButton
+            var radioButton: RadioButton = itemView.findViewById(R.id.rb_filter)
 
             init {
-                radioButton = itemView.findViewById(R.id.rb_filter)
                 radioButton.setOnClickListener {
                     lastCheckedPosition = adapterPosition
                     fromInitView = false
@@ -109,12 +108,10 @@ class FiltersBottomSheet : BottomSheetUnify() {
         init {
             val size = itemCount
             for (i in 0 until size) {
-                if (mFilterDetails != null) {
-                    if (mFilterDetails.get(i)?.isSelected!!) {
-                        lastCheckedPosition = i
-                        lastSavedPosition = i
-                        break
-                    }
+                if (mFilterDetails[i]?.isSelected!!) {
+                    lastCheckedPosition = i
+                    lastSavedPosition = i
+                    break
                 }
             }
         }

@@ -63,35 +63,40 @@ class StartPurchaseBottomSheet : BottomSheetUnify() {
                         RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, uri))
                     }
                 }
-                val icon = itemView.findViewById<ImageView>(R.id.img_lob)
-                if (item.text.equals("Beli", ignoreCase = true)) {
-                    icon.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_buy))
-                    AnalyticsTrackerUtil.sendEvent(view.context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BELI,
-                            "")
-                } else if (item.text.equals("Kereta", ignoreCase = true)) {
-                    icon.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_train))
-                    AnalyticsTrackerUtil.sendEvent(view.context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_KARETA,
-                            "")
-                } else if (item.text.equals("Pesawat", ignoreCase = true)) {
-                    icon.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_pesawat))
-                    AnalyticsTrackerUtil.sendEvent(view.context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_PESAWAT,
-                            "")
-                } else if (item.text.equals("Bayar", ignoreCase = true)) {
-                    icon.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_bayar))
-                    AnalyticsTrackerUtil.sendEvent(view.context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BAYAR,
-                            "")
+                val icon = itemView?.findViewById<ImageView>(R.id.img_lob)
+                when {
+                    item?.text.equals("Beli", ignoreCase = true) -> {
+                        icon?.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_buy))
+                        AnalyticsTrackerUtil.sendEvent(view.context,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BELI,
+                                "")
+                    }
+                    item.text.equals("Kereta", ignoreCase = true) -> {
+                        icon?.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_train))
+                        AnalyticsTrackerUtil.sendEvent(view.context,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_KARETA,
+                                "")
+                    }
+                    item.text.equals("Pesawat", ignoreCase = true) -> {
+                        icon?.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_pesawat))
+                        AnalyticsTrackerUtil.sendEvent(view.context,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_PESAWAT,
+                                "")
+                    }
+                    item.text.equals("Bayar", ignoreCase = true) -> {
+                        icon?.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_tp_bayar))
+                        AnalyticsTrackerUtil.sendEvent(view.context,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BAYAR,
+                                "")
+                    }
                 }
             }
         }
