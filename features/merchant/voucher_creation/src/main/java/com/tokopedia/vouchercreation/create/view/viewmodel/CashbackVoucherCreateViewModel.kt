@@ -117,7 +117,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     val cashbackPercentageInfoUiModelLiveData : LiveData<CashbackPercentageInfoUiModel>
         get() = mCashbackPercentageInfoUiModelLiveData
 
-    fun addTextFieldValueToCalculation(value: Int?, type: PromotionType.Cashback) {
+    fun<T> addTextFieldValueToCalculation(value: Int?, type: T) {
         when(type) {
             PromotionType.Cashback.Rupiah.MaximumDiscount -> {
                 mRupiahMaximumDiscountLiveData.value = value.toZeroIfNull()

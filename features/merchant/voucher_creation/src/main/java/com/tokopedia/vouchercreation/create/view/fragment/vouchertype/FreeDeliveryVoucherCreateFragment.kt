@@ -15,10 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
-import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
-import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
-import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
@@ -29,14 +26,13 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCr
 import javax.inject.Inject
 
 class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
-                                        private val viewContext: Context,
-                                        private val onOpenBottomSheet: (CreateVoucherBottomSheetType) -> Unit): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
+                                        private val viewContext: Context): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: () -> Unit = {},
-                           context: Context,
-                           onOpenBottomSheet: (CreateVoucherBottomSheetType) -> Unit = {}) = FreeDeliveryVoucherCreateFragment(onNextStep, context, onOpenBottomSheet)
+                           context: Context) = FreeDeliveryVoucherCreateFragment(onNextStep, context)
+
     }
 
     @Inject
@@ -61,42 +57,13 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
     }
 
     private val freeDeliveryAmountTextFieldModel by lazy {
-        VoucherTextFieldUiModel(
-                type = VoucherTextFieldType.CURRENCY,
-                labelRes = R.string.mvc_create_promo_type_free_deliv_textfield_free_deliv_amount,
-                minValue = PromotionTypeUiListStaticDataSource.MinValue.NOMINAL_AMOUNT,
-                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.NOMINAL_AMOUNT,
-                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionType = PromotionType.FreeDelivery.Amount,
-                onValueChanged = ::onTextFieldValueChanged,
-                onSetErrorMessage = ::onSetErrorMessage)
+        PromotionTypeUiListStaticDataSource.getFreeDeliveryAmountTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage)
     }
-
     private val minimumPurchaseTextFieldModel by lazy {
-        VoucherTextFieldUiModel(
-                type = VoucherTextFieldType.CURRENCY,
-                labelRes = R.string.mvc_create_promo_type_textfield_minimum_purchase,
-                minValue = PromotionTypeUiListStaticDataSource.MinValue.PUCHASE_AMOUNT,
-                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.PUCHASE_AMOUNT,
-                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionType = PromotionType.FreeDelivery.MinimumPurchase,
-                onValueChanged = ::onTextFieldValueChanged,
-                onSetErrorMessage = ::onSetErrorMessage)
+        PromotionTypeUiListStaticDataSource.getMinimumPurchaseTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.FreeDelivery.MinimumPurchase)
     }
-
     private val voucherQuotaTextFieldModel by lazy {
-        VoucherTextFieldUiModel(
-                type = VoucherTextFieldType.QUANTITY,
-                labelRes = R.string.mvc_create_promo_type_textfield_voucher_quota,
-                minValue = PromotionTypeUiListStaticDataSource.MinValue.VOUCHER_QUOTA,
-                maxValue = PromotionTypeUiListStaticDataSource.MaxValue.VOUCHER_QUOTA,
-                minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
-                maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
-                promotionType = PromotionType.FreeDelivery.VoucherQuota,
-                onValueChanged = ::onTextFieldValueChanged,
-                onSetErrorMessage = ::onSetErrorMessage)
+        PromotionTypeUiListStaticDataSource.getVoucherQuotaTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.FreeDelivery.VoucherQuota)
     }
 
     private val freeDeliveryTextFieldsList =
@@ -107,7 +74,14 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
             )
 
     private val freeDeliveryTextFieldsUiModel by lazy {
-        PromotionTypeInputListUiModel(freeDeliveryTextFieldsList)
+        freeDeliveryTextFieldsList.run {
+            if (::viewModelFactory.isInitialized) {
+                forEach { uiModel ->
+                    viewModel.addTextFieldValueToCalculation(uiModel.currentValue, uiModel.promotionType)
+                }
+            }
+            PromotionTypeInputListUiModel(this)
+        }
     }
 
     private val promotionExpenseEstimationUiModel =
@@ -115,12 +89,14 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
                     onTooltipClicked = ::onTooltipClicked
             )
 
-    private val freeDeliveryTypeUiList = mutableListOf(
-            promoDescTickerModel,
-            freeDeliveryTextFieldsUiModel,
-            promotionExpenseEstimationUiModel,
-            NextButtonUiModel(onNextStep)
-    )
+    private val freeDeliveryTypeUiList by lazy {
+        mutableListOf(
+                promoDescTickerModel,
+                freeDeliveryTextFieldsUiModel,
+                promotionExpenseEstimationUiModel,
+                NextButtonUiModel(onNextStep)
+        )
+    }
 
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 

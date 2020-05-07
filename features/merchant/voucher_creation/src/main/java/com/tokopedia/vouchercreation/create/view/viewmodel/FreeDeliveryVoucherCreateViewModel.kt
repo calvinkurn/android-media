@@ -53,7 +53,7 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
         )
     }
 
-    fun addTextFieldValueToCalculation(value: Int?, type: PromotionType.FreeDelivery) {
+    fun<T> addTextFieldValueToCalculation(value: Int?, type: T) {
         when(type) {
             PromotionType.FreeDelivery.Amount -> {
                 mFreeDeliveryAmountLiveData.value = value.toZeroIfNull()
