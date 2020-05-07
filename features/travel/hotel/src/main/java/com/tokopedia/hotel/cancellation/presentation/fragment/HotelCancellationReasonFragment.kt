@@ -55,6 +55,10 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        /*
+         Data is still dummy data
+         */
         cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.dummycancellation))
     }
 
