@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/hotel_cancellation_sticky_container"/>
+        app:layout_constraintBottom_toTopOf="@+id/hotel_cancellation_sticky_container"/>
 
     <LinearLayout
         android:id="@+id/hotel_cancellation_sticky_container"
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/layout_lvl2"
-            android:text="Lanjutkan"
+            android:text="@string/hotel_cancellation_button_submit"
             app:unifyButtonSize="large"
             app:unifyButtonType="main"
             tools:text="Lanjutkan" />

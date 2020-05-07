@@ -7,20 +7,20 @@
 
     <View
         android:id="@+id/hotel_cancellation_refund_connecting_line"
-        android:layout_width="1dp"
+        android:layout_width="@dimen/spacing_lvl1"
         android:layout_height="@dimen/layout_lvl0"
         android:background="@color/ticket_divider"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/hotel_cancellation_policy_item_icon_normal"
-        app:layout_constraintLeft_toLeftOf="@id/hotel_cancellation_policy_item_icon_normal"
-        app:layout_constraintRight_toRightOf="@id/hotel_cancellation_policy_item_icon_normal"
-        app:layout_constraintStart_toStartOf="@id/hotel_cancellation_policy_item_icon_normal"
+        app:layout_constraintEnd_toEndOf="@+id/hotel_cancellation_policy_item_icon_normal"
+        app:layout_constraintLeft_toLeftOf="@+id/hotel_cancellation_policy_item_icon_normal"
+        app:layout_constraintRight_toRightOf="@+id/hotel_cancellation_policy_item_icon_normal"
+        app:layout_constraintStart_toStartOf="@+id/hotel_cancellation_policy_item_icon_normal"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/hotel_cancellation_policy_item_icon_normal"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:background="@drawable/ic_hotel_shape_oval"
         app:backgroundTint="@color/Green_G500"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,8 +31,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/hotel_cancellation_policy_item_icon_deactivate"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:background="@drawable/ic_hotel_shape_oval"
         app:backgroundTint="@color/Neutral_N100"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -48,9 +48,9 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/hotel_cancellation_policy_item_icon_normal"
+        app:layout_constraintLeft_toRightOf="@+id/hotel_cancellation_policy_item_icon_normal"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@id/hotel_cancellation_policy_item_icon_normal"
+        app:layout_constraintStart_toEndOf="@+id/hotel_cancellation_policy_item_icon_normal"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography

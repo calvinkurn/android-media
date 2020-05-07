@@ -94,6 +94,10 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_cancellation_reason, container, false)
 
+    /*
+     * PLEASE DON'T REVIEW FOR THIS FUNCTION YET
+     * func: createHyperlinkText
+     */
     private fun createHyperlinkText(htmlText: String = "", urls: List<String> = listOf()): SpannableString {
 
         var htmlTextCopy = htmlText

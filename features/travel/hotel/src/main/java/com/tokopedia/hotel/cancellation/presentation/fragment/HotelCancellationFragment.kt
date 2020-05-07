@@ -89,14 +89,17 @@ class HotelCancellationFragment : BaseDaggerFragment() {
             hotel_cancellation_room_name.text = it.room.firstOrNull()?.roomName ?: ""
             hotel_cancellation_room_guest_info.text = it.room.firstOrNull()?.roomContent ?: ""
 
-            hotel_cancellation_room_duration_view.setViewLabel(it.checkInOut[0].title, it.checkInOut[1].title)
-            hotel_cancellation_room_duration_view.setRoomDatesFormatted(it.checkInOut[0].checkInOut.date, it.checkInOut[1].checkInOut.date, it.stayLength)
-            hotel_cancellation_room_duration_view.setRoomCheckTimes("${it.checkInOut[0].checkInOut.day}, ${it.checkInOut[0].checkInOut.time}", "${it.checkInOut[1].checkInOut.day}, ${it.checkInOut[1].checkInOut.time}")
+            val checkIn = it.checkInOut.firstOrNull()?: HotelCancellationModel.PropertyData.CheckInOut()
+            val checkOut = if (it.checkInOut.size > 1) it.checkInOut[1] else HotelCancellationModel.PropertyData.CheckInOut()
+            hotel_cancellation_room_duration_view.setViewLabel(checkIn.title, checkOut.title)
+            hotel_cancellation_room_duration_view.setRoomDatesFormatted(checkIn.checkInOut.date, checkOut.checkInOut.date, it.stayLength)
+            hotel_cancellation_room_duration_view.setRoomCheckTimes("${checkIn.checkInOut.day}, ${checkIn.checkInOut.time}",
+                    "${checkIn.checkInOut.day}, ${checkOut.checkInOut.time}")
         }
 
         hotelCancellationModel.cancelPolicy.let {
             hotel_cancellation_policy_title.text = it.title
-            hotel_cancellation_policy_widget.initView("Ketentuan Pembatalan", it.policy)
+            hotel_cancellation_policy_widget.initView(getString(R.string.hotel_cancellation_page_title), it.policy)
         }
 
         hotelCancellationModel.cancelInfo.let {
@@ -134,13 +137,18 @@ class HotelCancellationFragment : BaseDaggerFragment() {
 
         hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
         hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
-        hotel_cancellation_page_footer.setText(createHyperlinkText(hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
+        hotel_cancellation_page_footer.setText(createHyperlinkText(hotelCancellationModel.footer.desc,
+                hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
 
         hotel_cancellation_button_next.setOnClickListener {
             (activity as HotelCancellationActivity).showCancellationReasonFragment()
         }
     }
 
+    /*
+     * PLEASE DON'T REVIEW FOR THIS FUNCTION YET
+     * func: createHyperlinkText()
+     */
     private fun createHyperlinkText(htmlText: String = "", urls: List<String> = listOf()): SpannableString {
 
         var htmlTextCopy = htmlText
