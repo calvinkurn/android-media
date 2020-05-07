@@ -67,7 +67,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     @Inject
     lateinit var factory: ViewModelFactory
 
-     private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this,factory)[CouponCatalogViewModel::class.java] }
+    private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this, factory)[CouponCatalogViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(appContext)
@@ -126,21 +126,21 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     private fun addPointQueryObserver() = mViewModel.pointQueryLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it){
+        when (it) {
             is Success -> onSuccessPoints(it.data)
             is ErrorMessage -> onErrorPoint(null)
         }
     })
 
     private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context,it) }
+        it?.let { RouteManager.route(context, it) }
     })
 
     private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
-            is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
-            is ValidationError<*,*> -> {
-                if (it.data is ValidateMessageDialog){
+        when (it) {
+            is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
+            is ValidationError<*, *> -> {
+                if (it.data is ValidateMessageDialog) {
                     showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                 }
             }
@@ -148,7 +148,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     })
 
     private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { refreshCatalog(it)}
+        it?.let { refreshCatalog(it) }
     })
 
     private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
@@ -158,17 +158,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     })
 
     private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
-            is Success -> gotoSendGiftPage(it.data.id,it.data.title,it.data.pointStr,it.data.banner)
+        when (it) {
+            is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
             is ValidationError<*, *> -> {
                 if (it.data is PreValidateError)
-                onPreValidateError(it.data.title, it.data.message)
+                    onPreValidateError(it.data.title, it.data.message)
             }
         }
     })
 
     private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
+        when (it) {
             is Loading -> showLoader()
             is ErrorMessage -> {
                 hideLoader()
@@ -234,7 +234,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun initInjector() {
         getComponent(TokopointBundleComponent::class.java)
-            .inject(this)
+                .inject(this)
     }
 
     override fun onClick(source: View) {
@@ -252,7 +252,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
-        serverErrorView!!.setErrorButtonClickListener { view: View? -> mViewModel.getCatalogDetail(code ?: "") }
+        serverErrorView!!.setErrorButtonClickListener { view: View? ->
+            mViewModel.getCatalogDetail(code ?: "")
+        }
     }
 
     override fun openWebView(url: String) {
@@ -657,12 +659,14 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
         webView.loadData(data, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        bottomSheet.setChild(view)
-        bottomSheet.setTitle(title)
-        bottomSheet.showCloseIcon=true
-        bottomSheet.isDragable=true
-        bottomSheet.isHideable=true
-        bottomSheet.show(fragmentManager!!,"")
+        bottomSheet.apply {
+            setChild(view)
+            setTitle(title)
+            showCloseIcon = true
+            isDragable = true
+            isHideable = true
+        }
+        bottomSheet.show(childFragmentManager, "")
     }
 
     override fun gotoSendGiftPage(id: Int, title: String, pointStr: String, banner: String) {

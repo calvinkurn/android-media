@@ -268,9 +268,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private fun openPhoneVerificationBottomSheet() {
         val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
         val closeableBottomSheetDialog = BottomSheetUnify()
-        closeableBottomSheetDialog.setChild(view)
-        closeableBottomSheetDialog.showCloseIcon=false
-        closeableBottomSheetDialog.showHeader=false
+        closeableBottomSheetDialog.apply {
+            setChild(view)
+            showCloseIcon = false
+            showHeader = false
+        }
         val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
         val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
@@ -293,7 +295,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE_BATAL, "")
         }
 
-        closeableBottomSheetDialog.show(childFragmentManager,"")
+        closeableBottomSheetDialog.show(childFragmentManager, "")
     }
 
     override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
@@ -546,12 +548,14 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
         webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING)
-        bottomSheet.setChild(view)
-        bottomSheet.setTitle(title!!)
-        bottomSheet.showCloseIcon=true
-        bottomSheet.isDragable=true
-        bottomSheet.isHideable=true
-        bottomSheet.show(fragmentManager!!,"")
+        bottomSheet.apply {
+            setChild(view)
+            title?.let { setTitle(it) }
+            showCloseIcon = true
+            isDragable = true
+            isHideable = true
+        }
+        bottomSheet.show(childFragmentManager, "")
     }
 
     private fun addCountDownTimer(item: CouponValueEntity, label: Typography, btnContinue: TextView) {

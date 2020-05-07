@@ -8,7 +8,6 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_SWIPE_COUPON
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 class SwipeCouponUseCase @Inject constructor(private val map : Map<String, String>, private val useCase: MultiRequestGraphqlUseCase) {

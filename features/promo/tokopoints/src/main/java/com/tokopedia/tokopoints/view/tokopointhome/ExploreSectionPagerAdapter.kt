@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
 import android.content.Context
-import android.opengl.Visibility
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View

@@ -693,7 +693,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     private fun showOnBoardingTooltip(title: String, content: String) {
         val view = LayoutInflater.from(context).inflate(R.layout.tp_tooltip_es, null, false)
-        view.title_tooltip.text=title
+        view.title_tooltip.text = title
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             view.desc_tooltip.text = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY)
         } else {
@@ -702,7 +702,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         val mToolTip = BottomSheetUnify()
         mToolTip.apply {
             setChild(view)
-            showHeader=false
+            showHeader = false
             showCloseIcon = false
         }
         view.btn_tooltip.setOnClickListener {
