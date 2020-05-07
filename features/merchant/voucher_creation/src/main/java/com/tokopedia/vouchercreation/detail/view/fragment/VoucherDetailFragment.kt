@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
@@ -67,6 +68,13 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
 
     }
 
+    override fun showDescriptionBottomSheet(title: String, content: String) {
+        if (!isAdded) return
+
+        DescriptionBottomSheet(context ?: return)
+                .show(title, content, childFragmentManager)
+    }
+
     private fun setupView() = view?.run {
         setupActionBar()
     }
@@ -105,7 +113,14 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                 )),
                 DividerUiModel(8),
                 FooterButtonUiModel("Bagikan Voucher", ""),
-                FooterUiModel("Untuk menghentikan promosi, klik <font color=\"#03AC0E\"><b>disini</b></font>")
+                FooterUiModel(
+                        "Untuk menghentikan promosi, klik <font color=\"#03AC0E\"><b>disini</b></font>",
+                        "Pengeluaran Promosi",
+                        """
+                            Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam bembelian.<br><br>
+                            Pengeluaran akan otomatis dipotong dari hasil penjualanmu.
+                        """.trimIndent()
+                )
         )
         renderList(dummy)
     }

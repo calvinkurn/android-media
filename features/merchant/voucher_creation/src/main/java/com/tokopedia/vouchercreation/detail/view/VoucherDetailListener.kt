@@ -7,4 +7,6 @@ package com.tokopedia.vouchercreation.detail.view
 interface VoucherDetailListener {
 
     fun onFooterButtonClickListener()
+
+    fun showDescriptionBottomSheet(title: String, content: String)
 }

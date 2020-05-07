@@ -43,7 +43,9 @@ class VoucherDetailAdapterFactoryImpl(
             FooterButtonViewHolder.RES_LAYOUT -> FooterButtonViewHolder(parent) {
                 voucherDetailListener.onFooterButtonClickListener()
             }
-            FooterViewHolder.RES_LAYOUT -> FooterViewHolder(parent)
+            FooterViewHolder.RES_LAYOUT -> FooterViewHolder(parent) { title, content ->
+                voucherDetailListener.showDescriptionBottomSheet(title, content)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }

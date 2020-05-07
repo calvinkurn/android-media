@@ -7,7 +7,9 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
  */
 
 data class FooterUiModel(
-        val footerText: String
+        val footerText: String,
+        val bottomSheetTitle: String,
+        val bottomSheetContent: String
 ) : VoucherDetailUiModel {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int {
