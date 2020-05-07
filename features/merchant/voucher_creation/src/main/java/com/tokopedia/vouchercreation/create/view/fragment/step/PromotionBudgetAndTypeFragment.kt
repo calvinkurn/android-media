@@ -9,6 +9,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExp
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 
 class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
@@ -21,6 +22,15 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
 
     private val promotionTypeInputWidget by lazy {
         PromotionTypeInputUiModel()
+    }
+
+    private val bannerVoucherUiModel by lazy {
+        BannerVoucherUiModel<PromotionTypeBudgetTypeFactory>(
+                null,
+                "",
+                "",
+                ""
+        )
     }
 
     private val generalExpensesInfoBottomSheetFragment by lazy {
@@ -61,5 +71,7 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
     }
 
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
-            listOf(promotionTypeInputWidget)
+            listOf(
+                    bannerVoucherUiModel,
+                    promotionTypeInputWidget)
 }
