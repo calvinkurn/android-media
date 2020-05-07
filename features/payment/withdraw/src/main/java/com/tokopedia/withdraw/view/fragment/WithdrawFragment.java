@@ -97,7 +97,9 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
 
-public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View {
+public class WithdrawFragment{
+
+} /*extends BaseDaggerFragment implements WithdrawContract.View {
 
     private static final int BANK_INTENT = 34275;
     private static final int CONFIRM_PASSWORD_INTENT = 5964;
@@ -668,7 +670,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showConfirmationDialog(ValidatePopUpWithdrawal validatePopUpWithdrawal) {
-        /*if (validatePopUpWithdrawal.getData().isNeedShow()) {
+        *//*if (validatePopUpWithdrawal.getData().isNeedShow()) {
             alertDialog = getConfirmationDialog(validatePopUpWithdrawal.getData().getTitle(),
                     validatePopUpWithdrawal.getData().getNote(),
                     new View.OnClickListener() {
@@ -686,7 +688,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     }).create();
             alertDialog.show();
         } else
-            openUserVerificationScreen();*/
+            openUserVerificationScreen();*//*
     }
 
     @Override
@@ -853,11 +855,11 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             program = checkEligible.getData().getProgram();
         long withdrawal = (long) StringUtils.convertToNumeric(totalWithdrawal.getText().toString(),
                 false);
-        /*withdrawalRequest = new WithdrawalRequest(
+        *//*withdrawalRequest = new WithdrawalRequest(
                 userSession.getEmail(),
                 withdrawal, bankAdapter.getSelectedBank(),
                 sellerWithdrawal, userSession.getUserId()
-                , program);*/
+                , program);*//*
     }
 
     @Override
@@ -906,3 +908,4 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawalFragmentCallback = null;
     }
 }
+*/

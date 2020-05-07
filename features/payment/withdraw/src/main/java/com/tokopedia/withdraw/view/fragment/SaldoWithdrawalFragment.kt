@@ -37,9 +37,12 @@ import com.tokopedia.withdraw.domain.model.BankAccount
 import com.tokopedia.withdraw.domain.model.WithdrawalRequest
 import com.tokopedia.withdraw.domain.model.premiumAccount.CheckEligible
 import com.tokopedia.withdraw.domain.model.premiumAccount.CopyWriting
+import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpData
+import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal
 import com.tokopedia.withdraw.view.adapter.SaldoWithdrawalPagerAdapter
 import com.tokopedia.withdraw.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.withdraw.view.viewmodel.RekeningPremiumViewModel
+import com.tokopedia.withdraw.view.viewmodel.ValidatePopUpViewModel
 import kotlinx.android.synthetic.main.swd_fragment_saldo_withdrawal.*
 import kotlinx.android.synthetic.main.swd_layout_premium_account.*
 import javax.inject.Inject
@@ -69,6 +72,10 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     private lateinit var bankAccountListViewModel: BankAccountListViewModel
     private lateinit var rekeningPremiumViewModel: RekeningPremiumViewModel
+    private lateinit var validatePopUpViewModel: ValidatePopUpViewModel
+
+
+    lateinit var validatePopUpAlertDialog: AlertDialog
 
     override fun getScreenName(): String? {
         return null
@@ -94,6 +101,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         bankAccountListViewModel = viewModelProvider.get(BankAccountListViewModel::class.java)
         rekeningPremiumViewModel = viewModelProvider.get(RekeningPremiumViewModel::class.java)
+        validatePopUpViewModel = viewModelProvider.get(ValidatePopUpViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -126,10 +134,26 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                     inflateRekeningPremiumWidget()
                 }
                 is Fail -> {
+                    //block complete UI if loading failed...
                     //todo handle it as it is required during final withdrawal call...
                 }
             }
         })
+
+
+        validatePopUpViewModel.validatePopUpWithdrawalMutableData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    checkAndCreateValidatePopup(it.data)
+                }
+                is Fail -> {
+                    //Tidak ada koneksi internet
+                    //show toaster if failed
+                    //todo handle with error message
+                }
+            }
+        }
+        )
     }
 
     private fun inflateRekeningPremiumWidget() {
@@ -301,10 +325,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                     }
                 }
             }
-
         }
     }
-
 
     private fun showToaster(message: String) {
         view?.let {
@@ -323,7 +345,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                 userId = userSession.userId, email = userSession.email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = false, programName = getProgramName())
-        openUserVerificationScreen()
+        validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
     }
 
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
@@ -331,7 +353,45 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                 userId = userSession.userId, email = userSession.email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
                 isSellerWithdrawal = true, programName = getProgramName())
-        openUserVerificationScreen()
+        validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
+    }
+
+    private fun checkAndCreateValidatePopup(validatePopUpWithdrawal: ValidatePopUpWithdrawal) {
+        validatePopUpWithdrawal.data?.let {
+            if (it.needShow) {
+                showValidationPopUp(it)
+            } else {
+                openUserVerificationScreen()
+            }
+        } ?: run {
+            openUserVerificationScreen()
+        }
+    }
+
+    private fun showValidationPopUp(data: ValidatePopUpData) {
+        validatePopUpAlertDialog = getConfirmationDialog(data.title, data.note,
+                onContinue = {
+                    analytics.eventClickContinueBtn()
+                    validatePopUpAlertDialog.cancel()
+                    openUserVerificationScreen()
+                },
+                onCancelClick = {
+                    validatePopUpAlertDialog.cancel()
+                }).create()
+        validatePopUpAlertDialog.show()
+    }
+
+    private fun getConfirmationDialog(heading: String, description: String,
+                                      onContinue: () -> Unit,
+                                      onCancelClick: () -> Unit): AlertDialog.Builder {
+        val dialogBuilder = AlertDialog.Builder(activity!!)
+        val inflater = activity!!.layoutInflater
+        val dialogView = inflater.inflate(R.layout.confirmation_dialog, null)
+        (dialogView.findViewById<View>(R.id.heading) as TextView).text = heading
+        (dialogView.findViewById<View>(R.id.description) as TextView).text = Html.fromHtml(description)
+        dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener { onContinue() }
+        dialogView.findViewById<View>(R.id.back_btn).setOnClickListener { onCancelClick() }
+        return dialogBuilder.setView(dialogView)
     }
 
     private fun openUserVerificationScreen() {
@@ -346,7 +406,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         intent.putExtras(bundle)
         startActivityForResult(intent, VERIFICATION_REQUEST_CODE)
     }
-
 
     private fun onVerificationCompleted(data: Intent) {
         if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID) ||

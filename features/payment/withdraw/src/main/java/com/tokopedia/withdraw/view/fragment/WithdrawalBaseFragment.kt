@@ -57,11 +57,8 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var validatePopUpAlertDialog: AlertDialog
 
     private lateinit var bankAccountListViewModel: BankAccountListViewModel
-    private lateinit var validatePopUpViewModel: ValidatePopUpViewModel
-
     private lateinit var bankAccountAdapter: BankAccountAdapter
 
     private var balance: Long = 0L
@@ -85,8 +82,6 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
             viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             bankAccountListViewModel = viewModelProvider.get(BankAccountListViewModel::class.java)
         }
-        viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        validatePopUpViewModel = viewModelProvider.get(ValidatePopUpViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -133,18 +128,6 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
                 }
             }
         })
-
-        validatePopUpViewModel.validatePopUpWithdrawalMutableData.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    checkAndCreateValidatePopup(it.data)
-                }
-                is Fail -> {
-                    //todo handle with error message
-                }
-            }
-        }
-        )
     }
 
     private fun addTextWatcherToUpdateWithdrawalState() {
@@ -168,9 +151,13 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         saldoWithdrawHint.text = hintText
     }
 
-
     fun updateWithdrawalButton(canWithdraw: Boolean) {
         withdrawalButton.isEnabled = canWithdraw
+        if (canWithdraw) {
+            withdrawalButton.setOnClickListener {
+                initiateWithdrawal()
+            }
+        }
     }
 
     fun setBalanceType(accountBalanceType: SaldoWithdrawal, balance: Long) {
@@ -304,43 +291,6 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
             etWithdrawalInput.setSelection(etWithdrawalInput.length())
         }
         updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
-    }
-
-    private fun checkAndCreateValidatePopup(validatePopUpWithdrawal: ValidatePopUpWithdrawal) {
-        validatePopUpWithdrawal.data?.let {
-            if (it.needShow) {
-                showValidationPopUp(it)
-            } else {
-                initiateWithdrawal()
-            }
-        } ?: run {
-
-        }
-    }
-
-    private fun showValidationPopUp(data: ValidatePopUpData) {
-        validatePopUpAlertDialog = getConfirmationDialog(data.title, data.note,
-                onContinue = {
-                    analytics.eventClickContinueBtn()
-                    validatePopUpAlertDialog.cancel()
-                },
-                onCancelClick = {
-                    validatePopUpAlertDialog.cancel()
-                }).create()
-        validatePopUpAlertDialog.show()
-    }
-
-    private fun getConfirmationDialog(heading: String, description: String,
-                                      onContinue: () -> Unit,
-                                      onCancelClick: () -> Unit): AlertDialog.Builder {
-        val dialogBuilder = AlertDialog.Builder(activity!!)
-        val inflater = activity!!.layoutInflater
-        val dialogView = inflater.inflate(R.layout.confirmation_dialog, null)
-        (dialogView.findViewById<View>(R.id.heading) as TextView).text = heading
-        (dialogView.findViewById<View>(R.id.description) as TextView).text = Html.fromHtml(description)
-        dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener { onContinue() }
-        dialogView.findViewById<View>(R.id.back_btn).setOnClickListener { onCancelClick() }
-        return dialogBuilder.setView(dialogView)
     }
 
     private fun initiateWithdrawal() {
