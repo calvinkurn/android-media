@@ -12,7 +12,7 @@ object DeeplinkMapperEntertainment {
     fun getRegisteredNavigationEvents(deeplink: String, context: Context): String {
           return if(getRemoteConfigEventEnabler(context) && deeplink.equals(ApplinkConst.EVENTS)) {
               ApplinkConstInternalEntertainment.EVENT_HOME
-          } else if(deeplink.startsWith(ApplinkConst.EVENTS)){
+          } else if(getRemoteConfigEventPDPEnabler(context) && deeplink.startsWith(ApplinkConst.EVENTS)){
               val uri = Uri.parse(deeplink)
               ApplinkConstInternalEntertainment.EVENT_PDP+"/"+uri.lastPathSegment
           } else{
@@ -23,5 +23,10 @@ object DeeplinkMapperEntertainment {
     private fun getRemoteConfigEventEnabler(context: Context): Boolean{
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_REVAMP_EVENT,true))
+    }
+
+    private fun getRemoteConfigEventPDPEnabler(context: Context): Boolean{
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_REVAMP_PDP_EVENT,true))
     }
 }
