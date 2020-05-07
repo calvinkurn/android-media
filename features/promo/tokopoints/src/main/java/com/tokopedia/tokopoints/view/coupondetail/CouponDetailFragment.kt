@@ -545,12 +545,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         val bottomSheet = BottomSheetUnify()
         val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        /*val closeBtn = view.findViewById<ImageView>(R.id.close_button)
-        val titleView = view.findViewById<Typography>(R.id.title_closeable)*/
-
         webView.loadData(data, COUPON_MIME_TYPE, UTF_ENCODING)
-      /*  closeBtn.setOnClickListener { v -> bottomSheet.dismiss() }
-        titleView.text = title*/
         bottomSheet.setChild(view)
         bottomSheet.setTitle(title!!)
         bottomSheet.showCloseIcon=true
