@@ -14,9 +14,7 @@ class ProductReviewDetailTracking {
     private val EVENT_LABEL = "eventLabel"
     private val EVENT_CLICK_REVIEW = "clickReview"
     private val CLICK = "click"
-    private val POSITION = "position"
 
-    private val FIELD_ULASAN_RATING_PRODUCT = "ulasan - rating produk"
     private val FIELD_PRODUCT_DETAIL = "review detail page"
     private val FIELD_SCREEN_NAME = "screenName"
     private val FIELD_SHOP_ID = "shopId"
@@ -151,6 +149,30 @@ class ProductReviewDetailTracking {
         ))
     }
 
+    fun eventClickResetOnBottomSheet(shopId: String, productId: String) {
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_REVIEW,
+                EVENT_CATEGORY, FIELD_PRODUCT_DETAIL,
+                EVENT_ACTION, "$CLICK - reset on sort or filter bottomsheet",
+                EVENT_LABEL, "",
+                FIELD_SHOP_ID, shopId,
+                FIELD_PRODUCT_ID, productId,
+                FIELD_SCREEN_NAME, FIELD_PRODUCT_DETAIL
+        ))
+    }
+
+    fun eventClickCloseBottomSheetSortFilter(shopId: String, productId: String) {
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_REVIEW,
+                EVENT_CATEGORY, FIELD_PRODUCT_DETAIL,
+                EVENT_ACTION, "$CLICK - close bottomsheet",
+                EVENT_LABEL, "",
+                FIELD_SHOP_ID, shopId,
+                FIELD_PRODUCT_ID, productId,
+                FIELD_SCREEN_NAME, FIELD_PRODUCT_DETAIL
+        ))
+    }
+
     fun eventClickOptionFeedbackReview(shopId: String, productId: String, feedbackId: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, EVENT_CLICK_REVIEW,
@@ -187,7 +209,19 @@ class ProductReviewDetailTracking {
         ))
     }
 
-    //attachmentId not provided by backend, but using attachment string
+    fun eventClickReadMoreFeedback(shopId: String, productId: String, feedbackId: String) {
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_REVIEW,
+                EVENT_CATEGORY, FIELD_PRODUCT_DETAIL,
+                EVENT_ACTION, "$CLICK - selengkapnya on product review",
+                EVENT_LABEL, "$FIELD_FEEDBACK_ID:$feedbackId",
+                FIELD_SHOP_ID, shopId,
+                FIELD_PRODUCT_ID, productId,
+                FIELD_SCREEN_NAME, FIELD_PRODUCT_DETAIL
+        ))
+    }
+
+    //attachmentId = imagaUrl
     fun eventClickImagePreviewSlider(feedbackId: String, attachmentId: String, position: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, EVENT_CLICK_REVIEW,

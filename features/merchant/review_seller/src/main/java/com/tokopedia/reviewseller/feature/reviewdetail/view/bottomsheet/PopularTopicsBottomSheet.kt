@@ -26,6 +26,10 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
         setAction(ACTION_TITLE) {
             resetFilterClicked()
         }
+        setCloseClickListener {
+            tracking.eventClickCloseBottomSheetSortFilter(userSession.shopId.orEmpty(), productID.toString())
+            dismiss()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,6 +49,7 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
     }
 
     private fun resetFilterClicked() {
+        tracking.eventClickResetOnBottomSheet(userSession.shopId.orEmpty(), productID.toString())
         topicAdapter?.resetSortFilter()
         sortAdapter?.resetSortFilter()
     }

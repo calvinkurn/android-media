@@ -13,10 +13,10 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
-import com.tokopedia.reviewseller.feature.reviewdetail.util.ReviewUtil
+import com.tokopedia.reviewseller.common.util.getReviewStar
+import com.tokopedia.reviewseller.common.util.toRelativeDayAndWeek
+import com.tokopedia.reviewseller.common.util.toReviewDescriptionFormatted
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
-import com.tokopedia.reviewseller.feature.reviewdetail.util.toRelativeDayAndWeek
-import com.tokopedia.reviewseller.feature.reviewdetail.util.toReviewDescriptionFormatted
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
@@ -29,10 +29,10 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_product_feedback_detail
-        const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         const val REPLY_MAX_CHAR = 100
         const val FEEDBACK_MAX_CHAR = 150
         private const val isAutoReply = "false"
+        const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     }
 
     private var ivRatingFeedback: AppCompatImageView? = null
@@ -67,17 +67,16 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     }
 
     override fun bind(element: FeedbackUiModel) {
-        ivRatingFeedback?.setImageResource(ReviewUtil.getReviewStar(element.rating.orZero()))
+        ivRatingFeedback?.setImageResource(getReviewStar(element.rating.orZero()))
         ivOptionReviewFeedback?.setOnClickListener {
             setBottomSheetFeedbackOption(element)
         }
-        ivRatingFeedback?.setImageResource(ReviewUtil.getReviewStar(element.rating.orZero()))
         tvFeedbackUser?.text = MethodChecker.fromHtml(getString(R.string.label_name_reviewer_builder, element.reviewerName.orEmpty()))
         tvFeedbackDate?.text = element.reviewTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
 
         setFeedbackReply(element)
         setupVariant(element.variantName ?: "")
-        setupFeedbackReview(element.reviewText ?: "")
+        setupFeedbackReview(element.reviewText ?: "", element.feedbackID.toString())
         setImageAttachment(element)
     }
 
@@ -92,7 +91,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         }
     }
 
-    private fun setupFeedbackReview(feedbackText: String) {
+    private fun setupFeedbackReview(feedbackText: String, feedbackId: String) {
         if (feedbackText.isEmpty()) {
             tvFeedbackReview?.text = getString(R.string.review_not_found)
             tvFeedbackReview?.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_review_not_found))
@@ -101,6 +100,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
                 setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
                 text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR)
                 setOnClickListener {
+                    productFeedbackDetailListener.onFeedbackMoreReplyClicked(feedbackId)
                     maxLines = Integer.MAX_VALUE
                     text = feedbackText
                 }
@@ -146,6 +146,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
             rvItemAttachmentFeedback?.hide()
         } else {
             reviewDetailFeedbackImageAdapter.setAttachmentUiData(element.attachments)
+            reviewDetailFeedbackImageAdapter.setFeedbackId(element.feedbackID.toString())
             reviewDetailFeedbackImageAdapter.submitList(element.attachments)
             rvItemAttachmentFeedback?.show()
         }
@@ -155,7 +156,9 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         val optionDetailListItemUnify = SellerReviewProductDetailMapper.mapToItemUnifyListFeedback(view.context,
                 element.replyText?.isEmpty() ?: false)
         productFeedbackDetailListener.onOptionFeedbackClicked(
-                view, getString(R.string.option_menu_label), element.feedbackID.toString(), optionDetailListItemUnify,
+                view, getString(R.string.option_menu_label),
+                element,
+                optionDetailListItemUnify,
                 element.replyText?.isEmpty() ?: false)
     }
 

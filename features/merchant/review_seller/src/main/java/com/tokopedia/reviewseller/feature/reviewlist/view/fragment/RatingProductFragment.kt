@@ -40,7 +40,10 @@ import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiM
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.ReviewSummaryViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -60,8 +63,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     companion object {
         private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
-        val chipsPaddingRight = 8.toPx()
-        val maxChipTextWidth = 116.toPx()
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
     }
@@ -109,7 +110,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     var chipsFilterText: String? = ""
     var searchFilterText: String? = ""
     var isEmptyFilter = false
-
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -334,6 +334,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun onErrorGetReviewSellerData(throwable: Throwable) {
+        tracking.eventViewErrorIris(throwable.message.orEmpty())
         swipeToRefreshReviewSeller?.isRefreshing = false
         if (reviewSellerAdapter.itemCount.isZero()) {
             if (throwable.message?.isNotEmpty() == true) {
@@ -342,12 +343,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
 
-            filter_and_sort_layout?.gone()
-            rvRatingProduct?.gone()
-            emptyState_reviewProduct?.gone()
-            search_bar_layout?.show()
-            scrollView_globalError_reviewSeller?.show()
-            globalError_reviewSeller?.show()
+            showErrorState()
 
             globalError_reviewSeller.setActionClickListener {
                 tracking.eventClickRetryError(userSession.shopId.orEmpty(), throwable.message.orEmpty())
@@ -356,6 +352,15 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         } else {
             onErrorLoadMoreToaster(getString(R.string.error_message_load_more_review_product), getString(R.string.action_retry_toaster_review_product))
         }
+    }
+
+    private fun showErrorState() {
+        filter_and_sort_layout?.gone()
+        rvRatingProduct?.gone()
+        emptyState_reviewProduct?.gone()
+        search_bar_layout?.show()
+        scrollView_globalError_reviewSeller?.show()
+        globalError_reviewSeller?.show()
     }
 
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
@@ -533,7 +538,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    override fun onItemProductReviewClicked(productId: Int, position: Int) {
+    override fun onItemProductReviewClicked(productId: Int, position: Int, imageUrl: String) {
         tracking.eventClickItemRatingProduct(
                 shopId = userSession.shopId.orEmpty(),
                 productId = productId.toString(),
@@ -541,6 +546,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         startActivityForResult(Intent(context, SellerReviewDetailActivity::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
             putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
+            putExtra(SellerReviewDetailFragment.PRODUCT_IMAGE, imageUrl)
         }, ReviewSellerConstant.RESULT_INTENT_DETAIL)
     }
 

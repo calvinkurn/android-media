@@ -65,10 +65,6 @@ class ProductReviewDetailViewModel @Inject constructor(
         setSortDetailBottomSheet()
     }
 
-    fun setSortTopic(sortBy: String) {
-        this.sortBy = sortBy
-    }
-
     fun setChipFilterDateText(chipFilterText: String) {
         chipsFilterText = chipFilterText
         filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterText)
@@ -147,10 +143,6 @@ class ProductReviewDetailViewModel @Inject constructor(
         sortTopicData = data
         val sortValue = data.firstOrNull { it.isSelected }?.title.orEmpty()
         sortBy = ReviewSellerConstant.mapSortReviewDetail().getKeyByValue(sortValue)
-    }
-
-    fun updateSortFilterBottomSheet(data: List<SortItemUiModel>) {
-        sortTopicData = data
     }
 
     fun setSortAndFilterTopicData(data: Pair<List<SortFilterItemWrapper>, String>) {

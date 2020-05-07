@@ -3,6 +3,8 @@ package com.tokopedia.reviewseller.feature.reviewreply.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -22,12 +24,23 @@ class ProductItemReply: BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_reply_product_item, null)
+        View.inflate(context, R.layout.widget_reply_product_item, this)
     }
 
     fun setItem(data: ProductReplyUiModel) {
         ivItemProduct?.setImageUrl(data.productImageUrl.orEmpty())
         tgTitleProduct?.text = data.productName
-        tgVariantName?.text = data.variantName
+        setupVariant(data.variantName.orEmpty())
+    }
+
+    private fun setupVariant(variantName: String) {
+        if (variantName.isEmpty()) {
+            tgVariantName?.hide()
+            tgVariantLabel?.hide()
+        } else {
+            tgVariantLabel?.show()
+            tgVariantName?.show()
+            tgVariantName?.text = variantName
+        }
     }
 }
