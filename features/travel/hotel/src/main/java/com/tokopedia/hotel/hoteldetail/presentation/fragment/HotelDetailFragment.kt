@@ -51,6 +51,7 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.ceil
 import kotlin.math.round
 
 /**
@@ -533,7 +534,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
 
         trackingHotelUtil.hotelViewDetails(context, hotelHomepageModel, hotelName, hotelId, isAvailable,
-                data.firstOrNull()?.roomPrice?.priceAmount?.toString() ?: "",
+                ceil(data.firstOrNull()?.roomPrice?.priceAmount ?: 0.0).toInt().toString(),
                 data.firstOrNull()?.additionalPropertyInfo?.isDirectPayment ?: isDirectPayment, PDP_SCREEN_NAME)
 
         if (!isButtonEnabled) {

@@ -56,7 +56,7 @@ class PromoCheckoutListHotelActivity : BaseSimpleActivity(), HasComponent<PromoC
         const val HOTEL_PROMO_SCREEN_NAME = "/hotel/checkoutpromo"
         const val TOKOPEDIA_DIGITAL_HOTEL = "tokopediadigitalhotel"
         const val TRAVELENTERTAINMENT_LABEL = "travel & entertainment"
-        const val HOTEL_LABEL = ""
+        const val HOTEL_LABEL = "hotel"
         const val SCREEN_NAME = "screenName"
         const val CURRENT_SITE = "currentSite"
         const val CLIENT_ID = "clientId"

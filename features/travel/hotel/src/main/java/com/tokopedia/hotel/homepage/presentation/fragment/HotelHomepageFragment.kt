@@ -360,8 +360,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
             trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(position)
                     ?: TravelCollectiveBannerModel.Banner(), position, HOMEPAGE_SCREEN_NAME)
         }
-        if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(context, promoDataList.first(),
-                0, HOMEPAGE_SCREEN_NAME)
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
