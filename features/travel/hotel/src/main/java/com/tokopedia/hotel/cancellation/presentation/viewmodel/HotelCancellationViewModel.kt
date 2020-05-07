@@ -30,4 +30,8 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         var dummyData = gson.fromJson(query, HotelCancellationModel.Response::class.java)
         mutableCancellationData.postValue(Success(dummyData.data))
     }
+
+    fun submitCancellationData() {
+
+    }
 }

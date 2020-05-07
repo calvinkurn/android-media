@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +24,7 @@ import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,6 +55,11 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as HotelCancellationActivity).updateSubtitle(getString(R.string.hotel_cancellation_page_2_subtitle))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
@@ -77,6 +84,9 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
     }
 
     fun initView(hotelCancellationModel: HotelCancellationModel) {
+        //When page loaded, initially the button is disabled first until user choose reason
+        hotel_cancellation_button_next.isEnabled = false
+
         hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
         hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
         hotel_cancellation_page_footer.setText(createHyperlinkText(hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
@@ -85,8 +95,22 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
         hotel_cancellation_reason_rv.setHasFixedSize(true)
         hotel_cancellation_reason_rv.isNestedScrollingEnabled = false
         reasonAdapter = HotelCancellationReasonAdapter()
+        reasonAdapter.onClickItemListener = object: HotelCancellationReasonAdapter.OnClickItemListener {
+            override fun onClick(selectedId: String, valid: Boolean) {
+                hotel_cancellation_button_next.isEnabled = valid
+                reasonAdapter.onClickItem(selectedId)
+            }
+            override fun onTypeFreeTextAndMoreThan10Words(valid: Boolean) {
+                hotel_cancellation_button_next.isEnabled = valid
+            }
+        }
         reasonAdapter.updateItems(hotelCancellationModel.reasons)
         hotel_cancellation_reason_rv.adapter = reasonAdapter
+
+        hotel_cancellation_button_next.setOnClickListener {
+            cancellationViewModel.submitCancellationData()
+            Toast.makeText(requireContext(), "Submit!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun getScreenName(): String = ""

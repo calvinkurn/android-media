@@ -43,7 +43,6 @@ class HotelCancellationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     lateinit var cancellationViewModel: HotelCancellationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +64,11 @@ class HotelCancellationFragment : BaseDaggerFragment() {
          Data is still dummy data
          */
         cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.dummycancellation))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as HotelCancellationActivity).updateSubtitle(getString(R.string.hotel_cancellation_page_1_subtitle))
     }
 
     override fun getScreenName(): String = ""

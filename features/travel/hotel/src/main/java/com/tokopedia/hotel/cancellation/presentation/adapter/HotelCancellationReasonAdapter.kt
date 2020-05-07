@@ -1,5 +1,8 @@
 package com.tokopedia.hotel.cancellation.presentation.adapter
 
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,10 @@ import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_reason_item.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * @author by jessica on 05/05/20
@@ -17,6 +24,8 @@ import kotlinx.android.synthetic.main.layout_hotel_cancellation_reason_item.view
 class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var items: List<HotelCancellationModel.Reason> = listOf()
+    var selectedId = ""
+    var onClickItemListener: OnClickItemListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
@@ -33,7 +42,8 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position > 0) {
-            (holder as ViewHolder).bind(items[position - 1], position == items.size)
+            (holder as ViewHolder).bind(items[position - 1],position == items.size,
+                    onClickItemListener, selectedId)
         }
     }
 
@@ -42,19 +52,58 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged()
     }
 
+    fun onClickItem(selectedId: String) {
+        this.selectedId = selectedId
+        notifyDataSetChanged()
+    }
+
+    override fun getItemId(position: Int): Long {
+        return if (position == 0) 999 else items[position].id.toLong()
+    }
+
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        fun bind(reason: HotelCancellationModel.Reason, isLastItem: Boolean) {
+        fun bind(reason: HotelCancellationModel.Reason, isLastItem: Boolean,
+                 listener: OnClickItemListener?, selectedId: String) {
             with(itemView) {
                 hotel_cancellation_reason_hotel_description.text = reason.title
-                if (reason.freeText) {
-                    hotel_cancellation_reason_free_text_tf.show()
+
+                hotel_cancellation_reason_radio_button.isChecked = reason.id == selectedId
+                if (!hotel_cancellation_reason_radio_button.isChecked) hotel_cancellation_reason_free_text_tf.hide()
+                hotel_cancellation_reason_radio_button.setOnClickListener {
+                    if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
+                    listener?.onClick(reason.id, !reason.freeText)
                 }
+
+                if (reason.freeText) setUpFreeTextTextField(listener, reason.id)
                 if (isLastItem) hotel_cancellation_seperator.hide()
+            }
+        }
+
+        private fun setUpFreeTextTextField(listener: OnClickItemListener?, id: String) {
+            with(itemView) {
+                hotel_cancellation_reason_free_text_tf.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                hotel_cancellation_reason_free_text_tf.textFieldInput.addTextChangedListener(object : TextWatcher{
+                    override fun afterTextChanged(s: Editable?) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(300)
+                            if (s.toString().length > 10) listener?.onTypeFreeTextAndMoreThan10Words(true)
+                            else listener?.onTypeFreeTextAndMoreThan10Words(false)
+                        }
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* do nothing */ }
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* do nothing */ }
+                })
             }
         }
     }
 
     class HeaderViewHolder(view: View): RecyclerView.ViewHolder(view)
+
+    interface OnClickItemListener{
+        fun onClick(selectedId: String, valid: Boolean = true)
+        fun onTypeFreeTextAndMoreThan10Words(valid: Boolean)
+    }
 
     companion object {
         const val TYPE_HEADER = 10
