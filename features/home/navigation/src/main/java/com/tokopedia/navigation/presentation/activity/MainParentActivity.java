@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.os.Trace;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -1201,6 +1202,9 @@ public class MainParentActivity extends BaseActivity implements
                 null
         );
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.beginSection("PageLoadTime.startHomePreparePage");
+        }
         getPageLoadTimePerformanceInterface().startMonitoring(HOME_PERFORMANCE_MONITORING_KEY);
         getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
     }
@@ -1216,6 +1220,9 @@ public class MainParentActivity extends BaseActivity implements
                 getPageLoadTimePerformanceInterface().addAttribution(
                         HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                         HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                Trace.endSection();
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             getPageLoadTimePerformanceInterface().stopMonitoring();

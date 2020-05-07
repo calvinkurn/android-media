@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Trace;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -620,8 +621,14 @@ public class HomeFragment extends BaseDaggerFragment implements
             if (data != null) {
                 boolean isRequestNetwork = data.peekContent();
                 if (isRequestNetwork && getPageLoadTimeCallback() != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        Trace.beginSection("PageLoadTime.startHomeNetworkRequest");
+                    }
                     getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
                 } else if (getPageLoadTimeCallback() != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        Trace.endSection();
+                    }
                     getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
                 }
             }
@@ -633,6 +640,9 @@ public class HomeFragment extends BaseDaggerFragment implements
             if (data != null) {
                 boolean isViewModelInitialized = data.peekContent();
                 if (isViewModelInitialized && getPageLoadTimeCallback() != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                        Trace.endSection();
+                    }
                     getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
                 }
             }
@@ -766,6 +776,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    Trace.beginSection("PageLoadTime.startHomeRenderPage");
+                }
                 getPageLoadTimeCallback().startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter.submitList(data);
