@@ -183,8 +183,8 @@ class CatalogNavFragment : BaseBannedProductFragment(),
         if (toShow) {
             layout_no_data.run {
                 show()
-                setHeaderText(resources.getText(R.string.category_nav_catalog_no_data_title))
-                setDescriptionText(resources.getText(R.string.category_nav_catalog_no_data_description))
+                setHeaderText(R.string.category_nav_catalog_no_data_title)
+                setDescriptionText(R.string.category_nav_catalog_no_data_description)
             }
             txt_catalog_count.hide()
         } else {

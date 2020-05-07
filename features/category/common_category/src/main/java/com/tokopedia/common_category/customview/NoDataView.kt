@@ -15,16 +15,16 @@ class NoDataView @JvmOverloads constructor(
     init {
         context.run {
             View.inflate(this, R.layout.layout_nav_no_product, this@NoDataView)
-            setHeaderText(resources.getText(R.string.category_nav_product_no_data_title))
-            setDescriptionText(resources.getText(R.string.category_nav_product_no_data_description))
+            setHeaderText(R.string.category_nav_product_no_data_title)
+            setDescriptionText(R.string.category_nav_product_no_data_description)
         }
     }
 
-    fun setHeaderText(headerText: CharSequence) {
-        txt_no_data_header.text = headerText
+    fun setHeaderText(headerTextId: Int) {
+        txt_no_data_header.text = resources.getText(headerTextId)
     }
 
-    fun setDescriptionText(descriptionText: CharSequence) {
-        txt_no_data_description.text = descriptionText
+    fun setDescriptionText(descriptionTextId: Int) {
+        txt_no_data_description.text = resources.getText(descriptionTextId)
     }
 }
