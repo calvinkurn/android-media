@@ -144,13 +144,6 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
-            android:name="com.tokopedia.sessioncommon.view.forbidden.activity.ServiceActivity"
-            android:label="@string/title_activity_service"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
-        <activity
             android:name=".welcomepage.WelcomePageActivity"
             android:label="@string/title_verify"
             android:screenOrientation="portrait"

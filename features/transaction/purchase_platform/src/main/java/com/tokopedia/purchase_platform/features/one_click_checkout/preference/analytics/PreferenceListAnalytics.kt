@@ -151,4 +151,12 @@ class PreferenceListAnalytics : TransactionAnalytics() {
                 EventAction.CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT
         )
     }
+
+    fun eventClickSimpanOnSummaryPurchaseSetting() {
+        sendEventCategoryAction(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.PURCHASE_SETTING,
+                EventAction.CLICK_SIMPAN_ON_SUMMARY_PURCHASE_SETTING
+        )
+    }
 }

@@ -32,6 +32,7 @@ include 'libraries:locationmanager'
 include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
+include 'libraries:iris_session'
 //include 'libraries:iris_no_op'
 include "libraries:mediauploader"
 include "libraries:oms"

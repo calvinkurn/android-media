@@ -3,6 +3,7 @@ package com.tokopedia.home.testcase
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.test.application.TestRepeatRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,6 +21,9 @@ class PltHomeDynamicChannelPerformanceTest {
     @get:Rule
     var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
 
+    @get:Rule
+    var testRepeatRule: TestRepeatRule = TestRepeatRule()
+
     //for testing purpose, to check if mock response is working
 //    @Test
 //    fun testHomeLayout() {
@@ -35,6 +39,8 @@ class PltHomeDynamicChannelPerformanceTest {
     fun testPageLoadTimePerformance() {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
+        activityRule.activity.deleteDatabase("HomeCache.db")
+        activityRule.activity.finish()
     }
 
 
@@ -60,6 +66,8 @@ class PltHomeDynamicChannelPerformanceTest {
         var datasource = ""
         if (activityRule.activity.isFromCache) {
             datasource = "cache"
+        } else if (!pltPerformanceData.isSuccess) {
+            datasource = "failed"
         } else datasource = "network"
         perfReportPlt.appendText(
                 "$testCaseName," +

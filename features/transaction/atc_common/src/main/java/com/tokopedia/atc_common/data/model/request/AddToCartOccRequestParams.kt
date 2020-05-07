@@ -15,7 +15,7 @@ data class AddToCartOccRequestParams(
         var quantity: String,
         @SerializedName("warehouse_id")
         @Expose
-        var warehouseId: String = "",
+        var warehouseId: String = "0",
         @SerializedName("lang")
         @Expose
         var lang: String = "id",
@@ -33,5 +33,10 @@ data class AddToCartOccRequestParams(
         var listTracker: String = "",
         @SerializedName("notes")
         @Expose
-        var notes: String = ""
+        var notes: String = "",
+
+        // appflyer analytics data
+        var productName: String = "",
+        var category: String = "",
+        var price: String = ""
 )
