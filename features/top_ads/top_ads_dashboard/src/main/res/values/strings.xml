@@ -25,6 +25,8 @@
     <string name="title_top_ads_store">Toko</string>
 
     <string name="label_add_promo">Tambah Iklan</string>
+    <string name="label_add_ad_creation">Buat Iklan</string>
+
     <string name="label_auto_add_promo">Tambah Iklan Otomatis</string>
     <string name="label_top_ads_income">Total Pendapatan</string>
     <string name="label_top_ads_sold">Total Terjual</string>

@@ -33,22 +33,4 @@ public class TopchatNotificationPojo {
         return notifUnreadsBuyer;
     }
 
-    public class ChatNotificationResponse {
-
-        @SerializedName("notifications")
-        Notifications notifications = new Notifications();
-
-        public Notifications getNotifications() {
-            return notifications;
-        }
-
-        public class Notifications {
-            @SerializedName("chat")
-            TopchatNotificationPojo topchatNotificationPojo = new TopchatNotificationPojo();
-
-            public TopchatNotificationPojo getTopchatNotificationPojo() {
-                return topchatNotificationPojo;
-            }
-        }
-    }
 }

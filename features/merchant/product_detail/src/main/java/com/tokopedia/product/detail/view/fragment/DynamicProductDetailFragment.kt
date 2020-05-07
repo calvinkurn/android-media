@@ -103,6 +103,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.*
+import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -2240,6 +2241,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
                         shippingPrice = viewModel.shippingMinimumPrice
+                        productName = data.getProductName
+                        category = data.basic.category.name
+                        price = data.finalPrice.toString()
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -2255,6 +2259,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         attribution = trackerAttributionPdp ?: ""
                         listTracker = trackerListNamePdp ?: ""
                         warehouseId = selectedWarehouseId
+                        productName = data.getProductName
+                        category = data.basic.category.name
+                        price = data.finalPrice.toString()
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }
@@ -2268,6 +2275,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 warehouseId = selectedWarehouseId.toString()
                 attribution = trackerAttributionPdp ?: ""
                 listTracker = trackerListNamePdp ?: ""
+                productName = data.getProductName
+                category = data.basic.category.name
+                price = data.finalPrice.toString()
             }
             viewModel.addToCart(addToCartOccRequestParams)
         } else {
@@ -2279,6 +2289,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 attribution = trackerAttributionPdp ?: ""
                 listTracker = trackerListNamePdp ?: ""
                 warehouseId = selectedWarehouseId
+                productName = data.getProductName
+                category = data.basic.category.name
+                price = data.finalPrice.toString()
             }
             viewModel.addToCart(addToCartRequestParams)
         }
@@ -2295,7 +2308,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             DynamicProductDetailTracking.Click.eventClickApplyLeasing(
                     viewModel.getDynamicProductInfoP1,
-                    viewModel.generateVariantString()
+                    generateVariantString()
             )
 
             val urlApplyLeasingWithProductId = String.format(
@@ -2379,7 +2392,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         product.basic.shopID, "",
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
-                viewModel.putChatProductInfoTo(intent, product.basic.productID, product)
+                VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData)
                 startActivity(intent)
             }
         })
@@ -2443,7 +2456,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun gotoCart() {
         activity?.let {
-            DynamicProductDetailTracking.Click.eventCartToolbarClicked(viewModel.generateVariantString(),
+            DynamicProductDetailTracking.Click.eventCartToolbarClicked(generateVariantString(),
                     viewModel.getDynamicProductInfoP1)
             doActionOrLogin({
                 startActivity(RouteManager.getIntent(it, ApplinkConst.CART))

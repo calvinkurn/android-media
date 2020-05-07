@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.common_category.adapter.QuickFilterAdapter
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.unifyprinciples.Typography
 
 class FindPriceListAdapter(var productList: ArrayList<ProductsItem>, private var priceListClickListener: PriceListClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

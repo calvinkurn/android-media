@@ -14,11 +14,9 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -59,6 +57,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -74,14 +73,12 @@ import com.tokopedia.tkpd.timber.UserIdChangeCallback;
 import com.tokopedia.tkpd.timber.UserIdSubscriber;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
+import com.tokopedia.tkpd.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
-import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -93,7 +90,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
@@ -212,7 +208,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks(nfcSubscriber);
 
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
-
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         initBlockCanary();
     }
 

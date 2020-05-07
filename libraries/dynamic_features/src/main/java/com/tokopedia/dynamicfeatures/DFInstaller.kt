@@ -15,13 +15,13 @@ import com.tokopedia.dynamicfeatures.track.DFTracking
 import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
 import com.tokopedia.dynamicfeatures.utils.StorageUtils
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 import java.util.*
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Dynamic Installer, object that handle installing dynamic feature in background for application
@@ -109,7 +109,7 @@ object DFInstaller {
 
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) {
-                suspendCoroutine<Pair<Boolean, Boolean>> { continuation ->
+                suspendCancellableCoroutine<Pair<Boolean, Boolean>> { continuation ->
                     registerListener(applicationContext, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation)
                     //if has view will continue from the last state download
                     getView()?.let { view ->
@@ -147,7 +147,7 @@ object DFInstaller {
 
     fun onSuccessInstall(context: Context, moduleName: String,
                          onSuccessInstall: (() -> Unit)? = null,
-                         continuation: Continuation<Pair<Boolean, Boolean>>? = null) {
+                         continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null) {
         val viewRef = viewRef
         val view = viewRef?.get()
         var tag: String
@@ -161,12 +161,12 @@ object DFInstaller {
         }
         logSuccessStatus(tag, context, listOf(moduleName))
         onSuccessInstall?.invoke()
-        continuation?.resume(true to true)
+        handleContinuationOnSuccess(continuation)
     }
 
     fun onErrorInstall(context: Context, errorString: String, moduleName: String,
                        onFailedInstall: (() -> Unit)? = null,
-                       continuation: Continuation<Pair<Boolean, Boolean>>? = null) {
+                       continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null) {
         sessionId = null
         val viewRef = viewRef
         val view = viewRef?.get()
@@ -183,10 +183,32 @@ object DFInstaller {
         }
         logFailedStatus(tag, context.applicationContext, listOf(moduleName), listOf(errorString))
         onFailedInstall?.invoke()
-        if (view != null && view.getModuleNameView() != moduleName) {
-            continuation?.resume(false to true)
-        } else {
-            continuation?.resume(false to false)
+        handleContinuationOnError(view, moduleName, continuation)
+    }
+
+    fun handleContinuationOnError(view: DFInstallerView?,
+                                  moduleName: String,
+                                  continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null) {
+        try {
+            if (continuation?.isActive == true) {
+                if (view != null && view.getModuleNameView() != moduleName) {
+                    continuation.resume(false to true)
+                } else {
+                    continuation.resume(false to false)
+                }
+            }
+        } catch (e: Exception) {
+            //no-op
+        }
+    }
+
+    fun handleContinuationOnSuccess(continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null) {
+        try {
+            if (continuation?.isActive == true) {
+                continuation.resume(true to true)
+            }
+        } catch (e: Exception) {
+            //no-op
         }
     }
 
@@ -293,7 +315,7 @@ object DFInstaller {
     private fun registerListener(context: Context, moduleNameToDownload: List<String>,
                                  onSuccessInstall: (() -> Unit)? = null,
                                  onFailedInstall: (() -> Unit)? = null,
-                                 continuation: Continuation<Pair<Boolean, Boolean>>) {
+                                 continuation: CancellableContinuation<Pair<Boolean, Boolean>>) {
         SplitInstallListener.instance.context = context
         SplitInstallListener.instance.moduleNameToDownload = moduleNameToDownload
         SplitInstallListener.instance.onSuccessInstall = onSuccessInstall
@@ -317,7 +339,7 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
     var instance: SplitInstallListener = this
     var context: Context? = null
     var moduleNameToDownload: List<String> = emptyList()
-    var continuation: Continuation<Pair<Boolean, Boolean>>? = null
+    var continuation: CancellableContinuation<Pair<Boolean, Boolean>>? = null
     override fun onStateUpdate(state: SplitInstallSessionState) {
         if (state.sessionId() != DFInstaller.sessionId) {
             return

@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.BigListcatalogShimmerViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.GridListCatalogShimmerViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.ListCatalogShimmerViewHolder
@@ -11,9 +12,8 @@ import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimme
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.BigGridCatalogCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.ListCatalogCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.SmallGridCatalogCardViewHolder
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.CatalogItem
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactoryImpl
+import com.tokopedia.common_category.factory.BaseProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 
 class CatalogTypeFactoryImpl(val catalogCardListener: CatalogCardListener) : BaseProductTypeFactoryImpl(), CatalogTypeFactory {
