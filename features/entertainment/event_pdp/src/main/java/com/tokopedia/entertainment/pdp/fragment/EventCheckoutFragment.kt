@@ -143,7 +143,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 val error = it
                 view?.let {
                     progressDialog.dismiss()
-                    Toaster.make(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.make(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,  it.context.getString(R.string.ent_checkout_error))
                 }
             }
         })
@@ -152,7 +152,8 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             it?.let {
                 val error = it
                 view?.let {
-                    Toaster.make(it, ErrorHandler.getErrorMessage(context, error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.make(it, ErrorHandler.getErrorMessage(context, error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            it.context.getString(R.string.ent_checkout_error))
                 }
             }
         })
@@ -256,9 +257,9 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 val view = it
                 context?.let {
                     if (!userSessionInterface.isLoggedIn) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,  it.getString(R.string.ent_checkout_error))
                     } else if (forms.isEmpty()) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,  it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
                         if (name.isEmpty()) name = userSessionInterface.name

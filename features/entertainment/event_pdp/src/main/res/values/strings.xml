@@ -57,5 +57,6 @@
     <string name="ent_pdp_form_toaster_click_msg">Oke</string>
 
     <string name="ent_checkout_payment">Sedang diproses</string>
+    <string name="ent_checkout_error">Oke</string>
 
 </resources>
