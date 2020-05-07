@@ -15,12 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.R
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
+import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics
-import com.tokopedia.common_category.constants.CategoryNavConstants
-import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
@@ -34,8 +35,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
 import javax.inject.Inject
-import com.tokopedia.common_category.fragment.BaseBannedProductFragment
-import com.tokopedia.unifyprinciples.Typography
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -182,11 +181,10 @@ class CatalogNavFragment : BaseBannedProductFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
             layout_no_data.run {
                 show()
-                findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_catalog_no_data_title)
-                findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_catalog_no_data_description)
+                setHeaderText(resources.getText(R.string.category_nav_catalog_no_data_title))
+                setDescriptionText(resources.getText(R.string.category_nav_catalog_no_data_description))
             }
             txt_catalog_count.hide()
         } else {

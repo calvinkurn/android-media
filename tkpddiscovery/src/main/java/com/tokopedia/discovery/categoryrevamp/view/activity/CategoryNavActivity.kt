@@ -12,17 +12,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.core.gcm.Constants
-import com.tokopedia.discovery.R
 import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
+import com.tokopedia.common_category.interfaces.CategoryNavigationListener
+import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.core.gcm.Constants
+import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
@@ -30,11 +31,10 @@ import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
-import com.tokopedia.common_category.interfaces.CategoryNavigationListener
-import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -45,7 +45,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
@@ -333,12 +332,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private fun setErrorPage() {
         hideBottomNavigation()
         view_pager_container.hide()
-        /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
-        layout_no_data.run {
-            show()
-            findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_product_no_data_title)
-            findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_product_no_data_description)
-        }
+        layout_no_data.show()
     }
 
     private fun initBottomSheetListener() {

@@ -9,20 +9,13 @@ import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 private const val IS_BANNED = 1
 
-class BannedProdNavViewModel @Inject constructor() : ViewModel(), CoroutineScope, LifecycleObserver {
+class BannedProdNavViewModel @Inject constructor() : ViewModel(), LifecycleObserver {
 
-    private val jobs = SupervisorJob()
     var categoryName: String = ""
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + jobs
 
     @Inject
     lateinit var categoryNavRepository: CategoryNavRepository
@@ -34,7 +27,7 @@ class BannedProdNavViewModel @Inject constructor() : ViewModel(), CoroutineScope
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun fetchBannedProduct() {
-        launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val bannedResponse = categoryNavRepository.getCategoryDetail(categoryName)
             bannedResponse?.let {
                 handleDataForBanned(it)
