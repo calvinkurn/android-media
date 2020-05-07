@@ -380,7 +380,7 @@ public class MyApplication extends BaseMainApplication
     @Deprecated
     @Override
     public boolean isSupportApplink(String appLink) {
-        Toast.makeText(getApplicationContext(), "check for airbnb deeplink " + appLink, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "check for airbnb deeplink " + appLink, Toast.LENGTH_LONG).show();
         return false;
     }
 
