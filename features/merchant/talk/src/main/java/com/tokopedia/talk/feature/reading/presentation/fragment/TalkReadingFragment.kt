@@ -26,8 +26,7 @@ import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
-import com.tokopedia.talk.feature.reading.data.model.SortOption
-import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
+import com.tokopedia.talk.feature.reading.data.model.*
 import com.tokopedia.talk.feature.reading.di.DaggerTalkReadingComponent
 import com.tokopedia.talk.feature.reading.di.TalkReadingComponent
 import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapter
@@ -62,6 +61,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
+        const val LOGIN_ACTIVITY_REQUEST_CODE = 204
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
@@ -171,7 +171,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onThreadClicked(questionID: String) {
-        goToReplyActivity(questionID)
+        if(userSession.isLoggedIn) {
+            goToReplyActivity(questionID)
+            return
+        }
+        updateLastAction(TalkGoToReply(questionID))
+        goToLoginActivity()
     }
 
     override fun onUserDetailsClicked(userId: String) {
@@ -193,6 +198,18 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             }
             TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateQuestion()
+            }
+            LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                when (viewModel.talkLastAction.value) {
+                    is TalkGoToReply -> {
+                        (viewModel.talkLastAction.value as? TalkGoToReply)?.questionId?.let {
+                            goToReplyActivity(it)
+                        }
+                    }
+                    is TalkGoToWrite -> {
+                        goToWriteActivity()
+                    }
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -247,7 +264,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         addFloatingActionButton.hide()
         pageEmpty.visibility = View.VISIBLE
         readingEmptyAskButton.setOnClickListener {
-            goToWriteActivity()
+            if(userSession.isLoggedIn) {
+                goToWriteActivity()
+            } else {
+                updateLastAction(TalkGoToWrite)
+                goToLoginActivity()
+            }
         }
     }
 
@@ -398,6 +420,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity() {
+        if(userSession.isLoggedIn) {
+
+        }
         val intent = context?.let { AddTalkActivity.createIntent(it, productId) }
         startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
     }
@@ -410,6 +435,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun goToProfileActivity(userId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
         startActivity(intent)
+    }
+
+    private fun goToLoginActivity() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_ACTIVITY_REQUEST_CODE)
     }
 
     private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE) {
@@ -430,9 +460,18 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.updateCategories(filterCategories)
     }
 
+    private fun updateLastAction(talkLastAction: TalkLastAction) {
+        viewModel.updateLastAction(talkLastAction)
+    }
+
     private fun initFab() {
         addFloatingActionButton.setOnClickListener {
-            goToWriteActivity()
+            if(userSession.isLoggedIn) {
+                goToWriteActivity()
+            } else {
+                updateLastAction(TalkGoToWrite)
+                goToLoginActivity()
+            }
         }
     }
 

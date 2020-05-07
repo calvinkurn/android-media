@@ -7,6 +7,7 @@ import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
 import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
+import com.tokopedia.talk.feature.reading.data.model.TalkLastAction
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
@@ -38,6 +39,10 @@ class TalkReadingViewModel @Inject constructor(
     private val _filterCategories = MutableLiveData<List<TalkReadingCategory>>()
     val filterCategories: LiveData<List<TalkReadingCategory>>
     get() = _filterCategories
+
+    private val _talkLastAction = MutableLiveData<TalkLastAction>()
+    val talkLastAction: LiveData<TalkLastAction>
+    get() = _talkLastAction
 
     fun getDiscussionAggregate(productId: String, shopId: String) {
         launchCatchError(block = {
@@ -107,6 +112,10 @@ class TalkReadingViewModel @Inject constructor(
             it.isSelected = it.id == SortOption.SortId.INFORMATIVENESS
         }
         _sortOptions.value = sortOptions
+    }
+
+    fun updateLastAction(lastAction: TalkLastAction) {
+        _talkLastAction.postValue(lastAction)
     }
 
 }
