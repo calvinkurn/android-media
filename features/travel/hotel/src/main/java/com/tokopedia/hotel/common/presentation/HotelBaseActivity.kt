@@ -48,7 +48,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
 
     override fun sendScreenAnalytics() {
         screenName?.let {
-            trackingHotelUtil.openScreen(it)
+            trackingHotelUtil.openScreen(this, it)
         }
     }
 

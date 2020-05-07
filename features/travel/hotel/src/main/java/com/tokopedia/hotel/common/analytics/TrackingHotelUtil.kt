@@ -23,28 +23,27 @@ import kotlin.math.roundToLong
 /**
  * @author by resakemal on 13/06/19
  */
-class TrackingHotelUtil(context: Context) {
+class TrackingHotelUtil {
 
-    private val irisSessionId: String by lazy { IrisSession(context).getSessionId() }
-    private val userId: String by lazy { UserSession(context).userId }
+    private fun getIrisSessionId(context: Context): String = IrisSession(context).getSessionId()
+    private fun getUserId(context: Context): String = UserSession(context).userId
 
-    fun openScreen(screenName: String) {
+    fun openScreen(context: Context?, screenName: String) {
         if (screenName.isNotEmpty()) {
-            val map = getTrackingMapWithHeader(screenName)
+            val map = getTrackingMapWithHeader(context, screenName)
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
         }
     }
 
-    fun hotelBannerImpression(hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int, screenName: String) {
-
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelBannerImpression(context: Context?, hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(PROMO_VIEW, BANNER_IMPRESSION, "$HOTEL_LABEL - ${hotelPromoEntity.id}")
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS_LABEL, getBannerList(hotelPromoEntity, position)))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickBanner(hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelClickBanner(context: Context?, hotelPromoEntity: TravelCollectiveBannerModel.Banner, position: Int, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(PROMO_CLICK, CLICK_BANNER, "$HOTEL_LABEL - ${hotelPromoEntity.id}")
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS_LABEL, getBannerList(hotelPromoEntity, position)))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -63,45 +62,45 @@ class TrackingHotelUtil(context: Context) {
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelClickChangeDestination(screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelClickChangeDestination(context: Context?, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_WIDGET_SELECT_DESTINATION, HOTEL_LABEL)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelSelectDestination(destType: String, destination: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelSelectDestination(context: Context?, destType: String, destination: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, SELECT_DESTINATION, "$HOTEL_LABEL - $destType - $destination")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelSelectStayDate(checkInDate: String, dateRange: Int, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelSelectStayDate(context: Context?, checkInDate: String, dateRange: Int, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, SELECT_STAY_DATE, "$HOTEL_LABEL - ${convertDate(checkInDate)} - $dateRange")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelSelectRoomGuest(roomCount: Int, adultCount: Int, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelSelectRoomGuest(context: Context?, roomCount: Int, adultCount: Int, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, SELECT_ROOM_GUEST, "$HOTEL_LABEL - $roomCount - $adultCount")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun searchHotel(destType: String, destination: String, roomCount: Int, guestCount: Int,
+    fun searchHotel(context: Context?, destType: String, destination: String, roomCount: Int, guestCount: Int,
                     checkInDate: String, duration: Int, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel  = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${convertDate(checkInDate)} - $duration"
         map.addGeneralEvent(CLICK_HOTEL, SEARCH_HOTEL, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelViewHotelListImpression(destination: String, destinationType: String, searchParam: SearchParam,
+    fun hotelViewHotelListImpression(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
                                      products: List<Property>, currentListDataSize: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map.addGeneralEvent(PRODUCT_VIEW, VIEW_HOTEL_LIST_IMPRESSION, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(CURRENCY_LABEL, IDR_LABEL, IMPRESSIONS_LABEL,
@@ -109,13 +108,13 @@ class TrackingHotelUtil(context: Context) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun chooseHotel(destination: String, destinationType: String, searchParam: SearchParam,
+    fun chooseHotel(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
                     property: Property, position: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map.addGeneralEvent(PRODUCT_CLICK, CHOOSE_HOTEL, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
@@ -142,19 +141,19 @@ class TrackingHotelUtil(context: Context) {
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelUserClickFilter(screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelUserClickFilter(context: Context?, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, USER_CLICK_FILTER,"$HOTEL_LABEL - true")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelUserClickSort(sortValue: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelUserClickSort(context: Context?, sortValue: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, USER_CLICK_SORT, "$HOTEL_LABEL - $sortValue")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelViewDetails(hotelHomepageModel: HotelHomepageModel,
+    fun hotelViewDetails(context: Context?, hotelHomepageModel: HotelHomepageModel,
                          hotelName: String, hotelId: Long, available: Boolean,
                          price: String, directPayment: Boolean, screenName: String) {
 
@@ -164,7 +163,7 @@ class TrackingHotelUtil(context: Context) {
         val destinationType = hotelHomepageModel.locType
         val destination = if (hotelHomepageModel.locName.isEmpty()) hotelName else hotelHomepageModel.locName
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration"
         map.addGeneralEvent(VIEW_PRODUCT, VIEW_HOTEL_PDP, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
@@ -186,32 +185,33 @@ class TrackingHotelUtil(context: Context) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickHotelPhoto(hotelId: Long, price: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelClickHotelPhoto(context: Context?, hotelId: Long, price: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_HOTEL_PHOTO, "$HOTEL_LABEL - $hotelId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelClickHotelReviews(hotelId: Long, price: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelClickHotelReviews(context: Context?, hotelId: Long, price: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_HOTEL_REVIEWS, "$HOTEL_LABEL - $hotelId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelChooseViewRoom(hotelHomepageModel: HotelHomepageModel, hotelId: Long, hotelName: String, screenName: String) {
+    fun hotelChooseViewRoom(context: Context?, hotelHomepageModel: HotelHomepageModel, hotelId: Long,
+                            hotelName: String, screenName: String) {
         val roomCount = hotelHomepageModel.roomCount
         val guestCount = hotelHomepageModel.adultCount
         val duration = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         val destinationType = hotelHomepageModel.locType
         val destination = if (hotelHomepageModel.locName.isEmpty()) hotelName else hotelHomepageModel.locName
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration - $hotelId"
         map.addGeneralEvent(CLICK_HOTEL, CHOOSE_VIEW_ROOM, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelViewRoomList(hotelId: Long, hotelRoomListPageModel: HotelRoomListPageModel,
+    fun hotelViewRoomList(context: Context?, hotelId: Long, hotelRoomListPageModel: HotelRoomListPageModel,
                           roomList: List<HotelRoom>, screenName: String) {
         val roomCount = hotelRoomListPageModel.room
         val guestCount = hotelRoomListPageModel.adult
@@ -219,18 +219,19 @@ class TrackingHotelUtil(context: Context) {
         val destinationType = hotelRoomListPageModel.destinationType
         val destination = hotelRoomListPageModel.destinationName
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelRoomListPageModel.checkIn)} - $duration - $hotelId"
         map.addGeneralEvent(PRODUCT_VIEW, VIEW_ROOM_LIST, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(CURRENCY_LABEL, IDR_LABEL, IMPRESSIONS_LABEL, getViewHotelListRoom(roomList))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelViewRoomDetail(roomDetail: HotelRoom, addToCartParam: HotelAddCartParam, position: Int, screenName: String) {
+    fun hotelViewRoomDetail(context: Context?, roomDetail: HotelRoom, addToCartParam: HotelAddCartParam,
+                            position: Int, screenName: String) {
 
         val duration = HotelUtils.countDayDifference(addToCartParam.checkIn, addToCartParam.checkOut)
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - ${addToCartParam.destinationType} - ${addToCartParam.destinationName} - ${addToCartParam.roomCount} - ${addToCartParam.adult} - ${convertDate(addToCartParam.checkIn)} - $duration - ${addToCartParam.propertyId}"
         map.addGeneralEvent(VIEW_PRODUCT, VIEW_ROOM_DETAILS, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
@@ -275,14 +276,14 @@ class TrackingHotelUtil(context: Context) {
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelChooseRoom(room: HotelRoom, hotelAddCartParam: HotelAddCartParam, screenName: String) {
+    fun hotelChooseRoom(context: Context?, room: HotelRoom, hotelAddCartParam: HotelAddCartParam, screenName: String) {
         val hotelId = room.additionalPropertyInfo.propertyId
         val guestCount = hotelAddCartParam.adult
         val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
         val destinationType = hotelAddCartParam.destinationType
         val destination = hotelAddCartParam.destinationName
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - ${hotelAddCartParam.roomCount} - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
         map.addGeneralEvent(ADD_TO_CART, CHOOSE_ROOM, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
@@ -293,20 +294,20 @@ class TrackingHotelUtil(context: Context) {
                         NAME_LABEL, room.roomInfo.name,
                         ID_LABEL, room.roomId,
                         PRICE_LABEL, room.roomPrice.priceAmount.roundToLong(),
-                        QUANTITY_LABEL, ONE_LABEL,
+                        QUANTITY_LABEL, hotelAddCartParam.roomCount,
                         VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
                 ))))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickRoomListPhoto(hotelId: Int, roomId: String, price: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelClickRoomListPhoto(context: Context?, hotelId: Int, roomId: String, price: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_ROOM_PHOTO_ON_ROOM_LIST, "$HOTEL_LABEL - $hotelId - $roomId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelClickRoomDetails(hotelRoom: HotelRoom, hotelRoomListPageModel: HotelRoomListPageModel,
+    fun hotelClickRoomDetails(context: Context?, hotelRoom: HotelRoom, hotelRoomListPageModel: HotelRoomListPageModel,
                               position: Int, screenName: String) {
         val hotelId = hotelRoom.additionalPropertyInfo.propertyId
         val roomCount = hotelRoomListPageModel.room
@@ -315,7 +316,7 @@ class TrackingHotelUtil(context: Context) {
         val destinationType = hotelRoomListPageModel.destinationType
         val destination = hotelRoomListPageModel.destinationName
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelRoomListPageModel.checkIn)} - $duration - $hotelId"
         map.addGeneralEvent(PRODUCT_CLICK, CLICK_ROOM_DETAILS, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
@@ -335,13 +336,14 @@ class TrackingHotelUtil(context: Context) {
 
     }
 
-    fun hotelClickRoomDetailsPhoto(hotelId: Int, roomId: String, price: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelClickRoomDetailsPhoto(context: Context?, hotelId: Int, roomId: String, price: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, CLICK_ROOM_PHOTO_ON_ROOM_PDP, "$HOTEL_LABEL - $hotelId - $roomId - $price")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelChooseRoomDetails(room: HotelRoom, position: Int, hotelAddCartParam: HotelAddCartParam, screenName: String) {
+    fun hotelChooseRoomDetails(context: Context?, room: HotelRoom, position: Int,
+                               hotelAddCartParam: HotelAddCartParam, screenName: String) {
         val hotelId = room.additionalPropertyInfo.propertyId
         val roomCount = hotelAddCartParam.roomCount
         val guestCount = hotelAddCartParam.adult
@@ -349,7 +351,7 @@ class TrackingHotelUtil(context: Context) {
         val destinationType = hotelAddCartParam.destinationType
         val destination = hotelAddCartParam.destinationName
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelAddCartParam.checkIn)} - $duration - $hotelId"
         map.addGeneralEvent(ADD_TO_CART, CHOOSE_ROOM_DETAILS_PDP, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
@@ -363,17 +365,18 @@ class TrackingHotelUtil(context: Context) {
                         LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
                         VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                        POSITION_LABEL, "$position"
+                        POSITION_LABEL, "$position",
+                        QUANTITY_LABEL, hotelAddCartParam.roomCount
                 ))))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, roomCount: Int,
+    fun hotelClickNext(context: Context?, hotelCart: HotelCart, destType: String, destination: String, roomCount: Int,
                        guestCount: Int, personal: Boolean, screenName: String) {
         val hotelId = hotelCart.property.propertyID
         val duration = HotelUtils.countDayDifference(hotelCart.cart.checkIn, hotelCart.cart.checkOut)
 
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - ${convertDate(hotelCart.cart.checkIn)} - $duration - $hotelId - $personal"
         map.addGeneralEvent(CHECKOUT, CLICK_NEXT, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
@@ -403,22 +406,22 @@ class TrackingHotelUtil(context: Context) {
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun hotelApplyPromo(promoCode: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelApplyPromo(context: Context?, promoCode: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         map.addGeneralEvent(CLICK_HOTEL, APPLY_PROMO, "$HOTEL_LABEL - $promoCode")
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelLastSearchImpression(lastSearchItems: TravelRecentSearchModel.Item, position: Int, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelLastSearchImpression(context: Context?, lastSearchItems: TravelRecentSearchModel.Item, position: Int, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
         map.addGeneralEvent(PROMO_VIEW, ACTION_LAST_SEARCH_IMPRESSION, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_VIEW, getECommerceDataLastSearch(lastSearchItems, position))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelLastSearchClick(lastSearchItems: TravelRecentSearchModel.Item, position: Int, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelLastSearchClick(context: Context?, lastSearchItems: TravelRecentSearchModel.Item, position: Int, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
         map.addGeneralEvent(PROMO_CLICK, ACTION_LAST_SEARCH_CLICK, eventLabel)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_CLICK, getECommerceDataLastSearch(lastSearchItems, position))
@@ -437,16 +440,17 @@ class TrackingHotelUtil(context: Context) {
                 )))
     }
 
-    fun hotelClickChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String,
-                               irisSessionId: String, userId: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun hotelClickChangeSearch(context: Context?, type: String, name: String, totalRoom: Int,
+                               totalGuest: Int, checkIn: String, checkOut: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $type - $name - $totalRoom - $totalGuest - ${convertDate(checkIn)} - ${HotelUtils.countDayDifference(checkIn, checkOut)}"
         map.addGeneralEvent(CLICK_HOTEL, ACTION_CLICK_CHANGE_SEARCH, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickSaveChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String) {
-        val map = getTrackingMapWithHeader(screenName) as MutableMap<String, Any>
+    fun clickSaveChangeSearch(context: Context?, type: String, name: String, totalRoom: Int,
+                              totalGuest: Int, checkIn: String, checkOut: String, screenName: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $type - $name - $totalRoom - $totalGuest - ${convertDate(checkIn)} - ${HotelUtils.countDayDifference(checkIn, checkOut)}"
         map.addGeneralEvent(CLICK_HOTEL, ACTION_SAVE_CHANGE_SEARCH, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -457,13 +461,13 @@ class TrackingHotelUtil(context: Context) {
 
     private fun positionTracker(index: Int): Int { return index + 1 }
 
-    private fun getTrackingMapWithHeader(screenName: String): MutableMap<String, String> {
+    private fun getTrackingMapWithHeader(context: Context?, screenName: String): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[SCREEN_NAME] = screenName
         map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
         map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
-        map[SESSION_IRIS] = irisSessionId
-        map[USER_ID] = userId
+        map[SESSION_IRIS] = if (context != null) getIrisSessionId(context) else ""
+        map[USER_ID] = if (context != null) getUserId(context) else ""
         map[BUSINESS_UNIT] = TRAVELENTERTAINMENT_LABEL
         map[CATEGORY_LABEL] = HOTEL_LABEL
         return map

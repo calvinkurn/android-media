@@ -38,7 +38,7 @@ import java.util.*
 
 class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
 
-    private val trackingUtil: TrackingHotelUtil by lazy { TrackingHotelUtil(requireContext()) }
+    private val trackingUtil: TrackingHotelUtil by lazy { TrackingHotelUtil() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_change_search, container, false)
@@ -65,7 +65,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.nightCount = countRoomDuration()
 
             renderView()
-            trackingUtil.openScreen(SCREEN_NAME)
+            trackingUtil.openScreen(context, SCREEN_NAME)
         }
     }
 
@@ -82,11 +82,14 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             putExtra(NUM_OF_ROOMS, globalSearchModel.numOfRooms)
         }
 
-        context?.let {
-            trackingUtil.clickSaveChangeSearch(globalSearchModel.destinationType, globalSearchModel.destinationName,
-                    globalSearchModel.numOfRooms, globalSearchModel.numOfGuests, globalSearchModel.checkInDate, globalSearchModel.checkOutDate,
+            trackingUtil.clickSaveChangeSearch(context,
+                    globalSearchModel.destinationType,
+                    globalSearchModel.destinationName,
+                    globalSearchModel.numOfRooms,
+                    globalSearchModel.numOfGuests,
+                    globalSearchModel.checkInDate,
+                    globalSearchModel.checkOutDate,
                     SCREEN_NAME)
-        }
 
         activity?.setResult(RESULT_OK, intent)
         activity?.finish()

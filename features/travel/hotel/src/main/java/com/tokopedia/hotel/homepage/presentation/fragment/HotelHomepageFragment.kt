@@ -170,7 +170,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     override fun getScreenName(): String = ""
 
     override fun onSaveGuest(room: Int, adult: Int) {
-        trackingHotelUtil.hotelSelectRoomGuest(room, adult, HOMEPAGE_SCREEN_NAME)
+        trackingHotelUtil.hotelSelectRoomGuest(context, room, adult, HOMEPAGE_SCREEN_NAME)
 
         hotelHomepageModel.roomCount = room
         hotelHomepageModel.adultCount = adult
@@ -195,11 +195,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     override fun onItemBind(item: TravelRecentSearchModel.Item, position: Int) {
-        trackingHotelUtil.hotelLastSearchImpression(item, position, HOMEPAGE_SCREEN_NAME)
+        trackingHotelUtil.hotelLastSearchImpression(context, item, position, HOMEPAGE_SCREEN_NAME)
     }
 
     override fun onItemClick(item: TravelRecentSearchModel.Item, position: Int) {
-        trackingHotelUtil.hotelLastSearchClick(item, position, HOMEPAGE_SCREEN_NAME)
+        trackingHotelUtil.hotelLastSearchClick(context, item, position, HOMEPAGE_SCREEN_NAME)
     }
 
     private fun initView() {
@@ -233,7 +233,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChangeClicked() {
-        trackingHotelUtil.hotelClickChangeDestination(HOMEPAGE_SCREEN_NAME)
+        trackingHotelUtil.hotelClickChangeDestination(context, HOMEPAGE_SCREEN_NAME)
         context?.run {
             startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
@@ -292,7 +292,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun trackRoomDates() {
         val dateRange = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
-        trackingHotelUtil.hotelSelectStayDate(hotelHomepageModel.checkInDate, dateRange.toInt(), HOMEPAGE_SCREEN_NAME)
+        trackingHotelUtil.hotelSelectStayDate(context, hotelHomepageModel.checkInDate, dateRange.toInt(), HOMEPAGE_SCREEN_NAME)
     }
 
     private fun onDestinationNearBy(longitude: Double, latitude: Double) {
@@ -305,7 +305,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChanged(name: String, destinationId: Long, type: String) {
-        trackingHotelUtil.hotelSelectDestination(type, name, HOMEPAGE_SCREEN_NAME)
+        trackingHotelUtil.hotelSelectDestination(context, type, name, HOMEPAGE_SCREEN_NAME)
 
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = destinationId
@@ -316,7 +316,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onSearchButtonClicked() {
-        trackingHotelUtil.searchHotel(
+        trackingHotelUtil.searchHotel(context,
                 hotelHomepageModel.locType,
                 hotelHomepageModel.locName,
                 hotelHomepageModel.roomCount,
@@ -357,10 +357,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
         banner_hotel_homepage_promo.setOnPromoScrolledListener { position ->
-            trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)
+            trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(position)
                     ?: TravelCollectiveBannerModel.Banner(), position, HOMEPAGE_SCREEN_NAME)
         }
-        if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0, HOMEPAGE_SCREEN_NAME)
+        if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(context, promoDataList.first(),
+                0, HOMEPAGE_SCREEN_NAME)
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
@@ -440,7 +441,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
-        trackingHotelUtil.hotelClickBanner(promo, position, HOMEPAGE_SCREEN_NAME)
+        trackingHotelUtil.hotelClickBanner(context, promo, position, HOMEPAGE_SCREEN_NAME)
     }
 
     private fun showHotelLastSearchContainer() {

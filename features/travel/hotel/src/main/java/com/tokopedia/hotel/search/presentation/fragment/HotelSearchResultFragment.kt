@@ -163,7 +163,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
                         ?: ParamFilter()
 
-                trackingHotelUtil.hotelUserClickFilter(SEARCH_SCREEN_NAME)
+                trackingHotelUtil.hotelUserClickFilter(context, SEARCH_SCREEN_NAME)
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
@@ -181,7 +181,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     private fun onSuccessGetResult(data: PropertySearch) {
         val searchParam = searchResultviewModel.searchParam
-        trackingHotelUtil.hotelViewHotelListImpression(
+        trackingHotelUtil.hotelViewHotelListImpression(context,
                 searchDestinationName,
                 searchDestinationType,
                 searchParam,
@@ -225,7 +225,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
             override fun onSelect(sort: Sort) {
-                trackingHotelUtil.hotelUserClickSort(sort.displayName, SEARCH_SCREEN_NAME)
+                trackingHotelUtil.hotelUserClickSort(context, sort.displayName, SEARCH_SCREEN_NAME)
 
                 searchResultviewModel.addSort(sort)
                 if (sortMenu.isAdded) {
@@ -245,6 +245,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onItemClicked(property: Property, position: Int) {
         with(searchResultviewModel.searchParam) {
             trackingHotelUtil.chooseHotel(
+                    context,
                     searchDestinationName,
                     searchDestinationType,
                     this,
@@ -284,8 +285,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     fun onClickChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String) {
         context?.let {
-            trackingHotelUtil.hotelClickChangeSearch(type, name, totalRoom, totalGuest, checkIn, checkOut, screenName,
-                    IrisSession(it).getSessionId(), UserSession(it).userId)
+            trackingHotelUtil.hotelClickChangeSearch(context, type, name, totalRoom, totalGuest, checkIn, checkOut, screenName)
         }
     }
 

@@ -139,7 +139,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        trackingHotelUtil.hotelViewRoomDetail(hotelRoom, addToCartParam, roomIndex, ROOM_DETAIL_SCREEN_NAME)
+        trackingHotelUtil.hotelViewRoomDetail(context, hotelRoom, addToCartParam, roomIndex, ROOM_DETAIL_SCREEN_NAME)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -210,7 +210,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
             room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
-                    trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
+                    trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
                     ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
                 }
@@ -366,7 +366,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             progressDialog.show()
             if (userSessionInterface.isLoggedIn) {
                 room_detail_button.isEnabled = false
-                trackingHotelUtil.hotelChooseRoomDetails(hotelRoom, roomIndex, addToCartParam, ROOM_DETAIL_SCREEN_NAME)
+                trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
+                        ROOM_DETAIL_SCREEN_NAME)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
                 navigateToLoginPage()

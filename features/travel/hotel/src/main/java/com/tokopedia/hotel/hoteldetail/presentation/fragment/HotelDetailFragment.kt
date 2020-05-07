@@ -375,7 +375,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun onPhotoClicked() {
-        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPriceAmount, PDP_SCREEN_NAME)
+        trackingHotelUtil.hotelClickHotelPhoto(context, hotelId, roomPriceAmount, PDP_SCREEN_NAME)
     }
 
     private fun setupReviewLayout(data: HotelReview.ReviewData) {
@@ -424,7 +424,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             rv_best_review.adapter = detailReviewAdapter
 
             tv_hotel_detail_all_reviews.setOnClickListener {
-                trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPriceAmount, PDP_SCREEN_NAME)
+                trackingHotelUtil.hotelClickHotelReviews(context, hotelId, roomPriceAmount, PDP_SCREEN_NAME)
                 context?.run {
                     startActivityForResult(HotelReviewActivity.getCallingIntent(this, hotelHomepageModel.locId), RESULT_REVIEW)
                 }
@@ -516,7 +516,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
                 btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
-                    trackingHotelUtil.hotelChooseViewRoom(hotelHomepageModel, hotelId, hotelName, PDP_SCREEN_NAME)
+                    trackingHotelUtil.hotelChooseViewRoom(context, hotelHomepageModel, hotelId, hotelName, PDP_SCREEN_NAME)
                     context?.run {
                         startActivityForResult(HotelRoomListActivity.createInstance(this, hotelHomepageModel.locId, hotelName,
                                 hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
@@ -532,7 +532,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             showRoomNotAvailableContainerBottom()
         }
 
-        trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", data.firstOrNull()?.additionalPropertyInfo?.isDirectPayment ?: isDirectPayment, PDP_SCREEN_NAME)
+        trackingHotelUtil.hotelViewDetails(context, hotelHomepageModel, hotelName, hotelId, isAvailable,
+                data.firstOrNull()?.roomPrice?.priceAmount?.toString() ?: "",
+                data.firstOrNull()?.additionalPropertyInfo?.isDirectPayment ?: isDirectPayment, PDP_SCREEN_NAME)
 
         if (!isButtonEnabled) {
             btn_see_room.isEnabled = false

@@ -221,7 +221,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
                                 }
                                 TickerCheckoutView.State.ACTIVE -> {
-                                    trackingHotelUtil.hotelApplyPromo(promoCode, HOTEL_BOOKING_SCREEN_NAME)
+                                    trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
                                     setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                                             itemPromoData?.title.toEmptyStringIfNull(),
                                             itemPromoData?.description.toEmptyStringIfNull())
@@ -472,7 +472,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                         cart.appliedVoucher.titleDescription,
                         cart.appliedVoucher.message)
-                trackingHotelUtil.hotelApplyPromo(promoCode, HOTEL_BOOKING_SCREEN_NAME)
+                trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
             } else {
                 setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
             }
@@ -609,7 +609,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
-            trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName, roomCount, guestCount,
+            trackingHotelUtil.hotelClickNext(context, hotelCart, destinationType, destinationName, roomCount, guestCount,
                     hotelBookingPageModel.isForOtherGuest == 0, HOTEL_BOOKING_SCREEN_NAME)
 
             hotelBookingPageModel.promoCode = promoCode
