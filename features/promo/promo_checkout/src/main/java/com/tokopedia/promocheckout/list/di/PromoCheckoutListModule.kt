@@ -34,6 +34,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 
 @Module(includes = arrayOf(PromoCheckoutModule::class))
@@ -117,8 +118,10 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideEventPresenter(eventCheckRepository: EventCheckRepository):PromoCheckoutListEventPresenter{
-        return PromoCheckoutListEventPresenter(eventCheckRepository)
+    fun provideEventPresenter(eventCheckRepository: EventCheckRepository,
+                              compositeSubscription: CompositeSubscription
+    ):PromoCheckoutListEventPresenter{
+        return PromoCheckoutListEventPresenter(eventCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutListScope
@@ -179,6 +182,12 @@ class PromoCheckoutListModule {
     fun provideUserSession(@ApplicationContext context: Context) : UserSessionInterface {
         val userSession = UserSession(context)
         return userSession
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideCompositeSubscription(): CompositeSubscription {
+        return CompositeSubscription()
     }
 
 }

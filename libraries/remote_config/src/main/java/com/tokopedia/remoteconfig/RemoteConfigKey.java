@@ -216,6 +216,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
 
     public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
+    public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
 
     public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";

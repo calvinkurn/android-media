@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class CartItem(
         @SerializedName("address")
         @Expose
-        val address: Address = Address(),
+        val address: Any = Any(),
         @SerializedName("app_link")
         @Expose
         val appLink: String = "",

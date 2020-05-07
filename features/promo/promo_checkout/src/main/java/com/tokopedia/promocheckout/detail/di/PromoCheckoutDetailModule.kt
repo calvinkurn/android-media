@@ -10,7 +10,6 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
@@ -35,6 +34,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 
 @Module(includes = arrayOf(PromoCheckoutModule::class))
@@ -110,8 +110,9 @@ class PromoCheckoutDetailModule {
     @Provides
     fun provideEventPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                               clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                              eventCheckRepository: EventCheckRepository): PromoCheckoutDetailEventPresenter {
-        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase,clearCacheAutoApplyStackUseCase,eventCheckRepository)
+                              eventCheckRepository: EventCheckRepository,
+                              compositeSubscription: CompositeSubscription): PromoCheckoutDetailEventPresenter {
+        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase,clearCacheAutoApplyStackUseCase,eventCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutDetailScope
@@ -183,5 +184,12 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
         return EventCheckRepositoryImpl(eventCheckoutApi)
+    }
+
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideCompositeSubscription(): CompositeSubscription {
+        return CompositeSubscription()
     }
 }
