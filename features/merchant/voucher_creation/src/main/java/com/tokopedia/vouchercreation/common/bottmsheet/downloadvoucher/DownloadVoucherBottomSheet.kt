@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.common.widget.downloadvoucher
+package com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher
 
 import android.graphics.Rect
 import android.view.LayoutInflater
