@@ -280,7 +280,7 @@ class BrandlistPageFragment :
                     val currentOffset = viewModel.getCurrentOffset()
                     val groupHeader = viewModel.getCurrentLetter().toUpperCase()
 
-                    if (currentOffset == 0) {
+                    if (currentOffset == 0 && groupHeader == "A") {
                         BrandlistPageMapper.mappingAllBrandGroupHeader(groupHeader, adapter, this)
                     }
 
