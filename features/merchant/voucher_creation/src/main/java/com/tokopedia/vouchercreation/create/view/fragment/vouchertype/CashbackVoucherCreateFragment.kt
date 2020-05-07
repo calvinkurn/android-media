@@ -39,6 +39,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
 
         private const val INPUT_FIELD_ADAPTER_SIZE = 1
 
+        private const val TICKER_INDEX_POSITION = 0
     }
 
     @Inject
@@ -172,7 +173,10 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
 
     override fun onResume() {
         super.onResume()
-        adapter.notifyDataSetChanged()
+        // We actually don't need to notify adapter data as the data has not been changed
+        // But, as we used view pager and each fragment has different height (which will cut some layout when page changes according to previous page),
+        // we will notify the adapter to mimic layout refresh
+        adapter.notifyItemChanged(0)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -238,7 +242,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
 
     private fun onDismissTicker() {
         adapter.data.remove(promoDescTickerModel)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemRemoved(TICKER_INDEX_POSITION)
     }
 
     private fun onNext() {
@@ -250,6 +254,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
      * The text field index is equal to total visitables adapter size minus the bottom section model size and the input field itself
      */
     private fun onCashbackSelectedType(cashbackType: CashbackType) {
+        val oldList = adapter.data
         val extraSize = INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
         textFieldIndex = adapter.data.size - extraSize
         adapter.data.removeAt(textFieldIndex)
@@ -263,7 +268,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
         }
         viewModel.changeCashbackType(cashbackType)
 
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemChanged(textFieldIndex)
     }
 
     private fun onTextFieldValueChanged(value: Int?, type: PromotionType) {
@@ -290,4 +295,5 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
     }
 
     private fun getCashbackInfo(): CashbackPercentageInfoUiModel = cashbackPercentageInfoUiModel
+
 }

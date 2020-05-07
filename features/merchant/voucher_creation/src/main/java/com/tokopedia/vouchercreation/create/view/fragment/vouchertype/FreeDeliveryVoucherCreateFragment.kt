@@ -33,6 +33,7 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
         fun createInstance(onNextStep: () -> Unit = {},
                            context: Context) = FreeDeliveryVoucherCreateFragment(onNextStep, context)
 
+        private const val TICKER_INDEX_POSITION = 0
     }
 
     @Inject
@@ -125,7 +126,10 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
     override fun onResume() {
         super.onResume()
         viewModel.refreshTextFieldValue()
-        adapter.notifyDataSetChanged()
+        // We actually don't need to notify adapter data as the data has not been changed
+        // But, as we used view pager and each fragment has different height (which will cut some layout when page changes according to previous page),
+        // we will notify the adapter to mimic layout refresh
+        adapter.notifyItemChanged(0)
     }
 
     private fun setupView() {
@@ -156,7 +160,7 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
 
     private fun onDismissTicker() {
         adapter.data.remove(promoDescTickerModel)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemRemoved(TICKER_INDEX_POSITION)
     }
 
     private fun onTextFieldValueChanged(value: Int?, typeType: PromotionType) {
