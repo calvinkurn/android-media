@@ -106,7 +106,7 @@
     <string name="toaster_follow_fail">Gagal follow Tanya-Jawab. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="toaster_unfollow_fail">Gagal unfollow Tanya-Jawab. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
-    <string name="reply_header_tnc">Ini adalah forum buat kamu untuk ngobrolin segala hal seputar barang ini. Tetap sopan dan baca juga <b>syarat &amp; ketentuan.</b></string>
+    <string name="reply_header_tnc">Q&amp;A adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa baca <b>S&amp;K.</b></string>
     <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
     <string name="reply_toaster_message_too_long">Balasanmu terlalu panjang. Kurangi dikit, ya!</string>
     <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
@@ -126,6 +126,10 @@
     <string name="reply_report_question_ticker">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
     <string name="reply_header_follow_chip">Follow</string>
     <string name="reply_header_following_chip">Following</string>
+    <string name="reply_empty_title_own_question">Tunggu ya…</string>
+    <string name="reply_empty_subtitle_own_question">Jawaban akan segera datang untukmu</string>
+    <string name="reply_empty_title_default">Bantu jawab, yuk!</string>
+    <string name="reply_empty_subtitle_default">Karena jawabanmu begitu berarti buat orang lain</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>

@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -50,6 +51,7 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
+import kotlinx.android.synthetic.main.partial_talk_reply_empty_state.*
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
@@ -65,6 +67,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val TOASTER_ERROR_DEFAULT_HEIGHT = 50
         const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
         const val NOT_IN_VIEWHOLDER = false
+        const val TALK_REPLY_EMPTY_IMAGE_OWN_QUESTION_URL = "https://ecs7.tokopedia.net/android/others/talk_reply_own_question_empty_state.png"
+        const val TALK_REPLY_EMPTY_IMAGE_DEFAULT_URL = "https://ecs7.tokopedia.net/android/others/talk_reply_empty_state.png"
 
         @JvmStatic
         fun createNewInstance(questionId: String, shopId: String, productId: String): TalkReplyFragment =
@@ -88,7 +92,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var productId = ""
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
-    private var textLimit = 0
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var isMyShop = false
 
@@ -274,6 +277,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
+        hideEmpty()
     }
 
     private fun hidePageLoading() {
@@ -288,6 +292,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
         }
+        hideEmpty()
     }
 
     private fun hidePageError() {
@@ -417,11 +422,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         startRenderPerformanceMonitoring()
                         showAnswers(it.data)
                     } else {
-                        onAnswersEmpty()
+                        onAnswersEmpty(it.data.discussionDataByQuestionID.question.userId)
                     }
                     setIsFollowing(it.data.discussionDataByQuestionID.question.questionState.isFollowed)
-                    updateTextLimit(it.data.discussionDataByQuestionID.maxAnswerLength)
-                    initTextBox()
+                    initTextBox(it.data.discussionDataByQuestionID.maxAnswerLength)
                     hidePageError()
                     hidePageLoading()
                     replySwipeRefresh.isRefreshing = false
@@ -487,7 +491,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         talkReplyRecyclerView.adapter = adapter
     }
 
-    private fun initTextBox() {
+    private fun initTextBox(textLimit: Int) {
         val profilePicture = if(userSession.shopId == shopId) {
             userSession.shopAvatar
         } else {
@@ -542,10 +546,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         dialog.show()
     }
 
-    private fun onAnswersEmpty() {
+    private fun onAnswersEmpty(userId: Int) {
         talkReplyTotalAnswers.visibility = View.GONE
         talkReplyRecyclerView.visibility = View.GONE
-        talkReplyEmptyState.visibility = View.VISIBLE
+        showEmpty(userId)
     }
 
     private fun showAnswers(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
@@ -553,7 +557,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         adapter?.displayAnswers(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper))
         talkReplyTotalAnswers.visibility = View.VISIBLE
         talkReplyRecyclerView.visibility = View.VISIBLE
-        talkReplyEmptyState.visibility = View.GONE
+        hideEmpty()
     }
 
     private fun deleteReply(commentId: String) {
@@ -624,11 +628,26 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.setAttachedProducts(mutableListOf())
     }
 
-    private fun updateTextLimit(textLimit: Int) {
-        this.textLimit = textLimit
-    }
-
     private fun isMyShop() : Boolean {
         return userSession.shopId == shopId
+    }
+
+    private fun showEmpty(userId: Int) {
+        replyEmptyState.visibility = View.VISIBLE
+        if(userSession.userId == userId.toString()) {
+            showOwnQuestionEmptyState()
+            return
+        }
+        talkReplyEmptyImage.loadImage(TALK_REPLY_EMPTY_IMAGE_DEFAULT_URL)
+    }
+
+    private fun hideEmpty() {
+        replyEmptyState.visibility = View.GONE
+    }
+
+    private fun showOwnQuestionEmptyState() {
+        talkReplyEmptyImage.loadImage(TALK_REPLY_EMPTY_IMAGE_OWN_QUESTION_URL)
+        talkReplyEmptyTitle.text = getString(R.string.reply_empty_title_own_question)
+        talkReplyEmptySubtitle.text = getString(R.string.reply_empty_subtitle_own_question)
     }
 }

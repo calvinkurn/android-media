@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_si
 class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
-        private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_pdp_empty.png"
+        private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_product_detail_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
 

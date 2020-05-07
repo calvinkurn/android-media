@@ -62,7 +62,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
-        const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty.png"
+        const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
