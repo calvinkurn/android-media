@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.network_api
 
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
+import com.tokopedia.promocheckout.common.domain.model.event.Cart
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import retrofit2.Response
@@ -13,5 +14,5 @@ interface EventCheckoutApi {
     suspend fun postVerify(@QueryMap book:Map<String,Boolean>,  @Body eventVerifyBody: EventVerifyBody): Response<EventVerifyResponse>
 
     @POST(PATH_CHECKOUT)
-    suspend fun postCheckout(@QueryMap book:Map<String,Boolean>,  @Body eventCheckoutBody: EventCheckoutBody): Response<EventCheckoutResponse>
+    suspend fun postCheckout(@QueryMap book:Map<String,Boolean>,  @Body cart: Cart): Response<EventCheckoutResponse>
 }

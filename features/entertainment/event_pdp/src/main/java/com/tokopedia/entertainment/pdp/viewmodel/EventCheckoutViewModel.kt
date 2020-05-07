@@ -9,6 +9,7 @@ import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPErrorEntity
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
+import com.tokopedia.promocheckout.common.domain.model.event.Cart
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import com.tokopedia.usecase.coroutines.Fail
@@ -70,7 +71,7 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
             if (data.data.status.result.equals(SUCCESS, true)) {
                 eventVerifyResponseMutable.postValue(data)
-                checkCheckout(book, EventCheckoutBody(listOf(data.data.cart.cartItems[0])))
+                checkCheckout(false, data.data.cart)
             } else {
                 errorValueMutable.postValue(data.data.cart.error)
             }
@@ -80,10 +81,10 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun checkCheckout(book: Boolean, eventCheckoutBody: EventCheckoutBody) {
+    fun checkCheckout(book: Boolean, cart : Cart) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
-                repository.postCheckout(createMapParam(book), eventCheckoutBody)
+                repository.postCheckout(createMapParam(book), cart)
             }
 
             if (data.data.status.equals(SUCCESS, true)) {

@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.network_api
 
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
+import com.tokopedia.promocheckout.common.domain.model.event.Cart
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import java.io.IOException
@@ -17,8 +18,8 @@ class EventCheckoutRepositoryImpl @Inject constructor(private val eventCheckoutA
         throw IOException(ERROR_DEFAULT)
     }
 
-    override suspend fun postCheckout(book: Map<String, Boolean>, eventCheckoutBody: EventCheckoutBody): EventCheckoutResponse {
-        val response = eventCheckoutApi.postCheckout(book,eventCheckoutBody)
+    override suspend fun postCheckout(book: Map<String, Boolean>, cart: Cart): EventCheckoutResponse {
+        val response = eventCheckoutApi.postCheckout(book,cart)
         if (response.isSuccessful) {
             return response.body()!!
         }
