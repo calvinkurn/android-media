@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.AdapterDiffCallback
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.ReviewDetailFeedbackImageViewHolder
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 
@@ -13,6 +14,7 @@ class ReviewDetailFeedbackImageAdapter(
         ReviewDetailFeedbackImageViewHolder>(AdapterDiffCallback.ImageReviewDiffCallback) {
 
     private var attachmentUiModel: List<FeedbackUiModel.Attachment>? = null
+    private var feedbackId = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewDetailFeedbackImageViewHolder {
         val view = LayoutInflater
@@ -23,6 +25,7 @@ class ReviewDetailFeedbackImageAdapter(
 
     override fun onBindViewHolder(holder: ReviewDetailFeedbackImageViewHolder, position: Int) {
         holder.setAttachmentUiData(attachmentUiModel)
+        holder.setFeedbackId(feedbackId)
         getItem(position)?.let {
             holder.bind(it)
         }
@@ -30,5 +33,9 @@ class ReviewDetailFeedbackImageAdapter(
 
     fun setAttachmentUiData(attachmentUiModel: List<FeedbackUiModel.Attachment>) {
         this.attachmentUiModel = attachmentUiModel
+    }
+
+    fun setFeedbackId(feedbackId: String) {
+        this.feedbackId = feedbackId
     }
 }

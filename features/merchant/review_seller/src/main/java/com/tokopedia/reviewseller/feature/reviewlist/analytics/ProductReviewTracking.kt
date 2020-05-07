@@ -30,11 +30,10 @@ class ProductReviewTracking {
     private val FIELD_FEEDBACK_ID = "feedbackId"
     private val FIELD_IS_ACTIVE = "isActive"
 
-    fun sendScreen(shopId: String, productId: String) {
+    fun sendScreen(shopId: String) {
         val dataLayer = mutableMapOf<String, String>()
         dataLayer[FIELD_SCREEN_NAME] = FIELD_RATING_PRODUCT
         dataLayer[FIELD_SHOP_ID] = shopId
-        dataLayer[FIELD_PRODUCT_ID] = productId
         tracker.sendScreenAuthenticated(FIELD_SCREEN_NAME, dataLayer)
     }
 

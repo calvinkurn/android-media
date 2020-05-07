@@ -6,17 +6,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl3"
+    android:layout_marginLeft="@dimen/spacing_lvl3"
+    android:layout_marginRight="@dimen/spacing_lvl3"
+    android:layout_marginEnd="@dimen/spacing_lvl3"
     app:card_type="border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_14"
+        android:paddingRight="@dimen/dp_14"
         android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -45,7 +49,6 @@
             app:typographyWeight="bold"
             tools:text="Adidas NMD Pharell William x Human Made" />
 
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgVariantLabel"
             android:layout_width="wrap_content"
@@ -53,12 +56,12 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             android:textColor="@color/clr_f531353b"
-            app:layout_constraintBottom_toBottomOf="@id/ivItemProduct"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@id/ivItemProduct"
             app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Varian:" />
+            android:text="@string/variant_label" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgVariantName"
@@ -67,7 +70,7 @@
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginLeft="@dimen/spacing_lvl1"
             android:textColor="@color/clr_f531353b"
-            app:layout_constraintBottom_toBottomOf="@id/ivItemProduct"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@id/tgVariantLabel"
             app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
             app:typographyType="body_3"

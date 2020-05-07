@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -36,6 +37,9 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.SortBott
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
+import com.tokopedia.reviewseller.feature.reviewreply.view.activity.SellerReviewReplyActivity
+import com.tokopedia.reviewseller.feature.reviewreply.view.fragment.SellerReviewReplyFragment
+import com.tokopedia.reviewseller.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -58,8 +62,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         OverallRatingDetailListener, ProductFeedbackDetailListener, SellerRatingAndTopicListener {
 
     companion object {
-        const val PRODUCT_ID = "EXTRA_SHOP_ID"
+        const val PRODUCT_ID = "EXTRA_PRODUCT_ID"
         const val CHIP_FILTER = "EXTRA_CHIPS_FILTER"
+        const val PRODUCT_IMAGE = "EXTRA_PRODUCT_IMAGE"
         private const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
     }
 
@@ -73,6 +78,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     @Inject
     lateinit var tracking: ProductReviewDetailTracking
 
+    private var cacheManager: SaveInstanceCacheManager? = null
+
     private var linearLayoutManager: LinearLayoutManager? = null
     private val reviewSellerDetailAdapter by lazy { SellerReviewDetailAdapter(sellerReviewDetailTypeFactory) }
 
@@ -85,6 +92,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var chipFilterBundle = ""
 
     var productID: Int = 0
+    var productName = ""
+    var variantName = ""
+    var productImageUrl = ""
     var filterBy: String = "time=all"
     var toolbarTitle = ""
 
@@ -106,13 +116,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 getString(R.string.change_product_desc))
     }
 
-    override fun getScreenName(): String = "SellerReviewDetail"
+    override fun getScreenName(): String = context?.getString(R.string.title_review_detail_page).orEmpty()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
                 productID = getIntExtra(PRODUCT_ID, 0)
                 chipFilterBundle = getStringExtra(CHIP_FILTER)
+                productImageUrl = getStringExtra(PRODUCT_IMAGE)
             }
         }
         super.onCreate(savedInstanceState)
@@ -185,6 +196,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onDestroy() {
         viewModelProductReviewDetail?.productFeedbackDetail?.removeObservers(this)
+        viewModelProductReviewDetail?.reviewInitialData?.removeObservers(this)
         viewModelProductReviewDetail?.flush()
         super.onDestroy()
     }
@@ -229,7 +241,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
             override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-
                 coachMark.enableSkip = false
 
                 return false
@@ -301,6 +312,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             when (it) {
                 is Success -> {
                     swipeToRefreshReviewDetail?.isRefreshing = false
+                    productName = it.data.first.filterIsInstance<OverallRatingDetailUiModel>().firstOrNull()?.productName.orEmpty()
                     viewModelProductReviewDetail?.updateRatingFilterData(it.data.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
                             ?: listOf())
                     viewModelProductReviewDetail?.updateTopicsFilterData(it.data.first.filterIsInstance<TopicUiModel>().firstOrNull()?.sortFilterItemList
@@ -310,7 +322,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     review_detail_toolbar.title = toolbarTitle
 
                     renderList(it.data.first, it.data.third)
-
                     coachMarkShow()
                 }
                 is Fail -> {
@@ -453,52 +464,66 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetMenuDetail?.setChild(viewMenu)
     }
 
-    override fun onOptionFeedbackClicked(view: View, title: String, feedbackId: String,
+    override fun onOptionFeedbackClicked(view: View, title: String, data: FeedbackUiModel,
                                          optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
+        this.variantName = data.variantName.orEmpty()
+        val feedbackReplyUiModel = ProductReplyUiModel(productID, productImageUrl, productName, variantName)
+
+        cacheManager = context?.let {
+            SaveInstanceCacheManager(it, true).apply {
+                put(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, data)
+                put(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, feedbackReplyUiModel)
+            }
+        }
 
         tracking.eventClickOptionFeedbackReview(
                 userSession.shopId.orEmpty(),
                 productID.toString(),
-                feedbackId
+                data.feedbackID.toString()
         )
         optionFeedbackDetailUnify?.setData(optionDetailListItemUnify)
 
         bottomSheetOptionFeedback?.apply {
-
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
                 tracking.eventClickCloseFeedbackOptionBottomSheet(
                         userSession.shopId.orEmpty(),
                         productID.toString(),
-                        feedbackId
+                        data.feedbackID.toString()
                 )
                 dismiss()
             }
         }
 
+        onOptionFeedbackItemClicked(isEmptyReply, data)
+
+        fragmentManager?.let {
+            bottomSheetOptionFeedback?.show(it, title)
+        }
+    }
+
+    private fun onOptionFeedbackItemClicked(isEmptyReply: Boolean, data: FeedbackUiModel) {
         optionFeedbackDetailUnify?.let {
             it.onLoadFinish {
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
                         0 -> {
-                            if (!isEmptyReply) {
-
-                            }
+                            startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
+                                putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
+                                putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, userSession.shopId.orEmpty())
+                            })
+                            bottomSheetOptionFeedback?.dismiss()
                         }
                         1 -> {
                             tracking.eventClickReportOnBottomSheet(userSession.shopId.orEmpty(),
                                     productID.toString(),
-                                    feedbackId)
+                                    data.feedbackID.toString())
                             RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
                         }
                     }
                 }
             }
-        }
-
-        fragmentManager?.let {
-            bottomSheetOptionFeedback?.show(it, title)
         }
     }
 
@@ -516,6 +541,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     imagePosition = position
             ))
         }
+    }
+
+    override fun onFeedbackMoreReplyClicked(feedbackId: String) {
+        tracking.eventClickReadMoreFeedback(userSession.shopId.orEmpty(), productID.toString(), feedbackId)
     }
 
     /**
@@ -579,7 +608,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             isDifferent = topic[index].isSelected == data.isSelected
         }
 
-        if(viewModelProductReviewDetail?.sortAndFilter?.second == sortBy && isDifferent) return
+        if (viewModelProductReviewDetail?.sortAndFilter?.second == sortBy && isDifferent) return
 
         reviewSellerDetailAdapter.updateTopicFromBottomSheet(topic)
         viewModelProductReviewDetail?.setSortAndFilterTopicData(topic to sortValue)

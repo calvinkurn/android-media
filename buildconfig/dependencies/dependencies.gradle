@@ -83,7 +83,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.5'
-    unifyComponentsVersion = '1.1.35-beta-4'
+    unifyComponentsVersion = '1.1.35'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -97,7 +97,7 @@ ext {
     unifyGlobalErrorVersion = '1.0.6'
     unifyListVersion = "1.0.4"
     unifyHeaderVersion = '1.1.0'
-    unifySortFilterVersion = '1.0.1'
+    unifySortFilterVersion = '1.0.2'
     unifyIconNotificationVersion = '1.0.0'
 
     gradlePlugin = [

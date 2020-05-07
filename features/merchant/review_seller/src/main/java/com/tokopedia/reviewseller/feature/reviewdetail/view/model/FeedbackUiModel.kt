@@ -1,11 +1,8 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.model
 
-import android.os.Parcelable
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.BaseSellerReviewDetail
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class FeedbackUiModel(
         var attachments: List<Attachment> = mutableListOf(),
         var autoReply: String? = "",
@@ -20,15 +17,14 @@ data class FeedbackUiModel(
         var variantName: String? = "",
         var sellerUser: String? = "",
         var page : Int? = 0
-): Parcelable, BaseSellerReviewDetail {
+): BaseSellerReviewDetail {
 
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    @Parcelize
     data class Attachment(
             var thumbnailURL: String? = "",
             var fullSizeURL: String? = ""
-    ): Parcelable
+    )
 }

@@ -3,10 +3,30 @@ package com.tokopedia.reviewseller.feature.reviewreply.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
+import com.tokopedia.reviewseller.common.util.getReviewStar
+import com.tokopedia.reviewseller.common.util.toRelativeDayAndWeek
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewReplyFeedbackImageAdapter
+import kotlinx.android.synthetic.main.widget_reply_feedback_item.view.*
 
 class FeedbackItemReply: BaseCustomView {
+
+    companion object {
+        const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    }
+
+    private val replyReviewFeedbackImageAdapter by lazy {
+        ReviewReplyFeedbackImageAdapter()
+    }
 
     constructor(context: Context): super(context) {
         init()
@@ -20,6 +40,44 @@ class FeedbackItemReply: BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_reply_feedback_item, null)
+        View.inflate(context, R.layout.widget_reply_feedback_item, this)
+    }
+
+    fun setData(data: FeedbackUiModel) {
+        ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
+        tvFeedbackUser?.text = MethodChecker.fromHtml(context.getString(R.string.label_name_reviewer_builder, data.reviewerName.orEmpty()))
+        tvFeedbackDate?.text = data.reviewTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
+        setupFeedbackReview(data.reviewText.orEmpty(), data.feedbackID.toString())
+        setImageAttachment(data)
+    }
+
+    private fun setupFeedbackReview(feedbackText: String, feedbackId: String) {
+        if (feedbackText.isEmpty()) {
+            tvFeedbackReview?.text = context.getString(R.string.review_not_found)
+            tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, R.color.clr_review_not_found))
+        } else {
+            tvFeedbackReview?.apply {
+                setTextColor(ContextCompat.getColor(context, R.color.clr_f531353b))
+                maxLines = Integer.MAX_VALUE
+                text = feedbackText
+            }
+        }
+    }
+
+    private fun setImageAttachment(element: FeedbackUiModel) {
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvItemAttachmentFeedback?.apply {
+            layoutManager = linearLayoutManager
+            if (itemDecorationCount == 0) {
+                addItemDecoration(PaddingItemDecoratingReviewSeller())
+            }
+            adapter = replyReviewFeedbackImageAdapter
+        }
+        if (element.attachments.isEmpty()) {
+            rvItemAttachmentFeedback?.hide()
+        } else {
+            replyReviewFeedbackImageAdapter.submitList(element.attachments)
+            rvItemAttachmentFeedback?.show()
+        }
     }
 }

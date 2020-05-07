@@ -5,6 +5,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_review_rating_product">Rating Produk</string>
     <string name="title_review_inbox">Inbox Ulasan</string>
+    <string name="title_review_detail_page">Review Detail Page</string>
+    <string name="title_review_reply">Balas Ulasan</string>
     <string name="most_review">Ulasan Terbanyak</string>
     <string name="last_week">7 Hari Terakhir</string>
     <string name="period">Periode:</string>
@@ -76,4 +78,5 @@
     <string name="popular_topic_label">Topik Populer</string>
     <string name="sort_label">Urutkan</string>
     <string name="reply_editText_placeholder">Balas di sini...</string>
+    <string name="variant_label">Varian:</string>
 </resources>

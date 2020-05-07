@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/review_reply_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.reviewseller.feature.reviewreply.view.widget.ProductItemReply
+        android:id="@+id/productItemReplyWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/review_reply_toolbar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.reviewseller.feature.reviewreply.view.widget.FeedbackItemReply
+        android:id="@+id/feedbackItemReplyWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/productItemReplyWidget"/>
+
+    <com.tokopedia.reviewseller.feature.reviewreply.view.widget.ReviewReplyTextBox
+        android:id="@+id/reviewReplyTextBoxWidget"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderReviewReply"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        app:loader_corner_radius="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:loader_type="circular" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

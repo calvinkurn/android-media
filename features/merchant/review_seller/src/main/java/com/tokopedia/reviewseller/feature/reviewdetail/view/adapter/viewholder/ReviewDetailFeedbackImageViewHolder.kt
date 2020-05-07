@@ -8,7 +8,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ProductFeedb
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 
-class  ReviewDetailFeedbackImageViewHolder(
+class ReviewDetailFeedbackImageViewHolder(
         itemView: View,
         private val productFeedbackDetailListener: ProductFeedbackDetailListener): RecyclerView.ViewHolder(itemView) {
 
