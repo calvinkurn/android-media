@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,7 +29,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -269,8 +267,10 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private fun openPhoneVerificationBottomSheet() {
         val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
-        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-        closeableBottomSheetDialog.setCustomContentView(view, "", false)
+        val closeableBottomSheetDialog = BottomSheetUnify()
+        closeableBottomSheetDialog.setChild(view)
+        closeableBottomSheetDialog.showCloseIcon=false
+        closeableBottomSheetDialog.showHeader=false
         val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
         val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
@@ -282,18 +282,18 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
                     AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE,
                     "")
-            closeableBottomSheetDialog.cancel()
+            closeableBottomSheetDialog.dismiss()
 
         }
         btnCancel.setOnClickListener {
-            closeableBottomSheetDialog.cancel()
+            closeableBottomSheetDialog.dismiss()
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
                     AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
                     AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE_BATAL, "")
         }
 
-        closeableBottomSheetDialog.show()
+        closeableBottomSheetDialog.show(childFragmentManager,"")
     }
 
     override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {

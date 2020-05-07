@@ -20,7 +20,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.design.component.Tabs
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent

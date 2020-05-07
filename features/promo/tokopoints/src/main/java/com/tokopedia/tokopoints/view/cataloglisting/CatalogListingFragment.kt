@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
@@ -21,9 +20,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -37,6 +33,7 @@ import com.tokopedia.tokopoints.view.model.CatalogFilterPointRange
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.PageControl
 import java.util.*
 import javax.inject.Inject
 
@@ -192,10 +189,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
         pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
-        val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator)
-        pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
-        pageIndicator.pageColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.white_two)
-        pageIndicator.setViewPager(pager, 0)
+        val pageIndicator: PageControl = view!!.findViewById(R.id.page_indicator)
+        pageIndicator.setCurrentIndicator(0)
         view!!.findViewById<View>(R.id.container_pager).visibility = View.VISIBLE
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
@@ -212,7 +207,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun onSuccessFilter(filters: CatalogFilterBase) {
         hideLoader()
         //Setting up filters
-        //  setUpFilters(filters.pointRanges)
+        setUpFilters(filters.pointRanges)
         //Setting up subcategories types tabs
         if (filters == null || filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
@@ -467,7 +462,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         return counter
     }
 
-    override fun onSaveFilter(filter: CatalogFilterPointRange, selectedPosition: Int) {
+    override fun onSaveFilter(filter: CatalogFilterPointRange?, selectedPosition: Int) {
         if (filter != null) {
             if (menuItemFilter != null) {
                 if (selectedPosition == 0) {

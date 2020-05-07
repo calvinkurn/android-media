@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
@@ -40,18 +40,12 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.BottomSheetView
-import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
-import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.CustomViewPager
@@ -68,12 +62,10 @@ import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_tooltip_es.view.*
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -701,15 +693,19 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     private fun showOnBoardingTooltip(title: String, content: String) {
         val view = LayoutInflater.from(context).inflate(R.layout.tp_tooltip_es, null, false)
-        view.es_tooltip.setDescription(content)
-        view.es_tooltip.emptyStatePrimaryCTAText = getString(R.string.tp_label_check_storepoints)
+        view.title_tooltip.text=title
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            view.desc_tooltip.text = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            view.desc_tooltip.text = Html.fromHtml(content)
+        }
         val mToolTip = BottomSheetUnify()
         mToolTip.apply {
             setChild(view)
-            setTitle(title)
+            showHeader=false
             showCloseIcon = false
         }
-        view.es_tooltip.setPrimaryCTAClickListener {
+        view.btn_tooltip.setOnClickListener {
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -806,7 +802,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             }
         }
         //init bottom sheet
-        // renderPurchaseBottomsheet(data.lobs)
+        renderPurchaseBottomsheet(data.lobs)
     }
 
     override fun renderPurchaseBottomsheet(data: LobDetails) {

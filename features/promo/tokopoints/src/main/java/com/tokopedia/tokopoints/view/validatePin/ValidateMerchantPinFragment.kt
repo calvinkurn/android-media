@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.widget.PinEditText
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent

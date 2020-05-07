@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
@@ -196,55 +195,62 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     fun showCouponInStackBottomSheet(data: TokoPointPromosEntity) {
-        val closeableBottomSheetDialog = BottomSheetUnify()
-        val view = layoutInflater.inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_coupon_in_stack)
+        this.context?.let { context ->
+            this.fragmentManager?.let {fm->
+                val closeableBottomSheetDialog = BottomSheetUnify()
+                val view = layoutInflater.inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false)
+                val recyclerView = view.findViewById<RecyclerView>(R.id.rv_coupon_in_stack)
 
-        if (mItemDecoration != null) {
-            recyclerView.addItemDecoration(mItemDecoration!!)
+                if (mItemDecoration != null) {
+                    recyclerView.addItemDecoration(mItemDecoration!!)
+                }
+
+                val mStackedInadapter = CouponInStackBaseAdapter(object : AdapterCallback {
+                    override fun onRetryPageLoad(pageNumber: Int) {
+
+                    }
+
+                    override fun onEmptyList(rawObject: Any) {
+
+                    }
+
+                    override fun onStartFirstPageLoad() {
+
+                    }
+
+                    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
+                        closeableBottomSheetDialog.show(childFragmentManager, "")
+                    }
+
+                    override fun onStartPageLoad(pageNumber: Int) {
+
+                    }
+
+                    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
+
+                    }
+
+                    override fun onError(pageNumber: Int) {
+
+                    }
+                }, data)
+
+                recyclerView.adapter = mStackedInadapter
+                closeableBottomSheetDialog.apply {
+                    setChild(view)
+                    isDragable = true
+                    isHideable = true
+                    showCloseIcon = false
+                    showHeader = false
+                    showKnob=true
+                    this@CouponListingStackedFragment.view?.height?.div(2)?.let { height ->
+                        customPeekHeight = height
+                    }
+                }
+                closeableBottomSheetDialog.show(fm, "")
+                mStackedInadapter.startDataLoading()
+            }
         }
-
-        val mStackedInadapter = CouponInStackBaseAdapter(object : AdapterCallback {
-            override fun onRetryPageLoad(pageNumber: Int) {
-
-            }
-
-            override fun onEmptyList(rawObject: Any) {
-
-            }
-
-            override fun onStartFirstPageLoad() {
-
-            }
-
-            override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-                closeableBottomSheetDialog.show(childFragmentManager,"")
-            }
-
-            override fun onStartPageLoad(pageNumber: Int) {
-
-            }
-
-            override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-
-            }
-
-            override fun onError(pageNumber: Int) {
-
-            }
-        }, data)
-
-        recyclerView.adapter = mStackedInadapter
-        closeableBottomSheetDialog.apply {
-            setChild(view)
-            isDragable=true
-            isHideable=true
-            showCloseIcon=false
-            showHeader=false
-        }
-        closeableBottomSheetDialog.show(childFragmentManager,"")
-        mStackedInadapter.startDataLoading()
-
     }
 
     override fun onDestroyView() {

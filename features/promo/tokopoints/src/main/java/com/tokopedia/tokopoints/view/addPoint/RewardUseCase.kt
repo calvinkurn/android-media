@@ -1,14 +1,9 @@
 package com.tokopedia.tokopoints.view.addPoint
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokoPointScope
-import com.tokopedia.tokopoints.view.couponlisting.StackedCouponRepository
 import com.tokopedia.tokopoints.view.model.addpointsection.RewardPointResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_ADD_POINT_REWARD
 import kotlinx.coroutines.Dispatchers

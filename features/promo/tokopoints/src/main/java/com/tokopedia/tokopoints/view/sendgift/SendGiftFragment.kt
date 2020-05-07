@@ -16,13 +16,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.R
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
 import com.tokopedia.tokopoints.view.util.*
@@ -30,9 +28,6 @@ import com.tokopedia.unifycomponents.TextAreaUnify
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
     private var mContainerMain: ViewFlipper? = null
-
-    /* private var mEditEmail: TextInputEditText? = null
-     private var mEditNotes: TextInputEditText? = null*/
     private var mBtnSendGift: TextView? = null
     private var mBtnSendNow: TextView? = null
     private var mWrapperEmail: TextAreaUnify? = null
