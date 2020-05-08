@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
@@ -19,7 +20,6 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;

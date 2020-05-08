@@ -1,6 +1,7 @@
 package com.tokopedia.seller.base.view.listener;
 
-import com.tokopedia.seller.base.view.model.StepperModel;
+
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 
 /**
  * Created by zulfikarrahman on 7/27/17.

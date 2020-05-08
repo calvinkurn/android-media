@@ -109,7 +109,7 @@
         <activity
             android:name=".dashboard.view.activity.TopAdsAddProductListActivity"
             android:label="@string/title_activity_top_ads_list"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordCurrentListActivity"
             android:label="@string/title_top_ads_keyword"
@@ -191,14 +191,17 @@
         <activity
             android:name=".dashboard.view.activity.TopAdsCreatePromoNewGroupActivity"
             android:theme="@style/Theme.White"
+            android:label="@string/top_ads_title_keyword_add_keyword"
             android:screenOrientation="portrait" />
         <activity
             android:name=".dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity"
+            android:label="@string/top_ads_title_keyword_add_keyword"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".dashboard.view.activity.TopAdsCreatePromoExistingGroupEditActivity"
             android:theme="@style/Theme.White"
+            android:label="@string/top_ads_title_keyword_add_keyword"
             android:screenOrientation="portrait" />
         <activity
             android:name=".dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity"

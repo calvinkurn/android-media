@@ -1,20 +1,18 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListExistingGroupFragment;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
 
@@ -25,7 +23,7 @@ import java.util.List;
  * Created by zulfikarrahman on 8/8/17.
  */
 
-public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity<TopAdsCreatePromoExistingGroupModel> implements HasComponent<BaseAppComponent> {
+public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity implements HasComponent<BaseAppComponent> {
     protected List<Fragment> fragmentList;
 
     @NonNull
@@ -43,9 +41,9 @@ public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity<
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        stepperModel = createNewStepperModel();
     }
 
-    @Override
     public TopAdsCreatePromoExistingGroupModel createNewStepperModel() {
         String groupId = null;
         String itemIdToAdd = null;
@@ -59,7 +57,7 @@ public class TopAdsCreatePromoExistingGroupActivity extends BaseStepperActivity<
         ((TopAdsCreatePromoExistingGroupModel) stepperModel).setGroupId(groupId);
         ((TopAdsCreatePromoExistingGroupModel) stepperModel).setIdToAdd(itemIdToAdd);
         ((TopAdsCreatePromoExistingGroupModel) stepperModel).setSource(source);
-        return stepperModel;
+        return (TopAdsCreatePromoExistingGroupModel)stepperModel;
     }
 
 

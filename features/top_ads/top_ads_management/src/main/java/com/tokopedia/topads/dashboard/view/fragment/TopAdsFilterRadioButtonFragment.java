@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
+import com.tokopedia.topads.common.view.fragment.BaseFilterContentFragment;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsBasicRadioButtonAdapter;
 import com.tokopedia.topads.dashboard.view.model.RadioButtonItem;
 import com.tokopedia.seller.common.widget.DividerItemDecoration;

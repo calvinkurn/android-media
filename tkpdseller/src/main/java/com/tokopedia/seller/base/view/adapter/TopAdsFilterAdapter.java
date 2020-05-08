@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.model.FilterTitleItem;
 

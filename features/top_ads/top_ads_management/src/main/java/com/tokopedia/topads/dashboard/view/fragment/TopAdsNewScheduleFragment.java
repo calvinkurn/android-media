@@ -13,12 +13,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.datepicker.range.view.widget.DatePickerLabelView;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;

@@ -2,7 +2,7 @@ package com.tokopedia.shop.open.view.model;
 
 import android.os.Parcel;
 
-import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.Shipment;
 

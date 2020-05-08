@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;

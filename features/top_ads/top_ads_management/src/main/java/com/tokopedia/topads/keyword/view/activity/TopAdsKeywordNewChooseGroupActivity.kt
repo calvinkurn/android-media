@@ -13,13 +13,15 @@ import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.R
+import com.tokopedia.topads.TopAdsComponentInstance
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant
+import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewAddFragment
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 
-class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<BaseAppComponent>,
+class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<TopAdsComponent>,
         TopAdsKeywordNewAddFragment.OnSuccessSaveKeywordListener {
 
     var fragmentList: MutableList<Fragment>? = null
@@ -79,8 +81,8 @@ class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<
         return fragmentList!!
     }
 
-    override fun getComponent(): BaseAppComponent? {
-        return (getApplication() as BaseMainApplication).baseAppComponent
+    override fun getComponent(): TopAdsComponent {
+        return TopAdsComponentInstance.getComponent(application)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.base.view.model.StepperModel;
 
 import java.util.List;
 
