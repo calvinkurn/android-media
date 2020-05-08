@@ -27,6 +27,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -38,6 +39,7 @@ import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductVie
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Label
@@ -58,6 +60,8 @@ class AddToCartDoneBottomSheet :
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
+        private const val abNewPdpAfterAtcKey = "Pdp Product Thumbnail"
+        private const val variantNewPdpAfterAtc = "New Thumbnail"
     }
 
     @Inject
@@ -168,7 +172,13 @@ class AddToCartDoneBottomSheet :
                 is Success -> {
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
-                    atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(it.data.first(), addedProductDataModel?.shopId ?: -1))
+                    if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) == variantNewPdpAfterAtc){
+                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(it.data.first(), addedProductDataModel?.shopId ?: -1))
+                    } else {
+                        for (res in it.data) {
+                            atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
+                        }
+                    }
                     atcDoneAdapter.addElement(0, addedProductDataModel)
                     atcDoneAdapter.notifyDataSetChanged()
                 }

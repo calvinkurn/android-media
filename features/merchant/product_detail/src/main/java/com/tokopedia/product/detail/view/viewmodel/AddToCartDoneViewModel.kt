@@ -45,7 +45,7 @@ class AddToCartDoneViewModel @Inject constructor(
     companion object {
         object TopAdsDisplay {
             const val DEFAULT_PAGE_NUMBER = 1
-            const val DEFAULT_PAGE_NAME = "pdp_atc_1"
+            const val DEFAULT_PAGE_NAME = "pdp_atc_1,pdp_atc_2"
         }
     }
 
