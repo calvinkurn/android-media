@@ -28,17 +28,10 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'graphql'
-    groupId = 'com.tokopedia.graphql'
-    versionName = "1.1.13-debug"
-    artifactName = "graphql-debug"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -65,4 +58,11 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
 }
 
-apply from: '../publish_local.gradle'
+project.ext {
+    artifactId = 'graphql'
+    groupId = 'com.tokopedia.graphql'
+    versionName = "1.1.13-debug"
+    artifactName = "graphql-debug"
+}
+
+apply from: '../../publish_local.gradle'
