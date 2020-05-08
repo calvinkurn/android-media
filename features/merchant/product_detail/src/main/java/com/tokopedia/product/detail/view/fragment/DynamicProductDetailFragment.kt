@@ -2259,6 +2259,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         attribution = trackerAttributionPdp ?: ""
                         listTracker = trackerListNamePdp ?: ""
                         warehouseId = selectedWarehouseId
+                        atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
@@ -2289,6 +2290,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 attribution = trackerAttributionPdp ?: ""
                 listTracker = trackerListNamePdp ?: ""
                 warehouseId = selectedWarehouseId
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
                 productName = data.getProductName
                 category = data.basic.category.name
                 price = data.finalPrice.toString()
