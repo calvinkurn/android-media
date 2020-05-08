@@ -1,11 +1,9 @@
 package com.tokopedia.hotel.common.presentation
 
 import android.content.Context
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
