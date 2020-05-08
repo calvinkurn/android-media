@@ -100,7 +100,7 @@ public class SplashScreenActivity extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
             }
 
             @Override
