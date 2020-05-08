@@ -1,5 +1,5 @@
 <resources>
-    <string name="seller_migration_bottom_sheet_button">Gunakan Seller App</string>
+    <string name="seller_migration_bottom_sheet_button">Gunakan Tokopedia Seller</string>
     <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan menggunakan Seller App &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
 
     <string name="seller_migration_generic_ticker_title">Lebih leluasa berjualan dengan Tokopedia Seller</string>
