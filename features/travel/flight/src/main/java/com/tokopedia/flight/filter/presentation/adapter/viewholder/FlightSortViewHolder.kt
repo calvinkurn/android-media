@@ -60,12 +60,12 @@ class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, v
 
     private fun getSortItem(): List<FlightSortModel> {
         return listOf(FlightSortModel(TravelSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), selectedId == TravelSortOption.CHEAPEST),
+                FlightSortModel(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), selectedId == TravelSortOption.MOST_EXPENSIVE),
                 FlightSortModel(TravelSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), selectedId == TravelSortOption.EARLIEST_DEPARTURE),
                 FlightSortModel(TravelSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), selectedId == TravelSortOption.LATEST_DEPARTURE),
                 FlightSortModel(TravelSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_shortest_duration), selectedId == TravelSortOption.SHORTEST_DURATION),
                 FlightSortModel(TravelSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), selectedId == TravelSortOption.EARLIEST_ARRIVAL),
-                FlightSortModel(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), selectedId == TravelSortOption.LATEST_ARRIVAL),
-                FlightSortModel(TravelSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), selectedId == TravelSortOption.MOST_EXPENSIVE)
+                FlightSortModel(TravelSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), selectedId == TravelSortOption.LATEST_ARRIVAL)
         )
     }
 

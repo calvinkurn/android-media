@@ -1,6 +1,7 @@
 package com.tokopedia.flight.filter.presentation.bottomsheets
 
 import android.app.Application
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -123,6 +124,7 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
         mChildView = View.inflate(requireContext(), R.layout.fragment_flight_filter, null)
         setChild(mChildView)
+        bottomSheetAction.setTypeface(bottomSheetAction.typeface, Typeface.BOLD)
     }
 
     private fun initAdapter() {

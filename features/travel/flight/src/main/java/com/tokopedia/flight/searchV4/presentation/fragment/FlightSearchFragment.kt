@@ -46,7 +46,6 @@ import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearc
 import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -56,7 +55,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_flight_search.*
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
-import kotlinx.android.synthetic.main.include_flight_search_title_route.*
 import javax.inject.Inject
 
 /**
@@ -387,9 +385,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     open fun getSearchHorizontalProgress(): HorizontalProgressBar = horizontal_progress_bar
 
     open fun renderSearchList(list: List<FlightJourneyModel>) {
-        if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {
-            showSearchRouteTitle()
-        }
 
         renderList(list)
 
@@ -608,17 +603,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
 
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
-    }
-
-    private fun showSearchRouteTitle() {
-        tv_flight_search_title_route.text = getSearchRouteTitle()
-        tv_flight_search_title_route.show()
-    }
-
-    private fun getSearchRouteTitle(): String = if (isReturnTrip()) {
-        getString(R.string.flight_search_choose_return_flight)
-    } else {
-        getString(R.string.flight_search_choose_departure_flight)
     }
 
     private fun navigateToTheNextPage(selectedId: String, selectedTerm: String,

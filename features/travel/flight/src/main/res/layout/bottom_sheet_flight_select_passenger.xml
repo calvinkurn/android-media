@@ -126,12 +126,11 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icFlightPassengerInfant"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="@+id/tvFlightPassengerInfantDesc"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/icFlightPassengerChild"
+        app:layout_constraintRight_toRightOf="@+id/icFlightPassengerChild"
         app:layout_constraintTop_toTopOf="@+id/tvFlightPassengerInfantLabel"
         app:srcCompat="@drawable/ic_flight_infant" />
 

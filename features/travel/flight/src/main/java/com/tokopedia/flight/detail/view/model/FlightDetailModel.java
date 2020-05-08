@@ -48,6 +48,7 @@ public class FlightDetailModel implements Parcelable {
     private int countInfant;
     private List<FlightDetailRouteModel> routeList;
     private List<FlightAirlineModel> airlineDataList;
+    private String flightClass;
 
     public FlightDetailModel() {
     }
@@ -74,6 +75,7 @@ public class FlightDetailModel implements Parcelable {
         routeList = in.createTypedArrayList(FlightDetailRouteModel.CREATOR);
         isRefundable = (RefundableEnum) in.readSerializable();
         airlineDataList = in.createTypedArrayList(FlightAirlineModel.CREATOR);
+        flightClass = in.readString();
     }
 
     public FlightDetailModel build(FlightJourneyModel flightJourneyViewModel) {
@@ -166,6 +168,7 @@ public class FlightDetailModel implements Parcelable {
         setCountAdult(flightSearchPassDataViewModel.getFlightPassengerViewModel().getAdult());
         setCountChild(flightSearchPassDataViewModel.getFlightPassengerViewModel().getChildren());
         setCountInfant(flightSearchPassDataViewModel.getFlightPassengerViewModel().getInfant());
+        setFlightClass(flightSearchPassDataViewModel.getFlightClass().getTitle());
         return this;
     }
 
@@ -329,6 +332,14 @@ public class FlightDetailModel implements Parcelable {
         this.arrivalTime = arrivalTime;
     }
 
+    public String getFlightClass() {
+        return flightClass;
+    }
+
+    public void setFlightClass(String flightClass) {
+        this.flightClass = flightClass;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -357,6 +368,7 @@ public class FlightDetailModel implements Parcelable {
         parcel.writeTypedList(routeList);
         parcel.writeSerializable(isRefundable);
         parcel.writeTypedList(airlineDataList);
+        parcel.writeString(flightClass);
     }
 
     public List<FlightAirlineModel> getAirlineDataList() {

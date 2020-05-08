@@ -118,12 +118,12 @@
         <item name="android:textSize">@dimen/sp_16</item>
     </style>
 
-    <style name="Tabs.Secondary.Flight">
+<!--    <style name="Tabs.Secondary.Flight">
         <item name="android:textSize">@dimen/sp_10</item>
         <item name="selectedBold">false</item>
         <item name="android:textStyle">normal</item>
         <item name="footerIndicatorHeight">3dp</item>
-    </style>
+    </style>-->
 
     <style name="TextView.Micro.OrangeRed">
         <item name="android:textColor">@color/tkpd_main_orange</item>

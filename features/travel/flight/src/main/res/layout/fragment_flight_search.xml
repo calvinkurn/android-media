@@ -33,15 +33,12 @@
                 app:tickerShapeType="full"
                 tools:visibility="visible" />
 
-            <include layout="@layout/include_flight_search_title_route" />
-
             <include layout="@layout/include_flight_quick_filter" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/flight_search_list_background"
                 android:clipToPadding="false"
                 android:fitsSystemWindows="true" />
         </LinearLayout>

@@ -140,8 +140,20 @@ class FlightFilterViewModel @Inject constructor(
             // Sort
             items.add(SORT_ORDER, FlightSortModel())
 
+            // Transit
+            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
+
+            // Departure Time
+            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
+
+            // Arrival Time
+            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
+
             // Airline
             items.add(AIRLINE_ORDER, FlightFilterAirlineModel())
+
+            // Facility
+            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
             // Price
             val selectedMinPrice = filterModel.value?.priceMin ?: 0
@@ -152,18 +164,6 @@ class FlightFilterViewModel @Inject constructor(
                     selectedStartValue = if (selectedMinPrice > it.minPrice) selectedMinPrice else it.minPrice,
                     selectedEndValue = if (selectedMaxPrice < it.maxPrice) selectedMaxPrice else it.maxPrice
             ))
-
-            // Departure Time
-            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
-
-            // Arrival Time
-            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
-
-            // Transit
-            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
-
-            // Facility
-            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
         }
 

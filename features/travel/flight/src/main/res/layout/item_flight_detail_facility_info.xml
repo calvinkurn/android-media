@@ -18,7 +18,7 @@
         android:maxLines="5"
         android:scrollHorizontally="false"
         android:textColor="@color/Neutral_N700_68"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Jarak antar kursi" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -27,6 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/Neutral_N700_96"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="34 inci" />
 </LinearLayout>

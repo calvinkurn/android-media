@@ -33,7 +33,7 @@
     <string name="select_passenger_infant_more_than_four_error_message">Total penumpang bayi maksimal 4 penumpang</string>
     <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="select_passenger_submit_button">Simpan</string>
-    <string name="select_passenger_toolbar_title">Jumlah Penumpang</string>
+    <string name="select_passenger_toolbar_title">Jumlah penumpang</string>
     <string name="flight_label">PENERBANGAN</string>
     <string name="flight_label_facility">FASILITAS</string>
     <string name="flight_label_price">HARGA</string>
@@ -45,8 +45,8 @@
     <string name="flight_search_filter_transit">Transit</string>
     <string name="flight_search_filter_airplane">Maskapai penerbangan</string>
     <string name="flight_search_filter_facility">Fasilitas</string>
-    <string name="flight_search_filter_departure_time">Waktu Keberangkatan</string>
-    <string name="flight_search_filter_arrival_time">Waktu Tiba</string>
+    <string name="flight_search_filter_departure_time">Waktu keberangkatan</string>
+    <string name="flight_search_filter_arrival_time">Waktu tiba</string>
     <string name="flight_search_filter_refund_policy">Kebijakan Refund</string>
     <string name="flight_search_filter_ticket_price_label">Harga tiket</string>
     <string name="flight_search_filter_baggage_label">Gratis Bagasi</string>
@@ -86,19 +86,19 @@
     <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_sort_label">Urutkan</string>
     <string name="flight_search_sort_title">Urutkan</string>
-    <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terpagi</string>
-    <string name="flight_search_sort_item_latest_departure">Waktu Keberangkatan Termalam</string>
-    <string name="flight_search_sort_item_earliest_arrival">Waktu Tiba Terpagi</string>
-    <string name="flight_search_sort_item_latest_arrival">Waktu Tiba Termalam</string>
+    <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terawal</string>
+    <string name="flight_search_sort_item_latest_departure">Waktu Keberangkatan Terakhir</string>
+    <string name="flight_search_sort_item_earliest_arrival">Waktu Tiba Terawal</string>
+    <string name="flight_search_sort_item_latest_arrival">Waktu Tiba Terakhir</string>
     <string name="flight_search_sort_item_shortest_duration">Durasi Terpendek</string>
     <string name="flight_search_sort_item_longest_duration">Durasi Terlama</string>
     <string name="flight_search_sort_shortest_duration">Perjalanan Tercepat</string>
-    <string name="flight_search_sort_item_cheapest_price">Harga Termurah</string>
-    <string name="flight_search_sort_item_most_expensive_price">Harga Termahal</string>
+    <string name="flight_search_sort_item_cheapest_price">Harga Terendah</string>
+    <string name="flight_search_sort_item_most_expensive_price">Harga Tertinggi</string>
     <string name="flight_search_sort_dialog_title">Urutkan berdasarkan</string>
     <string name="flight_filter_label">Filter</string>
     <string name="flight_reset_label">Reset</string>
-    <string name="airline">Maskapai Penerbangan</string>
+    <string name="airline">Maskapai penerbangan</string>
     <string name="refundable_policy">Kebijakan Pengembalian</string>
     <string name="transit">Transit</string>
     <string name="start_from_x">Mulai dari %1$s</string>
@@ -521,7 +521,7 @@ di tempatmu.</string>
     <string name="flight_search_people_label">/orang</string>
 
     <string name="flight_search_see_other_journey_title">Mau cek penerbangan pulang lainnya?</string>
-    <string name="flight_search_see_other_journey_description"><![CDATA[Kalau pilih penerbangan di luar paket Best Pairing, harga tiket berangkatmu akan berubah jadi <b>%1$s</b>.]]></string>
+    <string name="flight_search_see_other_journey_description"><![CDATA[Kalau pilih penerbangan di luar Best Pairing, harga tiket berangkatmu akan berubah jadi <b>%1$s</b>.]]></string>
     <string name="flight_search_see_other_journey_button">Cek Penerbangan Lain</string>
 
     <string name="flight_search_see_only_best_pairing_journey_title">Mau pesan tiket dari pilihan sebelumnya?</string>

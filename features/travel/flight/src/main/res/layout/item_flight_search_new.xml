@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl1"
     android:background="@color/white"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingTop="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:paddingRight="@dimen/spacing_lvl4">
 
     <com.tokopedia.flight.common.view.FlightMultiAirlineView
         android:id="@+id/flightMultiAirline"
@@ -39,8 +37,9 @@
         android:layout_height="wrap_content"
         android:text="@string/flight_search_best_pairing_tag"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAirline"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvAirline"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:visibility="visible" />
@@ -188,10 +187,19 @@
         android:id="@+id/btnFlightDetail"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/bg_flight_gray_rounded"
-        android:padding="@dimen/flight_search_arrow_padding"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/flightSearchSeparator"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/ic_arrow_down_grey" />
+        app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
+
+    <View
+        android:id="@+id/flightSearchSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/flight_search_list_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

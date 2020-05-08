@@ -36,6 +36,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/airline_name"
                 android:layout_width="wrap_content"
+                android:textSize="14sp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Neutral_N700_96"
                 app:typographyType="heading_5"

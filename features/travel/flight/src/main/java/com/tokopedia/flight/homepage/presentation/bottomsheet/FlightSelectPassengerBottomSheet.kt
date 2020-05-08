@@ -191,7 +191,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
             qtyFlightPassengerChild.addButton.isEnabled = true
         }
 
-        qtyFlightPassengerAdult.subtractButton.isEnabled = passengers.adult > passengers.infant
+        qtyFlightPassengerAdult.subtractButton.isEnabled = passengers.adult > passengers.infant && passengers.adult > MIN_ADULT_PASSENGER
         qtyFlightPassengerInfant.addButton.isEnabled = passengers.infant < qtyFlightPassengerInfant.maxValue
     }
 
@@ -201,5 +201,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val TAG_SELECT_PASSENGER = "TagFlightSelectPassengerBottomSheet"
+
+        private const val MIN_ADULT_PASSENGER = 1
     }
 }
