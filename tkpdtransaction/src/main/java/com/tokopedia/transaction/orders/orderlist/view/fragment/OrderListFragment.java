@@ -473,13 +473,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
             quickSingleFilterView.setVisibility(View.VISIBLE);
             simpleSearchView.setVisibility(View.VISIBLE);
         }
-        if (isPulledToRefresh) {
-            if (getActivity() != null) {
-                ((OrderListActivity)getActivity()).getInitialData();
-                isPulledToRefresh = false;
-            }
+        if (isPulledToRefresh && getActivity() != null) {
+            ((OrderListActivity)getActivity()).getInitialData();
+            isPulledToRefresh = false;
         }
-        System.out.println("++ doRefresh - selectedFilter = "+selectedFilter);
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
 
@@ -600,7 +597,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
-        System.out.println("++ selectedFilter = "+selectedFilter);
         refreshHandler.startRefresh();
     }
 
