@@ -39,6 +39,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
 
     companion object {
+        const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
         fun getInstance(endPoint: String?): Fragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
@@ -131,7 +132,11 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                 Utils.shareData(activity, data.share.description, data.share.url, mDiscoveryViewModel.getBitmapFromURL(data.share.image))
             }
             ivSearch.setOnClickListener {
-                RouteManager.route(context, data.searchApplink)
+                if(data.searchApplink?.isNotEmpty() == true) {
+                    RouteManager.route(context, data.searchApplink)
+                } else {
+                    RouteManager.route(context, SEARCH_DEEPLINK)
+                }
             }
         } else {
             ivShare.hide()
