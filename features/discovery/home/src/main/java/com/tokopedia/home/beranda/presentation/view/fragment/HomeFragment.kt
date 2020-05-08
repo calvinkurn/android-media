@@ -199,8 +199,6 @@ class HomeFragment : BaseDaggerFragment(),
 
     override val eggListener: HomeEggListener
         get() = this
-    override val trackingQueue: TrackingQueue
-        get()  = TrackingQueue(activity!!)
     override val childsFragmentManager: FragmentManager
         get() = childFragmentManager
 
@@ -219,7 +217,8 @@ class HomeFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var mainParentStatusBarListener: MainParentStatusBarListener
+    override val trackingQueue: TrackingQueue? = null
+
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
@@ -241,6 +240,7 @@ class HomeFragment : BaseDaggerFragment(),
     private var layoutManager: LinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
     private var activityStateListener: ActivityStateListener? = null
+    private var mainParentStatusBarListener: MainParentStatusBarListener? = null
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
@@ -268,25 +268,27 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun requestStatusBarDark() {
         isLightThemeStatusBar = false
-        mainParentStatusBarListener!!.requestStatusBarDark()
+        mainParentStatusBarListener?.requestStatusBarDark()
     }
 
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
-        mainParentStatusBarListener!!.requestStatusBarLight()
+        mainParentStatusBarListener?.requestStatusBarLight()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userSession = UserSession(activity)
-        irisAnalytics = getInstance(activity!!)
-        irisSession = IrisSession(context!!)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
+        activity?.let {
+            userSession = UserSession(it)
+            irisAnalytics = getInstance(it)
+            irisSession = IrisSession(it)
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
         if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
-            getPageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
+            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+            getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
         }
         initViewModel()
         setGeolocationPermission()
@@ -386,9 +388,11 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setupStatusBar() {
-        statusBarBackground.background = ColorDrawable(
-                ContextCompat.getColor(activity!!, R.color.green_600)
-        )
+        activity?.let {
+            statusBarBackground.background = ColorDrawable(
+                    ContextCompat.getColor(it, R.color.green_600)
+            )
+        }
         //status bar background compability, we show view background for android >= Kitkat
 //because in that version, status bar can't forced to dark mode, we must set background
 //to keep status bar icon visible
@@ -402,25 +406,6 @@ class HomeFragment : BaseDaggerFragment(),
         }
         //initial condition for status and searchbar
         setStatusBarAlpha(0f)
-    }
-
-    private fun evaluateInheritScrollForHomeRecommendation() {
-        if (layoutManager!!.findLastCompletelyVisibleItemPosition()
-                == viewModel.getRecommendationFeedSectionPosition()) {
-            val vt = homeRecyclerView.overScroller.currVelocity / 1000
-            val a = -10f
-            val distanceToInherit = Math.abs(Math.pow(vt.toDouble(), 2.0) / (2 * a))
-            inheritScrollVelocityToRecommendation(distanceToInherit.toInt() * 1000)
-        }
-    }
-
-    private fun evaluateFloatingTextButtonOnStateChanged() {
-        val position = layoutManager!!.itemCount
-        if (position == viewModel.getRecommendationFeedSectionPosition()) {
-            floatingTextButton.hide()
-        } else {
-            floatingTextButton.show()
-        }
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
@@ -467,14 +452,14 @@ class HomeFragment : BaseDaggerFragment(),
                 floatingTextButton.resetState()
             }
         })
-        stickyLoginView!!.addOnLayoutChangeListener { v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int -> updateStickyState() }
-        stickyLoginView!!.setOnClickListener { v: View? ->
-            stickyLoginView!!.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
+        stickyLoginView?.addOnLayoutChangeListener { v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int -> updateStickyState() }
+        stickyLoginView?.setOnClickListener { v: View? ->
+            stickyLoginView?.tracker.clickOnLogin(StickyLoginConstant.Page.HOME)
             onGoToLogin()
         }
-        stickyLoginView!!.setOnDismissListener(View.OnClickListener { v: View? ->
-            stickyLoginView!!.dismiss(StickyLoginConstant.Page.HOME)
-            stickyLoginView!!.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
+        stickyLoginView?.setOnDismissListener(View.OnClickListener { v: View? ->
+            stickyLoginView?.dismiss(StickyLoginConstant.Page.HOME)
+            stickyLoginView?.tracker.clickOnDismiss(StickyLoginConstant.Page.HOME)
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
@@ -500,7 +485,7 @@ class HomeFragment : BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
         createAndCallSendScreen()
-        adapter!!.onResume()
+        adapter?.onResume()
         viewModel.refresh(isFirstInstall())
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
@@ -518,8 +503,8 @@ class HomeFragment : BaseDaggerFragment(),
 
     override fun onPause() {
         super.onPause()
-        adapter!!.onPause()
-        trackingQueue!!.sendAll()
+        adapter?.onPause()
+        trackingQueue?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
@@ -527,7 +512,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter!!.onDestroy()
+        adapter?.onDestroy()
         homeRecyclerView.adapter = null
         adapter = null
         homeRecyclerView.layoutManager = null
@@ -566,10 +551,10 @@ class HomeFragment : BaseDaggerFragment(),
         viewModel.isRequestNetworkLiveData.observe(viewLifecycleOwner, Observer {data: Event<Boolean> ->
             val isRequestNetwork = data.peekContent()
             if (isRequestNetwork && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
+                getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
             } else if (getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()!!.stopNetworkRequestPerformanceMonitoring()
-                getPageLoadTimeCallback()!!.startRenderPerformanceMonitoring()
+                getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
             }
         })
     }
@@ -578,7 +563,7 @@ class HomeFragment : BaseDaggerFragment(),
         viewModel.isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
+                getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
             }
         })
     }
@@ -663,9 +648,10 @@ class HomeFragment : BaseDaggerFragment(),
         viewModel.popupIntroOvoLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?> ->
             if (RouteManager.isSupportApplink(activity, data.peekContent())) {
                 val intentBalanceWallet = RouteManager.getIntent(activity, data.peekContent())
-                Objects.requireNonNull(context)!!.startActivity(intentBalanceWallet)
-                val activity = context as Activity?
-                activity!!.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
+                Objects.requireNonNull(context)?.startActivity(intentBalanceWallet)
+                activity?.let {
+                    it.overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
+                }
             }
         })
     }
@@ -683,31 +669,34 @@ class HomeFragment : BaseDaggerFragment(),
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
         viewModel.requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
-            Glide.with(context!!)
-                    .asBitmap()
-                    .load(playCardViewModelEvent.peekContent().playCardHome!!.coverUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            viewModel.setPlayBanner(playCardViewModelEvent.peekContent())
-                        }
+            context?.let {
+                Glide.with(it)
+                        .asBitmap()
+                        .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                viewModel.setPlayBanner(playCardViewModelEvent.peekContent())
+                            }
 
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            viewModel.clearPlayBanner()
-                        }
-                    })
+                            override fun onLoadCleared(placeholder: Drawable?) {}
+                            override fun onLoadFailed(errorDrawable: Drawable?) {
+                                viewModel.clearPlayBanner()
+                            }
+                        })
+            }
+
         })
     }
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()!!.startRenderPerformanceMonitoring();
+                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
-                adapter!!.submitList(data);
-                adapter!!.notifyDataSetChanged();
+                adapter?.submitList(data);
+                adapter?.notifyDataSetChanged();
             } else {
-                adapter!!.submitList(data);
+                adapter?.submitList(data);
             }
 
             if (isDataValid(data)) {
@@ -851,21 +840,23 @@ class HomeFragment : BaseDaggerFragment(),
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
         val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
         intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        activity!!.startActivities(arrayOf(intentHome, intent))
-        activity!!.finish()
+        activity?.let {
+            it.startActivities(arrayOf(intentHome, intent))
+            it.finish()
+        }
     }
 
     private fun onGoToCreateShop() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.CREATE_SHOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        activity!!.startActivity(intent)
+        activity?.startActivity(intent)
     }
 
     private fun onGoToShop(shopId: String) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP)
         intent.putExtra(EXTRA_SHOP_ID, shopId)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        activity!!.startActivity(intent)
+        activity?.startActivity(intent)
     }
 
     override fun openShop() {
@@ -887,23 +878,25 @@ class HomeFragment : BaseDaggerFragment(),
 
     override fun actionInfoPendingCashBackTokocash(cashBackData: CashBackData,
                                                    appLinkActionButton: String) {
-        val bottomSheetDialogTokoCash = BottomSheetView(activity!!)
-        bottomSheetDialogTokoCash.setListener(object : BottomSheetView.ActionListener {
-            override fun clickOnTextLink(url: String) {}
-            override fun clickOnButton(url: String, appLink: String) {
-                goToOvo(appLink)
-            }
-        })
-        bottomSheetDialogTokoCash.renderBottomSheet(BottomSheetFieldBuilder()
-                .setTitle(getString(R.string.toko_cash_pending_title))
-                .setBody(String.format(getString(R.string.toko_cash_pending_body),
-                        cashBackData.amountText))
-                .setImg(R.drawable.ic_box)
-                .setUrlButton("",
-                        appLinkActionButton,
-                        getString(R.string.toko_cash_pending_proceed_button))
-                .build())
-        bottomSheetDialogTokoCash.show()
+        activity?.let {
+            val bottomSheetDialogTokoCash = BottomSheetView(it)
+            bottomSheetDialogTokoCash.setListener(object : BottomSheetView.ActionListener {
+                override fun clickOnTextLink(url: String) {}
+                override fun clickOnButton(url: String, appLink: String) {
+                    goToOvo(appLink)
+                }
+            })
+            bottomSheetDialogTokoCash.renderBottomSheet(BottomSheetFieldBuilder()
+                    .setTitle(getString(R.string.toko_cash_pending_title))
+                    .setBody(String.format(getString(R.string.toko_cash_pending_body),
+                            cashBackData.amountText))
+                    .setImg(R.drawable.ic_box)
+                    .setUrlButton("",
+                            appLinkActionButton,
+                            getString(R.string.toko_cash_pending_proceed_button))
+                    .build())
+            bottomSheetDialogTokoCash.show()
+        }
     }
 
     override fun actionTokoPointClicked(appLink: String, tokoPointUrl: String, pageTitle: String) {
@@ -944,7 +937,7 @@ class HomeFragment : BaseDaggerFragment(),
                 ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         )
         if (activity != null && remoteConfigEnable) {
-            activity!!.startActivity(PromoListActivity.newInstance(
+            activity?.startActivity(PromoListActivity.newInstance(
                     activity,
                     PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
                     PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
@@ -978,7 +971,7 @@ class HomeFragment : BaseDaggerFragment(),
                 }
             }
             REQUEST_CODE_REVIEW -> {
-                adapter!!.notifyDataSetChanged()
+                adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
                     viewModel.onRemoveSuggestedReview()
                 }
@@ -989,7 +982,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        adapter!!.resetImpressionHomeBanner()
+        adapter?.resetImpressionHomeBanner()
         resetFeedState()
         removeNetworkError()
         if (viewModel != null) {
@@ -998,7 +991,7 @@ class HomeFragment : BaseDaggerFragment(),
             stickyContent
         }
         if (activity is RefreshNotificationListener) {
-            (activity as RefreshNotificationListener?)!!.onRefreshNotification()
+            (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
@@ -1015,7 +1008,7 @@ class HomeFragment : BaseDaggerFragment(),
             stickyContent
         }
         if (activity is RefreshNotificationListener) {
-            (activity as RefreshNotificationListener?)!!.onRefreshNotification()
+            (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         loadEggData()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
@@ -1035,8 +1028,8 @@ class HomeFragment : BaseDaggerFragment(),
 
     private val stickyContent: Unit
         private get() {
-            val isShowSticky = remoteConfig!!.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
-            if (isShowSticky && !userSession!!.isLoggedIn) viewModel.getStickyContent()
+            val isShowSticky = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+            if (isShowSticky && !userSession?.isLoggedIn) viewModel.getStickyContent()
         }
 
     private fun hideLoading() {
@@ -1060,19 +1053,21 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun needToShowGeolocationComponent() {
-        val firebaseShowGeolocationComponent = remoteConfig!!.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
+        val firebaseShowGeolocationComponent = remoteConfig?.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
         if (!firebaseShowGeolocationComponent) {
             viewModel.setNeedToShowGeolocationComponent(false)
             return
         }
         var needToShowGeolocationComponent = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val userHasDeniedPermissionBefore = ActivityCompat
-                    .shouldShowRequestPermissionRationale(activity!!,
-                            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
-            if (userHasDeniedPermissionBefore) {
-                viewModel.setNeedToShowGeolocationComponent(false)
-                return
+            activity?.let {
+                val userHasDeniedPermissionBefore = ActivityCompat
+                        .shouldShowRequestPermissionRationale(it,
+                                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
+                if (userHasDeniedPermissionBefore) {
+                    viewModel.setNeedToShowGeolocationComponent(false)
+                    return
+                }
             }
         }
         if (activity != null) {
@@ -1088,7 +1083,10 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setGeolocationPermission() {
-        if (activity == null) viewModel.setGeolocationPermission(false) else viewModel.setGeolocationPermission(permissionCheckerHelper.hasPermission(activity!!, arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)))
+        if (activity == null) viewModel.setGeolocationPermission(false)
+        else viewModel.setGeolocationPermission(permissionCheckerHelper.hasPermission(
+                activity!!,
+                arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)))
     }
 
     private fun promptGeolocationPermission() {
@@ -1112,16 +1110,18 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun detectAndSendLocation() {
-        Observable.just(true).map { aBoolean: Boolean? ->
-            val locationDetectorHelper = LocationDetectorHelper(
-                    permissionCheckerHelper,
-                    LocationServices.getFusedLocationProviderClient(activity!!.getApplicationContext()),
-                    activity!!.applicationContext)
-            locationDetectorHelper.getLocation(onGetLocation(), activity!!,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    "")
-            true
-        }.subscribeOn(Schedulers.io()).subscribe({ aBoolean: Boolean? -> }) { throwable: Throwable? -> }
+        activity?.let {
+            Observable.just(true).map { aBoolean: Boolean? ->
+                val locationDetectorHelper = LocationDetectorHelper(
+                        permissionCheckerHelper,
+                        LocationServices.getFusedLocationProviderClient(it.getApplicationContext()),
+                        it.applicationContext)
+                locationDetectorHelper.getLocation(onGetLocation(), it,
+                        LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                        "")
+                true
+            }.subscribeOn(Schedulers.io()).subscribe({ aBoolean: Boolean? -> }) { throwable: Throwable? -> }
+        }
     }
 
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
@@ -1146,8 +1146,8 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun saveFirstInstallTime() {
-        if (context != null) {
-            sharedPrefs = context!!.getSharedPreferences(
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
                     ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs.edit().putLong(
                     ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
@@ -1155,31 +1155,35 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun isFirstInstall(): Boolean {
-        if (context != null &&
-                !userSession!!.isLoggedIn &&
-                isShowFirstInstallSearch) {
-            sharedPrefs = context!!.getSharedPreferences(
-                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
-            var firstInstallCacheValue = sharedPrefs.getLong(
-                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0)
-            if (firstInstallCacheValue == 0L) return false
-            firstInstallCacheValue += (30 * 60000).toLong()
-            val now = Date()
-            val firstInstallTime = Date(firstInstallCacheValue)
-            if (now.compareTo(firstInstallTime) <= 0) {
-                return true
+        context?.let {
+            if (!userSession?.isLoggedIn &&
+                    isShowFirstInstallSearch) {
+                sharedPrefs = it.getSharedPreferences(
+                        ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                var firstInstallCacheValue = sharedPrefs.getLong(
+                        ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0)
+                if (firstInstallCacheValue == 0L) return false
+                firstInstallCacheValue += (30 * 60000).toLong()
+                val now = Date()
+                val firstInstallTime = Date(firstInstallCacheValue)
+                if (now.compareTo(firstInstallTime) <= 0) {
+                    return true
+                } else {
+                    saveFirstInstallTime()
+                    return false
+                }
             } else {
-                saveFirstInstallTime()
                 return false
             }
-        } else {
-            return false
         }
+        return false
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionCheckerHelper.onRequestPermissionsResult(activity!!, requestCode, permissions, grantResults)
+        activity?.let {
+            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+        }
     }
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
@@ -1211,13 +1215,13 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun showNetworkError(message: String) {
-        if (isAdded && activity != null) {
+        if (isAdded && activity != null && adapter != null) {
             if (adapter!!.itemCount > 0) {
                 if (messageSnackbar == null) {
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
                             activity, getString(R.string.msg_network_error)) { onNetworkRetry() }
                 }
-                messageSnackbar!!.showRetrySnackbar()
+                messageSnackbar?.showRetrySnackbar()
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
             }
@@ -1287,7 +1291,7 @@ class HomeFragment : BaseDaggerFragment(),
     private fun removeNetworkError() {
         NetworkErrorHelper.removeEmptyState(root)
         if (messageSnackbar != null && messageSnackbar!!.isShown) {
-            messageSnackbar!!.hideRetrySnackbar()
+            messageSnackbar?.hideRetrySnackbar()
             messageSnackbar = null
         }
     }
@@ -1333,7 +1337,7 @@ class HomeFragment : BaseDaggerFragment(),
                 viewModel.sendTopAds(bannerSlidesModel.topadsViewUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
-            dataLayer[KEY_SESSION_IRIS] = irisSession!!.getSessionId()
+            dataLayer[KEY_SESSION_IRIS] = irisSession?.getSessionId()
             putEEToTrackingQueue(dataLayer)
         }
     }
@@ -1346,7 +1350,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun restartBanner(isVisibleToUser: Boolean) {
         if (isVisibleToUser && view != null && adapter != null) {
-            adapter!!.notifyDataSetChanged()
+            adapter?.notifyDataSetChanged()
         }
     }
 
@@ -1359,7 +1363,7 @@ class HomeFragment : BaseDaggerFragment(),
     private fun sendScreen(): Boolean {
         if (activity != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
             lastSendScreenTimeMillis = System.currentTimeMillis()
-            HomePageTracking.sendScreen(activity, screenName, userSession!!.isLoggedIn)
+            HomePageTracking.sendScreen(activity, screenName, userSession?.isLoggedIn)
         }
         return true
     }
@@ -1403,7 +1407,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
-        trackingQueue!!.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
+        trackingQueue?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
     }
 
     override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
@@ -1413,23 +1417,28 @@ class HomeFragment : BaseDaggerFragment(),
 
     protected fun registerBroadcastReceiverTokoCash() {
         if (activity == null) return
-        activity!!.registerReceiver(
-                tokoCashBroadcaseReceiver,
-                IntentFilter(activity!!.getString(R.string.broadcast_wallet))
-        )
+        activity?.let {
+            it.registerReceiver(
+                    tokoCashBroadcaseReceiver,
+                    IntentFilter(it.getString(R.string.broadcast_wallet))
+            )
+        }
+
     }
 
     protected fun unRegisterBroadcastReceiverTokoCash() {
         if (activity == null) return
-        activity!!.unregisterReceiver(tokoCashBroadcaseReceiver)
+        activity?.unregisterReceiver(tokoCashBroadcaseReceiver)
     }
 
     private val tokoCashBroadcaseReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val extras = intent.extras
             if (extras != null) {
-                val data = extras.getString(activity!!.getString(R.string.broadcast_wallet))
-                if (data != null && !data.isEmpty()) viewModel.getHeaderData() // update header data
+                activity?.let {
+                    val data = extras.getString(it.getString(R.string.broadcast_wallet))
+                    if (data != null && !data.isEmpty()) viewModel.getHeaderData() // update header data
+                }
             }
         }
     }
@@ -1467,7 +1476,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun goToProductDetail(productId: String, imageSourceSingle: String, name: String, price: String) {
-        activity!!.startActivity(getProductIntent(productId))
+        activity?.startActivity(getProductIntent(productId))
     }
 
     private fun getProductIntent(productId: String): Intent? {
@@ -1566,14 +1575,14 @@ class HomeFragment : BaseDaggerFragment(),
         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
         val uri = Uri.fromParts("package", activity!!.packageName, null)
         intent.data = uri
-        activity!!.startActivity(intent)
+        activity?.startActivity(intent)
     }
 
     override fun onPromoDragStart() {}
     override fun onPromoDragEnd() {}
     override fun putEEToTrackingQueue(data: HashMap<String, Any>) {
         if (trackingQueue != null) {
-            trackingQueue!!.putEETracking(data)
+            trackingQueue?.putEETracking(data)
         }
     }
 
@@ -1583,7 +1592,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     override fun putEEToIris(data: HashMap<String, Any>) {
         if (irisAnalytics != null) {
-            irisAnalytics!!.saveEvent(data)
+            irisAnalytics?.saveEvent(data)
         }
     }
 
@@ -1601,7 +1610,7 @@ class HomeFragment : BaseDaggerFragment(),
             hideStickyLogin()
             return
         }
-        val isCanShowing = remoteConfig!!.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+        val isCanShowing = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
         if (!isCanShowing) {
             hideStickyLogin()
             return
@@ -1610,11 +1619,11 @@ class HomeFragment : BaseDaggerFragment(),
             hideStickyLogin()
             return
         }
-        stickyLoginView!!.setContent(tickerDetail!!)
-        stickyLoginView!!.show(StickyLoginConstant.Page.HOME)
-        if (stickyLoginView!!.isShowing()) {
-            positionSticky = stickyLoginView!!.getLocation()
-            stickyLoginView!!.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
+        stickyLoginView?.setContent(tickerDetail!!)
+        stickyLoginView?.show(StickyLoginConstant.Page.HOME)
+        if (stickyLoginView?.isShowing()) {
+            positionSticky = stickyLoginView?.getLocation()
+            stickyLoginView?.tracker.viewOnPage(StickyLoginConstant.Page.HOME)
         }
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
@@ -1637,7 +1646,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
-        val params = floatingEggButtonFragment.view!!.layoutParams as FrameLayout.LayoutParams
+        val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
         if (stickyLoginView!!.isShowing()) {
             params.setMargins(0, 0, 0, stickyLoginView!!.height)
             val positionEgg = IntArray(2)
@@ -1653,7 +1662,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     override fun getWindowWidth(): Int {
         val displayMetrics = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
         return displayMetrics.widthPixels
     }
 
