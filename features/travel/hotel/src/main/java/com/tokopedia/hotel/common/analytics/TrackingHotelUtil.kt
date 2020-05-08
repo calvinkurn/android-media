@@ -501,10 +501,11 @@ class TrackingHotelUtil {
     fun hotelClickChangeSearch(hotelSearchModel: HotelSearchModel, screenName: String,
                                irisSessionId: String, userId: String) {
         val map = mutableMapOf<String, Any>()
+        val type = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
         map[EVENT] = CLICK_HOTEL
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = ACTION_CLICK_CHANGE_SEARCH
-        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelSearchModel.type} - ${hotelSearchModel.name} - " +
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $type - ${hotelSearchModel.name} - " +
                 "${hotelSearchModel.room} - ${hotelSearchModel.adult} - " + "${convertDate(hotelSearchModel.checkIn)} - " +
                 "${HotelUtils.countDayDifference(hotelSearchModel.checkIn, hotelSearchModel.checkOut)}"
         map[SCREEN_NAME] = screenName

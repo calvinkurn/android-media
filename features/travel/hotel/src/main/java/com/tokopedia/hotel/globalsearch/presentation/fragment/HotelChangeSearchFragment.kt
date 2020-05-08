@@ -127,7 +127,8 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                 }
 
                 context?.let {
-                    trackingUtil.clickSaveChangeSearch(globalSearchModel.destinationType, globalSearchModel.destinationName,
+                    val type = if (globalSearchModel.searchType.isNotEmpty()) globalSearchModel.searchType else globalSearchModel.destinationType
+                    trackingUtil.clickSaveChangeSearch(type, globalSearchModel.destinationName,
                             globalSearchModel.numOfRooms, globalSearchModel.numOfGuests, globalSearchModel.checkInDate, globalSearchModel.checkOutDate,
                             SCREEN_NAME, IrisSession(it).getSessionId(), UserSession(it).userId)
                 }

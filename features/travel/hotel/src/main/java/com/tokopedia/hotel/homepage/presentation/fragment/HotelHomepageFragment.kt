@@ -351,8 +351,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onSearchButtonClicked() {
+        val type = if (hotelHomepageModel.searchType.isNotEmpty()) hotelHomepageModel.searchType
+        else hotelHomepageModel.locType
         trackingHotelUtil.searchHotel(
-                hotelHomepageModel.locType,
+                type,
                 hotelHomepageModel.locName,
                 hotelHomepageModel.roomCount,
                 hotelHomepageModel.adultCount,

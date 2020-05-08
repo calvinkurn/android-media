@@ -188,7 +188,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                     (fragment as HotelSearchResultFragment).let { searchFragment ->
                         searchFragment.searchResultviewModel.initSearchParam(hotelSearchModel)
                         searchFragment.searchDestinationName = hotelSearchModel.name
-                        searchFragment.searchDestinationType = hotelSearchModel.type
+                        searchFragment.searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
 
                         setUpTitleAndSubtitle()
                         searchFragment.changeSearchParam()
