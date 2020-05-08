@@ -612,7 +612,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
-        observeViewModelInitialized();
+//        observeViewModelInitialized();
         observeHomeRequestNetwork();
     }
 
@@ -621,6 +621,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             if (data != null) {
                 boolean isRequestNetwork = data.peekContent();
                 if (isRequestNetwork && getPageLoadTimeCallback() != null) {
+                    getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
                     getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
                 } else if (getPageLoadTimeCallback() != null) {
                     getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
