@@ -2241,6 +2241,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
                         shippingPrice = viewModel.shippingMinimumPrice
+                        productName = data.getProductName
+                        category = data.basic.category.name
+                        price = data.finalPrice.toString()
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -2256,6 +2259,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         attribution = trackerAttributionPdp ?: ""
                         listTracker = trackerListNamePdp ?: ""
                         warehouseId = selectedWarehouseId
+                        atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                        productName = data.getProductName
+                        category = data.basic.category.name
+                        price = data.finalPrice.toString()
                     }
                     viewModel.addToCart(addToCartRequestParams)
                 }
@@ -2269,6 +2276,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 warehouseId = selectedWarehouseId.toString()
                 attribution = trackerAttributionPdp ?: ""
                 listTracker = trackerListNamePdp ?: ""
+                productName = data.getProductName
+                category = data.basic.category.name
+                price = data.finalPrice.toString()
             }
             viewModel.addToCart(addToCartOccRequestParams)
         } else {
@@ -2280,6 +2290,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 attribution = trackerAttributionPdp ?: ""
                 listTracker = trackerListNamePdp ?: ""
                 warehouseId = selectedWarehouseId
+                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                productName = data.getProductName
+                category = data.basic.category.name
+                price = data.finalPrice.toString()
             }
             viewModel.addToCart(addToCartRequestParams)
         }
