@@ -44,10 +44,7 @@ import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -63,6 +60,8 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingStatus;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
 import com.tokopedia.seller.selling.view.listener.SellingTransaction;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -288,12 +287,13 @@ public class ActivitySellingTransaction extends BaseActivity
     }
 
     private void checkLogin() {
+        UserSessionInterface userSession = new UserSession(this);
         if (getApplication() instanceof TkpdCoreRouter) {
-            if (!SessionHandler.isV4Login(this)) {
+            if (!userSession.isLoggedIn()) {
                 startActivity(RouteManager.getIntent(this, ApplinkConst.LOGIN));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
-            } else if (!SessionHandler.isUserHasShop(this)) {
+            } else if (!userSession.hasShop()) {
                 startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
@@ -623,12 +623,7 @@ public class ActivitySellingTransaction extends BaseActivity
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            Intent homeIntent = null;
-            if (GlobalConfig.isSellerApp()) {
-                homeIntent = SellerAppRouter.getSellerHomeActivity(this);
-            } else {
-                homeIntent = HomeRouter.getHomeActivity(this);
-            }
+            Intent homeIntent = ((com.tokopedia.core.TkpdCoreRouter) getApplication()).getHomeIntent(this);
             startActivity(homeIntent);
             finish();
         } else {

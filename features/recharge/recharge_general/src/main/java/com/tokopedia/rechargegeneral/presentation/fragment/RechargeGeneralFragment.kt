@@ -49,9 +49,11 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
+import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
@@ -86,13 +88,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var rechargeAnalytics: RechargeAnalytics
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
+    @Inject
+    lateinit var mapper: RechargeGeneralMapper
+
     private var saveInstanceManager: SaveInstanceCacheManager? = null
 
     lateinit var adapter: RechargeGeneralAdapter
 
     private lateinit var favoriteNumbers: List<TopupBillsFavNumberItem>
     private var inputData: HashMap<String, String> = hashMapOf()
-    private lateinit var inputDataKeys: List<String>
+    private var inputDataKeys = mutableListOf<String>()
 
     private var operatorId: Int = 0
     set(value) {
@@ -249,7 +254,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             operatorId = savedInstanceState.getInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             selectedProduct = savedInstanceState.getParcelable(EXTRA_PARAM_PRODUCT)
             inputData = (savedInstanceState.getSerializable(EXTRA_PARAM_INPUT_DATA) as? HashMap<String, String>) ?: inputData
-            inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)?.toList() ?: inputDataKeys
+            inputDataKeys = savedInstanceState.getStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS)?.toMutableList() ?: inputDataKeys
         }
 
         rv_digital_product.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -309,7 +314,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
         outState.putParcelable(EXTRA_PARAM_PRODUCT, selectedProduct)
         outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
-        if (::inputDataKeys.isInitialized) {
+        if (inputDataKeys.isNotEmpty()) {
             outState.putStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS, ArrayList(inputDataKeys))
         }
         enquiryData?.let { data ->
@@ -426,9 +431,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun setupInputAndProduct(productData: RechargeGeneralProductData) {
+    private fun setupInputAndProduct(productData: RechargeGeneralDynamicInput) {
         val dataList: MutableList<Visitable<RechargeGeneralAdapterFactory>> = mutableListOf()
+
         if (productData.enquiryFields.isNotEmpty()) {
+
             val enquiryFields = productData.enquiryFields.toMutableList()
             val enquiryInfo = productData.enquiryFields.find { it.style == INPUT_TYPE_ENQUIRY_INFO }
             if (enquiryInfo != null) {
@@ -436,41 +443,46 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 // Set enquiry button label
                 setEnquiryButtonLabel(enquiryInfo.text)
             }
-            if (productData.needEnquiry) {
-                // Set favorite number if available
-                val itr = enquiryFields.listIterator()
-                while (itr.hasNext()) {
-                    val item = itr.next()
-                    if (inputData.containsKey(item.name)) {
-                        item.value = inputData[item.name]!!
+
+            inputDataKeys.clear()
+            enquiryFields.map {
+                // processing product
+                if (it.name == RechargeGeneralViewModel.PARAM_PRODUCT) {
+                    // Show product field if there is > 1 product
+                    val rechargeGeneralProductItemData = mapper.mapInputToProductItemData(it)
+                    if (productData.isShowingProduct) {
+                        val productSelectData = it
+                        productSelectData?.apply {
+                            selectedProduct?.run { rechargeGeneralProductItemData.selectedProductId = id }
+                            dataList.add(rechargeGeneralProductItemData)
+                        }
+                    } else {
+                        val product = it.dataCollections.getOrNull(0)?.products?.getOrNull(0)
+                        product?.let { catalogProduct ->
+                            with(catalogProduct.attributes) {
+                                val slashedPrice = if (promo != null) price else ""
+                                selectedProduct = RechargeGeneralProductSelectData(
+                                        catalogProduct.id,
+                                        desc,
+                                        detailCompact,
+                                        promo?.newPrice ?: price,
+                                        slashedPrice,
+                                        isPromo = promo != null)
+                            }
+                        }
                     }
-                    itr.set(item)
-                }
-                dataList.addAll(enquiryFields)
-
-                inputDataKeys = enquiryFields.map { it.name }
-            }
-        }
-
-        // Show product field if there is > 1 product
-        if (productData.isShowingProduct) {
-            val productSelectData = productData.product
-            productSelectData?.apply {
-                selectedProduct?.run { selectedId = id }
-                dataList.add(this)
-            }
-        } else {
-            val product = productData.product?.dataCollections?.getOrNull(0)?.products?.getOrNull(0)
-            product?.let {
-                with (it.attributes) {
-                    val slashedPrice = if (promo != null) price else ""
-                    selectedProduct = RechargeGeneralProductSelectData(
-                            it.id,
-                            desc,
-                            detailCompact,
-                            promo?.newPrice ?: price,
-                            slashedPrice,
-                            isPromo = promo != null)
+                } else {
+                    //processing enquiry fields
+                    if (productData.needEnquiry) {
+                        val enquiryField = mapper.mapDynamicInputToProductData(it)
+                        if (inputData.containsKey(it.name)) {
+                            enquiryField.value = inputData[it.name]!!
+                        }
+                        dataList.add(enquiryField)
+                        inputDataKeys.add(it.name)
+                    } else {
+                        // do nothing
+                    }
                 }
             }
         }
@@ -795,7 +807,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun validateEnquiry(): Boolean {
         return operatorId > 0 && selectedProduct != null
-                && ::inputDataKeys.isInitialized
+                && inputDataKeys.isNotEmpty()
                 && inputData.keys.toList().sorted() == inputDataKeys.sorted()
     }
 

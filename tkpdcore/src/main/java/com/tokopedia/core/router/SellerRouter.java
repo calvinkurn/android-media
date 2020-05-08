@@ -11,10 +11,6 @@ import com.tokopedia.core.util.RouterUtils;
 @Deprecated
 public class SellerRouter {
 
-    public static Intent getActivitySplashScreenActivity(Context context) {
-        return RouterUtils.getRouterFromContext(context).getSplashScreenIntent(context);
-    }
-
     public static Class<?> getSellingActivityClass() {
         return RouterUtils.getDefaultRouter().getSellingActivityClass();
     }

@@ -37,10 +37,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
@@ -86,7 +83,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -241,8 +237,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
         return {
-            ToasterNormal.make(view, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
-                    opponentName), ToasterNormal.LENGTH_SHORT).show()
+            view?.let {
+                Toaster.make(it, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
+                        opponentName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            }
             getViewState().removeChatBlocked(it)
         }
     }
@@ -532,8 +530,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun showSnackbarError(stringResource: String) {
-        if (view != null) {
-            ToasterError.make(view, stringResource, BaseToaster.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, stringResource, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
@@ -637,6 +635,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
         return View.OnClickListener {
             analytics.eventClickSeeButtonOnAtcSuccessToaster()
+            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
         }
     }
 
