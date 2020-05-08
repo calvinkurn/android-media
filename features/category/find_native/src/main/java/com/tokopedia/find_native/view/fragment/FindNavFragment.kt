@@ -20,34 +20,33 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.adapter.ProductNavListAdapter
 import com.tokopedia.common_category.adapter.QuickFilterAdapter
 import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
-import com.tokopedia.common_category.model.bannedCategory.Data
-import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
+import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.find_native.R
 import com.tokopedia.find_native.analytics.FindPageAnalytics.Companion.findPageAnalytics
 import com.tokopedia.find_native.data.model.RelatedLinkData
+import com.tokopedia.find_native.di.component.DaggerFindNavComponent
 import com.tokopedia.find_native.di.component.FindNavComponent
 import com.tokopedia.find_native.view.adapters.FindPriceListAdapter
 import com.tokopedia.find_native.view.adapters.FindRelatedLinkAdapter
 import com.tokopedia.find_native.viewmodel.FindNavViewModel
-import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
-import com.tokopedia.find_native.di.component.DaggerFindNavComponent
-import com.tokopedia.find_native.R
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -613,12 +612,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         if (toShow) {
             layoutRelated.hide()
             btnLoadMore.hide()
-            /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
-            layoutNoData.run {
-                show()
-                findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_product_no_data_title)
-                findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_product_no_data_description)
-            }
+            layoutNoData.show()
         } else {
             layoutNoData.hide()
             layoutRelated.show()

@@ -227,9 +227,19 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                 loadUserBankAccountList()
                 activity?.setResult(Activity.RESULT_OK, Intent())
             }
+            is OnDeleteAccountRequestFailedWithMessage -> {
+                showErrorToasterWithOK(state.message)
+            }
             is OnDeleteAccountRequestFailed -> {
                 showError(state.throwable) { deleteBankAccount() }
             }
+        }
+    }
+
+    private fun showErrorToasterWithOK(message: String?) {
+        view?.let {
+            Toaster.make(it, message ?: "", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    getString(R.string.sbank_oke), View.OnClickListener { })
         }
     }
 

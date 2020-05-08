@@ -23,6 +23,7 @@ import com.tokopedia.common_category.factory.catalog.CatalogTypeFactory
 import com.tokopedia.common_category.factory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.category_levels.di.DaggerCategoryNavComponent
 import com.tokopedia.common_category.interfaces.CatalogCardListener
@@ -182,11 +183,10 @@ class CatalogNavFragment : BaseBannedProductFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            /*Since kotlin synthetic is unable to import layout files from other module that'swhy using findViewById<>() here for layout_nav_no_product*/
             layout_no_data.run {
                 show()
-                findViewById<Typography>(R.id.txt_no_data_header).text = resources.getText(R.string.category_nav_catalog_no_data_title)
-                findViewById<Typography>(R.id.txt_no_data_description).text = resources.getText(R.string.category_nav_catalog_no_data_description)
+                setHeaderText(R.string.category_nav_catalog_no_data_title)
+                setDescriptionText(R.string.category_nav_catalog_no_data_description)
             }
             txt_catalog_count.hide()
         } else {

@@ -117,7 +117,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     when {
                         ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
                         ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> {
-                            showFailedGetRoomErrorDialog((it as HotelErrorException).message)
+                            showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                         }
                         else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
