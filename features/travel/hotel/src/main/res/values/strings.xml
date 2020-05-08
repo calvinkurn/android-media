@@ -244,4 +244,6 @@
     <string name="hotel_cancellation_reason_page_title">Kenapa kamu ingin batalkan pesanan?</string>
     <string name="hotel_cancellation_page_1_subtitle">1 dari 2 Langkah</string>
     <string name="hotel_cancellation_page_2_subtitle">2 dari 2 Langkah</string>
+    <string name="hotel_cancellation_reason_submit">Ya, Batalkan</string>
+    <string name="hotel_cancellation_reason_dismiss">Kembali</string>
 </resources>

@@ -2,11 +2,7 @@ package com.tokopedia.hotel.cancellation.presentation.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
@@ -24,15 +19,16 @@ import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationRefundDetailWidget
+import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_refund_detail.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_summary.*
 import kotlinx.android.synthetic.main.widget_hotel_cancellation_policy.*
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -44,6 +40,8 @@ class HotelCancellationFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var cancellationViewModel: HotelCancellationViewModel
+
+    private val cancelInfoBottomSheet = BottomSheetUnify()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +95,8 @@ class HotelCancellationFragment : BaseDaggerFragment() {
             hotel_cancellation_room_name.text = it.room.firstOrNull()?.roomName ?: ""
             hotel_cancellation_room_guest_info.text = it.room.firstOrNull()?.roomContent ?: ""
 
-            val checkIn = it.checkInOut.firstOrNull()?: HotelCancellationModel.PropertyData.CheckInOut()
+            val checkIn = it.checkInOut.firstOrNull()
+                    ?: HotelCancellationModel.PropertyData.CheckInOut()
             val checkOut = if (it.checkInOut.size > 1) it.checkInOut[1] else HotelCancellationModel.PropertyData.CheckInOut()
             hotel_cancellation_room_duration_view.setViewLabel(checkIn.title, checkOut.title)
             hotel_cancellation_room_duration_view.setRoomDatesFormatted(checkIn.checkInOut.date, checkOut.checkInOut.date, it.stayLength)
@@ -115,6 +114,22 @@ class HotelCancellationFragment : BaseDaggerFragment() {
             hotel_cancellation_ticker_refund_info.isClickable = it.isClickable
             hotel_cancellation_ticker_refund_info.tickerShape = Ticker.SHAPE_LOOSE
             hotel_cancellation_ticker_refund_info.tickerType = Ticker.TYPE_ANNOUNCEMENT
+
+            if (it.isClickable) {
+                cancelInfoBottomSheet.setTitle(it.longDesc.title)
+                val typography = Typography(requireContext())
+                typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
+                typography.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                typography.setPadding(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
+                typography.fontType = Typography.BODY_3
+                typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                cancelInfoBottomSheet.setChild(typography)
+
+                hotel_cancellation_ticker_refund_info.setOnClickListener {
+                    fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
+                }
+            }
         }
 
         hotelCancellationModel.payment.let {
@@ -137,7 +152,8 @@ class HotelCancellationFragment : BaseDaggerFragment() {
                     hotel_cancellation_total_price_refund.addView(widget)
                 }
             }
-            val spannable = createHyperlinkText(it.footer.desc, it.footer.links)
+            val spannable = HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
+                    it.footer.desc, it.footer.links)
             hotel_cancellation_refund_additional_text.highlightColor = Color.TRANSPARENT
             hotel_cancellation_refund_additional_text.movementMethod = LinkMovementMethod.getInstance()
             hotel_cancellation_refund_additional_text.setText(spannable, TextView.BufferType.SPANNABLE)
@@ -145,52 +161,11 @@ class HotelCancellationFragment : BaseDaggerFragment() {
 
         hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
         hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
-        hotel_cancellation_page_footer.setText(createHyperlinkText(hotelCancellationModel.footer.desc,
-                hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
+        hotel_cancellation_page_footer.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
+                hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
 
         hotel_cancellation_button_next.setOnClickListener {
             (activity as HotelCancellationActivity).showCancellationReasonFragment()
         }
     }
-
-    /*
-     * PLEASE DON'T REVIEW FOR THIS FUNCTION YET
-     * func: createHyperlinkText()
-     */
-    private fun createHyperlinkText(htmlText: String = "", urls: List<String> = listOf()): SpannableString {
-
-        var htmlTextCopy = htmlText
-        val text = TextHtmlUtils.getTextFromHtml(htmlTextCopy)
-        val spannableString = SpannableString(text)
-
-        val matcherHyperlinkOpenTag: Matcher = Pattern.compile("<hyperlink>").matcher(htmlTextCopy)
-        htmlTextCopy = htmlTextCopy.replace("</hyperlink>", "<hhyperlink>")
-        val matcherHyperlinkCloseTag: Matcher = Pattern.compile("<hhyperlink>").matcher(htmlTextCopy)
-        val posOpenTags: MutableList<Int> = mutableListOf()
-        val posCloseTags: MutableList<Int> = mutableListOf()
-        while (matcherHyperlinkOpenTag.find()) {
-            posOpenTags.add(matcherHyperlinkOpenTag.start())
-        }
-        while (matcherHyperlinkCloseTag.find()) {
-            posCloseTags.add(matcherHyperlinkCloseTag.start())
-        }
-
-        for ((index, tag) in posOpenTags.withIndex()) {
-            spannableString.setSpan(object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    RouteManager.route(context, urls[index])
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Green_G500) // specific color for this link
-                }
-            }, tag - (index * ("<hyperlink></hyperlink>".length)),
-                    posCloseTags[index] - ((index * ("<hyperlink></hyperlink>".length)) + "<hyperlink>".length),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        return spannableString
-    }
-
 }

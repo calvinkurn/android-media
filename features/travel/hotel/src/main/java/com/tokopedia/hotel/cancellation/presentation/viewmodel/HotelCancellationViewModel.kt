@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.cancellation.presentation.viewmodel
 
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -31,7 +32,7 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         mutableCancellationData.postValue(Success(dummyData.data))
     }
 
-    fun submitCancellationData() {
+    fun submitCancellationData(cancelCartId: String, selectedId: String, freeText: String) {
 
     }
 }

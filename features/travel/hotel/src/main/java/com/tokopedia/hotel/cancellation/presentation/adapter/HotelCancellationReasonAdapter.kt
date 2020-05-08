@@ -25,6 +25,7 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
 
     var items: List<HotelCancellationModel.Reason> = listOf()
     var selectedId = ""
+    var freeText = ""
     var onClickItemListener: OnClickItemListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -68,7 +69,12 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
                 hotel_cancellation_reason_hotel_description.text = reason.title
 
                 hotel_cancellation_reason_radio_button.isChecked = reason.id == selectedId
-                if (!hotel_cancellation_reason_radio_button.isChecked) hotel_cancellation_reason_free_text_tf.hide()
+                if (!hotel_cancellation_reason_radio_button.isChecked)
+                    hotel_cancellation_reason_free_text_tf.hide()
+                itemView.setOnClickListener {
+                    if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
+                    listener?.onClick(reason.id, !reason.freeText)
+                }
                 hotel_cancellation_reason_radio_button.setOnClickListener {
                     if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
                     listener?.onClick(reason.id, !reason.freeText)
@@ -86,7 +92,7 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
                     override fun afterTextChanged(s: Editable?) {
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(300)
-                            if (s.toString().length > 10) listener?.onTypeFreeTextAndMoreThan10Words(true)
+                            if (s.toString().length > 10) listener?.onTypeFreeTextAndMoreThan10Words(true, s.toString())
                             else listener?.onTypeFreeTextAndMoreThan10Words(false)
                         }
                     }
@@ -102,7 +108,7 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
 
     interface OnClickItemListener{
         fun onClick(selectedId: String, valid: Boolean = true)
-        fun onTypeFreeTextAndMoreThan10Words(valid: Boolean)
+        fun onTypeFreeTextAndMoreThan10Words(valid: Boolean, content: String = "")
     }
 
     companion object {

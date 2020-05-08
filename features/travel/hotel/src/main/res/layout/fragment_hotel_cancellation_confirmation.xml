@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="@dimen/layout_lvl2">
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/hotel_cancellation_confirmation_iv"
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_confirmation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_2"
+        tools:text="Pesanan anda"
+        android:textColor="@color/Neutral_N700_96"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/layout_lvl1"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_confirmation_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="lalaklsdnjlsnfjlsdngjsfg"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        />
+
+   <LinearLayout
+       android:id="@+id/hotel_cancellation_confirmation_button_layout"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="@dimen/layout_lvl3"
+       android:orientation="vertical"
+       android:layout_marginStart="@dimen/layout_lvl5"
+       android:layout_marginLeft="@dimen/layout_lvl5"
+       android:layout_marginEnd="@dimen/layout_lvl5"
+       android:layout_marginRight="@dimen/layout_lvl5"/>
+
+</LinearLayout>

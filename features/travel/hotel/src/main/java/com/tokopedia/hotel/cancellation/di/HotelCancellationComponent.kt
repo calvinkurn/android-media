@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.cancellation.di
 
+import com.tokopedia.hotel.cancellation.presentation.fragment.HotelCancellationConfirmationFragment
 import com.tokopedia.hotel.cancellation.presentation.fragment.HotelCancellationFragment
 import com.tokopedia.hotel.cancellation.presentation.fragment.HotelCancellationReasonFragment
 import com.tokopedia.hotel.common.di.component.HotelComponent
@@ -16,4 +17,6 @@ interface HotelCancellationComponent {
     fun inject(hotelCancellationFragment: HotelCancellationFragment)
 
     fun inject(hotelCancellationReasonFragment: HotelCancellationReasonFragment)
+
+    fun inject(hotelCancellationConfirmationFragment: HotelCancellationConfirmationFragment)
 }

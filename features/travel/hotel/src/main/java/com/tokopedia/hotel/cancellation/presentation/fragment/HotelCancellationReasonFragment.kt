@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -21,12 +22,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TextHtmlUtils
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
+import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation_reason.*
@@ -38,7 +41,7 @@ import javax.inject.Inject
  * @author by jessica on 30/04/20
  */
 
-class HotelCancellationReasonFragment: BaseDaggerFragment() {
+class HotelCancellationReasonFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -62,7 +65,7 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         /*
          Data is still dummy data
          */
@@ -89,18 +92,21 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
 
         hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
         hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
-        hotel_cancellation_page_footer.setText(createHyperlinkText(hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
+        hotel_cancellation_page_footer.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
+                hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
 
         hotel_cancellation_reason_rv.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         hotel_cancellation_reason_rv.setHasFixedSize(true)
         hotel_cancellation_reason_rv.isNestedScrollingEnabled = false
         reasonAdapter = HotelCancellationReasonAdapter()
-        reasonAdapter.onClickItemListener = object: HotelCancellationReasonAdapter.OnClickItemListener {
+        reasonAdapter.onClickItemListener = object : HotelCancellationReasonAdapter.OnClickItemListener {
             override fun onClick(selectedId: String, valid: Boolean) {
                 hotel_cancellation_button_next.isEnabled = valid
                 reasonAdapter.onClickItem(selectedId)
             }
-            override fun onTypeFreeTextAndMoreThan10Words(valid: Boolean) {
+
+            override fun onTypeFreeTextAndMoreThan10Words(valid: Boolean, content: String) {
+                reasonAdapter.freeText = content
                 hotel_cancellation_button_next.isEnabled = valid
             }
         }
@@ -108,9 +114,22 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
         hotel_cancellation_reason_rv.adapter = reasonAdapter
 
         hotel_cancellation_button_next.setOnClickListener {
-            cancellationViewModel.submitCancellationData()
-            Toast.makeText(requireContext(), "Submit!", Toast.LENGTH_SHORT).show()
+            showConfirmationDialog(hotelCancellationModel.cancelCartId, hotelCancellationModel.confirmationButton)
         }
+    }
+
+    private fun showConfirmationDialog(cancelCartId: String, confirmationButton: HotelCancellationModel.ConfirmationButton) {
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(confirmationButton.title)
+        dialog.setDescription(confirmationButton.desc)
+        dialog.setSecondaryCTAText(getString(R.string.hotel_cancellation_reason_submit))
+        dialog.setPrimaryCTAText(getString(R.string.hotel_cancellation_reason_dismiss))
+        dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+        dialog.setSecondaryCTAClickListener {
+            Toast.makeText(requireContext(), "${reasonAdapter.selectedId} ${reasonAdapter.freeText}", Toast.LENGTH_SHORT).show()
+            cancellationViewModel.submitCancellationData(cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
+        }
+        dialog.show()
     }
 
     override fun getScreenName(): String = ""
@@ -121,44 +140,4 @@ class HotelCancellationReasonFragment: BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_cancellation_reason, container, false)
-
-    /*
-     * PLEASE DON'T REVIEW FOR THIS FUNCTION YET
-     * func: createHyperlinkText
-     */
-    private fun createHyperlinkText(htmlText: String = "", urls: List<String> = listOf()): SpannableString {
-
-        var htmlTextCopy = htmlText
-        val text = TextHtmlUtils.getTextFromHtml(htmlTextCopy)
-        val spannableString = SpannableString(text)
-
-        val matcherHyperlinkOpenTag: Matcher = Pattern.compile("<hyperlink>").matcher(htmlTextCopy)
-        htmlTextCopy = htmlTextCopy.replace("</hyperlink>", "<hhyperlink>")
-        val matcherHyperlinkCloseTag: Matcher = Pattern.compile("<hhyperlink>").matcher(htmlTextCopy)
-        val posOpenTags: MutableList<Int> = mutableListOf()
-        val posCloseTags: MutableList<Int> = mutableListOf()
-        while (matcherHyperlinkOpenTag.find()) {
-            posOpenTags.add(matcherHyperlinkOpenTag.start())
-        }
-        while (matcherHyperlinkCloseTag.find()) {
-            posCloseTags.add(matcherHyperlinkCloseTag.start())
-        }
-
-        for ((index, tag) in posOpenTags.withIndex()) {
-            spannableString.setSpan(object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    RouteManager.route(context, urls[index])
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Green_G500) // specific color for this link
-                }
-            }, tag - (index * ("<hyperlink></hyperlink>".length)),
-                    posCloseTags[index] - ((index * ("<hyperlink></hyperlink>".length)) + "<hyperlink>".length),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        return spannableString
-    }
 }
