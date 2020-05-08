@@ -28,6 +28,12 @@ import com.tokopedia.category_levels.R
 import com.tokopedia.category_levels.adapters.SelectedFilterAdapter
 import com.tokopedia.category_levels.adapters.SubCategoryAdapter
 import com.tokopedia.category_levels.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
+import com.tokopedia.category_levels.di.CategoryNavComponent
+import com.tokopedia.category_levels.di.DaggerCategoryNavComponent
+import com.tokopedia.category_levels.utils.CategoryApiParamBuilder.Companion.categoryApiParamBuilder
+import com.tokopedia.category_levels.view.interfaces.SelectedFilterListener
+import com.tokopedia.category_levels.view.interfaces.SubCategoryListener
+import com.tokopedia.category_levels.viewmodel.ProductNavViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.adapter.ProductNavListAdapter
 import com.tokopedia.common_category.adapter.QuickFilterAdapter
@@ -39,15 +45,6 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.bannedCategory.SubCategoryItem
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.common_category.model.bannedCategory.SubCategoryItem
-import com.tokopedia.category_levels.di.CategoryNavComponent
-import com.tokopedia.category_levels.di.DaggerCategoryNavComponent
-import com.tokopedia.category_levels.utils.CategoryApiParamBuilder.Companion.categoryApiParamBuilder
-import com.tokopedia.category_levels.view.interfaces.SelectedFilterListener
-import com.tokopedia.category_levels.view.interfaces.SubCategoryListener
-import com.tokopedia.category_levels.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -57,6 +54,7 @@ import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
@@ -68,12 +66,9 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.android.synthetic.main.fragment_product_nav.*
 import rx.Subscriber
 import javax.inject.Inject
-import com.tokopedia.common_category.fragment.BaseBannedProductFragment
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_product_nav.*
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103

@@ -30,7 +30,6 @@ import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData

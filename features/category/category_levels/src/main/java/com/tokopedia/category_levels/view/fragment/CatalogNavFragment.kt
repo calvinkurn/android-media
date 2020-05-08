@@ -16,27 +16,25 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.category_levels.R
+import com.tokopedia.category_levels.adapters.CatalogNavListAdapter
 import com.tokopedia.category_levels.analytics.CategoryPageAnalytics
 import com.tokopedia.category_levels.di.CategoryNavComponent
+import com.tokopedia.category_levels.di.DaggerCategoryNavComponent
 import com.tokopedia.category_levels.viewmodel.CatalogNavViewModel
-import com.tokopedia.common_category.factory.catalog.CatalogTypeFactory
-import com.tokopedia.common_category.factory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.factory.catalog.CatalogTypeFactory
+import com.tokopedia.common_category.factory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
-import com.tokopedia.common_category.model.filter.DAFilterQueryType
-import com.tokopedia.category_levels.di.DaggerCategoryNavComponent
 import com.tokopedia.common_category.interfaces.CatalogCardListener
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import javax.inject.Inject
-import com.tokopedia.common_category.fragment.BaseBannedProductFragment
-import com.tokopedia.category_levels.adapters.CatalogNavListAdapter
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_category_nav.*
+import javax.inject.Inject
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
