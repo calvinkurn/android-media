@@ -1,11 +1,11 @@
 package com.tokopedia.topads.dashboard.view.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.topads.R;
@@ -36,22 +36,10 @@ import java.util.List;
 public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter{
     List<ItemType> datas;
     AdapterSelectionListener<TopAdsProductViewModel> listener;
-    private ImageHandler imageHandler;
     private boolean isEmptyShown;
-
-    public TopAdsAddProductListAdapter(ImageHandler imageHandler,
-                                       AdapterSelectionListener<TopAdsProductViewModel> listener) {
-        this.imageHandler = imageHandler;
-        this.listener = listener;
-        datas = new ArrayList<>();
-    }
 
     public TopAdsAddProductListAdapter() {
         datas = new ArrayList<>();
-    }
-
-    public void setImageHandler(ImageHandler imageHandler) {
-        this.imageHandler = imageHandler;
     }
 
     public void setListener(AdapterSelectionListener<TopAdsProductViewModel> adapterSelectionListener) {
@@ -73,7 +61,7 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter{
                 return new TopAdsNonPromotedViewHolder(view, listener);
             case TopAdsAddProductModel.TYPE:
                 view = from.inflate(R.layout.item_top_ads_add_product_list, parent, false);
-                return new TopAdsAddProductListViewHolder(view, imageHandler, listener);
+                return new TopAdsAddProductListViewHolder(view, listener);
             case EmptyTypeBasedModel.TYPE:
                 view = from.inflate(R.layout.item_top_ads_empty_list, parent, false);
                 return new TopAdsEmptyRowViewHolder(view);

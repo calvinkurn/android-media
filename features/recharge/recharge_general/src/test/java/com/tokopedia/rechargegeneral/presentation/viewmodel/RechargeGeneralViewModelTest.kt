@@ -4,14 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.rechargegeneral.RechargeGeneralTestDispatchersProvider
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
-import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
+import com.tokopedia.rechargegeneral.model.*
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -45,7 +43,7 @@ class RechargeGeneralViewModelTest {
                 mapOf(MessageErrorException::class.java to listOf(GraphqlError())), false)
 
         rechargeGeneralViewModel =
-                RechargeGeneralViewModel(graphqlRepository, RechargeGeneralTestDispatchersProvider())
+                RechargeGeneralViewModel(RechargeGeneralMapper(), graphqlRepository, RechargeGeneralTestDispatchersProvider())
     }
 
     @Test
@@ -97,36 +95,37 @@ class RechargeGeneralViewModelTest {
 
     @Test
     fun getProductList_Success() {
-        val productData = RechargeGeneralProductData.Response(RechargeGeneralProductData(
-                product = RechargeGeneralProductItemData(
-                        dataCollections = listOf(CatalogProductData.DataCollection(
+        val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
+                enquiryFields = listOf(RechargeGeneralDynamicField(
+                        name = "product_id",
+                        dataCollections = listOf(RechargeGeneralDynamicField.DataCollection(
                                 products = listOf(CatalogProduct(id = "1"))
                         ))
-                )
+                ))
         ))
+
         val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeGeneralProductData.Response::class.java to productData),
+                mapOf(RechargeGeneralDynamicInput.Response::class.java to productData),
                 mapOf(), false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         rechargeGeneralViewModel.getProductList("", mapParams)
         val actualData = rechargeGeneralViewModel.productList.value
         assert(actualData is Success)
-        val product = (actualData as Success).data.product
+        val product = (actualData as Success).data.enquiryFields
         assertNotNull(product)
         product?.run {
-            assertEquals(product.dataCollections.first().products.first().id, "1")
-        }
+            assertEquals(actualData.data.enquiryFields[0].dataCollections[0].products[0].id, "1") }
     }
 
     // Field value in response is null
     @Test
     fun getProductList_Fail_NullResponse() {
-        val productData = RechargeGeneralProductData.Response(RechargeGeneralProductData(
-                product = null
+        val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
+                enquiryFields = listOf(RechargeGeneralDynamicField())
         ))
         val gqlResponseNull = GraphqlResponse(
-                mapOf(RechargeGeneralProductData.Response::class.java to productData),
+                mapOf(RechargeGeneralDynamicInput.Response::class.java to productData),
                 mapOf(), false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
 

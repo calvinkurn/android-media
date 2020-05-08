@@ -3,8 +3,8 @@ package com.tokopedia.discovery.categoryrevamp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.discovery.categoryrevamp.domain.repository.CategoryNavRepository
+import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.common_category.usecase.repository.CategoryNavRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

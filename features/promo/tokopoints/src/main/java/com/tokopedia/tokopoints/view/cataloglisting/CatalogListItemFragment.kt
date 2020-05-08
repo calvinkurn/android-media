@@ -42,6 +42,7 @@ import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.TokoPointsRemoteConfig.Companion.instance
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -111,7 +112,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let {
+      it?.let {
             stopNetworkRequestPerformanceMonitoring()
             startRenderPerformanceMonitoring()
             refreshCatalog(it)
@@ -496,7 +497,10 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
         hideLoader()
         if (itemCount == -1) {
-            showError()
+            try {
+                showError()
+            } catch (exception: Exception) {
+            }
         } else {
             if (mTimer == null) {
                 startUpdateCatalogStatusTimer()
@@ -508,7 +512,10 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {}
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
-            showError()
+            try {
+                showError()
+            } catch (exception: Exception) {
+            }
         }
     }
 
