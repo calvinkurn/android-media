@@ -37,7 +37,6 @@ class FooterViewHolder(
             val spannableString = SpannableString(text)
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(v: View) {
-                    println("click xx")
                     onCtaClick(element.bottomSheetTitle, element.bottomSheetContent)
                 }
 
