@@ -22,9 +22,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -40,10 +38,8 @@ import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chat_tab_list.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -88,7 +84,6 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         initData()
         initOnBoarding()
         initChatCounterObserver()
-        setupTicker()
     }
 
     override fun onStart() {
@@ -124,25 +119,6 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
                     }
                 }
         )
-    }
-
-    private fun setupTicker() {
-        topChatSellerMigrationTicker.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDismiss() {}
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    openSellerMigrationBottomSheet()
-                }
-            })
-        }
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        context?.let {
-            SellerMigrationChatBottomSheet.createNewInstance(it).show(this.childFragmentManager, "")
-        }
     }
 
     private fun bindView(view: View) {
@@ -321,16 +297,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
     private fun initViewPager() {
         viewPager?.adapter = fragmentAdapter
         viewPager?.offscreenPageLimit = tabList.size
-        viewPager?.addOnPageChangeListener(object: TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
-            override fun onPageSelected(position: Int) {
-                if(position == 0) {
-                    topChatSellerMigrationTicker?.show()
-                } else {
-                    topChatSellerMigrationTicker?.hide()
-                }
-                super.onPageSelected(position)
-            }
-        })
+        viewPager?.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
     }
 
     private fun initViewModel() {

@@ -9,13 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/topChatSellerMigrationTicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:tickerType="announcement" />
-
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/vp_chat_list"
         android:layout_width="match_parent"
