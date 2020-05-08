@@ -26,3 +26,56 @@ val generalResponse = """
       "parentId": 13829
     }
 """.trimIndent()
+
+val testResponse = arrayListOf(
+        """
+            {
+                "icon": "",
+                "sound": "",
+                "notificationId": "-1",
+                "source": "toko-cm",
+                "tribe": "111",
+                "notificationType": "General",
+                "userId": "8966870",
+                "shopId": "",
+                "transId": "MTU4ODU2OTYwNzI1NjM4OTIwMyMxMTEjMCM4OTY2ODcwI3RydWUjMTEx:3",
+                "userTransId": "MTU4ODU2OTYwNzI1NjM4OTIwMyMxMTEjMCM4OTY2ODcwI3RydWUjMTEx",
+                "notifcenterBlastId": "",
+                "channel": "",
+                "title": "Halo Toppers",
+                "desc": "Cek Tokopedia yuk ada banyak coupon buat kamu!",
+                "message": "Cek Tokopedia yuk ada banyak coupon buat kamu!",
+                "appLink": "tokopedia://home",
+                "collapsedImg": "",
+                "expandedImg": "",
+                "campaignUserToken": "MTU4ODU2OTYwNzI1NjM4OTIwMyMxMTEjMCM4OTY2ODcwI3RydWUjMTEx:3",
+                "campaignId": 111,
+                "parentId": 111
+            }     
+        """.trimIndent(),
+        """
+            {
+                "icon": "",
+                "sound": "",
+                "notificationId": "-1",
+                "source": "toko-cm",
+                "tribe": "111",
+                "notificationType": "General",
+                "userId": "8966870",
+                "shopId": "",
+                "transId": "MTU4ODU2OTYwNzI1NjM4OTIwMyMxMTEjMCM4OTY2ODcwI3RydWUjMTEx:3",
+                "userTransId": "MTU4ODU2OTYwNzI1NjM4OTIwMyMxMTEjMCM4OTY2ODcwI3RydWUjMTEx",
+                "notifcenterBlastId": "",
+                "channel": "",
+                "title": "Halo Toppers",
+                "desc": "Cek Tokopedia yuk ada banyak coupon buat kamu!",
+                "message": "Cek Tokopedia yuk ada banyak coupon buat kamu!",
+                "appLink": "tokopedia://home",
+                "collapsedImg": "",
+                "expandedImg": "",
+                "campaignUserToken": "MTU4ODU2OTYwNzI1NjM4OTIwMyMxMTEjMCM4OTY2ODcwI3RydWUjMTEx:3",
+                "campaignId": 111,
+                "parentId": 111
+            }  
+        """.trimIndent()
+)
