@@ -97,31 +97,31 @@
             tools:listitem="@layout/item_mvc_tips_trick" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnMvcTipsTrickFirstCta"
+            android:id="@+id/btnMvcTipsTrickDownload"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl3"
             android:gravity="center"
+            android:text="@string/mvc_download_voucher"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvMvcTipsTrick"
-            app:unifyButtonVariant="ghost"
-            tools:text="@string/mvc_download_voucher" />
+            app:unifyButtonVariant="ghost" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnMvcTipsTrickSecondCta"
+            android:id="@+id/btnMvcTipsTrickShare"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl3"
             android:gravity="center"
+            android:text="@string/mvc_share_voucher"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnMvcTipsTrickFirstCta"
-            app:layout_goneMarginTop="@dimen/layout_lvl2"
-            tools:text="@string/mvc_share_voucher" />
+            app:layout_constraintTop_toBottomOf="@+id/btnMvcTipsTrickDownload"
+            app:layout_goneMarginTop="@dimen/layout_lvl2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

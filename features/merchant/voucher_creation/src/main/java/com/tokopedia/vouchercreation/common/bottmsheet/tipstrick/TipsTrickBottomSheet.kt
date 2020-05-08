@@ -33,6 +33,9 @@ class TipsTrickBottomSheet(
     private val tipsTrickAdapter by lazy { TipsTrickAdapter() }
     private val carouselAdapter by lazy { TipsTrickCarouselAdapter() }
 
+    private var ctaDownloadCallback: () -> Unit = {}
+    private var ctaShareCallback: () -> Unit = {}
+
     init {
         val child = LayoutInflater.from(mContext)
                 .inflate(R.layout.bottomsheet_mvc_tips_trick, ConstraintLayout(mContext), false)
@@ -43,6 +46,13 @@ class TipsTrickBottomSheet(
         child.run {
             tvMvcCarouselInfo.text = getCarouselInfo().parseAsHtml()
             icMvcCarouselInfo.loadImageDrawable(getVoucherTypeIcon())
+
+            btnMvcTipsTrickDownload.setOnClickListener {
+                ctaDownloadCallback()
+            }
+            btnMvcTipsTrickShare.setOnClickListener {
+                ctaShareCallback()
+            }
         }
         setupTipsAndTrick(child)
         setupCarouselImage(child)
@@ -168,6 +178,16 @@ class TipsTrickBottomSheet(
                 )
         )
         tipsTrickAdapter.setItems(items)
+    }
+
+    fun setOnDownloadClickListener(action: () -> Unit): TipsTrickBottomSheet {
+        this.ctaDownloadCallback = action
+        return this
+    }
+
+    fun setOnShareClickListener(action: () -> Unit): TipsTrickBottomSheet {
+        this.ctaShareCallback = action
+        return this
     }
 
     fun show(fm: FragmentManager) {

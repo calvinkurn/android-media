@@ -78,11 +78,25 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     override fun showTipsAndTrickBottomSheet() {
         if (!isAdded) return
         TipsTrickBottomSheet(context ?: return, true)
+                .setOnDownloadClickListener {
+                    showDownloadBottomSheet()
+                }
+                .setOnShareClickListener {
+                    showShareBottomSheet()
+                }
                 .show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
         setupActionBar()
+    }
+
+    private fun showDownloadBottomSheet() {
+
+    }
+
+    private fun showShareBottomSheet() {
+
     }
 
     private fun setupActionBar() = view?.run {
