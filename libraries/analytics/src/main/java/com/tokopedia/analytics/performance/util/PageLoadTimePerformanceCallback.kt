@@ -34,7 +34,6 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun startMonitoring(traceName: String) {
-        beginSystraceSection("PageLoadTime.overallPLT$traceName")
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
@@ -46,7 +45,6 @@ open class PageLoadTimePerformanceCallback(
         if (!isRenderDone) renderDuration = 0
         if (!isNetworkDone) requestNetworkDuration = 0
 
-        endSystraceSection()
         performanceMonitoring?.stopTrace()
         overallDuration = System.currentTimeMillis() - overallDuration
     }
