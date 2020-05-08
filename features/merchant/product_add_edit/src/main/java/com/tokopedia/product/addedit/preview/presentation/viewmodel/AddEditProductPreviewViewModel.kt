@@ -218,7 +218,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         getProduct(productId)
     }
 
-    private fun getProduct(productId: String) {
+    fun getProduct(productId: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
