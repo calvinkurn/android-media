@@ -24,6 +24,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
@@ -174,6 +175,7 @@ class ShopPageFragment :
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
+
 
     override fun onDestroy() {
         shopViewModel.shopInfoResp.removeObservers(this)
@@ -499,8 +501,12 @@ class ShopPageFragment :
 
     private fun redirectToShopSettingsPage() {
         context?.let { context ->
-            shopId?.let { shopId ->
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                shopId?.let { shopId ->
+                    startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                }
             }
         }
     }
@@ -552,9 +558,11 @@ class ShopPageFragment :
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
+
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
+
     }
 
     fun onBackPressed() {
@@ -680,7 +688,7 @@ class ShopPageFragment :
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
-            errorButton.setOnClickListener { getShopInfo() }
+            errorButton.setOnClickListener { getShopInfo(true) }
             swipeToRefresh.isRefreshing = false
         }
     }

@@ -16,11 +16,13 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
+import android.webkit.WebHistoryItem;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -180,6 +182,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
@@ -321,6 +324,35 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             checkLocationPermission(callback, origin);
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPermissionRequest(PermissionRequest request) {
+            for (String resource:
+                    request.getResources()) {
+                if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                    permissionCheckerHelper.checkPermission(BaseWebViewFragment.this, PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            request.deny();
+                        }
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            request.deny();
+                        }
+                        @Override
+                        public void onPermissionGranted() {
+                            request.grant(request.getResources());
+                        }
+                    }, getString(R.string.need_permission_camera));
+                }
+            }
+        }
+        @Override
+        public void onPermissionRequestCanceled(PermissionRequest request) {
+            super.onPermissionRequestCanceled(request);
         }
 
         @Override
@@ -487,21 +519,27 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'",failingUrl, errorCode, description);
+            String webUrl = view.getUrl();
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
+                    failingUrl, errorCode, description, webUrl);
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request.getUrl(), error.getErrorCode(), error.getDescription());
+            String webUrl = view.getUrl();
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
+                    request.getUrl(), error.getErrorCode(), error.getDescription(), webUrl);
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         @Override
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
-            Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s'", request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase());
+            String webUrl = view.getUrl();
+            Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s';web_url='%s'",
+                    request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase(), webUrl);
         }
     }
 
@@ -516,9 +554,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         Uri uri = Uri.parse(url);
         if (goToLoginGoogle(uri)) return true;
-        String queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
-        String headerText = uri.getQueryParameter(CUST_HEADER);
+        String queryParam = null;
+        String headerText = null;
 
+        try {
+            if(uri.isHierarchical()) {
+                queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+                headerText = uri.getQueryParameter(CUST_HEADER);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
@@ -590,8 +636,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void logApplinkErrorOpen(String url) {
-        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'",
-                BaseWebViewFragment.this.getClass().getSimpleName(), url);
+        String referrer = getPreviousUri();
+        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s'",
+                getClass().getSimpleName(), referrer, url);
     }
 
     private void checkActivityFinish() {
@@ -624,6 +671,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    private String getPreviousUri() {
+        if (webView == null) {
+            return "";
+        }
+        WebBackForwardList webBackForwardList = webView.copyBackForwardList();
+        if (webBackForwardList == null || webBackForwardList.getCurrentIndex() <= 0) {
+            return "";
+        }
+        WebHistoryItem webHistoryItem = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1);
+        if (webHistoryItem == null) {
+            return "";
+        }
+        return webHistoryItem.getUrl();
     }
 
     public TkpdWebView getWebView() {

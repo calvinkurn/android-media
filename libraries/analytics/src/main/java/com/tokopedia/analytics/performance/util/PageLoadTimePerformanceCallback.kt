@@ -21,7 +21,8 @@ open class PageLoadTimePerformanceCallback(
                 startPageDuration = preparePageDuration,
                 networkRequestDuration = requestNetworkDuration,
                 renderPageDuration = renderDuration,
-                overallDuration = overallDuration
+                overallDuration = overallDuration,
+                isSuccess = (isNetworkDone && isRenderDone)
         )
     }
 
@@ -30,11 +31,15 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun startMonitoring(traceName: String) {
+        performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
     }
 
     override fun stopMonitoring() {
+        if (!isNetworkDone) requestNetworkDuration = 0
+        if (!isRenderDone) renderDuration = 0
+
         performanceMonitoring?.stopTrace()
         overallDuration = System.currentTimeMillis() - overallDuration
         if (!isNetworkDone) requestNetworkDuration = 0
@@ -45,7 +50,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun stopPreparePagePerformanceMonitoring() {
-        if (!isPrepareDone) {
+        if (!isPrepareDone && preparePageDuration != 0L) {
             preparePageDuration = System.currentTimeMillis() - preparePageDuration
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
@@ -57,7 +62,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun stopNetworkRequestPerformanceMonitoring() {
-        if (!isNetworkDone) {
+        if (!isNetworkDone && requestNetworkDuration != 0L) {
             requestNetworkDuration = System.currentTimeMillis() - requestNetworkDuration
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
@@ -69,7 +74,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun stopRenderPerformanceMonitoring() {
-        if (!isRenderDone) {
+        if (!isRenderDone && renderDuration != 0L) {
             renderDuration = System.currentTimeMillis() - renderDuration
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true

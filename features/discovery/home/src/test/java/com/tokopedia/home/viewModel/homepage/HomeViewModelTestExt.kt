@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
@@ -8,7 +9,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeoutException
 @ExperimentalCoroutinesApi
 fun TestBody.createHomeViewModel(): HomeViewModel{
     val dismissHomeReviewUseCase by memoized<DismissHomeReviewUseCase>()
+    val getAtcUseCase by memoized<AddToCartOccUseCase>()
     val getBusinessUnitDataUseCase by memoized<GetBusinessUnitDataUseCase>()
     val getBusinessWidgetTab by memoized<GetBusinessWidgetTab>()
     val getCoroutinePendingCashbackUseCase by memoized<GetCoroutinePendingCashbackUseCase>()
@@ -40,6 +42,7 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val getStickyLoginUseCase by memoized<StickyLoginUseCase>()
     val userSessionInterface by memoized<UserSessionInterface>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
+    val closeChannelUseCase by memoized<CloseChannelUseCase>()
     return HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
@@ -58,13 +61,16 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             sendTopAdsUseCase = sendTopAdsUseCase,
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             stickyLoginUseCase = getStickyLoginUseCase,
-            userSession = userSessionInterface
+            getAtcUseCase = getAtcUseCase,
+            userSession = userSessionInterface,
+            closeChannelUseCase = closeChannelUseCase
     )
 }
 
 fun FeatureBody.createHomeViewModelTestInstance() {
     val userSessionInterface by memoized<UserSessionInterface> { mockk(relaxed = true) }
     val dismissHomeReviewUseCase by memoized<DismissHomeReviewUseCase> { mockk(relaxed = true) }
+    val getAtcUseCase by memoized<AddToCartOccUseCase>{ mockk(relaxed = true) }
     val getHomeReviewSuggestedUseCase by memoized<GetHomeReviewSuggestedUseCase> { mockk(relaxed = true) }
     val getKeywordSearchUseCase by memoized<GetKeywordSearchUseCase> { mockk(relaxed = true) }
     val getRecommendationTabUseCase by memoized<GetRecommendationTabUseCase> { mockk(relaxed = true) }
@@ -80,6 +86,7 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val getPopularKeywordUseCase by memoized<GetPopularKeywordUseCase> { mockk(relaxed = true) }
     val getDynamicChannelsUseCase by memoized<GetDynamicChannelsUseCase> { mockk(relaxed = true) }
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase> { mockk(relaxed = true) }
+    val closeChannelUseCase by memoized<CloseChannelUseCase> { mockk(relaxed = true) }
     val homeDataMapper by memoized<HomeDataMapper> { mockk(relaxed = true) }
 }
 
@@ -94,8 +101,8 @@ fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: Home
     coEvery { executeOnBackground() } returns homeWidget
 }
 
-fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(dynamicChannelViewModels: List<DynamicChannelViewModel>) {
-    coEvery { executeOnBackground() } returns dynamicChannelViewModels
+fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(dynamicChannelDataModels: List<DynamicChannelDataModel>) {
+    coEvery { executeOnBackground() } returns dynamicChannelDataModels
 }
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()

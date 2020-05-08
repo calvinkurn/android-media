@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -41,13 +42,14 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -71,6 +73,9 @@ class HotelBookingFragment : HotelBaseFragment() {
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
+
     lateinit var hotelCart: HotelCart
     var hotelBookingPageModel = HotelBookingPageModel()
     var promoCode = ""
@@ -87,6 +92,8 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_CHECKOUT)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -115,7 +122,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                     showErrorState(it.throwable)
                 }
             }
+            stopTrace()
         })
+
+        bookingViewModel.tokopointSumCouponResult.observe(this, androidx.lifecycle.Observer { renderSumCoupon(it) })
 
         bookingViewModel.hotelCheckoutResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
@@ -174,6 +184,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
         bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        bookingViewModel.getTokopointsSumCoupon(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_tokopoints_sum_coupon))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -450,6 +461,10 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
+    private fun renderSumCoupon(couponSum: String) {
+        booking_pay_now_promo_ticker.counterCoupons = couponSum
+    }
+
     private fun setupPayNowPromoTicker(cart: HotelCart) {
         if (cart.property.rooms.isNotEmpty() && cart.property.isDirectPayment) {
             booking_pay_now_promo_container.visibility = View.VISIBLE
@@ -493,7 +508,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                             intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
                             intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                             intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, true)
-                            requestCode = REQUST_CODE_PROMO_LIST
+                            requestCode = REQUEST_CODE_PROMO_LIST
                         }
                         intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
                         startActivityForResult(intent, requestCode)
@@ -652,6 +667,13 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources,
             com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
+
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring?.stopTrace()
+            isTraceStop = true
+        }
+    }
 
     companion object {
         const val ARG_CART_ID = "arg_cart_id"

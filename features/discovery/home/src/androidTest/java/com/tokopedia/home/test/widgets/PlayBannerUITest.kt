@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
@@ -29,18 +30,16 @@ import com.tokopedia.home.test.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers.not
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class PlayBannerUITest {
+class PlayBannerUITest{
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -66,6 +65,10 @@ class PlayBannerUITest {
     private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
     private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
+    private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
+    private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
+    private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -78,10 +81,10 @@ class PlayBannerUITest {
         
     }
     
-    @Before
-    fun setup(){
-        every { userSessionInterface.isLoggedIn } returns false
-    }
+//    @Before
+//    fun setup(){
+//        every { userSessionInterface.isLoggedIn } returns false
+//    }
 
     @Test
     fun test_when_no_data_skeleton_from_home_api_and_expect_the_widget_not_show(){
@@ -355,6 +358,10 @@ class PlayBannerUITest {
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
-            sendTopAdsUseCase = sendTopAdsUseCase
+            getAtcUseCase = getAtcUseCase,
+            sendTopAdsUseCase = sendTopAdsUseCase,
+            closeChannelUseCase = closeChannelUseCase,
+            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
     )
 }

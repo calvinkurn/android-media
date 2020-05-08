@@ -52,6 +52,7 @@ public class RemoteConfigKey {
     public static final String IMAGE_HOST = "image_host";
 
     public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
+    public static final String ENABLE_TRACKING_VIEW_PORT = "android_customer_enable_search_tracking_view_port";
 
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
@@ -183,6 +184,8 @@ public class RemoteConfigKey {
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+
+    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_seller_app_enable_old_product_manage";
 
 
 

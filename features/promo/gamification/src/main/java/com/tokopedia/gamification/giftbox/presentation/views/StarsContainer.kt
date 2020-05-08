@@ -41,7 +41,7 @@ class StarsContainer : FrameLayout {
     }
 
     fun init(attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(R.layout.view_stars_container, this, true)
+        LayoutInflater.from(context).inflate(com.tokopedia.gamification.R.layout.view_stars_container, this, true)
 
         imageStar1 = findViewById(R.id.image_star1)
         imageStar2 = findViewById(R.id.image_star2)
@@ -51,7 +51,7 @@ class StarsContainer : FrameLayout {
         images = arrayOf(imageStar1, imageStar2, imageStar3, imageStar4)
         setupAlphaStars()
 
-        var deviceIsTablet = context?.resources?.getBoolean(R.bool.gami_is_tablet)
+        var deviceIsTablet = context?.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet)
         deviceIsTablet?.let {
             isTablet = it
         }

@@ -6,11 +6,11 @@ import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.product.MultipleProductCardFactory
 
 class MultipleProductCardViewBean(
-        var templateKey: String = "",
-        var notificationId: String = "",
-        var userInfo: UserInfo = UserInfo(),
+        override var templateKey: String = "",
+        override var notificationId: String = "",
+        override var userInfo: UserInfo = UserInfo(),
         var product: ProductData = ProductData()
-): Visitable<MultipleProductCardFactory> {
+): BaseNotificationItemViewBean(), Visitable<MultipleProductCardFactory> {
 
     override fun type(typeFactory: MultipleProductCardFactory): Int {
         return typeFactory.type(this)

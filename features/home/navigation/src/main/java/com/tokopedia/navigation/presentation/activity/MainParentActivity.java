@@ -57,7 +57,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
@@ -86,8 +85,8 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -123,7 +122,7 @@ public class MainParentActivity extends BaseActivity implements
         RefreshNotificationListener,
         MainParentStatusBarListener,
         HomePerformanceMonitoringListener,
-        JankyFramesMonitoringListener {
+        OfficialStorePerformanceMonitoringListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -152,9 +151,14 @@ public class MainParentActivity extends BaseActivity implements
     private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
 
-    private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "Data source";
+    private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource";
     private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
     private static final String HOME_PERFORMANCE_MONITORING_NETWORK_VALUE= "Network";
+
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store";
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS = "official_store_plt_start_page_metrics";
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS = "official_store_plt_network_request_page_metrics";
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS = "official_store_plt_render_page_metrics";
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
     private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
@@ -184,9 +188,12 @@ public class MainParentActivity extends BaseActivity implements
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
+    private PerformanceMonitoring officialStorePerformanceMonitoring;
+
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
+    private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -194,7 +201,6 @@ public class MainParentActivity extends BaseActivity implements
     private float OS_STATE_SELECTED = 1f;
     private float OS_STATE_UNSELECTED = 0f;
     private float OS_STATE_ANIMATED = 0.7f;
-    private JankyFrameMonitoringUtil jankyFrameMonitoringUtil;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -258,9 +264,8 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        startHomePerformanceMonitoring();
+        startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        startJankyFrameMonitoringUtil();
 
         super.onCreate(savedInstanceState);
         initInjector();
@@ -283,7 +288,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void installDFonBackground() {
         List<String> moduleNameList = new ArrayList<>();
-        moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
         if (userSession.isLoggedIn()) {
             moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
@@ -291,17 +295,8 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
+        moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
-    }
-
-    private void startJankyFrameMonitoringUtil() {
-        jankyFrameMonitoringUtil = new JankyFrameMonitoringUtil();
-        jankyFrameMonitoringUtil.init(this, new JankyFrameMonitoringUtil.OnFrameListener() {
-            @Override
-            public void onFrameRendered(@NotNull com.tokopedia.analytics.performance.util.FpiPerformanceData fpiPerformanceData) {
-
-            }
-        });
     }
 
     @NotNull
@@ -430,6 +425,20 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
+        }
+    }
+
+    private void startSelectedPagePerformanceMonitoring(){
+        int tabPosition = HOME_MENU;
+        if (getIntent().getExtras() != null) {
+            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+        }
+        switch (tabPosition){
+            case HOME_MENU:
+                startHomePerformanceMonitoring();
+                break;
+            case OS_MENU:
+                startOfficialStorePerformanceMonitoring();
         }
     }
 
@@ -594,19 +603,24 @@ public class MainParentActivity extends BaseActivity implements
 
             Fragment currentFrag = manager.findFragmentByTag(backStateName);
             if (currentFrag != null && manager.getFragments().size() > 0) {
-                for (int i = 0; i < manager.getFragments().size(); i++) {
-                    Fragment frag = manager.getFragments().get(i);
-                    if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                        ft.show(frag); // only show fragment what you want to show
-                    } else {
-                        ft.hide(frag); // hide all fragment
-                    }
-                }
+                showSelectedFragment(fragment, manager, ft);
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
+                showSelectedFragment(fragment, manager, ft);
             }
             ft.commitNowAllowingStateLoss();
         });
+    }
+
+    private void showSelectedFragment(Fragment fragment, FragmentManager manager, FragmentTransaction ft) {
+        for (int i = 0; i < manager.getFragments().size(); i++) {
+            Fragment frag = manager.getFragments().get(i);
+            if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                ft.show(frag); // only show fragment what you want to show
+            } else {
+                ft.hide(frag); // hide all fragment
+            }
+        }
     }
 
     private void configureStatusBarBasedOnFragment(Fragment fragment) {
@@ -1203,8 +1217,8 @@ public class MainParentActivity extends BaseActivity implements
                         HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                         HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
-            getPageLoadTimePerformanceInterface().stopMonitoring();
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
+            getPageLoadTimePerformanceInterface().stopMonitoring();
             pageLoadTimePerformanceCallback = null;
         }
     }
@@ -1237,7 +1251,34 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public JankyFrameMonitoringUtil getMainJankyFrameMonitoringUtil() {
-        return jankyFrameMonitoringUtil;
+    public void stopOfficialStorePerformanceMonitoring() {
+        if(getOfficialStorePageLoadTimePerformanceInterface() != null){
+            getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
+            getOfficialStorePageLoadTimePerformanceInterface().stopMonitoring();
+            officialStorePageLoadTimePerformanceCallback = null;
+        }
+    }
+
+    @Override
+    public void startOfficialStorePerformanceMonitoring() {
+        if(officialStorePageLoadTimePerformanceCallback == null) {
+            officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
+                    OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
+                    OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
+                    OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null
+            );
+            getOfficialStorePageLoadTimePerformanceInterface().startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
+            getOfficialStorePageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public PageLoadTimePerformanceInterface getOfficialStorePageLoadTimePerformanceInterface() {
+        return officialStorePageLoadTimePerformanceCallback;
     }
 }

@@ -20,6 +20,7 @@ import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCa
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndValidateUseData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceClickData
@@ -74,7 +75,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private var cartListData: CartListData? = null
     private var hasPerformChecklistChange: Boolean = false
     private var insuranceChecked = true
+    // Store last validate use response from promo page
     var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
+    // Store last validate use response from cart page
+    var lastUpdateCartAndValidateUseResponse: UpdateAndValidateUseData? = null
     var isLastApplyResponseStillValid = true
 
     companion object {
@@ -223,18 +227,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processDeleteCartItem(allCartItemData: List<CartItemData>,
                                        removedCartItems: List<CartItemData>,
-                                       appliedPromoCodeList: ArrayList<String>?,
                                        addWishList: Boolean,
                                        removeInsurance: Boolean) {
         view?.let {
             it.showProgressLoading()
 
             val removeAllItem = allCartItemData.size == removedCartItems.size
-
-            var tmpAppliedPromoCodeList = appliedPromoCodeList
-            if (tmpAppliedPromoCodeList == null) {
-                tmpAppliedPromoCodeList = ArrayList()
-            }
 
             val toBeDeletedCartIds = ArrayList<String>()
             for (cartItemData in removedCartItems) {
@@ -247,7 +245,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             val requestParams = RequestParams.create()
             requestParams.putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, removeCartRequest)
-            requestParams.putObject(DeleteCartUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
 
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
@@ -1033,21 +1030,37 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         var productId = 0
         var shopId = 0
+        var productName = ""
+        var productCategory = ""
+        var productPrice = ""
         var externalSource = ""
+        var clickUrl = ""
         if (productModel is CartWishlistItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
+            productName = productModel.name
+            productCategory = productModel.category
+            productPrice = productModel.price
             externalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
         } else if (productModel is CartRecentViewItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
+            productName = productModel.name
+            productPrice = productModel.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
         } else if (productModel is CartRecommendationItemHolderData) {
             val (recommendationItem) = productModel
             productId = recommendationItem.productId
             shopId = recommendationItem.shopId
+            productName = recommendationItem.name
+            productCategory = recommendationItem.categoryBreadcrumbs
+            productPrice = recommendationItem.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
+            clickUrl = recommendationItem.clickUrl
         }
+
+        if(!clickUrl.isEmpty())
+            view?.sendATCTrackingURL(clickUrl)
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
             this.productId = productId.toLong()
@@ -1056,6 +1069,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             this.notes = ""
             this.warehouseId = 0
             this.atcFromExternalSource = externalSource
+            this.productName = productName
+            this.category = productCategory
+            this.price = productPrice
         }
 
         val requestParams = RequestParams.create()
@@ -1151,7 +1167,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(
                     updateCartAndValidateUseUseCase.createObservable(requestParams)
-                            .subscribe(UpdateCartAndValidateUseSubscriber(cartListView))
+                            .subscribe(UpdateCartAndValidateUseSubscriber(cartListView, this))
             )
         }
     }
@@ -1171,6 +1187,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?) {
         lastValidateUseResponse = response
+    }
+
+    override fun getUpdateCartAndValidateUseLastResponse(): UpdateAndValidateUseData? {
+        return lastUpdateCartAndValidateUseResponse
+    }
+
+    override fun setUpdateCartAndValidateUseLastResponse(response: UpdateAndValidateUseData?) {
+        lastUpdateCartAndValidateUseResponse = response
     }
 
     override fun isLastApplyValid(): Boolean {

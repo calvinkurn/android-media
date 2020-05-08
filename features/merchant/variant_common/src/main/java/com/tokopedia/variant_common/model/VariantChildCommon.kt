@@ -59,10 +59,18 @@ data class VariantChildCommon(
 
         @SerializedName("upcomingCampaignInfo")
         @Expose
-        val upcoming: VariantUpcoming? = null
+        val upcoming: VariantUpcoming? = null,
+
+        @SerializedName("warehouseInfo")
+        @Expose
+        val warehouseInfo: WarehouseInfoVariant? = null
 ) {
+    fun getVariantFinalStock() :Int {
+        return if(campaign?.isActive == true) campaign?.stock ?: 0 else stock?.stock ?: 0
+    }
+
     val isBuyable: Boolean
-        get() = stock?.isBuyable ?: false
+        get() = getVariantFinalStock() > 0 && stock?.isBuyable ?: false
 
     val isFlashSale: Boolean
         get() = campaign?.isActive == true

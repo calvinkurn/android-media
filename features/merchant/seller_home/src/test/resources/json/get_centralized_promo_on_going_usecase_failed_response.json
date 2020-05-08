@@ -1,0 +1,18 @@
+{
+  "data":{
+    "MerchantPromotionGetPromotionList":{
+      "header":{
+        "process_time":333756056,
+        "message":[
+          "Terjadi Kesalahan Pada Server"
+        ],
+        "reason":"",
+        "error_code":""
+      },
+      "data":{
+        "title":"Track your promotion",
+        "list":[]
+      }
+    }
+  }
+}

@@ -35,6 +35,7 @@ import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -223,6 +224,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void stopLoadingFavoriteShop() {
         favoriteAdapter.hideLoading();
+        updateEndlessRecyclerViewListener();
     }
 
     @Override
@@ -248,6 +250,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(elementList);
+        updateEndlessRecyclerViewListener();
     }
 
     @Override
@@ -256,6 +259,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
+        updateEndlessRecyclerViewListener();
         Map<String, Object> value = DataLayer.mapOf(
                 LOGIN_STATUS, userSession.isLoggedIn(),
                 IS_FAVORITE_EMPTY, dataFavorite.size() == 0
@@ -267,6 +271,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void showMoreDataFavoriteShop(List<Visitable> elementList) {
         favoriteAdapter.hideLoading();
         favoriteAdapter.addMoreData(elementList);
+        updateEndlessRecyclerViewListener();
     }
 
 
@@ -290,14 +295,11 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void showErrorLoadMore() {
         NetworkErrorHelper.createSnackbarWithAction(
                 getActivity(),
-                new NetworkErrorHelper.RetryClickedListener() {
-
-                    @Override
-                    public void onRetryClicked() {
-                        favoriteAdapter.hideLoading();
-                        favoritePresenter.loadMoreFavoriteShop();
-                    }
+                () -> {
+                    favoritePresenter.loadMoreFavoriteShop();
                 }).showRetrySnackbar();
+        favoriteAdapter.hideLoading();
+        updateEndlessRecyclerViewListener();
     }
 
     @Override
@@ -308,13 +310,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         } else {
             NetworkErrorHelper.showEmptyState(getContext(),
                     mainContent,
-                    new NetworkErrorHelper.RetryClickedListener() {
-
-                        @Override
-                        public void onRetryClicked() {
-                            favoritePresenter.refreshAllDataFavoritePage();
-                        }
-                    });
+                    () -> favoritePresenter.refreshAllDataFavoritePage());
         }
     }
 
@@ -353,6 +349,11 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void addFavoriteShop(FavoriteShopViewModel shopViewModel) {
         int favoriteShopPosition = 2;
         favoriteAdapter.addElement(favoriteShopPosition, shopViewModel);
+    }
+
+    @Override
+    public void sendFavoriteShopImpression(String clickUrl) {
+        new ImpresionTask(userSession).execute(clickUrl);
     }
 
     @Override
@@ -417,5 +418,10 @@ public class FragmentFavorite extends BaseDaggerFragment
             );
             isUserEventTrackerDoneTrack = true;
         }
+    }
+
+    private void updateEndlessRecyclerViewListener() {
+        recylerviewScrollListener.updateStateAfterGetData();
+        recylerviewScrollListener.setHasNextPage(favoritePresenter.hasNextPage());
     }
 }

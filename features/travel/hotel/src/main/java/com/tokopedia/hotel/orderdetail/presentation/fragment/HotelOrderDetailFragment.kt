@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
@@ -35,6 +36,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_ORDER_DETAIL
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
@@ -76,6 +78,11 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
+    private var isCrossSellingLoaded = false
+    private var isOrderDetailLoaded = false
+
     @Inject
     lateinit var trackingCrossSellUtil: TrackingCrossSellUtil
 
@@ -90,6 +97,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_ORDER_DETAIL)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -125,13 +134,18 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     loadingState.visibility = View.GONE
                 }
             }
+            isOrderDetailLoaded = true
+            stopTrace()
         })
 
         orderDetailViewModel.crossSellData.observe(this, Observer {
             when (it) {
                 is Success -> renderCrossSelling(it.data)
-                is Fail -> { }
+                is Fail -> {
+                }
             }
+            isCrossSellingLoaded = true
+            stopTrace()
         })
     }
 
@@ -246,7 +260,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             trackingCrossSellUtil.crossSellImpression(crossSelling.items)
             cross_sell_widget.show()
             cross_sell_widget.buildView(crossSelling)
-            cross_sell_widget.setListener(object: TravelCrossSellAdapter.OnItemClickListener{
+            cross_sell_widget.setListener(object : TravelCrossSellAdapter.OnItemClickListener {
                 override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
                     trackingCrossSellUtil.crossSellClick(item, position)
                     RouteManager.route(context, item.uri)
@@ -366,7 +380,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-        if (orderDetail.contactUs.helpText.isNotBlank()){
+        if (orderDetail.contactUs.helpText.isNotBlank()) {
             val helpLabel = TextViewCompat(context)
             helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
             helpLabel.setTextColor(resources.getColor(com.tokopedia.design.R.color.light_primary))
@@ -436,7 +450,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 override fun onClick(p0: View) {
                     onImportantNotesClicked(content)
                 }
-            }, text.indexOf("<font"), text.length-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }, text.indexOf("<font"), text.length - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return spannableString
     }
@@ -472,6 +486,15 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_KEY_ORDER_ID, orderId)
         outState.putString(SAVED_KEY_ORDER_CATEGORY, orderCategory)
+    }
+
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            if (isOrderDetailLoaded && isCrossSellingLoaded) {
+                performanceMonitoring?.stopTrace()
+                isTraceStop = true
+            }
+        }
     }
 
     companion object {
