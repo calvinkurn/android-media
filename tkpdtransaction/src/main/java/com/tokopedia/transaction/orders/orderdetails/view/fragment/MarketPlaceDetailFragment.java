@@ -330,11 +330,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             invoiceLayout.setVisibility(View.VISIBLE);
             invoiceView.setText(invoice.invoiceRefNum());
             invoiceCopy.setOnClickListener(view -> {
-            ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
-            clipboard.setPrimaryClip(clip);
-            Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
-        });if (!presenter.isValidUrl(invoice.invoiceUrl())) {
+                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
+                clipboard.setPrimaryClip(clip);
+                Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+            });
+            if (!presenter.isValidUrl(invoice.invoiceUrl())) {
                 lihat.setVisibility(View.GONE);
             }
             lihat.setOnClickListener(view -> {
