@@ -181,13 +181,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         CookieManager.getInstance().setAcceptCookie(true);
 
         webView.clearCache(true);
-        clearCookie();
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
+        webSettings.setAppCacheEnabled(false);
         webSettings.setBuiltInZoomControls(false);
         webSettings.setDisplayZoomControls(true);
         webView.setWebChromeClient(new MyWebChromeClient());
@@ -690,16 +690,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return webHistoryItem.getUrl();
     }
 
-    private void clearCookie() {
-        CookieSyncManager.createInstance(getContext());
-        CookieManager cookieManager = CookieManager.getInstance();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cookieManager.removeAllCookies(null);
-        } else {
-            cookieManager.removeAllCookie();
-        }
-    }
+//    private void clearCookie() {
+//        CookieSyncManager.createInstance(getContext());
+//        CookieManager cookieManager = CookieManager.getInstance();
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            cookieManager.removeAllCookies(null); // set null because currently we don't need to handle
+//        } else {
+//            cookieManager.removeAllCookie();
+//        }
+//    }
 
     public TkpdWebView getWebView() {
         return webView;
