@@ -420,9 +420,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity() {
-        if(userSession.isLoggedIn) {
-
-        }
         val intent = context?.let { AddTalkActivity.createIntent(it, productId) }
         startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
     }

@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.view.adapter.ProductDiscussionQuestionsAdapter
@@ -47,16 +48,16 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideTitle()
                     hideMultipleQuestion()
                 }
-                element.totalQuestion == 1 -> {
-                    showTitle(element.totalQuestion)
-                    showSingleQuestion(questions?.first())
+                totalQuestion == 1 -> {
+                    showTitle(totalQuestion, type, name)
+                    showSingleQuestion(questions?.first(), type, name)
                     hideEmptyState()
                     hideShimmer()
                     hideLocalLoad()
                     hideMultipleQuestion()
                 }
                 else -> {
-                    showTitle(element.totalQuestion)
+                    showTitle(totalQuestion, type, name)
                     showMultipleQuestions(questions)
                     hideSingleQuestionLayout()
                     hideEmptyState()
@@ -77,14 +78,14 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showSingleQuestion(question: Question?) {
-        question?.let {
+    private fun showSingleQuestion(question: Question?, type: String, name: String) {
+        question?.let { questionData ->
             itemView.productDiscussionMostHelpfulSingleQuestionLayout.apply {
                 visibility = View.VISIBLE
-                with(it) {
+                with(questionData) {
                     productDetailDiscussionSingleQuestion.text = question.content
                     productDetailDiscussionSingleQuestionChevron.setOnClickListener {
-                        listener.goToTalkReading()
+                        listener.goToTalkReply(questionID)
                     }
                     if(totalAnswer == 0) {
                         showNoAnswersText()
@@ -94,9 +95,9 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     showDisplayName(answer.userName, answer.userId)
                     showSellerLabelWithCondition(answer.isSeller)
                     showDate(answer.createTimeFormatted)
-                    showAnswer(answer.content)
+                    showAnswer(answer.content, questionID)
                     showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
-                    showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
+                    showNumberOfOtherAnswersWithCondition(totalAnswer, type, name)
                 }
             }
         }
@@ -112,12 +113,12 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showTitle(totalQuestion: Int) {
+    private fun showTitle(totalQuestion: Int, type: String, name: String) {
         itemView.apply {
             productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
             productDiscussionMostHelpfulTitle.visibility = View.VISIBLE
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
-                listener.goToTalkReading()
+                listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1))
             }
             productDiscussionMostHelpfulSeeAll.visibility = View.VISIBLE
         }
@@ -147,12 +148,12 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showAnswer(answer: String) {
+    private fun showAnswer(answer: String, questionId: String) {
         if(answer.isNotEmpty()) {
             itemView.productDetailDiscussionSingleQuestionMessage.apply {
                 text = answer
                 setOnClickListener {
-                    listener.goToTalkReading()
+                    listener.goToTalkReply(questionId)
                 }
                 visibility = View.VISIBLE
             }
@@ -184,13 +185,13 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, questionId: String) {
+    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, type: String, name: String) {
         val answersToShow = otherAnswers - 1
         if(answersToShow > 0) {
             itemView.productDetailDiscussionSingleQuestionAttachedSeeOtherAnswers.apply {
                 text = String.format(context.getString(R.string.product_detail_discussion_other_answers), answersToShow)
                 setOnClickListener {
-                    listener.goToTalkReading()
+                    listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1))
                 }
                 visibility = View.VISIBLE
             }

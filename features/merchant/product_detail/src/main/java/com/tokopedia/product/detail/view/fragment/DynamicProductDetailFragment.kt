@@ -929,11 +929,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDiscussionSendQuestionClicked() {
-
+        if(viewModel.userSessionInterface.isLoggedIn) {
+            goToWriteActivity()
+            return
+        }
+        goToLogin()
     }
 
-    override fun goToTalkReading() {
-        // go to talk reading
+    override fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel) {
+        viewModel.getDynamicProductInfoP1?.let {
+            DynamicProductDetailTracking.Click.eventDiscussionSeeAll(it, componentTrackDataModel, viewModel.userId)
+        }
+        goToReadingActivity()
+    }
+
+    override fun goToTalkReply(questionId: String) {
+        if(viewModel.userSessionInterface.isLoggedIn) {
+            goToReplyActivity(questionId)
+            return
+        }
+        goToLogin()
     }
 
     override fun onUserDetailsClicked(userId: String) {
@@ -2780,6 +2795,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     ProductDetailConstant.REQUEST_CODE_LOGIN)
+        }
+    }
+
+    private fun goToReadingActivity() {
+        viewModel.getDynamicProductInfoP1?.let {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK, it.basic.productID, it.basic.shopID)
+            startActivity(intent)
+        }
+    }
+
+    private fun goToReplyActivity(questionID: String) {
+        viewModel.getDynamicProductInfoP1?.let {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.TALK_REPLY, questionID, it.basic.productID, it.basic.shopID)
+            startActivity(intent)
         }
     }
 

@@ -712,6 +712,45 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Label.EMPTY_LABEL)
             TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
         }
+
+        fun eventDiscussionSeeAll(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, userId: String) {
+            val mapEvent = TrackingUtil.addDiscussionParams(
+                    TrackAppUtils.gtmData(
+                            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                            ProductTrackingConstant.Category.PDP,
+                            ProductTrackingConstant.Action.CLICK_DISCUSSION_SEE_ALL,
+                            ProductTrackingConstant.Label.EMPTY_LABEL),
+                    userId
+            )
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_DISCUSSION_SEE_ALL)
+        }
+
+        fun eventDiscussionDetails(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, userId: String, talkId: String, numberOfThreadsShown: String) {
+            val mapEvent = TrackingUtil.addDiscussionParams(
+                    TrackAppUtils.gtmData(
+                            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                            ProductTrackingConstant.Category.PDP,
+                            ProductTrackingConstant.Action.CLICK_THREAD_DETAIL_DISCUSSION,
+                            String.format(ProductTrackingConstant.Label.DISCUSSION_DETAIL, talkId, numberOfThreadsShown)),
+                    userId
+            )
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_THREAD_DETAIL_DISCUSSION)
+        }
+
+        fun eventEmptyDiscussionSendQuestion(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, userId: String) {
+            val mapEvent = TrackingUtil.addDiscussionParams(
+                    TrackAppUtils.gtmData(
+                            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                            ProductTrackingConstant.Category.PDP,
+                            ProductTrackingConstant.Action.CLICK_SEND_QUESTION,
+                            ProductTrackingConstant.Label.DISCUSSION_EMPTY_QUESTION),
+                    userId
+            )
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEND_QUESTION)
+        }
     }
 
     object Iris {
