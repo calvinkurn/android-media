@@ -65,69 +65,68 @@ class ShopPageViewModel @Inject constructor(private val gqlRepository: GraphqlRe
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            coroutineScope {
-                launch(Dispatchers.IO) {
-                    val shopInfoShopBadgeFeedWhitelist = asyncCatchError(
-                            Dispatchers.IO,
-                            block = { getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh) },
-                            onError = {
-                                shopInfoResp.value = Fail(it)
-                                null
-                            }
-                    )
+            val shopInfoShopBadgeFeedWhitelist = asyncCatchError(
+                    Dispatchers.IO,
+                    block = {
+                        getShopInfoShopReputationDataFeedWhitelist(id, shopDomain, isRefresh)
+                    },
+                    onError = {
+                        shopInfoResp.postValue(Fail(it))
+                        null
+                    }
+            )
 
-                    val shopOperationalHourStatus = asyncCatchError(
-                            Dispatchers.IO,
-                            block = { getShopOperationalHourStatus(id) },
-                            onError = {
-                                shopInfoResp.value = Fail(it)
-                                null
-                            }
-                    )
+            val shopOperationalHourStatus = asyncCatchError(
+                    Dispatchers.IO,
+                    block = { getShopOperationalHourStatus(id) },
+                    onError = {
+                        shopInfoResp.postValue(Fail(it))
+                        null
+                    }
+            )
 
-                    val shopFavourite = asyncCatchError(
-                            Dispatchers.IO,
-                            block = {getShopFavoriteStatus(shopId, shopDomain)},
-                            onError = {
-                                shopInfoResp.value = Fail(it)
-                                null
-                            }
-                    )
+            val shopFavourite = asyncCatchError(
+                    Dispatchers.IO,
+                    block = { getShopFavoriteStatus(shopId, shopDomain) },
+                    onError = {
+                        shopInfoResp.postValue(Fail(it))
+                        null
+                    }
+            )
 
-                    val shopInfoShopBadgeFeedWhitelistResponse = shopInfoShopBadgeFeedWhitelist.await()
-                    val shopOperationalHourStatusResponse = shopOperationalHourStatus.await()
-                    val shopFavouriteResponse = shopFavourite.await()
-                    shopInfoShopBadgeFeedWhitelistResponse?.feedWhitelist?.let {
-                        if (TextUtils.isEmpty(it.error)) {
-                            whiteListResp.postValue(Success(it.isWhitelist to it.url))
-                        } else {
-                            whiteListResp.postValue(Fail(RuntimeException()))
-                        }
+            val shopInfoShopBadgeFeedWhitelistResponse = shopInfoShopBadgeFeedWhitelist.await()
+            val shopOperationalHourStatusResponse = shopOperationalHourStatus.await()
+            val shopFavouriteResponse = shopFavourite.await()
+            shopInfoShopBadgeFeedWhitelistResponse?.let{
+                it.feedWhitelist?.let {
+                    if (TextUtils.isEmpty(it.error)) {
+                        whiteListResp.postValue(Success(it.isWhitelist to it.url))
+                    } else {
+                        whiteListResp.postValue(Fail(RuntimeException()))
                     }
-                    shopInfoShopBadgeFeedWhitelistResponse?.shopInfo?.let {shopInfo ->
-                            shopInfoResp.postValue(Success(shopInfo))
+                }
+                it.shopInfo?.let { shopInfo ->
+                    shopInfoResp.postValue(Success(shopInfo))
+                }
+                it.shopBadge?.let {
+                    shopBadgeResp.postValue((shopInfoShopBadgeFeedWhitelistResponse.shopInfo?.goldOS?.isOfficial != 1) to it)
+                }
+                shopOperationalHourStatusResponse?.let { shopOperationalStatusResponse ->
+                    it.shopInfo?.let { shopInfo ->
+                        shopTickerData.postValue(Success(Pair(shopInfo, shopOperationalStatusResponse)))
                     }
-                    shopInfoShopBadgeFeedWhitelistResponse?.shopBadge?.let {
-                        shopBadgeResp.postValue((shopInfoShopBadgeFeedWhitelistResponse.shopInfo?.goldOS?.isOfficial != 1) to it)
-                    }
-                    shopFavouriteResponse?.let{
-                        shopFavouriteResp.postValue(it)
-                    }
-
-                    shopOperationalHourStatusResponse?.let{ it ->
-                        shopInfoShopBadgeFeedWhitelistResponse?.shopInfo?.let {shopInfo ->
-                            shopTickerData.postValue(Success(Pair(shopInfo, it)))
-                        }
-                    }
+                }
+                shopFavouriteResponse?.let {
+                    shopFavouriteResp.postValue(it)
                 }
             }
         }) {
-            shopInfoResp.value = Fail(it)
+            shopInfoResp.postValue(Fail(it))
         }
     }
 
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
-        gqlGetShopOperationalHourStatusUseCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString(),1)
+        gqlGetShopOperationalHourStatusUseCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
         return gqlGetShopOperationalHourStatusUseCase.executeOnBackground()
     }
 
