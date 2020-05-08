@@ -27,7 +27,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
-        @Named("Main") dispatcher: RecommendationDispatcher
+        dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()){
 
     internal val recommendationItem = MutableLiveData<Response<List<RecommendationItem>>>()

@@ -41,7 +41,7 @@ fun TestBody.createPrimaryProductViewModel(): PrimaryProductViewModel {
     val removeWishListUseCase by memoized<RemoveWishListUseCase>()
     val getPrimaryProductUseCase by memoized<GetPrimaryProductUseCase>()
     val userSessionInterface by memoized<UserSessionInterface>()
-    val dispatcherProvider by memoized<RecommendationDispatcher>()
+    val dispatcherProvider= RecommendationDispatcherTest()
 
     return PrimaryProductViewModel(
             addWishListUseCase = addWishListUseCase,

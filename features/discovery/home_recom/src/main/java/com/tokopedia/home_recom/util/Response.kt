@@ -10,7 +10,7 @@ data class Response<out T>(val status: Status, val data: T?, val message: String
             return Response(Status.SUCCESS, data, null)
         }
 
-        fun <T> error(msg: String, data: T? = null): Response<T> {
+        fun <T> error(msg: String?, data: T? = null): Response<T> {
             return Response(Status.ERROR, data, msg)
         }
 

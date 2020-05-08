@@ -34,7 +34,7 @@ open class RecommendationPageViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        @Named("Main") val dispatcher: RecommendationDispatcher
+        dispatcher: RecommendationDispatcher
 ) : BaseViewModel(dispatcher.getMainDispatcher()) {
     /**
      * public variable

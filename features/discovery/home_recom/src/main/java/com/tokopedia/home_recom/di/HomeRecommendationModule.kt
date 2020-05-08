@@ -10,6 +10,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
+import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcherImpl
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
@@ -32,7 +33,7 @@ class HomeRecommendationModule {
 
     @HomeRecommendationScope
     @Provides
-    fun provideDispatchers(): RecommendationDispatcher = RecommendationDispatcher()
+    fun provideDispatchers(): RecommendationDispatcher = RecommendationDispatcherImpl()
 
     @Provides
     @HomeRecommendationScope

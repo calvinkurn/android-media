@@ -1,9 +1,15 @@
 package com.tokopedia.home_recom.view.dispatchers
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-class RecommendationDispatcher{
-    fun getMainDispatcher() = Dispatchers.Main
+interface RecommendationDispatcher{
+    fun getMainDispatcher(): CoroutineDispatcher
+    fun getIODispatcher(): CoroutineDispatcher
+}
 
-    fun getIODispatcher() = Dispatchers.IO
+class RecommendationDispatcherImpl : RecommendationDispatcher{
+    override fun getMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    override fun getIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
