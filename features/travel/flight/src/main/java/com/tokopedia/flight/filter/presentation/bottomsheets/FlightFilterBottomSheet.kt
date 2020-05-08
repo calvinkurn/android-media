@@ -85,6 +85,12 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         })
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        bottomSheetAction.setTypeface(bottomSheetAction.typeface, Typeface.BOLD)
+    }
+
     override fun getFlightSearchStaticticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
 
     override fun getFlightFilterModel(): FlightFilterModel? = flightFilterViewModel.filterModel.value
@@ -124,7 +130,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
         mChildView = View.inflate(requireContext(), R.layout.fragment_flight_filter, null)
         setChild(mChildView)
-        bottomSheetAction.setTypeface(bottomSheetAction.typeface, Typeface.BOLD)
     }
 
     private fun initAdapter() {
