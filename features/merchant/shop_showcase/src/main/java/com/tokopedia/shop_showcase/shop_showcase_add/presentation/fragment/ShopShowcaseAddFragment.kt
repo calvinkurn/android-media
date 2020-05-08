@@ -223,7 +223,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     override fun showDeleteCounter(firstDeletedItem: ShowcaseProduct) {
         ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
-        productCounterText?.text = context?.resources?.getString(
+        productCounterText?.text = context?.getString(
                 R.string.deleted_product_counter_text,
                 showcaseAddAdapter?.getDeletedProductList()?.size.toString()
         )
@@ -598,12 +598,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun updateDeletedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newDeletedProduct: ArrayList<ShowcaseProduct>?) {
         showcaseAddAdapter?.updateDeletedDataSet(newDeletedProduct)
-    }
-
-    private fun showToaster(message: String) {
-        view?.run {
-            Toaster.make(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-        }
     }
 
     private fun showSoftKeyboard() {
