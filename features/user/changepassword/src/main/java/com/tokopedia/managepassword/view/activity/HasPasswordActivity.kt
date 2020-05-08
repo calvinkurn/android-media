@@ -24,13 +24,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
+ * @author rival
  * @team: @minion-kevin
  *
  * For navigate :
  * External : [com.tokopedia.applink.ApplinkConst.HAS_PASSWORD]
  * Internal : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.HAS_PASSWORD]
  *
- * */
+ */
 
 class HasPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordComponent> {
 
@@ -83,20 +84,11 @@ class HasPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordCom
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
-                REQUEST_LOGIN -> {
-                    if (userSession.isLoggedIn) {
-                        viewModel.checkPassword()
-                    } else {
-                        setResult(Activity.RESULT_CANCELED)
-                        finish()
-                    }
-                }
-            }
-        } else {
-            when(requestCode) {
-                REQUEST_LOGIN -> {
+        when(requestCode) {
+            REQUEST_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK && userSession.isLoggedIn) {
+                    viewModel.checkPassword()
+                } else {
                     setResult(Activity.RESULT_CANCELED)
                     finish()
                 }
