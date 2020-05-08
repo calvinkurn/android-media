@@ -13,7 +13,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.typefactory.voucherimage.VoucherImageTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
-import kotlinx.android.synthetic.main.mvc_voucher_banner.view.*
+import kotlinx.android.synthetic.main.mvc_voucher_image_preview.view.*
 
 class BannerVoucherViewHolder<T : VoucherImageTypeFactory>(itemView: View) : AbstractViewHolder<BannerVoucherUiModel<T>>(itemView) {
 
@@ -21,7 +21,7 @@ class BannerVoucherViewHolder<T : VoucherImageTypeFactory>(itemView: View) : Abs
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.mvc_voucher_banner
+        val LAYOUT = R.layout.mvc_voucher_image_preview
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
     }

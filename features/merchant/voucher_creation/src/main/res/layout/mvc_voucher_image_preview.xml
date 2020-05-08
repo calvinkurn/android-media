@@ -5,9 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/voucherPreviewHorizontalImage"
+        android:id="@+id/bannerImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
