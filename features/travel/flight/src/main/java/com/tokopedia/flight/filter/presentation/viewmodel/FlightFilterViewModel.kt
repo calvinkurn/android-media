@@ -188,12 +188,12 @@ class FlightFilterViewModel @Inject constructor(
 
     companion object {
         const val SORT_ORDER = 0
-        const val AIRLINE_ORDER = 1
-        const val PRICE_ORDER = 2
-        const val DEPARTURE_TIME_ORDER = 3
-        const val ARRIVAL_TIME_ORDER = 4
-        const val TRANSIT_ORDER = 5
-        const val FACILITY_ORDER = 6
+        const val TRANSIT_ORDER = 1
+        const val DEPARTURE_TIME_ORDER = 2
+        const val ARRIVAL_TIME_ORDER = 3
+        const val AIRLINE_ORDER = 4
+        const val FACILITY_ORDER = 5
+        const val PRICE_ORDER = 6
 
         const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }
