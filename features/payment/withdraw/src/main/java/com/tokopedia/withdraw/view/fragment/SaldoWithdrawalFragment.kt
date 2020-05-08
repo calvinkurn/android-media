@@ -25,6 +25,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -134,8 +137,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                     inflateRekeningPremiumWidget()
                 }
                 is Fail -> {
-                    //block complete UI if loading failed...
-                    //todo handle it as it is required during final withdrawal call...
+                    handleGlobalError(it.throwable)
                 }
             }
         })
@@ -154,6 +156,20 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
             }
         }
         )
+    }
+
+    private fun handleGlobalError(throwable: Throwable) {
+        if (throwable is MessageErrorException) {
+            swdGlobalError.setType(GlobalError.SERVER_ERROR)
+        } else {
+            swdGlobalError.setType(GlobalError.NO_CONNECTION)
+        }
+        swdGlobalError.visible()
+        swdGlobalError.setActionClickListener { retryToLoadData() }
+    }
+
+    private fun retryToLoadData() {
+
     }
 
     private fun inflateRekeningPremiumWidget() {

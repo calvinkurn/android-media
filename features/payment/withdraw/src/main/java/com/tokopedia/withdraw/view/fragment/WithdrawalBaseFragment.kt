@@ -10,9 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.ColorRes
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -37,12 +35,9 @@ import com.tokopedia.withdraw.WithdrawAnalytics
 import com.tokopedia.withdraw.constant.WithdrawConstant
 import com.tokopedia.withdraw.di.WithdrawComponent
 import com.tokopedia.withdraw.domain.model.BankAccount
-import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpData
-import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal
 import com.tokopedia.withdraw.view.adapter.BankAccountAdapter
 import com.tokopedia.withdraw.view.decoration.SpaceItemDecoration
 import com.tokopedia.withdraw.view.viewmodel.BankAccountListViewModel
-import com.tokopedia.withdraw.view.viewmodel.ValidatePopUpViewModel
 import kotlinx.android.synthetic.main.swd_fragment_base_withdrawal.*
 import javax.inject.Inject
 
