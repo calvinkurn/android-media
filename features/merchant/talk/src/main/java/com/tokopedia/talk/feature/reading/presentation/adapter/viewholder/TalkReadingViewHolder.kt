@@ -43,6 +43,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 isEnabled = false
                 maskedContent
             } else {
+                isEnabled = true
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
