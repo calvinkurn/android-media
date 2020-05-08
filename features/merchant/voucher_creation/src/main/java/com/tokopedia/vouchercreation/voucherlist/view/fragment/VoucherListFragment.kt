@@ -17,9 +17,10 @@ import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
-import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
@@ -27,7 +28,9 @@ import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.*
+import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
+import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet

@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
+import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
@@ -72,7 +74,11 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     }
 
     override fun onFooterCtaTextClickListener() {
+        StopVoucherDialog(context ?: return)
+                .setOnPrimaryClickListener {
 
+                }
+                .show(VoucherUiModel("Voucher Hura Test Doang", "", true))
     }
 
     override fun showTipsAndTrickBottomSheet() {
