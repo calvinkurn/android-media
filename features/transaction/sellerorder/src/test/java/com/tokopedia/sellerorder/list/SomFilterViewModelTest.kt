@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.list
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sellerorder.InstantTaskExecutorRuleSpek
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
@@ -16,13 +15,12 @@ import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
 
 /**
  * Created by fwidjaja on 2020-02-18.
  */
-object SomFilterViewModelTest: Spek({
+/*
+object SomFilterViewModelTest: {
     InstantTaskExecutorRuleSpek(this)
 
     val dispatcher = Dispatchers.Unconfined
@@ -55,4 +53,4 @@ object SomFilterViewModelTest: Spek({
             }
         }
     }
-})
+})*/

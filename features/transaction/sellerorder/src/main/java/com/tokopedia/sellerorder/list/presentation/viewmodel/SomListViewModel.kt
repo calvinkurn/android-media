@@ -7,10 +7,12 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.list.data.model.*
+import com.tokopedia.sellerorder.list.domain.SomGetTickerListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,8 +22,9 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-08-27.
  */
-class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                           private val graphqlRepository: GraphqlRepository) : BaseViewModel(dispatcher) {
+class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
+                                           private val graphqlRepository: GraphqlRepository,
+                                           private val getTickerListUseCase: SomGetTickerListUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _tickerListResult = MutableLiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>()
     val tickerListResult: LiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>
@@ -39,8 +42,24 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val orderListResult: LiveData<Result<SomListOrder.Data.OrderList>>
         get() = _orderListResult
 
+    /*fun loadTickerList(tickerQuery: String) {
+        val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
+        getTickerListUseCase.execute(requestTickerParams, tickerQuery, { data: SomListTicker.Data ->
+            _tickerListResult.value = Success(data.orderTickers.listTicker.toMutableList())
+        }, { throwable: Throwable ->
+            _tickerListResult.postValue(Fail(throwable))
+        })
+    }*/
+
     fun loadTickerList(tickerQuery: String) {
-        launch { getTickerList(tickerQuery) }
+        val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
+        launch {
+            _tickerListResult.postValue(getTickerListUseCase.execute(requestTickerParams, tickerQuery))
+        }
+    }
+
+    fun loadTickerListOld(tickerQuery: String) {
+        launch { getTickerListOld(tickerQuery) }
     }
 
     fun loadStatusList(rawQuery: String) {
@@ -55,7 +74,7 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         launch { getOrderList(orderQuery, paramOrder) }
     }
 
-    suspend fun getTickerList(rawQuery: String) {
+    suspend fun getTickerListOld(rawQuery: String) {
         val requestTickerParams = SomListTickerParam(requestBy = PARAM_SELLER, client = PARAM_CLIENT)
         val tickerParams = mapOf(PARAM_INPUT to requestTickerParams)
         launchCatchError(block = {

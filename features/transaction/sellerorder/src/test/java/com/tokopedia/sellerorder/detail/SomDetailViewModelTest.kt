@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.detail
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sellerorder.InstantTaskExecutorRuleSpek
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.user.session.UserSession
@@ -13,12 +12,11 @@ import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
 
 /**
  * Created by fwidjaja on 2020-02-18.
  */
+/*
 object SomDetailViewModelTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
@@ -158,4 +156,4 @@ object SomDetailViewModelTest: Spek({
             }
         }
     }
-})
+})*/
