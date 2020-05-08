@@ -95,12 +95,15 @@ object PayloadConverter {
 
         model.status = NotificationStatus.PENDING
 
-        //notification attribution
+        // notification attribution
         model.transactionId = data.getString(CMConstant.PayloadKeys.TRANSACTION_ID)
         model.userTransactionId = data.getString(CMConstant.PayloadKeys.USER_TRANSACTION_ID)
         model.userId = data.getString(CMConstant.PayloadKeys.USER_ID)
         model.shopId = data.getString(CMConstant.PayloadKeys.SHOP_ID)
         model.blastId = data.getString(CMConstant.PayloadKeys.BLAST_ID)
+
+        // webHook parameters
+        model.webHookParam = data.getString(CMConstant.PayloadKeys.WEBHOOK_PARAM)
 
         return model
     }

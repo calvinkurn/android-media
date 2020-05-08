@@ -260,6 +260,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final long CLICK_TIME_INTERVAL = 500;
 
     private FragmentFramePerformanceIndexMonitoring fragmentFramePerformanceIndexMonitoring = new FragmentFramePerformanceIndexMonitoring();
+    private boolean isOnRecylerViewLayoutAdded = false;
 
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
@@ -622,7 +623,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                     getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
                 } else if (getPageLoadTimeCallback() != null) {
                     getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
-                    getPageLoadTimeCallback().startRenderPerformanceMonitoring();
                 }
             }
         });
@@ -766,10 +766,14 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback().startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
+                adapter.submitList(data);
+                adapter.notifyDataSetChanged();
+            } else {
+                adapter.submitList(data);
             }
 
-            adapter.submitList(data);
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
@@ -1161,6 +1165,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void setOnRecyclerViewLayoutReady(boolean isCache) {
+        isOnRecylerViewLayoutAdded = true;
         homeRecyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -1957,7 +1962,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean needToPerformanceMonitoring() {
-        return homePerformanceMonitoringListener != null;
+        return homePerformanceMonitoringListener != null && !isOnRecylerViewLayoutAdded;
     }
 
     private void showToaster(String message, int typeToaster){
