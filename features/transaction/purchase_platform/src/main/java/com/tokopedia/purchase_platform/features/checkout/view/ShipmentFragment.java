@@ -1396,7 +1396,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void updatePromoTrackingData(List<TrackingDetailsItem> trackingDetailsItems) {
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
+        List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
+        if (dataList == null) return;
+        for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 if (trackingDetailsItems.size() > 0) {
                     for (TrackingDetailsItem trackingDetailsItem : trackingDetailsItems) {
