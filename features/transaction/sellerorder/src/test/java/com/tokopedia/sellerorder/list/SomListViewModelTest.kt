@@ -6,6 +6,7 @@ import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.list.data.model.*
 import com.tokopedia.sellerorder.list.domain.SomGetTickerListUseCase
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -49,10 +50,6 @@ class SomListViewModelTest {
     @Test
     fun getTickerData_shouldReturnSuccess() {
         //given
-        /*val ticker1 = SomListTicker.Data.OrderTickers.Tickers(123, "body1", "shortDesc1", true)
-        val ticker2 = SomListTicker.Data.OrderTickers.Tickers(456, "body2", "shortDesc2", true)
-        val ticker3 = SomListTicker.Data.OrderTickers.Tickers(789, "body3", "shortDesc3", true)
-        val listTickers = arrayListOf(ticker1, ticker2, ticker3).toMutableList()*/
         coEvery {
             somGetTickerListUseCase.execute(any(), any())
         } returns Success(SomListTicker.Data.OrderTickers("", "", "", -1, listTickers).listTicker.toMutableList())
@@ -65,31 +62,32 @@ class SomListViewModelTest {
         assert((somListViewModel.tickerListResult.value as Success<MutableList<SomListTicker.Data.OrderTickers.Tickers>>).data[0].tickerId == 123)
     }
 
-    // bisa cek length
-    // lanjut yg return failed
-
-    /*@Test
-    fun getTickerData_shouldReturnSuccess() {
+    @Test
+    fun getTickerData_shouldReturnFail() {
         //given
-        val ticker1 = SomListTicker.Data.OrderTickers.Tickers(123, "body1", "shortDesc1", true)
-        val ticker2 = SomListTicker.Data.OrderTickers.Tickers(456, "body2", "shortDesc2", true)
-        val ticker3 = SomListTicker.Data.OrderTickers.Tickers(789, "body3", "shortDesc3", true)
-        val listTickers = arrayListOf(ticker1, ticker2, ticker3)
-
-        val dataListTickers : ArrayList<SomListTicker.Data.OrderTickers.Tickers> = listTickers
-        val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(SomListTicker.Data.OrderTickers.Tickers::class.java to dataListTickers),
-                mapOf(),
-                false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlSuccessResponse
+            somGetTickerListUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        somListViewModel.loadTickerList("")
+
+        //then
+        assert(somListViewModel.tickerListResult.value is Fail)
+    }
+
+    @Test
+    fun getTickerData_shouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somGetTickerListUseCase.execute(any(), any())
+        } returns Success(SomListTicker.Data.OrderTickers("", "", "", -1, listTickers).listTicker.toMutableList())
 
         //when
         somListViewModel.loadTickerList("")
 
         //then
         assert(somListViewModel.tickerListResult.value is Success)
-        // assert((somListViewModel.tickerListResult.value as Success<SomListTicker.Data.OrderTickers>).data.listTicker == dataListTickers)
-    }*/
+        assert((somListViewModel.tickerListResult.value as Success<MutableList<SomListTicker.Data.OrderTickers.Tickers>>).data.size == 3)
+    }
 }
