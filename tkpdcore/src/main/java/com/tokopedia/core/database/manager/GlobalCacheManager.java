@@ -1,6 +1,5 @@
 package com.tokopedia.core.database.manager;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;

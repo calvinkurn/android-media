@@ -239,7 +239,7 @@ public class OrderListActivity extends BaseSimpleActivity
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         viewPager.setCurrentItem(position);
-        orderListAnalytics.sendPageClickEvent("order -list");
+        orderListAnalytics.sendPageClickEvent("order-list");
     }
 
 

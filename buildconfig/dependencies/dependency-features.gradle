@@ -10,7 +10,9 @@ ext {
             nps                             : ":features:common:nps",
 
             commonTradein                   : ":features:category:common_tradein",
+            commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
+            hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
@@ -99,6 +101,7 @@ ext {
 
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
+            dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
 
@@ -212,7 +215,7 @@ ext {
             tkpdsession                     : ":tkpdsession",
             tkpdtransaction                 : ":tkpdtransaction",
             tkpdtransactioncommon           : ":tkpdtransaction-common",
-
+            promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice"
     ]
 }
