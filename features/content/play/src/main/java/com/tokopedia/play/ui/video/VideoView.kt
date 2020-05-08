@@ -85,6 +85,10 @@ class VideoView(container: ViewGroup) : UIView(container) {
             }
             else FrameLayout.LayoutParams.WRAP_CONTENT
 
+            lParams.width =
+                    if (videoOrientation is VideoOrientation.Horizontal && !screenOrientation.isLandscape) FrameLayout.LayoutParams.MATCH_PARENT
+                    else FrameLayout.LayoutParams.WRAP_CONTENT
+
             pvVideo.layoutParams = lParams
         }
 
