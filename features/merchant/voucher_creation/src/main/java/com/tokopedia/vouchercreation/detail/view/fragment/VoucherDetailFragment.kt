@@ -9,10 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
+import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
 /**
@@ -66,7 +68,7 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     }
 
     override fun onFooterButtonClickListener() {
-
+        showShareBottomSheet()
     }
 
     override fun showDescriptionBottomSheet(title: String, content: String) {
@@ -92,11 +94,23 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     }
 
     private fun showDownloadBottomSheet() {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        DownloadVoucherBottomSheet(parent)
+                .setOnDownloadClickListener {
 
+                }
+                .show(childFragmentManager)
     }
 
     private fun showShareBottomSheet() {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        ShareVoucherBottomSheet(parent)
+                .setOnItemClickListener {
 
+                }
+                .show(childFragmentManager)
     }
 
     private fun setupActionBar() = view?.run {
