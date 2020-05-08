@@ -13,6 +13,7 @@ class EmoneyAnalytics {
         mapEvent[Param.SESSION_IRIS] = irisSessionId
         mapEvent[Param.USER_ID] = userId
         mapEvent[Param.SCREEN_NAME] = screenName
+        mapEvent[Param.CLIENT_ID] = "none"
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
@@ -43,8 +44,8 @@ class EmoneyAnalytics {
         addComponentOpenScreenNFC(stringScreenName, userId, irisSessionId)
     }
 
-    fun openScreenFailedReadCardNFC(operatorName: String, userId: String, irisSessionId: String) {
-        val stringScreenName = "${Screen.FAILED_NFC}-${operatorName}"
+    fun openScreenFailedReadCardNFC(userId: String, irisSessionId: String) {
+        val stringScreenName = "${Screen.FAILED_NFC}"
         addComponentOpenScreenNFC(stringScreenName, userId, irisSessionId)
     }
 
@@ -67,13 +68,13 @@ class EmoneyAnalytics {
         addComponentClickNFC(map, "${Screen.SUCCESS_NFC}-$operator", userId, irisSessionId)
     }
 
-    fun clickTryAgainTapEmoney(category: String, operator: String, userId: String, irisSessionId: String) {
+    fun clickTryAgainTapEmoney(category: String, userId: String, irisSessionId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TRY_AGAIN,
-                "$category - $operator")
-        addComponentClickNFC(map, "${Screen.FAILED_NFC}-$operator", userId, irisSessionId)
+                "$category")
+        addComponentClickNFC(map, "${Screen.FAILED_NFC}", userId, irisSessionId)
     }
 
     //---------------------------------------------------------------------------------------------------------

@@ -162,7 +162,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         view_tap_emoney_card.setListener(object : TapETollCardView.OnTapEtoll {
             override fun tryAgainTopup(issuerId: Int) {
-                emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, getOperatorName(issuerId), userSession.userId, irisSessionId)
+                emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, userSession.userId, irisSessionId)
             }
         })
 
@@ -323,14 +323,14 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
             view_tap_emoney_card.showInitialState()
             view_tap_emoney_card.showErrorState(errorMessage)
         }
-        emoneyAnalytics.openScreenFailedReadCardNFC(operatorName, userSession.userId, irisSessionId)
+        emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }
 
     private fun showErrorDeviceUnsupported(errorMessage: String) {
         statusCloseBtn = FAILED_CLOSE_BTN
         view_tap_emoney_card.visibility = View.VISIBLE
         view_tap_emoney_card.showErrorDeviceUnsupportedState(errorMessage)
-        emoneyAnalytics.openScreenFailedReadCardNFC(operatorName, userSession.userId, irisSessionId)
+        emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }
 
     private fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
