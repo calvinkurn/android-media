@@ -3,9 +3,8 @@ package com.tokopedia.discovery.categoryrevamp.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.BannedCategoryResponse
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.CategoryDetailQueryV3
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
+import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
+import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
