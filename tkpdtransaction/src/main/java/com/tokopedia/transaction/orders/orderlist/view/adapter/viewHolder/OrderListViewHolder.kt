@@ -264,7 +264,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         itemView.setOnClickListener {
             if (!TextUtils.isEmpty(appLink)) {
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
-                orderListAnalytics.sendPageClickEvent("order - detail")
+                orderListAnalytics.sendPageClickEvent("order-detail")
                 orderListAnalytics.sendProductViewEvent(order, categoryName?.text.toString(), this.position, total?.text.toString())
 
                 var separator = "?"

@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -38,7 +39,6 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
@@ -78,7 +78,9 @@ import timber.log.Timber;
 
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
 import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 
 /**
@@ -232,7 +234,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case DeepLinkChecker.INVOICE:
-                    openInvoice(linkSegment, uriData);
+                    openInvoice(uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
@@ -506,8 +508,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return data;
     }
 
-    private void openInvoice(List<String> linkSegment, Uri uriData) {
-        AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
+    private void openInvoice(Uri uriData) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INVOICE);
+        intent.putExtra(KEY_URL, uriData.toString());
+        intent.putExtra(KEY_TITLE, "Invoice");
+        context.startActivity(intent);
+        context.finish();
     }
 
     @Override

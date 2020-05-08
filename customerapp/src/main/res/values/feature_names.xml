@@ -255,4 +255,7 @@
     <!--Play-->
     <string name="title_play_df">Play</string>
 
+    <!--Promo-->
+    <string name="title_gamification_df">Gamification</string>
+
 </resources>

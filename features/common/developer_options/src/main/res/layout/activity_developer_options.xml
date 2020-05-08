@@ -464,12 +464,11 @@
             android:padding="@dimen/margin_small"
             android:text="Fake response Activity"
             android:textColor="@color/white" />
-<!--
+
         <com.tokopedia.translator.ui.TranslatorSettingView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
--->
 
         <Button
             android:layout_width="match_parent"
