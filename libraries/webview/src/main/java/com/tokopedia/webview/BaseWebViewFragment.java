@@ -178,9 +178,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
 
-        CookieManager.getInstance().setAcceptCookie(true);
-
         webView.clearCache(true);
+        webView.clearHistory();
+        clearCookie();
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
@@ -689,16 +689,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return webHistoryItem.getUrl();
     }
 
-//    private void clearCookie() {
-//        CookieSyncManager.createInstance(getContext());
-//        CookieManager cookieManager = CookieManager.getInstance();
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            cookieManager.removeAllCookies(null); // set null because currently we don't need to handle
-//        } else {
-//            cookieManager.removeAllCookie();
-//        }
-//    }
+    private void clearCookie() {
+        CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            // we pass null as the callback because we don't need to know when the operation completes or whether any cookies were removed
+            cookieManager.removeAllCookies(null);
+            cookieManager.flush();
+        } else {
+            cookieSyncManager.startSync();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncManager.stopSync();
+            cookieSyncManager.sync();
+        }
+
+        cookieManager.setAcceptCookie(true);
+    }
 
     public TkpdWebView getWebView() {
         return webView;
