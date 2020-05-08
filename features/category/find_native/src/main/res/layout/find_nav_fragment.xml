@@ -78,7 +78,7 @@
                     android:layout_height="@dimen/dp_48"
                     android:layout_margin="@dimen/dp_12"
                     android:layout_marginTop="@dimen/dp_12"
-                    android:text="@string/load_more"
+                    android:text="@string/find_nav_load_more"
                     app:unifyButtonType="alternate"
                     app:unifyButtonVariant="ghost" />
 
@@ -110,11 +110,11 @@
 
                 </FrameLayout>
 
-                <include
+                <com.tokopedia.common_category.customview.NoDataView
                     android:id="@+id/layoutNoData"
-                    layout="@layout/layout_nav_no_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_8"
                     android:visibility="gone" />
 
             </LinearLayout>

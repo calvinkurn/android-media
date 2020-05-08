@@ -30,9 +30,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.discoveryCommon)
@@ -48,6 +45,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.sharedata)
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 }
 
 project.ext {
@@ -58,5 +56,3 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'

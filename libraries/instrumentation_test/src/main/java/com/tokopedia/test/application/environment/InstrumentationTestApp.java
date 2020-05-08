@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -113,11 +114,6 @@ public void sendAnalyticsAnomalyResponse(String title,
     }
 
     @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
     }
@@ -158,7 +154,7 @@ public void sendAnalyticsAnomalyResponse(String title,
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+    public Class<?> getHomeClass() {
         return null;
     }
 
@@ -175,18 +171,9 @@ public void sendAnalyticsAnomalyResponse(String title,
     @Override
     public SessionHandler legacySessionHandler() {
         return new SessionHandler(this) {
-            @Override
-            public String getLoginName() {
-                return "null";
-            }
 
             @Override
             public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getShopID() {
                 return "null";
             }
 
@@ -196,62 +183,12 @@ public void sendAnalyticsAnomalyResponse(String title,
             }
 
             @Override
-            public boolean isUserHasShop() {
-                return false;
-            }
-
-            @Override
-            public boolean isV4Login() {
-                return false;
-            }
-
-            @Override
-            public String getPhoneNumber() {
-                return "null";
-            }
-
-            @Override
-            public String getEmail() {
-                return "null";
-            }
-
-            @Override
             public String getRefreshToken() {
                 return "null";
             }
 
             @Override
-            public String getAccessToken() {
-                return "null";
-            }
-
-            @Override
-            public String getFreshToken() {
-                return null;
-            }
-
-            @Override
-            public String getUserId() {
-                return "null";
-            }
-
-            @Override
-            public String getDeviceId() {
-                return "null";
-            }
-
-            @Override
-            public String getProfilePicture() {
-                return "null";
-            }
-
-            @Override
             public boolean isMsisdnVerified() {
-                return false;
-            }
-
-            @Override
-            public boolean isHasPassword() {
                 return false;
             }
         };

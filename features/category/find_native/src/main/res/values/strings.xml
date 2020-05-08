@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="find_nav_banned_product">Produk dibatasi di Android</string>
+    <string name="find_nav_load_more">Lihat Selebihnya</string>
     <string name="find_nav_read_more">Baca Selengkapnya</string>
     <string name="find_related_search">Pencarian Terkait</string>
     <string name="title_tokopedia">Tokopedia</string>

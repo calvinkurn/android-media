@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -34,13 +35,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
@@ -61,14 +59,13 @@ import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +78,9 @@ import timber.log.Timber;
 
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
 import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 
 /**
@@ -89,6 +88,8 @@ import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
+    public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+    public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
@@ -125,8 +126,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void checkUriLogin(Uri uriData) {
+        UserSessionInterface userSession = new UserSession(context);
         if (DeepLinkChecker.getDeepLinkType(context, uriData.toString()) == DeepLinkChecker.ACCOUNTS && uriData.getPath().contains("activation")) {
-            if (!SessionHandler.isV4Login(context)) {
+            if (!userSession.isLoggedIn()) {
                 login(uriData);
             }
         }
@@ -150,7 +152,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Bundle defaultBundle = new Bundle();
         defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
-            Log.d(TAG, "URI DATA = " + uriData.toString());
+            Timber.d( "URI DATA = " + uriData.toString());
             processAFlistener();
         } else {
             List<String> linkSegment = uriData.getPathSegments();
@@ -232,19 +234,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case DeepLinkChecker.INVOICE:
-                    openInvoice(linkSegment, uriData);
+                    openInvoice(uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
                 case DeepLinkChecker.HOTEL:
                     openHotel(uriData, defaultBundle);
                     screenName = "";
                     break;
-                /*
-                case RECHARGE:
-                    openRecharge(linkSegment, uriData);
-                    screenName = AppScreen.SCREEN_RECHARGE;
-                    break;
-                   */
                 case DeepLinkChecker.APPLINK:
                     if (linkSegment != null && linkSegment.size() > 0) {
                         openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false, true,
@@ -380,18 +376,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private void openDigitalPage(String applink) {
-        if (context.getApplication() instanceof IDigitalModuleRouter) {
-            if (((IDigitalModuleRouter) context.getApplication())
-                    .isSupportedDelegateDeepLink(applink)) {
-                Bundle bundle = new Bundle();
-                ((IDigitalModuleRouter) context.getApplication()).actionNavigateByApplinksUrl(context,
-                        applink, bundle);
-                context.finish();
-            }
-        }
-    }
-
     private void openPeluangPage(List<String> linkSegment, Uri uriData, Bundle bundle) {
         String query = uriData.getQueryParameter("q");
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
@@ -475,7 +459,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (SessionHandler.isMsisdnVerified()) {
                     finishLogin();
                 } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intentHome = HomeRouter.getHomeActivity(context);
+                    Intent intentHome = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     Intent intentPhoneVerif = ((TkpdCoreRouter) MainApplication.getAppContext())
                             .getPhoneVerificationActivationIntent(context);
@@ -508,7 +492,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void finishLogin() {
-        Intent intent = HomeRouter.getHomeActivity(context);
+        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
         context.finish();
@@ -524,8 +508,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return data;
     }
 
-    private void openInvoice(List<String> linkSegment, Uri uriData) {
-        AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
+    private void openInvoice(Uri uriData) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INVOICE);
+        intent.putExtra(KEY_URL, uriData.toString());
+        intent.putExtra(KEY_TITLE, "Invoice");
+        context.startActivity(intent);
+        context.finish();
     }
 
     @Override
@@ -562,10 +550,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
-    }
-
     private void openWebView(Uri uri, boolean allowingOverriding, boolean showTitlebar,
                              boolean needLogin) {
         String encodedUri = UrlEncoderExtKt.encodeOnce(uri.toString());
@@ -578,17 +562,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             context.startActivity(intent);
             context.finish();
         }
-    }
-
-    private String encodeUrl(String url) {
-        String encodedUrl;
-        try {
-            encodedUrl = URLEncoder.encode(url, FORMAT_UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return encodedUrl;
     }
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
@@ -775,7 +748,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomepage(Bundle defaultBundle) {
-        Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
+        Intent intent = new Intent(context, ((com.tokopedia.core.TkpdCoreRouter) context.getApplication()).getHomeClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -803,9 +776,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomepageHot(Bundle bundle) {
-        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOTLIST);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -847,10 +820,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
         return applink + "?" + uriData.getQuery();
-    }
-
-    private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {
-        return (linkSegment.size() == 1 && !isHotAlias(uriData));
     }
 
     private boolean isHotAlias(Uri uri) {

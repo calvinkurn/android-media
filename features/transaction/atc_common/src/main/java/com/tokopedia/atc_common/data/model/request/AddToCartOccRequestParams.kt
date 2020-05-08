@@ -33,5 +33,10 @@ data class AddToCartOccRequestParams(
         var listTracker: String = "",
         @SerializedName("notes")
         @Expose
-        var notes: String = ""
+        var notes: String = "",
+
+        // appflyer analytics data
+        var productName: String = "",
+        var category: String = "",
+        var price: String = ""
 )
