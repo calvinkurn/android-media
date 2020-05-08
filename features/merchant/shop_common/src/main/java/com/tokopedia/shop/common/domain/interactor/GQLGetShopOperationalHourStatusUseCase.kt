@@ -40,10 +40,11 @@ class GQLGetShopOperationalHourStatusUseCase @Inject constructor(
     companion object {
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_TYPE = "type"
+        private const val DEFAULT_VALUE_TYPE = 1
         @JvmStatic
         fun createParams(
                 shopIds: String,
-                type: Int
+                type: Int = DEFAULT_VALUE_TYPE
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopIds)
             putObject(PARAM_TYPE, type)
