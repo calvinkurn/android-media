@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
@@ -24,6 +25,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
@@ -59,6 +61,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
@@ -66,6 +70,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_HOMEPAGE)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -132,6 +138,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     }
                 }
             }
+            stopTrace()
         })
 
         homepageViewModel.recentSearch.observe(this, Observer {
@@ -155,6 +162,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     override fun onErrorRetryClicked() {
         loadPromoData()
+    }
+
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring?.stopTrace()
+            isTraceStop = true
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
