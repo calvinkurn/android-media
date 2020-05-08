@@ -117,8 +117,8 @@
                 android:paddingTop="@dimen/dp_topchat_12"
                 android:paddingEnd="@dimen/spacing_lvl4"
                 android:visibility="gone"
-                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:listitem="@layout/item_template_chat_layout"
                 tools:orientation="horizontal"
                 tools:scrollbars="horizontal"
@@ -189,30 +189,12 @@
 
             </RelativeLayout>
 
-            <FrameLayout
-                android:id="@+id/rv_attachment_menu_container"
+            <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+                android:id="@+id/fl_chat_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                tools:visibility="visible">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spacing_lvl3"
-                    android:layout_gravity="top"
-                    android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
-
-                <com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
-                    android:id="@+id/rv_attachment_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:paddingTop="@dimen/spacing_lvl5"
-                    android:paddingBottom="@dimen/spacing_lvl5"
-                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    tools:spanCount="2" />
-
-            </FrameLayout>
+                tools:visibility="visible" />
 
         </LinearLayout>
 

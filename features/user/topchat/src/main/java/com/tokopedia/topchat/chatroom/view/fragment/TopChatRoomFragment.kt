@@ -67,6 +67,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -86,7 +87,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -129,6 +129,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedBannedProduct = HashSet<Int>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
+    private var chatMenu: ChatMenuView? = null
 
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -143,6 +144,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun bindView(view: View?) {
         composeArea = view?.findViewById(R.id.new_comment)
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
+        chatMenu = view?.findViewById(R.id.fl_chat_menu)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -274,7 +276,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun checkCanAttachVoucher(room: ChatroomViewModel) {
         if (room.isSeller()) {
-            addVoucherAttachmentMenu()
+            chatMenu?.addVoucherAttachmentMenu()
         }
     }
 

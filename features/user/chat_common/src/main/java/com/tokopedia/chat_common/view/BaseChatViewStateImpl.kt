@@ -290,12 +290,12 @@ open class BaseChatViewStateImpl(
         showChatMenu()
     }
 
-    private fun hideChatMenu() {
+    override fun hideChatMenu() {
         attachmentMenu?.isKeyboardOpened = true
         attachmentMenu?.hideMenu()
     }
 
-    private fun showChatMenu() {
+    override fun showChatMenu() {
         attachmentMenu?.isKeyboardOpened = false
         attachmentMenu?.let {
             if (it.showDelayed) {
