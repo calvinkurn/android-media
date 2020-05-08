@@ -208,8 +208,8 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     private fun setupSearchToolbarText() {
-        val departureCode = if (getDepartureAirport().cityCode.isNotEmpty()) getDepartureAirport().cityCode else getDepartureAirport().airportCode
-        val arrivalCode = if (getArrivalAirport().cityCode.isNotEmpty()) getArrivalAirport().cityCode else getArrivalAirport().airportCode
+        val departureCode = if (getDepartureAirport().airportCode.isNotEmpty()) getDepartureAirport().airportCode else getDepartureAirport().cityCode
+        val arrivalCode = if (getArrivalAirport().airportCode.isNotEmpty()) getArrivalAirport().airportCode else getArrivalAirport().cityCode
         val title = "${getDepartureAirport().cityName} (${departureCode}) ➝ ${getArrivalAirport().cityName} (${arrivalCode})"
         val subtitle = "$dateString | $passengerString | $classString"
 
