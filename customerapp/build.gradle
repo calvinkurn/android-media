@@ -602,6 +602,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }
 
 
