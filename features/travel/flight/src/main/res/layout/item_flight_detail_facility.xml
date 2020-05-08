@@ -28,8 +28,6 @@
             android:id="@+id/separator_info"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
             android:background="@color/flight_search_list_background" />
 
         <LinearLayout
@@ -49,7 +47,7 @@
                 android:layout_weight="1"
                 android:text="@string/flight_detail_facility_label"
                 android:textColor="@color/Neutral_N700_68"
-                app:typographyType="body_3" />
+                app:typographyType="body_2" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_amenity"
