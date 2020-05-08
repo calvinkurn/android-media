@@ -261,7 +261,6 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
@@ -414,6 +413,7 @@ dependencies {
     implementation project(rootProject.ext.features.agerestriction)
 
     implementation project(rootProject.ext.features.promotionsTarget)
+    implementation project(rootProject.ext.features.findNative)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
     if (rootProject.ext.debugToolsEnabled) {

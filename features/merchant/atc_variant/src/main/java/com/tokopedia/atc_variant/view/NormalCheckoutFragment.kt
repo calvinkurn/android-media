@@ -114,6 +114,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     var layoutName: String = ""
     @ProductAction
     var action: Int = ATC_AND_BUY
+    var atcFromExternalSource: String = ""
 
     var selectedProductInfo: ProductInfo? = null
     var originalProduct: ProductInfoAndVariant? = null
@@ -157,7 +158,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                            customEventLabel: String?,
                            customEventAction: String?,
                            tradeInParams: TradeInParams?,
-                           layoutName: String? = ""): NormalCheckoutFragment {
+                           layoutName: String? = "",
+                           atcFromExternalSource: String? = null): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
@@ -186,6 +188,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, customEventLabel)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, customEventAction)
                     putString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, layoutName)
+                    if (atcFromExternalSource != null) {
+                        putString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, atcFromExternalSource)
+                    }
                 }
             }
             return fragment
@@ -548,6 +553,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
             isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
             layoutName = argument.getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, "")
+            atcFromExternalSource = argument.getString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_OTHERS)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -1079,6 +1085,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
             addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
             addToCartOcsRequestParams.isTradeIn = isTradeIn == 1
+            addToCartOcsRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartOcsRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartOcsRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartOcsRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         } else {
@@ -1094,6 +1103,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartRequestParams.attribution = trackerAttribution ?: ""
             addToCartRequestParams.listTracker = trackerListName ?: ""
             addToCartRequestParams.warehouseId = selectedWarehouseId
+            addToCartRequestParams.atcFromExternalSource = atcFromExternalSource
+            addToCartRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         }
@@ -1104,11 +1117,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         addToCartDataModel?.run {
             if (addToCartDataModel.status == "OK" && addToCartDataModel.data.success == 1) {
                 //success checkout
-                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                        selectedProductInfo?.basic?.price.toString(),
-                        quantity,
-                        selectedProductInfo?.basic?.name ?: "",
-                        selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
             } else if (addToCartDataModel.errorReporter.eligible) {
                 onFinishError(addToCartDataModel)

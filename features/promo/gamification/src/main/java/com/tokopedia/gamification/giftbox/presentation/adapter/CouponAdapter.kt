@@ -9,7 +9,7 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.utils.image.ImageUtils
 
-class CouponAdapter(val couponList: ArrayList<GetCouponDetail>, val isTablet:Boolean) : RecyclerView.Adapter<CouponListVH>() {
+class CouponAdapter(val couponList: ArrayList<GetCouponDetail>, val isTablet: Boolean) : RecyclerView.Adapter<CouponListVH>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListVH {
         val vh = CouponListVH(LayoutInflater.from(parent.context).inflate(CouponListVH.LAYOUT, parent, false))
         if (couponList.size > 1 && !isTablet) {
@@ -28,7 +28,7 @@ class CouponAdapter(val couponList: ArrayList<GetCouponDetail>, val isTablet:Boo
 class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.list_item_coupons
+        val LAYOUT = com.tokopedia.gamification.R.layout.list_item_coupons
         const val WIDTH_RATIO = 1.26
     }
 

@@ -10,7 +10,6 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.gamification.R
@@ -26,7 +25,7 @@ class NoInternetDialog {
     lateinit var closeAbleDialog: CloseableBottomSheetDialog
 
     fun showDialog(context: Context) {
-        val resId = R.layout.dialog_gami_no_internet
+        val resId = com.tokopedia.gamification.R.layout.dialog_gami_no_internet
         val v = LayoutInflater.from(context).inflate(resId, null, false)
         closeAbleDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeAbleDialog.setContentView(v)

@@ -27,9 +27,8 @@
         android:paddingBottom="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@+id/quickfilter_recyclerview"/>
 
-    <include
+    <com.tokopedia.common_category.customview.NoDataView
         android:id="@+id/layout_no_data"
-        layout="@layout/layout_nav_no_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/quickfilter_recyclerview"
