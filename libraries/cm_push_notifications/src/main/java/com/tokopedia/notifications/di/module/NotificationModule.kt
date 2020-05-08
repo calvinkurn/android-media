@@ -75,13 +75,11 @@ import javax.inject.Named
     @CMNotificationScope
     fun provideDataManager(
             attributionUseCase: AttributionUseCase,
-            atcProductUseCase: AddToCartUseCase,
-            amplificationUseCase: AmplificationUseCase
+            atcProductUseCase: AddToCartUseCase
     ): DataManager {
         return DataManager(
                 attributionUseCase,
-                atcProductUseCase,
-                amplificationUseCase
+                atcProductUseCase
         )
     }
 
