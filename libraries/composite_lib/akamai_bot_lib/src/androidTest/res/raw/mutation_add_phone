@@ -1,0 +1,7 @@
+mutation add_phone($phone: String!) {
+  userProfileUpdate(phone: $phone) {
+    isSuccess
+    completionScore
+    errors
+  }
+}

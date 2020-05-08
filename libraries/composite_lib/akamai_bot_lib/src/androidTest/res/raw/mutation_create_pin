@@ -1,0 +1,8 @@
+mutation createPin($token: String!){
+    create_pin(input:{validate_token: $token}) {
+        success
+        errors {
+            message
+        }
+    }
+}

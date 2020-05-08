@@ -42,12 +42,13 @@ public class TimberWrapper {
             String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
+                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
                     UserSession userSession = new UserSession(application);
                     TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
                     timberReportingTree.setUserId(userSession.getUserId());
                     timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
+                    timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                     Timber.plant(timberReportingTree);
                 }
             }

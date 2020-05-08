@@ -1,0 +1,10 @@
+mutation {
+ clearCacheAutoApplyStack(
+    serviceID: "marketplace",
+    promoCode: #promoCode,
+    isOCC: #isOCC) {
+        Success
+        ticker_message
+        default_empty_promo_message
+ }
+}

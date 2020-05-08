@@ -12,12 +12,14 @@
     <ImageView
             android:id="@+id/background_thematic"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:scaleType="fitStart"
-            android:adjustViewBounds="false"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+        tools:background="@android:color/holo_purple"
+            android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/recycleList"/>
 
     <include
             layout="@layout/home_master_dynamic_channel"
@@ -27,6 +29,8 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_12"
             android:id="@+id/recycleList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

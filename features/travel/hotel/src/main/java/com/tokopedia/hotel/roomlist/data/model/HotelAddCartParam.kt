@@ -22,7 +22,7 @@ data class HotelAddCartParam(
 
         @SerializedName("propertyID")
         @Expose
-        val propertyId: Int = 0,
+        val propertyId: Long = 0,
 
         @SerializedName("rooms")
         @Expose

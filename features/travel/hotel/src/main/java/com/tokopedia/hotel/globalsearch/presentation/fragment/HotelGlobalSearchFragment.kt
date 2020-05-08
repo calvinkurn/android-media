@@ -28,9 +28,9 @@ import java.util.*
 /**
  * @author by furqan on 19/11/2019
  */
-class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
+open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
-    private val globalSearchModel: HotelGlobalSearchModel = HotelGlobalSearchModel()
+    protected val globalSearchModel: HotelGlobalSearchModel = HotelGlobalSearchModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_global_search, container, false)
@@ -71,7 +71,7 @@ class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomS
         renderView()
     }
 
-    private fun renderView() {
+    open fun renderView() {
         val data = globalSearchModel
 
         val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
@@ -97,7 +97,7 @@ class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomS
 
     }
 
-    private fun countRoomDuration(): Long = HotelUtils.countDayDifference(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
+    protected fun countRoomDuration(): Long = HotelUtils.countDayDifference(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
 
     private fun configAndRenderCheckInDate() {
         openCalendarDialog(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
@@ -168,7 +168,7 @@ class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomS
         fragmentManager?.let { hotelCalendarDialog.show(it, TAG_RANGE_DATE_CALENDAR) }
     }
 
-    private fun onCheckAvailabilityClicked() {
+    open fun onCheckAvailabilityClicked() {
         val intent = Intent().apply {
             putExtra(CHECK_IN_DATE, globalSearchModel.checkInDate)
             putExtra(CHECK_OUT_DATE, globalSearchModel.checkOutDate)

@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class RoomListParam(
         @SerializedName("propertyID")
         @Expose
-        var propertyId: Int = 0,
+        var propertyId: Long = 0,
 
         @SerializedName("checkIn")
         @Expose

@@ -65,10 +65,13 @@ data class Channel(
         val likeType: Int = 1,
 
         @SerializedName("video_stream")
-        var videoStream: VideoStream = VideoStream(),
+        val videoStream: VideoStream = VideoStream(),
 
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
+
+        @SerializedName("pinned_product")
+        val pinnedProduct: PinnedProduct = PinnedProduct(),
 
         @SerializedName("quick_reply")
         val quickReply: List<String> = emptyList(),
@@ -83,7 +86,16 @@ data class Channel(
         val exitMsg: ExitMsg = ExitMsg(),
 
         @SerializedName("freeze_channel_state")
-        val freezeChannelState: FreezeChannelState = FreezeChannelState()
+        val freezeChannelState: FreezeChannelState = FreezeChannelState(),
+
+        @SerializedName("channel_type")
+        val channelType: Int = 0,
+
+        @SerializedName("is_show_cart")
+        val isShowCart: Boolean = false,
+
+        @SerializedName("is_show_product_tagging")
+        val isShowProductTagging: Boolean = false
 
 ) {
 

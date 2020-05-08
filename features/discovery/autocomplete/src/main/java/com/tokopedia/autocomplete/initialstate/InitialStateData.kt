@@ -13,7 +13,7 @@ data class InitialStateData(
         val labelAction: String = "",
 
         @SerializedName("items")
-        var items: List<InitialStateItem> = listOf()
+        val items: List<InitialStateItem> = listOf()
 ) {
 
     companion object {

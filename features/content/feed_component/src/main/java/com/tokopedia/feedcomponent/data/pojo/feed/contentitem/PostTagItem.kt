@@ -20,6 +20,10 @@ data class PostTagItem(
         @Expose
         var price: String = "",
 
+        @SerializedName("priceOriginal")
+        @Expose
+        var priceOriginal: String = "",
+
         @SerializedName("type")
         @Expose
         var type: String = "",
@@ -56,7 +60,7 @@ data class PostTagItem(
 
         @SerializedName("tags")
         @Expose
-        val tags: List<PostTagItemTag> = ArrayList(),
+        val tags: List<TagsItem> = ArrayList(),
 
         @SerializedName("shop")
         @Expose
@@ -74,7 +78,7 @@ data class PostTagItem(
                 for (track in tracking) {
                         newTracking.add(track.copy())
                 }
-                val newTags: ArrayList<PostTagItemTag> = arrayListOf()
+                val newTags: ArrayList<TagsItem> = arrayListOf()
                 for (tag in tags) {
                         newTags.add(tag.copy())
                 }
@@ -89,6 +93,7 @@ data class PostTagItem(
                 return PostTagItem(id,
                         text,
                         price,
+                        priceOriginal,
                         type,
                         applink,
                         weblink,

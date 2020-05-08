@@ -53,6 +53,8 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
     private var productWeight: Float = 0f
     private var origin: String? = null
     private var isFreeOngkir: Boolean = false
+    private var shopId: String = ""
+    private var productId: String = ""
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -94,6 +96,8 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
             productWeight
             origin = it.getString(RatesEstimationConstant.PARAM_ORIGIN)
             isFreeOngkir = it.getBoolean(RatesEstimationConstant.PARAM_ISFREEONGKIR, false)
+            shopId = it.getString(RatesEstimationConstant.PARAM_SHOP_ID, "")
+            productId = it.getString(RatesEstimationConstant.PARAM_PRODUCT_ID, "")
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -109,7 +113,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
         val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight / 1000)
-        viewModel.getCostEstimation(weightInKg, shopDomain, origin)
+        viewModel.getCostEstimation(weightInKg, shopDomain, origin, shopId, productId)
     }
 
     private fun setViewState(viewLoading: Int) {
@@ -175,7 +179,9 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null, isFreeOngkir: Boolean) =
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String,
+                           origin: String? = null, isFreeOngkir: Boolean, shopId: String,
+                           productId: String) =
                 RatesEstimationDetailFragment().apply {
                     arguments = Bundle().apply {
                         putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
@@ -183,6 +189,8 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
                         putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                         putString(RatesEstimationConstant.PARAM_ORIGIN, origin)
                         putBoolean(RatesEstimationConstant.PARAM_ISFREEONGKIR, isFreeOngkir)
+                        putString(RatesEstimationConstant.PARAM_SHOP_ID, shopId)
+                        putString(RatesEstimationConstant.PARAM_PRODUCT_ID, productId)
                     }
                 }
     }

@@ -84,7 +84,7 @@ public class ServerErrorView extends NestedScrollView {
 
         if (!hasInternet) {
 
-            noConnectionImageId = R.drawable.ic_tp_no_connection;
+            noConnectionImageId = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection;
             buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
 
             buttonColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.bg_button_green_border_outline);

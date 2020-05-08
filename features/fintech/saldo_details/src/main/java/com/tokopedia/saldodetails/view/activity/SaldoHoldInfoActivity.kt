@@ -61,7 +61,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.saldo_hold_info_tabview)
-        SaldoDetailsComponentInstance.getComponent(application).inject(this)
+        SaldoDetailsComponentInstance.getComponent(this).inject(this)
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
         viewPager = findViewById(R.id.view_pager_saldo_info_type)
         saldoInfoPresenter.attachView(this)
@@ -84,7 +84,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     }
 
     override fun getComponent(): SaldoDetailsComponent {
-        return SaldoDetailsComponentInstance.getComponent(application)
+        return SaldoDetailsComponentInstance.getComponent(this)
     }
 
     override fun getNewFragment(): Fragment? = null

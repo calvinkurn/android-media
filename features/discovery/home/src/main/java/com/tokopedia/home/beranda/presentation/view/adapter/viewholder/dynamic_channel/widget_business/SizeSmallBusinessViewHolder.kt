@@ -1,39 +1,49 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business
 
 import android.graphics.Paint
-import androidx.core.content.ContextCompat
-import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.widget.TextView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_small_business.view.*
 
-
 open class SizeSmallBusinessViewHolder (
-        itemView: View?,
-        private val listener: BusinessUnitItemView
-) : AbstractViewHolder<HomeWidget.ContentItemTab>(itemView) {
-
-    override fun bind(element: HomeWidget.ContentItemTab) {
-        renderImage(element)
-        renderProduct(element)
-        renderTitle(element)
-        renderSubtitle(element)
-        renderFooter(element)
-        addImpressionListener(element)
+        itemView: View,
+        private val listener: BusinessUnitItemViewListener
+) : RecyclerView.ViewHolder(itemView) {
+    fun bind(element: BusinessUnitItemDataModel) {
+        element.content.let {
+            renderImage(it)
+            renderProduct(it)
+            renderTitle(it)
+            renderSubtitle(it)
+            renderFooter(it)
+            addImpressionListener(element)
+            addClickListener(element)
+        }
     }
 
-    open fun addImpressionListener(element: HomeWidget.ContentItemTab) {
-        itemView.icon.addOnImpressionListener(element,
+    open fun addClickListener(element: BusinessUnitItemDataModel){
+        itemView.setOnClickListener {
+            listener.onClicked(adapterPosition)
+            RouteManager.route(itemView.context, element.content.applink)
+        }
+    }
+
+    open fun addImpressionListener(element: BusinessUnitItemDataModel) {
+        itemView.icon.addOnImpressionListener(element as ImpressHolder,
                 object: ViewHintListener {
                     override fun onViewHint() {
                         listener.onImpressed(element, adapterPosition)
@@ -63,11 +73,11 @@ open class SizeSmallBusinessViewHolder (
     }
 
     open fun renderProduct(element: HomeWidget.ContentItemTab?) {
-        if (element?.name.isNullOrEmpty()) {
+        if (element?.contentName.isNullOrEmpty()) {
             getProductName().visibility = View.GONE
         } else {
             getProductName().visibility = View.VISIBLE
-            getProductName().text = MethodChecker.fromHtml(element?.name)
+            getProductName().text = MethodChecker.fromHtml(element?.contentName)
         }
     }
 

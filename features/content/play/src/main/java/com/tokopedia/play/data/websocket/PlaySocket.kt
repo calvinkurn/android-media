@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-11.
  */
-class PlaySocket @Inject constructor(
+open class PlaySocket @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
 ) {
@@ -31,7 +31,7 @@ class PlaySocket @Inject constructor(
     private var compositeSubscription: CompositeSubscription? = null
     private var rxWebSocketUtil: RxWebSocketUtil? = null
 
-    fun connect(onMessageReceived: (WebSocketResponse)-> Unit, onError: (error: Throwable) -> Unit) {
+    open fun connect(onMessageReceived: (WebSocketResponse)-> Unit, onReconnect: () -> Unit,  onError: (error: Throwable) -> Unit) {
         val wsBaseUrl: String = localCacheHandler.
                 getString(KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES,
                         TokopediaUrl.getInstance().WS_PLAY)
@@ -62,7 +62,9 @@ class PlaySocket @Inject constructor(
                 onError(e)
             }
 
-            override fun onReconnect() {}
+            override fun onReconnect() {
+                onReconnect()
+            }
         }
 
         rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)

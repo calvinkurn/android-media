@@ -1,0 +1,9 @@
+query get_shop_following_status($shopIDs: [Int!]!, $inputFields: [String!]!) {
+  shopInfoByID(input: {shopIDs: $shopIDs, fields: $inputFields}) {
+    result {
+      favoriteData {
+        alreadyFavorited
+      }
+    }
+  }
+}
