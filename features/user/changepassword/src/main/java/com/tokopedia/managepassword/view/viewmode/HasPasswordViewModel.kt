@@ -1,10 +1,10 @@
-package com.tokopedia.revamp_changepassword.view.viewmode
+package com.tokopedia.managepassword.view.viewmode
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.revamp_changepassword.data.ProfileCompletionData
-import com.tokopedia.revamp_changepassword.domain.usecase.GetProfileCompletionUseCase
+import com.tokopedia.managepassword.data.ProfileDataModel
+import com.tokopedia.managepassword.domain.usecase.GetProfileCompletionUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,8 +16,8 @@ class HasPasswordViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val _profileData = MutableLiveData<Result<ProfileCompletionData>>()
-    val profileData: LiveData<Result<ProfileCompletionData>>
+    private val _profileData = MutableLiveData<Result<ProfileDataModel>>()
+    val profileDataModel: LiveData<Result<ProfileDataModel>>
         get() = _profileData
 
     fun checkPassword() {

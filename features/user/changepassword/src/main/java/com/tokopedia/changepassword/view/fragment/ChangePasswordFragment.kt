@@ -57,8 +57,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
         userSession = UserSession(context)
         if (!userSession.isLoggedIn) {
-            activity?.finish()
-            return
+            activity?.apply {
+                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_LOGIN)
+            }
         }
 
         oldPasswordTextField = view.findViewById(R.id.wrapper_old)
@@ -79,6 +80,16 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         disableSubmitButton()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!userSession.isLoggedIn) {
+            activity?.apply {
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when(requestCode) {
@@ -92,6 +103,23 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                                 RouteManager.route(context, ApplinkConst.HOME)
                             }
                         }.show()
+                    }
+                }
+                REQUEST_LOGIN -> {
+                    if (!userSession.isLoggedIn) {
+                        activity?.apply {
+                            setResult(Activity.RESULT_CANCELED)
+                            finish()
+                        }
+                    }
+                }
+            }
+        } else {
+            when (requestCode) {
+                REQUEST_LOGIN -> {
+                    activity?.apply {
+                        setResult(Activity.RESULT_CANCELED)
+                        finish()
                     }
                 }
             }
@@ -222,6 +250,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     companion object {
-        private const val REQUEST_LOGOUT = 1000;
+        private const val REQUEST_LOGOUT = 1000
+        private const val REQUEST_LOGIN = 2000
     }
 }

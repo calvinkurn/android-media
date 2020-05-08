@@ -1,23 +1,23 @@
-package com.tokopedia.revamp_changepassword.di.module
+package com.tokopedia.managepassword.di.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.revamp_changepassword.di.ChangePasswordScope
-import com.tokopedia.revamp_changepassword.view.viewmode.HasPasswordViewModel
+import com.tokopedia.managepassword.di.ManagePasswordScope
+import com.tokopedia.managepassword.view.viewmode.HasPasswordViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class ChangePasswordViewModelModule {
+abstract class ManagePasswordViewModelModule {
 
     @Binds
-    @ChangePasswordScope
+    @ManagePasswordScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-    @ChangePasswordScope
+    @ManagePasswordScope
     @Binds
     @IntoMap
     @ViewModelKey(HasPasswordViewModel::class)

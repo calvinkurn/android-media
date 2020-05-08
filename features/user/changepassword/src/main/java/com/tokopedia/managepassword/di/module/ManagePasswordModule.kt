@@ -1,10 +1,9 @@
-package com.tokopedia.revamp_changepassword.di.module
+package com.tokopedia.managepassword.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.revamp_changepassword.di.ChangePasswordScope
+import com.tokopedia.managepassword.di.ManagePasswordScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.revamp_changepassword.di.ChangePasswordContext
+import com.tokopedia.managepassword.di.ManagePasswordContext
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -13,22 +12,22 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class ChangePasswordModule(private val context: Context) {
+class ManagePasswordModule(private val context: Context) {
 
-    @ChangePasswordScope
-    @ChangePasswordContext
+    @ManagePasswordScope
+    @ManagePasswordContext
     @Provides
     fun provideChangePasswordContext(): Context = context
 
-    @ChangePasswordScope
+    @ManagePasswordScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-    @ChangePasswordScope
+    @ManagePasswordScope
     @Provides
-    fun provideUserSession(@ChangePasswordContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSession(@ManagePasswordContext context: Context): UserSessionInterface = UserSession(context)
 
-    @ChangePasswordScope
+    @ManagePasswordScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 

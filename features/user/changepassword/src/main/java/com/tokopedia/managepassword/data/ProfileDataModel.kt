@@ -1,4 +1,4 @@
-package com.tokopedia.revamp_changepassword.data
+package com.tokopedia.managepassword.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -8,12 +8,12 @@ import com.google.gson.annotations.SerializedName
  * @team @minion-kevin
  */
 
-data class ProfileCompletionData(
+data class ProfileDataModel(
         @Expose
         @SerializedName("userProfileCompletion")
-        var userProfileData: UserProfileCompletion = UserProfileCompletion()
+        var profileData: Profile = Profile()
 ) {
-    data class UserProfileCompletion(
+    data class Profile(
             @Expose
             @SerializedName("isCreatedPassword")
             var isCreatedPassword: Boolean = false
