@@ -16,4 +16,8 @@ class FlightDeleteAllFlightSearchDataUseCase @Inject constructor(
         return flightSearchRepository.deleteAllFlightSearchData()
                 .map { true }
     }
+
+    suspend fun executeCoroutine() {
+        flightSearchRepository.deleteAllFlightSearchDataCoroutine()
+    }
 }
