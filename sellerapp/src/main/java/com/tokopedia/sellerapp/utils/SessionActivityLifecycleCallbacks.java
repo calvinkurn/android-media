@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.utils;
+package com.tokopedia.sellerapp.utils;
 
 import android.app.Activity;
 import android.app.Application;
@@ -29,8 +29,6 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
     private long lastSumTx = 0;
     private long lastSumRx = 0;
 
-    private Thread threadSession;
-
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         openedPageCount++;
@@ -44,11 +42,12 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
 
     @Override
     public void onActivityResumed(Activity activity) {
-        if (threadSession != null && threadSession.isAlive()) {
-            return;
-        }
-        threadSession = new Thread(() -> checkSession(activity.getClass().getSimpleName()));
-        threadSession.start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                checkSession(activity.getClass().getSimpleName());
+            }
+        }).start();
     }
 
     @Override
