@@ -7,7 +7,8 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
  */
 
 data class TipsUiModel(
-        val tips: String
+        val tips: String,
+        val clickableText: String
 ) : VoucherDetailUiModel {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int = typeFactory.type(this)

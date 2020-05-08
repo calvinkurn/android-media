@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/icMvcTips"
-        android:layout_width="@dimen/mvc_dimen_12dp"
-        android:layout_height="@dimen/mvc_dimen_12dp"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="@+id/tvMvcTips"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvMvcTips"

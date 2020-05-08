@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
+import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
@@ -70,9 +71,14 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
 
     override fun showDescriptionBottomSheet(title: String, content: String) {
         if (!isAdded) return
-
         DescriptionBottomSheet(context ?: return)
                 .show(title, content, childFragmentManager)
+    }
+
+    override fun showTipsAndTrickBottomSheet() {
+        if (!isAdded) return
+        TipsTrickBottomSheet(context ?: return, true)
+                .show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
@@ -93,7 +99,7 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                 PromoPerformanceUiModel("Rp2.600.000", 30, 120),
                 UsageProgressUiModel(30),
                 DividerUiModel(8),
-                TipsUiModel("Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat tips & trik"),
+                TipsUiModel("Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat tips & trik", "Lihat tips & trik"),
                 DividerUiModel(8),
                 InfoContainerUiModel("Info voucher", listOf(
                         SubInfoItemUiModel("Target Voucher", "Khusus"),

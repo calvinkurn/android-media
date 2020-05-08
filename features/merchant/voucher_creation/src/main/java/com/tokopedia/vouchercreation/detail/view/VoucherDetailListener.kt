@@ -9,4 +9,6 @@ interface VoucherDetailListener {
     fun onFooterButtonClickListener()
 
     fun showDescriptionBottomSheet(title: String, content: String)
+
+    fun showTipsAndTrickBottomSheet()
 }

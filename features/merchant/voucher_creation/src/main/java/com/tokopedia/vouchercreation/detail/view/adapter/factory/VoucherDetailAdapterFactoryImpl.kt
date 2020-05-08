@@ -38,7 +38,9 @@ class VoucherDetailAdapterFactoryImpl(
             PromoPerformanceViewHolder.RES_LAYOUT -> PromoPerformanceViewHolder(parent)
             UsageProgressViewHolder.RES_LAYOUT -> UsageProgressViewHolder(parent)
             DividerViewHolder.RES_LAYOUT -> DividerViewHolder(parent)
-            TipsViewHolder.RES_LAYOUT -> TipsViewHolder(parent)
+            TipsViewHolder.RES_LAYOUT -> TipsViewHolder(parent) {
+                voucherDetailListener.showTipsAndTrickBottomSheet()
+            }
             InfoContainerViewHolder.RES_LAYOUT -> InfoContainerViewHolder(parent)
             FooterButtonViewHolder.RES_LAYOUT -> FooterButtonViewHolder(parent) {
                 voucherDetailListener.onFooterButtonClickListener()
