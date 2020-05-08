@@ -56,7 +56,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.action_download -> {
-                orderListAnalytics?.sendDownloadEventData(intent.getStringExtra(STATUS))
+                orderListAnalytics?.sendDownloadEventData(intent.getStringExtra(STATUS) ?: "")
                 doWebPrint()
                 true
             }
