@@ -93,7 +93,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 showShopStatusTicker(shopInfo, isMyShop)
             }
             shouldShowShopStatusTicker(shopOperationalHourStatus.tickerTitle, shopOperationalHourStatus.tickerMessage) -> {
-                showShopOperationalHourStatusTicker(shopOperationalHourStatus, isMyShop)
+                showShopOperationalHourStatusTicker(shopOperationalHourStatus)
             }
             else -> {
                 hideShopStatusTicker()
@@ -138,16 +138,12 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean = false) {
+    private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus) {
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerType = Ticker.TYPE_ANNOUNCEMENT
         view.tickerShopStatus.tickerTitle = shopOperationalHourStatus.tickerTitle
         view.tickerShopStatus.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
-        if (isMyShop) {
-            view.tickerShopStatus.closeButtonVisibility = View.GONE
-        } else {
-            view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
-        }
+        view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
     }
 
     private fun hideShopStatusTicker() {
