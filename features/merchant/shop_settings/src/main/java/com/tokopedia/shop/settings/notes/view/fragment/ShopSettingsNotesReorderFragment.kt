@@ -5,19 +5,16 @@ package com.tokopedia.shop.settings.notes.view.fragment
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.graphql.data.GraphqlClient
@@ -27,9 +24,8 @@ import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter
-
-import java.util.ArrayList
-
+import com.tokopedia.unifycomponents.Toaster
+import java.util.*
 import javax.inject.Inject
 
 
@@ -134,22 +130,20 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteViewModel, Sho
 
     override fun onSuccessReorderShopNote(successMessage: String) {
         hideSubmitLoading()
-        ToasterNormal.make(activity!!.findViewById(android.R.id.content),
-                getString(R.string.note_success_reorder), BaseToaster.LENGTH_LONG)
-                .setAction(getString(com.tokopedia.abstraction.R.string.close)) {
-                    // no-op
-                }.show()
+        view?.let {
+            Toaster.make(it, getString(R.string.note_success_reorder), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.abstraction.R.string.close))
+        }
         listener!!.onSuccessReorderNotes()
     }
 
     override fun onErrorReorderShopNote(throwable: Throwable) {
         hideSubmitLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        ToasterError.make(activity!!.findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_LONG)
-                .setAction(getString(com.tokopedia.abstraction.R.string.close)) {
-                    // no-op
-                }.show()
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.close))
+        }
     }
 
     fun showSubmitLoading(message: String) {
