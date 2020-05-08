@@ -178,9 +178,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView = view.findViewById(setWebView());
         progressBar = view.findViewById(setProgressBar());
 
-        webView.clearCache(true);
-        webView.clearHistory();
-        clearCookie();
+        clearCache();
+        setupCookie();
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
@@ -689,10 +688,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return webHistoryItem.getUrl();
     }
 
-    private void clearCookie() {
+    private void clearCache() {
+        webView.clearCache(true);
+        webView.clearHistory();
+    }
+
+    private void setupCookie() {
         CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(getContext());
         CookieManager cookieManager = CookieManager.getInstance();
 
+        // clear all cookie
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             // we pass null as the callback because we don't need to know when the operation completes or whether any cookies were removed
             cookieManager.removeAllCookies(null);
