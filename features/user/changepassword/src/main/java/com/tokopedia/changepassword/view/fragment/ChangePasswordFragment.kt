@@ -91,9 +91,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
-                REQUEST_LOGOUT -> {
+        when(requestCode) {
+            REQUEST_LOGOUT -> {
+                if (resultCode == Activity.RESULT_OK) {
                     context?.let {
                         DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                             setTitle(getString(R.string.password))
@@ -105,18 +105,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                         }.show()
                     }
                 }
-                REQUEST_LOGIN -> {
-                    if (!userSession.isLoggedIn) {
-                        activity?.apply {
-                            setResult(Activity.RESULT_CANCELED)
-                            finish()
-                        }
-                    }
-                }
             }
-        } else {
-            when (requestCode) {
-                REQUEST_LOGIN -> {
+            REQUEST_LOGIN -> {
+                if (!userSession.isLoggedIn) {
                     activity?.apply {
                         setResult(Activity.RESULT_CANCELED)
                         finish()
