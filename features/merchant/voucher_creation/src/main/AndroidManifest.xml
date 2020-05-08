@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity"
+            android:name=".create.view.activity.CreateMerchantVoucherStepsActivity"
             android:exported="true"
             android:label="@string/create_voucher_title"
             android:screenOrientation="portrait"

@@ -23,6 +23,8 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
             return VoucherDisplayBottomSheetFragment(getVoucherType).apply {
                 context?.run {
                     val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
+                    // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
+                    view?.setupItemDecoration()
                     setChild(view)
                 }
             }
@@ -60,7 +62,6 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
 
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
-        view?.setupItemDecoration()
         val displayList = getVoucherType().displayPairList
         val voucherDisplayAdapter = VoucherDisplayAdapter(displayList)
         voucherDisplayRecyclerView?.run {
