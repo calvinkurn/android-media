@@ -89,6 +89,7 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
     }
 
     override fun stopHomePerformanceMonitoring(isCache: Boolean) {
+        pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceInterface?.stopMonitoring()
         isFromCache = isCache
     }

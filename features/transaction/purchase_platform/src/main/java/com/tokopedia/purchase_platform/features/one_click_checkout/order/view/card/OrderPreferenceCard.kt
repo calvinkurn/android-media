@@ -19,6 +19,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.CourierConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
@@ -26,7 +27,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener) {
+class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
     private lateinit var preference: OrderPreference
 
@@ -90,8 +91,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val shipmentModel = preference.preference.shipment
 
         val shipping = preference.shipping
-        tvShippingName?.text = shipping?.serviceName ?: shipmentModel.serviceName
-        tvShippingDuration?.text = shipping?.serviceDuration ?: shipmentModel.serviceDuration
+        tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
+        val tempServiceDuration = shipping?.serviceDuration ?: shipmentModel.serviceDuration
+        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+            "Durasi " + tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+        } else {
+            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
+        }
+        tvShippingDuration?.text = serviceDur
 
         if (shipping == null) {
             tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -100,7 +107,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = "${shipping.serviceDuration} - ${shipping.shipperName}"
+                    tvShippingDuration?.text = "Durasi ${shipping.serviceDuration} - ${shipping.shipperName}"
                     tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingDuration?.setOnClickListener { }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
@@ -150,6 +157,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                 } else {
+                    tvShippingName?.text = "Pengiriman"
+                    tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
                         listener.chooseDuration()
@@ -237,6 +246,26 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    fun setPaymentError(isError: Boolean) {
+        if (isError) {
+            ivPayment?.alpha = 0.5f
+            tvPaymentName?.alpha = 0.5f
+            tvPaymentDetail?.alpha = 0.5f
+            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)
+            if (color != null) {
+                tvPaymentDetail?.setTextColor(color)
+            }
+        } else {
+            ivPayment?.alpha = 1f
+            tvPaymentName?.alpha = 1f
+            tvPaymentDetail?.alpha = 1f
+            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+            if (color != null) {
+                tvPaymentDetail?.setTextColor(color)
+            }
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun showAddress() {
         val addressModel = preference.preference.address
@@ -274,6 +303,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             }
             if (shippingRecommendationData.logisticPromo != null) {
                 list.add(shippingRecommendationData.logisticPromo)
+                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                }
             }
             ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
                 override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
@@ -304,6 +336,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
             })
         }
+    }
+
+    companion object {
+        private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
     }
 
     interface OrderPreferenceCardListener {

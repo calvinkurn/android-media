@@ -16,15 +16,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
+import com.tokopedia.play.*
 import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.analytic.TrackingField
@@ -70,6 +69,8 @@ class PlayFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     private var channelId = ""
 
@@ -143,6 +144,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startPageMonitoring()
+        starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -194,6 +197,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        stopPrepareMonitoring()
+        startNetworkMonitoring()
         playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
@@ -312,7 +317,6 @@ class PlayFragment : BaseDaggerFragment() {
                         isBuffering = false,
                         shouldTrackNext = true
                 )
-
             }
         })
     }
@@ -405,6 +409,48 @@ class PlayFragment : BaseDaggerFragment() {
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
         })
+    }
+
+    /**
+     * Performance Monitoring
+     */
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_TRACE_PREPARE_PAGE,
+                PLAY_TRACE_REQUEST_NETWORK,
+                PLAY_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
+    }
+
+    private fun starPrepareMonitoring() {
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    private fun stopPrepareMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    fun stopRenderMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        pageMonitoring.stopMonitoring()
     }
 
     /**

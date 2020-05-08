@@ -26,7 +26,7 @@ class MultipleProductCardViewHolder(
         itemView: View,
         private val sourceView: SourceMultipleProductView,
         val listener: NotificationItemListener
-): AbstractViewHolder<MultipleProductCardViewBean>(itemView) {
+) : AbstractViewHolder<MultipleProductCardViewBean>(itemView) {
 
     private val thumbnail: ImageView = itemView.findViewById(R.id.iv_thumbnail)
     private val productName: TextView = itemView.findViewById(R.id.tv_product_name)
@@ -56,13 +56,13 @@ class MultipleProductCardViewHolder(
     private fun impressionTracker(element: MultipleProductCardViewBean) {
         when(sourceView) {
             is SourceMultipleProductView.NotificationCenter -> {
-                listener.getAnalytic().trackProductListImpression(
+                listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
                         notification = element
                 )
             }
             is SourceMultipleProductView.BottomSheetDetail -> {
-                listener.getAnalytic().trackProductListImpression(
+                listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
                         location = LABEL_BOTTOM_SHEET_LOCATION,
                         notification = element

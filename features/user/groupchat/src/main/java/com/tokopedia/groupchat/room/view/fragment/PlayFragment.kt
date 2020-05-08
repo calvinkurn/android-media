@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.room.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -26,7 +25,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
@@ -53,6 +51,7 @@ import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.sharedata.DefaultShareData
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -611,8 +610,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
+        if (userSession.isLoggedIn && !viewState.errorViewShown() && view!=null) {
+            Toaster.make(view!!, getString(R.string.connecting), Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR)
+            snackBarWebSocket = Toaster.snackBar
             isSnackbarEnded = false
             snackBarWebSocket?.removeCallback(snackBarCallback)
             snackBarWebSocket?.addCallback(snackBarCallback)
@@ -624,8 +625,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarRetryConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            if (isPortrait) snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
+        if (userSession.isLoggedIn && !viewState.errorViewShown() && view!=null) {
+            Toaster.make(view!!, getString(R.string.error_websocket_play), Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR)
+            if (isPortrait) snackBarWebSocket = Toaster.snackBar
             isSnackbarEnded = false
             snackBarWebSocket?.removeCallback(snackBarCallback)
             snackBarWebSocket?.addCallback(snackBarCallback)
@@ -695,7 +698,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
         viewState.onErrorSendMessage(pendingChatViewModel, exception)
-        ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
+        view?.let {
+            Toaster.make(it, exception?.message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun onFloatingIconClicked(it: DynamicButton, applink: String) {
@@ -820,7 +825,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 loadFirstTime()
             }
             STICKY_COMPONENT -> {
-                ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.play_atc_success))
+                view?.let {
+                    Toaster.make(it, getString(R.string.play_atc_success), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
             }
         }
     }

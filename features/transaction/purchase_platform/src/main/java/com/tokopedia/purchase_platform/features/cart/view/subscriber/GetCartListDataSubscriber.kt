@@ -30,6 +30,7 @@ class GetCartListDataSubscriber(val view: ICartListView?,
         view?.let {
             presenter?.setLastApplyValid()
             presenter?.setValidateUseLastResponse(null)
+            presenter?.setUpdateCartAndValidateUseLastResponse(null)
             if (!initialLoad) {
                 it.hideProgressLoading()
             }
