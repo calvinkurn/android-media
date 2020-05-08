@@ -558,7 +558,9 @@ public class ProductListFragment
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
-        sendProductImpressionTrackingEvent(list);
+        if (!presenter.isTrackingViewPortEnabled()) {
+            sendProductImpressionTrackingEvent(list);
+        }
 
         adapter.appendItems(list);
     }
@@ -607,6 +609,26 @@ public class ProductListFragment
                 }
             }
         }
+        if(irisSession != null){
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+                    irisSession.getSessionId());
+        }else {
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+        }
+    }
+
+    @Override
+    public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
+        String userId = getUserId();
+        String searchRef = getSearchRef();
+        List<Object> dataLayerList = new ArrayList<>();
+        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
+
+        String filterSortParams
+                = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
+        productItemViewModels.add(item);
+
         if(irisSession != null){
             SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
                     irisSession.getSessionId());

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -28,15 +27,16 @@ import com.tokopedia.common_category.adapter.ProductNavListAdapter
 import com.tokopedia.common_category.adapter.QuickFilterAdapter
 import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
-import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.*
-import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
+import com.tokopedia.common_category.model.bannedCategory.SubCategoryItem
 import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
+import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.discovery.R
+import com.tokopedia.discovery.categoryrevamp.adapters.SelectedFilterAdapter
+import com.tokopedia.discovery.categoryrevamp.adapters.SubCategoryAdapter
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.utils.CategoryApiParamBuilder.Companion.categoryApiParamBuilder
@@ -49,6 +49,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -56,16 +57,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -394,8 +394,6 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.show()
-            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
             quickfilter_parent.hide()
             val selectedFilterFromEmptyStateListener = getSelectedFilterAsOptionList()
             if (selectedFilterFromEmptyStateListener != null && selectedFilterFromEmptyStateListener.isNotEmpty()) {
@@ -751,5 +749,10 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     private fun isUserLoggedIn(): Boolean {
         return userSession.isLoggedIn
+    }
+
+    override fun addBannedProductScreen() {
+        super.addBannedProductScreen()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.show()
     }
 }

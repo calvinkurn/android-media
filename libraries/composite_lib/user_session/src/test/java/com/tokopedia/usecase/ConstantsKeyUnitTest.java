@@ -54,6 +54,7 @@ public class ConstantsKeyUnitTest {
     private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
     private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
     private static final String LOGIN_METHOD = "LOGIN_METHOD";
+    public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
 
     /**
      * Twitter Prefs
@@ -71,11 +72,11 @@ public class ConstantsKeyUnitTest {
             SHOP_AVATAR, IS_POWER_MERCHANT_IDLE, AUTOFILL_USER_DATA, LOGIN_METHOD,
             TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST, GTM_LOGIN_ID,
             TEMP_USER_ID, GCM_ID, IS_AFFILIATE, IS_FIRST_TIME_USER_NEW_ONBOARDING,
-            UUID_KEY, LOGIN_UUID_KEY
+            UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP
     };
 
     @Test
-    public void encryptKeys() {
+    public void compareAndDecryptKeys() {
 
         final String KEY_PEMBUKA = "tokopedia1234567";
 
@@ -85,6 +86,14 @@ public class ConstantsKeyUnitTest {
 
             assertEquals(result, expectedResult);
         }
+    }
+
+    @Test
+    public void encryptKeys() {
+        final String KEY_PEMBUKA = "tokopedia1234567";
+
+        String result = EncoderDecoder.Encrypt(GCM_ID_TIMESTAMP, KEY_PEMBUKA);
+        System.out.println(result);
     }
 
     @Test
