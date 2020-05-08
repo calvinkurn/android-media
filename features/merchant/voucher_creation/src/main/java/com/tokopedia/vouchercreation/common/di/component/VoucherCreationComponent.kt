@@ -6,6 +6,7 @@ import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelMo
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.FreeDeliveryVoucherCreateFragment
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
@@ -25,4 +26,5 @@ interface VoucherCreationComponent {
     fun inject(voucherListFragment: VoucherListFragment)
     fun inject(freeDeliveryVoucherCreateFragment: FreeDeliveryVoucherCreateFragment)
     fun inject(cashbackVoucherCreateFragment: CashbackVoucherCreateFragment)
+    fun inject(promotionBudgetAndTypeFragment: PromotionBudgetAndTypeFragment)
 }
