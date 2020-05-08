@@ -139,8 +139,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
-        val baseListAdapter = HotelSearchResultAdapter(this, adapterTypeFactory)
-        return baseListAdapter
+        return HotelSearchResultAdapter(this, adapterTypeFactory)
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
