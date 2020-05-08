@@ -411,7 +411,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private fun slideUpCounter() {
         productSelectedCounter?.animate()?.translationY(0f)
-        buttonBackToTop?.circleMainMenu?.show()
+        if(gridLayoutManager.findFirstCompletelyVisibleItemPosition() != 0)
+            buttonBackToTop?.circleMainMenu?.show()
     }
 
 }

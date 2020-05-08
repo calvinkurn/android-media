@@ -190,11 +190,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             updateAppendedSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             updateDeletedProduct(showcaseAddAdapter, newDeletedProductList)
             showSelectedProductList()
-            newSelectedProductList?.filter {
-                it.isNewAppended
-            }?.apply {
-                showToaster(resources.getString(R.string.success_add_product, size.toString()))
-            }
         }
     }
 
