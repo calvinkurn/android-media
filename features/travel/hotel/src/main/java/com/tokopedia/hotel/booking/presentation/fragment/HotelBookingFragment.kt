@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
@@ -262,7 +261,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         booking_button.setOnClickListener { onBookingButtonClicked() }
     }
 
-    fun initGuestInfoEditText() {
+    private fun initGuestInfoEditText() {
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
                     arrayListOf(), object : TravelContactArrayAdapter.ContactArrayListener {
