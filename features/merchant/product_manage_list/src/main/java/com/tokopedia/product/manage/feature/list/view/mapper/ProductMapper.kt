@@ -76,7 +76,6 @@ object ProductMapper {
             totalProductCount += violationFilterCount
         }
 
-
         return if(this?.value == null) {
             ShowFilterTab(productFilters, totalProductCount)
         } else {
