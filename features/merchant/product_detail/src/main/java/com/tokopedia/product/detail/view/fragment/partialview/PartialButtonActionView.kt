@@ -199,14 +199,14 @@ class PartialButtonActionView private constructor(val view: View,
 
     private fun hideButtonEmptyAndTopAds() = with(view) {
         btn_empty_stock.hide()
-        btn_top_ads.hide()
+        seller_button_container.hide()
     }
 
     private fun showShopManageButton() {
         with(view) {
             btn_empty_stock.hide()
             btn_topchat.hide()
-            btn_top_ads.show()
+            seller_button_container.show()
             if (hasTopAdsActive) {
                 btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.rincian_topads)
@@ -216,6 +216,8 @@ class PartialButtonActionView private constructor(val view: View,
                 btn_top_ads.text = context.getString(R.string.promote_topads)
                 btn_top_ads.buttonVariant = UnifyButton.Variant.FILLED
             }
+
+            btn_edit_product.setOnClickListener(this@PartialButtonActionView)
         }
     }
 
@@ -223,7 +225,7 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
             btn_byme.hide()
-            btn_top_ads.hide()
+            seller_button_container.hide()
             btn_empty_stock.show()
             btn_topchat.showWithCondition(!isShopOwner)
             btn_topchat.setOnClickListener(this@PartialButtonActionView)

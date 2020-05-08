@@ -154,9 +154,9 @@ object DynamicProductDetailMapper {
         }
     }
 
-    fun convertMediaToDataModel(media: MutableList<Media>): List<ProductMediaDataModel> {
+    fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
         return media.map { it ->
-            ProductMediaDataModel(it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
+            MediaDataModel(it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }
 

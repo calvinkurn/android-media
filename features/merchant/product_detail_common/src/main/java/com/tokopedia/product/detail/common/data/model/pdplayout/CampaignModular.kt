@@ -2,6 +2,9 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
 import com.google.gson.annotations.SerializedName
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 data class CampaignModular(
         @SerializedName("appLinks")
@@ -39,6 +42,21 @@ data class CampaignModular(
         @SerializedName("isUsingOvo")
         val isUsingOvo: Boolean = false
 ) {
+
+    fun timeIsUnder1Day(): Boolean {
+        return try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val endDate = dateFormat.parse(endDate)
+            val now = System.currentTimeMillis()
+            TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
+        } catch (e: Throwable) {
+            false
+        }
+    }
+
+    val shouldShowRibbonCampaign
+        get() = isActive && timeIsUnder1Day()
+
     val activeAndHasId
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0
 

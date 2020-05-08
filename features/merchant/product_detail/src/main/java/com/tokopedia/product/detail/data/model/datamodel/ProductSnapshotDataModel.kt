@@ -15,7 +15,7 @@ data class ProductSnapshotDataModel(
         var isAllowManage: Int = 0,
         var isWishlisted: Boolean = false,
 
-        var media: List<ProductMediaDataModel>? = null,
+        var media: List<MediaDataModel>? = null,
         var dynamicProductInfoP1: DynamicProductInfoP1? = null,
         var shouldShowCod: Boolean = false,
         var shouldShowTradein: Boolean = false,

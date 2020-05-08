@@ -527,6 +527,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 onShopChatClicked()
             }
             R.id.btn_apply_leasing -> doAtc(ProductDetailConstant.LEASING_BUTTON)
+            R.id.btn_edit_product -> gotoEditProduct()
             else -> {
             }
         }
@@ -2013,7 +2014,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val linearLayout = view?.findViewById<ViewGroup>(R.id.layout_search)
             linearLayout?.hide()
         }
-
         varToolbar = search_pdp_toolbar
         initToolBarMethod = ::initToolbarLight
         activity?.let {
@@ -2022,6 +2022,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             it.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
+
+        (activity as AppCompatActivity).supportActionBar?.elevation = 10F
 
         et_search.setOnClickListener {
             DynamicProductDetailTracking.Click.eventSearchToolbarClicked(viewModel.getDynamicProductInfoP1)
