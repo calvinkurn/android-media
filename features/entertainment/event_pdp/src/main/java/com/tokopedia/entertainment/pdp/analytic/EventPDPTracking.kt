@@ -213,7 +213,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 DataLayer.mapOf(
                         Product.NAME, mPackage.name,
                         Product.ID, mPackage.id,
-                        Product.PRICE, mPackage.salesPrice,
+                        Product.PRICE, (mPackage.salesPrice.toInt() * qty),
                         Product.BRAND, "",
                         Product.CATEGORY, productDetailData.category[0].title,
                         Product.VARIANT, mPackage.id,

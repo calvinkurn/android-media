@@ -192,9 +192,9 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
 
     private fun setupPilihTicketButton(){
         pilihTicketBtn.setOnClickListener {
+            eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
+                    PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET.toInt(), EXTRA_PACKAGES_ID)
             if(userSession.isLoggedIn) {
-                eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
-                        PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET.toInt(), EXTRA_PACKAGES_ID)
                 startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP,
                         viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
             } else {
