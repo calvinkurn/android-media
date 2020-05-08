@@ -636,6 +636,9 @@ open class HomeViewModel @Inject constructor(
                     getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
+                    if (homeDataModel?.list?.size?:0 > 1) {
+                        _isRequestNetworkLiveData.postValue(Event(false))
+                    }
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     refreshHomeData()
                 }
