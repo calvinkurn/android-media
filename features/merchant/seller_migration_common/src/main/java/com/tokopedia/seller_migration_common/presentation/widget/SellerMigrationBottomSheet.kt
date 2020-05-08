@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
 import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -44,7 +45,9 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
 
     private fun setupText() {
         if(contents.isNotEmpty() && titles.isNotEmpty()) {
-            setContentText(contents.first())
+            context?.let {
+                setContentText(HtmlLinkHelper(it, contents.first()).spannedString)
+            }
             setTitleText(titles.first())
         }
     }
@@ -74,7 +77,7 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     setTitleText(titles[current])
-                    setContentText(contents[current])
+                    setContentText(HtmlLinkHelper(context, contents[current]).spannedString)
                 }
             }
             visibility = View.VISIBLE
@@ -82,7 +85,7 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
         sellerMigrationBottomSheetImage.visibility = View.GONE
     }
 
-    private fun setContentText(text: String) {
+    private fun setContentText(text: CharSequence?) {
         sellerMigrationBottomSheetContent.text = text
     }
 

@@ -35,7 +35,7 @@
             android:id="@+id/sellerMigrationBottomSheetImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:visibility="gone"/>
     </RelativeLayout>
 
