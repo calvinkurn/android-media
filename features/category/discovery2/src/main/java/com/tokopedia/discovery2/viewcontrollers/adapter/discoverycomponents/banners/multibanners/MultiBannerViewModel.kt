@@ -13,7 +13,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
-import com.tokopedia.discovery2.utils.Utils
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSession

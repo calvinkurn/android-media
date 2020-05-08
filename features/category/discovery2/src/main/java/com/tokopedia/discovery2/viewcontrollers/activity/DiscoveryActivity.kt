@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.activity
 
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,6 +8,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.kotlin.extensions.view.hide
 import javax.inject.Inject
 
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
@@ -32,7 +32,8 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
 
     override fun initInject() {
-                DaggerDiscoveryComponent.builder()
+        toolbar?.hide()
+        DaggerDiscoveryComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
