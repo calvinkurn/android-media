@@ -14,17 +14,27 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
  * Created by jegul on 05/05/20
  */
 class FragmentVideoView(
-        channelId: String,
+        private val channelId: String,
         container: ViewGroup,
-        fragmentManager: FragmentManager,
-        listener: Listener
+        private val fragmentManager: FragmentManager,
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View =
             LayoutInflater.from(container.context).inflate(R.layout.view_fragment_video, container, true)
                     .findViewById(R.id.fl_video)
 
-    init {
+    override val containerId: Int = view.id
+
+    override fun show() {
+        view.show()
+    }
+
+    override fun hide() {
+        view.hide()
+    }
+
+    internal fun init() {
         fragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG) ?: PlayVideoFragment.newInstance(channelId).also {
             fragmentManager.beginTransaction()
                     .replace(view.id, it, VIDEO_FRAGMENT_TAG)
@@ -36,14 +46,12 @@ class FragmentVideoView(
         }
     }
 
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
+    internal fun release() {
+        fragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG)?.let { fragment ->
+            fragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commit()
+        }
     }
 
     companion object {

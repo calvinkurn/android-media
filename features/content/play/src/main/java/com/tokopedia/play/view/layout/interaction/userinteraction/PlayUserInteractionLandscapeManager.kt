@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.layout.interaction
+package com.tokopedia.play.view.layout.interaction.userinteraction
 
 import android.view.View
 import android.view.ViewGroup
@@ -7,14 +7,17 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
+import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
  * Created by jegul on 13/04/20
  */
-class PlayInteractionLandscapeManager(
+class PlayUserInteractionLandscapeManager(
         container: ViewGroup,
         viewInitializer: PlayInteractionViewInitializer
 ) : PlayInteractionLayoutManager {
@@ -74,6 +77,9 @@ class PlayInteractionLandscapeManager(
 
     override fun getVideoBottomBoundsOnKeyboardShown(container: View, estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
         return 0
+    }
+
+    override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
     }
 
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {

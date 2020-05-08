@@ -48,6 +48,7 @@ open class YouTubeComponent(
                                 uiView.setYouTubeId(it.videoPlayer.youtubeId)
                                 uiView.show()
                             }
+                            is ScreenStateEvent.OrientationChanged -> uiView.setFullScreenButton(it.orientation.isLandscape)
                         }
                     }
         }

@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -70,6 +71,9 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
     private val orientationListener: PlayOrientationListener
         get() = requireParentFragment() as PlayOrientationListener
 
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
     override fun getScreenName(): String = "Play YouTube"
 
     override fun initInjector() {
@@ -114,6 +118,16 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         return false
     }
 
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return false
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val orientation = ScreenOrientation.getByInt(newConfig.orientation)
+        sendOrientationChangedEvent(orientation)
+    }
+
     //region observe
     private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
@@ -138,7 +152,7 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation))
                         )
             }
         })
@@ -179,16 +193,25 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }
 
     private fun enterFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
+        if (!orientation.isLandscape)
+            orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
-        orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
+        if (!orientation.isPortrait)
+            orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
+    }
+
+    private fun sendOrientationChangedEvent(orientation: ScreenOrientation) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(ScreenStateEvent::class.java, ScreenStateEvent.OrientationChanged(orientation, playViewModel.getStateHelper(orientation)))
+        }
     }
 }

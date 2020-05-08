@@ -21,7 +21,7 @@ class FragmentBottomSheetComponent(
         container: ViewGroup,
         fragmentManager: FragmentManager,
         private val bus: EventBusFactory,
-        private val scope: CoroutineScope,
+        scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<Unit> {
 
@@ -33,7 +33,14 @@ class FragmentBottomSheetComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.Init -> {
+                                uiView.init()
+                                uiView.show()
+                            }
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isBanned || it.event.isFreeze) {
+                                uiView.release()
+                                uiView.hide()
+                            }
                         }
                     }
         }

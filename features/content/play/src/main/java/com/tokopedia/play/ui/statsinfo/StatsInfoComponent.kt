@@ -37,7 +37,7 @@ open class StatsInfoComponent(
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
                             }
-                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && !it.stateHelper.screenOrientation.isLandscape) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown) uiView.show() else uiView.hide()
                         }
                     }
         }

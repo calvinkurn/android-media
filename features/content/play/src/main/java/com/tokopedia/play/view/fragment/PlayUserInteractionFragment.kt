@@ -64,7 +64,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
-import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
+import com.tokopedia.play.view.layout.interaction.userinteraction.PlayUserInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -168,6 +168,9 @@ class PlayUserInteractionFragment :
             requireActivity().window.decorView.systemUiVisibility = value
         }
 
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
     /**
      * Animation
      */
@@ -177,7 +180,7 @@ class PlayUserInteractionFragment :
     private val delayFadeOutAnimation = PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
     private val fadeAnimationList = arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation)
 
-    override fun getScreenName(): String = "Play Interaction"
+    override fun getScreenName(): String = "Play User Interaction"
 
     override fun initInjector() {
         DaggerPlayComponent.builder()
@@ -236,11 +239,6 @@ class PlayUserInteractionFragment :
         trackingQueue.sendAll()
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupSystemUi()
-    }
-
     override fun onDestroyView() {
         destroyInsets(requireView())
         super.onDestroyView()
@@ -265,6 +263,17 @@ class PlayUserInteractionFragment :
         return false
     }
 
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return if (!orientation.isLandscape) {
+            systemUiVisibility = if (!playViewModel.videoOrientation.isHorizontal && container.isFullAlpha)
+                PlayFullScreenHelper.getHideSystemUiVisibility()
+            else
+                PlayFullScreenHelper.getShowSystemUiVisibility()
+
+            true
+        } else false
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
@@ -283,17 +292,6 @@ class PlayUserInteractionFragment :
 
     private fun destroyInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view, null)
-    }
-
-    private fun setupSystemUi() {
-        val screenOrientation = playViewModel.screenOrientation
-        systemUiVisibility =
-                if (screenOrientation.isLandscape) PlayFullScreenHelper.getHideSystemUiVisibility()
-                else {
-                    val videoOrientation = playViewModel.screenOrientation
-                    if (!videoOrientation.isLandscape && container.isFullAlpha) PlayFullScreenHelper.getHideSystemUiVisibility()
-                    else PlayFullScreenHelper.getShowSystemUiVisibility()
-                }
     }
 
     //region observe
@@ -320,7 +318,7 @@ class PlayUserInteractionFragment :
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.VideoPropertyChanged(it, playViewModel.stateHelper)
+                                ScreenStateEvent.VideoPropertyChanged(it, playViewModel.getStateHelper(orientation))
                         )
             }
         })
@@ -440,7 +438,7 @@ class PlayUserInteractionFragment :
                     EventBusFactory.get(viewLifecycleOwner)
                             .emit(
                                     ScreenStateEvent::class.java,
-                                    ScreenStateEvent.BottomInsetsChanged(map, map.isAnyShown, map.isAnyHidden, playViewModel.stateHelper)
+                                    ScreenStateEvent.BottomInsetsChanged(map, map.isAnyShown, map.isAnyHidden, playViewModel.getStateHelper(orientation))
                             )
 
                 }.apply {
@@ -473,12 +471,8 @@ class PlayUserInteractionFragment :
     //endregion
 
     private fun setupView(view: View) {
-        container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
         container.setOnClickListener {
-            if (
-                    (playViewModel.screenOrientation.isLandscape && container.hasAlpha) ||
-                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isHorizontal && container.hasAlpha)
-            ) triggerImmersive(it.isFullSolid)
+            if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
         }
     }
 
@@ -496,7 +490,7 @@ class PlayUserInteractionFragment :
         }
 
         when {
-            playViewModel.screenOrientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
+            orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> sendImmersiveEvent(shouldImmersive)
             else -> {
                 systemUiVisibility = if (shouldImmersive) layoutManager.onEnterImmersive() else layoutManager.onExitImmersive()
@@ -523,9 +517,9 @@ class PlayUserInteractionFragment :
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        layoutManager = PlayInteractionLayoutManagerImpl(
+        layoutManager = PlayUserInteractionLayoutManager(
                 container = container,
-                orientation = playViewModel.screenOrientation,
+                orientation = orientation,
                 videoOrientation = playViewModel.videoOrientation,
                 viewInitializer = this
         )
@@ -667,10 +661,9 @@ class PlayUserInteractionFragment :
                                         channelId = channelId,
                                         userId = userSession.userId,
                                         channelType = playViewModel.channelType,
-                                        screenOrientation = playViewModel.screenOrientation
+                                        screenOrientation = orientation
                                 )
-                                if (playViewModel.screenOrientation.isLandscape && this@PlayUserInteractionFragment.container.hasAlpha) this@PlayUserInteractionFragment.container.performClick()
-                                else triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
+                                triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
                             }
                         }
                     }
@@ -755,7 +748,7 @@ class PlayUserInteractionFragment :
         scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }
@@ -830,7 +823,7 @@ class PlayUserInteractionFragment :
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.stateHelper)
+                            ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.getStateHelper(orientation))
                     )
         }
     }
@@ -840,21 +833,21 @@ class PlayUserInteractionFragment :
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.stateHelper)
+                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.getStateHelper(orientation))
                     )
         }
     }
     //endregion
 
     private fun onScrubStarted() {
-        if (!playViewModel.screenOrientation.isLandscape) return
+        if (!orientation.isLandscape) return
 
         cancelAllAnimations()
         fadeInAnimation.start(container)
     }
 
     private fun onScrubEnded() {
-        if (!playViewModel.screenOrientation.isLandscape) return
+        if (!orientation.isLandscape) return
 
         cancelAllAnimations()
         delayFadeOutAnimation.start(container)

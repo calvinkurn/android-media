@@ -32,7 +32,21 @@ class FragmentYouTubeComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init -> {
+                                uiView.release()
+                                uiView.hide()
+                            }
+                            is ScreenStateEvent.SetVideo -> if (it.videoPlayer.isYouTube) {
+                                uiView.init()
+                                uiView.show()
+                            } else {
+                                uiView.release()
+                                uiView.hide()
+                            }
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isBanned || it.event.isFreeze) {
+                                uiView.release()
+                                uiView.hide()
+                            }
                         }
                     }
         }

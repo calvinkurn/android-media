@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
  * Created by jegul on 16/04/20
@@ -35,5 +36,9 @@ class PlayVideoLayoutManagerImpl(
 
     override fun onDestroy() {
         manager.onDestroy()
+    }
+
+    override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
+        manager.onOrientationChanged(view, orientation, videoOrientation, videoPlayer)
     }
 }

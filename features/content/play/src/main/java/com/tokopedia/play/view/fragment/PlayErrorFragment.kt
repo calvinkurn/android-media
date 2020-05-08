@@ -91,6 +91,10 @@ class PlayErrorFragment: BaseDaggerFragment(), PlayFragmentContract {
         return false
     }
 
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return false
+    }
+
     private fun initComponent(view: View) {
         container = view.findViewById(R.id.container_global_error)
         globalError = view.findViewById(R.id.global_error)

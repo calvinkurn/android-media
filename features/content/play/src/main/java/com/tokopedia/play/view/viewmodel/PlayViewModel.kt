@@ -83,8 +83,6 @@ class PlayViewModel @Inject constructor(
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
 
-    var screenOrientation: ScreenOrientation = ScreenOrientation.Unknown
-        private set
     val videoOrientation: VideoOrientation
         get() {
             val videoStream = _observableCompleteInfo.value?.videoStream
@@ -124,21 +122,6 @@ class PlayViewModel @Inject constructor(
         get() = _observablePartnerInfo.value?.id
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
-
-    val stateHelper: StateHelperUiModel
-        get() {
-            val pinned = _observablePinned.value
-            val bottomInsets = _observableBottomInsetsState.value
-            return StateHelperUiModel(
-                    shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
-                    channelType = channelType,
-                    videoPlayer = videoPlayer,
-                    bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
-                    screenOrientation = screenOrientation,
-                    videoOrientation = videoOrientation,
-                    videoState = playVideoManager.getVideoState()
-            )
-        }
 
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
@@ -246,10 +229,6 @@ class PlayViewModel @Inject constructor(
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
         stopPlayer()
-    }
-
-    fun resumeWithChannelId(channelId: String) {
-        getChannelInfo(channelId)
     }
     //endregion
 
@@ -495,13 +474,6 @@ class PlayViewModel @Inject constructor(
         return shownBottomSheets.isNotEmpty()
     }
 
-    /**
-     * Set Screen Orientation
-     */
-    fun setScreenOrientation(screenOrientation: ScreenOrientation) {
-        this.screenOrientation = screenOrientation
-    }
-
     fun updateBadgeCart() {
         val channelInfo = _observableGetChannelInfo.value
         if (channelInfo != null && channelInfo is Success) {
@@ -566,6 +538,20 @@ class PlayViewModel @Inject constructor(
             _observableSocketInfo.value = PlaySocketInfo.Error(it)
             startWebSocket(channelId, gcToken, settings)
         })
+    }
+
+    fun getStateHelper(orientation: ScreenOrientation): StateHelperUiModel {
+        val pinned = _observablePinned.value
+        val bottomInsets = _observableBottomInsetsState.value
+        return StateHelperUiModel(
+                shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
+                channelType = channelType,
+                videoPlayer = videoPlayer,
+                bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
+                screenOrientation = orientation,
+                videoOrientation = videoOrientation,
+                videoState = playVideoManager.getVideoState()
+        )
     }
 
     /**

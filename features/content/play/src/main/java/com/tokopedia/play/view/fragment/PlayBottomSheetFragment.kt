@@ -106,6 +106,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     private val generalErrorMessage: String
         get() = getString(R.string.play_general_err_message)
 
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     override fun getScreenName(): String = "Play Bottom Sheet"
@@ -170,6 +173,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
         return ::loadingDialog.isInitialized && loadingDialog.isVisible
     }
 
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return false
+    }
+
     private fun observeProductSheetContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
             scope.launch {
@@ -213,7 +220,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation)))
 
                 val productSheetState = it[BottomInsetsType.ProductSheet]
 
@@ -293,7 +300,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
         scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }

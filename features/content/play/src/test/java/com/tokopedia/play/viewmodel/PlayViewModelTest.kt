@@ -671,7 +671,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -687,7 +687,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -705,7 +705,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -719,7 +719,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -737,7 +737,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(orientation).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -755,7 +755,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(orientation).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -768,7 +768,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(orientation).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -777,7 +777,7 @@ class PlayViewModelTest {
         val expectedResult = PlayChannelType.Unknown
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(orientation).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -796,7 +796,7 @@ class PlayViewModelTest {
         val expectedResult = true
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -815,7 +815,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -826,7 +826,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -835,7 +835,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
     //endregion

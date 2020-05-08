@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.layout.interaction
+package com.tokopedia.play.view.layout.interaction.userinteraction
 
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +12,17 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
+import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
  * Created by jegul on 13/04/20
  */
-class PlayInteractionPortraitManager(
+class PlayUserInteractionPortraitManager(
         container: ViewGroup,
         private val videoOrientation: VideoOrientation,
         viewInitializer: PlayInteractionViewInitializer
@@ -92,6 +95,9 @@ class PlayInteractionPortraitManager(
 
     override fun onExitImmersive(): Int {
         return PlayFullScreenHelper.getShowSystemUiVisibility()
+    }
+
+    override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
     }
 
     override fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int {

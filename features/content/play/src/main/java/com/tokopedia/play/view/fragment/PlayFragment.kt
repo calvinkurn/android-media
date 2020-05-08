@@ -3,12 +3,11 @@ package com.tokopedia.play.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -22,12 +21,10 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.play.*
 import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -36,34 +33,33 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isAnyHidden
-import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isKeyboardShown
+import com.tokopedia.play.extensions.*
 import com.tokopedia.play.ui.closebutton.CloseButtonComponent
 import com.tokopedia.play.ui.closebutton.interaction.CloseButtonInteractionEvent
 import com.tokopedia.play.ui.fragment.bottomsheet.FragmentBottomSheetComponent
 import com.tokopedia.play.ui.fragment.error.FragmentErrorComponent
+import com.tokopedia.play.ui.fragment.miniinteraction.FragmentMiniInteractionComponent
 import com.tokopedia.play.ui.fragment.userinteraction.FragmentUserInteractionComponent
 import com.tokopedia.play.ui.fragment.video.FragmentVideoComponent
 import com.tokopedia.play.ui.fragment.video.interaction.FragmentVideoInteractionEvent
 import com.tokopedia.play.ui.fragment.youtube.FragmentYouTubeComponent
 import com.tokopedia.play.ui.fragment.youtube.interaction.FragmentYouTubeInteractionEvent
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.layout.parent.PlayParentViewInitializer
+import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
-import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.state.PlayVideoState
@@ -134,13 +130,20 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private val keyboardWatcher = KeyboardWatcher()
 
-    private var isChangingOrientation = false
-
     private var requestedOrientation: Int
         get() = requireActivity().requestedOrientation
         set(value) {
             requireActivity().requestedOrientation = value
         }
+
+    private var systemUiVisibility: Int
+        get() = requireActivity().window.decorView.systemUiVisibility
+        set(value) {
+            requireActivity().window.decorView.systemUiVisibility = value
+        }
+
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     override fun getScreenName(): String = "Play"
 
@@ -197,7 +200,8 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         super.onResume()
         stopPrepareMonitoring()
         startNetworkMonitoring()
-        if (!isChangingOrientation) playViewModel.resumeWithChannelId(channelId)
+        playViewModel.getChannelInfo(channelId)
+        onInterceptSystemUiVisibilityChanged()
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -254,6 +258,18 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         return isIntercepted || !videoOrientation.isHorizontal
     }
 
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        val isIntercepted = childFragmentManager.fragments.asSequence()
+                .filterIsInstance<PlayFragmentContract>()
+                .any { it.onInterceptSystemUiVisibilityChanged() }
+
+        if (!isIntercepted) {
+            if (orientation.isLandscape) systemUiVisibility = PlayFullScreenHelper.getHideSystemUiVisibility()
+        }
+
+        return isIntercepted
+    }
+
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
         layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
@@ -273,7 +289,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         if (this.topBounds == null && topBounds > 0) {
             this.topBounds = topBounds
         }
-        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoPlayer, playViewModel.screenOrientation, videoOrientation, it) }
+        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoPlayer, orientation, videoOrientation, it) }
     }
 
     /**
@@ -283,7 +299,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         val isHandled = playViewModel.onBackPressed()
         return when {
             isHandled -> isHandled
-            playViewModel.screenOrientation.isLandscape -> {
+            orientation.isLandscape -> {
                 requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
                 true
             }
@@ -346,6 +362,11 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 .getContainerId()
     }
 
+    override fun onInitMiniInteractionFragment(container: ViewGroup): Int {
+        return FragmentMiniInteractionComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+                .getContainerId()
+    }
+
     override fun onInitBottomSheetFragment(container: ViewGroup): Int {
         return FragmentBottomSheetComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .getContainerId()
@@ -377,11 +398,61 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
     //endregion
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
+        layoutManager.onOrientationChanged(requireView(), newOrientation, playViewModel.videoOrientation, playViewModel.videoPlayer)
+        sendOrientationChangedEvent(newOrientation)
+        onInterceptSystemUiVisibilityChanged()
+    }
+
     private fun sendInitState() {
         scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
+            )
+        }
+    }
+
+    private fun sendEventBanned(event: EventUiModel) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Banned(
+                                            title = event.bannedTitle,
+                                            message = event.bannedMessage,
+                                            btnTitle = event.bannedButtonTitle
+                                    )
+                            )
+                    )
+        }
+    }
+
+    private fun sendEventFreeze(event: EventUiModel) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Freeze(
+                                            title = event.freezeTitle,
+                                            message = event.freezeMessage,
+                                            btnTitle = event.freezeButtonTitle,
+                                            btnUrl = event.freezeButtonUrl
+                                    )
+                            )
+                    )
+        }
+    }
+
+    private fun sendOrientationChangedEvent(orientation: ScreenOrientation) {
+        scope.launch(dispatchers.immediate) {
+            EventBusFactory.get(viewLifecycleOwner).emit(
+                    ScreenStateEvent::class.java,
+                    ScreenStateEvent.OrientationChanged(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }
@@ -393,10 +464,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private fun setOrientation() {
         orientationManager = PlaySensorOrientationManager(requireContext(), this)
         orientationManager.enable()
-
-        val screenOrientation = ScreenOrientation.getByInt(resources.configuration.orientation)
-        isChangingOrientation = (playViewModel.screenOrientation != ScreenOrientation.Unknown) && (playViewModel.screenOrientation != screenOrientation)
-        playViewModel.setScreenOrientation(screenOrientation)
     }
 
     private fun initView(view: View) {
@@ -443,13 +510,15 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            if (playViewModel.screenOrientation.isLandscape && (it.isFreeze || it.isBanned)) {
+            if (orientation.isLandscape && (it.isFreeze || it.isBanned)) {
                 requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
-            } else {
-                if (it.isFreeze)
-                    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-                else if (it.isBanned)
-                    showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+            }
+            if (it.isFreeze) {
+                sendEventFreeze(it)
+                try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+            } else if (it.isBanned) {
+                sendEventBanned(it)
+                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
             }
         })
     }
@@ -501,7 +570,13 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
-
+            scope.launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetVideo(it)
+                        )
+            }
         })
     }
 
@@ -511,7 +586,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation))
                         )
             }
         })
@@ -605,7 +680,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
-                if (!playViewModel.stateHelper.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.getStateHelper(orientation).bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }

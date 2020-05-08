@@ -68,6 +68,11 @@ sealed class ScreenStateEvent : ComponentEvent {
      */
     object ShowGlobalError : ScreenStateEvent()
 
+    /**
+     * Orientation Changed
+     */
+    data class OrientationChanged(val orientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
+
 
     object OnNoMoreAction : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()

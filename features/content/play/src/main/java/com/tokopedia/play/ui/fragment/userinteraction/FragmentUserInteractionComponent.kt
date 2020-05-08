@@ -21,7 +21,7 @@ class FragmentUserInteractionComponent(
         container: ViewGroup,
         fragmentManager: FragmentManager,
         private val bus: EventBusFactory,
-        private val scope: CoroutineScope,
+        scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<Unit> {
 
@@ -34,6 +34,8 @@ class FragmentUserInteractionComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.OrientationChanged ->
+                                if (it.orientation.isLandscape) uiView.hide() else uiView.show()
                         }
                     }
         }

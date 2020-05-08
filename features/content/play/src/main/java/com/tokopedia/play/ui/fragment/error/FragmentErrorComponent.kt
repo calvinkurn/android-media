@@ -21,7 +21,7 @@ class FragmentErrorComponent(
         container: ViewGroup,
         fragmentManager: FragmentManager,
         private val bus: EventBusFactory,
-        private val scope: CoroutineScope,
+        scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<Unit> {
 

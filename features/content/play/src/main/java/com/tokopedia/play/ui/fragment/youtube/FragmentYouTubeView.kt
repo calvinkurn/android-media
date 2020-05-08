@@ -16,8 +16,8 @@ import com.tokopedia.play.view.fragment.PlayYouTubeFragment
  */
 class FragmentYouTubeView(
         container: ViewGroup,
-        fragmentManager: FragmentManager,
-        listener: Listener
+        private val fragmentManager: FragmentManager,
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View =
@@ -26,7 +26,17 @@ class FragmentYouTubeView(
 
     private val flYouTube = view as ScaleFriendlyFrameLayout
 
-    init {
+    override val containerId: Int = view.id
+
+    override fun show() {
+        view.show()
+    }
+
+    override fun hide() {
+        view.hide()
+    }
+
+    internal fun init() {
         fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) ?: PlayYouTubeFragment.newInstance().also {
             fragmentManager.beginTransaction()
                     .replace(view.id, it, YOUTUBE_FRAGMENT_TAG)
@@ -38,14 +48,12 @@ class FragmentYouTubeView(
         }
     }
 
-    override val containerId: Int = view.id
-
-    override fun show() {
-        view.show()
-    }
-
-    override fun hide() {
-        view.hide()
+    internal fun release() {
+        fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG)?.let { fragment ->
+            fragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commit()
+        }
     }
 
     companion object {

@@ -7,7 +7,9 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
  * Created by jegul on 24/04/20
@@ -36,6 +38,9 @@ class PlayVideoPortraitManager(
 
     override fun onDestroy() {
 
+    }
+
+    override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
     }
 
     private fun layoutVideo(container: View, @IdRes id: Int) {

@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -84,6 +85,9 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
     override fun getScreenName(): String = "Play Video"
 
     override fun initInjector() {
@@ -133,6 +137,15 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
         return false
     }
 
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return false
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        sendOrientationChangedEvent(ScreenOrientation.getByInt(newConfig.orientation))
+    }
+
     //region observe
     private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
@@ -165,7 +178,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation))
                         )
             }
         })
@@ -189,7 +202,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     private fun initComponents(container: ViewGroup) {
         layoutManager = PlayVideoLayoutManagerImpl(
                 container = container,
-                orientation = playViewModel.screenOrientation,
+                orientation = orientation,
                 videoOrientation = playViewModel.videoOrientation,
                 viewInitializer = this
         )
@@ -225,7 +238,16 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
         scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
+            )
+        }
+    }
+
+    private fun sendOrientationChangedEvent(orientation: ScreenOrientation) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner).emit(
+                    ScreenStateEvent::class.java,
+                    ScreenStateEvent.OrientationChanged(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }
@@ -235,7 +257,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.stateHelper)
+                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.getStateHelper(orientation))
                     )
         }
     }
@@ -288,7 +310,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.stateHelper)
+                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.getStateHelper(orientation))
                     )
         }
     }

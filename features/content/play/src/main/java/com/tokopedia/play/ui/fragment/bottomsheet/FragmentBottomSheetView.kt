@@ -14,22 +14,14 @@ import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
  * Created by jegul on 05/05/20
  */
 class FragmentBottomSheetView(
-        channelId: String,
+        private val channelId: String,
         container: ViewGroup,
-        fragmentManager: FragmentManager
+        private val fragmentManager: FragmentManager
 ) : UIView(container) {
 
     private val view: View =
             LayoutInflater.from(container.context).inflate(R.layout.view_fragment_bottom_sheet, container, true)
                     .findViewById(R.id.fl_bottom_sheet)
-
-    init {
-        fragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) ?: PlayBottomSheetFragment.newInstance(channelId).also {
-            fragmentManager.beginTransaction()
-                    .replace(view.id, it, BOTTOM_SHEET_FRAGMENT_TAG)
-                    .commit()
-        }
-    }
 
     override val containerId: Int = view.id
 
@@ -39,6 +31,22 @@ class FragmentBottomSheetView(
 
     override fun hide() {
         view.hide()
+    }
+
+    internal fun init() {
+        fragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) ?: PlayBottomSheetFragment.newInstance(channelId).also {
+            fragmentManager.beginTransaction()
+                    .replace(view.id, it, BOTTOM_SHEET_FRAGMENT_TAG)
+                    .commit()
+        }
+    }
+
+    internal fun release() {
+        fragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG)?.let { fragment ->
+            fragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commit()
+        }
     }
 
     companion object {
