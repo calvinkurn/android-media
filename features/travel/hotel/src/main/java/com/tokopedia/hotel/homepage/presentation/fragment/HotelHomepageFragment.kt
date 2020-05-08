@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
@@ -62,6 +63,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
+    var promoScrolledListener: BannerView.OnPromoScrolledListener? = null
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -118,6 +120,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
         loadRecentSearchData()
+        banner_hotel_homepage_promo.onPromoScrolledListener = promoScrolledListener
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -356,10 +359,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
         showPromoContainer()
 
         banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
-        banner_hotel_homepage_promo.setOnPromoScrolledListener { position ->
+        promoScrolledListener = BannerView.OnPromoScrolledListener { position ->
             trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(position)
                     ?: TravelCollectiveBannerModel.Banner(), position, HOMEPAGE_SCREEN_NAME)
         }
+        banner_hotel_homepage_promo.onPromoScrolledListener = promoScrolledListener
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
