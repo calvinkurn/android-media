@@ -153,7 +153,7 @@ class CatalogDetailPageFragment : Fragment(),
         for (specs in topthreespec) {
             val textView = TextView(context)
             textView.textSize = 12f
-            textView.text = MethodChecker.fromHtml(resources.getString(R.string.bullet_string, specs.value)).toString()
+            textView.text = MethodChecker.fromHtml(resources.getString(R.string.catalog_bullet_string, specs.value)).toString()
             textView.setTextColor(MethodChecker.getColor(context, R.color.grey_796))
             top_three_specs.addView(textView)
         }
@@ -173,9 +173,9 @@ class CatalogDetailPageFragment : Fragment(),
     private fun generateCatalogShareData(catalogUrl: String, catalogId: String): LinkerData {
         return LinkerData.Builder.getLinkerBuilder()
                 .setId(catalogId)
-                .setName(getString(R.string.tkpd_discovery_message_share_catalog))
+                .setName(getString(R.string.catalog_message_share_catalog))
                 .setType(LinkerData.CATALOG_TYPE)
-                .setTextContent(getString(R.string.tkpd_discovery_share_text_content))
+                .setTextContent(getString(R.string.catalog_share_text_content))
                 .setUri(catalogUrl)
                 .build()
     }
