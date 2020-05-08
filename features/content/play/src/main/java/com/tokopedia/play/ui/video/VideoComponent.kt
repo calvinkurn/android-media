@@ -39,7 +39,7 @@ open class VideoComponent(
                         when (it) {
                             is ScreenStateEvent.Init -> {
                                 uiView.setOrientation(it.screenOrientation, it.stateHelper.videoOrientation)
-                                uiView.hide()
+                                uiView.show()
                                 if (it.stateHelper.videoState == PlayVideoState.Ended) showEndImage()
                             }
                             is ScreenStateEvent.SetVideo -> if (it.videoPlayer is General) uiView.setPlayer(it.videoPlayer.exoPlayer)
@@ -50,7 +50,10 @@ open class VideoComponent(
                             is ScreenStateEvent.VideoPropertyChanged -> {
                                 if (!it.stateHelper.videoPlayer.isGeneral) {
                                     uiView.hide()
-                                } else handleVideoStateChanged(it.videoProp.state)
+                                } else {
+                                    uiView.show()
+                                    handleVideoStateChanged(it.videoProp.state)
+                                }
                             }
                             is ScreenStateEvent.VideoStreamChanged -> {
                                 uiView.setOrientation(it.stateHelper.screenOrientation, it.videoStream.orientation)
@@ -79,11 +82,9 @@ open class VideoComponent(
     private fun handleVideoStateChanged(state: PlayVideoState) {
         when (state) {
             PlayVideoState.Playing, PlayVideoState.Pause -> {
-                uiView.show()
                 uiView.showThumbnail(null)
             }
             PlayVideoState.Ended -> {
-                uiView.show()
                 uiView.getCurrentBitmap()?.let { saveEndImage(it) }
             }
         }
