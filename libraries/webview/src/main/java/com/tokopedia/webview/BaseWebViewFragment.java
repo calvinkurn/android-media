@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
@@ -180,6 +181,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         CookieManager.getInstance().setAcceptCookie(true);
 
         webView.clearCache(true);
+        clearCookie();
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
@@ -686,6 +688,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return "";
         }
         return webHistoryItem.getUrl();
+    }
+
+    private void clearCookie() {
+        CookieSyncManager.createInstance(getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cookieManager.removeAllCookies(null);
+        } else {
+            cookieManager.removeAllCookie();
+        }
     }
 
     public TkpdWebView getWebView() {
