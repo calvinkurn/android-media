@@ -107,15 +107,8 @@
         app:typographyType="body_2"
         app:typographyWeight="reguler"/>
 
-    <include layout="@layout/partial_seller_migration_warning"
-        android:id="@+id/account_seller_warning"
-        android:layout_below="@id/seller_migration_promotion_info"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/layout_lvl2" />
-
     <include layout="@layout/partial_seller_migration_footer"
-        android:layout_below="@id/account_seller_warning"
+        android:layout_below="@id/seller_migration_promotion_info"
         android:layout_marginTop="@dimen/layout_lvl3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
