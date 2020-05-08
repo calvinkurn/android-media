@@ -116,6 +116,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
     }
 
+    private var productListFirstItem: Int = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
+
     private val buttonBackToTop: FloatingButtonUnify? by lazy {
         view?.findViewById<FloatingButtonUnify>(R.id.btn_back_to_top)?.apply {
             circleMainMenu.run {
@@ -143,8 +145,6 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     private val headerLayout: CardView? by lazy {
         view?.findViewById<CardView>(R.id.header_layout)
     }
-
-    var firstItem = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
 
     /**
      * Setup Scroll Listener for endless recycler view load.
@@ -177,12 +177,12 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 }
                 if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     val currentFirstVisible = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
-                    if(currentFirstVisible > firstItem)
+                    if(currentFirstVisible > productListFirstItem)
                         slideDownCounter()
                     else
                         slideDownCounter()
 
-                    firstItem = currentFirstVisible
+                    productListFirstItem = currentFirstVisible
                 }
                 super.onScrollStateChanged(recyclerView, newState)
             }

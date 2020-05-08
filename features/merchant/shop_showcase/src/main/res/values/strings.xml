@@ -20,7 +20,6 @@
     <string name="product_default_name">Batik Kultur Tops - SQT - Oak Trees Trees</string>
     <string name="product_showcase_price_text">Rp 1.550.000</string>
     <string name="product_total_review">(%1$s)</string>
-    <string name="success_add_product">Yay, kamu berhasil tambah %1$s produk</string>
     <string name="save_product_action_text">Simpan</string>
     <string name="chosen_product_counter_text">%1$s produk dipilih</string>
     <string name="deleted_product_counter_text">%1$s produk dihapus</string>
