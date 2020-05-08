@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.common.domain.event.network_api
 
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
+import com.tokopedia.url.TokopediaUrl
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -14,6 +15,7 @@ interface EventCheckoutApi {
     fun postVerify(@QueryMap book: Map<String, Boolean>, @Body eventVerifyBody: EventVerifyBody): Observable<EventVerifyResponse>
 
     companion object{
-        const val BASE_URL_EVENT = "https://omscart-staging.tokopedia.com/"
+        val data = TokopediaUrl.getInstance().TYPE
+        const val BASE_URL_EVENT = "https://omscart.tokopedia.com/"
     }
 }

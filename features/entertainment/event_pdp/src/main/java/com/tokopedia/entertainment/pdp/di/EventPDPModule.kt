@@ -130,7 +130,8 @@ class EventPDPModule {
     }
 
     companion object{
-        const val BASE_URL = "https://omscart-staging.tokopedia.com/"
+
+        const val BASE_URL = "https://omscart.tokopedia.com/"
     }
 
 }
