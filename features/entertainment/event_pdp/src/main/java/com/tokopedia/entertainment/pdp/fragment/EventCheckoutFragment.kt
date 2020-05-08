@@ -34,6 +34,7 @@ import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKET_ID
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_SCHEDULE_ID
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.getDateString
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
@@ -96,6 +97,9 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    @Inject
+    lateinit var eventPDPTracking: EventPDPTracking
+
     lateinit var progressDialog: ProgressDialog
 
 
@@ -131,6 +135,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         eventCheckoutViewModel.isError.observe(this, Observer {
             it?.let {
                 if (it.error) {
+                    progressDialog.dismiss()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView) {
                         requestData()
                     }
@@ -152,6 +157,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             it?.let {
                 val error = it
                 view?.let {
+                    progressDialog.dismiss()
                     Toaster.make(it, ErrorHandler.getErrorMessage(context, error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                             it.context.getString(R.string.ent_checkout_error))
                 }
@@ -243,6 +249,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             )
         }
 
+        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp,amount)
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
@@ -262,6 +269,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,  it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
+                        eventPDPTracking.onClickCheckoutButton(getPackage(scheduleID, groupID, packetID, productDetailData), productDetailData,amount)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
                         eventCheckoutViewModel.checkVerify(true, getVerifyMapped(productDetailData))

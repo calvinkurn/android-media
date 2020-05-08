@@ -7,13 +7,18 @@ import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactoryImp
 import com.tokopedia.entertainment.pdp.adapter.viewholder.CurrencyFormatter
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageViewHolder
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
 import com.tokopedia.entertainment.pdp.data.Package
+import javax.inject.Inject
 
-class BaseListPackageAdapter(packageTypeFactoryImp: PackageTypeFactoryImp, val setTotalAndPackageId: (String, String, String, Boolean)->Unit):
+class BaseListPackageAdapter(packageTypeFactoryImp: PackageTypeFactoryImp,
+                             val setTotalAndPackageId: (String, String, String, Boolean, String, String, String)->Unit):
         BaseListAdapter<EventPDPTicketModel, PackageTypeFactory>(packageTypeFactoryImp) {
 
     private var lastClickedIndex: Int = -1
+
+
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         if(holder is PackageViewHolder){
@@ -23,8 +28,8 @@ class BaseListPackageAdapter(packageTypeFactoryImp: PackageTypeFactoryImp, val s
         super.onBindViewHolder(holder, position)
     }
 
-    private fun quantitiyEditorValueButtonListener(idPackages: String, price: String, qty: Int, isError: Boolean){
-        setTotalAndPackageId(idPackages, CurrencyFormatter.getRupiahFormat(price.toLong()*qty), qty.toString(), isError)
+    private fun quantitiyEditorValueButtonListener(idPackages: String, price: String, qty: Int, isError: Boolean, product_name: String, product_id: String){
+        setTotalAndPackageId(idPackages, CurrencyFormatter.getRupiahFormat(price.toLong()*qty), qty.toString(), isError, product_name, product_id, price)
     }
 
     private fun pilihButtonClicked(idClicked: String){

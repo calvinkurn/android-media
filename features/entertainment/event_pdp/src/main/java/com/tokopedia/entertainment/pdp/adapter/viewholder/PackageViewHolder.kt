@@ -12,19 +12,24 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.pdp.R
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.data.Package
 import com.tokopedia.kotlin.extensions.view.isVisible
 import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
 import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 
 class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
 
-    lateinit var quantityEditorValueButtonClicked: (String, String, Int, Boolean) -> Unit
+    lateinit var quantityEditorValueButtonClicked: (String, String, Int, Boolean, String, String) -> Unit
     lateinit var pilihbuttonClicked: (String) -> Unit
     private var isError = false
+
+    @Inject
+    lateinit var eventPDPTracking : EventPDPTracking
 
     private fun getDigit(str: String): Int{
         if(str.isNotBlank()){
@@ -59,8 +64,9 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                 if(::quantityEditorValueButtonClicked.isInitialized){
                     isError = !(quantityEditor.getValue() >= items.minQty.toInt() && quantityEditor.getValue() <= items.maxQty.toInt())
 
-                    quantityEditorValueButtonClicked.invoke(items.id,items.salesPrice,newValue, isError)
+                    quantityEditorValueButtonClicked.invoke(items.id,items.salesPrice,newValue, isError, items.name,items.productId)
                 }
+                eventPDPTracking.onClickQuantity()
             }
             quantityEditor.editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(txtTotal: Editable?) {
@@ -94,7 +100,7 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                     } else if(txtTotal.toString().isBlank()){ isError = true }
 
                     if (::quantityEditorValueButtonClicked.isInitialized) {
-                        quantityEditorValueButtonClicked.invoke(items.id, items.salesPrice, getDigit(txtTotal.toString()), isError)
+                        quantityEditorValueButtonClicked.invoke(items.id, items.salesPrice, getDigit(txtTotal.toString()), isError, items.name, items.productId)
                     }
                 }
             })
@@ -111,6 +117,8 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                 itemView.quantityEditor.editText.visibility = View.VISIBLE
                 itemView.quantityEditor.addButton.visibility = View.VISIBLE
                 itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
+
+                eventPDPTracking.onClickPackage(items, itemView.quantityEditor.getValue())
             } else {
                 itemView.clearFocus()
                 itemView.txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isHabis) View.GONE else View.VISIBLE

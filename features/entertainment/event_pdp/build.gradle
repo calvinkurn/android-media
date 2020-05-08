@@ -41,6 +41,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.mapviewer)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.libraries.oms)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

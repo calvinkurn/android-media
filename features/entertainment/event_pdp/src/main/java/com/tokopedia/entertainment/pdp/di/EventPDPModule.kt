@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepositoryImpl
@@ -13,6 +14,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -113,6 +115,18 @@ class EventPDPModule {
     @EventPDPScope
     fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckoutRepository {
         return EventCheckoutRepositoryImpl(eventCheckoutApi)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideIris(@ApplicationContext  context: Context): IrisSession {
+        return IrisSession(context)
+    }
+
+    @Provides
+    @EventPDPScope
+    fun provideTracking(irisSession: IrisSession, userSession: UserSessionInterface): EventPDPTracking {
+        return EventPDPTracking(userSession, irisSession)
     }
 
     companion object{

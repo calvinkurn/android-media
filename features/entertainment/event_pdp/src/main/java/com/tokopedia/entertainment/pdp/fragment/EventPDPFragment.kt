@@ -27,6 +27,7 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFacilitiesBottomSheetAdap
 import com.tokopedia.entertainment.pdp.adapter.EventPDPLocationDetailAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventPDPOpenHourAdapter
 import com.tokopedia.entertainment.pdp.adapter.factory.EventPDPFactoryImpl
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter
 import com.tokopedia.entertainment.pdp.common.util.EventShare
 import com.tokopedia.entertainment.pdp.data.Facilities
@@ -79,6 +80,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     @Inject
     lateinit var eventPDPViewModel: EventPDPViewModel
+
+    @Inject
+    lateinit var eventPDPTracking: EventPDPTracking
 
     override fun getScreenName(): String = ""
 
@@ -193,7 +197,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     private fun loadCalendar(context: Context, productDetailData: ProductDetailData) {
         btn_event_pdp_cek_tiket.setOnClickListener {
+            eventPDPTracking.onClickCariTicket(productDetailData)
             if (getSizeSchedule(productDetailData)) {
+                eventPDPTracking.onClickPickDate()
                 val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
                 val bottomSheets = BottomSheetUnify()
                 bottomSheets.apply {

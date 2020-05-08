@@ -31,6 +31,7 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.SELECTED_DATE
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.END_DATE
 import com.tokopedia.entertainment.pdp.adapter.BaseListPackageAdapter
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,6 +49,9 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     private var selectedDate = ""
     private var EXTRA_PACKAGES_ID = ""
     private var AMOUNT_TICKET = ""
+    private var PRODUCT_NAME = ""
+    private var PRODUCT_ID = ""
+    private var PRODUCT_PRICE = ""
     lateinit var bottomSheets: BottomSheetUnify
     private var packageTypeFactoryImp = PackageTypeFactoryImp()
 
@@ -56,6 +60,9 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var eventPDPTracking: EventPDPTracking
 
     override fun getScreenName(): String = ""
     override fun initInjector() {
@@ -96,9 +103,12 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setSelectedPackages(idPackages: String, nominal: String, qty: String, isError: Boolean){
+    private fun setSelectedPackages(idPackages: String, nominal: String, qty: String, isError: Boolean, product_name: String, product_id: String, price: String){
         this.EXTRA_PACKAGES_ID = idPackages
         this.AMOUNT_TICKET = qty
+        this.PRODUCT_NAME = product_name
+        this.PRODUCT_ID = product_id
+        this.PRODUCT_PRICE = price
         setTotalPrice(nominal)
         showViewBottom(!isError)
     }
@@ -182,6 +192,8 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     private fun setupPilihTicketButton(){
         pilihTicketBtn.setOnClickListener {
             if(userSession.isLoggedIn) {
+                eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
+                        PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET.toInt(), EXTRA_PACKAGES_ID)
                 startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP,
                         viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
             } else {
@@ -243,6 +255,7 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
 
     private fun setupUbahButton(){
         activity?.txtUbah?.setOnClickListener {
+            eventPDPTracking.onClickPickDate()
             bottomSheets.show(fragmentManager!!, "")
         }
     }

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
+import com.tokopedia.entertainment.pdp.data.Category
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
 import com.tokopedia.entertainment.pdp.data.Group
 import com.tokopedia.entertainment.pdp.data.Package
@@ -31,6 +32,8 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
 
     var lists: MutableList<EventPDPTicketModel> = mutableListOf()
     var listsActiveDate: MutableList<Date> = mutableListOf()
+
+    var categoryData = Category()
 
     var EXTRA_SCHEDULE_ID = ""
     var EXTRA_GROUPS_ID = ""
@@ -65,6 +68,8 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                             }
                         }
                     }
+                    if(data.data.eventProductDetailEntity.EventProductDetail.productDetailData.category.isNotEmpty())
+                        categoryData = data.data.eventProductDetailEntity.EventProductDetail.productDetailData.category[0]
                     _ticketModel.value = lists
                 }
                 is Fail -> {
