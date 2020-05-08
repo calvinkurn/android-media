@@ -101,6 +101,7 @@ final class ProductListPresenter
     private boolean enableGlobalNavWidget = true;
     private boolean changeParamRow = false;
     private boolean isUsingBottomSheetFilter = true;
+    private boolean enableTrackingViewPort = true;
     private String additionalParams = "";
     private boolean isFirstTimeLoad = false;
     private boolean isTickerHasDismissed = false;
@@ -143,6 +144,7 @@ final class ProductListPresenter
         this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
         this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
         this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+        this.enableTrackingViewPort = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true);
     }
 
     @Override
@@ -1333,7 +1335,14 @@ final class ProductListPresenter
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
             getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+        } else if (enableTrackingViewPort) {
+            getView().sendProductImpressionTrackingEvent(item);
         }
+    }
+
+    @Override
+    public boolean isTrackingViewPortEnabled() {
+        return enableTrackingViewPort;
     }
 
     @Override

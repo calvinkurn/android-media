@@ -85,6 +85,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
+import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
@@ -558,7 +559,9 @@ public class ProductListFragment
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
-        sendProductImpressionTrackingEvent(list);
+        if (!presenter.isTrackingViewPortEnabled()) {
+            sendProductImpressionTrackingEvent(list);
+        }
 
         adapter.appendItems(list);
     }
@@ -607,6 +610,26 @@ public class ProductListFragment
                 }
             }
         }
+        if(irisSession != null){
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+                    irisSession.getSessionId());
+        }else {
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+        }
+    }
+
+    @Override
+    public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
+        String userId = getUserId();
+        String searchRef = getSearchRef();
+        List<Object> dataLayerList = new ArrayList<>();
+        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
+
+        String filterSortParams
+                = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
+        productItemViewModels.add(item);
+
         if(irisSession != null){
             SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
                     irisSession.getSessionId());
@@ -1644,15 +1667,7 @@ public class ProductListFragment
 
     @Override
     public void logWarning(String message, @Nullable Throwable throwable) {
-        Timber.w("P2#DISCOVERY_SEARCH_ERROR#%s;error=%s", message, getStackTrace(throwable));
-    }
-
-    private String getStackTrace(@Nullable Throwable throwable) {
-        if (throwable != null) {
-            return ExceptionUtils.getStackTrace(throwable);
-        }
-
-        return "";
+        new SearchLogger().logWarning(message, throwable);
     }
 
     @Override

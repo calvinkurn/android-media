@@ -164,6 +164,8 @@ public interface ProductListSectionContract {
 
         void startRenderPerformanceMonitoring();
 
+        void sendProductImpressionTrackingEvent(ProductItemViewModel item);
+
         void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
     }
 
@@ -206,5 +208,7 @@ public interface ProductListSectionContract {
         void onProductImpressed(ProductItemViewModel item, int adapterPosition);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
+
+        boolean isTrackingViewPortEnabled();
     }
 }
