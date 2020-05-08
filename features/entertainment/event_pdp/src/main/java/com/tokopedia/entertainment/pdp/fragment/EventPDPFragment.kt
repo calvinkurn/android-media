@@ -199,7 +199,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         btn_event_pdp_cek_tiket.setOnClickListener {
             eventPDPTracking.onClickCariTicket(productDetailData)
             if (getSizeSchedule(productDetailData)) {
-                eventPDPTracking.onClickPickDate()
+
                 val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
                 val bottomSheets = BottomSheetUnify()
                 bottomSheets.apply {
@@ -217,6 +217,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                         override fun onDateSelected(date: Date) {
                             val selectedDate = (date.time / 1000).toString()
+                            eventPDPTracking.onClickPickDate()
                             goToTicketPage(productDetailData, selectedDate)
                             bottomSheets.dismiss()
                         }

@@ -13,17 +13,18 @@ import com.tokopedia.entertainment.pdp.data.Package
 import javax.inject.Inject
 
 class BaseListPackageAdapter(packageTypeFactoryImp: PackageTypeFactoryImp,
-                             val setTotalAndPackageId: (String, String, String, Boolean, String, String, String)->Unit):
+                             val setTotalAndPackageId: (String, String, String, Boolean, String, String, String)->Unit,
+                             val eventPDPTracking: EventPDPTracking
+                             ):
         BaseListAdapter<EventPDPTicketModel, PackageTypeFactory>(packageTypeFactoryImp) {
 
     private var lastClickedIndex: Int = -1
-
-
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         if(holder is PackageViewHolder){
             holder.quantityEditorValueButtonClicked = ::quantitiyEditorValueButtonListener
             holder.pilihbuttonClicked = ::pilihButtonClicked
+            holder.eventPDPTracking = eventPDPTracking
         }
         super.onBindViewHolder(holder, position)
     }

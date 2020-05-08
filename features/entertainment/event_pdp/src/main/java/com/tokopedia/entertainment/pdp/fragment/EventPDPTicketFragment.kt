@@ -94,7 +94,7 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     }
 
     override fun createAdapterInstance(): BaseListAdapter<EventPDPTicketModel, PackageTypeFactory> {
-        return BaseListPackageAdapter(packageTypeFactoryImp, ::setSelectedPackages)
+        return BaseListPackageAdapter(packageTypeFactoryImp, ::setSelectedPackages, eventPDPTracking)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -166,6 +166,7 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
                         bottomSheets.dismiss()
                         EXTRA_PACKAGES_ID = ""
                         AMOUNT_TICKET = ""
+                        eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
                     }
@@ -255,7 +256,6 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
 
     private fun setupUbahButton(){
         activity?.txtUbah?.setOnClickListener {
-            eventPDPTracking.onClickPickDate()
             bottomSheets.show(fragmentManager!!, "")
         }
     }

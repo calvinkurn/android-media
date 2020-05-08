@@ -28,8 +28,7 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
     lateinit var pilihbuttonClicked: (String) -> Unit
     private var isError = false
 
-    @Inject
-    lateinit var eventPDPTracking : EventPDPTracking
+    lateinit var eventPDPTracking: EventPDPTracking
 
     private fun getDigit(str: String): Int{
         if(str.isNotBlank()){
