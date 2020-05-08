@@ -8,7 +8,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 
-class TopchatAttachmentMenuRecyclerView : RecyclerView {
+class ChatMenuAttachmentView : RecyclerView {
 
     private val manager = GridLayoutManager(context, 4)
     private val adapter = AttachmentMenuAdapter()

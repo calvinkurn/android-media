@@ -20,7 +20,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     var showDelayed = false
     var isKeyboardOpened = false
 
-    private var attachmentMenu: TopchatAttachmentMenuRecyclerView? = null
+    private var attachmentMenu: ChatMenuAttachmentView? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

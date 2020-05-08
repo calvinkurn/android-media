@@ -11,7 +11,7 @@
         android:layout_gravity="top"
         android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
 
-    <com.tokopedia.topchat.chatroom.view.custom.TopchatAttachmentMenuRecyclerView
+    <com.tokopedia.topchat.chatroom.view.custom.ChatMenuAttachmentView
         android:id="@+id/rv_topchat_attachment_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
