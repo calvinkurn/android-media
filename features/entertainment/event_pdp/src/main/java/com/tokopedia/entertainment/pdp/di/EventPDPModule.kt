@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi
+import com.tokopedia.entertainment.pdp.network_api.EventCheckoutApi.Companion.BASE_URL
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepositoryImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -128,10 +129,4 @@ class EventPDPModule {
     fun provideTracking(irisSession: IrisSession, userSession: UserSessionInterface): EventPDPTracking {
         return EventPDPTracking(userSession, irisSession)
     }
-
-    companion object{
-
-        const val BASE_URL = "https://omscart.tokopedia.com/"
-    }
-
 }
