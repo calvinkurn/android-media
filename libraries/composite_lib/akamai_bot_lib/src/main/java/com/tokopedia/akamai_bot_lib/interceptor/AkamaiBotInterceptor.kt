@@ -3,7 +3,7 @@ package com.tokopedia.akamai_bot_lib.interceptor
 import android.content.Context
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.*
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -30,7 +30,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
         val response = chain.proceed(newRequest.build())
 
         if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
-            throw MessageErrorException(ERROR_MESSAGE_AKAMAI)
+            throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
         }
         return response
     }
