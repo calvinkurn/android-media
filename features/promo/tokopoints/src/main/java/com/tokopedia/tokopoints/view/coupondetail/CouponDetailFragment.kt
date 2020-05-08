@@ -764,40 +764,28 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     override fun stopPerformanceMonitoring() {
-        if (pageLoadTimePerformanceMonitoring != null) {
-            pageLoadTimePerformanceMonitoring?.stopMonitoring()
-            pageLoadTimePerformanceMonitoring = null
-        }
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
     }
 
     override fun stopPreparePagePerformanceMonitoring() {
-        if (pageLoadTimePerformanceMonitoring != null) {
-            pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
-        if (pageLoadTimePerformanceMonitoring != null) {
-            pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
     }
 
     override fun stopNetworkRequestPerformanceMonitoring() {
-        if (pageLoadTimePerformanceMonitoring != null) {
-            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
     }
 
     override fun startRenderPerformanceMonitoring() {
-        if (pageLoadTimePerformanceMonitoring != null) {
-            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
     }
 
     override fun stopRenderPerformanceMonitoring() {
-        if (pageLoadTimePerformanceMonitoring != null) {
-            pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
 }
