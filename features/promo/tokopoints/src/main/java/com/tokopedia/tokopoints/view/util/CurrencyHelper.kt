@@ -1,7 +1,7 @@
 package com.tokopedia.tokopoints.view.util
 
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 object CurrencyHelper {
     private val dotFormat: NumberFormat = NumberFormat.getNumberInstance(Locale("in", "id"))
