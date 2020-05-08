@@ -22,6 +22,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
@@ -130,28 +131,17 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
             tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
             setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
             setDescriptionClickEvent(object: TickerCallback {
+                override fun onDismiss() {}
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openSellerMigrationBottomSheet()
-                }
-                override fun onDismiss() {
-                    // No Op
                 }
             })
         }
     }
 
-    private fun showSellerMigrationTicker() {
-        topChatSellerMigrationTicker.visibility = View.VISIBLE
-    }
-
-    private fun hideSellerMigrationTicker() {
-        topChatSellerMigrationTicker.visibility = View.GONE
-    }
-
     private fun openSellerMigrationBottomSheet() {
         context?.let {
-            val sellerMigrationBottomSheet = SellerMigrationChatBottomSheet.createNewInstance(it)
-            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
+            SellerMigrationChatBottomSheet.createNewInstance(it).show(this.childFragmentManager, "")
         }
     }
 
@@ -334,9 +324,9 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         viewPager?.addOnPageChangeListener(object: TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
             override fun onPageSelected(position: Int) {
                 if(position == 0) {
-                    showSellerMigrationTicker()
+                    topChatSellerMigrationTicker?.show()
                 } else {
-                    hideSellerMigrationTicker()
+                    topChatSellerMigrationTicker?.hide()
                 }
                 super.onPageSelected(position)
             }
