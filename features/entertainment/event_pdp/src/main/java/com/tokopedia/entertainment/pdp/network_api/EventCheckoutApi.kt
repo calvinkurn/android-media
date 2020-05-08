@@ -16,7 +16,7 @@ interface EventCheckoutApi {
     suspend fun postVerify(@QueryMap book:Map<String,Boolean>,  @Body eventVerifyBody: EventVerifyBody): Response<EventVerifyResponse>
 
     @POST(PATH_CHECKOUT)
-    suspend fun postCheckout(@QueryMap book:Map<String,Boolean>,  @Body cart: Cart): Response<EventCheckoutResponse>
+    suspend fun postCheckout(@Body cart: Cart?): Response<EventCheckoutResponse>
 
     companion object{
         val BASE_URL = if(TokopediaUrl.getInstance().TYPE == Env.LIVE) "https://omscart.tokopedia.com/"

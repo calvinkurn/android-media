@@ -10,19 +10,22 @@ import javax.inject.Inject
 
 class EventCheckoutRepositoryImpl @Inject constructor(private val eventCheckoutApi: EventCheckoutApi): EventCheckoutRepository{
 
-    override suspend fun postVerify(book:Map<String,Boolean>,eventVerifyBody: EventVerifyBody): EventVerifyResponse {
+    override suspend fun postVerify(book:Map<String,Boolean>,eventVerifyBody: EventVerifyBody): EventVerifyResponse? {
         val response = eventCheckoutApi.postVerify(book,eventVerifyBody)
         if (response.isSuccessful) {
-            return response.body()!!
+            return response.body()
         }
         throw IOException(ERROR_DEFAULT)
     }
 
-    override suspend fun postCheckout(book: Map<String, Boolean>, cart: Cart): EventCheckoutResponse {
-        val response = eventCheckoutApi.postCheckout(book,cart)
-        if (response.isSuccessful) {
-            return response.body()!!
+    override suspend fun postCheckout(cart: Cart?): EventCheckoutResponse? {
+        cart.let {
+            val response = eventCheckoutApi.postCheckout(it)
+            if (response.isSuccessful) {
+                return response.body()
+            }
         }
+
         throw IOException(ERROR_DEFAULT)
     }
 

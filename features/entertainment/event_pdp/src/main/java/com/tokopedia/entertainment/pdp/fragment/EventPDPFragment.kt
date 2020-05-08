@@ -227,8 +227,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                         }
                     })
                 }
-
-                bottomSheets.show(fragmentManager!!, "")
+                fragmentManager?.let {
+                    bottomSheets.show(it, "")
+                }
             } else {
                 goToTicketPageWithoutDate()
             }
@@ -245,7 +246,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         val navIcon = event_pdp_toolbar.navigationIcon
 
-        context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.white) }?.let {
+        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let {
             navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
         }
         (activity as EventPDPActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
@@ -271,7 +272,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     isShow = true
                 } else if (isShow) {
                     event_pdp_collapsing_toolbar.title = ""
-                    context?.let { ContextCompat.getColor(it, com.tokopedia.design.R.color.white) }?.let {
+                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
                     }
                     event_pdp_toolbar.menu.getItem(0).setIcon(R.drawable.ic_event_pdp_share_white)
@@ -340,7 +341,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             this.adapter = openHourAdapter
         }
 
-        bottomSheets.show(fragmentManager!!, "")
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
     }
 
     override fun seeAllFacilities(facilities: List<Facilities>, title: String) {
@@ -357,8 +360,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             this.adapter = facilitiesBottomSheetAdapter
         }
-
-        bottomSheets.show(fragmentManager!!, "")
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
     }
 
     override fun seeAllHowtoGoThere(listBullet: List<ValueBullet>, title: String) {
@@ -375,8 +379,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             this.adapter = eventPDPLocationDetailAdapter
         }
-
-        bottomSheets.show(fragmentManager!!, "")
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
     }
 
     override fun seeAllAbout(value: String, title: String) {
@@ -390,7 +395,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         CoroutineScope(Dispatchers.Main).launch {
             view.web_event_pdp_about.loadData(value, "text/html", "UTF-8")
             delay(600)
-            bottomSheets.show(fragmentManager!!, "")
+            fragmentManager?.let {
+                bottomSheets.show(it, "")
+            }
         }
     }
 

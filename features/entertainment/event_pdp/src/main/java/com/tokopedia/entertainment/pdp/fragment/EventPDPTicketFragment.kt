@@ -256,7 +256,9 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
 
     private fun setupUbahButton(){
         activity?.txtUbah?.setOnClickListener {
-            bottomSheets.show(fragmentManager!!, "")
+            fragmentManager?.let {
+                bottomSheets.show(it, "")
+            }
         }
     }
 

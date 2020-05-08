@@ -50,7 +50,7 @@
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:id="@+id/loaderUbah"
-                android:layout_width="40dp"
+                android:layout_width="@dimen/spacing_lvl7"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

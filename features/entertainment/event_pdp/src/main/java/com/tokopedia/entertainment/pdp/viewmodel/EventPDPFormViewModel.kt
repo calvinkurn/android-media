@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.pdp.viewmodel
 
 import android.content.res.Resources
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -18,9 +19,13 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
 
     lateinit var resources: Resources
 
-    val error: MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val errorMutable = MutableLiveData<String>()
+    val error : LiveData<String>
+        get() = errorMutable
 
-    val mFormData: MutableLiveData<MutableList<Form>> by lazy { MutableLiveData<MutableList<Form>>() }
+    val mFormDataMutable = MutableLiveData<MutableList<Form>>()
+    val mFormData : LiveData<MutableList<Form>>
+    get() = mFormDataMutable
 
     fun getData(url: String){
         val formData: MutableList<Form> = mutableListOf()
@@ -30,11 +35,11 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
                     data.data.eventProductDetailEntity.EventProductDetail.productDetailData.forms.forEach {
                         formData.add(it)
                     }
-                    mFormData.value = formData
+                    mFormDataMutable.value = formData
                 }
 
                 is Fail -> {
-                    error.value = data.throwable.toString()
+                    errorMutable.value = data.throwable.toString()
                 }
             }
         }

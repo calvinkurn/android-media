@@ -69,11 +69,11 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 repository.postVerify(createMapParam(book), eventVerifyBody)
             }
 
-            if (data.data.status.result.equals(SUCCESS, true)) {
+            if (data?.data?.status?.result.equals(SUCCESS, true)) {
                 eventVerifyResponseMutable.postValue(data)
-                checkCheckout(false, data.data.cart)
+                checkCheckout(data?.data?.cart)
             } else {
-                errorValueMutable.postValue(data.data.cart.error)
+                errorValueMutable.postValue(data?.data?.cart?.error)
             }
 
         }) {
@@ -81,16 +81,16 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun checkCheckout(book: Boolean, cart : Cart) {
+    fun checkCheckout( cart : Cart?) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
-                repository.postCheckout(createMapParam(book), cart)
+                repository.postCheckout(cart)
             }
 
-            if (data.data.status.equals(SUCCESS, true)) {
+            if (data?.data?.status.equals(SUCCESS, true)) {
                 eventCheckoutResponseMutable.postValue(data)
             } else {
-                errorValueMutable.postValue(data.data.error)
+                errorValueMutable.postValue(data?.data?.error)
             }
 
         }) {

@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,18 +12,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -53,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.oms.scrooge.ScroogePGUtil
 import com.tokopedia.oms.view.utils.Utils
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
 import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
@@ -63,7 +58,6 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
 import kotlinx.android.synthetic.main.fragment_event_checkout.*
@@ -167,23 +161,12 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         eventCheckoutViewModel.eventCheckoutResponse.observe(this, Observer {
             it?.let {
                 val data = it
-                view?.let {
-                    val taskStackBuilder = TaskStackBuilder.create(context)
-                    val intentHomeUmrah = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
-                    taskStackBuilder.addNextIntent(intentHomeUmrah)
-
-                    val checkoutResultData = PaymentPassData()
-                     checkoutResultData.queryString = Utils.transform(getJsonMapper(data))
-                     checkoutResultData.redirectUrl = data.data.url
-
-                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                context?.let {
                     progressDialog.dismiss()
-                    intent?.run {
-                        putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-                        taskStackBuilder.addNextIntent(this)
-                        taskStackBuilder.startActivities()
-                    }
+
+                    val paymentData = Utils.transform(getJsonMapper(data))
+                    val paymentURL: String = data.data.url
+                    ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(R.string.pembayaran))
                 }
             }
         })
@@ -325,8 +308,9 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         view.tg_event_checkout_tnc_bottom_sheet.apply {
             text = schedule.tnc
         }
-
-        bottomSheets.show(fragmentManager!!, "")
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
     }
 
     fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {

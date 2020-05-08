@@ -8,39 +8,16 @@ import com.tokopedia.entertainment.pdp.data.checkout.EventPaymentEntity
 
 object EventPaymentMapper {
     fun getJsonMapper(data : EventCheckoutResponse):JsonObject{
-        var eventPayment = EventPaymentEntity()
-
+        val gson = Gson()
         data.data.apply {
-            if(data.data.amount>0) {
-                eventPayment = EventPaymentEntity(
-                        amount = amount,
-                        currency = currency,
-                        customerEmail = customerEmail,
-                        customerMsisdn = customerMsisdn,
-                        customerName = customerName,
-                        hitPG = hitPG,
-                        itemsname = itemsname,
-                        itemsprice = itemsprice,
-                        itemsquantity = itemsquantity,
-                        merchantCode = merchantCode,
-                        message = message,
-                        paymentMetadata = paymentMetadata,
-                        profileCode = profileCode,
-                        refundAmount = refundAmount,
-                        signature = signature,
-                        status = status,
-                        transactionDate = transactionDate,
-                        transactionId = transactionId,
-                        userDefinedValue = userDefinedValue
-                )
+             if(data.data.amount>0) {
+                return JsonParser().parse(gson.toJson(data.data)).asJsonObject
             }else{
-                eventPayment = EventPaymentEntity(
+                val eventPayment = EventPaymentEntity(
                         transactionId = transactionId
                 )
+                return JsonParser().parse(gson.toJson(eventPayment)).asJsonObject
             }
         }
-
-        val gson = Gson()
-        return JsonParser().parse(gson.toJson(eventPayment)).asJsonObject
     }
 }

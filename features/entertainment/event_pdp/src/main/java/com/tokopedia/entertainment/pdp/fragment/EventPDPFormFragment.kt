@@ -93,10 +93,12 @@ class EventPDPFormFragment : BaseDaggerFragment(){
     private fun setupSimpanButton(){
         simpanBtn.setOnClickListener {
             if(formAdapter.getError().first.isNotBlank()) {
-                if(formAdapter.getError().second == EMPTY_TYPE) {
-                    Toaster.make(view!!, String.format(resources.getString(R.string.ent_pdp_form_error_empty_value_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
-                } else if(formAdapter.getError().second == REGEX_TYPE){
-                    Toaster.make(view!!, String.format(resources.getString(R.string.ent_pdp_form_error_regex_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
+                view?.let {
+                    if (formAdapter.getError().second == EMPTY_TYPE) {
+                        Toaster.make(it, String.format(resources.getString(R.string.ent_pdp_form_error_empty_value_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
+                    } else if (formAdapter.getError().second == REGEX_TYPE) {
+                        Toaster.make(it, String.format(resources.getString(R.string.ent_pdp_form_error_regex_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
+                    }
                 }
             } else {
                 activity?.run{

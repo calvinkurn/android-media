@@ -38,7 +38,9 @@ class WidgetEventPDPTabSection @JvmOverloads constructor(context: Context, attrs
     fun setScrolledSection(currentPosition: Int) {
         tab_widget.tabLayout.apply {
             if (currentPosition != 0)
-                getTabAt(currentPosition-1)!!.select()
+                getTabAt(currentPosition-1)?.let {
+                    it.select()
+                }
         }
     }
 
@@ -49,7 +51,7 @@ class WidgetEventPDPTabSection @JvmOverloads constructor(context: Context, attrs
 
     fun setScrolledMode(){
         val params = tab_widget.layoutParams
-        params.height = context.resources.getDimensionPixelSize(R.dimen.spacing_lvl8)
+        params.height = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)
         tab_widget.layoutParams = params
         tab_widget.customTabMode = TabLayout.MODE_SCROLLABLE
     }
