@@ -36,6 +36,7 @@ class SellerSeamlessViewModel @Inject constructor(@Named(SessionModule.SESSION_M
     val goToSecurityQuestion: LiveData<Boolean>
         get() = mutableGoToSecurityQuestion
 
+    fun hasLogin(): Boolean = userSession.email.isNotEmpty()
 
     fun loginSeamless(code: String) {
         val encryptedCode = AESUtils.encryptSeamless(code.toByteArray())
