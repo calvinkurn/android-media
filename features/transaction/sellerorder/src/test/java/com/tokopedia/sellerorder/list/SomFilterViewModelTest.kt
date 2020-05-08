@@ -1,21 +1,5 @@
 package com.tokopedia.sellerorder.list
 
-import com.google.gson.Gson
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
-import com.tokopedia.sellerorder.list.data.model.SomListFilter
-import com.tokopedia.sellerorder.list.data.model.SomListOrder
-import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
-import com.tokopedia.sellerorder.list.presentation.viewmodel.SomFilterViewModel
-import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import io.mockk.spyk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-
 /**
  * Created by fwidjaja on 2020-02-18.
  */

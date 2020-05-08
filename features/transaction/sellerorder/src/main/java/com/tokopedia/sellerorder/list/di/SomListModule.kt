@@ -5,8 +5,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.SomProductionDispatcherProvider
+import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
+import com.tokopedia.sellerorder.list.data.model.SomListFilter
+import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
-import com.tokopedia.sellerorder.list.domain.SomGetTickerListUseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,6 +34,18 @@ class SomListModule {
     @SomListScope
     @Provides
     fun provideSomGetTickerListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomListTicker.Data> = GraphqlUseCase(graphqlRepository)
+
+    @SomListScope
+    @Provides
+    fun provideSomGetFilterStatusListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomListAllFilter.Data> = GraphqlUseCase(graphqlRepository)
+
+    @SomListScope
+    @Provides
+    fun provideSomGetFilterListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomListFilter.Data> = GraphqlUseCase(graphqlRepository)
+
+    @SomListScope
+    @Provides
+    fun provideSomGetOrderListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomListOrder.Data> = GraphqlUseCase(graphqlRepository)
 
     @SomListScope
     @Provides

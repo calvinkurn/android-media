@@ -340,7 +340,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     filterList = it.data
                     renderFilter()
                     if (filterStatusId != 0) {
-                        loadFilterStatusList()
+                        loadStatusOrderList()
                     } else {
                         nextOrderId = 0
                         loadOrderList(nextOrderId)
@@ -370,8 +370,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     })
 
-    private fun loadFilterStatusList() {
-        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
+    private fun loadStatusOrderList() {
+        somListViewModel.loadStatusOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
     }
 
     private fun loadOrderList(nextOrderId: Int) {
