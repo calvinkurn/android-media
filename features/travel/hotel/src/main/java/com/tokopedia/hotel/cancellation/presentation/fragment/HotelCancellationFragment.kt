@@ -121,7 +121,7 @@ class HotelCancellationFragment : BaseDaggerFragment() {
                 typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
                 typography.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT)
-                typography.setPadding(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
+                typography.setPadding(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
                 typography.fontType = Typography.BODY_3
                 typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
                 cancelInfoBottomSheet.setChild(typography)

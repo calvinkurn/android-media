@@ -1,0 +1,35 @@
+{
+  "data": {
+    "success": true,
+    "title": "Pembatalan berhasil",
+    "desc": "Berhasil melakukan pembatalan.",
+    "actionButton": [
+      {
+        "label": "Cari hotel lainnya",
+        "buttonType": "buy",
+        "URI": "tokopedia.com://hotel/dashboard",
+        "URIWeb": "https://tokopedia.com/hotel"
+      },
+      {
+        "label": "Lihat daftar transaksi",
+        "buttonType": "primary",
+        "URI": "tokopedia.com://orders/hotel/XXX",
+        "URIWeb": "https://tokopedia.com/orders/hotel/XXX"
+      },
+      {
+        "label": "Beli lagi",
+        "buttonType": "secondary",
+        "URI": "tokopedia.com://hotel/614153?check_in=2020-01-31&check_out=2020-02-01",
+        "URIWeb": "https://tokopedia.com/hotel"
+      }
+    ]
+  },
+  "meta": {
+    "cancelCartID": "123r5gkjwechfmr1cy2",
+    "selectedReason": {
+      "id": "1",
+      "title": "tidak membutuhkan tempat menginap lagi",
+      "freeText": false
+    }
+  }
+}

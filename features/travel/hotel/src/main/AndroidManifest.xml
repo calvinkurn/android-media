@@ -134,6 +134,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"/>
+
+        <activity android:name=".cancellation.presentation.activity.HotelCancellationConfirmationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

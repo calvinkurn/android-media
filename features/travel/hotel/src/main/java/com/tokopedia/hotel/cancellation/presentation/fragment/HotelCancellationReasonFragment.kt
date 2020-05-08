@@ -2,39 +2,31 @@ package com.tokopedia.hotel.cancellation.presentation.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation_reason.*
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -127,7 +119,9 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
         dialog.setPrimaryCTAClickListener { dialog.dismiss() }
         dialog.setSecondaryCTAClickListener {
             Toast.makeText(requireContext(), "${reasonAdapter.selectedId} ${reasonAdapter.freeText}", Toast.LENGTH_SHORT).show()
-            cancellationViewModel.submitCancellationData(cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
+            cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.dummycancellationsubmit),
+                    cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
+            startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext()))
         }
         dialog.show()
     }
