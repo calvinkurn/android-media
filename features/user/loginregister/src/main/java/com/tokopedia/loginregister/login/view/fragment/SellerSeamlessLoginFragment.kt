@@ -121,6 +121,11 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private fun maskEmail(email: String): String =
             email.replace("(?<=.)[^@](?=[^@]*?@)|(?:(?<=@.)|(?!^)\\G(?=[^@]*$)).(?=.*\\.)".toRegex(), "*")
 
+    private fun showFullProgressBar(){
+        seller_seamless_loader?.show()
+        seller_seamless_main_view?.hide()
+    }
+
     private fun showProgressBar(){
         seller_seamless_main_view?.alpha = 0.4F
         seller_seamless_loader?.show()
@@ -152,6 +157,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         if(GlobalConfig.isSellerApp()){
             connectService()
         }
+
+        showFullProgressBar()
 
         view?.seller_seamless_positive_btn.setOnClickListener {
             if(service != null){
