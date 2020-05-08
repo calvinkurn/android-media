@@ -1,0 +1,14 @@
+{
+  "errors": {
+      "message": "failed getting layout from shop page service",
+      "path": [
+        "shopPageGetLayout"
+      ],
+      "extensions": {
+        "code": 500,
+        "developerMessage": "[shoppage][ShopPageGetLayout] error when call ShopPageGetLayout",
+        "moreInfo": "rpc error: code = Unknown desc = [layout.GetShopLayout] failed to GetLayoutWidget. err : pq: invalid input syntax for type bigint: \"jjj\"",
+        "timestamp": "2020-03-03 16:45:55.942400506 +0700 WIB m=+174.750947904"
+      }
+    }
+}

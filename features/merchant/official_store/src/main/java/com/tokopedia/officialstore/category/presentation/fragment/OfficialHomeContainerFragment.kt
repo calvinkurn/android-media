@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.category.presentation.fragment
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -17,8 +17,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.*
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
+import com.tokopedia.officialstore.ApplinkConstant
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OfficialStoreInstance
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
@@ -30,7 +33,6 @@ import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStore
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_official_home.*
@@ -63,12 +65,15 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        startOfficialStorePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
         arguments?.let {
@@ -164,13 +169,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         val categorySelected = getSelectedCategory(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
 
-        val category = tabAdapter.categoryList[0]
-        tracking.eventImpressionCategory(
-                category.title,
-                category.categoryId,
-                0,
-                category.icon
-        )
+        tabAdapter.categoryList.forEachIndexed { index, category ->
+            tracking.eventImpressionCategory(
+                    category.title,
+                    category.categoryId,
+                    index,
+                    category.icon
+            )
+        }
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -234,5 +240,16 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
         mainToolbar?.setQuerySearch(getString(R.string.os_query_search))
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
+    }
+
+    private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
+        return if (context is OfficialStorePerformanceMonitoringListener) {
+            context
+        } else null
+    }
+
+    private fun startOfficialStorePerformanceMonitoring(){
+        officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
+        officialStorePerformanceMonitoringListener = null
     }
 }

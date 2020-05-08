@@ -12,7 +12,8 @@ class TravelHomepageDestinationModel(@SerializedName("destination")
                                      val destination: List<Destination> = arrayListOf(),
                                      @SerializedName("meta")
                                      @Expose
-                                     val meta: MetaModel = MetaModel())
+                                     val meta: MetaModel = MetaModel(),
+                                     val spanSize: Int = 1)
     : TravelHomepageItemModel() {
 
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
@@ -21,21 +22,22 @@ class TravelHomepageDestinationModel(@SerializedName("destination")
                       @Expose
                       val attributes: Attribute = Attribute())
 
-    data class Attribute(@SerializedName("title")
+    data class Attribute(var id: String = "",
+                        @SerializedName("title")
                          @Expose
-                         val title: String = "",
+                         var title: String = "",
                          @SerializedName("subtitle")
                          @Expose
-                         val subtitle: String = "",
+                         var subtitle: String = "",
                          @SerializedName("webURL")
                          @Expose
-                         val webUrl: String = "",
+                         var webUrl: String = "",
                          @SerializedName("appURL")
                          @Expose
-                         val appUrl: String = "",
+                         var appUrl: String = "",
                          @SerializedName("imageURL")
                          @Expose
-                         val imageUrl: String = "")
+                         var imageUrl: String = "")
 
     data class Response(@SerializedName("TravelDestination")
                         @Expose

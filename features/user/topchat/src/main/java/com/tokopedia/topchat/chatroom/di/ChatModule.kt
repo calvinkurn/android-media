@@ -20,6 +20,9 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.mediauploader.di.MediaUploaderModule
+import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
+import com.tokopedia.mediauploader.di.NetworkModule
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -30,7 +33,7 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
@@ -56,7 +59,14 @@ import javax.inject.Named
  * @author : Steven 29/11/18
  */
 
-@Module(includes = arrayOf(ImageUploaderModule::class, ChatNetworkModule::class))
+@Module(
+        includes = arrayOf(
+                ChatNetworkModule::class,
+                MediaUploaderModule::class,
+                MediaUploaderNetworkModule::class,
+                NetworkModule::class
+        )
+)
 class ChatModule {
 
     private val NET_READ_TIMEOUT = 60
@@ -74,16 +84,6 @@ class ChatModule {
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
-    }
-
-    @Provides
-    fun provideUploadImageUseCase(
-            @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
-            @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
-            @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier userSession: UserSessionInterface,
-            @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<TopChatImageUploadPojo> {
-        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, TopChatImageUploadPojo::class.java, imageUploaderUtils)
     }
 
     @ChatScope
@@ -241,6 +241,13 @@ class ChatModule {
     @Provides
     internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
+            : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
+        return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
     }
 
 }

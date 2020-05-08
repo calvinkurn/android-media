@@ -32,7 +32,7 @@ class MoreFilterViewHolder(
 
             val count = data.filterCount.toString()
             filterCount.setNotification(count, NotificationUnify.COLOR_TEXT_TYPE, NotificationUnify.COLOR_SECONDARY)
-            filter.chipImageResource = ContextCompat.getDrawable(context, R.color.Neutral_N0)
+            filter.chipImageResource = ContextCompat.getDrawable(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         } else {
             filterCount.hide()
             filter.chipImageResource = ContextCompat.getDrawable(context, com.tokopedia.sortfilter.R.drawable.unify_filter_ic)

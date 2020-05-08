@@ -19,7 +19,7 @@
         android:clickable="false"
         android:theme="@style/CheckBox.Wishlist"/>
 
-    <com.tokopedia.home_wishlist.view.custom.WishlistCardView
+    <com.tokopedia.productcard.ProductCardListView
         android:id="@+id/wishlist_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

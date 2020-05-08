@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/pdp_shimmering_shop_info"
     android:layout_width="match_parent"
+    android:paddingBottom="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
     android:layout_height="wrap_content">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView

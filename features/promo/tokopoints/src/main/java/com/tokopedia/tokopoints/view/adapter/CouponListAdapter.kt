@@ -112,7 +112,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
             /*This section is exclusively for handling flash-sale timer*/if (holder.timer != null) {
                 holder.timer!!.cancel()
             }
-            if (item.usage.activeCountDown < 1) {
+            if ( item.usage != null && item.usage.activeCountDown < 1) {
                 if (item.usage.expiredCountDown > 0
                         && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                     holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()

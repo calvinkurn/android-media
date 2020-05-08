@@ -1,0 +1,15 @@
+query travelTicker($did: String!, $instanceName: String!, $tickerPage: String!){
+    travelTicker(did: $did, instanceName: $instanceName, tickerPage: $tickerPage) {
+      Title
+      Message
+      URL
+      Type
+      Status
+      EndTime
+      StartTime
+      Instances
+      Device
+      Page
+      IsPeriod
+    }
+}

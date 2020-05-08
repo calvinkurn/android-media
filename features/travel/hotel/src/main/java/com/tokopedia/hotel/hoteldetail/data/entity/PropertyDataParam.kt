@@ -8,4 +8,4 @@ import com.google.gson.annotations.SerializedName
  */
 class PropertyDataParam(@SerializedName("propertyId")
                         @Expose
-                        val propertyId: Int = 0)
+                        val propertyId: Long = 0)

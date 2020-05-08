@@ -14,4 +14,5 @@
 
     <color name="checkbox_text">#61000000</color>
     <color name="white_grey">#fbfbfb</color>
+    <color name="category_border_color">#F3F4F5</color>
 </resources>

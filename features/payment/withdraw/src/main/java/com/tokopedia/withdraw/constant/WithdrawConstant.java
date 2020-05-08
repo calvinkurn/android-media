@@ -13,7 +13,6 @@ public class WithdrawConstant {
     public static final String SALDOLOCK_PAYNOW_URL = WEB_DOMAIN_URL + "fm/modal-toko/dashboard/pembayaran";
     public static final String SALDOLOCK_INFO = WEB_DOMAIN_URL + "help/article/a-2086";
 
-    public static final String WEB_REKENING_PREMIUM_URL = "https://m.tokopedia.com/payment/rekening-premium";
     public static final String WEB_TNC_URL = "https://m.tokopedia.com/terms/withdrawal-sla";
     public static final int MAX_LENGTH = 14;
 

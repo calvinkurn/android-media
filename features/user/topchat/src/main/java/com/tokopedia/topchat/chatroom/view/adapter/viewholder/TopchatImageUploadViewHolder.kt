@@ -21,7 +21,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     override fun getProgressBarSendImageId() = R.id.progress_bar
     override fun getLeftActionId() = R.id.left_action
     override fun getReadStatusId() = R.id.chat_status
-    override fun getChatBalloonId() = R.id.card_group_chat_message
+    override fun getChatBalloonId() = R.id.fl_image_container
 
     override fun bind(element: ImageUploadViewModel?) {
         if (element == null) return

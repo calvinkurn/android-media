@@ -13,6 +13,7 @@ import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
+import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
@@ -33,7 +34,6 @@ import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseC
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
-import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
