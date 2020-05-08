@@ -50,7 +50,10 @@ open class VideoComponent(
                             is ScreenStateEvent.VideoPropertyChanged -> {
                                 if (!it.stateHelper.videoPlayer.isGeneral) {
                                     uiView.hide()
-                                } else handleVideoStateChanged(it.videoProp.state)
+                                } else {
+                                    uiView.show()
+                                    handleVideoStateChanged(it.videoProp.state)
+                                }
                             }
                             is ScreenStateEvent.VideoStreamChanged -> {
                                 uiView.setOrientation(it.stateHelper.screenOrientation, it.videoStream.orientation)
