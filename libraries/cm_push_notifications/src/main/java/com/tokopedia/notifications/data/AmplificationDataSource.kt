@@ -9,20 +9,20 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
 import com.tokopedia.notifications.data.model.AmplificationNotifier
 import com.tokopedia.notifications.domain.AmplificationUseCase
+import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
 
-object AmplificationDataManager {
+object AmplificationDataSource {
 
-    @JvmStatic fun amplification(context: Context, deviceToken: String) {
-        val useCase = GraphqlUseCase<AmplificationNotifier>(
+    private val useCase by lazy(LazyThreadSafetyMode.NONE) {
+        GraphqlUseCase<AmplificationNotifier>(
                 GraphqlInteractor.getInstance().graphqlRepository
         )
-        val query = GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.query_notification_amplification
-        )
+    }
+
+    @JvmStatic fun invoke(context: Context) {
+        val query = loadRaw(context.resources, R.raw.query_notification_amplification)
         val amplificationUseCase = AmplificationUseCase(useCase, query)
-        val params = amplificationUseCase.params(deviceToken)
-        amplificationUseCase.execute(params) {
+        amplificationUseCase.execute {
             it.webhookAttributionNotifier.pushData.forEach { data ->
                 val bundle = jsonToBundle(data)
                 PushController(context).handleNotificationBundle(bundle)
