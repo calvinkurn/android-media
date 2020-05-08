@@ -45,7 +45,6 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
@@ -53,7 +52,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.notifications.data.AmplificationDataManager;
+import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -211,10 +210,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         initBlockCanary();
 
-        AmplificationDataManager.amplification(
-                this,
-                FCMCacheManager.getRegistrationId(this)
-        );
+        AmplificationDataSource.invoke(this);
     }
 
     private void createAndCallPreSeq(){
