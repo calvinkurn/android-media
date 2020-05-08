@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -96,7 +97,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun handleIntentReceive(taskId: String, bundle: Bundle?) {
         if(bundle != null) {
-            hideProgressBar()
             if(!bundle.containsKey(SeamlessSellerConstant.KEY_ERROR)) {
                 if (taskId == getUserTaskId
                         && bundle.getString(SeamlessSellerConstant.KEY_SHOP_NAME).isNotEmpty()
@@ -149,7 +149,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showProgressBar()
         if(GlobalConfig.isSellerApp()){
             connectService()
         }
@@ -252,6 +251,9 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     fun onBackPressedFragment() {
         analytics.eventClickBack()
+        if(seamlessViewModel.hasLogin())
+            moveToNormalLogin()
+        else RouteManager.route(activity, ApplinkConstInternalSellerapp.WELCOME)
     }
 
     internal inner class RemoteServiceConnection : ServiceConnection {
