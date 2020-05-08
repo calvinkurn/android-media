@@ -170,18 +170,18 @@ class SmartBillsFragment : BaseDaggerFragment(),
             startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_LOGIN)
         } else {
             context?.let { context ->
-                // Navigate to onboarding if it's the first time
-                val visitedOnboarding = sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)
-                if (!visitedOnboarding) {
-                    //TODO: Put onboarding tracking here
-                    if (::sharedPrefs.isInitialized) {
+                if (::sharedPrefs.isInitialized) {
+                    // Navigate to onboarding if it's the first time
+                    val visitedOnboarding = sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)
+                    if (!visitedOnboarding) {
+                        //TODO: Put onboarding tracking here
                         sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING, true).apply()
-                    }
 
-                    startActivityForResult(Intent(context,
-                            SmartBillsOnboardingActivity::class.java),
-                            REQUEST_CODE_SMART_BILLS_ONBOARDING
-                    )
+                        startActivityForResult(Intent(context,
+                                SmartBillsOnboardingActivity::class.java),
+                                REQUEST_CODE_SMART_BILLS_ONBOARDING
+                        )
+                    }
                 }
 
                 // Setup ticker
