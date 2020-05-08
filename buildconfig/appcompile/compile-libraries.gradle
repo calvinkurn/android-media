@@ -65,3 +65,4 @@ include "libraries:weaver"
 include "libraries:utils"
 include "libraries:pre_release_inspector"
 include "libraries:pre_release_inspector_no_op"
+include ':libraries:annotation_proc_central'
