@@ -39,7 +39,6 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
 
     companion object {
-        const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
         fun getInstance(endPoint: String?): Fragment {
             val bundle = Bundle()
             val fragment = DiscoveryFragment()
@@ -135,7 +134,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                 if(data.searchApplink?.isNotEmpty() == true) {
                     RouteManager.route(context, data.searchApplink)
                 } else {
-                    RouteManager.route(context, SEARCH_DEEPLINK)
+                    RouteManager.route(context, Utils.SEARCH_DEEPLINK)
                 }
             }
         } else {

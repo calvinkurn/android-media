@@ -15,6 +15,7 @@ class Utils {
         const val DEFAULT_BANNER_WIDTH = 800
         const val DEFAULT_BANNER_HEIGHT = 150
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
+        const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {

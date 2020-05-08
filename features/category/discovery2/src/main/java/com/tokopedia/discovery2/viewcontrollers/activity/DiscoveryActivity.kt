@@ -22,6 +22,9 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val END_POINT = "end_point"
     }
 
+    override fun initView() {
+        toolbar?.hide()
+    }
 
 //    override fun initDaggerInject() {
 //        DaggerDiscoveryComponent.builder()
