@@ -22,6 +22,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.updateinactivephone.R
@@ -212,13 +214,13 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     }
 
     override fun dismissLoading() {
-        loader?.visibility = View.GONE
-        parentView?.visibility = View.VISIBLE
+        loader?.hide()
+        parentView?.show()
     }
 
     override fun showLoading() {
-        loader?.visibility = View.VISIBLE
-        parentView?.visibility = View.GONE
+        loader?.show()
+        parentView?.hide()
     }
 
     override fun showErrorValidateData(errorMessage: String) {

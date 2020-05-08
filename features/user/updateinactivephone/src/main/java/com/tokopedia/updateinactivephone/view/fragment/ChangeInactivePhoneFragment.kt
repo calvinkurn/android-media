@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
@@ -175,13 +177,13 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     override fun dismissLoading() {
-        loader?.visibility = View.GONE
-        mainLayout?.visibility = View.VISIBLE
+        loader?.hide()
+        mainLayout?.show()
     }
 
     override fun showLoading() {
-        loader?.visibility = View.VISIBLE
-        mainLayout?.visibility = View.GONE
+        loader?.show()
+        mainLayout?.hide()
     }
 
     override fun onForbidden() {}
