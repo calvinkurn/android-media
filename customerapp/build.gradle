@@ -94,6 +94,10 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+ext.lintchecks = [
+        'SetColourUsageError',
+        'CoreResourcesUsageError'
+] as String[]
 
 
 android {
@@ -135,8 +139,13 @@ android {
     }
 
     lintOptions {
-        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport true
+        htmlOutput file("lint-report.html")
+        warningsAsErrors false
         abortOnError false
+        checkReleaseBuilds false
+        check lintchecks
     }
 
     signingConfigs {
@@ -599,6 +608,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    lintChecks project(rootProject.ext.libraries.lint)
 }
 
 

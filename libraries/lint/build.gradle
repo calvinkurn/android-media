@@ -2,13 +2,24 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 ext {
-    lintVersion = "26.6.0"
+    lintVersion = "26.6.3"
 }
 
 repositories {
     google()
     mavenCentral()
     jcenter()
+}
+
+jar {
+    manifest {
+        attributes 'Manifest-Version': 1.0
+        attributes('Lint-Registry': 'com.tokopedia.linter.IssueRegistry')
+    }
+}
+
+task cleanJar(type: Delete) {
+    delete rootProject.buildDir
 }
 
 dependencies {
@@ -23,3 +34,12 @@ dependencies {
     testImplementation "com.android.tools.lint:lint-tests:$lintVersion"
     testImplementation 'junit:junit:4.12'
 }
+
+project.ext {
+    artifactId = 'lint'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "lint-release"
+}
+
+apply from: '../../publish_local.gradle'

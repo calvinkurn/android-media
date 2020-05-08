@@ -97,10 +97,10 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.powerMockXstream
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    lintChecks project(rootProject.ext.libraries.lint)
+    //lintChecks project(rootProject.ext.libraries.lint)
 }
-android {
+/*android {
     lintOptions {
         abortOnError false
     }
-}
+}*/

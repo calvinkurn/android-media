@@ -13,6 +13,9 @@ class IssueRegistry : IssueRegistry() {
                 CoreResourcesDetector.ISSUE
         )
 
+    override val minApi: Int
+        get() = super.minApi
+
     override val api: Int = CURRENT_API
 
 }
