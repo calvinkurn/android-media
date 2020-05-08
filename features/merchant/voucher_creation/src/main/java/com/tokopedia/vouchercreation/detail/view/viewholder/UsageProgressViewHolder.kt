@@ -12,7 +12,10 @@ import kotlinx.android.synthetic.main.item_mvc_usage_progress.view.*
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class UsageProgressViewHolder(itemView: View?) : AbstractViewHolder<UsageProgressUiModel>(itemView) {
+class UsageProgressViewHolder(
+        itemView: View?,
+        private val tooltipListener: (String, String) -> Unit
+) : AbstractViewHolder<UsageProgressUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -23,6 +26,19 @@ class UsageProgressViewHolder(itemView: View?) : AbstractViewHolder<UsageProgres
         with(itemView) {
             progressMvcUsage.setValue(element.voucherUsed, true)
             progressMvcUsage.progressBarHeight = context.pxToDp(6).toInt()
+
+            imgInfo.setOnClickListener {
+                setOnTooltipClick()
+            }
         }
+    }
+
+    private fun setOnTooltipClick() {
+        val title = itemView.context.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses)
+        val dummyContent = """
+                            Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam bembelian.<br><br>
+                            Pengeluaran akan otomatis dipotong dari hasil penjualanmu.
+                        """.trimIndent()
+        tooltipListener(title, dummyContent)
     }
 }

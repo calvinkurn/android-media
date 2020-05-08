@@ -71,10 +71,8 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
         showShareBottomSheet()
     }
 
-    override fun showDescriptionBottomSheet(title: String, content: String) {
-        if (!isAdded) return
-        DescriptionBottomSheet(context ?: return)
-                .show(title, content, childFragmentManager)
+    override fun onFooterCtaTextClickListener() {
+
     }
 
     override fun showTipsAndTrickBottomSheet() {
@@ -87,6 +85,12 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                     showShareBottomSheet()
                 }
                 .show(childFragmentManager)
+    }
+
+    override fun showDescriptionBottomSheet(title: String, content: String) {
+        if (!isAdded) return
+        DescriptionBottomSheet(context ?: return)
+                .show(title, content, childFragmentManager)
     }
 
     private fun setupView() = view?.run {
@@ -124,7 +128,6 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
     private fun showDummyData() {
         val dummy = listOf(
                 VoucherHeaderUiModel(),
-                PromoPerformanceUiModel("Rp2.600.000", 30, 120),
                 UsageProgressUiModel(30),
                 DividerUiModel(8),
                 TipsUiModel("Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat tips & trik", "Lihat tips & trik"),
@@ -147,14 +150,7 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                 )),
                 DividerUiModel(8),
                 FooterButtonUiModel("Bagikan Voucher", ""),
-                FooterUiModel(
-                        "Untuk menghentikan promosi, klik <font color=\"#03AC0E\"><b>disini</b></font>",
-                        "Pengeluaran Promosi",
-                        """
-                            Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam bembelian.<br><br>
-                            Pengeluaran akan otomatis dipotong dari hasil penjualanmu.
-                        """.trimIndent()
-                )
+                FooterUiModel("Untuk menghentikan promosi, klik <font color=\"#03AC0E\"><b>disini</b></font>")
         )
         renderList(dummy)
     }

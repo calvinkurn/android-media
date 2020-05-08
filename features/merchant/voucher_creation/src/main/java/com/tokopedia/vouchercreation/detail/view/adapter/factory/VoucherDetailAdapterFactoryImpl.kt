@@ -35,8 +35,12 @@ class VoucherDetailAdapterFactoryImpl(
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent)
-            PromoPerformanceViewHolder.RES_LAYOUT -> PromoPerformanceViewHolder(parent)
-            UsageProgressViewHolder.RES_LAYOUT -> UsageProgressViewHolder(parent)
+            PromoPerformanceViewHolder.RES_LAYOUT -> PromoPerformanceViewHolder(parent) { title, content ->
+                voucherDetailListener.showDescriptionBottomSheet(title, content)
+            }
+            UsageProgressViewHolder.RES_LAYOUT -> UsageProgressViewHolder(parent)  { title, content ->
+                voucherDetailListener.showDescriptionBottomSheet(title, content)
+            }
             DividerViewHolder.RES_LAYOUT -> DividerViewHolder(parent)
             TipsViewHolder.RES_LAYOUT -> TipsViewHolder(parent) {
                 voucherDetailListener.showTipsAndTrickBottomSheet()
@@ -45,8 +49,8 @@ class VoucherDetailAdapterFactoryImpl(
             FooterButtonViewHolder.RES_LAYOUT -> FooterButtonViewHolder(parent) {
                 voucherDetailListener.onFooterButtonClickListener()
             }
-            FooterViewHolder.RES_LAYOUT -> FooterViewHolder(parent) { title, content ->
-                voucherDetailListener.showDescriptionBottomSheet(title, content)
+            FooterViewHolder.RES_LAYOUT -> FooterViewHolder(parent) {
+                voucherDetailListener.onFooterCtaTextClickListener()
             }
             else -> super.createViewHolder(parent, type)
         }

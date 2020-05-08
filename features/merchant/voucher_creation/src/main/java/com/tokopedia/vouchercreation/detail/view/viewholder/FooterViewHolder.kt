@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.item_mvc_footer.view.*
 
 class FooterViewHolder(
         itemView: View?,
-        private val onCtaClick: (String, String) -> Unit
+        private val onCtaClick: () -> Unit
 ) : AbstractViewHolder<FooterUiModel>(itemView) {
 
     companion object {
@@ -37,7 +37,7 @@ class FooterViewHolder(
             val spannableString = SpannableString(text)
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(v: View) {
-                    onCtaClick(element.bottomSheetTitle, element.bottomSheetContent)
+                    onCtaClick()
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
