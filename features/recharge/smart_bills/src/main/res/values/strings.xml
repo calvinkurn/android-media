@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Smart Bills Management</string>
-    <string name="smart_bills_app_name">Smart Bills Management</string>
 
     <string name="smart_bills_onboarding_title">Yuk, bayar sekaligus tagihanmu!</string>
     <string name="smart_bills_onboarding_desc_1">Bayar sekaligus tagihanmu dengan cepat dan mudah</string>
     <string name="smart_bills_onboarding_desc_2">Tagihan yang bisa dibayar sekaligus didapatkan dari riwayat transaksimu sebelumnya</string>
     <string name="smart_bills_onboarding_label">Mulai Bayar</string>
 
+    <string name="smart_bills_action_bar_title">Bayar Sekaligus</string>
     <string name="smart_bills_title">Tagihan yang dibayar sekaligus</string>
     <string name="smart_bills_select_all">Pilih Semua</string>
     <string name="smart_bills_item_description">%1$s - %2$s</string>
+    <string name="smart_bills_checkout_view_button_label">Bayar</string>
+    <string name="smart_bills_no_item_price">Rp -</string>
     <string name="smart_bills_item_default_error">Terdapat kendala pada tagihan ini</string>
     <string name="smart_bills_checkout_error">Maaf, terdapat kendala pada pemrosesan tagihan</string>
     <string name="smart_bills_ticker">Belum berlangganan? Mulai bayar tagihanmu secara otomatis [di sini]{%1$s}</string>

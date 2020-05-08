@@ -20,13 +20,14 @@
         android:layout_width="@dimen/smart_bills_icon_size"
         android:layout_height="@dimen/smart_bills_icon_size"
         android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:focusable="false"
         app:cardCornerRadius="@dimen/smart_bills_icon_corner_size">
 
         <ImageView
             android:id="@+id/iv_smart_bills_item_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
     </androidx.cardview.widget.CardView>
 

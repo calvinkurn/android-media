@@ -76,7 +76,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
         performanceMonitoring = PerformanceMonitoring.start(RECHARGE_SMART_BILLS_PAGE_PERFORMANCE)
 
         activity?.let {
-            (it as BaseSimpleActivity).updateTitle(getString(R.string.smart_bills_app_name))
+            (it as BaseSimpleActivity).updateTitle(getString(R.string.smart_bills_action_bar_title))
 
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             viewModel = viewModelProvider.get(SmartBillsViewModel::class.java)
@@ -196,7 +196,11 @@ class SmartBillsFragment : BaseDaggerFragment(),
                     }
                 })
 
-                cb_smart_bills_select_all.setOnClickListener {
+//                cb_smart_bills_select_all.setOnClickListener {
+//                    toggleAllItems(cb_smart_bills_select_all.isChecked)
+//                }
+                view_smart_bills_select_all_checkbox_container.setOnClickListener {
+                    cb_smart_bills_select_all.toggle()
                     toggleAllItems(cb_smart_bills_select_all.isChecked)
                 }
 
@@ -209,6 +213,9 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 })
 
                 smart_bills_checkout_view.listener = this
+                smart_bills_checkout_view.setVisibilityLayout(true)
+                smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
+                setTotalPrice()
 
                 loadData()
             }
@@ -266,16 +273,32 @@ class SmartBillsFragment : BaseDaggerFragment(),
     }
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
-        smart_bills_checkout_view.setVisibilityLayout(adapter.checkedDataList.isNotEmpty())
-
         if (isChecked) {
             totalPrice += item.amount.toInt()
         } else {
             totalPrice -= item.amount.toInt()
         }
-        smart_bills_checkout_view.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true))
+        setTotalPrice()
 
         cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
+    }
+
+    private fun toggleAllItems(value: Boolean) {
+        adapter.toggleAllItems(value)
+
+        totalPrice = if (value) maximumPrice else 0
+        setTotalPrice()
+    }
+
+    private fun setTotalPrice() {
+        if (totalPrice >= 0) {
+            val totalPriceString = if (totalPrice > 0) {
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true)
+            } else {
+                getString(R.string.smart_bills_no_item_price)
+            }
+            smart_bills_checkout_view.setTotalPrice(totalPriceString)
+        }
     }
 
     override fun onClickNextBuyButton() {
@@ -293,15 +316,6 @@ class SmartBillsFragment : BaseDaggerFragment(),
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
             )
         }
-    }
-
-    private fun toggleAllItems(value: Boolean) {
-        adapter.toggleAllItems(value)
-
-        smart_bills_checkout_view.setVisibilityLayout(value)
-
-        totalPrice = if (value) maximumPrice else 0
-        smart_bills_checkout_view.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true))
     }
 
     companion object {

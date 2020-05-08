@@ -39,12 +39,13 @@
 
             <LinearLayout
                 android:id="@+id/view_smart_bills_select_all_checkbox_container"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl5"
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:orientation="horizontal"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_smart_bills_title">
 
                 <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify

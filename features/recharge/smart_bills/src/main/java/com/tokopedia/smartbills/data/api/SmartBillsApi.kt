@@ -5,7 +5,10 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.smartbills.data.MultiCheckoutRequest
 import com.tokopedia.smartbills.data.RechargeMultiCheckoutResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.Header
+import retrofit2.http.Headers
+import retrofit2.http.POST
 
 interface SmartBillsApi {
 
@@ -17,6 +20,6 @@ interface SmartBillsApi {
     ): Response<DataResponse<RechargeMultiCheckoutResponse>>
 
     companion object {
-        const val PATH_MULTI_CHECKOUT = "v1.4/checkout/multi-item"
+        const val PATH_MULTI_CHECKOUT = "checkout/multi-item"
     }
 }

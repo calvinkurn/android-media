@@ -39,6 +39,10 @@ class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListene
             } else {
                 tv_smart_bills_item_error.hide()
             }
+
+            setOnClickListener {
+                toggle()
+            }
         }
     }
 
