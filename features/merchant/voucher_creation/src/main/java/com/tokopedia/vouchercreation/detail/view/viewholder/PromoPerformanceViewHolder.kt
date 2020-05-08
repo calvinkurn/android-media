@@ -22,12 +22,11 @@ class PromoPerformanceViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_voucher_promo_performance
     }
 
-    @SuppressLint("SetTextI18n")
     override fun bind(element: PromoPerformanceUiModel) {
         with(itemView) {
             tvMvcNominalTotalSpending.text = element.totalSpending
             tvMvcPromoUsedQuota.text = element.voucherUsed.toString()
-            tvMvcPromoTotalQuota.text = "/${element.voucherQuota}"
+            tvMvcPromoTotalQuota.text = String.format("/%d",element.voucherQuota)
             imgInfo.setOnClickListener {
                 setOnTooltipClick()
             }
