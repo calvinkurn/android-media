@@ -33,7 +33,6 @@ class SellerSeamlessLoginActivity : BaseSimpleActivity(), HasComponent<LoginRegi
     override fun onBackPressed() {
         if(fragment != null && fragment is SellerSeamlessLoginFragment){
             (fragment as SellerSeamlessLoginFragment).onBackPressedFragment()
-            super.onBackPressed()
         }else{
             super.onBackPressed()
         }
