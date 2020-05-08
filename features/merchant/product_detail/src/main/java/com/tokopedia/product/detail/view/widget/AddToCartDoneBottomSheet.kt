@@ -60,8 +60,8 @@ class AddToCartDoneBottomSheet :
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
-        private const val abNewPdpAfterAtcKey = "Pdp Product Thumbnail"
-        private const val variantNewPdpAfterAtc = "New Thumbnail"
+        private const val abNewPdpAfterAtcKey = "PDP ATC 2020"
+        private const val oldVariantPDP = "PDP after ATC"
     }
 
     @Inject
@@ -172,7 +172,7 @@ class AddToCartDoneBottomSheet :
                 is Success -> {
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
-                    if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) == variantNewPdpAfterAtc){
+                    if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
                         atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(it.data.first(), addedProductDataModel?.shopId ?: -1))
                     } else {
                         for (res in it.data) {
