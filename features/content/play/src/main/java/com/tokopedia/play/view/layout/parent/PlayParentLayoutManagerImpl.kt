@@ -51,8 +51,6 @@ class PlayParentLayoutManagerImpl(
     private val offset12 = container.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
-    private var isVideoAlreadyReady = false
-
     private var topBounds = 0
 
     /**
@@ -91,10 +89,6 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun onVideoStateChanged(view: View, videoState: PlayVideoState, videoOrientation: VideoOrientation) {
-        if (videoState in arrayOf(PlayVideoState.Playing, PlayVideoState.Pause, PlayVideoState.Ended) && !isVideoAlreadyReady) {
-            reconfigureLayout(view, videoOrientation)
-            isVideoAlreadyReady = true
-        }
     }
 
     override fun onVideoTopBoundsChanged(view: View, videoPlayer: VideoPlayerUiModel, screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation, topBounds: Int) {
@@ -107,7 +101,7 @@ class PlayParentLayoutManagerImpl(
 
         if (shouldConfigureMargin) {
             if (videoPlayer.isYouTube) changeVideoMargin(flYouTube, this.topBounds)
-            else if (isVideoAlreadyReady) reconfigureLayout(view, videoOrientation)
+            else reconfigureLayout(view, videoOrientation)
         }
     }
 
