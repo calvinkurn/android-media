@@ -612,8 +612,8 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
-        observeHomeRequestNetwork();
         observeViewModelInitialized();
+        observeHomeRequestNetwork();
     }
 
     private void observeHomeRequestNetwork() {
