@@ -1,20 +1,14 @@
 package com.tokopedia.vouchercreation.detail.view.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
-import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
-import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
-import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
@@ -23,15 +17,10 @@ import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDetailAdapterFactoryImpl>(),
-        VoucherDetailListener {
+class VoucherDetailFragment : BaseDetailFragment() {
 
     companion object {
         fun newInstance(): VoucherDetailFragment = VoucherDetailFragment()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_mvc_voucher_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,19 +38,9 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
         return super.onOptionsItemSelected(item)
     }
 
-    override fun getRecyclerViewResourceId(): Int = R.id.rvMvcVoucherDetail
-
-    override fun getAdapterTypeFactory(): VoucherDetailAdapterFactoryImpl {
-        return VoucherDetailAdapterFactoryImpl(this)
-    }
-
     override fun getScreenName(): String = this::class.java.simpleName
 
     override fun initInjector() {
-
-    }
-
-    override fun onItemClicked(t: VoucherDetailUiModel?) {
 
     }
 
@@ -91,12 +70,6 @@ class VoucherDetailFragment : BaseListFragment<VoucherDetailUiModel, VoucherDeta
                     showShareBottomSheet()
                 }
                 .show(childFragmentManager)
-    }
-
-    override fun showDescriptionBottomSheet(title: String, content: String) {
-        if (!isAdded) return
-        DescriptionBottomSheet(context ?: return)
-                .show(title, content, childFragmentManager)
     }
 
     private fun setupView() = view?.run {
