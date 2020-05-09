@@ -62,11 +62,6 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
             shopId = userSession.shopId
         }
 
-//        if (isNeedToGoToAddShowcase) {
-//            val addShowcaseIntent = RouteManager.getIntent(this, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
-//            startActivityForResult(addShowcaseIntent, REQUEST_CODE_ADD_ETALASE)
-//        }
-
         getShopType()
         setupInitialFragment()
         setupStatusbar()
@@ -79,29 +74,12 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
                     isShowZeroProduct, isMyShop(), isNeedToGoToAddShowcase)
             navigateToOtherFragment(fragmentShowcaseList, null)
         } else if (page == PageNameConstant.SHOWCASE_LIST_REORDER_PAGE) {
+            isNeedToGoToAddShowcase = false
             val fragmentShowcaseReorder = ShopShowcaseListReorderFragment.createInstance(
                     shopType, showcaseList, isMyShop())
             navigateToOtherFragment(fragmentShowcaseReorder, null)
         }
     }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        when (requestCode) {
-//            REQUEST_CODE_ADD_ETALASE -> {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    val intent = Intent()
-//                    setResult(Activity.RESULT_OK, intent)
-//                    finish()
-//                } else if (resultCode == Activity.RESULT_CANCELED) {
-//                    val intent = Intent()
-//                    setResult(Activity.RESULT_CANCELED, intent)
-//                    finish()
-//                } 
-//            }
-//        }
-//
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
 
     private fun setupStatusbar(){
         val window: Window = getWindow()

@@ -59,3 +59,4 @@ include "libraries:linker"
 include "libraries:webview"
 include "libraries:imagepreviewslider"
 include "libraries:weaver"
+include ':libraries:annotation_proc_central'

@@ -111,7 +111,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
         somConfirmRequestPickupViewModel.processReqPickupResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    processReqPickupResponse = it.data.data.mpLogisticRequestPickup
+                    processReqPickupResponse = it.data.mpLogisticRequestPickup
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_PROCESS_REQ_PICKUP, processReqPickupResponse)
                     })

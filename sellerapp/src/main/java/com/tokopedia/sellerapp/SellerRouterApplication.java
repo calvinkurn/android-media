@@ -122,9 +122,9 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
 import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
@@ -164,7 +164,6 @@ import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -268,11 +267,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
-
-        if(remoteConfig.getBoolean(ENABLE_OLD_PRODUCT_MANAGE)) {
-            intent = new Intent(context, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity.class);
-        }
-
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -365,7 +359,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
-        Intent intent = new Intent(context, WelcomeActivity.class);
+        Intent intent = new Intent(context, SellerOnboardingActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
                 return SellerHomeActivity.createIntent(context);
@@ -387,7 +381,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (SessionHandler.isV4Login(context)) {
             return SellerHomeActivity.class;
         } else {
-            return WelcomeActivity.class;
+            return SellerOnboardingActivity.class;
         }
     }
 
