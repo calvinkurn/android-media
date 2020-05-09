@@ -36,7 +36,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
 
     private static final String URL_FORGOT_PASSWORD = "https://accounts.tokopedia.com/reset-password/islogin?theme=mobile";
-    private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW = "android_forgot_password_direct_to_webview";
+    private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW = "android_forgot_password_webview";
 
     public static Intent createInstance(Context context) {
         return new Intent(context, ForgotPasswordActivity.class);
