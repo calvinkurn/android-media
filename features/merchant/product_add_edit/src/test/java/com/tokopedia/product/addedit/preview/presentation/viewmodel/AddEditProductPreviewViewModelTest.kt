@@ -8,14 +8,12 @@ import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
-import com.tokopedia.product.addedit.preview.data.source.api.response.Variant
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Test
@@ -131,11 +129,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.getOrAwaitValue()
 
         viewModel.getNewProductInputModel(arrayListOf())
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertTrue(viewModel.productInputModel.value?.detailInputModel != null)
 
         viewModel.updateSizeChart(PictureViewModel())
         viewModel.productInputModel.getOrAwaitValue()
 
-        assertTrue(viewModel.productInputModel.value?.variantInputModel?.variantOptionParent?.isNotEmpty() ?: false)
+        assertTrue(viewModel.productInputModel.value?.variantInputModel?.productSizeChart != null)
     }
 
     @Test
@@ -303,6 +304,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     private fun verifyGetProductResult(expectedResult: Success<Product>) {
         val actualResult = viewModel.getProductResult.value as Success<Product>
         assertEquals(expectedResult, actualResult)
+
+        viewModel.isVariantEmpty.getOrAwaitValue()
+        assertEquals(true, viewModel.isVariantEmpty.value)
     }
 
     private fun verifyGetProductVariantFailed() {
@@ -324,9 +328,12 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     private fun verifyGetProductFailed() {
         val result = viewModel.getProductResult.value
         assertTrue(result is Fail)
+
+        viewModel.isVariantEmpty.getOrAwaitValue()
+        assertEquals(true, viewModel.isVariantEmpty.value)
     }
 
-    fun <T> LiveData<T>.getOrAwaitValue(
+    private fun <T> LiveData<T>.getOrAwaitValue(
             time: Long = 2,
             timeUnit: TimeUnit = TimeUnit.SECONDS
     ): T {
