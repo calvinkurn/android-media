@@ -11,7 +11,7 @@ open class PublishCompositeTaskNew : DefaultTask() {
     var dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
     var projectToArtifactInfoList = hashMapOf<String, ArtifactInfo>()
     var artifactIdToProjectNameList = hashMapOf<String, String>()
-    var moduleToPublishList = hashSetOf<String>()
+    var moduleToPublishList = mutableSetOf<String>()
 
     lateinit var sortedDependency: List<String>
 
@@ -40,6 +40,9 @@ open class PublishCompositeTaskNew : DefaultTask() {
         println("Artifact to Project: $artifactIdToProjectNameList")
         println("Module to Publish: $moduleToPublishList")
 
+        if (moduleToPublishList.isEmpty()){
+            return
+        }
         // get sorted dependency
         sortedDependency = sortGraph().reversed()
         println("After Topological Sort $sortedDependency")
@@ -223,22 +226,18 @@ open class PublishCompositeTaskNew : DefaultTask() {
             outputFile2.delete()
         }
         
-//        val gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
-//        val gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
-//        if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
-//            return false
-//        }
-//        if (outputFile2.exists()) {
-//            outputFile2.copyTo(outputFile, true)
-//        }
+        val gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
+        val gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
+            return false
+        }
+        if (outputFile2.exists()) {
+            outputFile2.copyTo(outputFile, true)
+        }
 
-//        val gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
-//        val gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
-//        print(gitResultLog)
-//        return gitResultLog.contains("BUILD SUCCESSFUL")
-
-        val gitResultLog = "BUILD SUCCESSFUL"
-        print("$module - $gitResultLog")
+        val gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
+        val gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        print(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }
 

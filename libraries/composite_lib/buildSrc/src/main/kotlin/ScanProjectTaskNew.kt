@@ -4,7 +4,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 import versionToInt
-import java.io.File
 
 open class ScanProjectTaskNew : DefaultTask() {
 
@@ -12,23 +11,16 @@ open class ScanProjectTaskNew : DefaultTask() {
     var versionConfigMap = mutableMapOf<String, Int>()
     var versionSuffix = ""
     var moduleLatestVersionMap = hashMapOf<String, ArtifactLatestVersionInfo>()
+    var moduleToPublishList = mutableSetOf<String>()
 
     //output:
     val dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
     val projectToArtifactInfoList = hashMapOf<String, ArtifactInfo>()
     val artifactIdToProjectNameList = hashMapOf<String, String>()
 
-    companion object {
-        const val LIBRARIES_PATH = "../../buildconfig/dependencies/dependency-libraries.gradle"
-        const val TKPD_INTERNAL_LIB_DEPENDENCIES = "tkpdInternalLibDependencies"
-        //define who is responsible to change the version
-        //if the author contains the name in here, it will be ignored and the version will not change.
-//        val CHANGER_EMAIL = listOf("jenkins")
-    }
-
     @TaskAction
     fun run() {
-        //get shild project info
+        //get project info
         //result stored in projectToArtifactInfoList and artifactIdToProjectNameList
         populateProject()
 
@@ -36,15 +28,12 @@ open class ScanProjectTaskNew : DefaultTask() {
         // stored in dependenciesProjectNameHashSet
         populateProjectDependencies()
 
-        // this is to update all possible candidate version increase
-        // for example, the change of global config will also
-        // increase the version of the project that dependent on it
-        // calibratingCandidateList()
-
         // artifact version calibrating
         // dependency-libraries version and version defined in project extension might be different
         // if it is different, take the maximum between those 2
         calibratingVersion()
+
+        checkCommitModuleToPublishAndUpdate()
 
         println(projectToArtifactInfoList)
         println(artifactIdToProjectNameList)
@@ -115,29 +104,6 @@ open class ScanProjectTaskNew : DefaultTask() {
     private fun calibratingVersion() {
         try {
             projectToArtifactInfoList.forEach { artifactItem ->
-                //check if there is the library in root project
-//                if (rootArtifactVersionMap.containsKey(artifactItem.value.artifactId)) {
-//                    //compare artifact on the each compositelib project.ext to artifact in dependencies-libraries in the root proj
-//                    //if found, will update the value to the maximum between 2
-//                    val version = rootArtifactVersionMap.get(artifactItem.value.artifactId) ?: "1"
-//                    val versionInCompositeLib = artifactItem.value.versionName.versionToInt(versionConfigMap)
-//                    val versionInRoot = version.versionToInt(versionConfigMap)
-//                    val chosenVersion = if (versionInRoot.first > versionInCompositeLib.first) {
-//                        versionInRoot
-//                    } else {
-//                        versionInCompositeLib
-//                    }
-//                    artifactItem.value.maxCurrentVersionName = chosenVersion.second
-//                } else {
-//                    artifactItem.value.maxCurrentVersionName = artifactItem.value.versionName
-//                }
-//                val currentMaxVersion = artifactItem.value.maxCurrentVersionName.versionToInt(versionConfigMap).first
-//                val versionSuffixString = (if (versionSuffix.isNotEmpty()) {
-//                    "-$versionSuffix"
-//                } else "")
-//                val increasedVersionString = (currentMaxVersion + (versionConfigMap["Step"]
-//                    ?: 1)).toVersion(versionConfigMap) + versionSuffixString
-//                artifactItem.value.increaseVersionString = increasedVersionString
                 artifactItem.value.maxCurrentVersionName = moduleLatestVersionMap[artifactItem.value.artifactId]?.versionName ?: "0.0.0"
                 val currentMaxVersion = artifactItem.value.maxCurrentVersionName.versionToInt(versionConfigMap).first
                 val versionSuffixString = (if (versionSuffix.isNotEmpty()) {
@@ -150,6 +116,27 @@ open class ScanProjectTaskNew : DefaultTask() {
         } catch (ignored: Exception) {
 
         }
+    }
+
+    fun checkCommitModuleToPublishAndUpdate(){
+        val moduleToPublishEligible = mutableSetOf<String>()
+        for (key in moduleToPublishList) {
+            val currentCommitId = getCommitId(key)
+            val artifactId = projectToArtifactInfoList[key]?.artifactId ?: ""
+            val commitIdInServer = moduleLatestVersionMap[artifactId]?.commidId ?: ""
+            if (currentCommitId != commitIdInServer) {
+                // eligible to publish because the commit id is different
+                moduleToPublishEligible.add(key)
+            } else {
+                println ("Module $key is not eligible to Publish because the commit in local and server is same.")
+            }
+        }
+        moduleToPublishList = moduleToPublishEligible
+    }
+
+    fun getCommitId (projectName:String):String {
+        val gitLog = "git log -1 --pretty=format:\'%h\' ${projectName}"
+        return gitLog.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
     }
 
     fun Int.toVersion(configMap: Map<String, Int>): String {

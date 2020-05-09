@@ -5,7 +5,7 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class ScanModuleToPublishTask : DefaultTask() {
-    var moduleToPublishList = hashSetOf<String>()
+    var moduleToPublishList = mutableSetOf<String>()
 
     val PROPERTY_KEY = "moduleToPublish"
     var successScan = false
