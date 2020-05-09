@@ -3,12 +3,16 @@ package com.tokopedia.entertainment.pdp.activity
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.pdp.di.DaggerEventPDPComponent
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment
+import com.tokopedia.oms.scrooge.ScroogePGUtil
 
 class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent>{
 
@@ -39,6 +43,20 @@ class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPCompone
                 .putExtra(EXTRA_GROUP_ID,groupID)
                 .putExtra(EXTRA_PACKET_ID,packetID)
                 .putExtra(EXTRA_AMOUNT, amount)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
+            if (data != null) {
+                this.let {
+                    val url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true"
+                    RouteManager.route(it, url)
+                    finish()
+                }
+            }
+        }
     }
 
 }

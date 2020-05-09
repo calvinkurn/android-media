@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -20,8 +21,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
-import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_AMOUNT
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GROUP_ID
