@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.view.widget
+package com.tokopedia.vouchercreation.common.bottmsheet
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
@@ -24,7 +24,7 @@ class StopVoucherDialog(context: Context) {
         setTitle(context.getString(R.string.mvc_stop_voucher_dialog_title))
         val description = context.getString(R.string.mvc_stop_voucher_dialog_description)
         setDescription(String.format(description, voucher.name).parseAsHtml())
-        setPrimaryCTAText(context.getString(R.string.mvc_yes_cancel))
+        setPrimaryCTAText(context.getString(R.string.mvc_yes_stop))
         setPrimaryCTAClickListener {
             primaryClick()
             dismiss()
