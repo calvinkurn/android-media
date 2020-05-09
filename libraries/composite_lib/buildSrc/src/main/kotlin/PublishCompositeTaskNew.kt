@@ -152,7 +152,7 @@ open class PublishCompositeTaskNew : DefaultTask() {
                     if (strSplit.size == 2) {
                         val strProject = strSplit[1].substring(strSplit[1].indexOf("\""), strSplit[1].lastIndexOf("\""))
                         val projectSplit = strProject.split(":".toPattern(), 3)
-                        if (projectSplit.size == 3 && projectSplit[0].contains(ScanProjectTask.TOKOPEDIA)) {
+                        if (projectSplit.size == 3) {
                             val artifactId = projectSplit[1]
                             if (artifactId == artifactInfo.artifactId) {
                                 val versionInRoot = projectSplit[2]
