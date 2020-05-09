@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
  * For Fragments, allows declarations like
@@ -49,4 +50,8 @@ fun View.resize(percentage: Int) {
     val params = this.layoutParams
     params.width = width * percentage / 100
     this.layoutParams = params
+}
+
+fun BottomSheetUnify.dialogWindow(): View? {
+    return dialog?.window?.findViewById(android.R.id.content)
 }
