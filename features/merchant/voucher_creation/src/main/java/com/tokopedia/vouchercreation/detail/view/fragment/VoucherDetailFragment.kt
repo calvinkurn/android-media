@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
-import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
 /**
  * Created By @ilhamsuaib on 30/04/20
@@ -73,7 +71,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     }
 
     private fun setupView() = view?.run {
-        setupActionBar()
+
     }
 
     private fun showDownloadBottomSheet() {
@@ -94,14 +92,6 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
                 }
                 .show(childFragmentManager)
-    }
-
-    private fun setupActionBar() = view?.run {
-        (activity as? AppCompatActivity)?.let { activity ->
-            activity.setSupportActionBar(toolbarMvcVoucherDetail)
-            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            activity.supportActionBar?.title = "Voucher Hura Test Doang"
-        }
     }
 
     private fun showDummyData() {

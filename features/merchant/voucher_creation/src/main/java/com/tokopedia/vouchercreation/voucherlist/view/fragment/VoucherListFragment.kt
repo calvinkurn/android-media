@@ -177,12 +177,19 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
+            is Duplicate -> duplicateVoucher(voucher)
+        }
+    }
+
+    private fun duplicateVoucher(voucher: VoucherUiModel) {
+        activity?.let {
+            startActivity(VoucherDetailActivity.createDuplicateIntent(it, VoucherDetailActivity.DUPLICATE_PAGE))
         }
     }
 
     private fun viewVoucherDetail() {
         activity?.let {
-            startActivity(Intent(it, VoucherDetailActivity::class.java))
+            startActivity(VoucherDetailActivity.createDetailIntent(it, VoucherDetailActivity.DETAIL_PAGE))
         }
     }
 
