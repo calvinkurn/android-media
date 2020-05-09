@@ -55,7 +55,11 @@ dependencies {
     2. Adding impl of constraintLayout does not increase the aar size of graphql
     * */
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
 }
 
 project.ext {
