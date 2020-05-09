@@ -10,9 +10,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.session.forgotpassword.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenterImpl;
@@ -30,6 +34,9 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     private static final String INTENT_EXTRA_PARAM_EMAIL = "email";
     private static final String INTENT_EXTRA_AUTO_RESET = "INTENT_EXTRA_AUTO_RESET";
     private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
+
+    private static final String URL_FORGOT_PASSWORD = "https://accounts.tokopedia.com/reset-password/islogin?theme=mobile";
+    private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW = "android_forgot_password_direct_to_webview";
 
     public static Intent createInstance(Context context) {
         return new Intent(context, ForgotPasswordActivity.class);
@@ -61,6 +68,12 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        if (remoteConfig.getBoolean(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW, false)) {
+            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_FORGOT_PASSWORD));
+            finish();
+            return;
+        }
 
         if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
             ForgotPasswordFragment fragment = ForgotPasswordFragment.createInstance(
