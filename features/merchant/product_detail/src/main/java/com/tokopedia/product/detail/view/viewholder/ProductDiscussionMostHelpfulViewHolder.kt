@@ -2,7 +2,9 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
@@ -70,7 +72,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
 
     private fun showEmptyState() {
         itemView.productDiscussionMostHelpfulEmptyLayout.apply {
-            visibility = View.VISIBLE
+            show()
             productDetailDiscussionEmptyButton.setOnClickListener {
                 listener.onDiscussionSendQuestionClicked()
             }
@@ -81,7 +83,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     private fun showSingleQuestion(question: Question?, type: String, name: String) {
         question?.let { questionData ->
             itemView.productDiscussionMostHelpfulSingleQuestionLayout.apply {
-                visibility = View.VISIBLE
+                show()
                 with(questionData) {
                     productDetailDiscussionSingleQuestion.text = question.content
                     productDetailDiscussionSingleQuestionChevron.setOnClickListener {
@@ -108,7 +110,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
             val questionsAdapter = ProductDiscussionQuestionsAdapter(it, listener)
             itemView.productDiscussionMostHelpfulQuestions.apply {
                 adapter = questionsAdapter
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -116,11 +118,11 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     private fun showTitle(totalQuestion: Int, type: String, name: String) {
         itemView.apply {
             productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
-            productDiscussionMostHelpfulTitle.visibility = View.VISIBLE
+            productDiscussionMostHelpfulTitle.show()
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
                 listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1))
             }
-            productDiscussionMostHelpfulSeeAll.visibility = View.VISIBLE
+            productDiscussionMostHelpfulSeeAll.show()
         }
     }
 
@@ -131,7 +133,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                 setOnClickListener {
                     listener.onUserDetailsClicked(userId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -143,7 +145,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                 setOnClickListener {
                     listener.onUserDetailsClicked(userId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -155,7 +157,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                 setOnClickListener {
                     listener.goToTalkReply(questionId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -164,23 +166,23 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         if(date.isNotEmpty()) {
             itemView.productDetailDiscussionSingleQuestionDate.apply {
                 text = getString(R.string.product_detail_discussion_formatted_date, date)
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
 
     private fun showSellerLabelWithCondition(isSeller: Boolean) {
         if(isSeller) {
-            itemView.productDetailDiscussionSingleQuestionSellerLabel.visibility = View.VISIBLE
+            itemView.productDetailDiscussionSingleQuestionSellerLabel.show()
         }
     }
 
     private fun showNumberOfAttachedProductsWithCondition(attachedProducts: Int) {
         if(attachedProducts > 0) {
             itemView.apply {
-                productDetailDiscussionSingleQuestionAttachedProductIcon.visibility = View.VISIBLE
+                productDetailDiscussionSingleQuestionAttachedProductIcon.show()
                 productDetailDiscussionSingleQuestionAttachedProductCount.text = String.format(context.getString(R.string.product_detail_discussion_attached_products), attachedProducts)
-                productDetailDiscussionSingleQuestionAttachedProductCount.visibility = View.VISIBLE
+                productDetailDiscussionSingleQuestionAttachedProductCount.show()
             }
         }
     }
@@ -188,37 +190,37 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, type: String, name: String) {
         val answersToShow = otherAnswers - 1
         if(answersToShow > 0) {
-            itemView.productDetailDiscussionSingleQuestionAttachedSeeOtherAnswers.apply {
+            itemView.productDetailDiscussionSingleQuestionAttachedSeeOtherAnswers?.apply {
                 text = String.format(context.getString(R.string.product_detail_discussion_other_answers), answersToShow)
                 setOnClickListener {
                     listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1))
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
 
     private fun showNoAnswersText() {
-        itemView.productDetailDiscussionSingleQuestionAttachedNoAnswers.visibility = View.VISIBLE
+        itemView.productDetailDiscussionSingleQuestionAttachedNoAnswers.show()
         hideOtherElements()
     }
 
     private fun hideOtherElements() {
         itemView.apply {
-            productDetailDiscussionSingleQuestionAttachedProductCount.visibility = View.GONE
-            productDetailDiscussionSingleQuestionAttachedProductIcon.visibility = View.GONE
-            productDetailDiscussionSingleQuestionMessage.visibility = View.GONE
-            productDetailDiscussionSingleQuestionProfilePicture.visibility = View.GONE
-            productDetailDiscussionSingleQuestionDisplayName.visibility = View.GONE
-            productDetailDiscussionSingleQuestionDate.visibility = View.GONE
-            productDetailDiscussionSingleQuestionAttachedSeeOtherAnswers.visibility = View.GONE
-            productDetailDiscussionSingleQuestionSellerLabel.visibility = View.GONE
+            productDetailDiscussionSingleQuestionAttachedProductCount.hide()
+            productDetailDiscussionSingleQuestionAttachedProductIcon.hide()
+            productDetailDiscussionSingleQuestionMessage.hide()
+            productDetailDiscussionSingleQuestionProfilePicture.hide()
+            productDetailDiscussionSingleQuestionDisplayName.hide()
+            productDetailDiscussionSingleQuestionDate.hide()
+            productDetailDiscussionSingleQuestionAttachedSeeOtherAnswers.hide()
+            productDetailDiscussionSingleQuestionSellerLabel.hide()
         }
     }
 
     private fun showLocalLoad() {
         itemView.apply {
-            productDiscussionLocalLoadLayout.visibility = View.VISIBLE
+            productDiscussionLocalLoadLayout.show()
             productDetailDiscussionLocalLoad.apply {
                 title?.text = getString(R.string.product_detail_discussion_local_load_title)
                 description?.text = getString(R.string.product_detail_discussion_local_load_description)
@@ -230,34 +232,34 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     }
 
     private fun hideMultipleQuestion() {
-        itemView.productDiscussionMostHelpfulQuestions.visibility = View.GONE
+        itemView.productDiscussionMostHelpfulQuestions.hide()
     }
 
     private fun hideTitle() {
         itemView.apply {
-            productDiscussionMostHelpfulTitle.visibility = View.GONE
-            productDiscussionMostHelpfulSeeAll.visibility = View.GONE
+            productDiscussionMostHelpfulTitle.hide()
+            productDiscussionMostHelpfulSeeAll.hide()
         }
     }
 
     private fun showShimmer() {
-        itemView.productDiscussionShimmerLayout.visibility = View.VISIBLE
+        itemView.productDiscussionShimmerLayout.show()
     }
 
     private fun hideSingleQuestionLayout() {
-        itemView.productDiscussionMostHelpfulSingleQuestionLayout.visibility = View.GONE
+        itemView.productDiscussionMostHelpfulSingleQuestionLayout.hide()
     }
 
     private fun hideEmptyState() {
-        itemView.productDiscussionMostHelpfulEmptyLayout.visibility = View.GONE
+        itemView.productDiscussionMostHelpfulEmptyLayout.hide()
     }
 
     private fun hideShimmer() {
-        itemView.productDiscussionShimmerLayout.visibility = View.GONE
+        itemView.productDiscussionShimmerLayout.hide()
     }
 
     private fun hideLocalLoad() {
-        itemView.productDiscussionLocalLoadLayout.visibility = View.GONE
+        itemView.productDiscussionLocalLoadLayout.hide()
     }
 
 }
