@@ -43,6 +43,7 @@ open class PublishCompositeTaskNew : DefaultTask() {
         if (moduleToPublishList.isEmpty()){
             return
         }
+
         // get sorted dependency
         sortedDependency = sortGraph().reversed()
         println("After Topological Sort $sortedDependency")

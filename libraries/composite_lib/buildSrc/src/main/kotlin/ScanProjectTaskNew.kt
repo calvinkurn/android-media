@@ -34,10 +34,6 @@ open class ScanProjectTaskNew : DefaultTask() {
         calibratingVersion()
 
         checkCommitModuleToPublishAndUpdate()
-
-        println(projectToArtifactInfoList)
-        println(artifactIdToProjectNameList)
-        println(dependenciesProjectNameHashSet)
     }
 
     private fun populateProject() {
@@ -62,8 +58,6 @@ open class ScanProjectTaskNew : DefaultTask() {
                 artifactIdToProjectNameList[artifactId] = projectName
             }
         }
-        println(projectToArtifactInfoList)
-        println(artifactIdToProjectNameList)
     }
 
     private fun populateProjectDependencies() {
