@@ -388,13 +388,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 if (cameraResultFile.exists()) {
                     return cameraResultFile.absolutePath
                 } else {
-                    Timber.e("P1#LIVENESS_IMAGE_ERROR# ${resources.getString(R.string.liveness_failed_file_not_found)}")
+                    Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
                 }
             } else {
-                Timber.e("P1#LIVENESS_IMAGE_ERROR# ${resources.getString(R.string.liveness_failed_file_image_null)}")
+                Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
             }
         } catch (error: Throwable) {
-            Timber.e("P1#LIVENESS_IMAGE_ERROR# ${resources.getString(R.string.liveness_failed_set_file)} - ${error.printStackTrace()}")
+            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
         }
         return ""
     }
@@ -418,6 +418,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             out.close()
         } catch (e: Throwable) {
             e.printStackTrace()
+            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
         }
         return file
     }

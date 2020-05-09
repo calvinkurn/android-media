@@ -23,8 +23,4 @@
     <string name="liveness_failed_face_detection_title"> Verifikasi wajah gagal</string>
     <string name="liveness_failed_reason_prerecord">Verifikasi wajah tidak dapat mendeteksi video rekaman. Biar proses ini berhasil, scan wajahmu secara langsung, ya.</string>
     <string name="liveness_failed_reason_blurry">Gambar terlihat gelap. Saran kami, coba di tempat terang, biar scan wajah berhasil.</string>
-
-    <string name="liveness_failed_file_not_found">Failed to load the image, the image does not exist</string>
-    <string name="liveness_failed_file_image_null">Cannot save image, image bitmap is null</string>
-    <string name="liveness_failed_set_file">Failed to save liveness result</string>
 </resources>
