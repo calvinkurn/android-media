@@ -48,7 +48,6 @@ import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
-import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
 
 open class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
@@ -133,7 +132,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
 
     private fun initObservable() {
         viewModel.productStockHandler.observe(viewLifecycleOwner, Observer {
-            showNotificationDetail(BottomSheetType.StockHandler, stockHandlerMapper(it))
+            showNotificationDetail(BottomSheetType.StockHandler, it)
         })
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             showToastMessageError(it)
