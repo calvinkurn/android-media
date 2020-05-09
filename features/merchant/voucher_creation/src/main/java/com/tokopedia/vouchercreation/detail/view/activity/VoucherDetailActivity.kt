@@ -33,7 +33,8 @@ class VoucherDetailActivity : BaseActivity() {
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
+            window.decorView.setBackgroundColor(Color.WHITE)
+            setStatusBarColor(Color.TRANSPARENT)
             setLightStatusBar(true)
         }
     }
