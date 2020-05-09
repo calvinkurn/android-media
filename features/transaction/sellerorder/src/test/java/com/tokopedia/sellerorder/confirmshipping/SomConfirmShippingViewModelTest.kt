@@ -1,102 +1,197 @@
 package com.tokopedia.sellerorder.confirmshipping
 
-import com.google.gson.Gson
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
+import com.tokopedia.sellerorder.confirmshipping.domain.SomChangeCourierUseCase
+import com.tokopedia.sellerorder.confirmshipping.domain.SomGetConfirmShippingResultUseCase
+import com.tokopedia.sellerorder.confirmshipping.domain.SomGetCourierListUseCase
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
-import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.user.session.UserSession
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import io.mockk.spyk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.*
+import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
 /**
- * Created by fwidjaja on 2020-02-18.
+ * Created by fwidjaja on 2020-05-08.
  */
-/*
-object SomConfirmShippingViewModelTest: Spek({
-    InstantTaskExecutorRuleSpek(this)
+@RunWith(JUnit4::class)
+class SomConfirmShippingViewModelTest {
 
-    val dispatcher = Dispatchers.Unconfined
-    val graphqlRepository: GraphqlRepository = mockk(relaxed = true)
-    val viewModel = SomConfirmShippingViewModel(dispatcher, graphqlRepository)
-    val spy = spyk(viewModel)
-    val queryChangeCourier = "query_change_courier"
-    val queryCourierList = "query_courier_list"
-    val queryConfirmShipping = "query_confirm_shipping"
-    val changeCourierSuccessJson = "response_change_courier_success"
-    val courierListSuccessJson = "response_courier_list_success"
-    val confirmShippingSuccessJson = "response_confirm_shipping_success"
-    val gson = Gson()
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
-    Feature("SOM Confirm Shipping") {
-        Scenario("Confirm Shipping") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(confirmShippingSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomConfirmShipping.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomConfirmShipping.Data::class.java to response),
-                        mapOf(SomConfirmShipping.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
+    private val dispatcher = SomTestDispatcherProvider()
+    private lateinit var somConfirmShippingViewModel: SomConfirmShippingViewModel
+    private var listMsg = listOf<String>()
+    private var listCourier = listOf<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>()
 
-            When("Load file GQL-raw mutation mpLogisticConfirmShipping") {
-                runBlocking {
-                    spy.confirmShipping(queryConfirmShipping)
-                }
-            }
+    @RelaxedMockK
+    lateinit var somGetConfirmShippingResultUseCase: SomGetConfirmShippingResultUseCase
 
-            Then("Verify Func doConfirmShipping works as expected!") {
-                coVerify { spy.confirmShipping(queryConfirmShipping) }
-            }
-        }
+    @RelaxedMockK
+    lateinit var somGetCourierListUseCase: SomGetCourierListUseCase
 
-        Scenario("Get Courier List") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(courierListSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomCourierList.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomCourierList.Data::class.java to response),
-                        mapOf(SomCourierList.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
+    @RelaxedMockK
+    lateinit var somChangeCourierUseCase: SomChangeCourierUseCase
 
-            When("Load file GQL-raw mutation mpLogisticGetEditShippingForm") {
-                runBlocking {
-                    spy.getCourierList(queryCourierList)
-                }
-            }
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
+        somConfirmShippingViewModel = SomConfirmShippingViewModel(dispatcher,
+                somGetConfirmShippingResultUseCase, somGetCourierListUseCase, somChangeCourierUseCase)
 
-            Then("Verify Func getCourierList works as expected!") {
-                coVerify { spy.getCourierList(queryCourierList) }
-            }
-        }
+        val msg1 = "msg1"
+        val msg2 = "msg2"
+        val msg3 = "msg3"
+        listMsg = listOf(msg1, msg2, msg3)
 
-        Scenario("Change Courier") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(changeCourierSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomConfirmShipping.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomConfirmShipping.Data::class.java to response),
-                        mapOf(SomConfirmShipping.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
-
-            When("Load file GQL-raw mutation mpLogisticChangeCourier") {
-                runBlocking {
-                    spy.changeCourier(queryChangeCourier)
-                }
-            }
-
-            Then("Verify Func doChangeCourier works as expected!") {
-                coVerify { spy.changeCourier(queryChangeCourier) }
-            }
-        }
+        val courier1 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 123)
+        val courier2 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 456)
+        val courier3 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 789)
+        listCourier = listOf(courier1, courier2, courier3)
     }
-})*/
+
+    // confirm_shipping_result
+    @Test
+    fun getConfirmShippingData_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somGetConfirmShippingResultUseCase.execute(any())
+        } returns Success(SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg))
+
+        //when
+        somConfirmShippingViewModel.confirmShipping("")
+
+        //then
+        assert(somConfirmShippingViewModel.confirmShippingResult.value is Success)
+        assert((somConfirmShippingViewModel.confirmShippingResult.value as Success<SomConfirmShipping.Data.MpLogisticConfirmShipping>).data.listMessage.first() == "msg1")
+    }
+
+    @Test
+    fun getConfirmShippingData_shouldReturnFail() {
+        //given
+        coEvery {
+            somGetConfirmShippingResultUseCase.execute(any())
+        } returns Fail(Throwable())
+
+        //when
+        somConfirmShippingViewModel.confirmShipping("")
+
+        //then
+        assert(somConfirmShippingViewModel.confirmShippingResult.value is Fail)
+    }
+
+    @Test
+    fun getConfirmShippingData_shouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somGetConfirmShippingResultUseCase.execute(any())
+        } returns Success(SomConfirmShipping.Data.MpLogisticConfirmShipping(listMsg))
+
+        //when
+        somConfirmShippingViewModel.confirmShipping("")
+
+        //then
+        assert(somConfirmShippingViewModel.confirmShippingResult.value is Success)
+        assert((somConfirmShippingViewModel.confirmShippingResult.value as Success<SomConfirmShipping.Data.MpLogisticConfirmShipping>).data.listMessage.isNotEmpty())
+    }
+
+    // courier_list
+    @Test
+    fun getCourierListData_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somGetCourierListUseCase.execute(any())
+        } returns Success(SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList())
+
+        //when
+        somConfirmShippingViewModel.getCourierList("")
+
+        //then
+        assert(somConfirmShippingViewModel.courierListResult.value is Success)
+        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.first().shipmentId == 123)
+    }
+
+    @Test
+    fun getCourierListData_shouldReturnFail() {
+        //given
+        coEvery {
+            somGetCourierListUseCase.execute(any())
+        } returns Fail(Throwable())
+
+        //when
+        somConfirmShippingViewModel.getCourierList("")
+
+        //then
+        assert(somConfirmShippingViewModel.courierListResult.value is Fail)
+    }
+
+    @Test
+    fun getCourierListData_shouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somGetCourierListUseCase.execute(any())
+        } returns Success(SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier).listShipment.toMutableList())
+
+        //when
+        somConfirmShippingViewModel.getCourierList("")
+
+        //then
+        assert(somConfirmShippingViewModel.courierListResult.value is Success)
+        assert((somConfirmShippingViewModel.courierListResult.value as Success<MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment>>).data.size > 0)
+    }
+
+    // change_courier
+    @Test
+    fun getChangeCourierData_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somChangeCourierUseCase.execute(any())
+        } returns Success(SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg)))
+
+        //when
+        somConfirmShippingViewModel.changeCourier("")
+
+        //then
+        assert(somConfirmShippingViewModel.changeCourierResult.value is Success)
+        assert((somConfirmShippingViewModel.changeCourierResult.value as Success<SomChangeCourier.Data>).data.mpLogisticChangeCourier.listMessage.first() == "msg1")
+    }
+
+    @Test
+    fun getChangeCourierData_shouldReturnFail() {
+        //given
+        coEvery {
+            somChangeCourierUseCase.execute(any())
+        } returns Fail(Throwable())
+
+        //when
+        somConfirmShippingViewModel.changeCourier("")
+
+        //then
+        assert(somConfirmShippingViewModel.changeCourierResult.value is Fail)
+    }
+
+    @Test
+    fun getChangeCourierData_shouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somChangeCourierUseCase.execute(any())
+        } returns Success(SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg)))
+
+        //when
+        somConfirmShippingViewModel.changeCourier("")
+
+        //then
+        assert(somConfirmShippingViewModel.changeCourierResult.value is Success)
+        assert((somConfirmShippingViewModel.changeCourierResult.value as Success<SomChangeCourier.Data>).data.mpLogisticChangeCourier.listMessage.isNotEmpty())
+    }
+}

@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.any
 
 /**
- * Created by fwidjaja on 2020-02-17.
+ * Created by fwidjaja on 2020-05-07.
  */
 
 @RunWith(JUnit4::class)
@@ -34,7 +34,6 @@ class SomListViewModelTest {
 
     private val dispatcher = SomTestDispatcherProvider()
     private lateinit var somListViewModel: SomListViewModel
-    private val graphqlRepository = mockk<GraphqlRepository>()
     private var listTickers = listOf<SomListTicker.Data.OrderTickers.Tickers>()
     private var listOrderStatus = listOf<SomListAllFilter.Data.OrderFilterSomSingle.StatusList>()
     private var listFilter = listOf<SomListFilter.Data.OrderFilterSom.StatusList>()
@@ -55,7 +54,7 @@ class SomListViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        somListViewModel = SomListViewModel(dispatcher, graphqlRepository, somGetTickerListUseCase,
+        somListViewModel = SomListViewModel(dispatcher, somGetTickerListUseCase,
                 somGetOrderStatusListUseCase, somGetFilterListUseCase, somGetOrderListUseCase)
 
         val ticker1 = SomListTicker.Data.OrderTickers.Tickers(123)

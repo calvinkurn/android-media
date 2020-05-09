@@ -26,7 +26,6 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-08-27.
  */
 class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
-                                           private val graphqlRepository: GraphqlRepository,
                                            private val getTickerListUseCase: SomGetTickerListUseCase,
                                            private val getOrderStatusListUseCase: SomGetOrderStatusListUseCase,
                                            private val getFilterListUseCase: SomGetFilterListUseCase,
