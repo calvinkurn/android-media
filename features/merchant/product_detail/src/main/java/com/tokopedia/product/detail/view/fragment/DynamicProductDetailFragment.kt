@@ -1440,6 +1440,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP2General(it: ProductInfoP2General) {
         viewModel.installmentData = it.productFinancingCalculationData
+        if (it.latestTalk.id.isEmpty()) {
+            dynamicAdapter.removeDiscussionSection(pdpHashMapUtil?.productDiscussionMap)
+        }
 
         if (it.vouchers.isNullOrEmpty()) {
             dynamicAdapter.removeMerchantVoucherSection(pdpHashMapUtil?.productMerchantVoucherMap)

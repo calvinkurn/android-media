@@ -36,6 +36,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productInfoMap: ProductInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_INFO] as? ProductInfoDataModel
 
+    val productDiscussionMap: ProductDiscussionDataModel?
+        get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionDataModel
+
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionMostHelpfulDataModel
 
@@ -110,6 +113,11 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
             valuePropositionDataModel?.run {
                 isOfficialStore = it.data.isOS
+            }
+
+            productDiscussionMap?.run {
+                shopId = it.basic.shopID
+                talkCount = it.basic.stats.countTalk
             }
 
             socialProofMap?.run {
@@ -223,6 +231,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
             productSocialProofPvDataModel?.run{
                 wishListCount = it.wishlistCount.count
+            }
+
+            productDiscussionMap?.run {
+                latestTalk = it.latestTalk
             }
 
             productDiscussionMostHelpfulMap?.run {

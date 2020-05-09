@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
+import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.usecase.coroutines.Result
@@ -26,6 +27,7 @@ data class ProductInfoP2General(
         var minInstallment: InstallmentBank.Installment? = null,
         var imageReviews: List<ImageReviewItem> = listOf(),
         var helpfulReviews: List<Review> = listOf(),
+        var latestTalk: Talk = Talk(),
         var discussionMostHelpful: DiscussionMostHelpful = DiscussionMostHelpful(),
         var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
         var variantResp: ProductVariantCommon? = null,
