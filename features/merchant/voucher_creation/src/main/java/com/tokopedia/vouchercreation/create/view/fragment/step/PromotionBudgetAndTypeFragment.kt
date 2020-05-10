@@ -1,9 +1,16 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -16,19 +23,26 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.Promoti
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
+import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTypeViewModel
+import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
-class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
+class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
     : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>(onNextStep, false) {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit) = PromotionBudgetAndTypeFragment(onNext)
+
+        private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
+
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    override var layoutRes: Int = R.layout.mvc_banner_voucher_fragment
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -48,18 +62,21 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
         }
     }
 
-    private val bannerVoucherUiModel =
-            BannerVoucherUiModel<PromotionTypeBudgetTypeFactory>(
-                    VoucherImageType.Rupiah(127000000),
+    private val bannerVoucherUiModel: BannerVoucherUiModel<PromotionTypeBudgetTypeFactory> =
+            BannerVoucherUiModel(
+                    VoucherImageType.Percentage(127000000, 30),
                     "cobaindoangini",
                     "Tumbler Starbucks 123",
                     "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg"
             )
 
+    private var isImageBitmapAlreadyLoaded = false
+
+    private var painter: VoucherPreviewPainter? = null
+    private var bannerDrawable: Drawable? = null
+
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
-            listOf(
-                    bannerVoucherUiModel,
-                    promotionTypeInputWidget)
+            listOf(promotionTypeInputWidget)
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
 
@@ -69,7 +86,12 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
 
     }
 
-    override fun getAdapterTypeFactory(): PromotionTypeBudgetAdapterTypeFactory = PromotionTypeBudgetAdapterTypeFactory(this)
+    override fun onFinishRenderInitial() {
+
+    }
+
+    override fun getAdapterTypeFactory(): PromotionTypeBudgetAdapterTypeFactory =
+            PromotionTypeBudgetAdapterTypeFactory(this, onNextStep, ::onShouldChangeBannerValue)
 
     override fun onItemClicked(t: Visitable<CreateVoucherTypeFactory>?) {}
 
@@ -87,11 +109,42 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
     override fun setupView() {
         super.setupView()
         setupBottomSheet()
+        observeLiveData()
+
     }
 
     private fun setupBottomSheet() {
         context?.run {
             addBottomSheetView(CreateVoucherBottomSheetType.GENERAL_EXPENSE_INFO, generalExpensesInfoBottomSheetFragment)
+        }
+    }
+
+    private fun observeLiveData() {
+
+    }
+
+    private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
+        bannerImage?.run {
+            bannerVoucherUiModel.imageType = voucherImageType
+            Glide.with(context)
+                    .asDrawable()
+                    .load(BANNER_BASE_URL)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            val bitmap = resource.toBitmap()
+                            painter?.clearValue()
+                            if (painter == null) {
+                                painter = VoucherPreviewPainter(context, bitmap)
+                            }
+                            setImageBitmap(painter?.drawInitial(bannerVoucherUiModel, bitmap))
+                            return false
+                        }
+                    })
+                    .submit()
         }
     }
 }

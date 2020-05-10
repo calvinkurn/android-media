@@ -5,6 +5,7 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -31,12 +32,17 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
 
     open var extraWidget : List<Visitable<F>> = mutableListOf()
 
+    @LayoutRes
+    open var layoutRes: Int = R.layout.fragment_base_list
+
     abstract fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType)
 
     abstract fun onBeforeShowBottomSheet(bottomSheetType: CreateVoucherBottomSheetType)
 
+    abstract fun onFinishRenderInitial()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_base_list, container, false)
+        return inflater.inflate(layoutRes, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,6 +62,7 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
                 }
                 adapter?.data?.clear()
                 renderList(this)
+                onFinishRenderInitial()
             }
         }
     }

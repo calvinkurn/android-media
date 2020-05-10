@@ -3,7 +3,7 @@ package com.tokopedia.vouchercreation.create.view.uimodel.voucherimage
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 
 data class PostVoucherUiModel(
-        override val imageType: VoucherImageType,
+        override var imageType: VoucherImageType,
         override val promoName: String,
         override val shopAvatar: String,
         override val shopName: String,

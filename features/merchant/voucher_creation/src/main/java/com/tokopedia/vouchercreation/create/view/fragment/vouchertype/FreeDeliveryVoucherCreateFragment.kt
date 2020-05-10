@@ -17,6 +17,7 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
@@ -26,12 +27,14 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCr
 import javax.inject.Inject
 
 class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
+                                        private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                         private val viewContext: Context): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: () -> Unit = {},
-                           context: Context) = FreeDeliveryVoucherCreateFragment(onNextStep, context)
+                           onShouldChangeBannerValue: (VoucherImageType) -> Unit = {},
+                           context: Context) = FreeDeliveryVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
 
         private const val TICKER_INDEX_POSITION = 0
     }
@@ -156,6 +159,9 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
                 freeDeliveryTextFieldsList.forEachIndexed { index, voucherTextFieldUiModel ->
                     voucherTextFieldUiModel.currentErrorPair = errorPairList[index]
                 }
+            }
+            observe(viewModel.freeDeliveryAmountLiveData) { amount ->
+                onShouldChangeBannerValue(VoucherImageType.FreeDelivery(amount))
             }
         }
     }

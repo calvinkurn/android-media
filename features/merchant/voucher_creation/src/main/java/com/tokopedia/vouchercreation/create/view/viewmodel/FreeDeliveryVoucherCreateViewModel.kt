@@ -15,6 +15,8 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     private val mFreeDeliveryAmountLiveData = MutableLiveData<Int>()
+    val freeDeliveryAmountLiveData: LiveData<Int>
+        get() = mFreeDeliveryAmountLiveData
     private val mMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mVoucherQuotaLiveData = MutableLiveData<Int>()
 

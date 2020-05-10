@@ -18,6 +18,7 @@ import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpen
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.CashbackExpenseInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
@@ -30,12 +31,14 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreate
 import javax.inject.Inject
 
 class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
+                                    onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                     private val viewContext: Context) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: () -> Unit = {},
-                           context: Context) = CashbackVoucherCreateFragment(onNextStep, context)
+                           onShouldChangeBannerValue: (VoucherImageType) -> Unit,
+                           context: Context) = CashbackVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
 
         private const val INPUT_FIELD_ADAPTER_SIZE = 1
 

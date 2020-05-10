@@ -121,6 +121,10 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
         }
     }
 
+    override fun onFinishRenderInitial() {
+
+    }
+
     private fun observeLiveData() {
         viewModel.run {
             voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->

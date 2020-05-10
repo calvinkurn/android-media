@@ -28,21 +28,26 @@ class BannerVoucherViewHolder<T : VoucherImageTypeFactory>(itemView: View) : Abs
 
     override fun bind(element: BannerVoucherUiModel<T>) {
         itemView.bannerImage?.run {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(BANNER_BASE_URL)
-                    .listener(object : RequestListener<Bitmap> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
+            if (painter == null) {
+                Glide.with(context)
+                        .asBitmap()
+                        .load(BANNER_BASE_URL)
+                        .listener(object : RequestListener<Bitmap> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                return false
+                            }
 
-                        override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            painter = VoucherPreviewPainter(context, resource)
-                            setImageBitmap(painter?.drawInitial(element))
-                            return false
-                        }
-                    })
-                    .submit()
+                            override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                painter = VoucherPreviewPainter(context, resource)
+                                setImageBitmap(painter?.drawInitial(element))
+                                return false
+                            }
+                        })
+                        .submit()
+            }
+            else {
+                setImageBitmap(painter?.drawInitial(element))
+            }
         }
     }
 }

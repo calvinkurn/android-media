@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.adapter.vouchertype.PromotionTypeAdapter
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.FreeDeliveryVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
@@ -14,7 +15,9 @@ import kotlinx.android.synthetic.main.mvc_type_budget_promotion_widget.view.*
 
 class PromotionTypeInputViewHolder(itemView: View,
                                    private val fragment: Fragment,
-                                   private val onNextStep: () -> Unit) : AbstractViewHolder<PromotionTypeInputUiModel>(itemView) {
+                                   private val onNextStep: () -> Unit,
+                                   private val onShouldChangeBannerValue: (VoucherImageType) -> Unit)
+    : AbstractViewHolder<PromotionTypeInputUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -25,11 +28,11 @@ class PromotionTypeInputViewHolder(itemView: View,
     }
 
     private val freeDeliveryVoucherCreateFragment by lazy {
-        FreeDeliveryVoucherCreateFragment.createInstance(onNextStep, itemView.context)
+        FreeDeliveryVoucherCreateFragment.createInstance(onNextStep, onShouldChangeBannerValue, itemView.context)
     }
 
     private val cashbackVoucherCreateFragment by lazy {
-        CashbackVoucherCreateFragment.createInstance(onNextStep, itemView.context)
+        CashbackVoucherCreateFragment.createInstance(onNextStep, onShouldChangeBannerValue, itemView.context)
     }
 
     private val promotionTypeFragmentHashMap by lazy {

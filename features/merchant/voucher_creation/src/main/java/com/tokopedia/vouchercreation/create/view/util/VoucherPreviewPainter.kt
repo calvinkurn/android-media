@@ -32,10 +32,22 @@ class VoucherPreviewPainter(private val context: Context,
         private const val BILLION = 1000000000
 
         private const val ASTERISK = "*"
+        private const val PERCENT = "%"
     }
 
-    private val canvas = Canvas(bitmap)
+    enum class VoucherValuePosition {
+        TOP, CENTER, BOTTOM
+    }
 
+    val canvas = Canvas(bitmap)
+
+    private val voucherBannerPaint by lazy {
+        Paint().apply {
+            isAntiAlias = true
+            isFilterBitmap = true
+            isDither = true
+        }
+    }
     private val shopAvatarPaint by lazy {
         Paint().apply {
             isAntiAlias = true
@@ -82,13 +94,23 @@ class VoucherPreviewPainter(private val context: Context,
     private val promoNameY = (bitmapHeight * 0.4f)
     private val shopAvatarSize = (bitmapWidth * 0.075).toInt()
     private val middleX = (bitmapWidth * 0.82f)
+    private val labelHeight = (bitmapHeight * 0.12).toInt()
+    private val topLabelY = (bitmapHeight * 0.1).toInt()
     private val middleLabelY = (bitmapHeight * 0.32).toInt()
-    private val middleLabelHeight = (bitmapHeight * 0.12).toInt()
+    private val bottomLabelY = (bitmapHeight * 0.5).toInt()
+    private val topValueY = (bitmapHeight * 0.18f)
     private val middleValueY = (bitmapHeight * 0.4f)
+    private val bottomValueY = (bitmapHeight * 0.58f)
     private val valueMarginTop = (bitmapHeight * 0.05).toInt()
 
-    fun<T : VoucherImageTypeFactory> drawInitial(uiModel: BannerVoucherUiModel<T>): Bitmap {
+    fun<T : VoucherImageTypeFactory> drawInitial(uiModel: BannerVoucherUiModel<T>, newBitmap: Bitmap? = null): Bitmap {
         uiModel.run {
+            val bannerRect = Rect().apply {
+                set(0, 0, bitmapWidth, bitmapHeight)
+            }
+            newBitmap?.let {
+                canvas.drawBitmap(it, null, bannerRect, voucherBannerPaint)
+            }
             canvas.drawText(shopName, shopNameX, shopNameY, shopNamePaint)
             canvas.drawText(promoName, promoNameX, promoNameY, promoNamePaint)
             Glide.with(context)
@@ -120,16 +142,18 @@ class VoucherPreviewPainter(private val context: Context,
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                                     val bitmapRatio = resource.width / resource.height
-                                    val fittedLabelWidth = bitmapRatio * middleLabelHeight
+                                    val fittedLabelWidth = bitmapRatio * labelHeight
                                     val bitmapRect = Rect().apply {
-                                        set(middleX.toInt() - fittedLabelWidth/2, middleLabelY, middleX.toInt() + fittedLabelWidth/2, middleLabelY + middleLabelHeight)
+                                        set(middleX.toInt() - fittedLabelWidth/2, middleLabelY, middleX.toInt() + fittedLabelWidth/2, middleLabelY + labelHeight)
                                     }
                                     canvas.drawBitmap(resource, null, bitmapRect, promoTypePaint)
                                     return false
                                 }
                             })
                             .submit()
-                    drawValueText(imageType.value)
+                    (imageType as? VoucherImageType.FreeDelivery)?.value?.let {
+                        canvas.drawValueText(it, VoucherValuePosition.CENTER)
+                    }
                 }
                 is VoucherImageType.Rupiah -> {
                     Glide.with(context)
@@ -142,41 +166,116 @@ class VoucherPreviewPainter(private val context: Context,
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                                     val bitmapRatio = resource.width / resource.height
-                                    val fittedLabelWidth = bitmapRatio * middleLabelHeight
+                                    val fittedLabelWidth = bitmapRatio * labelHeight
                                     val bitmapRect = Rect().apply {
-                                        set(middleX.toInt() - fittedLabelWidth/2, middleLabelY, middleX.toInt() + fittedLabelWidth/2, middleLabelY + middleLabelHeight)
+                                        set(middleX.toInt() - fittedLabelWidth/2, middleLabelY, middleX.toInt() + fittedLabelWidth/2, middleLabelY + labelHeight)
                                     }
                                     canvas.drawBitmap(resource, null, bitmapRect, promoTypePaint)
                                     return false
                                 }
                             })
                             .submit()
-                    drawValueText(imageType.value)
+                    (imageType as? VoucherImageType.Rupiah)?.value?.let {
+                        canvas.drawValueText(it, VoucherValuePosition.CENTER)
+                    }
                 }
                 is VoucherImageType.Percentage -> {
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(CASHBACK)
+                            .listener(object : RequestListener<Bitmap> {
+                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                    return false
+                                }
 
+                                override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                    val bitmapRatio = resource.width / resource.height
+                                    val fittedLabelWidth = bitmapRatio * labelHeight
+                                    val bitmapRect = Rect().apply {
+                                        set(middleX.toInt() - fittedLabelWidth/2, topLabelY, middleX.toInt() + fittedLabelWidth/2, topLabelY + labelHeight)
+                                    }
+                                    canvas.drawBitmap(resource, null, bitmapRect, promoTypePaint)
+                                    return false
+                                }
+                            })
+                            .submit()
+                    (imageType as? VoucherImageType.Percentage)?.percentage?.let {
+                        canvas.drawValueText(it, VoucherValuePosition.TOP)
+                    }
+
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(CASHBACK_UNTIL)
+                            .listener(object : RequestListener<Bitmap> {
+                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                    return false
+                                }
+
+                                override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                    val bitmapRatio = resource.width / resource.height
+                                    val fittedLabelWidth = bitmapRatio * labelHeight
+                                    val bitmapRect = Rect().apply {
+                                        set(middleX.toInt() - fittedLabelWidth/2, bottomLabelY, middleX.toInt() + fittedLabelWidth/2, bottomLabelY + labelHeight)
+                                    }
+                                    canvas.drawBitmap(resource, null, bitmapRect, promoTypePaint)
+                                    return false
+                                }
+                            })
+                            .submit()
+
+                    (imageType as? VoucherImageType.Percentage)?.value?.let {
+                        canvas.drawValueText(it, VoucherValuePosition.BOTTOM)
+                    }
                 }
             }
         }
         return bitmap
     }
 
-    private fun drawValueText(value: Int) {
-        val valuePair = getScaledValuePair(value)
-        val valueTextView = getTextView(valuePair.first, VoucherImageTextType.VALUE)
-        val scaleTextView = getTextView(valuePair.second, VoucherImageTextType.SCALE)
-        val asterixTextView = getTextView(ASTERISK, VoucherImageTextType.ASTERIX)
-        val horizontalLinearLayout = LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            addView(valueTextView)
-            addView(scaleTextView)
-            addView(asterixTextView)
-            layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+    fun clearValue() {
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+    }
+
+    private fun Canvas.drawValueText(value: Int, voucherValuePosition: VoucherValuePosition) {
+        val isPercentagePosition = voucherValuePosition == VoucherValuePosition.TOP
+        val horizontalLinearLayout = getValueLinearLayout(value, isPercentagePosition)
+        val yPosition: Float = when(voucherValuePosition) {
+            VoucherValuePosition.TOP -> topValueY
+            VoucherValuePosition.CENTER -> middleValueY
+            VoucherValuePosition.BOTTOM -> bottomValueY
         }
-        canvas.drawBitmap(horizontalLinearLayout.toBitmap(null, null), middleX - horizontalLinearLayout.width/2, middleValueY, null)
+        drawBitmap(horizontalLinearLayout.toBitmap(null, null), middleX - horizontalLinearLayout.width/2, yPosition, null)
+    }
+
+    private fun getValueLinearLayout(value: Int, isPercentage: Boolean): LinearLayout {
+        return if(isPercentage) {
+            val valueTextView = getTextView(value.toString(), VoucherImageTextType.VALUE)
+            val percentageTextView = getTextView(PERCENT, VoucherImageTextType.SCALE)
+            LinearLayout(context).apply {
+                orientation = LinearLayout.HORIZONTAL
+                addView(valueTextView)
+                addView(percentageTextView)
+                layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            }
+        } else {
+            val valuePair = getScaledValuePair(value)
+            val valueTextView = getTextView(valuePair.first, VoucherImageTextType.VALUE)
+            val scaleTextView = getTextView(valuePair.second, VoucherImageTextType.SCALE)
+            val asterixTextView = getTextView(ASTERISK, VoucherImageTextType.ASTERIX)
+            LinearLayout(context).apply {
+                orientation = LinearLayout.HORIZONTAL
+                addView(valueTextView)
+                addView(scaleTextView)
+                addView(asterixTextView)
+                layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            }
+        }
     }
 
     private fun getScaledValuePair(value: Int): Pair<String, String> {
