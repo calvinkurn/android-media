@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/dialogContainer"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -33,8 +32,7 @@
             android:textColor="@color/charcoal_grey_96"
             app:typographyType="body_1" />
 
-        <include
-            layout="@layout/item_notification_product_reminder" />
+        <include layout="@layout/item_notification_product_reminder" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
