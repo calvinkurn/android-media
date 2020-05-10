@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.widget
 import android.app.Dialog
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -191,6 +192,7 @@ class AddToCartDoneBottomSheet :
                     )
                 }
             }
+            configBottomSheetHeight()
         })
     }
 
@@ -203,6 +205,21 @@ class AddToCartDoneBottomSheet :
                     getString(R.string.title_try_again),
                     onClickListener
             )
+        }
+    }
+
+    private fun configBottomSheetHeight() {
+        if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
+            dialog?.run {
+                val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                val displaymetrics = DisplayMetrics()
+                activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
+                val screenHeight = displaymetrics.heightPixels
+                val maxHeight = (screenHeight * 0.9f).toInt()
+                val params = parent.layoutParams
+                params.height = maxHeight
+                parent.layoutParams = params
+            }
         }
     }
 
