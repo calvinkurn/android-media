@@ -688,7 +688,7 @@ class ShopPageFragment :
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
-            errorButton.setOnClickListener { getShopInfo() }
+            errorButton.setOnClickListener { getShopInfo(true) }
             swipeToRefresh.isRefreshing = false
         }
     }

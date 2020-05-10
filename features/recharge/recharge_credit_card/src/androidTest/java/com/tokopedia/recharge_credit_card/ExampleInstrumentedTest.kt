@@ -1,9 +1,8 @@
 package com.tokopedia.recharge_credit_card
 
-
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import org.junit.Assert.assertEquals
+
 import org.junit.Test
 import org.junit.runner.RunWith
 
