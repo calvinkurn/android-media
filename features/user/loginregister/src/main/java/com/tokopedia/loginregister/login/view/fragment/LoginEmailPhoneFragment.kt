@@ -1214,6 +1214,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             emailPhoneEditText.setText(email)
             emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
         } else if (activity != null) {
+            activity?.setResult(Activity.RESULT_CANCELED)
             activity?.finish()
         }
     }
