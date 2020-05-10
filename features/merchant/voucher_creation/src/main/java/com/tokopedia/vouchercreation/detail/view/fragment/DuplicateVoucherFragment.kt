@@ -84,6 +84,8 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
     private fun getDummy() {
         val dummy = listOf(
                 VoucherPreviewUiModel("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeAXT6zjKmrSVxiyxhNo36-3Rd7WNBtXjevcmrN9azk562wctF&usqp=CAU"),
+                TipsUiModel("<b>Voucher kamu akan tampil</b> di halaman detail produk dan halaman toko. Lihat Tampilan", "Lihat Tampilan"),
+                DividerUiModel(2),
                 InfoContainerUiModel("Info voucher", listOf(
                         SubInfoItemUiModel("Target Voucher", "Khusus"),
                         SubInfoItemUiModel("Nama Voucher", "Voucher Hura Test Doang"),
