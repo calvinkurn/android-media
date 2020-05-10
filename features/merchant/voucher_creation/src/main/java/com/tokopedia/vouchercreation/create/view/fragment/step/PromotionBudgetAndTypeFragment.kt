@@ -66,8 +66,8 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
             // todo: change dummy
             BannerVoucherUiModel(
                     VoucherImageType.FreeDelivery(0),
-                    "cobaindoangini",
-                    "Tumbler Starbucks 123",
+                    "harusnyadaristep1",
+                    "Ini Harusnya dari Backend",
                     "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg"
             )
 
