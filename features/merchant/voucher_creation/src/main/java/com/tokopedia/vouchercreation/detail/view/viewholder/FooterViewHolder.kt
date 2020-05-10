@@ -31,7 +31,7 @@ class FooterViewHolder(
 
     override fun bind(element: FooterUiModel) {
         with(itemView) {
-            val text = element.footerText
+            val text = element.footerText.parseAsHtml()
             val greenColor = context.getResColor(R.color.light_G500)
             val spannableStringColor = ForegroundColorSpan(greenColor)
             val spannableString = SpannableString(text)
