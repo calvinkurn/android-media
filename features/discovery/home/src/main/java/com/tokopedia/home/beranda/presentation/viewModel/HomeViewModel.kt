@@ -649,7 +649,7 @@ open class HomeViewModel @Inject constructor(
         channel = Channel()
         if(channel != null) {
             jobChannel?.cancelChildren()
-            jobChannel = launch(coroutineContext) {
+            jobChannel = launch(homeDispatcher.ui()) {
                 updateChannel(channel!!)
             }
         }
@@ -969,9 +969,9 @@ open class HomeViewModel @Inject constructor(
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
-                    withContext(homeDispatcher.ui()) {
+//                    withContext(homeDispatcher.ui()) {
                         _homeLiveData.value = homeDataModel
-                    }
+//                    }
                 }
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()
@@ -993,9 +993,9 @@ open class HomeViewModel @Inject constructor(
                             }
                             ACTION_DELETE -> newList.remove(homeVisitable)
                         }
-                        withContext(homeDispatcher.ui()) {
+//                        withContext(homeDispatcher.ui()) {
                             _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-                        }
+//                        }
                     }
                 }
             }
