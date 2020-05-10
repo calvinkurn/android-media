@@ -57,8 +57,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
         userSession = UserSession(context)
         if (!userSession.isLoggedIn) {
-            activity?.apply {
-                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_LOGIN)
+            var intent: Intent
+            activity?.let {
+                intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                startActivityForResult(intent, REQUEST_LOGIN)
             }
         }
 
@@ -236,6 +238,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     companion object {
         private const val REQUEST_LOGOUT = 1000
-        private const val REQUEST_LOGIN = 2000
+        const val REQUEST_LOGIN = 2000
     }
 }

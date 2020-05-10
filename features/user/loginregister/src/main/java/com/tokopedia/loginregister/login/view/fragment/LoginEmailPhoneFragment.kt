@@ -167,7 +167,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         activity?.run {
             analytics.trackScreen(this, screenName)
         }
-        activity?.setResult(Activity.RESULT_OK)
     }
 
     override fun onResume() {
@@ -1215,6 +1214,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             emailPhoneEditText.setText(email)
             emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
         } else if (activity != null) {
+
             activity?.finish()
         }
     }
