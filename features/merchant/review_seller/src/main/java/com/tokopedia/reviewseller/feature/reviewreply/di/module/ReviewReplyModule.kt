@@ -4,9 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
-import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProviderImpl
-import com.tokopedia.reviewseller.common.util.GQL_GET_TEMPLATE_LIST
+import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewreply.di.scope.ReviewReplyScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,5 +31,19 @@ class ReviewReplyModule {
     @Named(GQL_GET_TEMPLATE_LIST)
     fun getReviewTemplateList(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_review_template_list)
+    }
+
+    @ReviewReplyScope
+    @Provides
+    @Named(GQL_INSERT_SELLER_RESPONSE)
+    fun insertReviewReply(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_insert_review_reply)
+    }
+
+    @ReviewReplyScope
+    @Provides
+    @Named(GQL_UPDATE_SELLER_RESPONSE)
+    fun updateReviewReply(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_review_reply)
     }
 }

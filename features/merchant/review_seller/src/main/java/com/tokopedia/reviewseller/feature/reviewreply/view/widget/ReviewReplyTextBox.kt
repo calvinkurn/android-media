@@ -37,8 +37,9 @@ class ReviewReplyTextBox : BaseCustomView {
         View.inflate(context, R.layout.widget_reply_textbox, this)
     }
 
-    fun setReplyAction(data: List<ReplyTemplateUiModel>) {
-        setTemplateList(data)
+    fun setReplyAction() {
+//        setTemplateList()
+
         replyEditText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
 

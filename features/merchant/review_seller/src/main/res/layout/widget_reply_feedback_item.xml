@@ -5,11 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivRatingFeedback"
@@ -83,6 +84,96 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dividerFeedbackReply"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
 
+        <View
+            android:id="@+id/replyFeedbackState"
+            android:layout_width="@dimen/spacing_lvl2"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:background="@drawable/rectangle_8"
+            app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvReplyUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
+            app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Balasan otomatis •" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvReplyDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:textColor="@color/clr_ad31353b"
+            app:layout_constraintStart_toEndOf="@id/tvReplyUser"
+            app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Hari ini" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvReplyEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:text="@string/label_edit"
+            android:textColor="@color/clr_03ac0e"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvReplyComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
+            app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Thank you, semoga puas dan ditunggu orderan selanjutnya" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="dividerFeedbackReply, replyFeedbackState, tvReplyUser, tvReplyDate, tvReplyComment, tvReplyEdit"
+            app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
+

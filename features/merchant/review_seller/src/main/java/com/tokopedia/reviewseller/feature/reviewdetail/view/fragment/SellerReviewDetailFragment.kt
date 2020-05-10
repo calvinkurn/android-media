@@ -33,7 +33,6 @@ import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProduc
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
-import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.SortBottomSheet
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
@@ -52,7 +51,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
-import kotlinx.android.synthetic.main.item_topic_review_detail.view.*
 import javax.inject.Inject
 
 /**
@@ -512,6 +510,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                             startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
                                 putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
                                 putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, userSession.shopId.orEmpty())
+                                putExtra(SellerReviewReplyFragment.IS_REPLY_REVIEW, isEmptyReply)
                             })
                             bottomSheetOptionFeedback?.dismiss()
                         }
@@ -570,15 +569,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         val bottomSheet = PopularTopicsBottomSheet(activity, tracking, userSession, productID, ::onTopicsClicked)
         viewModelProductReviewDetail?.filterTopicData?.let { bottomSheet.setTopicListData(it) }
         viewModelProductReviewDetail?.sortTopicData?.let { bottomSheet.setSortListData(it) }
-        bottomSheet.showDialog()
-    }
-
-    override fun onSortTopicClicked(view: View) {
-        val bottomSheet = SortBottomSheet(activity, ::onTopicsClicked)
-        viewModelProductReviewDetail?.sortTopicData?.let { bottomSheet.setSortListData(it) }
-        bottomSheet.setOnDismissListener {
-            view.chipsSortFilter.toggle()
-        }
         bottomSheet.showDialog()
     }
 
