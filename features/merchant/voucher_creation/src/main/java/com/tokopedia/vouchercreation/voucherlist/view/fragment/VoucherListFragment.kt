@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -19,6 +18,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
+import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.model.*
@@ -35,7 +35,6 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.F
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
-import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -116,6 +115,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeMvcList
+
     override fun getAdapterTypeFactory(): VoucherListAdapterFactoryImpl {
         return VoucherListAdapterFactoryImpl(this)
     }
@@ -129,12 +130,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 .inject(this)
     }
 
+    override fun hasInitialSwipeRefresh(): Boolean = true
+
     override fun onItemClicked(t: Visitable<*>?) {
 
     }
 
     override fun loadData(page: Int) {
-
+        showDummyData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -170,7 +173,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
-            is EditQuota -> showEditQuotaBottomSheet()
+            is EditQuota -> showEditQuotaBottomSheet(voucher)
             is ViewDetail -> viewVoucherDetail()
             is ShareVoucher -> showShareBottomSheet(voucher)
             is EditPeriod -> showEditPeriodBottomSheet(voucher)
@@ -239,10 +242,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 .show(voucher)
     }
 
-    private fun showEditQuotaBottomSheet() {
+    private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        EditQuotaBottomSheet(parent).show(childFragmentManager)
+        EditQuotaBottomSheet(parent, voucher).show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
