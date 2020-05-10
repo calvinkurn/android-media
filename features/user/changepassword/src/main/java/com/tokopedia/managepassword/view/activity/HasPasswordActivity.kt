@@ -74,14 +74,6 @@ class HasPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordCom
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!userSession.isLoggedIn) {
-            setResult(Activity.RESULT_CANCELED)
-            finish()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {

@@ -57,8 +57,10 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
         userSession = UserSession(context)
         if (!userSession.isLoggedIn) {
-            activity?.apply {
-                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_LOGIN)
+            var intent: Intent
+            activity?.let {
+                intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                startActivityForResult(intent, REQUEST_LOGIN)
             }
         }
 
@@ -78,16 +80,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
             onGoToForgotPass()
         }
         disableSubmitButton()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!userSession.isLoggedIn) {
-            activity?.apply {
-                setResult(Activity.RESULT_CANCELED)
-                finish()
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
