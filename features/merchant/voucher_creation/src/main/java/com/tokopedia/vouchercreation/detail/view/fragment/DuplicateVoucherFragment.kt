@@ -10,6 +10,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadV
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
 /**
  * Created By @ilhamsuaib on 09/05/20
@@ -79,9 +80,8 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
     private fun setupView() {
         (activity as? AppCompatActivity)?.let { activity ->
             activity.supportActionBar?.title = dummyVoucher.name
-            activity.supportActionBar?.setSubtitle(getString(R.string.mvc_voucher_review))
+            view?.toolbarMvcVoucherDetail?.headerSubTitle = getString(R.string.mvc_voucher_review)
         }
-
 
     }
 
