@@ -16,7 +16,10 @@ import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductHighlightViewHolder(view: View): RecyclerView.ViewHolder(view) {
+class ProductHighlightViewHolder(
+        private val onAtcClick: () -> Unit,
+        view: View
+): RecyclerView.ViewHolder(view) {
 
     private val imgProduct: ImageView = view.findViewById(R.id.imgProduct)
     private val txtProductName: TextView = view.findViewById(R.id.txtProductName)
@@ -27,6 +30,7 @@ class ProductHighlightViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
     fun bind(element: ProductHighlightViewBean?) {
         if (element == null) return
+        btnAddToCart.setOnClickListener { onAtcClick() }
         viewCampaignTag.setCampaign(mapToCampaign(element))
 
         imgProduct.loadImage(element.imageUrl)
@@ -37,15 +41,13 @@ class ProductHighlightViewHolder(view: View): RecyclerView.ViewHolder(view) {
             imgCampaign.loadImage(element.freeOngkirIcon)
             imgCampaign.show()
         }
-
-        btnAddToCart.setOnClickListener {}
     }
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_notification_product_highlight
 
-        fun builder(parent: ViewGroup): ProductHighlightViewHolder {
-            return ProductHighlightViewHolder(LayoutInflater
+        fun builder(parent: ViewGroup, onAtcClick: () -> Unit): ProductHighlightViewHolder {
+            return ProductHighlightViewHolder(onAtcClick, LayoutInflater
                     .from(parent.context)
                     .inflate(
                             LAYOUT,
