@@ -2233,7 +2233,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         viewModel.getDynamicProductInfoP1?.let { data ->
             showProgressDialog()
-            showAddToCartDoneBottomSheet()
             when (actionButton) {
                 ProductDetailConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
