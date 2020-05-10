@@ -14,6 +14,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTracker
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
@@ -99,11 +101,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
     protected fun notifyBottomActionView() {
         bottomFilterView().let {
-            if (markAllReadCounter == 0L) {
-                it?.hide()
-            } else {
-                it?.show()
-            }
+            if (markAllReadCounter == 0L) it?.hide()
+            else it?.show()
         }
     }
 
@@ -139,6 +138,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
             is BottomSheetType.LongerContent -> showLongerContent(element)
             is BottomSheetType.ProductCheckout -> showProductCheckout(element)
             is BottomSheetType.StockHandler -> {
+                //TODO reverted it
                 val fromJson = Gson().fromJson<NotificationCenterDetail>(
                         Mock.notificationUpdateFakeResponse,
                         NotificationCenterDetail::class.java
@@ -154,6 +154,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
             if (it.stock < 1) {
 
             }
+            //TODO put it inside condition above
             ProductStockHandlerDialog(
                     element = element,
                     userSession = userSession,
@@ -191,6 +192,30 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
         if (!longerTextDialog.isAdded) {
             longerTextDialog.show(childFragmentManager, TAG_LONGER_TEXT)
+        }
+    }
+
+    override fun onSuccessAddToCart(message: String) {
+        val onActionClick = View.OnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+        }
+
+        view?.let {
+            Toaster.make(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.notifcenter_title_view),
+                    onActionClick
+            )
+        }
+    }
+
+    override fun showMessageError(e: Throwable?) {
+        view?.let {
+            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
+            showToastMessageError(errorMessage)
         }
     }
 
