@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Neutral_N0">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.tokopedia.header.HeaderUnify
                 android:id="@+id/toolbarMvcList"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
@@ -33,7 +33,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:subtitleTextAppearance="?subtitleTextAppearance"
-                app:titleTextAppearance="?titleTextAppearance" />
+                app:titleTextAppearance="?titleTextAppearance"
+                app:unify_header_is_show_shadow="false" />
 
             <com.tokopedia.design.text.SearchInputView
                 android:id="@+id/searchBarMvc"
