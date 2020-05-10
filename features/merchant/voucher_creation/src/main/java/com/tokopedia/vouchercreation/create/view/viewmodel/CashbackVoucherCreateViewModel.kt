@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackPercentageInfoUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -117,6 +118,40 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     val cashbackPercentageInfoUiModelLiveData : LiveData<CashbackPercentageInfoUiModel>
         get() = mCashbackPercentageInfoUiModelLiveData
 
+    private val mVoucherImageValueLiveData = MediatorLiveData<VoucherImageType>().apply {
+        addSource(mRupiahMaximumDiscountLiveData) { amount ->
+            value = VoucherImageType.Rupiah(amount)
+        }
+        addSource(mPercentageDiscountAmountLiveData) { percentage ->
+            mPercentageMaximumDiscountLiveData.value?.let { amount ->
+                value = VoucherImageType.Percentage(amount, percentage)
+            }
+        }
+        addSource(mPercentageMaximumDiscountLiveData) { amount ->
+            mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                value = VoucherImageType.Percentage(amount, percentage)
+            }
+        }
+        addSource(mActiveCashbackPromoTypeLiveData) { type ->
+            when(type) {
+                CashbackType.Rupiah -> {
+                    mRupiahMaximumDiscountLiveData.value?.let { amount ->
+                        value = VoucherImageType.Rupiah(amount)
+                    }
+                }
+                CashbackType.Percentage -> {
+                    mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                        mPercentageMaximumDiscountLiveData.value?.let { amount ->
+                            value = VoucherImageType.Percentage(amount, percentage)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    val voucherImageValueLiveData: LiveData<VoucherImageType>
+        get() = mVoucherImageValueLiveData
+
     fun<T> addTextFieldValueToCalculation(value: Int?, type: T) {
         when(type) {
             PromotionType.Cashback.Rupiah.MaximumDiscount -> {
@@ -139,6 +174,25 @@ class CashbackVoucherCreateViewModel @Inject constructor(
             }
             PromotionType.Cashback.Percentage.VoucherQuota -> {
                 mPercentageVoucherQuotaLiveData. value = value.toZeroIfNull()
+            }
+        }
+    }
+
+    fun refreshImageType() {
+        mActiveCashbackPromoTypeLiveData.value?.let { type ->
+            when(type) {
+                CashbackType.Rupiah -> {
+                    mRupiahMaximumDiscountLiveData.value?.let { amount ->
+                        mVoucherImageValueLiveData.value = VoucherImageType.Rupiah(amount)
+                    }
+                }
+                CashbackType.Percentage -> {
+                    mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                        mPercentageMaximumDiscountLiveData.value?.let { amount ->
+                            mVoucherImageValueLiveData.value = VoucherImageType.Percentage(amount, percentage)
+                        }
+                    }
+                }
             }
         }
     }

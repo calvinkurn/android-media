@@ -43,6 +43,9 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
         get() = mExpensesExtimationLiveData
 
     fun refreshTextFieldValue() {
+        mFreeDeliveryAmountLiveData.run {
+            value = value
+        }
         mValueListLiveData.value = arrayOf(
                 mFreeDeliveryAmountLiveData.value.toZeroIfNull(),
                 mMinimumPurchaseLiveData.value.toZeroIfNull(),

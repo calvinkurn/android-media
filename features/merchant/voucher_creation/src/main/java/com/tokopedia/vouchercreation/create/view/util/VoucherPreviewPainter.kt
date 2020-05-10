@@ -59,6 +59,7 @@ class VoucherPreviewPainter(private val context: Context,
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.BLACK
             textSize = 30f
+            typeface = Typeface.DEFAULT_BOLD
         }
     }
     private val promoNamePaint by lazy {

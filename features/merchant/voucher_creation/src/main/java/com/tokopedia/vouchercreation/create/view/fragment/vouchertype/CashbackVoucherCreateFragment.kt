@@ -31,7 +31,7 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreate
 import javax.inject.Inject
 
 class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
-                                    onShouldChangeBannerValue: (VoucherImageType) -> Unit,
+                                    private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                     private val viewContext: Context) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
@@ -176,6 +176,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
 
     override fun onResume() {
         super.onResume()
+        viewModel.refreshImageType()
         // We actually don't need to notify adapter data as the data has not been changed
         // But, as we used view pager and each fragment has different height (which will cut some layout when page changes according to previous page),
         // we will notify the adapter to mimic layout refresh
@@ -233,6 +234,9 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
             }
             observe(viewModel.cashbackTypeData) { type ->
                 activeCashbackType = type
+            }
+            observe(viewModel.voucherImageValueLiveData) { imageValue ->
+                onShouldChangeBannerValue(imageValue)
             }
         }
     }

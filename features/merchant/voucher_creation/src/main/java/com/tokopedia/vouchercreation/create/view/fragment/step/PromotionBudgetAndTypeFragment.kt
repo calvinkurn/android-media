@@ -63,17 +63,15 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
     }
 
     private val bannerVoucherUiModel: BannerVoucherUiModel<PromotionTypeBudgetTypeFactory> =
+            // todo: change dummy
             BannerVoucherUiModel(
-                    VoucherImageType.Percentage(127000000, 30),
+                    VoucherImageType.FreeDelivery(0),
                     "cobaindoangini",
                     "Tumbler Starbucks 123",
                     "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg"
             )
 
-    private var isImageBitmapAlreadyLoaded = false
-
     private var painter: VoucherPreviewPainter? = null
-    private var bannerDrawable: Drawable? = null
 
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
             listOf(promotionTypeInputWidget)
