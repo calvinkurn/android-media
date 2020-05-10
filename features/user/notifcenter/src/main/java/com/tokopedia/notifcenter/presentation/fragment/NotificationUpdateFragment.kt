@@ -255,9 +255,14 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         super.onSwipeRefresh()
     }
 
+    override fun showToastMessageError(e: Throwable?) {
+        showMessageError(e)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        viewModel.cleared()
     }
 
     private fun onSuccessGetTotalUnreadCounter(): (NotificationUpdateTotalUnread) -> Unit {
@@ -275,30 +280,8 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         analytics.trackAtcOnClick(product, atc)
     }
 
-    override fun showToastMessageError(e: Throwable?) {
-        view?.let {
-            val errorMessage = ErrorHandler.getErrorMessage(it.context, e)
-            showToastMessageError(errorMessage)
-        }
-    }
-
     override fun showMessageAtcSuccess(message: String) {
-        view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.notifcenter_title_view),
-                    onClickSeeButtonOnAtcSuccessToaster()
-            )
-        }
-    }
-
-    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
-        return View.OnClickListener {
-            RouteManager.route(it.context, ApplinkConstInternalMarketplace.CART)
-        }
+        onSuccessAddToCart(message)
     }
 
     override fun trackOnClickCtaButton(templateKey: String) {
