@@ -1,15 +1,11 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatTextView
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -26,15 +22,16 @@ import com.tokopedia.notifcenter.presentation.adapter.ProductHighlightAdapter
 import com.tokopedia.notifcenter.presentation.viewmodel.ProductStockHandlerViewModel
 import com.tokopedia.notifcenter.util.dialogWindow
 import com.tokopedia.notifcenter.util.viewModelProvider
-import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.Toaster.toasterLength
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.dialog_product_stock_handler.*
+import kotlinx.android.synthetic.main.item_empty_state.*
+import kotlinx.android.synthetic.main.item_notification_product_reminder.*
 import javax.inject.Inject
 
 class ProductStockHandlerDialog(
@@ -42,22 +39,6 @@ class ProductStockHandlerDialog(
         private val userSession: UserSessionInterface,
         private val listener: NotificationItemListener
 ): BottomSheetUnify() {
-
-    private lateinit var dialogContainerView: LinearLayout
-    private lateinit var productCard: CardUnify
-    private lateinit var txtTitle: AppCompatTextView
-    private lateinit var txtDescription: AppCompatTextView
-    private lateinit var thumbnail: ImageView
-    private lateinit var productName: TextView
-    private lateinit var productPrice: TextView
-    private lateinit var productCampaign: CampaignRedView
-    private lateinit var campaignTag: ImageView
-    private lateinit var btnReminder: UnifyButton
-
-    // empty state
-    private lateinit var emptyContainer: RelativeLayout
-    private lateinit var txtEmptyMessage: TextView
-    private lateinit var lstProduct: RecyclerView
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: ProductStockHandlerViewModel
@@ -72,37 +53,24 @@ class ProductStockHandlerDialog(
         StockHandlerAnalytics()
     }
 
-    private val containerView: View by lazy(LazyThreadSafetyMode.NONE) {
-        View.inflate(requireContext(), R.layout.dialog_product_stock_handler, null)
-    }
-
-    private fun initView() {
-        dialogContainerView = containerView.findViewById(R.id.dialogContainer)
-        productCard = containerView.findViewById(R.id.productCard)
-        txtTitle = containerView.findViewById(R.id.txtTitle)
-        txtDescription = containerView.findViewById(R.id.txtDescription)
-        thumbnail = containerView.findViewById(R.id.imgThumbnail)
-        productName = containerView.findViewById(R.id.txtProductName)
-        productPrice = containerView.findViewById(R.id.txtProductPrice)
-        productCampaign = containerView.findViewById(R.id.txtProductCampaign)
-        campaignTag = containerView.findViewById(R.id.viewCampaignTag)
-        btnReminder = containerView.findViewById(R.id.btnReminder)
-
-        // empty state
-        emptyContainer = containerView.findViewById(R.id.empty_container)
-        txtEmptyMessage = containerView.findViewById(R.id.txt_message)
-
-        lstProduct = containerView.findViewById(R.id.lstProduct)
-        lstProduct.adapter = adapter
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
         viewModel = viewModelProvider(viewModelFactory)
+    }
 
-        initView()
-        setChild(containerView)
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        val contentView = View.inflate(
+                requireContext(),
+                R.layout.dialog_product_stock_handler,
+                null
+        )
+        setChild(contentView)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,16 +80,10 @@ class ProductStockHandlerDialog(
         initObservable()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.cleared()
-        dismissAllowingStateLoss()
-    }
-
     private fun initObservable() {
         viewModel.productHighlight.observe(viewLifecycleOwner, Observer {
             if (it.isEmpty()) {
-                emptyContainer.show()
+                emptyContainer?.show()
             } else {
                 productHighlightList.clear()
                 productHighlightList.addAll(it)
@@ -133,7 +95,7 @@ class ProductStockHandlerDialog(
             val successMessage = getString(R.string.product_reminder_success)
             val actionText = getString(R.string.notifcenter_btn_title_ok)
             onSuccessListener(successMessage, actionText)
-            btnReminder.isEnabled = false
+            btnReminder?.isEnabled = false
         })
 
         viewModel.addToCart.observe(viewLifecycleOwner, Observer {
@@ -146,14 +108,18 @@ class ProductStockHandlerDialog(
     }
 
     private fun renderView() {
+        // delegate view before rendering a content view
+        lstProduct?.adapter = adapter
+
         // content view of bottomSheet container and empty state
         setContainerContentView()
 
         element.getAtcProduct()?.let { product ->
             // set product card data
+            productCard?.setOnClickListener { onProductCardClicked(product) }
+            btnReminder?.setOnClickListener { onProductStockReminderClicked(product) }
             buttonReminderValidation(product.typeButton)
             setDataProductCard(product)
-            onClickListener(product)
 
             // get product highlight
             if (product.shop?.id != null) {
@@ -163,21 +129,21 @@ class ProductStockHandlerDialog(
     }
 
     private fun setContainerContentView() {
-        txtTitle.text = element.title
-        txtDescription.text = element.body
-        txtEmptyMessage.text = getString(R.string.product_highlight_empty)
+        txtTitle?.text = element.title
+        txtDescription?.text = element.body
+        txtEmptyMessage?.text = getString(R.string.product_highlight_empty)
     }
 
     private fun setDataProductCard(product: ProductData) {
         ImageHandler.loadImage2(
-                thumbnail,
+                imgThumbnail,
                 product.imageUrl,
                 R.drawable.ic_notifcenter_loading_toped
         )
 
-        productName.text = product.name
-        productPrice.text = product.priceFormat
-        productCampaign.setCampaign(product.campaign)
+        txtProductName?.text = product.name
+        txtProductPrice?.text = product.priceFormat
+        txtProductCampaign?.setCampaign(product.campaign)
 
         setCampaignTag(product)
     }
@@ -185,8 +151,8 @@ class ProductStockHandlerDialog(
     private fun setCampaignTag(product: ProductData) {
         if (product.shop?.freeShippingIcon != null &&
             product.shop.freeShippingIcon.isNotEmpty()) {
-            campaignTag.loadImage(product.shop.freeShippingIcon)
-            campaignTag.show()
+            viewCampaignTag?.loadImage(product.shop.freeShippingIcon)
+            viewCampaignTag?.show()
         }
     }
 
@@ -194,23 +160,21 @@ class ProductStockHandlerDialog(
         viewModel.addProductToCart(element.getAtcProduct())
     }
 
-    private fun onClickListener(product: ProductData) {
-        productCard.setOnClickListener {
-            analytics.productCardClicked(element, userSession.userId)
-            RouteManager.route(
-                    context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    product.productId
-            )
-        }
+    private fun onProductCardClicked(product: ProductData) {
+        analytics.productCardClicked(element, userSession.userId)
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                product.productId
+        )
+    }
 
-        btnReminder.setOnClickListener {
-            analytics.stockReminderClicked(element, userSession.userId)
-            if (product.stock < SINGLE_PRODUCT_STOCK) {
-                viewModel.setProductReminder(product.productId, element.notificationId)
-            } else {
-                listener.addProductToCheckout(element.userInfo, element)
-            }
+    private fun onProductStockReminderClicked(product: ProductData) {
+        analytics.stockReminderClicked(element, userSession.userId)
+        if (product.stock < SINGLE_PRODUCT_STOCK) {
+            viewModel.setProductReminder(product.productId, element.notificationId)
+        } else {
+            listener.addProductToCheckout(element.userInfo, element)
         }
     }
 
@@ -230,12 +194,12 @@ class ProductStockHandlerDialog(
     private fun buttonReminderValidation(type: Int) {
         when(type) {
             TYPE_BUY_BUTTON -> {
-                btnReminder.text = context?.getString(R.string.notifcenter_btn_buy)
-                btnReminder.buttonType = UnifyButton.Type.TRANSACTION
+                btnReminder?.text = context?.getString(R.string.notifcenter_btn_buy)
+                btnReminder?.buttonType = UnifyButton.Type.TRANSACTION
             }
             TYPE_REMINDER_BUTTON -> {
-                btnReminder.text = context?.getString(R.string.notifcenter_btn_reminder)
-                btnReminder.buttonType = UnifyButton.Type.MAIN
+                btnReminder?.text = context?.getString(R.string.notifcenter_btn_reminder)
+                btnReminder?.buttonType = UnifyButton.Type.MAIN
             }
         }
     }
@@ -244,6 +208,12 @@ class ProductStockHandlerDialog(
         (activity as NotificationActivity)
                 .notificationComponent
                 .inject(this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.cleared()
+        dismissAllowingStateLoss()
     }
 
     companion object {
