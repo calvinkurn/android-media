@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/empty_container"
+    android:id="@+id/emptyContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
@@ -17,7 +17,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/img_state"
+            android:id="@+id/imgEmpty"
             android:src="@drawable/bg_notif_empty_state"
             android:layout_width="@dimen/dp_280"
             android:layout_height="@dimen/dp_210"
@@ -26,7 +26,7 @@
             android:layout_marginEnd="@dimen/dp_20" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_message"
+            android:id="@+id/txtEmptyMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Message"

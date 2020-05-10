@@ -16,9 +16,9 @@ class EmptyDataStateViewHolder(
         view: View
 ) : AbstractViewHolder<NotificationEmptyStateViewBean>(view) {
 
-    private val container = view.findViewById<RelativeLayout>(R.id.empty_container)
-    private val txtMessage = view.findViewById<TextView>(R.id.txt_message)
-    private val imgState = view.findViewById<ImageView>(R.id.img_state)
+    private val container = view.findViewById<RelativeLayout>(R.id.emptyContainer)
+    private val txtMessage = view.findViewById<TextView>(R.id.txtEmptyMessage)
+    private val imgState = view.findViewById<ImageView>(R.id.imgEmpty)
 
     private val _matchParent by lazy { ViewGroup.LayoutParams.MATCH_PARENT }
     private val _wrapContent by lazy { ViewGroup.LayoutParams.WRAP_CONTENT }
