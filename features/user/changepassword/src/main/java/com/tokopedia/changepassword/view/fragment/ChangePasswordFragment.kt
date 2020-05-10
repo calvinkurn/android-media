@@ -82,10 +82,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         disableSubmitButton()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             REQUEST_LOGOUT -> {
