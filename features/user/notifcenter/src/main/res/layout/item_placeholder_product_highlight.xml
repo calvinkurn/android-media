@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <View
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_128"
-            android:background="@color/divider_notif_big"/>
+            android:background="@color/divider_notif_big" />
 
-        <View
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_10"
@@ -25,9 +25,9 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@color/divider_notif_big"/>
+            app:corners="@integer/notif_radius_shimmering" />
 
-        <View
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_10"
@@ -35,9 +35,9 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@color/divider_notif_big"/>
+            app:corners="@integer/notif_radius_shimmering"/>
 
-        <View
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_10"
@@ -45,9 +45,9 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@color/divider_notif_big"/>
+            app:corners="@integer/notif_radius_shimmering"/>
 
-        <View
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_32"
             android:layout_marginStart="@dimen/dp_10"
@@ -56,7 +56,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
-            android:background="@color/divider_notif_big"/>
+            app:corners="@integer/notif_radius_shimmering"/>
 
     </LinearLayout>
 
