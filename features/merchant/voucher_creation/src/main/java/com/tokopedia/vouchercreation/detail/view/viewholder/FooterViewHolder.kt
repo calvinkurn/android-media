@@ -31,7 +31,7 @@ class FooterViewHolder(
 
     override fun bind(element: FooterUiModel) {
         with(itemView) {
-            val text = element.footerText.parseAsHtml()
+            val text = element.footerText
             val greenColor = context.getResColor(R.color.light_G500)
             val spannableStringColor = ForegroundColorSpan(greenColor)
             val spannableString = SpannableString(text)
@@ -44,9 +44,8 @@ class FooterViewHolder(
                     ds.isUnderlineText = false
                 }
             }
-            val clickableTextLength = 6
-            val end = text.length
-            val start = end.minus(clickableTextLength)
+            val start = text.indexOf(string = element.clickableText, ignoreCase = true)
+            val end = start.plus(element.clickableText.length)
             spannableString.setSpan(spannableStringColor, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             tvMvcFooter.text = spannableString

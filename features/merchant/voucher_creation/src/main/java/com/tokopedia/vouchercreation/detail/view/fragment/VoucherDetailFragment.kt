@@ -120,7 +120,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 )),
                 DividerUiModel(8),
                 FooterButtonUiModel("Bagikan Voucher", ""),
-                FooterUiModel("Untuk menghentikan promosi, klik <font color=\"#03AC0E\"><b>disini</b></font>")
+                FooterUiModel("Untuk menghentikan promosi, klik disini", "disini")
         )
         renderList(dummy)
     }
