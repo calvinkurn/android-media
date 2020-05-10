@@ -35,5 +35,4 @@ class GetReviewTemplateListUseCase @Inject constructor(
             throw MessageErrorException(error.joinToString(", ") { it.message} )
         }
     }
-
 }

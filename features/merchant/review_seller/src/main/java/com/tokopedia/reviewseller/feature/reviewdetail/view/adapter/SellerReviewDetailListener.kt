@@ -11,7 +11,6 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 interface SellerReviewDetailListener {
     fun onChildTopicFilterClicked(item: SortFilterItem, adapterPosition: Int)
     fun onParentTopicFilterClicked()
-    fun onSortTopicClicked(view: View)
 }
 
 interface ProductFeedbackDetailListener {

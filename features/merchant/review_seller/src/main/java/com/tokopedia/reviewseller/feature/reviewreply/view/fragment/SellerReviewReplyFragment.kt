@@ -3,7 +3,6 @@ package com.tokopedia.reviewseller.feature.reviewreply.view.fragment
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -16,12 +15,9 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiMode
 import com.tokopedia.reviewseller.feature.reviewreply.di.component.ReviewReplyComponent
 import com.tokopedia.reviewseller.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ProductReplyUiModel
-import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_seller_review_reply.*
 import javax.inject.Inject
 
@@ -32,7 +28,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
         const val EXTRA_PRODUCT_DATA = "EXTRA_PRODUCT_DATA"
         const val CACHE_OBJECT_ID = "CACHE_OBJECT_ID"
         const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
-
+        const val IS_REPLY_REVIEW = "IS_REPLY_REVIEW"
     }
 
 //    @Inject
@@ -51,6 +47,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
     private var cacheManager: SaveInstanceCacheManager? = null
 
     private var shopId = 0
+    private var isReply = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initData(savedInstanceState)
@@ -71,6 +68,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
         initToolbar()
         initViewBottomSheet()
         observeLiveData()
+        initWidgetView(isReply)
     }
 
     override fun getScreenName(): String {
@@ -98,18 +96,18 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
     }
 
     private fun observeLiveData() {
-        hideData()
+//        hideData()
 
-        viewModelReviewReply?.reviewTemplate?.observe(this, Observer {
-            when(it) {
-                is Success -> {
-                    initWidgetView(it.data)
-                }
-                is Fail -> { }
-            }
-        })
-
-        viewModelReviewReply?.getTemplateListReply(shopId)
+//        viewModelReviewReply?.reviewTemplate?.observe(this, Observer {
+//            when(it) {
+//                is Success -> {
+//                    initWidgetView(it.data)
+//                }
+//                is Fail -> { }
+//            }
+//        })
+//
+//        viewModelReviewReply?.getTemplateListReply(shopId)
     }
 
     private fun showData() {
@@ -130,6 +128,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
         context?.let {
             activity?.intent?.run {
                 shopId = getStringExtra(EXTRA_SHOP_ID).toInt()
+                isReply = getBooleanExtra(IS_REPLY_REVIEW, false)
                 val objectId = getStringExtra(CACHE_OBJECT_ID)
                 val manager = if(savedInstanceState == null) {
                     SaveInstanceCacheManager(it, objectId)
@@ -142,11 +141,11 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun initWidgetView(data: List<ReplyTemplateUiModel>) {
-        showData()
+    private fun initWidgetView(isReply: Boolean) {
+//        showData()
         productReplyUiModel?.let { productItemReplyWidget?.setItem(it) }
-        feedbackUiModel?.let { feedbackItemReplyWidget?.setData(it) }
-        reviewReplyTextBoxWidget?.setReplyAction(data)
+        feedbackUiModel?.let { feedbackItemReplyWidget?.setData(it, isReply) }
+        reviewReplyTextBoxWidget?.setReplyAction()
     }
 
     private fun initToolbar() {
