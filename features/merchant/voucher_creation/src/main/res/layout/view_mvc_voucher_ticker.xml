@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/layout_lvl4"
+    android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+    android:paddingStart="@dimen/mvc_dimen_12dp"
+    android:paddingLeft="@dimen/mvc_dimen_12dp"
+    android:paddingTop="@dimen/mvc_dimen_10dp"
+    android:paddingEnd="@dimen/mvc_dimen_12dp"
+    android:paddingRight="@dimen/mvc_dimen_12dp"
+    android:paddingBottom="@dimen/mvc_dimen_10dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/edtMvcQuota">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcTickerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginRight="@dimen/layout_lvl3"
+        android:maxLines="1"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/tvMvcExpanse"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Estimasi Maks. Pengeluaran" />
+
+    <ImageView
+        android:id="@+id/imgInfo"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/mvc_dimen_6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcTickerTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvMvcTickerTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcTickerTitle"
+        app:srcCompat="@drawable/ic_info"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcTickerDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvMvcExpanse"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMvcTickerTitle"
+        app:typographyType="body_3"
+        tools:text="Dipotong transaksi selesai" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcExpanse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcTickerDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcTickerTitle"
+        app:typographyType="heading_4"
+        tools:text="Rp3.000.000" />
+</androidx.constraintlayout.widget.ConstraintLayout>

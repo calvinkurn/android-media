@@ -52,6 +52,10 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
 
     }
 
+    override fun onInfoContainerCtaClick(dataKey: String) {
+
+    }
+
     override fun showDescriptionBottomSheet(title: String, content: String) {
         if (!isAdded) return
         DescriptionBottomSheet(context ?: return)

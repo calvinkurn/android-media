@@ -172,4 +172,6 @@
     <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
     <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
     <string name="mvc_voucher_code_copied">Kode voucher sudah disalin</string>
+    <string name="mvc_voucher_review">Review voucher</string>
+    <string name="mvc_add_voucher">Tambah Voucher</string>
 </resources>

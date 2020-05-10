@@ -16,7 +16,8 @@
             android:id="@+id/toolbarMvcVoucherDetail"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:theme="?toolbarTheme" />
+            android:theme="?toolbarTheme"
+            app:subtitleTextColor="@color/Neutral_N700_44" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
