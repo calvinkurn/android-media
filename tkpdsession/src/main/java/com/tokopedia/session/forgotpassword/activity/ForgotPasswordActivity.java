@@ -37,6 +37,9 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
 
     private static final String URL_FORGOT_PASSWORD = "https://accounts.tokopedia.com/reset-password/islogin?theme=mobile";
     private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW = "android_forgot_password_webview";
+    private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url";
+
+    private RemoteConfig remoteConfig;
 
     public static Intent createInstance(Context context) {
         return new Intent(context, ForgotPasswordActivity.class);
@@ -68,9 +71,9 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (remoteConfig.getBoolean(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW, false)) {
-            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_FORGOT_PASSWORD));
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
+        if (isDirectToWebView()) {
+            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, getUrlResetPassword()));
             finish();
             return;
         }
@@ -85,6 +88,19 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
             fragmentTransaction.add(R.id.container, fragment, TAG);
             fragmentTransaction.commit();
         }
+    }
+
+    private String getUrlResetPassword() {
+        String url = remoteConfig.getString(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL, "");
+        if(url.isEmpty()) {
+            return URL_FORGOT_PASSWORD;
+        } else {
+            return url;
+        }
+    }
+
+    private boolean isDirectToWebView() {
+        return remoteConfig.getBoolean(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW, false);
     }
 
     @Override
