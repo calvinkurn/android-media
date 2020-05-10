@@ -3,9 +3,12 @@ package com.tokopedia.vouchercreation.detail.view.fragment
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
+import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 
 /**
  * Created By @ilhamsuaib on 09/05/20
@@ -22,6 +25,8 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
         private const val DATA_KEY_VOUCHER_BENEFIT = "benefitVoucher"
         private const val DATA_KEY_VOUCHER_PERIOD = "periodeVoucher"
     }
+
+    private val dummyVoucher = VoucherUiModel("Dummy Voucher Toko", "Ini voucher dummy doang", true)
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -62,7 +67,7 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
 
     private fun setupView() {
         (activity as? AppCompatActivity)?.let { activity ->
-            activity.supportActionBar?.title = "Dummy Voucher Toko"
+            activity.supportActionBar?.title = dummyVoucher.name
             activity.supportActionBar?.setSubtitle(getString(R.string.mvc_voucher_review))
         }
 
@@ -78,7 +83,13 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
     }
 
     private fun setVoucherPeriod() {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        VoucherPeriodBottomSheet(parent, dummyVoucher)
+                .setOnSaveClickListener {
 
+                }
+                .show(childFragmentManager)
     }
 
     private fun getDummy() {

@@ -35,7 +35,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.F
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 

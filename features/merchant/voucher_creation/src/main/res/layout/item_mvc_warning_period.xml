@@ -55,6 +55,8 @@
         android:layout_marginTop="@dimen/layout_lvl3"
         android:layout_marginBottom="@dimen/layout_lvl3"
         app:closeButtonVisibility="gone"
+        android:focusable="true"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
