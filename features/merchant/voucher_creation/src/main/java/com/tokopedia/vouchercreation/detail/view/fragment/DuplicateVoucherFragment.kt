@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
@@ -26,7 +27,7 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
         private const val DATA_KEY_VOUCHER_PERIOD = "periodeVoucher"
     }
 
-    private val dummyVoucher = VoucherUiModel("Dummy Voucher Toko", "Ini voucher dummy doang", true)
+    private val dummyVoucher = VoucherUiModel("Voucher Hura Test Doang", "Ini voucher dummy doang", true)
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -63,6 +64,16 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
             DATA_KEY_VOUCHER_BENEFIT -> editVoucherBenefit()
             DATA_KEY_VOUCHER_PERIOD -> setVoucherPeriod()
         }
+    }
+
+    override fun showDownloadBottomSheet() {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        DownloadVoucherBottomSheet(parent)
+                .setOnDownloadClickListener {
+
+                }
+                .show(childFragmentManager)
     }
 
     private fun setupView() {
@@ -107,7 +118,7 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
                         SubInfoItemUiModel("Tipe Voucher", "Cashback"),
                         SubInfoItemUiModel("Nominal Diskon", "10%"),
                         SubInfoItemUiModel("Kuota", "100"),
-                        SubInfoItemUiModel("Syarat Pembelian", "Min. pembelian Rp50.000 - Max. potongan Rp20.000")
+                        SubInfoItemUiModel("Syarat Pembelian", "Min. pembelian Rp50.000 - <br>Max. potongan Rp20.000")
                 ), DATA_KEY_VOUCHER_BENEFIT, true),
                 VoucherTickerUiModel("Estimasi Maks. Pengeluaran", "Dipotong dari transaksi selesai", "Rp3.000.000", true),
                 DividerUiModel(2),
