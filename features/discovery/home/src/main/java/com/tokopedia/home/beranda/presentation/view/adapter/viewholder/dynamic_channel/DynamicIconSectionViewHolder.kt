@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.beranda.helper.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.helper.glide.FPM_USE_CASE_ICON
@@ -70,11 +71,15 @@ class DynamicIconSectionViewHolder(val view: View,
         recyclerView.clearOnScrollListeners()
     }
     override fun bind(element: DynamicIconSectionDataModel) {
+        BenchmarkHelper.beginSystraceSection("onBind.DynamicIconSectionViewHolder")
         adapter?.run { setSectionData(element) }
+        BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: DynamicIconSectionDataModel, payloads: MutableList<Any>) {
+        BenchmarkHelper.beginSystraceSection("onBind.DynamicIconSectionViewHolder")
         adapter?.run { setSectionData(element) }
+        BenchmarkHelper.endSystraceSection()
     }
 
     private class DynamicIconAdapter(

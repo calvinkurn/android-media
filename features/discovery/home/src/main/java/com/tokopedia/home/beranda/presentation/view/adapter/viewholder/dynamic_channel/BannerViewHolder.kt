@@ -11,6 +11,7 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.helper.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
@@ -43,6 +44,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     override fun bind(element: HomepageBannerDataModel, payloads: MutableList<Any>) {
+        BenchmarkHelper.beginSystraceSection("onBind.BannerViewHolder")
         try {
             slidesList = element.slides
             this.isCache = element.isCache
@@ -53,6 +55,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         }catch (e: Exception){
             e.printStackTrace()
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
     private fun initSeeAllPromo(){

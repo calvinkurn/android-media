@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
+import com.tokopedia.home.beranda.helper.BenchmarkHelper
 import java.util.*
 
 
@@ -12,12 +13,18 @@ class Converters {
 
     @TypeConverter
     fun convertHomeData(data: String): HomeData {
-        return gson.fromJson(data, HomeData::class.java)
+        BenchmarkHelper.beginSystraceSection("Converters.StringtoHomeData")
+        val output =  gson.fromJson(data, HomeData::class.java)
+        BenchmarkHelper.endSystraceSection()
+        return output
     }
 
     @TypeConverter
     fun convertHomeData(homeData: HomeData): String{
-        return gson.toJson(homeData)
+        BenchmarkHelper.beginSystraceSection("HomeCachedDataSource.HomeDatatoString")
+        val output = gson.toJson(homeData)
+        BenchmarkHelper.endSystraceSection()
+        return output
     }
 
     @TypeConverter

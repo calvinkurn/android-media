@@ -349,7 +349,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.beginSection("inflate.HomeFragment");
+        }
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.endSection();
+        }
         fragmentFramePerformanceIndexMonitoring.init(
                 "home", this, new FragmentFramePerformanceIndexMonitoring.OnFrameListener() {
                     @Override
@@ -625,17 +631,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                     getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
                 } else if (getPageLoadTimeCallback() != null) {
                     getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
-                }
-            }
-        });
-    }
-
-    private void observeViewModelInitialized() {
-        viewModel.isViewModelInitalized().observe(getViewLifecycleOwner(), data -> {
-            if (data != null) {
-                boolean isViewModelInitialized = data.peekContent();
-                if (isViewModelInitialized && getPageLoadTimeCallback() != null) {
-                    getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
                 }
             }
         });

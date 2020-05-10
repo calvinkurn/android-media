@@ -30,6 +30,7 @@ import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
+import com.tokopedia.home.beranda.helper.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
@@ -58,8 +59,10 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
     private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
 
     override fun bind(element: HeaderDataModel) {
+        BenchmarkHelper.beginSystraceSection("onBind.OvoViewholder")
         if (element.isUserLogin) renderLogin(element)
         else renderNonLogin()
+        BenchmarkHelper.endSystraceSection()
     }
 
     private fun renderNonLogin() {

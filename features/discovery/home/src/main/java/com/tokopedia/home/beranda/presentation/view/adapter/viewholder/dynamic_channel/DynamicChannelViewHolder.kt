@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.home.beranda.helper.BenchmarkHelper
 
 abstract class DynamicChannelViewHolder(itemView: View,
                                         private val listener: HomeCategoryListener) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
@@ -74,6 +75,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
     }
 
     override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
+        BenchmarkHelper.beginSystraceSection("onBind.dynamicChannel_"+element.channel?.layout)
         super.bind(element, payloads)
         try {
             val channel = element.channel
@@ -90,9 +92,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
         } catch (e: Exception) {
             Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: DynamicChannelDataModel) {
+        BenchmarkHelper.beginSystraceSection("onBind.dynamicChannel_"+element.channel?.layout)
         try {
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
@@ -108,6 +112,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         } catch (e: Exception) {
             Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
     private fun handleHeaderComponent(channelHeaderName: String?, channel: DynamicHomeChannel.Channels, channelSubtitleName: String?, element: DynamicChannelDataModel) {
