@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter;
+package com.tokopedia.notifcenter.data.consts;
 
 /**
  * Created by meta on 25/07/18.

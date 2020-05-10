@@ -2,7 +2,7 @@ package com.tokopedia.notifcenter.data.consts
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.notifcenter.GlobalNavConstant.*
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.*
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.data.viewbean.BuyerNotificationViewBean

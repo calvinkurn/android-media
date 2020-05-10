@@ -1,7 +1,7 @@
 package com.tokopedia.notifcenter.data.viewbean
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.GlobalNavConstant.*
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.*
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactory
 

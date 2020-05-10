@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.navigation_common.model.NotificationsModel
-import com.tokopedia.notifcenter.GlobalNavConstant.*
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.*
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
