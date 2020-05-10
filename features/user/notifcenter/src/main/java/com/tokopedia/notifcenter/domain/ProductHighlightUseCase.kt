@@ -32,7 +32,7 @@ class ProductHighlightUseCase @Inject constructor(
 
         fun params(shopId: String): HashMap<String, Any> {
             return hashMapOf<String, Any>().apply {
-                put(PARAM_QUERY, "device=android&source=shop_product&rows=7&shop_id=$shopId")
+                put(PARAM_QUERY, "device=android&source=shop_product&rows=6&shop_id=$shopId")
             }
         }
     }
