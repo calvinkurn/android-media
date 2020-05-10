@@ -134,7 +134,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
 
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             val bitmap = resource.toBitmap()
-                            painter?.clearValue()
+//                            painter?.clearValue()
                             if (painter == null) {
                                 painter = VoucherPreviewPainter(context, bitmap)
                             }
