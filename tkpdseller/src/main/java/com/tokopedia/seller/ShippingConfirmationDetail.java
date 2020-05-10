@@ -19,11 +19,11 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core2.R;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
@@ -44,6 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 public class
 ShippingConfirmationDetail extends TActivity {
@@ -316,7 +319,10 @@ ShippingConfirmationDetail extends TActivity {
     }
 
     public void invoiceClick() {
-        AppUtils.InvoiceDialog(ShippingConfirmationDetail.this, invoice_uri, invoice_pdf, Invoice.getText().toString());
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalOrder.INVOICE);
+        intent.putExtra(KEY_URL, invoice_uri);
+        intent.putExtra(KEY_TITLE, "Invoice");
+        startActivity(intent);
     }
 
     public void onBuyerClick() {

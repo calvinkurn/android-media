@@ -25,6 +25,7 @@ import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
@@ -47,8 +48,6 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
@@ -103,6 +102,7 @@ import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.UnknownHostException
 import java.util.*
@@ -461,17 +461,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun showToasterNormal(message: String) {
-        ToasterNormal.make(view, message, ToasterNormal.LENGTH_LONG)
-                .setAction(com.tokopedia.design.R.string.close) {
-                    //NO OP
-                }.show()
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), View.OnClickListener {  })
+        }
     }
 
     private fun showToasterError(message: String, actionLabel: String, listener: () -> Unit) {
-        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(actionLabel) {
-                    listener.invoke()
-                }.show()
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, View.OnClickListener { listener.invoke() })
+        }
+
     }
 
     private fun showSnackBarWithAction(message: String, listener: () -> Unit) {

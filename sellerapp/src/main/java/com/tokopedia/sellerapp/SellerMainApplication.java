@@ -38,6 +38,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
+import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
@@ -150,10 +152,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
-        LogManager.init(this);
-        if (LogManager.instance != null) {
-            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
-        }
         TimberWrapper.init(this);
         super.onCreate();
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
@@ -164,11 +162,17 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initializeAbTestVariant();
 
         initAppNotificationReceiver();
+        registerActivityLifecycleCallbacks();
         initBlockCanary();
     }
 
     public void initBlockCanary(){
         BlockCanary.install(context, new BlockCanaryContext()).start();
+    }
+
+    private void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
     }
 
     @Override

@@ -51,6 +51,7 @@ import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
+import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.logger.utils.DataLogConfig;
 import com.tokopedia.logger.utils.TimberReportingTree;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -321,26 +322,11 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-                String remoteConfigStringKey;
+                String remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_CUSTOMER_APP;
                 if (GlobalConfig.isSellerApp()) {
-                    remoteConfigStringKey = "android_seller_app_log_config";
-                } else {
-                    remoteConfigStringKey = "android_customer_app_log_config";
+                    remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_SELLER_APP;
                 }
-                String logConfigString = remoteConfig.getString(remoteConfigStringKey);
-                if (!TextUtils.isEmpty(logConfigString)) {
-                    DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-                    if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
-                        UserSession userSession = new UserSession(this);
-                        TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
-                        timberReportingTree.setUserId(userSession.getUserId());
-                        timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
-                        timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
-                        timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
-                        Timber.plant(timberReportingTree);
-                    }
-                }
+                TimberWrapper.initByRemoteConfig(this, remoteConfigValue);
                 Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
             } else {
                 Timber.uprootAll();
@@ -590,6 +576,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void initTranslator() {
-//        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 }

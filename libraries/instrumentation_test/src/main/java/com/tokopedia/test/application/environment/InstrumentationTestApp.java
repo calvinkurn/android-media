@@ -154,6 +154,11 @@ public void sendAnalyticsAnomalyResponse(String title,
     }
 
     @Override
+    public Class<?> getHomeClass() {
+        return null;
+    }
+
+    @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
         return null;
     }
