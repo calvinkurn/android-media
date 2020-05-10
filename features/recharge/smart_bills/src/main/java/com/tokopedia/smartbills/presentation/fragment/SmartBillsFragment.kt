@@ -117,7 +117,9 @@ class SmartBillsFragment : BaseDaggerFragment(),
                             maximumPrice += bill.amount.toInt()
                         }
                     } else {
-                        adapter.renderEmptyState("kamu tidak punya tagihan", "ayo bayar tagihan kamu di tokopedia")
+                        adapter.renderEmptyState(
+                                getString(R.string.smart_bills_empty_state_title),
+                                getString(R.string.smart_bills_empty_state_description))
                     }
                 }
                 is Fail -> {
@@ -196,9 +198,6 @@ class SmartBillsFragment : BaseDaggerFragment(),
                     }
                 })
 
-//                cb_smart_bills_select_all.setOnClickListener {
-//                    toggleAllItems(cb_smart_bills_select_all.isChecked)
-//                }
                 view_smart_bills_select_all_checkbox_container.setOnClickListener {
                     cb_smart_bills_select_all.toggle()
                     toggleAllItems(cb_smart_bills_select_all.isChecked)
@@ -218,16 +217,6 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 setTotalPrice()
 
                 loadData()
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_LOGIN -> {
-
-                }
             }
         }
     }

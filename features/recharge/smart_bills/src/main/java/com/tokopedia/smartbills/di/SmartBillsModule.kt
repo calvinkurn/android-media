@@ -106,7 +106,6 @@ class SmartBillsModule {
     }
 
     companion object {
-//        var BASE_URL = "https://pulsa-api-staging.tokopedia.com/" + DigitalUrl.VERSION
         var BASE_URL = DigitalUrl.BASE_URL
     }
 }
