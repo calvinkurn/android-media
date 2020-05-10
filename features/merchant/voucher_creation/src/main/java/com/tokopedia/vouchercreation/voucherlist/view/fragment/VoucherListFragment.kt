@@ -102,7 +102,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         setHasOptionsMenu(true)
 
         setupView()
-        showDummyData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
