@@ -25,6 +25,7 @@ interface NotificationUpdateContract {
     fun isProductStockHandler(notificationId: String)
     fun getSingleNotification(notificationId: String)
     fun onErrorMessage(throwable: Throwable)
+    fun cleared()
 }
 
 class NotificationUpdateViewModel @Inject constructor(
@@ -78,6 +79,10 @@ class NotificationUpdateViewModel @Inject constructor(
                 _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         }
+    }
+
+    override fun cleared() {
+        onCleared()
     }
 
 }
