@@ -70,11 +70,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 .show(childFragmentManager)
     }
 
-    private fun setupView() = view?.run {
-
-    }
-
-    private fun showDownloadBottomSheet() {
+    override fun showDownloadBottomSheet() {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
         DownloadVoucherBottomSheet(parent)
@@ -82,6 +78,10 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
                 }
                 .show(childFragmentManager)
+    }
+
+    private fun setupView() = view?.run {
+
     }
 
     private fun showShareBottomSheet() {
@@ -112,11 +112,11 @@ class VoucherDetailFragment : BaseDetailFragment() {
                         SubInfoItemUiModel("Tipe Voucher", "Cashback"),
                         SubInfoItemUiModel("Nominal Diskon", "10%"),
                         SubInfoItemUiModel("Kuota", "100"),
-                        SubInfoItemUiModel("Syarat Pembelian", "Min. pembelian Rp50.000 - Max. potongan Rp20.000")
+                        SubInfoItemUiModel("Syarat Pembelian", "Min. pembelian Rp50.000 - <br>Max. potongan Rp20.000")
                 )),
                 DividerUiModel(2),
                 InfoContainerUiModel("Periode tampil", listOf(
-                        SubInfoItemUiModel("Periode", "17 Jan 2020, 08:30 WIB - 17 Feb 2020, 22:00 WIB")
+                        SubInfoItemUiModel("Periode", "17 Jan 2020, 08:30 WIB - <br>17 Feb 2020, 22:00 WIB")
                 )),
                 DividerUiModel(8),
                 FooterButtonUiModel("Bagikan Voucher", ""),

@@ -40,7 +40,9 @@ class VoucherDetailAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent)
+            HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent) {
+                voucherDetailListener.showDownloadBottomSheet()
+            }
             PromoPerformanceViewHolder.RES_LAYOUT -> PromoPerformanceViewHolder(parent) { title, content ->
                 voucherDetailListener.showDescriptionBottomSheet(title, content)
             }
