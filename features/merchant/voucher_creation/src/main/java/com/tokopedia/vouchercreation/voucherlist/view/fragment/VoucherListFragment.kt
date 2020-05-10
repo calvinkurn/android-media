@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -148,6 +150,9 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             }
             R.id.menuMvcShowVoucherHistory -> {
                 fragmentListener?.switchFragment(false)
+            }
+            R.id.menuMvcAddVoucher -> {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
             }
         }
         return super.onOptionsItemSelected(item)
