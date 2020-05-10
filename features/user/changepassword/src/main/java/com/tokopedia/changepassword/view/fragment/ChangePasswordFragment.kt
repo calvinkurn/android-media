@@ -234,6 +234,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     companion object {
         private const val REQUEST_LOGOUT = 1000
-        const val REQUEST_LOGIN = 2000
+        private const val REQUEST_LOGIN = 2000
     }
 }
