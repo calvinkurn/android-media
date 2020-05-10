@@ -128,6 +128,7 @@
     <string name="mvc_cancel_voucher_dialog_title">Yakin batalkan Voucher?</string>
     <string name="mvc_cancel_voucher_dialog_description"><![CDATA[<font color="#AD31353B">Dengan membatalkan Voucher Toko <b>\"%s\"</b>, calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
     <string name="mvc_yes_cancel">Ya, Batalkan</string>
+    <string name="mvc_yes_stop">Ya, Hentikan</string>
     <string name="mvc_back">Kembali</string>
     <string name="mvc_stop_voucher_dialog_title">Yakin hentikan voucher yang sedang berlangsung?</string>
     <string name="mvc_stop_voucher_dialog_description"><![CDATA[<font color="#AD31353B">Dengan menghentikan Voucher Toko <b>\"%s\"</b>, calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
@@ -154,4 +155,27 @@
     <string name="mvc_jt">Jt</string>
     <string name="mvc_rp_value">Rp%s</string>
     <string name="mvc_percent">&#37;</string>
+    <string name="mvc_start_date">Tanggal Mulai</string>
+    <string name="mvc_spending_so_far">Pengeluaran hingga saat ini</string>
+    <string name="mvc_used_voucher">Voucher terpakai</string>
+    <string name="mvc_promo_performance">Performa promo</string>
+    <string name="mvc_total_spending">Total pengeluaran</string>
+    <string name="mvc_statistic_detail">Detail Statistik</string>
+    <string name="mvc_voucher_view">Tampilan Voucher</string>
+    <string name="mvc_share_voucher">Bagikan Voucher</string>
+    <string name="mvc_tips_and_trick_private">Tips &amp; Trik Voucher Khusus</string>
+    <string name="mvc_tips_and_trick_public">Tips &amp; Trik Voucher Publik</string>
+    <string name="mvc_show_voucher_to_your_social_media_title">Sebarkan Voucher Toko di media sosialmu</string>
+    <string name="mvc_show_voucher_to_your_social_media_description">Kamu ingin membagikan Voucher Toko di Instagram Feed dan Instagram Story? Nah, download voucher biar kamu dapat segera bagikan dengan post di Instagram tokomu. Atur jadwal tampil supaya nggak spamming, ya.</string>
+    <string name="mvc_giveaway_for_followers_title">Beri giveaway untuk followers</string>
+    <string name="mvc_giveaway_for_followers_description">Ajak juga follower-mu untuk ikut menyebarkannya, bisa repost atau tag akun kamu di media sosial mereka. Berikan hadiah buat "pemenang"nya.</string>
+    <string name="mvc_post_voucher_on_shop_feed_title">Post Voucher Toko di feed toko</string>
+    <string name="mvc_post_voucher_on_shop_feed_description">Selain Instagram Feed, sekarang kamu juga bisa post Voucher Toko di feed Tokopedia supaya tokomu makin ramai pengunjung!</string>
+    <string name="mvc_set_as_shop_cover_title">Pasang sebagai Sampul Toko</string>
+    <string name="mvc_set_as_shop_cover_description">Manfaatkan juga sampul toko agar pengunjung toko tahu tentang promo Voucher Toko-mu.</string>
+    <string name="mvc_share_on_messenger_group_title">Sebarkan di grup chat messenger</string>
+    <string name="mvc_share_on_messenger_group_desription">Jangan lupa manfaatkan jaringan pribadimu! Walau terdengar konvensional, tapi cara ini ampuh juga loh! Ingat, pilih grup sesuai konteks jualanmu.</string>
+    <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
+    <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
+    <string name="mvc_voucher_code_copied">Kode voucher sudah disalin</string>
 </resources>

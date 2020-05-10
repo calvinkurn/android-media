@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherLis
 
 data class VoucherUiModel(
         val name: String,
+        val description: String,
         val isOngoingStatus: Boolean
 ) : BaseVoucherListUiModel {
 

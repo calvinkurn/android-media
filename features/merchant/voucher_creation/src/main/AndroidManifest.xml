@@ -44,5 +44,9 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".detail.view.activity.VoucherDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

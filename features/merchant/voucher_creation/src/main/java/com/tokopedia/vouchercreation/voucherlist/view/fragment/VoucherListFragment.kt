@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +17,10 @@ import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
+import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
@@ -24,11 +28,14 @@ import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.*
+import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
+import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -164,11 +171,29 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
             is EditQuota -> showEditQuotaBottomSheet()
+            is ViewDetail -> viewVoucherDetail()
             is ShareVoucher -> showShareBottomSheet(voucher)
+            is EditPeriod -> showEditPeriodBottomSheet(voucher)
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
         }
+    }
+
+    private fun viewVoucherDetail() {
+        activity?.let {
+            startActivity(Intent(it, VoucherDetailActivity::class.java))
+        }
+    }
+
+    private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        VoucherPeriodBottomSheet(parent, voucher)
+                .setOnSaveClickListener {
+
+                }
+                .show(childFragmentManager)
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
@@ -184,7 +209,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent, voucher)
+        DownloadVoucherBottomSheet(parent)
                 .setOnDownloadClickListener {
 
                 }
@@ -336,7 +361,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         list.add(ErrorStateUiModel)
         list.add(EmptyStateUiModel(isActiveVoucher))*/
         repeat(10) {
-            list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
+            list.add(VoucherUiModel("Voucher Hura Nyoba Doang", "Cachback 10%", it % 2 == 0))
         }
         return list
     }
