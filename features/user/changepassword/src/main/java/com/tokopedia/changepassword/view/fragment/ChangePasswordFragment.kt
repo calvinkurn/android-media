@@ -36,6 +36,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     lateinit var confPasswordTextField : TextFieldUnify
 
     private lateinit var userSession : UserSessionInterface
+    private var isFirstTime = true
 
     override fun getScreenName(): String {
         return ChangePasswordAnalytics.SCREEN_NAME
@@ -58,6 +59,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         userSession = UserSession(context)
         if (!userSession.isLoggedIn) {
             activity?.apply {
+                isFirstTime = false
                 startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_LOGIN)
             }
         }
@@ -82,12 +84,12 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onResume() {
         super.onResume()
-        if (!userSession.isLoggedIn) {
-            activity?.apply {
-                setResult(Activity.RESULT_CANCELED)
-                finish()
-            }
-        }
+//        if (!userSession.isLoggedIn && !isFirstTime) {
+//            activity?.apply {
+//                setResult(Activity.RESULT_CANCELED)
+//                finish()
+//            }
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
