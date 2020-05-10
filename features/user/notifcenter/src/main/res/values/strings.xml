@@ -105,4 +105,7 @@
     <string name="notifcenter_btn_out_of_stock">Stock Habis</string>
 
     <string name="product_reminder_success">Kami akan mengabarkan bila barang sudah di stok kembali</string>
+    <string name="product_highlight_empty">Belum ada produk</string>
+    <string name="notifcenter_btn_title_atc">+ Keranjang</string>
+    <string name="notifcenter_title_product_highlight">Produk unggulan dari toko ini</string>
 </resources>
