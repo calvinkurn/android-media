@@ -3,8 +3,6 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +10,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
@@ -23,7 +24,6 @@ import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
-import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
@@ -113,8 +113,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         budgetPerDayEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus) {
-                    CommonUtils.hideKeyboard(getActivity(), view);
+                if (!hasFocus && getActivity() != null) {
+                    KeyboardHandler.hideSoftKeyboard(getActivity());
                 }
             }
         });

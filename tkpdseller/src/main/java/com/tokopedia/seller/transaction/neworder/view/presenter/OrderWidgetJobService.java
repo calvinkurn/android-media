@@ -5,16 +5,16 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Build;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.transaction.neworder.di.DaggerNewOrderWidgetComponent;
 import com.tokopedia.seller.transaction.neworder.di.NewOrderWidgetModule;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.GetNewOrderView;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
-import com.tokopedia.seller.transaction.neworder.di.DaggerNewOrderWidgetComponent;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -42,7 +42,8 @@ public class OrderWidgetJobService extends JobService implements GetNewOrderView
     }
 
     public void getNewOrder() {
-        if(SessionHandler.isV4Login(this) && SessionHandler.isUserHasShop(this)) {
+        UserSessionInterface userSession = new UserSession(this);
+        if(userSession.isLoggedIn() && userSession.hasShop()) {
             presenter.getNewOrderAndCountAsync();
         }else{
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);

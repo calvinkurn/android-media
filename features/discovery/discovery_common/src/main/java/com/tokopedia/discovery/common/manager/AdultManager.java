@@ -4,24 +4,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
-
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.unifycomponents.Toaster;
 
 public class AdultManager {
 
-    public static final String EXTRA_ORIGIN = "ORIGIN";
-    public static final String EXTRA_DESTINATION_GTM = "DESTINATION_GTM";
-    public static final String EXTRA_VERIFICATION_SUCCESS = "VERIFICATION_SUCCESS";
+    private static final String EXTRA_ORIGIN = "ORIGIN";
+    private static final String EXTRA_DESTINATION_GTM = "DESTINATION_GTM";
+    private static final String EXTRA_VERIFICATION_SUCCESS = "VERIFICATION_SUCCESS";
 
     public static final int ORIGIN_CATEGORY_PAGE = 1;
     public static final int ORIGIN_PDP = 2;
     public static final int ORIGIN_SEARCH_PAGE = 3;
+    public static final int ORIGIN_FIND_PAGE = 4;
 
-    public static final int RESULT_CODE_DOB_VERIFICATION_SUCCESS = 980;
+    private static final int RESULT_CODE_DOB_VERIFICATION_SUCCESS = 980;
 
     private static final int REQUEST_CODE = 5838;
 
@@ -69,10 +69,12 @@ public class AdultManager {
         if (callback != null) {
             callback.onVerificationSuccess(message);
         } else {
-            Toaster.INSTANCE.showNormalWithAction(activity.findViewById(android.R.id.content),
+            Toaster.INSTANCE.make(activity.findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_INDEFINITE,
-                    "Ok", (v) -> {
+                    Toaster.TYPE_NORMAL,
+                    "Ok", v -> {
+
                     });
         }
     }
