@@ -31,6 +31,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     override fun bind(element: HomepageBannerDataModel) {
+        BenchmarkHelper.beginSystraceSection("onBind.BannerViewHolder")
         try {
             slidesList = element.slides
             slidesList?.let {
@@ -41,6 +42,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: HomepageBannerDataModel, payloads: MutableList<Any>) {
