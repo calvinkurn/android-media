@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.detail.model.*
-import com.tokopedia.vouchercreation.detail.view.viewholder.DividerViewHolder
 
 /**
  * Created By @ilhamsuaib on 09/05/20
@@ -58,6 +56,7 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
         when (dataKey) {
             DATA_KEY_VOUCHER_INFO -> editVoucherInfo()
             DATA_KEY_VOUCHER_BENEFIT -> editVoucherBenefit()
+            DATA_KEY_VOUCHER_PERIOD -> setVoucherPeriod()
         }
     }
 
@@ -78,6 +77,10 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
 
     }
 
+    private fun setVoucherPeriod() {
+
+    }
+
     private fun getDummy() {
         val dummy = listOf(
                 VoucherPreviewUiModel("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeAXT6zjKmrSVxiyxhNo36-3Rd7WNBtXjevcmrN9azk562wctF&usqp=CAU"),
@@ -95,6 +98,8 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
                 ), DATA_KEY_VOUCHER_BENEFIT, true),
                 VoucherTickerUiModel("Estimasi Maks. Pengeluaran", "Dipotong dari transaksi selesai", "Rp3.000.000", true),
                 DividerUiModel(2),
+                WarningPeriodUiModel(DATA_KEY_VOUCHER_PERIOD),
+                DividerUiModel(8),
                 FooterButtonUiModel(getString(R.string.mvc_add_voucher), ""),
                 FooterUiModel("Dengan klik Tambah Voucher, saya menyetujui <br>syarat dan ketentuan yang berlaku.", "syarat dan ketentuan")
         )
