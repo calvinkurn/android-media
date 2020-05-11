@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/searchBroadMatchTitle"
@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         android:maxLines="2"
@@ -41,9 +40,9 @@
 
     <com.tokopedia.carouselproductcard.CarouselProductCardView
         android:id="@+id/searchBroadMatchList"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintTop_toBottomOf="@+id/searchBroadMatchTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
