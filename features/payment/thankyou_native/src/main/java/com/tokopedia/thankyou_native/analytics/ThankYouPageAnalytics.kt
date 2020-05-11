@@ -64,9 +64,9 @@ class ThankYouPageAnalytics {
         return mapOf(
                 ActionFieldNodeTrackingKey.KEY_ID to orderedItem.orderId,
                 ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
-                ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue,
-                ActionFieldNodeTrackingKey.KEY_TAX to orderedItem.tax,
-                ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount,
+                ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue.toString(),
+                ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
+                ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmountStr,
                 ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon
         )
     }
@@ -77,7 +77,7 @@ class ThankYouPageAnalytics {
             val productNodeMap = HashMap<String, Any?>()
             productNodeMap[ProductNodeTrackingKey.KEY_NAME] = item.productName
             productNodeMap[ProductNodeTrackingKey.KEY_ID] = item.productId
-            productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.price
+            productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.priceStr
             productNodeMap[ProductNodeTrackingKey.KEY_BRAND] = item.productBrand
             productNodeMap[ProductNodeTrackingKey.KEY_CATEGORY] = item.category
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
