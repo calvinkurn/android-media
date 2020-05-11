@@ -283,7 +283,6 @@ class HomeFragment : BaseDaggerFragment(),
             irisAnalytics = getInstance(it)
             irisSession = IrisSession(it)
             remoteConfig = FirebaseRemoteConfigImpl(it)
-            homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
@@ -356,6 +355,7 @@ class HomeFragment : BaseDaggerFragment(),
         if (arguments != null) {
             scrollToRecommendList = arguments!!.getBoolean(SCROLL_RECOMMEND_LIST)
         }
+        homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         fetchRemoteConfig()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
         setupStatusBar()
