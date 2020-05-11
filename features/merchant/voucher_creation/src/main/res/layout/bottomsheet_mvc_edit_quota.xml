@@ -101,12 +101,14 @@
         app:text_field_input_type="number"
         app:text_field_label="@string/mvc_voucher_quota" />
 
-    <include
+    <com.tokopedia.vouchercreation.common.view.voucherticker.VoucherTickerView
         android:id="@+id/mvcTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl4"
-        layout="@layout/mvc_max_expense_estimation"
+        android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtMvcQuota"/>
 
     <com.tokopedia.unifycomponents.UnifyButton

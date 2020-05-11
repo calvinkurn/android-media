@@ -4,20 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarMvcVoucherDetail"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/toolbarMvcVoucherDetail"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarMvcVoucherDetail"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:theme="?toolbarTheme" />
-    </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMvcVoucherDetail"
@@ -26,5 +20,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarMvcVoucherDetail" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarMvcVoucherDetail" />
 </androidx.constraintlayout.widget.ConstraintLayout>

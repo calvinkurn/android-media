@@ -8,7 +8,9 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
 
 data class InfoContainerUiModel(
         val title: String,
-        val informationList: List<SubInfoItemUiModel>
+        val informationList: List<SubInfoItemUiModel>,
+        val dataKey: String = "",
+        val hasCta: Boolean = false
 ) : VoucherDetailUiModel {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int {

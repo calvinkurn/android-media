@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
 
 /**
@@ -17,7 +18,8 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
  */
 
 class EditQuotaBottomSheet(
-        parent: ViewGroup
+        parent: ViewGroup,
+        private val voucher: VoucherUiModel
 ) : BottomSheetUnify() {
 
     init {
@@ -37,6 +39,14 @@ class EditQuotaBottomSheet(
     private fun setupView(view: View) = with(view) {
         imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
         KeyboardHandler.showSoftKeyboard(activity)
+
+        tvMvcVoucherName.text = voucher.name
+        tvMvcVoucherDescription.text = voucher.description
+        mvcTicker.run {
+            title = "Estimasi Maks. Pengeluaran"
+            description = "Dipotong dari transaksi selesai"
+            nominal = "Rp3.290.000"
+        }
 
         setAction(context.getString(R.string.mvc_retry)) {
 

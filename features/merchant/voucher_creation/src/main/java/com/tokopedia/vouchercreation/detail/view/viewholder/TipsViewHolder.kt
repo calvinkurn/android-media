@@ -32,7 +32,7 @@ class TipsViewHolder(
 
     override fun bind(element: TipsUiModel) {
         with(itemView) {
-            val text = element.tips
+            val text = element.tips.parseAsHtml()
             val greenColor = context.getResColor(R.color.light_G500)
             val spannableStringColor = ForegroundColorSpan(greenColor)
             val spannableString = SpannableString(text)
@@ -45,8 +45,8 @@ class TipsViewHolder(
                     ds.isUnderlineText = false
                 }
             }
-            val start = element.tips.indexOf(string = element.clickableText, ignoreCase = true)
-            val end = element.tips.length
+            val start = text.indexOf(string = element.clickableText, ignoreCase = true)
+            val end = start.plus(element.clickableText.length)
             spannableString.setSpan(spannableStringColor, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
 

@@ -11,7 +11,10 @@ import kotlinx.android.synthetic.main.item_mvc_voucher_header.view.*
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class HeaderViewHolder(itemView: View?) : AbstractViewHolder<VoucherHeaderUiModel>(itemView) {
+class HeaderViewHolder(
+        itemView: View?,
+        private val onDownloadClick: () -> Unit
+) : AbstractViewHolder<VoucherHeaderUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -21,7 +24,7 @@ class HeaderViewHolder(itemView: View?) : AbstractViewHolder<VoucherHeaderUiMode
     override fun bind(element: VoucherHeaderUiModel) {
         with(itemView) {
             btnMvcDownload.setOnClickListener {
-
+                onDownloadClick()
             }
         }
     }

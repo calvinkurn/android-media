@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.detail.model.SubInfoItemUiModel
 import kotlinx.android.synthetic.main.item_mvc_sub_info.view.*
@@ -40,7 +41,7 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
 
         fun bind(model: SubInfoItemUiModel) = with(itemView) {
             tvMvcInfoKey.text = model.infoKey
-            tvMvcInfoValue.text = model.infoValue
+            tvMvcInfoValue.text = model.infoValue.parseAsHtml()
             imgMvcVoucherCopy.isVisible = model.canCopy
             imgMvcVoucherCopy.setOnClickListener { 
                 Toast.makeText(context, context.getString(R.string.mvc_voucher_code_copied), Toast.LENGTH_SHORT).show()
