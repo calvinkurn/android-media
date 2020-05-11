@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.quickedit.variant.presentation.data
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Picture
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Selection
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class EditVariantResult(
     val productId: String,
@@ -20,8 +21,13 @@ data class EditVariantResult(
         return stock
     }
 
-    fun isVariantActive(): Boolean {
+    fun getVariantStatus(): ProductStatus {
         val activeVariant = variants.find { it.isActive() }
-        return activeVariant != null
+        val isVariantActive = activeVariant != null
+        return if(isVariantActive) {
+            ProductStatus.ACTIVE
+        } else {
+            ProductStatus.INACTIVE
+        }
     }
 }
