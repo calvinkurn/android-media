@@ -13,7 +13,7 @@ class BrandlistSearchAllBrandLabelViewHolder(view: View) : AbstractViewHolder<Br
     }
 
     override fun bind(element: BrandlistSearchAllBrandLabelViewModel) {
-        itemView.tv_total_brand.text = element.letter
+//        itemView.tv_total_brand.text = element.letter
     }
 
 }

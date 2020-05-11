@@ -34,8 +34,9 @@ class BrandlistPageMapper {
             notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands, listener), adapter)
         }
 
-        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface) {
-            adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText, listener))
+        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?,
+                                       listener: BrandlistHeaderBrandInterface, totalBrandsPerAlphabet: Int, totalBrands: Int) {
+            adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText, listener, totalBrands, totalBrandsPerAlphabet))
             adapter?.notifyItemRangeInserted(adapter.lastIndex, 1)
         }
 

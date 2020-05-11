@@ -15,15 +15,11 @@ class StickyHeaderItemDecoration(private val listener: StickyHeaderInterface) : 
         super.onDrawOver(canvas, parent, state)
 
         val gridLayoutManager = parent.layoutManager as GridLayoutManager
-
         val topChildPosition = gridLayoutManager.findFirstVisibleItemPosition()
-
         if (topChildPosition == RecyclerView.NO_POSITION) return
 
         val headerView = getHeaderViewForItem(topChildPosition, parent) ?: return
-
         val contactPoint = headerView.bottom + parent.paddingTop
-
         val childInContact = getChildInContact(parent, contactPoint) ?: return
 
         if (listener.isHeader(parent.getChildAdapterPosition(childInContact))) {
@@ -33,6 +29,7 @@ class StickyHeaderItemDecoration(private val listener: StickyHeaderInterface) : 
 
         drawHeader(canvas, headerView, parent.paddingTop)
     }
+
 
     private fun getHeaderViewForItem(itemPosition: Int, parent: RecyclerView): View? {
         if (parent.adapter == null) {

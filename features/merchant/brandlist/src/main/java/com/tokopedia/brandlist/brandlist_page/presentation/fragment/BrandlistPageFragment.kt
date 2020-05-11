@@ -3,6 +3,7 @@ package com.tokopedia.brandlist.brandlist_page.presentation.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -68,6 +69,7 @@ class BrandlistPageFragment :
     private var isLoadedOnce: Boolean = false
     private var isScrolling: Boolean = false
     private var categoryName = ""
+    private var totalBrandsNumber: Int = 0
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -113,6 +115,7 @@ class BrandlistPageFragment :
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 
         recyclerView?.addOnScrollListener(endlessScrollListener)
+        recyclerView?.isNestedScrollingEnabled = true
         return rootView
     }
 
@@ -128,6 +131,32 @@ class BrandlistPageFragment :
         observeAllBrands()
 
         swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
+
+//        recyclerView?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+//            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+//
+//            }
+//
+//            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+//                when (e.action) {
+//                    MotionEvent.ACTION_DOWN -> {
+//                        recyclerView?.parent?.requestDisallowInterceptTouchEvent(true)
+//                    }
+//                    MotionEvent.ACTION_SCROLL -> {
+//                        println("Test ACTION_SCROLL")
+//                    }
+//                    MotionEvent.ACTION_MOVE -> {
+//                        println("Test ACTION_MOVE")
+//                    }
+//                }
+//                return false
+//            }
+//
+//            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+//
+//            }
+//
+//        })
 
         if (parentFragment is RecyclerViewScrollListener) {
             val scrollListener = parentFragment as RecyclerViewScrollListener
@@ -257,6 +286,7 @@ class BrandlistPageFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     val title = getString(R.string.brandlist_all_brand)
+                    totalBrandsNumber = it.data.totalBrands
                     BrandlistPageMapper.mappingAllBrandHeader(title, it.data.totalBrands, adapter, this)
                 }
                 is Fail -> {
@@ -271,7 +301,7 @@ class BrandlistPageFragment :
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val totalBrands = it.data.totalBrands
+                    val totalBrandsPerAlphabet = it.data.totalBrands
                     adapter?.hideLoading()
                     swipeRefreshLayout?.isRefreshing = false
 
@@ -281,7 +311,7 @@ class BrandlistPageFragment :
                     val groupHeader = viewModel.getCurrentLetter().toUpperCase()
 
                     if (currentOffset == 0 && groupHeader == "A") {
-                        BrandlistPageMapper.mappingAllBrandGroupHeader(groupHeader, adapter, this)
+                        BrandlistPageMapper.mappingAllBrandGroupHeader(groupHeader, adapter, this, totalBrandsPerAlphabet, totalBrandsNumber)
                     }
 
                     BrandlistPageMapper.mappingAllBrand(it.data, adapter, this)

@@ -29,15 +29,16 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
     }
 
     override fun bind(element: AllBrandGroupHeaderViewModel) {
-        val headerList: MutableList<String> = getAlphabeticalShopFilter()
+        val totalBrand: Int = element.totalBrands
+        val headerList: MutableList<String> = getAlphabeticalShopFilter(totalBrand)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
         recyclerViewBrandHeader?.layoutManager = layoutManager
         adapter = BrandlistAlphabetHeaderAdapter(element.listener)
         adapter?.updateDataHeaderList(headerList)
         recyclerViewBrandHeader?.adapter = adapter
 
-        tvTotalBrand?.text = element.groupHeaderText
-//        element.totalBrands?.let {
+//        tvTotalBrand?.text = element.groupHeaderText
+//        element.totalBrands.let {
 //            val totalBrandContent: String = NumberFormat.getNumberInstance(Locale.US)
 //                    .format(it).toString().replace(",", ".") + " " +
 //                    getString(R.string.brandlist_brand_label)
@@ -45,10 +46,15 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
 //        }
     }
 
-    private fun getAlphabeticalShopFilter(): MutableList<String> {
+    private fun getAlphabeticalShopFilter(totalBrand: Int): MutableList<String> {
         var c: Char
-        var tempHeaderList = mutableListOf<String>()
         c = 'A'
+        var tempHeaderList = mutableListOf<String>()
+        val totalBrandContent: String = NumberFormat.getNumberInstance(Locale.US)
+                .format(totalBrand).toString().replace(",", ".") + " " +
+                getString(R.string.brandlist_brand_label)
+
+        tempHeaderList.add(totalBrandContent)
         tempHeaderList.add("Semua Brand")
         while (c <= 'Z') {
             println("getAlphabeticalShopFilter: $c")

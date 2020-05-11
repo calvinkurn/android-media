@@ -6,7 +6,9 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.ad
 
 class AllBrandGroupHeaderViewModel(
         val groupHeaderText: String,
-        val listener: BrandlistHeaderBrandInterface
+        val listener: BrandlistHeaderBrandInterface,
+        val totalBrands: Int,
+        val totalBrandsPerAlphabet: Int
 ) : Visitable<BrandlistPageTypeFactory> {
 
     override fun type(adapterTypeFactory: BrandlistPageTypeFactory): Int {
