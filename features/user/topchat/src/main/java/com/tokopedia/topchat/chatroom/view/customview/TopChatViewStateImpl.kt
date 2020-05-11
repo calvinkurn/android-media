@@ -135,7 +135,7 @@ class TopChatViewStateImpl(
     }
 
     override fun onStickerOpened() {
-        chatStickerMenuButton?.setImageResource(R.drawable.ic_arrow_up)
+        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_keyboard)
         chatStickerMenuButton?.setOnClickListener {
             replyEditText.requestFocus()
             chatMenu?.showKeyboard(replyEditText)
