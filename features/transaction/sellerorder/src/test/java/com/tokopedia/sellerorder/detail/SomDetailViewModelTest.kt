@@ -1,159 +1,346 @@
 package com.tokopedia.sellerorder.detail
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.sellerorder.confirmshipping.domain.SomChangeCourierUseCase
 import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.domain.*
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
+import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.any
+import java.lang.ClassCastException
 
 /**
- * Created by fwidjaja on 2020-02-18.
+ * Created by fwidjaja on 2020-05-11.
  */
-/*
-object SomDetailViewModelTest: Spek({
-    InstantTaskExecutorRuleSpek(this)
 
-    val dispatcher = Dispatchers.Unconfined
-    val graphqlRepository: GraphqlRepository = mockk(relaxed = true)
-    val userSession: UserSession = mockk(relaxed = true)
-    val viewModel = SomDetailViewModel(dispatcher, graphqlRepository, userSession)
-    val spy = spyk(viewModel)
-    val queryOrderDetailPageList = "query_filter_page_list"
-    val queryAcceptOrder = "query_accept_order"
-    val queryRejectOrder = "query_reject_order"
-    val queryEditAwb = "query_edit_awb"
-    val orderDetailPageSuccessJson = "response_order_detail_success"
-    val acceptOrderSuccessJson = "response_accept_order_success"
-    val rejectReasonsSuccessJson = "response_reject_reasons_success"
-    val rejectOrderSuccessJson = "response_reject_order_success"
-    val editAwbSuccessJson = "response_edit_awb_success"
-    val shopId = "1479278"
-    val orderId = "397293266"
-    val orderIdNewOrder = "437997831"
-    val gson = Gson()
-    val paramRejectOrder = SomRejectRequest(
-        orderId = orderIdNewOrder,
-        reason = "lalala",
-        rCode = "2",
-        listPrd = "14263814~14263815",
-        closeEnd = "17/05/2017",
-        userId = "12345",
-        mobile = "1",
-        lang = "id",
-        ignorePenalty = "false"
-    )
+@RunWith(JUnit4::class)
+class SomDetailViewModelTest {
 
-    Feature("SOM Detail Order Page") {
-        Scenario("Load Detail Order Page GQL") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(orderDetailPageSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomDetailOrder.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomDetailOrder.Data::class.java to response),
-                        mapOf(SomDetailOrder.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
-            When("Load file GQL-raw query GetSOMDetail") {
-                runBlocking {
-                    spy.loadDetailOrder(queryOrderDetailPageList, orderId)
-                }
-            }
+    private val dispatcher = SomTestDispatcherProvider()
+    private lateinit var somDetailViewModel: SomDetailViewModel
+    private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Products>()
+    private var listMsg = listOf<String>()
+    private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
-            Then("Verify Func getDetailOrder works as expected!") {
-                coVerify { spy.loadDetailOrder(queryOrderDetailPageList, orderId) }
-            }
-        }
+    @RelaxedMockK
+    lateinit var somGetOrderDetailUseCase: SomGetOrderDetailUseCase
 
-        Scenario("Accept Order") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(acceptOrderSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomAcceptOrder.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomAcceptOrder.Data::class.java to response),
-                        mapOf(SomAcceptOrder.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
+    @RelaxedMockK
+    lateinit var somAcceptOrderUseCase: SomAcceptOrderUseCase
 
-            When("Load file GQL-raw mutation Accept Order") {
-                runBlocking {
-                    spy.acceptOrder(queryAcceptOrder, orderIdNewOrder, shopId)
-                }
-            }
+    @RelaxedMockK
+    lateinit var somReasonRejectUseCase: SomReasonRejectUseCase
 
-            Then("Verify Func acceptOrder works as expected!") {
-                coVerify { spy.acceptOrder(queryAcceptOrder, orderIdNewOrder, shopId) }
-            }
-        }
+    @RelaxedMockK
+    lateinit var somRejectOrderUseCase: SomRejectOrderUseCase
 
-        Scenario("Get Reject Reasons") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(rejectReasonsSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomReasonRejectData.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomReasonRejectData.Data::class.java to response),
-                        mapOf(SomReasonRejectData.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
+    @RelaxedMockK
+    lateinit var somEditRefNumUseCase: SomEditRefNumUseCase
 
-            When("Load file GQL-raw query SOMRejectReason") {
-                runBlocking {
-                    spy.getRejectReasons(queryAcceptOrder)
-                }
-            }
+    @RelaxedMockK
+    lateinit var somSetDeliveredUseCase: SomSetDeliveredUseCase
 
-            Then("Verify Func doGetRejectReasons works as expected!") {
-                coVerify { spy.getRejectReasons(queryAcceptOrder) }
-            }
-        }
+    @Before
+    fun setUp() {
+        MockKAnnotations.init(this)
+        somDetailViewModel = SomDetailViewModel(dispatcher, somGetOrderDetailUseCase,
+                somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
+                somEditRefNumUseCase, somSetDeliveredUseCase)
 
-        Scenario("Reject Order") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(rejectOrderSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomRejectOrder.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomRejectOrder.Data::class.java to response),
-                        mapOf(SomRejectOrder.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
+        val product1 = SomDetailOrder.Data.GetSomDetail.Products(123)
+        listProducts = arrayListOf(product1).toMutableList()
 
-            When("Load file GQL-raw mutation RejectOrder") {
-                runBlocking {
-                    spy.rejectOrder(queryRejectOrder, paramRejectOrder)
-                }
-            }
+        listMsg = arrayListOf("msg1")
 
-            Then("Verify Func doRejectOrder works as expected!") {
-                coVerify { spy.rejectOrder(queryRejectOrder, paramRejectOrder) }
-            }
-        }
-
-        Scenario("Edit AWB") {
-            Given("Return Success Data") {
-                val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(editAwbSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
-                val response = gson.fromJson(jsonResponse, SomEditAwbResponse.Data::class.java)
-                val gqlResponseSuccess = GraphqlResponse(
-                        mapOf(SomEditAwbResponse.Data::class.java to response),
-                        mapOf(SomEditAwbResponse.Data::class.java to listOf()), false)
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
-            }
-
-            When("Load file GQL-raw mutation Edit Awb") {
-                runBlocking {
-                    spy.editAwb(queryEditAwb)
-                }
-            }
-
-            Then("Verify Func doEditAwb works as expected!") {
-                coVerify { spy.editAwb(queryEditAwb) }
-            }
-        }
+        val reasonReject1 = SomReasonRejectData.Data.SomRejectReason(1)
+        listReasonReject = arrayListOf(reasonReject1).toMutableList()
     }
-})*/
+
+    // order_detail
+    @Test
+    fun getOrderDetail_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somGetOrderDetailUseCase.execute(any(), any())
+        } returns Success(SomDetailOrder.Data.GetSomDetail(123))
+
+        //when
+        somDetailViewModel.loadDetailOrder("", "")
+
+        //then
+        assert(somDetailViewModel.orderDetailResult.value is Success)
+        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.orderId == 123)
+    }
+
+    @Test
+    fun getOrderDetail_shouldReturnFail() {
+        //given
+        coEvery {
+            somGetOrderDetailUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        somDetailViewModel.loadDetailOrder("", "")
+
+        //then
+        assert(somDetailViewModel.orderDetailResult.value is Fail)
+    }
+
+    @Test
+    fun getOrderDetail_shouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somGetOrderDetailUseCase.execute(any(), any())
+        } returns Success(SomDetailOrder.Data.GetSomDetail(listProduct = listProducts))
+
+        //when
+        somDetailViewModel.loadDetailOrder("", "")
+
+        //then
+        assert(somDetailViewModel.orderDetailResult.value is Success)
+        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.listProduct.isNotEmpty())
+    }
+
+    // accept_order
+    @Test
+    fun acceptOrder_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somAcceptOrderUseCase.execute(any(), any(), any())
+        } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(success = 1)))
+
+        //when
+        somDetailViewModel.acceptOrder("", "", "")
+
+        //then
+        assert(somDetailViewModel.acceptOrderResult.value is Success)
+        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrder.Data>).data.acceptOrder.success == 1)
+    }
+
+    @Test
+    fun acceptOrder_shouldReturnFail() {
+        //given
+        coEvery {
+            somAcceptOrderUseCase.execute(any(), any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        somDetailViewModel.acceptOrder("", "", "")
+
+        //then
+        assert(somDetailViewModel.acceptOrderResult.value is Fail)
+    }
+
+    @Test
+    fun acceptOrder_msgShouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somAcceptOrderUseCase.execute(any(), any(), any())
+        } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(listMessage = listMsg)))
+
+        //when
+        somDetailViewModel.acceptOrder("", "", "")
+
+        //then
+        assert(somDetailViewModel.acceptOrderResult.value is Success)
+        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrder.Data>).data.acceptOrder.listMessage.isNotEmpty())
+    }
+
+    // reason_reject
+    @Test
+    fun getReasonReject_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somReasonRejectUseCase.execute(any(), any())
+        } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
+
+        //when
+        somDetailViewModel.getRejectReasons("")
+
+        //then
+        assert(somDetailViewModel.rejectReasonResult.value is Success)
+        assert((somDetailViewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.first().reasonCode == 1)
+    }
+
+    @Test
+    fun getReasonReject_shouldReturnFail() {
+        //given
+        coEvery {
+            somReasonRejectUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        somDetailViewModel.getRejectReasons("")
+
+        //then
+        assert(somDetailViewModel.rejectReasonResult.value is Fail)
+    }
+
+    @Test
+    fun getReasonReject_msgShouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somReasonRejectUseCase.execute(any(), any())
+        } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
+
+        //when
+        somDetailViewModel.getRejectReasons("")
+
+        //then
+        assert(somDetailViewModel.rejectReasonResult.value is Success)
+        assert((somDetailViewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.isNotEmpty())
+    }
+
+    // reject_order
+    @Test
+    fun rejectOrder_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somRejectOrderUseCase.execute(any(), any())
+        } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(success = 1)))
+
+        //when
+        somDetailViewModel.rejectOrder("", SomRejectRequest())
+
+        //then
+        assert(somDetailViewModel.rejectOrderResult.value is Success)
+        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrder.Data>).data.rejectOrder.success == 1)
+    }
+
+    @Test
+    fun rejectOrder_shouldReturnFail() {
+        //given
+        coEvery {
+            somRejectOrderUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        somDetailViewModel.rejectOrder("", SomRejectRequest())
+
+        //then
+        assert(somDetailViewModel.rejectOrderResult.value is Fail)
+    }
+
+    @Test
+    fun rejectOrder_msgShouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somRejectOrderUseCase.execute(any(), any())
+        } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(message = listMsg)))
+
+        //when
+        somDetailViewModel.rejectOrder("", SomRejectRequest())
+
+        //then
+        assert(somDetailViewModel.rejectOrderResult.value is Success)
+        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrder.Data>).data.rejectOrder.message.isNotEmpty())
+    }
+
+    // edit_awb
+    @Test
+    fun editAwb_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somEditRefNumUseCase.execute(any())
+        } returns Success(SomEditAwbResponse.Data(SomEditAwbResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
+
+        //when
+        somDetailViewModel.editAwb("")
+
+        //then
+        assert(somDetailViewModel.editRefNumResult.value is Success)
+        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditAwbResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
+    }
+
+    @Test
+    fun editAwb_shouldReturnFail() {
+        //given
+        coEvery {
+            somEditRefNumUseCase.execute(any())
+        } returns Fail(Throwable())
+
+        //when
+        somDetailViewModel.editAwb("")
+
+        //then
+        assert(somDetailViewModel.rejectOrderResult.value is Fail)
+    }
+
+    @Test
+    fun editAwb_msgShouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somEditRefNumUseCase.execute(any())
+        } returns Success(SomEditAwbResponse.Data(SomEditAwbResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
+
+        //when
+        somDetailViewModel.editAwb("")
+
+        //then
+        assert(somDetailViewModel.editRefNumResult.value is Success)
+        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditAwbResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
+    }
+
+    // set_delivered
+    @Test
+    fun setDelivered_shouldReturnSuccess() {
+        //given
+        coEvery {
+            somSetDeliveredUseCase.execute(any(), any(), any())
+        } returns Success(SetDeliveredResponse(SetDelivered(success = 1)))
+
+        //when
+        somDetailViewModel.setDelivered("","","")
+
+        //then
+        assert(somDetailViewModel.setDelivered.value is Success)
+        assert((somDetailViewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.success == 1)
+    }
+
+    @Test
+    fun setDelivered_shouldReturnFail() {
+        //given
+        coEvery {
+            somSetDeliveredUseCase.execute(any(), any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        somDetailViewModel.setDelivered("","","")
+
+        //then
+        assert(somDetailViewModel.setDelivered.value is Fail)
+    }
+
+    @Test
+    fun setDelivered_msgShouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somSetDeliveredUseCase.execute(any(), any(), any())
+        } returns Success(SetDeliveredResponse(SetDelivered(message = listMsg)))
+
+        //when
+        somDetailViewModel.setDelivered("","","")
+
+        //then
+        assert(somDetailViewModel.setDelivered.value is Success)
+        assert((somDetailViewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
+    }
+}

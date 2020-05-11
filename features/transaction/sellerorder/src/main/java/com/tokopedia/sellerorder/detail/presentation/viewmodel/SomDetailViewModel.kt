@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_IS_FROM_FINTECH
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
@@ -15,11 +16,11 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_ORDERID
 import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.domain.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,9 +29,13 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                             private val graphqlRepository: GraphqlRepository,
-                                             private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
+class SomDetailViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
+                                             private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
+                                             private val somAcceptOrderUseCase: SomAcceptOrderUseCase,
+                                             private val somReasonRejectUseCase: SomReasonRejectUseCase,
+                                             private val somRejectOrderUseCase: SomRejectOrderUseCase,
+                                             private val somEditRefNumUseCase: SomEditRefNumUseCase,
+                                             private val somSetDeliveredUseCase: SomSetDeliveredUseCase) : BaseViewModel(dispatcher.ui()) {
 
     private val _orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
     val orderDetailResult: LiveData<Result<SomDetailOrder.Data.GetSomDetail>>
@@ -57,26 +62,50 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         get() = _setDelivered
 
     fun loadDetailOrder(detailQuery: String, orderId: String) {
-        launch { getDetailOrder(detailQuery, orderId) }
+        launch {
+            _orderDetailResult.postValue(somGetOrderDetailUseCase.execute(detailQuery, orderId))
+        }
     }
 
     fun acceptOrder(acceptOrderQuery: String, orderId: String, shopId: String) {
-        launch { doAcceptOrder(acceptOrderQuery, orderId, shopId) }
+        launch {
+            _acceptOrderResult.postValue(somAcceptOrderUseCase.execute(acceptOrderQuery, orderId, shopId))
+        }
     }
 
     fun getRejectReasons(rejectReasonQuery: String) {
-        launch { doGetRejectReasons(rejectReasonQuery, SomReasonRejectParam()) }
+        launch {
+            _rejectReasonResult.postValue(somReasonRejectUseCase.execute(rejectReasonQuery, SomReasonRejectParam()))
+        }
     }
 
     fun rejectOrder(rejectOrderQuery: String, rejectOrderRequest: SomRejectRequest) {
-        launch { doRejectOrder(rejectOrderQuery, rejectOrderRequest) }
+        launch {
+            _rejectOrderResult.postValue(somRejectOrderUseCase.execute(rejectOrderQuery, rejectOrderRequest))
+        }
     }
 
     fun editAwb(queryString: String) {
-        launch { doEditAwb(queryString) }
+        launch {
+            _editRefNumResult.postValue(somEditRefNumUseCase.execute(queryString))
+        }
     }
 
     fun setDelivered(rawQuery: String, orderId: String, receivedBy: String) {
+        launch {
+            _setDelivered.postValue(somSetDeliveredUseCase.execute(rawQuery, orderId, receivedBy))
+        }
+    }
+
+    fun rejectOrderOld(rejectOrderQuery: String, rejectOrderRequest: SomRejectRequest, userId: String) {
+        // launch { doRejectOrder(rejectOrderQuery, rejectOrderRequest) }
+    }
+
+    fun editAwbOld(queryString: String) {
+        // launch { doEditAwb(queryString) }
+    }
+
+    /*fun setDelivered(rawQuery: String, orderId: String, receivedBy: String) {
         launchCatchError(block = {
             val param = mapOf("input" to SetDeliveredRequest(orderId, receivedBy))
             val gqlRequest = GraphqlRequest(rawQuery, SetDeliveredResponse::class.java, param)
@@ -167,5 +196,5 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         }, onError = {
             _editRefNumResult.postValue(Fail(it))
         })
-    }
+    }*/
 }
