@@ -5,6 +5,7 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 
@@ -33,8 +34,8 @@ class BrandlistPageMapper {
             notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands, listener), adapter)
         }
 
-        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
-            adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText))
+        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface) {
+            adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText, listener))
             adapter?.notifyItemRangeInserted(adapter.lastIndex, 1)
         }
 

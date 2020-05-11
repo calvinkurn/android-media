@@ -23,6 +23,7 @@ import com.tokopedia.brandlist.brandlist_page.di.BrandlistPageModule
 import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
@@ -40,7 +41,7 @@ import javax.inject.Inject
 
 class BrandlistPageFragment :
         BaseDaggerFragment(),
-        HasComponent<BrandlistPageComponent>, BrandlistPageTrackingListener {
+        HasComponent<BrandlistPageComponent>, BrandlistPageTrackingListener, BrandlistHeaderBrandInterface {
 
     companion object {
         const val BRANDLIST_GRID_SPAN_COUNT = 3
@@ -92,7 +93,6 @@ class BrandlistPageFragment :
         category?.let {
             categoryName = it.title
         }
-        getAlphabeticalShopFilter()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -271,7 +271,7 @@ class BrandlistPageFragment :
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-
+                    val totalBrands = it.data.totalBrands
                     adapter?.hideLoading()
                     swipeRefreshLayout?.isRefreshing = false
 
@@ -312,14 +312,6 @@ class BrandlistPageFragment :
         }
     }
 
-    private fun getAlphabeticalShopFilter() {
-        var c: Char
-        c = 'A'
-        while (c <= 'Z') {
-            println("getAlphabeticalShopFilter: $c")
-            ++c
-        }
-    }
 
     override fun clickBrandPopular(shopId: String, shopLogoPosition: String, shopName: String, imgUrl: String) {
         val isLogin = userSession.isLoggedIn
@@ -378,6 +370,10 @@ class BrandlistPageFragment :
         val isLogin = userSession.isLoggedIn
         brandlistTracking?.impressionBrand(isLogin, shopId, categoryName, shoplogoPosition, shopName,
                 imgUrl, false, "")
+    }
+
+    override fun onClickedChip() {
+
     }
 
 }
