@@ -30,6 +30,7 @@ import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -178,7 +179,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun observeProductSheetContent() {
-        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -205,7 +206,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun observeVariantSheetContent() {
-        viewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
+        viewModel.observableProductVariant.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -217,7 +218,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation)))
@@ -235,7 +236,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             if (it.isFreeze || it.isBanned) {
                 viewModel.onFreezeBan()
                 hideLoadingView()
@@ -248,12 +249,12 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun observeBuyEvent() {
-        viewModel.observableAddToCart.observe(viewLifecycleOwner, Observer {
+        viewModel.observableAddToCart.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is PlayResult.Loading -> showLoadingView()
                 is PlayResult.Success -> {
                     hideLoadingView()
-                    val data = it.data.getContentIfNotHandled() ?: return@Observer
+                    val data = it.data.getContentIfNotHandled() ?: return@DistinctObserver
 
                     if (data.isSuccess) {
                         playViewModel.updateBadgeCart()

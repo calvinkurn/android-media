@@ -143,7 +143,7 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             if (::containerYouTube.isInitialized) {
                 if (it.isAnyShown) containerYouTube.setCornerRadius(cornerRadius)
                 else containerYouTube.setCornerRadius(0f)

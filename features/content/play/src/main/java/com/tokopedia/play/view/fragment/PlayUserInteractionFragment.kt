@@ -58,7 +58,9 @@ import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
@@ -296,7 +298,7 @@ class PlayUserInteractionFragment :
 
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
             layoutManager.onVideoPlayerChanged(container, it, playViewModel.channelType)
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -309,7 +311,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
             if (it.state == PlayVideoState.Playing) {
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
             }
@@ -325,7 +327,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeTitleChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it is Success) setChannelTitle(it.data.title)
             triggerStartMonitoring()
         })
@@ -336,7 +338,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
             layoutManager.onVideoOrientationChanged(container, it.orientation)
             triggerImmersive(false)
             playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, layoutManager.getVideoTopBounds(container, it.orientation))
@@ -358,7 +360,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeNewChat() {
-        playViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver {
+        playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -393,7 +395,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeFollowShop() {
-        viewModel.observableFollowPartner.observe(viewLifecycleOwner, Observer {
+        viewModel.observableFollowPartner.observe(viewLifecycleOwner, DistinctObserver {
             if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
             }
@@ -452,7 +454,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 getBottomSheetInstance().setState(it.isFreeze)
 

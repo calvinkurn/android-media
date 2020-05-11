@@ -48,6 +48,7 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
@@ -488,7 +489,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeGetChannelInfo() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer { result ->
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver { result ->
             when (result) {
                 is Success -> PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
                 is Fail -> result.throwable.message?.let {
@@ -499,7 +500,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeSocketInfo() {
-        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
             when(it) {
                 is PlaySocketInfo.Reconnect ->
                     PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}", playViewModel.channelType)
@@ -510,7 +511,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             if (orientation.isLandscape && (it.isFreeze || it.isBanned)) {
                 requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
             }
@@ -525,7 +526,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
             if (it.state is PlayVideoState.Error) {
                 PlayAnalytics.errorState(channelId,
                         "$ERR_STATE_VIDEO: ${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
@@ -563,14 +564,14 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
             setWindowSoftInputMode(it.channelType.isLive)
             setBackground(it.backgroundUrl)
         })
     }
 
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -582,7 +583,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(

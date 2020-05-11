@@ -22,6 +22,7 @@ import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -108,7 +109,7 @@ class PlayErrorFragment: BaseDaggerFragment(), PlayFragmentContract {
     }
 
     private fun observeErrorChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
                 is Fail -> {
                     showGlobalError(it.throwable)

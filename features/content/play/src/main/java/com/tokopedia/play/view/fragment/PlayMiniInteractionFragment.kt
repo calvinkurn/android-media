@@ -42,6 +42,7 @@ import com.tokopedia.play.ui.videosettings.VideoSettingsMiniComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -372,7 +373,7 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
 
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
             layoutManager.onVideoPlayerChanged(container, it, playViewModel.channelType)
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -409,7 +410,7 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
             if (it.state == PlayVideoState.Playing) {
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
             }
@@ -424,7 +425,7 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
     }
 
     private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
             setVideoStream(it)
         })
     }
