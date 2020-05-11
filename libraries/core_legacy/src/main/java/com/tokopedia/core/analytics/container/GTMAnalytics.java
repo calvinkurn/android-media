@@ -1034,12 +1034,13 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                    String eventName = keyEvent(clone(values));
-                    if (eventName == null || mGclid == null) {
-                        pushIris("", it);
-                    } else {
-                    addGclIdIfNeeded(eventName, it);
+                    if (it.get("event") != null) {
+                        String eventName = String.valueOf(it.get("event"));
+                        if ( mGclid != null) {
+                            addGclIdIfNeeded(eventName, it);
+                        }
                     }
+                    pushIris("", it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
@@ -1053,7 +1054,7 @@ public class GTMAnalytics extends ContextAnalytics {
             case VIEWPRODUCT:
             case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
             case TRANSACTION:
-                values.put("GCLID", mGclid);
+                values.put("gclid", mGclid);
         }
     }
 
