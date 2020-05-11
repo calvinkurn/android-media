@@ -30,7 +30,9 @@ import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
@@ -178,7 +180,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initSellerMigrationTicker()
         prepareLayout()
         setListeners()
         setInitialValue()
@@ -188,17 +189,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingOrders()
     }
 
-    private fun initSellerMigrationTicker() {
-        somListSellerMigrationTicker.tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
-        somListSellerMigrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
-        somListSellerMigrationTicker.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(charSequence: CharSequence) {
-                openSellerMigrationBottomSheet()
-            }
-            override fun onDismiss() {
-                // No Op
-            }
-        })
+    private fun showSellerMigrationTicker() {
+        somListSellerMigrationTicker.apply {
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
+            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(charSequence: CharSequence) {
+                    openSellerMigrationBottomSheet()
+                }
+                override fun onDismiss() {
+                    // No Op
+                }
+            })
+            show()
+        }
     }
 
     private fun openSellerMigrationBottomSheet() {
@@ -404,6 +408,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
         if (tickerList.isNotEmpty()) {
+            somListSellerMigrationTicker.hide()
             (ticker_info?.getChildAt(0) as CardView).useCompatPadding = false
             ticker_info?.visibility = View.VISIBLE
             if (tickerList.size > 1) {
@@ -455,6 +460,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         } else {
             ticker_info?.visibility = View.GONE
+            showSellerMigrationTicker()
         }
     }
 
