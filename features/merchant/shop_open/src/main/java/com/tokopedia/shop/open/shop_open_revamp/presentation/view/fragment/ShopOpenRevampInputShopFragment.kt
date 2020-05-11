@@ -26,11 +26,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
-import com.tokopedia.shop.open.shop_open_revamp.common.ExitDialog
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.common.TermsAndConditionsLink.URL_PRIVACY_POLICY
 import com.tokopedia.shop.open.shop_open_revamp.common.TermsAndConditionsLink.URL_TNC
@@ -68,7 +66,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private val MIN_SHOP_NAME_LENGTH = 3
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
-    lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var txtInputShopName: TextFieldUnify
     private lateinit var txtInputDomainName: TextFieldUnify
     private lateinit var txtTermsAndConditions: TextView
@@ -78,6 +75,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampShopsSuggestionAdapter? = null
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+    private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var isValidShopName = false
     private var isValidDomainName = false
     private var shopNameValue = ""
@@ -167,7 +165,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         }
         btnBack.setOnClickListener {
             shopOpenRevampTracking?.clickBackButtonFromInputShopPage()
-            showExitDialog()
+            fragmentNavigationInterface?.showExitDialog()
         }
 
         observeShopNameValidationData()
@@ -276,7 +274,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     if (_shopId.isNotEmpty() && _isSuccess) {
                         isSuccess = true
                         userSession.shopId = _shopId
-                        fragmentNavigationInterface.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
+                        fragmentNavigationInterface?.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
                         shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                     } else {
                         isSuccess = false
@@ -366,26 +364,6 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
     private fun showErrorResponse(message: String) {
         view?.let {
             Toaster.showError(it, message, Snackbar.LENGTH_LONG)
-        }
-    }
-
-    private fun showExitDialog() {
-        activity?.also {
-            var exitDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            exitDialog.apply {
-                setTitle(ExitDialog.TITLE)
-                setDescription(ExitDialog.DESCRIPTION)
-                setPrimaryCTAText("Batal")
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                }
-                setSecondaryCTAText("Keluar")
-                setSecondaryCTAClickListener {
-                    this.dismiss()
-                    activity?.finish()
-                }
-                show()
-            }
         }
     }
 

@@ -65,30 +65,30 @@ open class CardConstraintLayout : ConstraintLayout {
     open fun readAttrs(attrs: AttributeSet?) {
         if (attrs != null) {
             val typedArray =
-                    context.theme.obtainStyledAttributes(attrs, R.styleable.GfCardConstraintLayout, 0, 0)
-            shadowTopOffset = typedArray.getDimension(R.styleable.GfCardConstraintLayout_gfShadowTopOffset, dpToPx(context, 0))
-            shadowBottomOffset = typedArray.getDimension(R.styleable.GfCardConstraintLayout_gfShadowBottomOffset, dpToPx(context, 0))
-            shadowStartOffset = typedArray.getDimension(R.styleable.GfCardConstraintLayout_gfShadowStartOffset, dpToPx(context, 0))
-            shadowEndOffset = typedArray.getDimension(R.styleable.GfCardConstraintLayout_gfShadowEndOffset, dpToPx(context, 0))
+                    context.theme.obtainStyledAttributes(attrs, com.tokopedia.gamification.R.styleable.GfCardConstraintLayout, 0, 0)
+            shadowTopOffset = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfShadowTopOffset, dpToPx(context, 0))
+            shadowBottomOffset = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfShadowBottomOffset, dpToPx(context, 0))
+            shadowStartOffset = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfShadowStartOffset, dpToPx(context, 0))
+            shadowEndOffset = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfShadowEndOffset, dpToPx(context, 0))
             shadowStartY = typedArray.getDimension(
-                    R.styleable.GfCardConstraintLayout_gfShadowStartY,
+                    com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfShadowStartY,
                     java.lang.Float.MIN_VALUE
             )
-            shadowColor = typedArray.getColor(R.styleable.GfCardConstraintLayout_gfShadowColor, Color.BLACK)
+            shadowColor = typedArray.getColor(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfShadowColor, Color.BLACK)
             shadowStrokeWidth =
                     typedArray.getDimension(
-                            R.styleable.GfCardConstraintLayout_gfShadowStrokeWidth,
+                            com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfShadowStrokeWidth,
                             dpToPx(context, 1)
                     )
             cornerRadius = typedArray.getDimension(
-                    R.styleable.GfCardConstraintLayout_gfCornerRadius,
+                    com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfCornerRadius,
                     dpToPx(context, 3)
             )
             blurRadius =
-                    typedArray.getDimension(R.styleable.GfCardConstraintLayout_gfBlurRadius, dpToPx(context, 8))
-            enableShadow = typedArray.getBoolean(R.styleable.GfCardConstraintLayout_gfEnableShadow, true)
-            enableBorder = typedArray.getBoolean(R.styleable.GfCardConstraintLayout_gfEnableBorder, false)
-            borderHeight = typedArray.getDimension(R.styleable.GfCardConstraintLayout_gfBorderHeight, 0f)
+                    typedArray.getDimension(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfBlurRadius, dpToPx(context, 8))
+            enableShadow = typedArray.getBoolean(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfEnableShadow, true)
+            enableBorder = typedArray.getBoolean(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfEnableBorder, false)
+            borderHeight = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GfCardConstraintLayout_gfBorderHeight, 0f)
             typedArray.recycle()
         }
     }
@@ -119,7 +119,7 @@ open class CardConstraintLayout : ConstraintLayout {
 
     private fun drawBorder(canvas: Canvas) {
 
-        val borderColor = ContextCompat.getColor(context, R.color.gf_constraint_borderColor)
+        val borderColor = ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_constraint_borderColor)
 
         borderPaint.style = Paint.Style.STROKE
         borderPaint.color = borderColor

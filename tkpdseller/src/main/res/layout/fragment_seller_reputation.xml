@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:visibility="visible"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".reputation.view.activity.SellerReputationActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/seller_reputation_app_bar_layout"

@@ -2,10 +2,9 @@ package com.tokopedia.notifcenter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -82,6 +81,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         super.onCreate(savedInstanceState)
         notificationComponent.inject(this)
         presenter.attachView(this)
+        setWindowBackground()
 
         intent?.data?.path?.let {
             when {
@@ -286,6 +286,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     private fun openNotificationSettingPage(): Boolean {
         RouteManager.route(this, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
         return true
+    }
+
+    private fun setWindowBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     override fun onDestroy() {

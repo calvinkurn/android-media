@@ -60,7 +60,6 @@ class DynamicChannelMixTopViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
-            dcEventHandler.flashSaleImpression(dynamicChannelData)
             setupHeader(dynamicChannelData)
             setupContent(dynamicChannelData)
         }
@@ -91,7 +90,6 @@ class DynamicChannelMixTopViewHolder(
                         setOnClickListener {
                             dcEventHandler.onMixFlashSaleSeeAllClicked( channel,header.applink)
                         }
-                        setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
                     }
                 } else {
                     headerActionText.visibility = View.GONE

@@ -1,7 +1,5 @@
 package com.tokopedia.core.people.model;
 
-import android.text.Html;
-
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.util.MethodChecker;
 

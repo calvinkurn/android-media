@@ -5,6 +5,7 @@
         upload KTP. Upload Sekarang</string>
     <string name="alert_not_verified_highlight_text">Upload Sekarang</string>
 
+    <string name="kyc_error_compress_image">Gagal memproses gambar. Silahkan pilih gambar lain.</string>
     <string name="alert_waiting_verification_text">Akun toko Anda sedang dalam proses menunggu
         verifikasi. Lihat status</string>
     <string name="alert_waiting_verification_highlight_text">Lihat status</string>
@@ -74,7 +75,8 @@
     <string name="title_kyc_info">Verifikasi Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
-    <string name="error_text_image_cant_be_accessed">Foto tidak dapat diakses</string>
+    <string name="error_text_image_cant_be_accessed">Foto ktp tidak dapat diakses</string>
+    <string name="error_text_liveness_image_cant_be_accessed">Foto tidak dapat diakses</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
     <string name="title_kyc_form_selfie">2. Foto Diri &amp; KTP</string>

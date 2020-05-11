@@ -1,14 +1,10 @@
 package com.tokopedia.sellerapp.deeplink;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenter;
@@ -30,28 +26,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void inflateFragment(Fragment fragment, String tag) {
-        getFragmentManager().beginTransaction().add(R.id.main_view, fragment, tag).commit();
-    }
-
-    @Override
     public void inflateFragmentV4(androidx.fragment.app.Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction().replace(R.id.main_view, fragment, tag).commit();
-    }
-
-    @Override
-    public void replaceFragment(Fragment fragment, String tag) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_view, fragment, tag);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
-    @Override
-    public void hideActionBar() {
-        if (getSupportActionBar()!=null) {
-            getSupportActionBar().hide();
-        }
     }
 
     @Override
@@ -99,8 +75,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, SellerRouter.getSellingActivityClass());
-            this.startActivity(intent);
             this.finish();
         }
     }

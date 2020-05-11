@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
@@ -21,15 +21,14 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.search_universal.presentation.bottomsheet.FlightSearchUniversalBottomSheet
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.activity_flight_search.*
@@ -41,7 +40,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     protected lateinit var dateString: String
     protected lateinit var passengerString: String
     protected lateinit var classString: String
-    protected lateinit var passDataViewModel: FlightSearchPassDataViewModel
+    protected lateinit var passDataModel: FlightSearchPassDataModel
 
     private lateinit var wrapper: LinearLayout
 
@@ -60,7 +59,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         setupSearchToolbarText()
     }
 
-    override fun getNewFragment(): Fragment = FlightSearchFragment.newInstance(passDataViewModel)
+    override fun getNewFragment(): Fragment = FlightSearchFragment.newInstance(passDataModel)
 
     override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH
 
@@ -71,7 +70,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun getParentViewResourceID(): Int = R.id.flight_search_parent_view
 
     private fun initializeDataFromExtras() {
-        passDataViewModel = intent.extras.getParcelable(EXTRA_PASS_DATA)
+        passDataModel = intent.extras.getParcelable(EXTRA_PASS_DATA)
         initializeToolbarData()
     }
 
@@ -79,13 +78,13 @@ open class FlightSearchActivity : BaseFlightActivity(),
         dateString = FlightDateUtil.formatDate(
                 FlightDateUtil.DEFAULT_FORMAT,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                passDataViewModel.departureDate
+                passDataModel.departureDate
         )
-        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
-        classString = passDataViewModel.flightClass.title
+        passengerString = buildPassengerTextFormatted(passDataModel.flightPassengerViewModel)
+        classString = passDataModel.flightClass.title
     }
 
-    protected fun buildPassengerTextFormatted(passData: FlightPassengerViewModel): String {
+    protected fun buildPassengerTextFormatted(passData: FlightPassengerModel): String {
         var passengerFmt = ""
 
         if (passData.adult > 0) {
@@ -101,9 +100,9 @@ open class FlightSearchActivity : BaseFlightActivity(),
         return passengerFmt
     }
 
-    open fun getDepartureAirport(): FlightAirportViewModel = passDataViewModel.departureAirport
+    open fun getDepartureAirport(): FlightAirportModel = passDataModel.departureAirport
 
-    open fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.arrivalAirport
+    open fun getArrivalAirport(): FlightAirportModel = passDataModel.arrivalAirport
 
     private fun setupSearchToolbarAction() {
         wrapper = LinearLayout(this)
@@ -164,7 +163,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                                 (fragment as FlightSearchFragment).flightSearchPresenter
                                         .attachView(fragment as FlightSearchFragment)
                                 (fragment as FlightSearchFragment)
-                                        .setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataViewModel))
+                                        .setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
                                 (fragment as FlightSearchFragment).refreshData()
                             }
                         }
@@ -174,53 +173,46 @@ open class FlightSearchActivity : BaseFlightActivity(),
         }
     }
 
-    override fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel) {
-        passDataViewModel = flightSearchPassDataViewModel
+    override fun changeDate(flightSearchPassDataModel: FlightSearchPassDataModel) {
+        passDataModel = flightSearchPassDataModel
         initializeToolbarData()
         setupSearchToolbarText()
     }
 
-    override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
+    override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
                               isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
-        passDataViewModel.searchRequestId = requestId
-        if (passDataViewModel.isOneWay) {
-            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
-                startActivityForResult(FlightBookingActivity
-                        .getCallingIntent(this, passDataViewModel, selectedFlightID, selectedTerm,
-                                flightPriceViewModel),
-                        REQUEST_CODE_BOOKING)
-            } else {
-                startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
-                        .getCallingIntent(this, passDataViewModel, selectedFlightID,
-                                flightPriceViewModel),
-                        REQUEST_CODE_BOOKING)
-            }
+        passDataModel.searchRequestId = requestId
+        if (passDataModel.isOneWay) {
+            startActivityForResult(FlightBookingActivity
+                    .getCallingIntent(this, passDataModel, selectedFlightID, selectedTerm,
+                            flightPriceModel),
+                    REQUEST_CODE_BOOKING)
         } else {
             startActivityForResult(FlightSearchReturnActivity
-                    .getCallingIntent(this, passDataViewModel, selectedFlightID, selectedTerm,
-                            isBestPairing, flightPriceViewModel, isCombineDone),
+                    .getCallingIntent(this, passDataModel, selectedFlightID, selectedTerm,
+                            isBestPairing, flightPriceModel, isCombineDone),
                     REQUEST_CODE_RETURN)
         }
     }
 
-    override fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataViewModel) {
-        passDataViewModel.departureAirport = flightSearchParams.departureAirport
-        passDataViewModel.arrivalAirport = flightSearchParams.arrivalAirport
-        passDataViewModel.isOneWay = flightSearchParams.isOneWay
-        passDataViewModel.departureDate = flightSearchParams.departureDate
-        passDataViewModel.returnDate = flightSearchParams.returnDate
-        passDataViewModel.flightPassengerViewModel = flightSearchParams.flightPassengerViewModel
-        passDataViewModel.flightClass = flightSearchParams.flightClass
+    override fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataModel) {
+        passDataModel.departureAirport = flightSearchParams.departureAirport
+        passDataModel.arrivalAirport = flightSearchParams.arrivalAirport
+        passDataModel.isOneWay = flightSearchParams.isOneWay
+        passDataModel.departureDate = flightSearchParams.departureDate
+        passDataModel.returnDate = flightSearchParams.returnDate
+        passDataModel.flightPassengerViewModel = flightSearchParams.flightPassengerViewModel
+        passDataModel.flightClass = flightSearchParams.flightClass
 
         if (isReturnPage()) {
             val intent = Intent()
-            intent.putExtra(EXTRA_PASS_DATA, passDataViewModel)
+            intent.putExtra(EXTRA_PASS_DATA, passDataModel)
             FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
         } else {
             if (fragment is FlightSearchFragment) {
                 (fragment as FlightSearchFragment).flightSearchPresenter
                         .attachView(fragment as FlightSearchFragment)
-                (fragment as FlightSearchFragment).setSearchPassData(passDataViewModel)
+                (fragment as FlightSearchFragment).setSearchPassData(passDataModel)
                 (fragment as FlightSearchFragment).refreshData()
             }
         }
@@ -275,9 +267,9 @@ open class FlightSearchActivity : BaseFlightActivity(),
         private const val REQUEST_CODE_BOOKING = 10
         private const val REQUEST_CODE_RETURN = 11
 
-        fun getCallingIntent(context: Context, passDataViewModel: FlightSearchPassDataViewModel): Intent {
+        fun getCallingIntent(context: Context, passDataModel: FlightSearchPassDataModel): Intent {
             val intent = Intent(context, FlightSearchActivity::class.java)
-            intent.putExtra(EXTRA_PASS_DATA, passDataViewModel)
+            intent.putExtra(EXTRA_PASS_DATA, passDataModel)
             return intent
         }
     }

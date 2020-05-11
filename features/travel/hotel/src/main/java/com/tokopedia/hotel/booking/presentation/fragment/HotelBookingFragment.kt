@@ -23,9 +23,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
@@ -35,12 +35,14 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
+import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity.Companion.HOTEL_BOOKING_SCREEN_NAME
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -71,6 +73,9 @@ class HotelBookingFragment : HotelBaseFragment() {
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
+
     lateinit var hotelCart: HotelCart
     var hotelBookingPageModel = HotelBookingPageModel()
     var promoCode = ""
@@ -87,6 +92,8 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_CHECKOUT)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -115,7 +122,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                     showErrorState(it.throwable)
                 }
             }
+            stopTrace()
         })
+
+        bookingViewModel.tokopointSumCouponResult.observe(this, androidx.lifecycle.Observer { renderSumCoupon(it) })
 
         bookingViewModel.hotelCheckoutResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
@@ -174,6 +184,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
         bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        bookingViewModel.getTokopointsSumCoupon(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_tokopoints_sum_coupon))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -186,14 +197,6 @@ class HotelBookingFragment : HotelBaseFragment() {
                         hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
                         renderContactData()
                     }
-                }
-            }
-
-            REQUEST_CODE_ADD_EMAIL -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    activity?.recreate()
-                } else {
-                    activity?.finish()
                 }
             }
 
@@ -220,7 +223,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
                                 }
                                 TickerCheckoutView.State.ACTIVE -> {
-                                    trackingHotelUtil.hotelApplyPromo(promoCode)
+                                    trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
                                     setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                                             itemPromoData?.title.toEmptyStringIfNull(),
                                             itemPromoData?.description.toEmptyStringIfNull())
@@ -259,7 +262,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         booking_button.setOnClickListener { onBookingButtonClicked() }
     }
 
-    fun initGuestInfoEditText() {
+    private fun initGuestInfoEditText() {
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
                     arrayListOf(), object : TravelContactArrayAdapter.ContactArrayListener {
@@ -383,10 +386,6 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun setupContactDetail(cart: HotelCartData) {
-        // If user email in cart.contact is empty, force user to add email
-        if (cart.contact.email.isEmpty()) {
-            navigateToAddEmailPage()
-        }
 
         // Check if contact data is empty
         if (hotelBookingPageModel.contactData.isEmpty() || hotelBookingPageModel.contactData.email.isEmpty()) {
@@ -462,6 +461,10 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
+    private fun renderSumCoupon(couponSum: String) {
+        booking_pay_now_promo_ticker.counterCoupons = couponSum
+    }
+
     private fun setupPayNowPromoTicker(cart: HotelCart) {
         if (cart.property.rooms.isNotEmpty() && cart.property.isDirectPayment) {
             booking_pay_now_promo_container.visibility = View.VISIBLE
@@ -471,11 +474,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                 setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                         cart.appliedVoucher.titleDescription,
                         cart.appliedVoucher.message)
-                trackingHotelUtil.hotelApplyPromo(promoCode)
+                trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
             } else {
-                setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                        "",
-                        "")
+                setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
             }
 
             booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
@@ -610,8 +611,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
-            trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName, roomCount, guestCount,
-                    hotelBookingPageModel.isForOtherGuest == 0)
+            trackingHotelUtil.hotelClickNext(context, hotelCart, destinationType, destinationName, roomCount, guestCount,
+                    hotelBookingPageModel.isForOtherGuest == 0, HOTEL_BOOKING_SCREEN_NAME)
 
             hotelBookingPageModel.promoCode = promoCode
 
@@ -665,8 +666,11 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun getCancelVoucherQuery(): String = GraphqlHelper.loadRawString(resources,
             com.tokopedia.promocheckout.common.R.raw.promo_checkout_flight_cancel_voucher)
 
-    private fun navigateToAddEmailPage() {
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL), REQUEST_CODE_ADD_EMAIL)
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring?.stopTrace()
+            isTraceStop = true
+        }
     }
 
     companion object {
@@ -679,7 +683,6 @@ class HotelBookingFragment : HotelBaseFragment() {
         const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
         const val REQUEST_CODE_CONTACT_DATA = 104
         const val REQUEST_CODE_CHECKOUT = 105
-        const val REQUEST_CODE_ADD_EMAIL = 106
         const val TAG_HOTEL_CANCELLATION_POLICY = "hotel_cancellation_policy"
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val TAG_HOTEL_IMPORTANT_NOTES = "hotel_important_notes"

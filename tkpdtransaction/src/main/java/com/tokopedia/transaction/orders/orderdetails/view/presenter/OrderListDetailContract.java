@@ -107,15 +107,15 @@ public interface OrderListDetailContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream);
+        void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
 
         void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
         List<ActionButton> getActionList();
 
-        void onBuyAgainAllItems(String eventActionLabel);
+        void onBuyAgainAllItems(String eventActionLabel, String statusCode);
 
-        void onBuyAgainItems(List<Items> items, String eventActionLabel);
+        void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
 
         void assignInvoiceDataTo(Intent intent);
 
