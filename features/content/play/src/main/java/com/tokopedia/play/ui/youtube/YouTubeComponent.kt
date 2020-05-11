@@ -14,6 +14,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -31,6 +32,8 @@ open class YouTubeComponent(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container, fragmentManager)
+
+    private var isPlaying: Boolean = false
 
     init {
         scope.launch(dispatchers.immediate) {
@@ -88,6 +91,23 @@ open class YouTubeComponent(
         uiView.release()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        isPlaying = uiView.isPlaying()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        if (isPlaying) scope.launch {
+            delay(YOUTUBE_DELAY)
+            uiView.play()
+        }
+    }
+
     protected open fun initView(container: ViewGroup, fragmentManager: FragmentManager) =
             YouTubeView(container, fragmentManager, this)
+
+    companion object {
+        private const val YOUTUBE_DELAY = 1000L
+    }
 }

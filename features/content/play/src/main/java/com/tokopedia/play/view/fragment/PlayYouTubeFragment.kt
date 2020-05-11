@@ -18,6 +18,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.youtube.YouTubeComponent
 import com.tokopedia.play.ui.youtube.interaction.YouTubeInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
@@ -130,7 +131,7 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
 
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(

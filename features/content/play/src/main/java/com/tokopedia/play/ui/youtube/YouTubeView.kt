@@ -124,6 +124,14 @@ class YouTubeView(
         youTubePlayer?.setFullscreen(isFullscreen)
     }
 
+    internal fun isPlaying(): Boolean {
+        return youTubePlayer?.isPlaying ?: false
+    }
+
+    internal fun play() {
+        youTubePlayer?.play()
+    }
+
     private fun playYouTubeFromId(youtubeId: String) {
         youTubePlayer?.loadVideo(youtubeId)
     }
