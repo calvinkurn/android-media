@@ -202,7 +202,8 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         startNetworkMonitoring()
         playViewModel.getChannelInfo(channelId)
         onInterceptSystemUiVisibilityChanged()
-        requireView().post {
+        scope.launch {
+            delay(200)
             registerKeyboardListener(requireView())
         }
     }

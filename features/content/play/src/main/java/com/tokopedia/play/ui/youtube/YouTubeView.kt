@@ -47,7 +47,6 @@ class YouTubeView(
         }
 
         override fun onLoaded(videoId: String?) {
-            youTubePlayer?.play()
         }
 
         override fun onVideoEnded() {
@@ -126,7 +125,7 @@ class YouTubeView(
     }
 
     private fun playYouTubeFromId(youtubeId: String) {
-        youTubePlayer?.cueVideo(youtubeId)
+        youTubePlayer?.loadVideo(youtubeId)
     }
 
     private fun initYouTubePlayer(player: YouTubePlayer) : YouTubePlayer {

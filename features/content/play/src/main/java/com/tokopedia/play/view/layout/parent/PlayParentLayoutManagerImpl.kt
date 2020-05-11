@@ -61,6 +61,7 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = true
+            flYouTube.isClickable = true
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -68,6 +69,7 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
+            flYouTube.isClickable = false
         }
     }
     private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
@@ -76,6 +78,7 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = false
+            flYouTube.isClickable = true
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -83,6 +86,7 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
+            flYouTube.isClickable = false
         }
     }
 
