@@ -84,7 +84,7 @@ class DataManager @Inject constructor(
                 putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
             }
         }
-        
+
     }
 
 }
