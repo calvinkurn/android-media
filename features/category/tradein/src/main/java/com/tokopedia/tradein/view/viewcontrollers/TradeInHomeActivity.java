@@ -153,14 +153,17 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
             notElligibleText = R.string.not_elligible_money_in;
-            tncStringId = R.string.money_in_tnc;
+            tncUrl = MONEYIN_TNC_URL;
             category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         } else {
             closeButtonText = R.string.go_to_product_details;
             notElligibleText = R.string.not_elligible;
-            tncStringId = R.string.tradein_tnc;
+            tncUrl = TRADEIN_TNC_URL;
         }
         mTvGoToProductDetails.setText(closeButtonText);
+        mTvGoToProductDetails.setOnClickListener(v -> {
+            finish();
+        });
         typographyImeiHelp.setOnClickListener(v -> {
             TradeInImeiHelpBottomSheet tradeInImeiHelpBottomSheet = TradeInImeiHelpBottomSheet.Companion.newInstance();
             tradeInImeiHelpBottomSheet.show(getSupportFragmentManager(), "");
@@ -377,11 +380,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
-    protected Fragment getTncFragmentInstance(int TncResId) {
-        return TnCFragment.getInstance(TncResId);
-    }
-
-    @Override
     protected int getLayoutRes() {
         return R.layout.layout_activity_tradeinhome;
     }
@@ -444,7 +442,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(@NotNull View widget) {
-                showTnC(tncStringId);
+                showTnC(tncUrl);
             }
         };
         SpannableString spannableString = new SpannableString(getString(messageStringId));
@@ -474,6 +472,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         } else if (requestCode == LOGIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK)
                 tradeInHomeViewModel.checkLogin();
+            else
+                finish();
         }
     }
 

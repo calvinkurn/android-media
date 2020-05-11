@@ -6,9 +6,8 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
@@ -50,10 +49,10 @@ open class VideoLoadingComponent(
     protected open fun initView(container: ViewGroup) =
             VideoLoadingView(container)
 
-    private fun handleVideoStateChanged(state: TokopediaPlayVideoState) {
+    private fun handleVideoStateChanged(state: PlayVideoState) {
         when (state) {
-            TokopediaPlayVideoState.Buffering -> uiView.show()
-            TokopediaPlayVideoState.Playing, TokopediaPlayVideoState.Ended, TokopediaPlayVideoState.NoMedia, TokopediaPlayVideoState.Pause -> uiView.hide()
+            PlayVideoState.Buffering -> uiView.show()
+            PlayVideoState.Playing, PlayVideoState.Ended, PlayVideoState.NoMedia, PlayVideoState.Pause -> uiView.hide()
         }
     }
 }

@@ -27,6 +27,10 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
@@ -206,7 +210,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeSimilarSearchLiveData()
         observeRouteToLoginEventLiveData()
         observeUpdateWishlistOriginalProductEventLiveData()
-        observeWishlistSimilarProductEventLiveData()
         observeAddWishlistEventLiveData()
         observeRemoveWishlistEventLiveData()
         observeAddToCartEventLiveData()
@@ -300,12 +303,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun observeUpdateWishlistOriginalProductEventLiveData() {
         similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             originalProductView?.updateWishlistStatus(it)
-        })
-    }
-
-    private fun observeWishlistSimilarProductEventLiveData() {
-        similarSearchViewModel?.getUpdateWishlistSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            similarSearchAdapter?.updateSimilarProductItemWishlistStatus(it)
         })
     }
 
@@ -431,14 +428,27 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         SimilarSearchTracking.trackEventClickSimilarProduct(getOriginalProductId(), screenName, similarProductItemAsObjectDataLayer)
     }
 
-    override fun onItemWishlistClicked(productId: String, isWishlisted: Boolean) {
-        similarSearchViewModel?.onViewToggleWishlistSimilarProduct(productId, isWishlisted)
+    override fun onThreeDotsClicked(similarProductItem: Product, adapterPosition: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = similarProductItem.isWishlisted,
+                        productId = similarProductItem.id
+                )
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             REQUEST_CODE_GO_TO_PRODUCT_DETAIL -> handleResultFromProductDetail(data)
         }
+
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                similarSearchViewModel?.onReceiveProductCardOptionsWishlistResult(productCardOptionsModel)
+            }
+        })
     }
 
     private fun handleResultFromProductDetail(data: Intent?) {

@@ -7,10 +7,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
+import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
@@ -28,7 +31,9 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
+import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -61,6 +66,7 @@ class ProductManageViewModel @Inject constructor(
     private val deleteProductUseCase: DeleteProductUseCase,
     private val multiEditProductUseCase: MultiEditProductUseCase,
     private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val editProductVariantUseCase: EditProductVariantUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -98,6 +104,10 @@ class ProductManageViewModel @Inject constructor(
         get() = _selectedFilterAndSort
     val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
+    val editVariantPriceResult: LiveData<Result<EditVariantResult>>
+        get() = _editVariantPriceResult
+    val editVariantStockResult: LiveData<Result<EditVariantResult>>
+        get() = _editVariantStockResult
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -113,6 +123,8 @@ class ProductManageViewModel @Inject constructor(
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
+    private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
+    private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -308,6 +320,52 @@ class ProductManageViewModel @Inject constructor(
         hideProgressDialog()
     }
 
+    fun editVariantsPrice(result: EditVariantResult) {
+        showProgressDialog()
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                val shopId = userSessionInterface.shopId
+                val variantInputParam = mapResultToUpdateParam(shopId, result)
+                val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
+                editProductVariantUseCase.execute(requestParams).productUpdateV3Data
+            }
+
+            if(response.isSuccess) {
+                _editVariantPriceResult.value = Success(result)
+            } else {
+                val message = response.header.errorMessage.lastOrNull().orEmpty()
+                _editVariantPriceResult.value = Fail(MessageErrorException(message))
+            }
+            hideProgressDialog()
+        }) {
+            _editVariantPriceResult.value = Fail(it)
+            hideProgressDialog()
+        }
+    }
+
+    fun editVariantsStock(result: EditVariantResult) {
+        showProgressDialog()
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                val shopId = userSessionInterface.shopId
+                val variantInputParam = mapResultToUpdateParam(shopId, result)
+                val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
+                editProductVariantUseCase.execute(requestParams).productUpdateV3Data
+            }
+
+            if(response.isSuccess) {
+                _editVariantStockResult.value = Success(result)
+            } else {
+                val message = response.header.errorMessage.lastOrNull().orEmpty()
+                _editVariantStockResult.value = Fail(MessageErrorException(message))
+            }
+            hideProgressDialog()
+        }) {
+            _editVariantStockResult.value = Fail(it)
+            hideProgressDialog()
+        }
+    }
+
     fun getFreeClaim(graphqlQuery: String, shopId: String) {
         val requestParams = TopAdsGetShopDepositGraphQLUseCase.createRequestParams(graphqlQuery, shopId)
         topAdsGetShopDepositGraphQLUseCase.execute(requestParams,
@@ -391,10 +449,18 @@ class ProductManageViewModel @Inject constructor(
                     val list = arrayListOf<Boolean>()
                     list.addAll(filters.filterShownState)
                     list[list.size - 1] = true
-                    filters.copy(filterOptions = selectedFilter, filterShownState = list, selectedFilterCount = countFilter(selectedFilter))
+
+                    var selectedFilterCount = countSelectedFilter(selectedFilter)
+                    _selectedFilterAndSort.value?.sortOption?.let { selectedFilterCount++ }
+
+                    filters.copy(
+                        filterOptions = selectedFilter,
+                        filterShownState = list,
+                        selectedFilterCount = selectedFilterCount
+                    )
                 }
             } else {
-                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false), countFilter(selectedFilter))
+                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
             }
         }
     }
@@ -443,18 +509,5 @@ class ProductManageViewModel @Inject constructor(
 
     private fun hideProgressDialog() {
         _viewState.value = HideProgressDialog
-    }
-
-    private fun countFilter(filterOptions: List<FilterOption>?): Int {
-        var totalCount = 0
-        filterOptions?.forEach {
-            when(it) {
-                is FilterOption.FilterByCondition -> totalCount++
-                is FilterOption.FilterByCategory -> totalCount += it.categoryIds.size
-                is FilterOption.FilterByMenu -> totalCount += it.menuIds.size
-                else -> totalCount += 0
-            }
-        }
-        return totalCount
     }
 }

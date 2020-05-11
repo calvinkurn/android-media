@@ -1,0 +1,14 @@
+query CouponFilter($slug: String) {
+  filter: tokopointsCouponFilter(slug: $slug) {
+    resultStatus {
+      code
+      status
+      message
+    }
+    categories {
+      id
+      name
+      isSelected
+    }
+  }
+}

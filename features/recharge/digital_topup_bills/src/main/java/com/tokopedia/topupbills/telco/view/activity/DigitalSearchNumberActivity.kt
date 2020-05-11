@@ -3,9 +3,11 @@ package com.tokopedia.topupbills.telco.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Parcelable
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment
 import java.util.*
 
@@ -13,7 +15,7 @@ import java.util.*
  * @author rizkyfadillah on 10/4/2017.
  */
 
-class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity() {
+class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasComponent<DigitalTopupComponent> {
 
     override fun getScreenName(): String? {
         return DigitalSearchNumberActivity::class.java.simpleName
@@ -22,6 +24,10 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity() {
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DigitalSearchNumberFragment
                 .newInstance(clientNumberType, number, numberList)
+    }
+
+    override fun getComponent(): DigitalTopupComponent {
+        return DigitalTopupInstance.getComponent(application)
     }
 
     companion object {
