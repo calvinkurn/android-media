@@ -133,8 +133,10 @@ import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
+import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutine
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -1027,10 +1029,21 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private val stickyContent: Unit
-        private get() {
-            val isShowSticky = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
-            if (isShowSticky && !userSession?.isLoggedIn) viewModel.getStickyContent()
+        private get(){
+            val stickyContentWeave: WeaveInterface = object : WeaveInterface {
+                @NotNull
+                override fun execute(): Any {
+                    return executeGetStickyContent()
+                }
+            }
+            Weaver.executeWeaveCoRoutineNow(stickyContentWeave)
         }
+
+    private fun executeGetStickyContent():Boolean{
+        val isShowSticky = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+        if (isShowSticky && !userSession?.isLoggedIn) viewModel.getStickyContent()
+        return true
+    }
 
     private fun hideLoading() {
         refreshLayout.isRefreshing = false
