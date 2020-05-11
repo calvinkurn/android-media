@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.kotlin.extensions.view.intentIntExtra
+import com.tokopedia.kotlin.extensions.view.getIntIntentExtra
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
@@ -38,7 +38,7 @@ class VoucherDetailActivity : BaseActivity() {
         }
     }
 
-    private val pageType by intentIntExtra(PAGE_TYPE, DETAIL_PAGE)
+    private val pageType by getIntIntentExtra(PAGE_TYPE, DETAIL_PAGE)
 
     override fun getScreenName(): String = this::class.java.simpleName
 

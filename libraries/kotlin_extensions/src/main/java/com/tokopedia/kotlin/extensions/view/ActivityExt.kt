@@ -77,7 +77,7 @@ fun Activity.setStatusBarColor(color: Int) {
     window.statusBarColor = color;
 }
 
-fun Activity.intentIntExtra(key: String, defValue: Int): Lazy<Int> {
+fun Activity.getIntIntentExtra(key: String, defValue: Int): Lazy<Int> {
     return lazy {
         intent?.getIntExtra(key, defValue) ?: defValue
     }
