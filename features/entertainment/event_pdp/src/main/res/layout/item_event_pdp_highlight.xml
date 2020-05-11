@@ -72,7 +72,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_300"
+        android:background="@color/Neutral_N100"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
