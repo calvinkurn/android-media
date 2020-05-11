@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -42,7 +41,7 @@ import com.tokopedia.atc_variant.view.presenter.NormalCheckoutViewModel
 import com.tokopedia.atc_variant.view.viewmodel.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.design.component.ToasterError
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
@@ -115,6 +114,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     var layoutName: String = ""
     @ProductAction
     var action: Int = ATC_AND_BUY
+    var atcFromExternalSource: String = ""
 
     var selectedProductInfo: ProductInfo? = null
     var originalProduct: ProductInfoAndVariant? = null
@@ -158,7 +158,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                            customEventLabel: String?,
                            customEventAction: String?,
                            tradeInParams: TradeInParams?,
-                           layoutName: String? = ""): NormalCheckoutFragment {
+                           layoutName: String? = "",
+                           atcFromExternalSource: String? = null): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
@@ -187,6 +188,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, customEventLabel)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, customEventAction)
                     putString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, layoutName)
+                    if (atcFromExternalSource != null) {
+                        putString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, atcFromExternalSource)
+                    }
                 }
             }
             return fragment
@@ -518,11 +522,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             ErrorHandler.getErrorMessage(context, throwable)
         }
         activity?.run {
-            val snackbar = ToasterError.make(findViewById(android.R.id.content), message)
-            if (onRetry != null) {
-                snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
-            }
-            snackbar.show()
+            Toaster.make(view!!, message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener {
+                onRetry?.invoke(it)
+            })
         }
     }
 
@@ -551,6 +553,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
             isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
             layoutName = argument.getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, "")
+            atcFromExternalSource = argument.getString(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_OTHERS)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -1100,6 +1103,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartRequestParams.attribution = trackerAttribution ?: ""
             addToCartRequestParams.listTracker = trackerListName ?: ""
             addToCartRequestParams.warehouseId = selectedWarehouseId
+            addToCartRequestParams.atcFromExternalSource = atcFromExternalSource
             addToCartRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
             addToCartRequestParams.category = selectedProductInfo?.category?.name ?: ""
             addToCartRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
@@ -1293,8 +1297,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     override fun getScreenName(): String? = null
 
     override fun showToasterError(message: String?) {
-        ToasterError.make(view, message
-                ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, message ?: getString(R.string.default_request_error_unknown),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun navigateCheckoutToThankYouPage(appLink: String) {

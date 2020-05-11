@@ -249,10 +249,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
 
-    // ChangePPasswordActivity
+    // ChangePasswordActivity
     // tokopedia-android-internal://global/change-password
     @JvmField
     val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
+
+    // HasPasswordActivity
+    // tokopedia-android-internal://global/has-password
+    @JvmField
+    val HAS_PASSWORD = "$INTERNAL_GLOBAL/has-password"
 
     // ChangePinActivity
     // tokopedia-android-internal://global/change-pin
@@ -439,4 +444,7 @@ object ApplinkConstInternalGlobal {
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
     val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
 
+    //ManageNotificationActivity
+    @JvmField
+    val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
 }

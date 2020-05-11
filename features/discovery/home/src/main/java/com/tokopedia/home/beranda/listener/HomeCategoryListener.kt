@@ -25,9 +25,9 @@ interface HomeCategoryListener {
 
     val eggListener: HomeEggListener
 
-    val trackingQueue: TrackingQueue
+    var trackingQueue: TrackingQueue?
 
-    val childFragmentManager: FragmentManager
+    val childsFragmentManager: FragmentManager
 
     val windowHeight: Int
 

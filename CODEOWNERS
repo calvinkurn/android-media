@@ -9,6 +9,7 @@
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-darth
 /features/category/       				                @tokopedia/minion-darth
+/features/discovery2/       				            @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeper-analytic
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -67,9 +68,20 @@
 /features/merchant/shop_etalase_picker/                 @tokopedia/minion-stuart
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
+
+/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_common/            @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-skywalker
+/features/top_ads/top_ads_autoads/                      @tokopedia/minion-skywalker
+/features/top_ads/top_ads_create/                       @tokopedia/minion-skywalker
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
+
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
 /features/merchant/variant_common/                      @tokopedia/minion-stuart
 
+/features/merchant/seller_home/                         @tokopedia/minion-stuart
+/features/merchant/seller_home_drawer/                  @tokopedia/minion-stuart
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
@@ -95,6 +107,7 @@
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
 /features/entertainment/event_home                 		@tokopedia/minion-mark
 /features/entertainment/event_search        			@tokopedia/minion-mark
+/features/entertainment/event_pdp         			    @tokopedia/minion-mark
 
 /features/travel/flight_orderlist                       @tokopedia/minion-mark
 /features/travel/flight/                                @tokopedia/minion-mark
@@ -119,6 +132,7 @@
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
 /features/logistic/logisticorder/                    	@tokopedia/minion-bob
+/features/logistic/dropoff/                    	        @tokopedia/minion-bob
 /features/promo/promo_checkout/                 		@tokopedia/minion-bob
 /features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob

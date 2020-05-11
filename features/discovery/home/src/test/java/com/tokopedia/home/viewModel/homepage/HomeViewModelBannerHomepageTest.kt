@@ -54,6 +54,47 @@ class HomeViewModelBannerHomepageTest : Spek({
         }
     }
 
+    Feature("Get Initial Data and try click topads"){
+        lateinit var homeViewModel: HomeViewModel
+        createHomeViewModelTestInstance()
+
+        val getHomeUseCase by memoized<HomeUseCase>()
+        Scenario("User doesn't have cache, and must get data from network. And should available on view"){
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+            val bannerDataModel = HomepageBannerDataModel()
+            val slidesModel = BannerSlidesModel()
+            bannerDataModel.slides = listOf(
+                    slidesModel
+            )
+            Given("Banner data "){
+                getHomeUseCase.givenGetHomeDataReturn(
+                        HomeDataModel(
+                                list = listOf(bannerDataModel)
+                        )
+                )
+            }
+
+            Given("home viewmodel") {
+                homeViewModel = createHomeViewModel()
+                homeViewModel.homeLiveData.observeForever(observerHome)
+            }
+
+            Then("Expect channel updated") {
+                verifyOrder {
+                    // check on home data initial first channel is dynamic channel
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is HomepageBannerDataModel
+                    })
+                }
+                confirmVerified(observerHome)
+            }
+
+            When("Topads clicked"){
+                homeViewModel.onBannerClicked(slidesModel)
+            }
+        }
+    }
+
     Feature("Get update data"){
 
         lateinit var homeViewModel: HomeViewModel
