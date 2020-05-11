@@ -76,6 +76,11 @@ class RechargeCCFragment : BaseDaggerFragment() {
         activity?.let {
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
         }
+
+        if (savedInstanceState != null) {
+            checkoutPassDataState = saveInstanceManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
+                    DigitalCheckoutPassData::class.java, null)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -92,11 +97,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (savedInstanceState != null) {
-            checkoutPassDataState = saveInstanceManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
-                    DigitalCheckoutPassData::class.java, null)
-        }
 
         initializedViewModel()
         getDataBundle()
