@@ -1,0 +1,31 @@
+<resources>
+    <string name="seller_migration_bottom_sheet_button">Gunakan Tokopedia Seller</string>
+    <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan menggunakan Seller App &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+
+    <string name="seller_migration_generic_ticker_title">Lebih leluasa berjualan dengan Tokopedia Seller</string>
+    <string name="seller_migration_generic_ticker_content">Nikmati kendali penuh bertransaksi dengan fitur penjual di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="seller_migration_generic_bottom_sheet_title">Berjualan jadi lebih mudah dengan aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_generic_bottom_sheet_set_stock_description">Atur stok dan terima pesanan dengan cepat dan mudah.</string>
+    <string name="seller_migration_generic_bottom_sheet_reply_chat_description">Balas chat pembelimu di mana saja, kapan saja.</string>
+    <string name="seller_migration_generic_bottom_sheet_promotion_and_ads_description">Pasang promosi dan iklan untuk memajukan bisnismu.</string>
+
+    <string name="seller_migration_chat_ticker_title">Cepat balas chat di Tokopedia Seller</string>
+    <string name="seller_migration_chat_ticker_description">Kelola chat dari pembeli hanya di aplikasi Tokopedia Seller versi baru. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="seller_migration_chat_bottom_sheet_title">Balas chat jadi lebih mudah dengan Tokopedia Seller</string>
+    <string name="seller_migration_chat_bottom_sheet_title_second_page">Akses cepat untuk menjawab pertanyaan pembeli </string>
+    <string name="seller_migration_chat_bottom_sheet_first_page_description">Jawab semua pertanyaan dari pembeli langsung dari notifikasi chat di HP kamu.</string>
+    <string name="seller_migration_chat_bottom_sheet_second_page_description">Kamu bisa memantau jumlah chat masuk atau langsung balas chat pembeli di notifikasi.</string>
+
+    <string name="seller_migration_product_manage_ticker_title">Kelola stok langsung di Seller App</string>
+    <string name="seller_migration_product_manage_ticker_content">Penuhi permintaan pembeli dengan rutin cek ketersediaan stok produkmu. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="seller_migration_product_bottom_sheet_title">Tampilan baru pengaturan daftar produk di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_product_bottom_sheet_content">Kini kamu bisa langsung menambah stok produk, memasang pengingat stok, dan mengubah harga dengan mudah dan cepat.</string>
+
+    <string name="seller_migration_topads_ticker_title">Beragam fitur promosi di Tokopedia Seller</string>
+    <string name="seller_migration_topads_ticker_description">Jangkau pembeli dengan langsung kelola fitur promosi di aplikasi Tokopedia Seller. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
+    <string name="seller_migration_promo_bottom_sheet_title">Ada banyak pilihan fitur promosi di aplikasi Tokopedia Seller, lho!</string>
+    <string name="seller_migration_promo_bottom_sheet_title_second_page">Rutin pantau performa iklan dan promosi tokomu</string>
+    <string name="seller_migration_promo_bottom_sheet_content">Pilih jenis promosi yang sesuai strategi bisnismu atau gunakan rekomendasi dari kami agar lebih optimal beriklan.</string>
+    <string name="seller_migration_promo_bottom_sheet_content_second_page">Laporan performa iklan akan diperbarui secara berkala, agar kamu bisa mengatur strategi promosi untuk tingkatkan penjualan.</string>
+
+</resources>

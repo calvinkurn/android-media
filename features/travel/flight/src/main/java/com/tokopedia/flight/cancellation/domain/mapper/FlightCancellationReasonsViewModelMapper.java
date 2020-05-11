@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellation.domain.mapper;
 
 import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ public class FlightCancellationReasonsViewModelMapper {
     public FlightCancellationReasonsViewModelMapper() {
     }
 
-    public List<FlightCancellationReasonViewModel> transform(List<Reason> reasonList) {
-        List<FlightCancellationReasonViewModel> data = new ArrayList<>();
+    public List<FlightCancellationReasonModel> transform(List<Reason> reasonList) {
+        List<FlightCancellationReasonModel> data = new ArrayList<>();
 
         if (reasonList != null) {
             for (Reason reason : reasonList) {
@@ -30,8 +30,8 @@ public class FlightCancellationReasonsViewModelMapper {
         return data;
     }
 
-    public FlightCancellationReasonViewModel transform(Reason reason) {
-        FlightCancellationReasonViewModel data = new FlightCancellationReasonViewModel();
+    public FlightCancellationReasonModel transform(Reason reason) {
+        FlightCancellationReasonModel data = new FlightCancellationReasonModel();
 
         data.setId(reason.getId());
         data.setDetail(reason.getTitle());

@@ -1,6 +1,6 @@
 package com.tokopedia.core.common.category.data.source.cloud.api;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.common.category.constant.TkpdBaseURL;
 import com.tokopedia.core.common.category.data.source.cloud.model.CategoryVersionServiceModel;
 import com.tokopedia.core.common.category.data.source.cloud.model.CategoryServiceModel;
 
