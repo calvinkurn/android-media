@@ -3,16 +3,9 @@ package com.tokopedia.seller.common.logout.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
-import com.tokopedia.core.common.category.data.source.CategoryDataSource;
-import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
-import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.core.common.category.data.source.db.CategoryDB;
-import com.tokopedia.core.common.category.data.source.db.CategoryDao;
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.common.category.domain.interactor.ClearCategoryCacheUseCase;
-import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
@@ -35,7 +28,7 @@ import retrofit2.Retrofit;
  */
 
 @TkpdSellerLogoutScope
-@Module
+@Module(includes = {CategoryPickerModule.class})
 public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
@@ -66,24 +59,6 @@ public class TkpdSellerLogoutModule {
     @Provides
     ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
         return productDraftDB.getProductDraftDao();
-    }
-
-    @TkpdSellerLogoutScope
-    @Provides
-    CategoryDao provideCategoryDao(@ApplicationContext Context context){
-        return CategoryDB.getInstance(context).getCategoryDao();
-    }
-
-    @TkpdSellerLogoutScope
-    @Provides
-    CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource, CategoryDataSource categoryDataSource, FetchCategoryDataSource fetchCategoryDataSource){
-        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
-    }
-
-    @TkpdSellerLogoutScope
-    @Provides
-    HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
-        return retrofit.create(HadesCategoryApi.class);
     }
 
     @TkpdSellerLogoutScope

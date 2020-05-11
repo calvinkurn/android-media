@@ -52,8 +52,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
@@ -88,8 +86,6 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -140,6 +136,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView statusValue;
     private TextView conditionalInfoText;
     private TextView invoiceView;
+    private ImageView invoiceCopy;
     private TextView lihat;
     private TextView detailLabel;
     private TextView additionalText;
@@ -210,6 +207,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
+        invoiceCopy = view.findViewById(R.id.iv_copy_invoice);
         statusLihat = view.findViewById(R.id.lihat_status);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
@@ -314,6 +312,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
+        invoiceCopy.setOnClickListener(view -> {
+            ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
+            clipboard.setPrimaryClip(clip);
+            Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+        });
         if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
@@ -357,7 +361,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         try {
                             myClip = ClipData.newPlainText("text", detail.value());
                             myClipboard.setPrimaryClip(myClip);
-                            ToasterNormal.showClose(getActivity(), getContext().getResources().getString(R.string.awb_number_copied));
+                            Toaster.INSTANCE.make(getView(), getContext().getResources().getString(R.string.awb_number_copied),
+                                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.close), v->{});
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -522,17 +527,19 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void showSucessMessage(String message) {
-        ToasterNormal.show(getActivity(), message);
+        Toaster.INSTANCE.make(getView(), message,
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override
     public void showErrorMessage(String message) {
-        ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {});
     }
 
     @Override
@@ -582,7 +589,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order");
+                        presenter.onBuyAgainAllItems(" - order", status.status());
                     }
                 });
             } else {
@@ -616,7 +623,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order");
+                            presenter.onBuyAgainAllItems(" - order", status.status());
                         }
                     });
                 } else {
@@ -713,12 +720,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                             getArguments().getString(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya penjual")) {
-                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
-                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
                                 } else {
                                     if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
+                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
                                         startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
                                     } else
                                         RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
@@ -735,6 +739,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
                                 RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
                             } else {
+                                if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
+                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
+                                }
                                 dialog.dismiss();
                             }
                         }

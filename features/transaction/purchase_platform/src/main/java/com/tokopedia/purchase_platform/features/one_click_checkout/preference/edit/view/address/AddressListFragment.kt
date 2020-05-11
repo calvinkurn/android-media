@@ -75,6 +75,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         const val REQUEST_CREATE = 2
 
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
+        const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
 
         private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val ARG_IS_EDIT = "is_edit"
@@ -209,6 +210,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
+                setShippingParam()
                 parent.goBack()
             }
         }
@@ -256,6 +258,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (saveAddressDataModel != null) {
                 viewModel.selectedId = saveAddressDataModel.id.toString()
+                viewModel.destinationLongitude = saveAddressDataModel.longitude
+                viewModel.destinationLatitude = saveAddressDataModel.latitude
+                viewModel.destinationPostalCode = saveAddressDataModel.postalCode
+                viewModel.destinationDistrict = saveAddressDataModel.districtId.toString()
                 performSearch("")
                 goToNextStep()
             }
@@ -315,6 +321,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     private fun goToPickLocation(requestCode: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
         intent.putExtra(EXTRA_IS_FULL_FLOW, true)
+        intent.putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
         intent.putExtra(KERO_TOKEN, viewModel.token)
         startActivityForResult(intent, requestCode)
     }
@@ -326,7 +333,23 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
+                setShippingParam()
                 parent.addFragment(ShippingDurationFragment())
+            }
+        }
+    }
+
+    private fun setShippingParam() {
+        val parent = activity
+        if(parent is PreferenceEditParent) {
+            val shippingParam = parent.getShippingParam()
+            if (shippingParam != null) {
+                shippingParam.destinationDistrictId = viewModel.destinationDistrict
+                shippingParam.addressId = viewModel.selectedId.toInt()
+                shippingParam.destinationLatitude = viewModel.destinationLatitude
+                shippingParam.destinationLongitude = viewModel.destinationLongitude
+                shippingParam.destinationPostalCode = viewModel.destinationPostalCode
+                shippingParam?.let { parent.setShippingParam(it) }
             }
         }
     }

@@ -1,45 +1,41 @@
-query voucherGameProductDetail($menuID: Int!, $operator: String!){
-  rechargeCatalogProductInput(menuID: $menuID, platformID: 5, operator: $operator) {
+query voucherGameProductDetail($menuID: Int!, $operator: String!) {
+  rechargeCatalogDynamicInput(menuID: $menuID, platformID: 5, operator: $operator) {
     needEnquiry
     isShowingProduct
-    enquiryFields {
-      id
+    dynamicFields {
       param_name
       name
-      style
       text
+      style
       placeholder
       help
       data_collections {
-        value
-      }
-      validations {
-        rule
-        title
-      }
-    }
-    product {
-      name
-      text
-      dataCollections {
         name
         products {
           id
           attributes {
-            desc
             price
             price_plain
             promo {
-              id
-              new_price
+                id
+                new_price
             }
-            product_labels
+            desc
             detail
             detail_compact
+            info
             detail_url
             detail_url_text
+            category_id
+            product_labels
+            product_descriptions
+            hide_from_subscription
           }
         }
+      }
+      validations {
+        rule
+        title
       }
     }
   }

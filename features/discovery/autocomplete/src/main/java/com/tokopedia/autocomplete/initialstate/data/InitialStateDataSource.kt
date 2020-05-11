@@ -4,7 +4,6 @@ import com.tokopedia.autocomplete.initialstate.InitialStateData
 import com.tokopedia.autocomplete.initialstate.InitialStateMapper
 import com.tokopedia.autocomplete.network.AutocompleteCache
 import com.tokopedia.cachemanager.CacheManager
-import retrofit2.Response
 import rx.Observable
 import java.util.concurrent.TimeUnit
 

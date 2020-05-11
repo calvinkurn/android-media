@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
@@ -35,6 +36,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_ORDER_DETAIL
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
@@ -78,6 +80,11 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
+    private var isCrossSellingLoaded = false
+    private var isOrderDetailLoaded = false
+
     @Inject
     lateinit var trackingCrossSellUtil: TrackingCrossSellUtil
 
@@ -92,6 +99,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_ORDER_DETAIL)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -127,6 +136,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     loadingState.visibility = View.GONE
                 }
             }
+            isOrderDetailLoaded = true
+            stopTrace()
         })
 
         orderDetailViewModel.crossSellData.observe(this, Observer {
@@ -135,6 +146,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 is Fail -> {
                 }
             }
+            isCrossSellingLoaded = true
+            stopTrace()
         })
     }
 
@@ -478,6 +491,15 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_KEY_ORDER_ID, orderId)
         outState.putString(SAVED_KEY_ORDER_CATEGORY, orderCategory)
+    }
+
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            if (isOrderDetailLoaded && isCrossSellingLoaded) {
+                performanceMonitoring?.stopTrace()
+                isTraceStop = true
+            }
+        }
     }
 
     companion object {

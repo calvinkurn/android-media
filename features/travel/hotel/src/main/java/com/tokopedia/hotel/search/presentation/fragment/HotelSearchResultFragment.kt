@@ -16,10 +16,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
@@ -53,6 +56,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
 
     var searchDestinationName = ""
     var searchDestinationType = ""
@@ -97,6 +102,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_SEARCH)
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         searchResultviewModel = viewModelProvider.get(HotelSearchResultViewModel::class.java)
         arguments?.let {
@@ -120,6 +127,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError(it.throwable)
             }
+            stopTrace()
         })
     }
 
@@ -147,6 +155,13 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 sortMenu.setTitle(getString(R.string.hotel_bottomsheet_sort_title))
                 sortMenu.show(childFragmentManager, javaClass.simpleName)
             }
+        }
+    }
+
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring?.stopTrace()
+            isTraceStop = true
         }
     }
 

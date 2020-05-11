@@ -24,7 +24,7 @@ object NotificationAnalytics {
         val product = mapOf(
                 "name" to addToCart.productName,
                 "id" to addToCart.productId,
-                "price" to addToCart.productPrice,
+                "price" to addToCart.productPrice.toString(),
                 "brand" to addToCart.productBrand,
                 "category" to "",
                 "variant" to addToCart.productVariant,
@@ -32,9 +32,9 @@ object NotificationAnalytics {
                 "dimension79" to addToCart.shopId,
                 "dimension81" to addToCart.shopType,
                 "dimension80" to addToCart.shopName,
-                "dimension82" to addToCart.productPrice,
+                "dimension82" to "",
                 "dimension45" to cartId,
-                "dimension40" to ""
+                "dimension40" to "/pushnotif"
         )
 
         sendTracker(mapOf(

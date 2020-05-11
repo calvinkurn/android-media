@@ -24,10 +24,9 @@ class MoneyInPickupScheduleUseCaseTest {
     var rule = InstantTaskExecutorRule()
 
     private val tradeInRepository: TradeInRepository = mockk(relaxed = true)
-    val context: Context = mockk()
     private val resources: Resources = mockk()
 
-    private var moneyInPickupScheduleUseCase = spyk(MoneyInPickupScheduleUseCase(context, tradeInRepository))
+    private var moneyInPickupScheduleUseCase = spyk(MoneyInPickupScheduleUseCase(tradeInRepository))
 
     @Before
     @Throws(Exception::class)
@@ -51,10 +50,9 @@ class MoneyInPickupScheduleUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any())} returns responseData
 
-            moneyInPickupScheduleUseCase.getPickupScheduleOption()
+            moneyInPickupScheduleUseCase.getPickupScheduleOption(resources)
 
             coVerify { tradeInRepository.getGQLData(any(), ResponseData::class.java, any()) }
         }

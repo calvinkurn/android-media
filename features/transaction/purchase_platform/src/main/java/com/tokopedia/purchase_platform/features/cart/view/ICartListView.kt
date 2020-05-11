@@ -123,4 +123,6 @@ interface ICartListView : CustomerView {
     fun generateGeneralParamValidateUse() : ValidateUsePromoRequest
 
     fun resetRecentViewList()
+
+    fun sendATCTrackingURL(clickUrl: String)
 }

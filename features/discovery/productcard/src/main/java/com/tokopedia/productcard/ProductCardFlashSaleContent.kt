@@ -79,6 +79,7 @@ private fun ProductCardFlashSaleView.renderOutOfStockView(productCardModel: Prod
         outOfStockOverlay.visibility = View.VISIBLE
     } else {
         outOfStockOverlay.visibility = View.GONE
+        labelProductStatus?.hide()
     }
 }
 

@@ -47,14 +47,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
 
     //Base
     implementation project(rootProject.ext.features.onboarding)
     //Category
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
-    implementation project(rootProject.ext.features.tradeIn)
     //Content
     implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.profile)
@@ -83,18 +81,18 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
+    //Logistic
+    implementation project(rootProject.ext.features.dropOff)
     //Merchant
-    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.shopOpen)
     //Operational
-    implementation project(rootProject.ext.features.contactUs)
-    implementation project(rootProject.ext.features.chatbot)
+
     //Payment
     implementation project(rootProject.ext.features.paymentSetting)
     //Promo
     implementation project(rootProject.ext.features.tokopoints)
     //Salam
-    implementation project(rootProject.ext.features.umrah)
+
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.flight)
@@ -103,7 +101,6 @@ dependencies {
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.groupchat)
-    implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
@@ -116,4 +113,6 @@ dependencies {
     //Entertainment
     implementation project(rootProject.ext.features.eventHome)
     implementation project(rootProject.ext.features.eventSearch)
+    //Logistic
+    implementation project(rootProject.ext.features.logisticorder)
 }

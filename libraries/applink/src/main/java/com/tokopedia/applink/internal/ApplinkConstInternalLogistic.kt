@@ -38,4 +38,7 @@ object ApplinkConstInternalLogistic {
     @JvmField
     val DROPOFF_PICKER = "$INTERNAL_LOGISTIC/dropoff/"
 
+    @JvmField
+    val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/"
+
 }

@@ -63,6 +63,8 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
         }
 
+    val stringBlastId: String get() = blastId.toString()
+
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
                 replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,

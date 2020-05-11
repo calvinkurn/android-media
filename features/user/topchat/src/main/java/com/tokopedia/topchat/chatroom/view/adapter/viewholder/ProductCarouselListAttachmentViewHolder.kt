@@ -29,6 +29,7 @@ class ProductCarouselListAttachmentViewHolder(
 
     private fun initRecyclerView() {
         itemView.rv_product?.apply {
+            setHasFixedSize(true)
             adapter = this@ProductCarouselListAttachmentViewHolder.adapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

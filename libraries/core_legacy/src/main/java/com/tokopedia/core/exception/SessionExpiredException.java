@@ -8,10 +8,6 @@ import java.io.IOException;
 
 public class SessionExpiredException extends IOException {
 
-    public SessionExpiredException() {
-        super();
-    }
-
     public SessionExpiredException(String errorMessage) {
         super("Expiry Message : " + errorMessage);
     }
