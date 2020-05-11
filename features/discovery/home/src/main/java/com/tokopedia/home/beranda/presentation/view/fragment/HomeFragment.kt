@@ -283,6 +283,7 @@ class HomeFragment : BaseDaggerFragment(),
             irisAnalytics = getInstance(it)
             irisSession = IrisSession(it)
             remoteConfig = FirebaseRemoteConfigImpl(it)
+            homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
