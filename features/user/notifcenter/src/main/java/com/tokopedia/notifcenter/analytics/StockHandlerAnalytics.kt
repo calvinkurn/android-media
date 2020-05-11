@@ -90,6 +90,62 @@ class StockHandlerAnalytics {
         send(dataTracker)
     }
 
+    fun addToCardClicked(element: NotificationItemViewBean, userId: String, cartId: String) {
+        val eventName = "add_to_cart"
+        val eventCategory = "notif center"
+        val eventAction = "click on restock product ATC"
+        val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
+
+        val items = layerMapOf(
+                "item_name", element.getAtcProduct()?.name,
+                "item_id", element.getAtcProduct()?.productId,
+                "price", element.getAtcProduct()?.price,
+                "item_brand", "",
+                "item_category", "none / other",
+                "item_variant", element.getAtcProduct()?.variant,
+                "list", "/notifcenter",
+                "quantity", "1",
+                "dimension69", element.getAtcProduct()?.shop?.id?: "",
+                "dimension71", "",
+                "dimension70", element.getAtcProduct()?.shop?.name?: "",
+                "category_id", "",
+                "dimension42", cartId,
+                "dimension39", "/notif"
+        )
+
+        val dataTracker = layerMapOf(
+                KEY_EVENT_NAME, eventName,
+                KEY_EVENT_CATEGORY, eventCategory,
+                KEY_EVENT_ACTION, eventAction,
+                KEY_EVENT_LABEL, eventLabel,
+                KEY_USER_ID, userId,
+                KEY_EVENT_ITEMS, listOf(items)
+        )
+        send(dataTracker)
+    }
+
+    fun swipeRestockProductList(
+            notificationId: String,
+            productId: String,
+            userId: String,
+            shopId: String
+    ) {
+        val eventName = "clickNotifCenter"
+        val eventCategory = "notif center"
+        val eventAction = "swipe on restock product list"
+        val eventLabel = "$notificationId - $productId"
+
+        val dataTracker = layerMapOf(
+                KEY_EVENT_NAME, eventName,
+                KEY_EVENT_CATEGORY, eventCategory,
+                KEY_EVENT_ACTION, eventAction,
+                KEY_EVENT_LABEL, eventLabel,
+                KEY_USER_ID, userId,
+                KEY_SHOP_ID, shopId
+        )
+        send(dataTracker)
+    }
+
     private fun send(data: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
@@ -100,6 +156,7 @@ class StockHandlerAnalytics {
         private const val KEY_EVENT_CATEGORY = "eventCategory"
         private const val KEY_EVENT_ACTION = "eventAction"
         private const val KEY_EVENT_LABEL = "eventLabel"
+        private const val KEY_EVENT_ITEMS = "items"
 
         //key event
         private const val KEY_USER_ID = "userId"

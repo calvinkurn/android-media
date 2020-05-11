@@ -30,6 +30,7 @@ import com.tokopedia.unifycomponents.Toaster.toasterLength
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.dialog_product_stock_handler.*
+import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import kotlinx.android.synthetic.main.item_empty_state.*
 import kotlinx.android.synthetic.main.item_notification_product_reminder.*
 import javax.inject.Inject
@@ -88,6 +89,12 @@ class ProductStockHandlerDialog(
                 productHighlightList.clear()
                 productHighlightList.addAll(it)
                 adapter.notifyDataSetChanged()
+
+                // send tracker
+                productHighlightList.forEach { product ->
+                    val shopId = element.getAtcProduct()?.shop?.id.toString()
+                    swipeProductListTracker(product.id.toString(), shopId)
+                }
             }
         })
 
@@ -99,6 +106,7 @@ class ProductStockHandlerDialog(
         })
 
         viewModel.addToCart.observe(viewLifecycleOwner, Observer {
+            analytics.addToCardClicked(element, userSession.userId, it.data.cartId)
             listener.onSuccessAddToCart(it.data.message.first())
         })
 
@@ -202,6 +210,15 @@ class ProductStockHandlerDialog(
                 btnReminder?.buttonType = UnifyButton.Type.MAIN
             }
         }
+    }
+
+    private fun swipeProductListTracker(productId: String, shopId: String) {
+        analytics.swipeRestockProductList(
+                notificationId = element.notificationId,
+                productId = productId,
+                userId = userSession.userId,
+                shopId = shopId
+        )
     }
 
     private fun initInjector() {
