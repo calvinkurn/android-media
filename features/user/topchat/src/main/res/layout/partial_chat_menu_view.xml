@@ -18,7 +18,17 @@
         android:overScrollMode="never"
         android:paddingTop="@dimen/spacing_lvl5"
         android:paddingBottom="@dimen/spacing_lvl5"
+        android:visibility="gone"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:spanCount="2" />
+        tools:spanCount="2"
+        tools:visibility="visible" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
+        android:id="@+id/ll_sticker_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_topchat_192"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </merge>

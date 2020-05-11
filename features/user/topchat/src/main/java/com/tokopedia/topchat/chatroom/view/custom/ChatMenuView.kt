@@ -21,6 +21,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     var isKeyboardOpened = false
 
     private var attachmentMenu: ChatMenuAttachmentView? = null
+    private var stickerMenu: ChatMenuStickerView? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -33,20 +34,44 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
         bindViewId()
     }
 
-    fun setupAttachmentMenu(attachmentMenuListener: AttachmentMenu.AttachmentMenuListener) {
-        attachmentMenu?.setAttachmentMenuListener(attachmentMenuListener)
-        attachmentMenu?.setAttachmentMenuViewHolderListener(this)
+    private fun initViewLayout() {
+        View.inflate(context, LAYOUT, this)
+    }
+
+    private fun bindViewId() {
+        attachmentMenu = findViewById(R.id.rv_topchat_attachment_menu)
+        stickerMenu = findViewById(R.id.ll_sticker_container)
     }
 
     override fun closeMenu() {
         hide()
     }
 
+    fun setupAttachmentMenu(attachmentMenuListener: AttachmentMenu.AttachmentMenuListener) {
+        attachmentMenu?.setAttachmentMenuListener(attachmentMenuListener)
+        attachmentMenu?.setAttachmentMenuViewHolderListener(this)
+    }
+
     fun toggleAttachmentMenu() {
+        toggleMenu {
+            attachmentMenu?.show()
+            stickerMenu?.hide()
+        }
+    }
+
+    fun toggleStickerMenu() {
+        toggleMenu {
+            attachmentMenu?.hide()
+            stickerMenu?.show()
+        }
+    }
+
+    private fun toggleMenu(onShow: () -> Unit) {
         if (isShowing) return
         if (isVisible) {
             hideMenu()
         } else {
+            onShow()
             showMenu()
         }
     }
@@ -61,14 +86,14 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     private fun showMenu() {
         isShowing = true
         if (!isKeyboardOpened) {
-            showMenuImmedietly()
+            showMenuImmediately()
         } else {
             showDelayed = true
             hideKeyboard()
         }
     }
 
-    fun showMenuImmedietly() {
+    private fun showMenuImmediately() {
         isShowing = false
         showDelayed = false
         isVisible = true
@@ -80,17 +105,9 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    private fun initViewLayout() {
-        View.inflate(context, LAYOUT, this)
-    }
-
-    private fun bindViewId() {
-        attachmentMenu = findViewById(R.id.rv_topchat_attachment_menu)
-    }
-
     fun showMenuDelayed() {
         if (showDelayed) {
-            showMenuImmedietly()
+            showMenuImmediately()
         }
     }
 

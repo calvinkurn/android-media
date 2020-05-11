@@ -72,4 +72,5 @@
 
     <dimen name="sp_topchat_4">4sp</dimen>
     <dimen name="sp_topchat_11">11sp</dimen>
+    <dimen name="dp_topchat_192">192dp</dimen>
 </resources>
