@@ -403,6 +403,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
+        if (newOrientation.isLandscape) hideAllInsets()
         layoutManager.onOrientationChanged(requireView(), newOrientation, playViewModel.videoOrientation, playViewModel.videoPlayer)
         sendOrientationChangedEvent(newOrientation)
         onInterceptSystemUiVisibilityChanged()
