@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -49,7 +50,7 @@ class MoreMenuBottomSheet(
 
     fun show(isActiveVoucher: Boolean, fm: FragmentManager) {
         val getMenuItem = if (isActiveVoucher) {
-            if (voucher?.isOngoingStatus == true) {
+            if (voucher?.status == VoucherStatusConst.ON_GOING) {
                 getOngoingVoucherMenu()
             } else {
                 getPendingVoucherMenu()
