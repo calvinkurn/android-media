@@ -1115,14 +1115,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onSetCashbackClicked(productManageViewModel: ProductViewModel) {
-
-        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, productManageViewModel.id, productManageViewModel.title)
-        val uri = Uri.parse(newUri)
-                .buildUpon()
-                .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, productManageViewModel.cashBack.toString())
-                .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productManageViewModel.price)
-                .build()
-                .toString()
         with(productManageViewModel) {
             context?.let {
                 val intent = ProductManageSetCashbackActivity.createIntent(it, id, title, cashBack, price)
