@@ -58,7 +58,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         ThreadListener, TalkPerformanceMonitoringContract {
 
     companion object {
-        const val TOASTER_CTA_WIDTH = 80
+        const val TOASTER_CTA_WIDTH = 300
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
         const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
