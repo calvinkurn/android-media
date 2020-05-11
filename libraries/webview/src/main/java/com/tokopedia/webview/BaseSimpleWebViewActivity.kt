@@ -98,11 +98,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         if (::url.isInitialized) {
             return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
         } else {
-            val referrer = getReferrerCompatible(this)
-            val extraReferrer = getExtraReferrer(this)
-            val uri = getDataUri(this)
-            Timber.w("P1#DEEPLINK_OPEN_APP#NULL_URL_%s;referrer='%s';extra_referrer='%s';uri='%s'",
-                javaClass.simpleName, referrer, extraReferrer.toString(), uri.toString())
             this.finish()
             return Fragment()
         }
