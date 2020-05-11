@@ -826,8 +826,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
             btn_cancel_order_confirmed?.setOnClickListener {
                 bottomSheetUbahResi.dismiss()
-                val textAwb = tf_cancel_notes?.textFieldInput?.text.toString()
-                doEditAwb(textAwb)
+                doEditAwb(tf_cancel_notes?.textFieldInput?.text.toString())
             }
         }
 
