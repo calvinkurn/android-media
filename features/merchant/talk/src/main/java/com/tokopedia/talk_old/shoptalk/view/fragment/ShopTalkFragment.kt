@@ -212,18 +212,18 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         NetworkErrorHelper.showRedSnackbar(view, errorMessage)
     }
 
-    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         if (userSession.isLoggedIn) {
-            goToDetailTalk(talkId, shopId, allowReply)
+            goToDetailTalk(talkId, shopId, allowReply, productId)
         } else {
             goToLogin()
         }
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         if (userSession.isLoggedIn) {
             analytics.trackClickReplyButtonFromShop(talkId)
-            goToDetailTalk(talkId, shopId, allowReply)
+            goToDetailTalk(talkId, shopId, allowReply, productId)
         } else {
             goToLogin()
         }
@@ -235,15 +235,15 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         }
     }
 
-    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
+    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean, productId: String) {
         if (allowReply) {
             context?.run {
                 val intent = RouteManager.getIntent(
                         context,
-                        ApplinkConstInternalGlobal.DETAIL_TALK,
+                        ApplinkConstInternalGlobal.TALK_REPLY,
                         talkId,
+                        productId,
                         shopId,
-                        "",
                         TalkDetailsActivity.SOURCE_SHOP
                 )
                 this@ShopTalkFragment.startActivityForResult(
@@ -477,8 +477,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         onGoToPdp(attachProduct.productId.toString())
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
-        goToDetailTalk(talkId, shopId, allowReply)
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean, productId: String) {
+        goToDetailTalk(talkId, shopId, allowReply, productId)
     }
 
     override fun showLoadingAction() {

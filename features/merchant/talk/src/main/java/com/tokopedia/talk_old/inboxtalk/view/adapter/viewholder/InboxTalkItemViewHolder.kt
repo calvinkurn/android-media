@@ -38,12 +38,12 @@ open class InboxTalkItemViewHolder(val v: View,
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
     interface TalkItemListener : BranchLinkHandlerListener {
-        fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String)
+        fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String, productId: String)
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
         fun onGoToUserProfile(userId: String)
-        fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String)
+        fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String, productId: String)
         fun onGoToPdpFromProductItemHeader(productId: String)
     }
 
@@ -92,14 +92,16 @@ open class InboxTalkItemViewHolder(val v: View,
                 listener.onReplyTalkButtonClick(
                         element.talkThread.headThread.menu.allowReply,
                         element.talkThread.headThread.talkId,
-                        element.talkThread.headThread.shopId)
+                        element.talkThread.headThread.shopId,
+                        element.talkThread.headThread.productId)
             }
 
             itemView.setOnClickListener {
                 listener.onItemTalkClick(
                         element.talkThread.headThread.menu.allowReply,
                         element.talkThread.headThread.talkId,
-                        element.talkThread.headThread.shopId)
+                        element.talkThread.headThread.shopId,
+                        element.talkThread.headThread.productId)
             }
         }
 

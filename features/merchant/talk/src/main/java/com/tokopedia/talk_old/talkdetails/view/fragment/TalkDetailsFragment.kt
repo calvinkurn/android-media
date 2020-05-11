@@ -551,11 +551,11 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         goToReportTalkPage(talkId, shopId, productId, commentId)
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         //There should not be reply button
     }
 
-    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         //Do nothing
     }
 
@@ -676,7 +676,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean, productId: String) {
         //TODO : TO BE IMPLEMENTED
     }
 

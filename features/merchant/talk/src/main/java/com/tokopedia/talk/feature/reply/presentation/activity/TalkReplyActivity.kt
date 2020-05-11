@@ -16,11 +16,13 @@ import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.presentation.fragment.TalkReplyFragment
+import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 
 class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
 
     private var questionId = ""
     private var shopId = ""
+    private var isFromInbox = false
     private var productId = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -32,7 +34,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReplyFragment.createNewInstance(questionId, shopId, productId)
+        return TalkReplyFragment.createNewInstance(questionId, shopId, productId, isFromInbox)
     }
 
     override fun getComponent(): TalkComponent {
@@ -54,11 +56,16 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString
         }
-        val shopId = uri.getQueryParameter(TalkConstants.SHOP_ID) ?: ""
+        val shopId = uri.getQueryParameter(TalkConstants.PARAM_SHOP_ID) ?: ""
         if (shopId.isNotEmpty()) {
             this.shopId = shopId
         }
-
+        with(TalkDetailsActivity) {
+            val source = uri.getQueryParameter(SOURCE) ?: ""
+            if (source.isNotEmpty()) {
+                isFromInbox = source == SOURCE_INBOX
+            }
+        }
     }
 
     override fun startPerformanceMonitoring() {

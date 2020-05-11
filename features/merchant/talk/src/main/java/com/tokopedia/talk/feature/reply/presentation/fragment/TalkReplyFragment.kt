@@ -21,13 +21,15 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
 import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
-import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
@@ -38,6 +40,7 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
+import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
@@ -56,7 +59,7 @@ import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
         OnKebabClickedListener, AttachedProductCardListener, TalkReplyHeaderListener,
-        TalkReplyTextboxListener, TalkPerformanceMonitoringContract, ThreadListener {
+        TalkReplyTextboxListener, TalkPerformanceMonitoringContract, ThreadListener, TalkReplyProductHeaderListener {
 
     companion object {
 
@@ -71,13 +74,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val TALK_REPLY_EMPTY_IMAGE_DEFAULT_URL = "https://ecs7.tokopedia.net/android/others/talk_reply_empty_state.png"
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, productId: String): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, productId: String, isFromInbox: Boolean): TalkReplyFragment =
                 TalkReplyFragment().apply {
                     arguments = Bundle()
                     arguments?.apply {
                         putString(QUESTION_ID, questionId)
-                        putString(SHOP_ID, shopId)
+                        putString(PARAM_SHOP_ID, shopId)
                         putString(PRODUCT_ID, productId)
+                        putBoolean(IS_FROM_INBOX, isFromInbox)
                     }
                 }
     }
@@ -90,6 +94,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var questionId = ""
     private var shopId = ""
     private var productId = ""
+    private var isFromInbox = false
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
@@ -238,6 +243,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onUserDetailsClicked(userId: String) {
         goToProfileActivity(userId)
+    }
+
+    override fun onProductClicked() {
+        goToPdp(productId)
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -416,19 +425,24 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.discussionData.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, isMyShop))
-                    if(it.data.discussionDataByQuestionID.question.totalAnswer > 0) {
-                        stopNetworkRequestPerformanceMonitoring()
-                        startRenderPerformanceMonitoring()
-                        showAnswers(it.data)
-                    } else {
-                        onAnswersEmpty(it.data.discussionDataByQuestionID.question.userId)
+                    with(it.data) {
+                        if(isFromInbox && isMyShop) {
+                            initProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
+                        }
+                        bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, isMyShop))
+                        if(discussionDataByQuestionID.question.totalAnswer > 0) {
+                            stopNetworkRequestPerformanceMonitoring()
+                            startRenderPerformanceMonitoring()
+                            showAnswers(this)
+                        } else {
+                            onAnswersEmpty(discussionDataByQuestionID.question.userId)
+                        }
+                        setIsFollowing(discussionDataByQuestionID.question.questionState.isFollowed)
+                        initTextBox(discussionDataByQuestionID.maxAnswerLength)
+                        hidePageError()
+                        hidePageLoading()
+                        replySwipeRefresh.isRefreshing = false
                     }
-                    setIsFollowing(it.data.discussionDataByQuestionID.question.questionState.isFollowed)
-                    initTextBox(it.data.discussionDataByQuestionID.maxAnswerLength)
-                    hidePageError()
-                    hidePageLoading()
-                    replySwipeRefresh.isRefreshing = false
                 }
                 else -> {
                     showPageError()
@@ -512,6 +526,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         replySwipeRefresh.setOnRefreshListener {
             getDiscussionData()
             showPageLoading()
+        }
+    }
+
+    private fun initProductHeader(productHeader: TalkReplyProductHeaderModel) {
+        talkReplyProductHeader.apply {
+            show()
+            bind(productHeader, this@TalkReplyFragment)
         }
     }
 
@@ -613,8 +634,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun getDataFromArguments() {
         arguments?.let {
             questionId = it.getString(QUESTION_ID, "")
-            shopId = it.getString(SHOP_ID, "")
+            shopId = it.getString(PARAM_SHOP_ID, "")
             productId = it.getString(PRODUCT_ID, "")
+            isFromInbox = it.getBoolean(IS_FROM_INBOX)
         }
         isMyShop = isMyShop()
     }

@@ -342,20 +342,20 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
     }
 
-    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         if (!presenter.isLoggedIn()) {
             goToLogin()
         } else {
-            goToDetailTalk(talkId, shopId, allowReply)
+            goToDetailTalk(talkId, shopId, allowReply, productId)
         }
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         if (!presenter.isLoggedIn()) {
             goToLogin()
         } else {
             analytics.trackClickReplyButton(talkId)
-            goToDetailTalk(talkId, shopId, allowReply)
+            goToDetailTalk(talkId, shopId, allowReply, productId)
         }
     }
 
@@ -363,15 +363,15 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showRedSnackbar(view, getString(R.string.error_default_cannot_reply_talk))
     }
 
-    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
+    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean, productId: String) {
         if (allowReply) {
             context?.run {
                 val intent = RouteManager.getIntent(
                         context,
-                        ApplinkConstInternalGlobal.DETAIL_TALK,
+                        ApplinkConstInternalGlobal.TALK_REPLY,
                         talkId,
+                        productId,
                         shopId,
-                        "",
                         TalkDetailsActivity.SOURCE_PDP
                 )
                 this@ProductTalkFragment.startActivityForResult(
@@ -619,8 +619,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         goToReportTalk(talkId, shopId, productId, "")
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
-        goToDetailTalk(talkId, shopId, allowReply)
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean, productId: String) {
+        goToDetailTalk(talkId, shopId, allowReply, productId)
     }
 
     override fun onDestroyView() {

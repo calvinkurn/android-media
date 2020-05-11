@@ -13,7 +13,7 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TA
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_READING_TRACE
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants.NO_SHADOW_ELEVATION
-import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
@@ -100,7 +100,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
 
     private fun getDataFromAppLink() {
         val uri = intent.data ?: return
-        val shopId = uri.getQueryParameter(SHOP_ID) ?: ""
+        val shopId = uri.getQueryParameter(PARAM_SHOP_ID) ?: ""
         if (shopId.isNotEmpty()) {
             this.shopId = shopId
         }

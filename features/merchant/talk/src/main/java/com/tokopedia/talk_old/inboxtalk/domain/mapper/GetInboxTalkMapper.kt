@@ -70,7 +70,9 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
             listComment.add(LoadMoreCommentTalkViewModel(totalMoreComment,
                     pojo.talk_id,
                     pojo.talk_shop_id,
-                    pojo.talk_state.allow_reply))
+                    pojo.talk_state.allow_reply,
+                    pojo.talk_product_id
+            ))
         }
 
         for (data: TalkCommentItem in pojo.list) {

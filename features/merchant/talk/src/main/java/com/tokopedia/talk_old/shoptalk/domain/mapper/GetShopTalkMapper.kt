@@ -71,7 +71,8 @@ class GetShopTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inbo
             listComment.add(LoadMoreCommentTalkViewModel(totalMoreComment,
                     pojo.talk_id,
                     pojo.talk_shop_id,
-                    pojo.talk_state.allow_reply))
+                    pojo.talk_state.allow_reply,
+                    pojo.talk_product_id))
         }
 
         for (data: TalkCommentItem in pojo.list) {

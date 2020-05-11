@@ -19,6 +19,9 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
             """
                 query discussionDataByQuestionID($questionID: String!, $shopID: String) {
                   discussionDataByQuestionID(questionID: $questionID, shopID: $shopID) {
+                    productName
+                    thumbnail
+                    url
                     maxAnswerLength
                     question {
                       questionID

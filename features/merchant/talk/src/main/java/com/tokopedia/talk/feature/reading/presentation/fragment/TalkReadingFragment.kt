@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.reading.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +11,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -24,7 +25,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
-import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.*
@@ -57,12 +58,14 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         ThreadListener, TalkPerformanceMonitoringContract {
 
     companion object {
+        const val TOASTER_CTA_WIDTH = 80
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
         const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
+        const val TALK_READING_SOURCE = "reading"
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
@@ -70,7 +73,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             TalkReadingFragment().apply {
                 arguments = Bundle()
                 arguments?.putString(PRODUCT_ID, productId)
-                arguments?.putString(SHOP_ID, shopId)
+                arguments?.putString(PARAM_SHOP_ID, shopId)
             }
     }
 
@@ -399,7 +402,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showErrorToaster() {
-        view?.let { Toaster.make(it, getString(R.string.reading_connection_error_toaster_message), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry)) }
+        Toaster.toasterCustomCtaWidth = TOASTER_CTA_WIDTH
+        view?.let { Toaster.make(it, getString(R.string.reading_connection_error_toaster_message), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener {
+            loadData(currentPage)
+        }) }
     }
 
     private fun updateSortHeader(sortOption: SortOption) {
@@ -414,7 +420,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun getDataFromArguments() {
         arguments?.let {
             productId = it.getString(PRODUCT_ID, "")
-            shopId = it.getString(SHOP_ID, "")
+            shopId = it.getString(PARAM_SHOP_ID, "")
         }
     }
 
@@ -424,7 +430,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToReplyActivity(questionID: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.TALK_REPLY, questionID, productId, shopId)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.TALK_REPLY, questionID, productId, shopId, TALK_READING_SOURCE)
         startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
     }
 

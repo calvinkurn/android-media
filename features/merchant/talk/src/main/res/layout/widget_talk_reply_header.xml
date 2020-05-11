@@ -13,6 +13,7 @@
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3" />
 
@@ -29,10 +30,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="@id/replyHeaderDate"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/replyHeaderDate"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
@@ -65,12 +69,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderTNC"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         android:text="@string/reply_header_tnc"
         app:typographyType="small"
         app:layout_constraintBottom_toBottomOf="parent"

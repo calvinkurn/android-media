@@ -472,13 +472,13 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
-        goToDetailTalk(talkId, shopId, allowReply)
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
+        goToDetailTalk(talkId, shopId, allowReply, productId)
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         analytics.trackClickReplyButton(talkId)
-        goToDetailTalk(talkId, shopId, allowReply)
+        goToDetailTalk(talkId, shopId, allowReply, productId)
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
@@ -649,15 +649,15 @@ open class InboxTalkFragment : BaseDaggerFragment(),
         adapter.showReportedCommentTalk(talkId, commentId)
     }
 
-    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
+    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean, productId: String) {
         if (allowReply) {
             context?.run {
                 val intent = RouteManager.getIntent(
                         context,
-                        ApplinkConstInternalGlobal.DETAIL_TALK,
+                        ApplinkConstInternalGlobal.TALK_REPLY,
                         talkId,
+                        productId,
                         shopId,
-                        "",
                         TalkDetailsActivity.SOURCE_INBOX
                 )
                 this@InboxTalkFragment.startActivityForResult(
@@ -689,8 +689,8 @@ open class InboxTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_follow_talk))
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
-        goToDetailTalk(talkId, shopId, allowReply)
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean, productId: String) {
+        goToDetailTalk(talkId, shopId, allowReply, productId)
     }
 
     override fun shouldHandleUrlManually(url: String): Boolean {

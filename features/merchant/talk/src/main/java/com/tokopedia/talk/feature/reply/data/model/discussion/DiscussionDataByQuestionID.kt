@@ -9,5 +9,14 @@ data class DiscussionDataByQuestionID(
         val question: Question = Question(),
         @SerializedName("maxAnswerLength")
         @Expose
-        val maxAnswerLength: Int = 0
+        val maxAnswerLength: Int = 0,
+        @SerializedName("productName")
+        @Expose
+        val productName: String = "",
+        @SerializedName("thumbnail")
+        @Expose
+        val thumbnail: String = "",
+        @SerializedName("url")
+        @Expose
+        val url: String = ""
 )
