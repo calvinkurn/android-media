@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
@@ -22,7 +23,6 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.Vouch
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.FillVoucherNameUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.VoucherTargetUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
-import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import javax.inject.Inject
 
 class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
@@ -119,6 +119,10 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
             }
             else -> {}
         }
+    }
+
+    override fun onFinishRenderInitial() {
+
     }
 
     private fun observeLiveData() {

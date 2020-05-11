@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -13,6 +12,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import kotlinx.android.synthetic.main.mvc_textfield.view.*
 
 class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTextFieldUiModel>(itemView) {
@@ -24,6 +24,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
 
     private var minAlertErrorMessage: String = ""
     private var maxAlertErrorMessage: String = ""
+    private var extraValidationErrorMessage: String = ""
 
     override fun bind(element: VoucherTextFieldUiModel) {
         itemView.textField?.run {
@@ -31,11 +32,33 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
             setInputType(InputType.TYPE_CLASS_NUMBER)
 
             element.labelRes?.let { labelRes ->
-                textFiedlLabelText.text = context.resources.getString(labelRes).toBlankOrString()
+                textFiedlLabelText.text = context?.resources?.getString(labelRes).toBlankOrString()
+            }
+
+            element.extraValidationRes?.let { errorRes ->
+                extraValidationErrorMessage = context?.resources?.getString(errorRes).toBlankOrString()
+            }
+
+            element.currentErrorPair?.let { errorPair ->
+                setError(errorPair.first)
+                setMessage(errorPair.second)
+            }
+
+            textFieldInput.run {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        selectAll()
+                    }
+                }
             }
 
             when(element.type) {
                 VoucherTextFieldType.CURRENCY -> {
+                    element.currentValue?.let { value ->
+                        if (value > 0) {
+                            textFieldInput.setText(CurrencyFormatHelper.convertToRupiah(value.toString()))
+                        }
+                    }
                     minAlertErrorMessage = String.format(context.resources.getString(element.minAlertRes, CurrencyFormatHelper.convertToRupiah(element.minValue.toString())))
                     maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, CurrencyFormatHelper.convertToRupiah(element.maxValue.toString())))
 
@@ -48,22 +71,36 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                         textFieldType = VoucherTextFieldType.CURRENCY,
                                         currentValue = number.toInt(),
                                         minValue = element.minValue,
-                                        maxValue = element.maxValue)
+                                        maxValue = element.maxValue,
+                                        promotionType = element.promotionType,
+                                        onValueChanged = element.onValueChanged,
+                                        onSetErrorMessage = element.onSetErrorMessage,
+                                        extraValidation = element.extraValidation)
                             }
                         })
                     }
                 }
                 VoucherTextFieldType.QUANTITY -> {
+                    element.currentValue?.let { value ->
+                        if(value > 0) {
+                            textFieldInput.setText(value.toString())
+                        }
+                    }
                     minAlertErrorMessage = String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))
                     maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))
 
                     textFieldInput.addTextChangedListener(object : TextWatcher {
                         override fun afterTextChanged(s: Editable?) {
+                            val value = s.toString().toIntOrZero()
                             this@run.validateValue(
                                     textFieldType = VoucherTextFieldType.QUANTITY,
-                                    currentValue = s.toString().toIntOrZero(),
+                                    currentValue = value,
                                     minValue = element.minValue,
-                                    maxValue = element.maxValue)
+                                    maxValue = element.maxValue,
+                                    promotionType = element.promotionType,
+                                    onValueChanged = element.onValueChanged,
+                                    onSetErrorMessage = element.onSetErrorMessage,
+                                    extraValidation = element.extraValidation)
                         }
 
                         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -72,17 +109,27 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     })
                 }
                 VoucherTextFieldType.PERCENTAGE -> {
-                    minAlertErrorMessage = String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))
-                    maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))
+                    element.currentValue?.let { value ->
+                        if(value > 0) {
+                            textFieldInput.setText(value.toString())
+                        }
+                    }
+                    minAlertErrorMessage = "${String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))}%"
+                    maxAlertErrorMessage = "${String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))}%"
 
                     appendText(context.resources.getString(R.string.mvc_percent).toBlankOrString())
                     textFieldInput.addTextChangedListener(object : TextWatcher {
                         override fun afterTextChanged(s: Editable?) {
+                            val value = s.toString().toIntOrZero()
                             this@run.validateValue(
                                     textFieldType = VoucherTextFieldType.PERCENTAGE,
-                                    currentValue = s.toString().toIntOrZero(),
+                                    currentValue = value,
                                     minValue = element.minValue,
-                                    maxValue = element.maxValue)
+                                    maxValue = element.maxValue,
+                                    promotionType = element.promotionType,
+                                    onValueChanged = element.onValueChanged,
+                                    onSetErrorMessage = element.onSetErrorMessage,
+                                    extraValidation = element.extraValidation)
                         }
 
                         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -91,31 +138,45 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     })
                 }
             }
-            if (element.isLastTextField) {
-                textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            }
         }
     }
 
     private fun TextFieldUnify.validateValue(textFieldType: VoucherTextFieldType,
                                              currentValue: Int,
                                              minValue: Int,
-                                             maxValue: Int) {
+                                             maxValue: Int,
+                                             promotionType: PromotionType,
+                                             onValueChanged: (Int?, PromotionType) -> Unit,
+                                             onSetErrorMessage: (Boolean, String?, PromotionType) -> Unit,
+                                             extraValidation: (Int, String) -> Pair<Boolean, String>) {
+        onValueChanged(currentValue, promotionType)
         when {
             currentValue < minValue -> {
                 setError(true)
                 setMessage(minAlertErrorMessage)
+                onSetErrorMessage(true, minAlertErrorMessage, promotionType)
             }
             currentValue > maxValue -> {
                 setError(true)
                 setMessage(maxAlertErrorMessage)
+                onSetErrorMessage(true, maxAlertErrorMessage, promotionType)
             }
             else -> {
-                setError(false)
-                if (textFieldType == VoucherTextFieldType.QUANTITY) {
-                    setMessage(maxAlertErrorMessage)
+                val pairResult = extraValidation(currentValue, extraValidationErrorMessage)
+                if (pairResult.first) {
+                    setError(false)
+                    if (textFieldType == VoucherTextFieldType.QUANTITY) {
+                        setMessage(maxAlertErrorMessage)
+                        onSetErrorMessage(false, maxAlertErrorMessage, promotionType)
+                    } else {
+                        setMessage("")
+                        onSetErrorMessage(false, "", promotionType)
+                    }
                 } else {
-                    setMessage("")
+                    val errorMessage = pairResult.second
+                    setError(true)
+                    setMessage(errorMessage)
+                    onSetErrorMessage(true, errorMessage, promotionType)
                 }
             }
         }

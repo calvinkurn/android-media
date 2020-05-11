@@ -25,10 +25,17 @@ object PromoCreationStaticData {
                     ),
                     PromoCreationUiModel(
                             R.drawable.ic_broadcast_chat,
-                            "Voucher Toko",
-                            "Gunakan voucher toko yang sesuai target pembeli tokomu",
+                            "Voucher Toko - Create",
+                            "Kelik di sini gan/sis untuk liat voucher creation",
                             "",
                             ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
+                    ),
+                    PromoCreationUiModel(
+                            R.drawable.ic_broadcast_chat,
+                            "Voucher Toko - List",
+                            "Kelik di sini gan/sis untuk liat voucher list",
+                            "",
+                            ApplinkConstInternalSellerapp.VOUCHER_LIST
                     )
             ),
             errorMessage = ""

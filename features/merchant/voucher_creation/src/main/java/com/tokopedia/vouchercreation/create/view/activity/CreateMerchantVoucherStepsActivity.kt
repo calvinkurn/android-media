@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.create.view.activity
 
 import android.animation.ObjectAnimator
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -16,14 +17,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
-import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
-import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
-import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import javax.inject.Inject
 
@@ -112,6 +113,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun setupView() {
+        window.decorView.setBackgroundColor(Color.WHITE)
         setupStatusBar()
         setupToolbar()
         setupViewPager()
@@ -120,7 +122,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(this, R.color.white))
+                setStatusBarColor(ContextCompat.getColor(this, R.color.transparent))
             } catch (ex: Resources.NotFoundException) {
                 ex.printStackTrace()
             }
@@ -129,16 +131,16 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun setupToolbar() {
         createMerchantVoucherHeader?.run {
+            setBackgroundColor(Color.TRANSPARENT)
             try {
                 addRightIcon(R.drawable.ic_tips).setOnClickListener {
-                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment.javaClass.name)
+                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment::javaClass.name)
                 }
             } catch (ex: Resources.NotFoundException) {
                 ex.printStackTrace()
             }
             setNavigationOnClickListener(onNavigationClickListener)
         }
-
     }
 
     private fun setupViewPager() {
