@@ -99,7 +99,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When get remote product is failed Expect fail object`() {
+    fun `When get remote product is failed Expect fail object`() {
         onGetProduct_thenFailed()
         viewModel.getProductData("4")
 
@@ -327,7 +327,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun verifyGetProductFailed() {
         val result = viewModel.getProductResult.value
-        assertEquals(result,  null)
+        assertTrue(result is Fail)
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
