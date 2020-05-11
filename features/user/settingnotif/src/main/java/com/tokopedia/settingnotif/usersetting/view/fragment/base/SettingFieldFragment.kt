@@ -21,24 +21,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
-import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
+import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError as GetSettingError
-import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError as SetSettingError
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
@@ -247,6 +247,9 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         const val TYPE_PUSH_NOTIF = "pushnotif"
         const val TYPE_EMAIL = "email"
         const val TYPE_SMS = "sms"
+
+        // this will be used to filter buyer notification settings so that buyer setting will not be showed
+        const val BUYING_TRANSACTION_SECTION_TITLE = "Transaksi Pembelian"
     }
 
 }

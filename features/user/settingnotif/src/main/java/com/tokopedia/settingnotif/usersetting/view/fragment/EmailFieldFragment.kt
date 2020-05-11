@@ -7,18 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
-import com.tokopedia.settingnotif.usersetting.data.pojo.SettingSections
-import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationEmail
+import com.tokopedia.settingnotif.usersetting.view.dataview.SettingStateDataView.removeBuyerNotificationSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewModel
 
 class EmailFieldFragment: SettingFieldFragment() {
-
-    companion object {
-        const val BUYING_TRANSACTION_SECTION_TITLE = "Transaksi Pembelian"
-    }
 
     private lateinit var viewModel: SettingStateViewModel
 
@@ -81,16 +76,4 @@ class EmailFieldFragment: SettingFieldFragment() {
 
     override fun getScreenName() = getString(R.string.settingnotif_email)
     override fun getNotificationType() = TYPE_EMAIL
-
-    private fun removeBuyerNotificationSetting(items: List<Visitable<SettingFieldTypeFactory>>): List<Visitable<SettingFieldTypeFactory>> {
-        var include = true
-        return ArrayList(items.filter { setting ->
-            if (setting is SettingSections && setting.title == BUYING_TRANSACTION_SECTION_TITLE) {
-                include = false
-            } else if (setting is SettingSections && !include) {
-                include = true
-            }
-            include
-        })
-    }
 }
