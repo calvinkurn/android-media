@@ -328,7 +328,7 @@ public class TopChatAnalytics {
                 getField(String.valueOf(product.getBlastId())),
                 products,
                 null,
-                Name.EVENT_NAME_PRODUCT_PREVIEW,
+                ProductListImpressionBundler.KEY,
                 Category.CHAT_DETAIL,
                 Action.VIEW_PRODUCT_PREVIEW,
                 null,
