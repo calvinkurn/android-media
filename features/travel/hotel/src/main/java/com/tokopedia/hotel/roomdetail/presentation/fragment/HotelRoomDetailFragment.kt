@@ -119,6 +119,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                         ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> {
                             showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                         }
+                        ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
                         else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
                 }
@@ -402,6 +403,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     private fun navigateToAddPhonePage() {
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
+    }
+
+    private fun navigateToAddEmailPage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
     }
 
     private fun showFailedGetRoomErrorDialog(message: String) {

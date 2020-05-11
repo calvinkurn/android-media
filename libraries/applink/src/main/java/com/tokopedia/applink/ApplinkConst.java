@@ -227,6 +227,7 @@ public interface ApplinkConst {
     String PINJAMAN_ONLINE_TAB = "tokopedia://loan/category/pinjamanonline";
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
+    String HAS_PASSWORD = "tokopedia://settings/haspassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
     String SETTING_NOTIFICATION = "tokopedia://settings/notification";
 

@@ -147,12 +147,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     }
                 }
                 is Fail -> {
-                    if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
-                        navigateToAddPhonePage()
-                    } else if (ErrorHandlerHotel.isGetFailedRoomError(it.throwable)) {
-                        showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
-                    } else {
-                        NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    when {
+                        ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
+                        ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
+                        ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
+                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
                 }
             }
@@ -414,6 +413,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             progressDialog.dismiss()
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
+    }
+
+    private fun navigateToAddEmailPage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
     }
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
