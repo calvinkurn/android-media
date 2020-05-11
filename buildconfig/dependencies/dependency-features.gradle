@@ -58,7 +58,8 @@ ext {
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
             eventHome                       : ":features:entertainment:event_home",
-            eventSearch                       : ":features:entertainment:event_search",
+            eventSearch                     : ":features:entertainment:event_search",
+            eventPDP                        : ":features:entertainment:event_pdp",
             digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
@@ -200,6 +201,7 @@ ext {
             settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
+            orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
             seamlesslogin                   : ":features:user:seamless_login",

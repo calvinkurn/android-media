@@ -34,7 +34,7 @@ import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity.Companion.PDP_SCREEN_NAME
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailAllFacilityActivity
-import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
+import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
@@ -318,8 +318,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         btn_hotel_detail_show.setOnClickListener {
             context?.run {
-                startActivity(HotelDetailMapActivity.getCallingIntent(this, data.property.name,
-                        data.property.latitude, data.property.longitude, data.property.address))
+                startActivity(MapViewerActivity.getCallingIntent(this, data.property.name,
+                        data.property.latitude, data.property.longitude, data.property.address,HOTEL_PIN))
             }
         }
 
@@ -640,6 +640,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
 
         const val EXTRA_SHOW_ROOM = "EXTRA_SHOW_ROOM"
+
+        const val HOTEL_PIN = "HOTEL_PIN"
 
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102

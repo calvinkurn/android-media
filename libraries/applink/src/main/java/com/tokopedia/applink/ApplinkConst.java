@@ -88,6 +88,7 @@ public interface ApplinkConst {
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
+    String ORDER_HISTORY = "tokopedia://product-order-history";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
@@ -434,6 +435,10 @@ public interface ApplinkConst {
     interface AttachVoucher {
         String PARAM_SHOP_ID = "shop_id";
         String PARAM_VOUCHER_PREVIEW = "voucher_preview";
+    }
+
+    interface OrderHistory {
+        String PARAM_SHOP_ID = "shop_id";
     }
 
     interface Play {
