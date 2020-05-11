@@ -11,6 +11,7 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
@@ -114,6 +115,11 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModelStore.clear()
+    }
+
     private fun setupBottomSheet() {
         context?.run {
             addBottomSheetView(CreateVoucherBottomSheetType.GENERAL_EXPENSE_INFO, generalExpensesInfoBottomSheetFragment)
@@ -121,7 +127,10 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
     }
 
     private fun observeLiveData() {
-
+        viewLifecycleOwner.observe(viewModel.bannerBitmapLiveData) { bitmap ->
+            bannerImage?.setImageBitmap(bitmap)
+            setVoucherBitmap(bitmap)
+        }
     }
 
     private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
@@ -139,20 +148,23 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             val bitmap = resource.toBitmap()
                             if (painter == null) {
-                                painter = VoucherPreviewPainter(context, bitmap)
+                                painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner)
                             }
                             if (canSetBitmap) {
-                                val paintedBitmap = painter?.drawInitial(bannerVoucherUiModel, bitmap)
-                                setImageBitmap(paintedBitmap)
-                                paintedBitmap?.let {
-                                    setVoucherBitmap(it)
-                                }
                                 canSetBitmap = false
+                                painter?.let {
+                                    viewModel.drawBanner(it, bannerVoucherUiModel, resource.toBitmap())
+                                }
                             }
                             return false
                         }
                     })
                     .submit()
         }
+    }
+
+    private fun onSuccessGetBanner(bitmap: Bitmap) {
+        bannerImage?.setImageBitmap(bitmap)
+        setVoucherBitmap(bitmap)
     }
 }

@@ -160,8 +160,8 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
                     voucherTextFieldUiModel.currentErrorPair = errorPairList[index]
                 }
             }
-            observe(viewModel.freeDeliveryAmountLiveData) { amount ->
-                onShouldChangeBannerValue(VoucherImageType.FreeDelivery(amount))
+            observe(viewModel.voucherImageValueLiveData) { imageValue ->
+                onShouldChangeBannerValue(imageValue)
             }
         }
     }

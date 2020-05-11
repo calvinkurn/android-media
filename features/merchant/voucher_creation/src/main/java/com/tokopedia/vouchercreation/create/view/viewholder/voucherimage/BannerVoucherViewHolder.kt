@@ -39,14 +39,14 @@ class BannerVoucherViewHolder<T : VoucherImageTypeFactory>(itemView: View) : Abs
 
                             override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                                 painter = VoucherPreviewPainter(context, resource)
-                                setImageBitmap(painter?.drawInitial(element))
+//                                setImageBitmap(painter?.drawInitial(element))
                                 return false
                             }
                         })
                         .submit()
             }
             else {
-                setImageBitmap(painter?.drawInitial(element))
+//                setImageBitmap(painter?.drawInitial(element))
             }
         }
     }

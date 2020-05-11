@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
@@ -15,8 +16,6 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     private val mFreeDeliveryAmountLiveData = MutableLiveData<Int>()
-    val freeDeliveryAmountLiveData: LiveData<Int>
-        get() = mFreeDeliveryAmountLiveData
     private val mMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mVoucherQuotaLiveData = MutableLiveData<Int>()
 
@@ -31,6 +30,13 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
     val errorPairListLiveData : LiveData<Array<Pair<Boolean, String>?>>
         get() = mErrorPairListLiveData
 
+    private val mIsFirstTimeDraw = MutableLiveData<Boolean>().apply {
+        value = true
+    }
+    private val mVoucherImageValueLiveData = MutableLiveData<VoucherImageType>()
+    val voucherImageValueLiveData: LiveData<VoucherImageType>
+        get() = mVoucherImageValueLiveData
+
     private val mExpensesExtimationLiveData = MediatorLiveData<Int>().apply {
         addSource(mFreeDeliveryAmountLiveData) {
             calculateExpenseEstimation()
@@ -43,8 +49,13 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
         get() = mExpensesExtimationLiveData
 
     fun refreshTextFieldValue() {
-        mFreeDeliveryAmountLiveData.run {
-            value = value
+        mIsFirstTimeDraw.value?.let { isFirstTimeDraw ->
+            if (!isFirstTimeDraw) {
+                mFreeDeliveryAmountLiveData.value?.let { amount ->
+                    mVoucherImageValueLiveData.value = VoucherImageType.FreeDelivery(amount)
+                }
+            }
+            mIsFirstTimeDraw.value = false
         }
         mValueListLiveData.value = arrayOf(
                 mFreeDeliveryAmountLiveData.value.toZeroIfNull(),
@@ -62,6 +73,9 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
         when(type) {
             PromotionType.FreeDelivery.Amount -> {
                 mFreeDeliveryAmountLiveData.value = value.toZeroIfNull()
+                value?.let { amount ->
+                    mVoucherImageValueLiveData.value = VoucherImageType.FreeDelivery(amount)
+                }
             }
             PromotionType.FreeDelivery.MinimumPurchase -> {
                 mMinimumPurchaseLiveData.value = value.toZeroIfNull()

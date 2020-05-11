@@ -21,7 +21,8 @@ import com.tokopedia.vouchercreation.create.view.typefactory.voucherimage.Vouche
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 
 class VoucherPreviewPainter(private val context: Context,
-                            private val bitmap: Bitmap) {
+                            private val bitmap: Bitmap,
+                            var onSuccessGetBitmap: (Bitmap) -> Unit = { _ -> }) {
 
     companion object {
         private const val FREE_DELIVERY = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
@@ -118,7 +119,7 @@ class VoucherPreviewPainter(private val context: Context,
     private val bottomValueY = (bitmapHeight * 0.58f)
     private val valueMarginTop = (bitmapHeight * 0.05).toInt()
 
-    fun<T : VoucherImageTypeFactory> drawInitial(uiModel: BannerVoucherUiModel<T>, newBitmap: Bitmap? = null): Bitmap {
+    fun<T : VoucherImageTypeFactory> drawInitial(uiModel: BannerVoucherUiModel<T>, newBitmap: Bitmap? = null) {
         uiModel.run {
             val bannerRect = Rect().apply {
                 set(0, 0, bitmapWidth, bitmapHeight)
@@ -141,10 +142,20 @@ class VoucherPreviewPainter(private val context: Context,
                                 set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
                             }
                             canvas.drawBitmap(resource, null, bitmapRect, shopAvatarPaint)
+                            drawVoucherValue(uiModel)
                             return false
                         }
                     })
                     .submit()
+        }
+    }
+
+    fun clearValue() {
+        canvas.drawColor(0, PorterDuff.Mode.CLEAR)
+    }
+
+    private fun<T : VoucherImageTypeFactory> drawVoucherValue(uiModel: BannerVoucherUiModel<T>) {
+        uiModel.run {
             when(imageType) {
                 is VoucherImageType.FreeDelivery -> {
                     Glide.with(context)
@@ -156,14 +167,13 @@ class VoucherPreviewPainter(private val context: Context,
                                 }
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    canvas.drawPromotionLabel(resource, middleLabelY)
+                                    (imageType as? VoucherImageType.FreeDelivery)?.value?.let {
+                                        canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
+                                    }
                                     return false
                                 }
                             })
                             .submit()
-                    (imageType as? VoucherImageType.FreeDelivery)?.value?.let {
-                        canvas.drawValueText(it, VoucherValuePosition.CENTER)
-                    }
                 }
                 is VoucherImageType.Rupiah -> {
                     Glide.with(context)
@@ -175,14 +185,14 @@ class VoucherPreviewPainter(private val context: Context,
                                 }
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    canvas.drawPromotionLabel(resource, middleLabelY)
+                                    (imageType as? VoucherImageType.Rupiah)?.value?.let {
+                                        canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
+                                    }
                                     return false
                                 }
                             })
                             .submit()
-                    (imageType as? VoucherImageType.Rupiah)?.value?.let {
-                        canvas.drawValueText(it, VoucherValuePosition.CENTER)
-                    }
+
                 }
                 is VoucherImageType.Percentage -> {
                     Glide.with(context)
@@ -194,14 +204,13 @@ class VoucherPreviewPainter(private val context: Context,
                                 }
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    canvas.drawPromotionLabel(resource, topLabelY)
+                                    (imageType as? VoucherImageType.Percentage)?.percentage?.let {
+                                        canvas.drawPromotionLabel(resource, topLabelY, it, VoucherValuePosition.TOP)
+                                    }
                                     return false
                                 }
                             })
                             .submit()
-                    (imageType as? VoucherImageType.Percentage)?.percentage?.let {
-                        canvas.drawValueText(it, VoucherValuePosition.TOP)
-                    }
 
                     Glide.with(context)
                             .asBitmap()
@@ -212,32 +221,29 @@ class VoucherPreviewPainter(private val context: Context,
                                 }
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    canvas.drawPromotionLabel(resource, bottomLabelY)
+                                    (imageType as? VoucherImageType.Percentage)?.value?.let {
+                                        canvas.drawPromotionLabel(resource, bottomLabelY, it, VoucherValuePosition.BOTTOM)
+                                    }
                                     return false
                                 }
                             })
                             .submit()
 
-                    (imageType as? VoucherImageType.Percentage)?.value?.let {
-                        canvas.drawValueText(it, VoucherValuePosition.BOTTOM)
-                    }
+
                 }
             }
         }
-        return bitmap
     }
 
-    fun clearValue() {
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-    }
-
-    private fun Canvas.drawPromotionLabel(resource: Bitmap, yPosition: Int) {
+    private fun Canvas.drawPromotionLabel(resource: Bitmap, yPosition: Int, value: Int, @VoucherValuePosition voucherValuePosition: Int) {
         val bitmapRatio = resource.width / resource.height
         val fittedLabelWidth = bitmapRatio * labelHeight
         val bitmapRect = Rect().apply {
             set(middleX.toInt() - fittedLabelWidth/2, yPosition, middleX.toInt() + fittedLabelWidth/2, yPosition + labelHeight)
         }
-        canvas.drawBitmap(resource, null, bitmapRect, promoTypePaint)
+        drawBitmap(resource, null, bitmapRect, promoTypePaint)
+
+        drawValueText(value, voucherValuePosition)
     }
 
     private fun Canvas.drawValueText(value: Int, @VoucherValuePosition voucherValuePosition: Int) {
@@ -250,6 +256,7 @@ class VoucherPreviewPainter(private val context: Context,
             else -> return
         }
         drawBitmap(horizontalLinearLayout.toBitmap(null, null), middleX - horizontalLinearLayout.width/2, yPosition, null)
+        onSuccessGetBitmap(bitmap)
     }
 
     private fun getValueLinearLayout(value: Int, isPercentage: Boolean): LinearLayout {
