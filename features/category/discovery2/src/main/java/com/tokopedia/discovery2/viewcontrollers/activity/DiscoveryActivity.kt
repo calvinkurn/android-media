@@ -26,16 +26,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         toolbar?.hide()
     }
 
-//    override fun initDaggerInject() {
-//        DaggerDiscoveryComponent.builder()
-//                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-//                .build()
-//                .inject(this)
-//    }
-
-
     override fun initInject() {
-        toolbar?.hide()
         DaggerDiscoveryComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()

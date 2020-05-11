@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         editTextPassword.setText("toped12345")
         val loginButton = findViewById<Button>(R.id.loginButton)
 
+        goTo()
         // simplify login process without error handling/verify number/etc
         loginButton.setOnClickListener {
             val userName = editTextUser.text.toString().trim()
