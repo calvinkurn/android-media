@@ -219,7 +219,7 @@ class HomeFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override val trackingQueue: TrackingQueue? = null
+    override var trackingQueue: TrackingQueue? = null
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
@@ -285,6 +285,7 @@ class HomeFragment : BaseDaggerFragment(),
             irisAnalytics = getInstance(it)
             irisSession = IrisSession(it)
             remoteConfig = FirebaseRemoteConfigImpl(it)
+            trackingQueue = TrackingQueue(it)
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
@@ -357,6 +358,7 @@ class HomeFragment : BaseDaggerFragment(),
         if (arguments != null) {
             scrollToRecommendList = arguments!!.getBoolean(SCROLL_RECOMMEND_LIST)
         }
+        homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         fetchRemoteConfig()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
         setupStatusBar()
@@ -670,8 +672,8 @@ class HomeFragment : BaseDaggerFragment(),
 
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
-        viewModel.requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
-            context?.let {
+        context?.let {
+            viewModel.requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
                 Glide.with(it)
                         .asBitmap()
                         .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
@@ -685,9 +687,8 @@ class HomeFragment : BaseDaggerFragment(),
                                 viewModel.clearPlayBanner()
                             }
                         })
-            }
-
-        })
+            })
+        }
     }
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
