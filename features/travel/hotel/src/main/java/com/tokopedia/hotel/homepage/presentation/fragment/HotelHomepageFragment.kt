@@ -217,13 +217,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 if (data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG)) {
                     onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
-                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)) {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME)
-                            ?: "",
-                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
-                                    ?: "",
-                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
-                                    ?: "")
+                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID)) {
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
+                            id = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
                 }
             }
         }
@@ -403,9 +400,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             checkIn = hotelHomepageModel.checkInDate,
                             checkOut = hotelHomepageModel.checkOutDate,
                             room = hotelHomepageModel.roomCount,
-                            adult = hotelHomepageModel.adultCount,
-                            searchType = hotelHomepageModel.searchType,
-                            searchId = hotelHomepageModel.searchId)
+                            adult = hotelHomepageModel.adultCount)
+//                            searchType = hotelHomepageModel.searchType,
+//                            searchId = hotelHomepageModel.searchId)
                     startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
