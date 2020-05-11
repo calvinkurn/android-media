@@ -17,12 +17,12 @@ class UpdateSellerResponseUseCase @Inject constructor(
 ): UseCase<ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse>() {
 
     companion object {
-        private const val FEEDBACK_ID = "productId"
+        private const val FEEDBACK_ID = "feedbackID"
         private const val RESPONSE_MESSAGE = "responseMessage"
 
         @JvmStatic
-        fun createParams(feedbackId: Int, responseMessage: String): Map<String, Any> =
-                mapOf(FEEDBACK_ID to feedbackId, RESPONSE_MESSAGE to responseMessage)
+        fun createParams(productId: Int, responseMessage: String): Map<String, Any> =
+                mapOf(FEEDBACK_ID to productId, RESPONSE_MESSAGE to responseMessage)
     }
 
     var params = mapOf<String, Any>()

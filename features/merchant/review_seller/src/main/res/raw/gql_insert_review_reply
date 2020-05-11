@@ -1,8 +1,6 @@
-query insert_review_reply($reviewId: Int!, productId: Int!, shopId: Int!, responseMessage: String!) {
-    mutation{
+mutation insert_review_reply($reviewId: Int!, $productId: Int!, $shopId: Int!, $responseMessage: String!) {
       inboxReviewInsertReviewResponse(reviewId: $reviewId, productId: $productId, shopId: $shopId,
         responseMessage: $responseMessage) {
             isSuccesss
       }
-    }
 }

@@ -1,5 +1,5 @@
-query update_review_reply(feedbackId: Int!, responseMessage: String!) {
-    productrevUpdateSellerResponse(feedbackId: $feedbackId!, responseMessage: $responseMessage) {
+mutation update_review_reply($feedbackID: Int!, $responseMessage: String!) {
+    productrevUpdateSellerResponse(feedbackID: $feedbackID, responseMessage: $responseMessage) {
         success
         data {
           shopID

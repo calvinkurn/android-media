@@ -21,10 +21,13 @@ object ReviewSellerConstant {
     const val HIGHEST_RATING_KEY = "rating_avg desc"
     const val LOWEST_RATING_KEY = "rating_avg asc"
 
+    const val LATEST_REVIEW_KEY = "reviewt desc"
+
+    const val LATEST_REVIEW_VALUE = "Ulasan Terbaru"
+
     const val MOST_REVIEW_VALUE = "Ulasan Terbanyak"
     const val HIGHEST_RATING_VALUE = "Rating Tertinggi"
     const val LOWEST_RATING_VALUE = "Rating Terendah"
-
 
     fun mapSortReviewProduct(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
@@ -36,7 +39,7 @@ object ReviewSellerConstant {
 
     fun mapSortReviewDetail(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
-        map[MOST_REVIEW_KEY] = MOST_REVIEW_VALUE
+        map[LATEST_REVIEW_KEY] = LATEST_REVIEW_VALUE
         map[HIGHEST_RATING_KEY] = HIGHEST_RATING_VALUE
         map[LOWEST_RATING_KEY] = LOWEST_RATING_VALUE
         return map
