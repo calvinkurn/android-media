@@ -823,12 +823,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             tf_cancel_notes?.setMessage(getString(R.string.change_no_resi_notes))
             tf_cancel_notes?.textFieldInput?.hint = getString(R.string.change_no_resi_hint)
             btn_cancel_order_canceled?.setOnClickListener { bottomSheetUbahResi.dismiss() }
-            btn_cancel_order_confirmed?.apply {
-                text = getString(R.string.change_no_resi_btn_ubah)
-                setOnClickListener {
-                    bottomSheetUbahResi.dismiss()
-                    doEditAwb(tf_cancel_notes?.getEditableValue().toString())
-                }
+            btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
+            btn_cancel_order_confirmed?.setOnClickListener {
+                bottomSheetUbahResi.dismiss()
+                doEditAwb(tf_cancel_notes?.textFieldInput?.text.toString())
             }
         }
 
