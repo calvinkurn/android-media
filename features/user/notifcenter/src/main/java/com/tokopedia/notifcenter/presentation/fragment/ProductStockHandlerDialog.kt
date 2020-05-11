@@ -14,9 +14,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.mapper.ProductHighlightMapper.mapToProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.listener.ProductStockListener
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.adapter.ProductHighlightAdapter
 import com.tokopedia.notifcenter.presentation.viewmodel.ProductStockHandlerViewModel
@@ -30,24 +32,24 @@ import com.tokopedia.unifycomponents.Toaster.toasterLength
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.dialog_product_stock_handler.*
-import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import kotlinx.android.synthetic.main.item_empty_state.*
 import kotlinx.android.synthetic.main.item_notification_product_reminder.*
 import javax.inject.Inject
 
 class ProductStockHandlerDialog(
         private val element: NotificationItemViewBean,
-        private val userSession: UserSessionInterface,
         private val listener: NotificationItemListener
-): BottomSheetUnify() {
+): BottomSheetUnify(), ProductStockListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var userSession: UserSessionInterface
+
     private lateinit var viewModel: ProductStockHandlerViewModel
 
     private val productHighlightList = arrayListOf<ProductHighlightViewBean>()
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
-        ProductHighlightAdapter(productHighlightList, ::onAtcClicked)
+        ProductHighlightAdapter(productHighlightList, this)
     }
 
     private val analytics by lazy(LazyThreadSafetyMode.NONE) {
@@ -164,8 +166,8 @@ class ProductStockHandlerDialog(
         }
     }
 
-    private fun onAtcClicked() {
-        viewModel.addProductToCart(element.getAtcProduct())
+    override fun onAddToCartProduct(element: ProductHighlightViewBean) {
+        viewModel.addProductToCart(mapToProductData(element))
     }
 
     private fun onProductCardClicked(product: ProductData) {

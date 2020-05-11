@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.data.viewbean
 
+import com.tokopedia.notifcenter.data.entity.Shop
+
 class ProductHighlightViewBean(
         val id: Int,
         val name: String,
@@ -9,5 +11,6 @@ class ProductHighlightViewBean(
         val freeOngkirIcon: String,
         val isFreeOngkir: Boolean,
         var originalPrice: String,
-        var discountPercentage: Int
+        var discountPercentage: Int,
+        val shop: Shop?
 )

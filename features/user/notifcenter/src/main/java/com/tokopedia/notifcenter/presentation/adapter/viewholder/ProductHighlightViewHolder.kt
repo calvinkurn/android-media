@@ -14,14 +14,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.mapper.ProductHighlightMapper.mapToCampaign
 import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
+import com.tokopedia.notifcenter.listener.ProductStockListener
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductHighlightViewHolder(
-        private val onAtcClick: () -> Unit,
-        view: View
+        view: View,
+        private val listener: ProductStockListener
 ): RecyclerView.ViewHolder(view) {
 
     private val container: CardUnify = view.findViewById(R.id.container)
@@ -35,8 +36,6 @@ class ProductHighlightViewHolder(
     fun bind(element: ProductHighlightViewBean?) {
         if (element == null) return
         container.setOnClickListener { productDetailClicked(element.id.toString()) }
-        btnAddToCart.setOnClickListener { onAtcClick() }
-
         viewCampaignTag.setCampaign(mapToCampaign(element))
 
         imgProduct.loadImage(element.imageUrl)
@@ -46,6 +45,10 @@ class ProductHighlightViewHolder(
         if (element.isFreeOngkir && element.freeOngkirIcon.isNotEmpty()) {
             imgCampaign.loadImage(element.freeOngkirIcon)
             imgCampaign.show()
+        }
+
+        btnAddToCart.setOnClickListener {
+            listener.onAddToCartProduct(element)
         }
     }
 
@@ -60,15 +63,14 @@ class ProductHighlightViewHolder(
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_notification_product_highlight
 
-        fun builder(parent: ViewGroup, onAtcClick: () -> Unit): ProductHighlightViewHolder {
-            return ProductHighlightViewHolder(onAtcClick, LayoutInflater
+        fun builder(parent: ViewGroup, listener: ProductStockListener): ProductHighlightViewHolder {
+            return ProductHighlightViewHolder(LayoutInflater
                     .from(parent.context)
                     .inflate(
                             LAYOUT,
                             parent,
                             false
-                    )
-            )
+                    ), listener)
         }
     }
 
