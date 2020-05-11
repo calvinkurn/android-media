@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
@@ -43,8 +44,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
@@ -199,19 +200,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
-    fun updateDetailInputModel(detailInputModel: DetailInputModel) {
-        this.detailInputModel.value = detailInputModel
-        productInputModel.value?.let { it.detailInputModel = detailInputModel }
-    }
-
-    fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {
-        productInputModel.value?.descriptionInputModel = descriptionInputModel
-    }
-
-    fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
-        productInputModel.value?.variantInputModel = variantInputModel
-    }
-
     fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
         productInputModel.value?.variantInputModel?.productVariant =
@@ -222,10 +210,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun updateSizeChart(productSizeChart: PictureViewModel?) {
         productInputModel.value?.variantInputModel?.productSizeChart = productSizeChart
-    }
-
-    fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
-        productInputModel.value?.shipmentInputModel = shipmentInputModel
     }
 
     fun updateProductStatus(isActive: Boolean) {
@@ -311,11 +295,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return errorMessage
     }
 
-    fun validateProductInput(): String {
-        val detailInputModel = productInputModel.value?.detailInputModel ?: DetailInputModel()
-        return validateProductInput(detailInputModel)
-    }
-
     fun incrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
         wholesaleList.forEach { wholesaleInputModel ->
             // recalculate wholesale min order because of > symbol
@@ -326,7 +305,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return wholesaleList
     }
 
-    private fun decrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+    fun decrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
         wholesaleList.forEach { wholesaleInputModel ->
             // recalculate wholesale min order because of > symbol
             val oldValue = wholesaleInputModel.quantity.toBigInteger()
@@ -383,9 +362,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     // disable removing variant when in edit mode and if product have a variant
-    private fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
+    fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
         val variantInputModel  = inputModel.variantInputModel
-        variantInputModel?.apply {
+        variantInputModel.apply {
             if (isEditing.value == true) {
                 if (productVariant.size > 0) {
                     return variantOptionParent.getOrNull(0) != null
