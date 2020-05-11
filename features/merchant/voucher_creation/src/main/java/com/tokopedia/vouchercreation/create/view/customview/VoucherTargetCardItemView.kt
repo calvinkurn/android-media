@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.view.VoucherCustomView
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 

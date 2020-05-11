@@ -118,6 +118,7 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
     override fun loadData(page: Int) {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        observeLiveData()
         return inflater.inflate(R.layout.fragment_voucher_promotion_type, container, false)
     }
 
@@ -138,7 +139,6 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
     }
 
     private fun setupView() {
-        observeLiveData()
         renderList(freeDeliveryTypeUiList)
     }
 

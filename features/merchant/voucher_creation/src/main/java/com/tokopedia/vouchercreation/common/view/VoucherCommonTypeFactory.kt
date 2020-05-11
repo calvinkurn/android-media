@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.common.view
 
-import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
+import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 
 interface VoucherCommonTypeFactory {

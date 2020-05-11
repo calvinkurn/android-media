@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.common.view.textfield
+package com.tokopedia.vouchercreation.common.view.textfield.vouchertype
 
 interface VoucherTextField {
     val maxValue: Int

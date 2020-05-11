@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.common.view.textfield
+package com.tokopedia.vouchercreation.common.view.textfield.vouchertype
 
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable

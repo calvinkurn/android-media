@@ -1,8 +1,8 @@
 package com.tokopedia.vouchercreation.create.data.source
 
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldType
-import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
+import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldType
+import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 
 object PromotionTypeUiListStaticDataSource {

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.view.VoucherCustomView
 import kotlinx.android.synthetic.main.mvc_promo_code_info.view.*
 
 class VoucherTargetPromoCodeInfoView @JvmOverloads constructor(

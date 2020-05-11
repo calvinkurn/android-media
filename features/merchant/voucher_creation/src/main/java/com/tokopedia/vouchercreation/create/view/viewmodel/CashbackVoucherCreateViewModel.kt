@@ -120,16 +120,22 @@ class CashbackVoucherCreateViewModel @Inject constructor(
 
     private val mVoucherImageValueLiveData = MediatorLiveData<VoucherImageType>().apply {
         addSource(mRupiahMaximumDiscountLiveData) { amount ->
-            value = VoucherImageType.Rupiah(amount)
+            if (mActiveCashbackPromoTypeLiveData.value == CashbackType.Rupiah) {
+                value = VoucherImageType.Rupiah(amount)
+            }
         }
         addSource(mPercentageDiscountAmountLiveData) { percentage ->
-            mPercentageMaximumDiscountLiveData.value?.let { amount ->
-                value = VoucherImageType.Percentage(amount, percentage)
+            if (mActiveCashbackPromoTypeLiveData.value == CashbackType.Percentage) {
+                mPercentageMaximumDiscountLiveData.value?.let { amount ->
+                    value = VoucherImageType.Percentage(amount, percentage)
+                }
             }
         }
         addSource(mPercentageMaximumDiscountLiveData) { amount ->
-            mPercentageDiscountAmountLiveData.value?.let { percentage ->
-                value = VoucherImageType.Percentage(amount, percentage)
+            if (mActiveCashbackPromoTypeLiveData.value == CashbackType.Percentage) {
+                mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                    value = VoucherImageType.Percentage(amount, percentage)
+                }
             }
         }
         addSource(mActiveCashbackPromoTypeLiveData) { type ->
