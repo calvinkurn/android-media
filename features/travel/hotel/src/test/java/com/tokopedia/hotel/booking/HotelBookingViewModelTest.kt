@@ -112,7 +112,7 @@ class HotelBookingViewModelTest {
         val graphqlSuccessResponse = GraphqlResponse(
                 mapOf<Type, Any>(),
                 mapOf<Type, List<GraphqlError>>(HotelCart.Response::class.java to listOf(GraphqlError())),
-                mapOf<Type, Boolean>(HotelCart.Response::class.java to false))
+                false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
         } returns graphqlSuccessResponse
