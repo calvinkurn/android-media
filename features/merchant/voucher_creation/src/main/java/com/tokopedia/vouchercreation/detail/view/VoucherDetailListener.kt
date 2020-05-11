@@ -13,4 +13,8 @@ interface VoucherDetailListener {
     fun showDescriptionBottomSheet(title: String, content: String)
 
     fun onFooterCtaTextClickListener()
+
+    fun onInfoContainerCtaClick(dataKey: String)
+
+    fun showDownloadBottomSheet()
 }
