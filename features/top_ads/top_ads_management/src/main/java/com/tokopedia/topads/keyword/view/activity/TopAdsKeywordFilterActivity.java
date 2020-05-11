@@ -36,7 +36,7 @@ public class TopAdsKeywordFilterActivity extends BaseFilterActivity
     private boolean showStatus;
 
     @Override
-    public void setupBundlePass(Bundle extras) {
+    protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
         selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS,
                 KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
