@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
@@ -47,7 +48,7 @@ class TalkReplyViewHolder(view: View,
                 setOnClickListener {
                     threadListener.onUserDetailsClicked(userId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -59,7 +60,7 @@ class TalkReplyViewHolder(view: View,
                 setOnClickListener {
                     threadListener.onUserDetailsClicked(userId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -68,14 +69,14 @@ class TalkReplyViewHolder(view: View,
         if(date.isNotEmpty()) {
             itemView.replyDate.apply {
                 text = addBulletPointToDate(date)
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
 
     private fun showSellerLabelWithCondition(isSeller: Boolean) {
         if(isSeller) {
-            itemView.replySellerLabel.visibility = View.VISIBLE
+            itemView.replySellerLabel.show()
         }
     }
 
@@ -87,7 +88,7 @@ class TalkReplyViewHolder(view: View,
         if(isMasked) {
             itemView.replyMessage.apply {
                 text = maskedContent
-                visibility = View.VISIBLE
+                show()
                 isEnabled = false
             }
             return
@@ -95,7 +96,7 @@ class TalkReplyViewHolder(view: View,
         if(answer.isNotEmpty()) {
             itemView.replyMessage.apply {
                 text = answer
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -110,7 +111,7 @@ class TalkReplyViewHolder(view: View,
         val adapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
         itemView.replyAttachedProductsRecyclerView.adapter = adapter
         adapter.setData(attachedProducts)
-        itemView.replyAttachedProductsRecyclerView.visibility = View.VISIBLE
+        itemView.replyAttachedProductsRecyclerView.show()
     }
 
     private fun showKebabWithConditions(commentId: String, allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
@@ -118,13 +119,13 @@ class TalkReplyViewHolder(view: View,
             itemView.replyKebab.setOnClickListener {
                 onKebabClickedListener.onKebabClicked(commentId, allowReport, allowDelete)
             }
-            itemView.replyKebab.visibility = View.VISIBLE
+            itemView.replyKebab.show()
         }
     }
 
     private fun showTickerWithCondition(isMasked: Boolean, allowUnmask: Boolean) {
         if(isMasked && allowUnmask) {
-            itemView.replyReportedTicker.visibility = View.VISIBLE
+            itemView.replyReportedTicker.show()
         }
     }
 

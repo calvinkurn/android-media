@@ -2,7 +2,9 @@ package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
@@ -56,20 +58,20 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         itemView.readingMessage.apply {
             text = maskedContent
             isEnabled = false
-            visibility = View.VISIBLE
+            show()
         }
     }
 
     private fun showNoAnswersText() {
-        itemView.readingNoAnswersText.visibility = View.VISIBLE
+        itemView.readingNoAnswersText.show()
         hideOtherElements()
     }
 
     private fun hideNoAnswersText() {
         itemView.apply {
-            readingNoAnswersText.visibility = View.GONE
-            likeIcon.visibility = View.VISIBLE
-            likeCount.visibility = View.VISIBLE
+            readingNoAnswersText.hide()
+            likeIcon.show()
+            likeCount.show()
         }
     }
 
@@ -80,7 +82,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onUserDetailsClicked(userId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -92,7 +94,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onUserDetailsClicked(userId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -104,7 +106,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -113,14 +115,14 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         if(date.isNotEmpty()) {
             itemView.readingDate.apply {
                 text = addBulletPointToDate(date)
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
 
     private fun showSellerLabelWithCondition(isSeller: Boolean) {
         if(isSeller) {
-            itemView.readingSellerLabel.visibility = View.VISIBLE
+            itemView.readingSellerLabel.show()
         }
     }
 
@@ -135,7 +137,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         if(likeCount > 0) {
             itemView.likeCount.apply {
                 text = likeCount.toString()
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
@@ -143,9 +145,9 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     private fun showNumberOfAttachedProductsWithCondition(attachedProducts: Int) {
         if(attachedProducts > 0) {
             itemView.apply {
-                attachedProductIcon.visibility = View.VISIBLE
+                attachedProductIcon.show()
                 attachedProductCount.text = String.format(context.getString(R.string.reading_attached_product), attachedProducts)
-                attachedProductCount.visibility = View.VISIBLE
+                attachedProductCount.show()
             }
         }
     }
@@ -158,23 +160,23 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                visibility = View.VISIBLE
+                show()
             }
         }
     }
 
     private fun hideOtherElements() {
         itemView.apply {
-            likeIcon.visibility = View.GONE
-            likeCount.visibility = View.GONE
-            attachedProductCount.visibility = View.GONE
-            attachedProductIcon.visibility = View.GONE
-            readingMessage.visibility = View.GONE
-            readingProfilePicture.visibility = View.GONE
-            readingDisplayName.visibility = View.GONE
-            readingDate.visibility = View.GONE
-            seeOtherAnswers.visibility = View.GONE
-            readingSellerLabel.visibility = View.GONE
+            likeIcon.hide()
+            likeCount.hide()
+            attachedProductCount.hide()
+            attachedProductIcon.hide()
+            readingMessage.hide()
+            readingProfilePicture.hide()
+            readingDisplayName.hide()
+            readingDate.hide()
+            seeOtherAnswers.hide()
+            readingSellerLabel.hide()
         }
     }
 

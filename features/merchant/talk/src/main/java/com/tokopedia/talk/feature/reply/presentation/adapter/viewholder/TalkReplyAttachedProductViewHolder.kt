@@ -2,6 +2,7 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
@@ -17,7 +18,7 @@ class TalkReplyAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(v
             attachedProductCardListener.onClickAttachedProduct(attachedProduct.productId)
         }
         if(isInViewHolder) {
-            itemView.replyAttachedProductRemoveButton.visibility = View.GONE
+            itemView.replyAttachedProductRemoveButton.hide()
             return
         }
         itemView.replyAttachedProductRemoveButton.setOnClickListener {

@@ -40,9 +40,7 @@ class TalkReadingViewModel @Inject constructor(
     val filterCategories: LiveData<List<TalkReadingCategory>>
     get() = _filterCategories
 
-    private val _talkLastAction = MutableLiveData<TalkLastAction>()
-    val talkLastAction: LiveData<TalkLastAction>
-    get() = _talkLastAction
+    var talkLastAction: TalkLastAction? = null
 
     fun getDiscussionAggregate(productId: String, shopId: String) {
         launchCatchError(block = {
@@ -115,7 +113,7 @@ class TalkReadingViewModel @Inject constructor(
     }
 
     fun updateLastAction(lastAction: TalkLastAction) {
-        _talkLastAction.postValue(lastAction)
+        talkLastAction = lastAction
     }
 
 }
