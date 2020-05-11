@@ -12,6 +12,8 @@ import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
+import com.tokopedia.hotel.search.data.model.Filter
+import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.iris.util.IrisSession
