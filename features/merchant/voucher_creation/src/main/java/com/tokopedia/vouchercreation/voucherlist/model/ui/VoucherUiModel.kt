@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.model.ui
 
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactory
 
 /**
@@ -10,11 +12,11 @@ data class VoucherUiModel(
         val id: Int,
         val shopId: Int,
         val name: String,
-        val type: Int,
+        @VoucherTypeConst val type: Int,
         val typeFormatted: String,
         val image: String,
         val imageSquare: String,
-        val status: Int,
+        @VoucherStatusConst val status: Int,
         val statusFormatted: String,
         val discountType: Int,
         val discountTypeFormatted: String,
@@ -23,6 +25,7 @@ data class VoucherUiModel(
         val discountAmtMax: Int,
         val discountAmtMaxFormatted: String,
         val minimumAmt: Int,
+        val minimumAmtFormatted: String,
         val quota: Int,
         val remainingQuota: Int,
         val bookedQuota: Int,
@@ -37,9 +40,7 @@ data class VoucherUiModel(
         val updatedBy: Int,
         val isPublic: Boolean,
         val isQuotaAvailable: Boolean,
-        val tnc: String,
-        val hyperLink: HyperlinkUiModel,
-        val isOngoingStatus: Boolean
+        val tnc: String
 ) : BaseVoucherListUiModel {
 
     override fun type(typeFactory: VoucherListAdapterFactory): Int {
