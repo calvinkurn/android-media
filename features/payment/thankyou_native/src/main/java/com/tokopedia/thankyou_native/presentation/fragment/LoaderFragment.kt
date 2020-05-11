@@ -101,11 +101,13 @@ class LoaderFragment : BaseDaggerFragment() {
         globalError.visible()
         return if (throwable is UnknownHostException) {
             globalError.setType(GlobalError.NO_CONNECTION)
-            globalError.setActionClickListener {
+            globalError.errorAction.visible()
+            globalError.errorAction.setOnClickListener {
                 loadThankPageData()
             }
         } else {
             globalError.setType(GlobalError.SERVER_ERROR)
+            globalError.errorAction.gone()
         }
 
     }

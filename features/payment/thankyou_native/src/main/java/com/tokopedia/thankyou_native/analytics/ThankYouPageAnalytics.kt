@@ -168,10 +168,6 @@ class ThankYouPageAnalytics {
 
 }
 
-object ParentTrackingKeyValue {
-    val KEY_EVENT_VALUE = "transaction"
-    val KEY_EVENT_CATEGORY_VALUE = "order complete"
-}
 
 object ParentTrackingKey {
     val KEY_EVENT = "event"

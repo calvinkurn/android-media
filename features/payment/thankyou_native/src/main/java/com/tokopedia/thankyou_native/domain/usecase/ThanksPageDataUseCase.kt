@@ -26,7 +26,7 @@ class ThanksPageDataUseCase @Inject constructor(
             }
             )
         } catch (throwable: Throwable) {
-            throw throwable
+            onError(throwable)
         }
     }
 
