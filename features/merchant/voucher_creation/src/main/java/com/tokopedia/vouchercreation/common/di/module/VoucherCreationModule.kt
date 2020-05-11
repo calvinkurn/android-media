@@ -1,5 +1,8 @@
 package com.tokopedia.vouchercreation.common.di.module
 
+import com.tokopedia.graphql.coroutines.data.Interactor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import dagger.Module
 import dagger.Provides
@@ -13,4 +16,8 @@ class VoucherCreationModule {
     @VoucherCreationScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @VoucherCreationScope
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
 }
