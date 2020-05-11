@@ -3,22 +3,15 @@ package com.tokopedia.sellerorder.list.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.list.data.model.*
-import com.tokopedia.sellerorder.list.domain.SomGetFilterListUseCase
-import com.tokopedia.sellerorder.list.domain.SomGetOrderListUseCase
-import com.tokopedia.sellerorder.list.domain.SomGetOrderStatusListUseCase
-import com.tokopedia.sellerorder.list.domain.SomGetTickerListUseCase
-import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

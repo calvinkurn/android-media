@@ -281,7 +281,7 @@ class SomDetailViewModelTest {
         somDetailViewModel.editAwb("")
 
         //then
-        assert(somDetailViewModel.rejectOrderResult.value is Fail)
+        assert(somDetailViewModel.editRefNumResult.value is Fail)
     }
 
     @Test

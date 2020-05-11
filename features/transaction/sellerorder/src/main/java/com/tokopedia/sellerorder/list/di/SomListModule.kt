@@ -33,6 +33,10 @@ class SomListModule {
 
     @SomListScope
     @Provides
+    fun provideSomDispatcherProvider(): SomDispatcherProvider = SomProductionDispatcherProvider()
+
+    @SomListScope
+    @Provides
     fun provideSomGetTickerListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomListTicker.Data> = GraphqlUseCase(graphqlRepository)
 
     @SomListScope
@@ -49,5 +53,5 @@ class SomListModule {
 
     @SomListScope
     @Provides
-    fun provideSomDispatcherProvider(): SomDispatcherProvider = SomProductionDispatcherProvider()
+    fun provideSomGetAllFilterUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomListAllFilter.Data> = GraphqlUseCase(graphqlRepository)
 }

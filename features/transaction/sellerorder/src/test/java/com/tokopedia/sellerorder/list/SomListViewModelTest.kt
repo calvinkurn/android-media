@@ -1,26 +1,23 @@
 package com.tokopedia.sellerorder.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.list.data.model.*
-import com.tokopedia.sellerorder.list.domain.SomGetFilterListUseCase
-import com.tokopedia.sellerorder.list.domain.SomGetOrderListUseCase
-import com.tokopedia.sellerorder.list.domain.SomGetOrderStatusListUseCase
-import com.tokopedia.sellerorder.list.domain.SomGetTickerListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
+import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers.any
 
 /**
  * Created by fwidjaja on 2020-05-07.

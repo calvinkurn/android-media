@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.list.domain
+package com.tokopedia.sellerorder.list.domain.list
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter

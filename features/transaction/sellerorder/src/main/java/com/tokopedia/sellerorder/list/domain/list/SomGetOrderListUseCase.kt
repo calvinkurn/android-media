@@ -1,11 +1,9 @@
-package com.tokopedia.sellerorder.list.domain
+package com.tokopedia.sellerorder.list.domain.list
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
-import com.tokopedia.sellerorder.list.data.model.SomListTicker
-import com.tokopedia.sellerorder.list.data.model.SomListTickerParam
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
