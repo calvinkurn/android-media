@@ -225,7 +225,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         super.onDestroyView()
         if (::orientationManager.isInitialized) orientationManager.disable()
         if (::layoutManager.isInitialized) layoutManager.onDestroy()
-        scope.cancel()
+        job.cancelChildren()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

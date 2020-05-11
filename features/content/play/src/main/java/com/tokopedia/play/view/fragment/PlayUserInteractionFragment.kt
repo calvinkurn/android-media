@@ -242,7 +242,7 @@ class PlayUserInteractionFragment :
         destroyInsets(requireView())
         super.onDestroyView()
         layoutManager.onDestroy()
-        job.cancel()
+        job.cancelChildren()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
