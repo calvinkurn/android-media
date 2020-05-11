@@ -1,5 +1,6 @@
 package com.tokopedia.promotionstarget.presentation.ui.dialog
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
@@ -41,6 +42,7 @@ import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
+import com.tokopedia.promotionstarget.data.claim.PopGratificationActionButton
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.components.AppModule
@@ -49,10 +51,10 @@ import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApiResponseCallback
 import com.tokopedia.promotionstarget.presentation.TargetedPromotionAnalytics
+import com.tokopedia.promotionstarget.presentation.dpToPx
 import com.tokopedia.promotionstarget.presentation.loadImageGlide
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber
-import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogVM
@@ -63,6 +65,16 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
+//todo Rahul need to changes assets for non-login state
+/**
+ * Notes -
+ * ImageViewRight is used to display image for non-logged in state
+ * */
+
+//todo Rahul List
+// ALREADY LOGGED IN FLOW
+// RETRY FLOW
+// ALL ERROR STATES FOR BOTH UI
 class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     private val CONTAINER_COUPON = 0
@@ -88,6 +100,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var claimCouponApi: ClaimCouponApi
 
     private var data: GratificationDataContract? = null
+    var popGratificationActionButton: PopGratificationActionButton? = null
 
     private var originalBtnText: String? = null
     private var couponCodeAfterClaim: String? = null
@@ -108,9 +121,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private var skipBtnAction = false
     private var screenWidth = 0f
     private var IS_DISMISSED = false
+    private var isNewerVersion = false
 
     companion object {
         const val PARAM_WAITING_FOR_LOGIN = "PARAM_WAITING_FOR_LOGIN"
+        const val PARAM_REFERENCE_ID = "PARAM_REFERENCE_ID"
     }
 
     private val couponClaimResponseCallback = object : ClaimCouponApiResponseCallback {
@@ -151,8 +166,80 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         return R.layout.dialog_target_promotions
     }
 
-    fun showNonLoggedInUi(context: Context){
+    fun showNonLoggedInUi(activityContext: Context,
+                          data: GratificationDataContract,
+                          gratificationData: GratificationData): Dialog? {
+        isNewerVersion = true
 
+        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activityContext)
+        val view = LayoutInflater.from(activityContext).inflate(getLayout(TargetPromotionsCouponType.SINGLE_COUPON), null, false)
+        bottomSheet.setCustomContentView(view, "", true)
+        bottomSheet.show()
+        bottomSheetDialog = bottomSheet
+
+        initViews(view, activityContext, data, null, gratificationData)
+        setNonLoginUiData()
+        setNonLoggedInListeners()
+        return bottomSheet
+    }
+
+    fun showNonLoggedInDestroyedActivity(activityContext: Context,
+                                         referenceId: IntArray,
+                                         gratificationData: GratificationData): Dialog? {
+        isNewerVersion = true
+
+        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activityContext)
+        val view = LayoutInflater.from(activityContext).inflate(getLayout(TargetPromotionsCouponType.SINGLE_COUPON), null, false)
+        bottomSheet.setCustomContentView(view, "", true)
+        bottomSheet.show()
+        bottomSheetDialog = bottomSheet
+
+        initViews(view, activityContext, null, null, gratificationData)
+        setNonLoginUiData()
+        setNonLoggedInListeners()
+
+        val ids = arrayListOf<Int>()
+        referenceId.forEach {
+            ids.add(it)
+        }
+        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, ids)
+        return bottomSheet
+    }
+
+    fun showNewLoggedIn(activityContext: Context,
+                        couponUiType: TargetPromotionsCouponType,
+                        data: GratificationDataContract,
+                        couponDetailResponse: GetCouponDetailResponse,
+                        gratificationData: GratificationData,
+                        waitingForLogin: Boolean): Dialog? {
+        isNewerVersion = true
+
+        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activityContext)
+        val view = LayoutInflater.from(activityContext).inflate(getLayout(TargetPromotionsCouponType.SINGLE_COUPON), null, false)
+        bottomSheet.setCustomContentView(view, "", true)
+        bottomSheet.show()
+        bottomSheetDialog = bottomSheet
+
+        if (waitingForLogin) {
+            //show login
+            initViews(view, activityContext, data, null, gratificationData)
+            setNonLoginUiData()
+            setNonLoggedInListeners()
+
+            // make call to claim coupon
+            if (data is GetPopGratificationResponse) {
+                viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, data.popGratification?.popGratificationBenefits?.map { it -> it?.referenceID })
+            }
+
+        }
+        //show recyclerview coupons
+
+        //show title & text
+
+        // show buttons
+
+        //btn redirect is based on response from ClaimPopGratificationResponse
+        return bottomSheet
     }
 
     fun show(activityContext: Context,
@@ -181,6 +268,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         bottomSheetDialog = bottomSheet
         this.claimCouponApi = claimCouponApi
         initViews(view, activityContext, data, couponDetailResponse, gratificationData)
+        setListeners(activityContext)
 
         if (autoHitActionButton) {
             btnAction.performClick()
@@ -201,10 +289,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         return bottomSheet
     }
 
+
     @SuppressLint("ClickableViewAccessibility")
     private fun initViews(root: View, activityContext: Context,
-                          data: GratificationDataContract,
-                          couponDetailResponse: GetCouponDetailResponse,
+                          data: GratificationDataContract?,
+                          couponDetailResponse: GetCouponDetailResponse?,
                           gratificationData: GratificationData) {
         imageView = root.findViewById(R.id.imageView)
         tvTitle = root.findViewById(R.id.tvTitle)
@@ -243,16 +332,35 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         this.gratificationData = gratificationData
 
         initInjections(activityContext)
-        setUiData(couponDetailResponse)
-        setListeners(activityContext)
-
+        couponDetailResponse?.let {
+            setUiData(it)
+        }
     }
 
     private fun initialAnimation() {
-        rightViewList.forEach {
-            it.translationX = screenWidth
-            it.alpha = 0f
+        if (isNewerVersion) {
+            leftViewList.forEach {
+                it.translationX = screenWidth
+                it.alpha = 0f
+            }
+        } else {
+            rightViewList.forEach {
+                it.translationX = screenWidth
+                it.alpha = 0f
+            }
         }
+
+    }
+
+    private fun setNonLoginUiData() {
+        tvTitleRight.text = tvTitle.context.getString(R.string.t_promo_non_login_title)
+        tvSubTitleRight.text = tvTitle.context.getString(R.string.t_promo_non_login_sub_title)
+        originalBtnText = tvTitle.context.getString(R.string.t_promo_login_sekarang)
+        btnAction.text = originalBtnText
+        imageViewRight.layoutParams.apply {
+            height = imageViewRight.dpToPx(280).toInt()
+        }
+        imageViewRight.setImageResource(R.drawable.t_promo_non_login)
     }
 
     private fun setUiData(couponDetailResponse: GetCouponDetailResponse) {
@@ -306,9 +414,16 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     fun onActivityResumeIfWaitingForLogin(isLoggedIn: Boolean) {
+        //todo Rahul check for newer & older version
         if (!originallyLoggedIn && !IS_DISMISSED && isLoggedIn) {
-            skipBtnAction = false
-            btnAction.performClick()
+            if (isNewerVersion) {
+                if (data is GetPopGratificationResponse) {
+                    viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, (data as GetPopGratificationResponse).popGratification?.popGratificationBenefits?.map { it -> it?.referenceID })
+                }
+            } else {
+                skipBtnAction = false
+                btnAction.performClick()
+            }
         }
     }
 
@@ -330,6 +445,40 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         imageView.loadImageGlide(R.drawable.t_promo_server_error)
     }
 
+    //todo Rahul
+    private fun setUiForSuccessClaimGratificationNewVersion(data: ClaimPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse? = null) {
+        tvTitle.text = data.popGratificationClaim?.title
+        tvSubTitle.text = data.popGratificationClaim?.text
+        originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
+        btnAction.text = originalBtnText
+        popGratificationActionButton = data.popGratificationClaim?.popGratificationActionButton
+
+
+        //load data in rv
+        // check for error as well
+
+        //todo check 1
+        val couponDetailList = ArrayList<GetCouponDetail>()
+        couponDetailResponse?.couponList?.let {
+            couponDetailList.addAll(it)
+            couponListAdapter = CouponListAdapter(couponDetailList)
+            recyclerView.adapter = couponListAdapter
+            recyclerView.addItemDecoration(CouponItemDecoration())
+            viewFlipper.displayedChild = CONTAINER_COUPON
+        }
+
+        //todo check 2
+        if (couponDetailList.isEmpty()) {
+            imageView.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
+                expandBottomSheet()
+            }
+        }
+
+        performAnimationClaimUiVersionNew()
+
+    }
+
+    //todo Rahul (NOW - coupod detail is empty because benefits are empty in claim response)
     private fun setUiForSuccessClaimGratification(data: ClaimPopGratificationResponse) {
         tvTitleRight.text = data.popGratificationClaim?.title
         tvSubTitleRight.text = data.popGratificationClaim?.text
@@ -345,10 +494,61 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         this.data = data
         shouldCallAutoApply = true
 
-        if(!couponCodeAfterClaim.isNullOrEmpty()){
+        if (!couponCodeAfterClaim.isNullOrEmpty()) {
             tvSubTitleRight.text = tvSubTitleRight.context.getString(R.string.t_promo_kupon_sudah_ada_dihalaman_keranjangmu_ya)
             originalBtnText = tvSubTitleRight.context.getString(R.string.t_promo_belanja_sekarang)
             btnAction.text = originalBtnText
+        }
+    }
+
+    //todo Rahul not ready
+    private fun setNonLoggedInListeners() {
+        if (btnAction.context is AppCompatActivity) {
+            val activity = btnAction.context as AppCompatActivity
+
+            btnAction.setOnClickListener {
+                shouldCallAutoApply = false
+                if (!skipBtnAction) {
+                    if (UserSession(activity).isLoggedIn) {
+
+                        popGratificationActionButton?.let { btn ->
+                            if (!btn.type.isNullOrEmpty() && btn.type == "dismiss") {
+                                bottomSheetDialog.dismiss()
+                            } else if (!btn.appLink.isNullOrEmpty()) {
+                                RouteManager.route(btnAction.context, btn.appLink)
+                            } else {
+                                bottomSheetDialog.dismiss()
+                            }
+                        }
+                    } else {
+                        routeToLogin(activity)
+                    }
+                }
+                skipBtnAction = true
+            }
+
+            //todo Rahul - set error ui
+            viewModel.claimApiLiveData.observe(activity, Observer {
+                when (it.status) {
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        toggleProgressBar(false)
+                        toggleBtnText(true)
+                        it.data?.let { claim ->
+                            setUiForSuccessClaimGratificationNewVersion(claim.first, claim.second)
+                        }
+
+                    }
+                    LiveDataResult.STATUS.ERROR -> {
+                        toggleProgressBar(false)
+                        toggleBtnText(true)
+                    }
+
+                    LiveDataResult.STATUS.LOADING->{
+                        toggleProgressBar(true)
+                        toggleBtnText(false)
+                    }
+                }
+            })
         }
     }
 
@@ -409,6 +609,51 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
+    //todo Rahul same code as performAnimationToGotoClaimUI - refactor this
+    // todo Rahul imageView is switched with imageViewRight
+    private fun performAnimationClaimUiVersionNew() {
+        val alphaDuration = 300L
+        val translateAnimationDuration = 600L
+        val startDelay = alphaDuration
+
+        //fade out
+        rightViewList.forEach {
+            it.animate().setDuration(alphaDuration).alpha(0f)
+        }
+
+        imageViewRight.animate().setDuration(translateAnimationDuration).translationX(-screenWidth).setListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                imageViewRight.visibility = View.GONE
+                expandBottomSheet()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+
+            }
+        })
+        tvTitleRight.animate().setStartDelay(100L).setDuration(translateAnimationDuration).translationX(-screenWidth)
+        tvSubTitleRight.animate().setStartDelay(150L).setDuration(translateAnimationDuration).translationX(-screenWidth)
+
+
+        //fade in
+
+        leftViewList.forEach {
+            it.animate().setStartDelay(startDelay).setDuration(translateAnimationDuration).alpha(1f)
+        }
+
+        viewFlipper.animate().setStartDelay(startDelay).setDuration(translateAnimationDuration).translationX(0f)
+        tvTitle.animate().setStartDelay(startDelay + 100L).setDuration(translateAnimationDuration).translationX(0f)
+        tvSubTitle.animate().setStartDelay(startDelay + 150L).setDuration(translateAnimationDuration).translationX(0f)
+    }
+
     private fun performAnimationToGotoClaimUI() {
 
         val alphaDuration = 300L
@@ -433,6 +678,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     }
 
+    //todo Rahul needs to refactor
     private fun performActionAfterCouponIsClaimed(activityContext: Activity, data: ClaimPopGratificationResponse, buttonText: String) {
 
         val applink = data.popGratificationClaim?.popGratificationActionButton?.appLink
@@ -444,7 +690,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         TargetedPromotionAnalytics.userClickCheckMyCoupon(buttonText)
     }
 
-    private fun performActionToClaimCoupon(data: GetPopGratificationResponse, activityContext: Activity, btnActionText:String) {
+    private fun performActionToClaimCoupon(data: GetPopGratificationResponse, activityContext: Activity, btnActionText: String) {
 
         val userSession = UserSession(activityContext)
         if (userSession.isLoggedIn) {
@@ -462,29 +708,54 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 bottomSheetDialog.dismiss()
             }
         } else {
-            val bundle = addGratificationDataInBundleIfNotLoggedIn(activityContext, gratificationData)
-            activityContext.intent.putExtras(bundle)
-            activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
 
-            val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
-            activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
-
-            val handler = Handler()
-            handler.postDelayed({
-                toggleProgressBar(false)
-                toggleBtnText(true)
-            }, 300L)
-        }
-
-        val applink = data.popGratification?.popGratificationActionButton?.appLink
-        if (retryCount > 0) {
-            TargetedPromotionAnalytics.tryAgain()
-        } else if (TextUtils.isEmpty(applink)) {
-            TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn)
-        } else {
-            TargetedPromotionAnalytics.performButtonAction(btnActionText)
+            routeToLogin(activityContext)
+            val applink = data.popGratification?.popGratificationActionButton?.appLink
+            if (retryCount > 0) {
+                TargetedPromotionAnalytics.tryAgain()
+            } else if (TextUtils.isEmpty(applink)) {
+                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn)
+            } else {
+                TargetedPromotionAnalytics.performButtonAction(btnActionText)
+            }
         }
     }
+
+    private fun routeToLogin(activityContext: Activity) {
+        val bundle = addGratificationDataInBundleIfNotLoggedIn(activityContext, gratificationData)
+        activityContext.intent.putExtras(bundle)
+        activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
+        if (isNewerVersion) {
+            activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
+
+            if (data is GetPopGratificationResponse) {
+                val benefits = (data as GetPopGratificationResponse).popGratification?.popGratificationBenefits
+                if (!benefits.isNullOrEmpty()) {
+                    val intArray = IntArray(benefits.size)
+                    benefits.forEachIndexed { index, item ->
+                        item?.referenceID?.let { referenceID ->
+                            intArray[index] = referenceID
+                        }
+                    }
+
+                    if (intArray.isNotEmpty() && intArray[0] != 0) {
+                        activityContext.intent?.putExtra(PARAM_REFERENCE_ID, intArray)
+                    }
+
+                }
+            }
+        }
+
+        val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
+        activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
+
+        val handler = Handler()
+        handler.postDelayed({
+            toggleProgressBar(false)
+            toggleBtnText(true)
+        }, 300L)
+    }
+
 
     private fun initInjections(activityContext: Context) {
         val activity = activityContext as AppCompatActivity

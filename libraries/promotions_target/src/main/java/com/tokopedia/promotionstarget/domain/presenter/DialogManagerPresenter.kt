@@ -9,11 +9,14 @@ import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCas
 import com.tokopedia.promotionstarget.domain.usecase.GetCouponDetailUseCase
 import com.tokopedia.promotionstarget.domain.usecase.GetPopGratificationUseCase
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class DialogManagerPresenter @Inject constructor(val getPopGratificationUseCase: GetPopGratificationUseCase,
-                                                 val couponDetailUseCase: GetCouponDetailUseCase,
-                                                 val claimPopGratificationUseCase: ClaimPopGratificationUseCase
+class DialogManagerPresenter @Inject constructor(
+        val userSession: UserSession,
+        val getPopGratificationUseCase: GetPopGratificationUseCase,
+        val couponDetailUseCase: GetCouponDetailUseCase,
+        val claimPopGratificationUseCase: ClaimPopGratificationUseCase
 ) {
 
     suspend fun getGratificationAndShowDialog(gratificationData: GratificationData): GetPopGratificationResponse {

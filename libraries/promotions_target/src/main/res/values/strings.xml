@@ -13,4 +13,7 @@
     <string name="t_promo_apakah_kamu_mau_klaim_kupon_ini">Apakah kamu mau klaim kupon ini?</string>
     <string name="t_promo_kupon_sudah_ada_dihalaman_keranjangmu_ya">Kupon sudah ada dihalaman keranjangmu ya</string>
     <string name="t_promo_belanja_sekarang">Belanja Sekarang</string>
+    <string name="t_promo_non_login_title">Selangkah lagi untuk dapatkan kuponmu</string>
+    <string name="t_promo_non_login_sub_title">Ayo login ke akun Tokopedia kamu supaya kuponnya bisa segera dipakai untuk belanja!</string>
+    <string name="t_promo_login_sekarang">Login Sekarang</string>
 </resources>

@@ -9,10 +9,8 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.promotionstarget.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -24,18 +22,21 @@ fun AppCompatImageView.loadImageGlide(url: String?, onLoadingFinished: (success:
                 .load(url)
                 .placeholder(R.drawable.t_promo_placeholder)
                 .dontAnimate()
-                .listener(object : RequestListener<Drawable> {
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        onLoadingFinished(true)
-                        return false
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        onLoadingFinished(false)
                     }
 
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    override fun onLoadCleared(placeholder: Drawable?) {
                         onLoadingFinished(false)
-                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        this@loadImageGlide.setImageDrawable(resource)
+                        onLoadingFinished(true)
                     }
                 })
-                .into(this)
     }
 }
 
