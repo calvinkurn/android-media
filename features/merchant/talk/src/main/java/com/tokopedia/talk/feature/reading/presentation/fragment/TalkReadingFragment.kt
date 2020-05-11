@@ -42,6 +42,7 @@ import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
+import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -430,7 +431,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToReplyActivity(questionID: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.TALK_REPLY, questionID, productId, shopId, TALK_READING_SOURCE)
+        val intent = RouteManager.getIntent(
+                context,
+                Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID, productId))
+                        .buildUpon()
+                        .appendQueryParameter(PARAM_SHOP_ID, shopId)
+                        .build().toString()
+        )
         startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
     }
 

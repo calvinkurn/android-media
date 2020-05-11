@@ -16,10 +16,12 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk_old.common.adapter.viewholder.CommentTalkViewHolder
@@ -43,6 +45,8 @@ import com.tokopedia.talk_old.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk_old.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity.Companion.SOURCE
+import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity.Companion.SOURCE_INBOX
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import java.util.*
 import javax.inject.Inject
@@ -654,11 +658,11 @@ open class InboxTalkFragment : BaseDaggerFragment(),
             context?.run {
                 val intent = RouteManager.getIntent(
                         context,
-                        ApplinkConstInternalGlobal.TALK_REPLY,
-                        talkId,
-                        productId,
-                        shopId,
-                        TalkDetailsActivity.SOURCE_INBOX
+                        Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, talkId, productId))
+                                .buildUpon()
+                                .appendQueryParameter(PARAM_SHOP_ID, shopId)
+                                .appendQueryParameter(SOURCE, SOURCE_INBOX)
+                                .build().toString()
                 )
                 this@InboxTalkFragment.startActivityForResult(
                         intent, REQUEST_GO_TO_DETAIL)

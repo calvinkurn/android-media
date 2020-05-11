@@ -176,9 +176,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val TALK_REPLY_BASE = "$INTERNAL_GLOBAL/reply-talk/"
     @JvmField
-    val TALK_REPLY = "$TALK_REPLY_BASE{question_id}/{product_id}/?" +
-            "shop_id={shop_id}&" +
-            "source={source}"
+    val TALK_REPLY = "$TALK_REPLY_BASE{question_id}/{product_id}/"
 
     // TalkDetailsActivity
     // tokopedia-android-internal://global/detail-talk

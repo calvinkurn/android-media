@@ -19,11 +19,13 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk_old.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.common.adapter.TalkProductAttachmentAdapter
@@ -368,11 +370,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
             context?.run {
                 val intent = RouteManager.getIntent(
                         context,
-                        ApplinkConstInternalGlobal.TALK_REPLY,
-                        talkId,
-                        productId,
-                        shopId,
-                        TalkDetailsActivity.SOURCE_PDP
+                        Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, talkId, productId))
+                                .buildUpon()
+                                .appendQueryParameter(TalkConstants.PARAM_SHOP_ID, shopId)
+                                .appendQueryParameter(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_PDP)
+                                .build().toString()
                 )
                 this@ProductTalkFragment.startActivityForResult(
                         intent, REQUEST_GO_TO_DETAIL)

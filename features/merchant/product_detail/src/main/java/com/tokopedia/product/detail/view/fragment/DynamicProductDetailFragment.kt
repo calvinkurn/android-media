@@ -73,6 +73,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_ID
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -2816,13 +2817,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun goToReplyActivity(questionID: String) {
         viewModel.getDynamicProductInfoP1?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.TALK_REPLY, questionID, it.basic.productID, it.basic.shopID)
+            val intent = RouteManager.getIntent(
+                    context,
+                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID, it.basic.productID))
+                            .buildUpon()
+                            .appendQueryParameter(PARAM_SHOP_ID, it.basic.shopID)
+                            .build().toString()
+            )
             startActivity(intent)
         }
     }
 
     private fun goToWriteActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_TALK)
+        viewModel.getDynamicProductInfoP1?.basic?.productID?.let {
+            val intent = RouteManager.getIntent(context, Uri.parse(ApplinkConstInternalGlobal.ADD_TALK).buildUpon().appendQueryParameter(ProductDetailConstant.PARAM_PRODUCT_ID, it).build().toString())
+            startActivity(intent)
+        }
     }
 
     private fun goToProfileActivity(userId: String) {

@@ -40,7 +40,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionDataModel
 
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
-        get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionMostHelpfulDataModel
+        get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
     val productMostHelpfulMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
