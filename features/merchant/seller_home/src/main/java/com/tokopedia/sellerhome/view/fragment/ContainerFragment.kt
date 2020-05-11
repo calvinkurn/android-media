@@ -88,7 +88,6 @@ class ContainerFragment : Fragment() {
 
         setupView()
         observeCurrentSelectedPage()
-        setupDefaultPage()
     }
 
     private fun setupView() = view?.run {
@@ -107,10 +106,6 @@ class ContainerFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun setupDefaultPage() {
-        sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
     }
 
     private fun observeCurrentSelectedPage() {

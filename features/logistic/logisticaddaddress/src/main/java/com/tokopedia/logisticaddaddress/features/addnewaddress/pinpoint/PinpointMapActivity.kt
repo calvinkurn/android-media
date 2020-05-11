@@ -79,11 +79,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
         }
 
         if (isAllowed) {
-            if(!isFullFLow) AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
-            else AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation(isFullFLow)
         } else {
-            if(!isFullFLow) AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = NON_LOGISTIC_LABEL)
-            else AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation(isFullFLow)
         }
 
     }

@@ -13,8 +13,10 @@ import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaWra
 import com.tokopedia.product.manage.feature.filter.data.model.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProduct
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.*
@@ -24,9 +26,9 @@ import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductU
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.FeaturedProductResponseModel
-import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.GoldManageFeaturedProductV2
-import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.Header
+import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
+import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
+import com.tokopedia.product.manage.feature.list.data.model.Header
 import com.tokopedia.product.manage.verification.verifyErrorEquals
 import com.tokopedia.product.manage.verification.verifySuccessEquals
 import com.tokopedia.product.manage.verification.verifyValueEquals
@@ -42,12 +44,15 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption.*
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.verifyAll
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import rx.Subscriber
 
 class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
@@ -190,6 +195,49 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
+    fun `given selected filter and sort null when setSelectedFilter should set default filter option`() {
+        val selectedFilter = listOf(CashBackOnly, NewOnly)
+
+        viewModel.setSelectedFilter(selectedFilter)
+
+        val expectedSelectedFilter = FilterOptionWrapper(
+            null,
+            selectedFilter,
+            listOf(true, true, false, false)
+        )
+
+        viewModel.selectedFilterAndSort
+            .verifyValueEquals(expectedSelectedFilter)
+    }
+
+    @Test
+    fun `given sort option null when setSelectedFilter should NOT add sort option to filter count`() {
+        val sortOption = null
+        val selectedFilterCount = 2
+        val selectedFilter = listOf(CashBackOnly, NewOnly)
+
+        val filterOption = FilterOptionWrapper(
+            sortOption,
+            selectedFilter,
+            listOf(true, true, false, false),
+            selectedFilterCount
+        )
+
+        viewModel.setFilterOptionWrapper(filterOption)
+        viewModel.setSelectedFilter(selectedFilter)
+
+        val expectedFilterOption = FilterOptionWrapper(
+            null,
+            selectedFilter,
+            listOf(true, true, false, true),
+            selectedFilterCount
+        )
+
+        viewModel.selectedFilterAndSort
+            .verifyValueEquals(expectedFilterOption)
+    }
+
+    @Test
     fun `when setFilter should update filter accordingly`() {
         val filterOptionWrapper = FilterOptionWrapper(
                 SortByName(ASC),
@@ -260,6 +308,8 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
             viewModel.productListResult
                 .verifySuccessEquals(expectedProductList)
+
+            verifyHideProgressBar()
         }
     }
 
@@ -294,8 +344,8 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         viewModel.setFilterOptionWrapper(filterOptions)
         viewModel.getFiltersTab()
 
-        val filterTabList = listOf(MoreFilter(3),Active(10))
-        val expectedResult = Success(GetFilterTabResult(filterTabList, 10))
+        val filterTabList = listOf(Active(10))
+        val expectedResult = Success(ShowFilterTab(filterTabList, 10))
 
         viewModel.productFiltersTab
             .verifySuccessEquals(expectedResult)
@@ -432,6 +482,19 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         viewModel.getFiltersTab()
 
         val expectedProductCount = 10
+        val actualProductCount = viewModel.getTotalProductCount()
+
+        assertEquals(expectedProductCount, actualProductCount)
+    }
+
+    @Test
+    fun `given get filters tab is null when get total product count should return zero`() {
+        onGetFiltersTab_thenError(NullPointerException())
+
+        viewModel.getFiltersTab()
+        viewModel.getTotalProductCount()
+
+        val expectedProductCount = 0
         val actualProductCount = viewModel.getTotalProductCount()
 
         assertEquals(expectedProductCount, actualProductCount)
@@ -586,6 +649,76 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             .verifyErrorEquals(expectedResult)
     }
 
+    @Test
+    fun `when get free claim success should set live data value success`() {
+        val dataDeposit = DataDeposit()
+
+        onGetFreeClaim_thenReturn(dataDeposit)
+
+        viewModel.getFreeClaim("query", "1")
+
+        val expectedResult = Success(dataDeposit)
+
+        viewModel.getFreeClaimResult
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when get free claim error should set live data value fail`() {
+        val error = NullPointerException()
+
+        onGetFreeClaim_thenReturn(error)
+
+        viewModel.getFreeClaim("query", "1")
+
+        val expectedResult = Fail(error)
+
+        viewModel.getFreeClaimResult
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when get popups info success should set live data value success`() {
+        val productId = "1"
+        val showPopup = true
+
+        onGetPopupsInfo_thenReturn(showPopup)
+
+        viewModel.getPopupsInfo(productId)
+
+        val expectedResult = Success(GetPopUpResult(productId, showPopup))
+
+        viewModel.getPopUpResult
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when get popups info error should set live data value fail`() {
+        val error = NullPointerException()
+
+        onGetPopupsInfo_thenReturn(error)
+
+        viewModel.getPopupsInfo("1")
+
+        val expectedResult = Fail(error)
+
+        viewModel.getPopUpResult
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when detach view should call use case unsubscribe and cancelJobs`() {
+        viewModel.detachView()
+
+        verifyAll {
+            gqlGetShopInfoUseCase.cancelJobs()
+            topAdsGetShopDepositGraphQLUseCase.unsubscribe()
+            popupManagerAddProductUseCase.unsubscribe()
+            getProductListUseCase.cancelJobs()
+            setFeaturedProductUseCase.cancelJobs()
+        }
+    }
+
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
         coEvery { multiEditProductUseCase.execute(any()) } coAnswers { throw exception }
     }
@@ -642,6 +775,38 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         coEvery { editProductVariantUseCase.execute(any()) } throws error
     }
 
+    private fun onGetFreeClaim_thenReturn(deposit: DataDeposit) {
+        coEvery {
+            topAdsGetShopDepositGraphQLUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DataDeposit>>().onNext(deposit)
+        }
+    }
+
+    private fun onGetFreeClaim_thenReturn(error: Throwable) {
+        coEvery {
+            topAdsGetShopDepositGraphQLUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DataDeposit>>().onError(error)
+        }
+    }
+
+    private fun onGetPopupsInfo_thenReturn(showPopup: Boolean) {
+        coEvery {
+            popupManagerAddProductUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onNext(showPopup)
+        }
+    }
+
+    private fun onGetPopupsInfo_thenReturn(error: Throwable) {
+        coEvery {
+            popupManagerAddProductUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onError(error)
+        }
+    }
+
     private fun verifyEditPriceUseCaseCalled() {
         coVerify { editPriceUseCase.executeOnBackground() }
     }
@@ -675,5 +840,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     private fun verifyFilterOptionWrapperEquals(expectedFilterOptionWrapper: FilterOptionWrapper) {
         val actualFilterOptionWrapper = viewModel.selectedFilterAndSort.value
         assertEquals(expectedFilterOptionWrapper, actualFilterOptionWrapper)
+    }
+
+    private fun verifyHideProgressBar() {
+        viewModel.viewState.verifyValueEquals(HideProgressDialog)
     }
 }

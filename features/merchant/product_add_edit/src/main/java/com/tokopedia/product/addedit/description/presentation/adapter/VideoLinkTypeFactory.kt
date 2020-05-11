@@ -44,18 +44,27 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
         }
 
         override fun bind(element: VideoLinkModel) {
+            itemView.textFieldUrl.textAreaInput.apply {
+                maxLines = 1
+                setSingleLine(true)
+            }
+            itemView.textFieldUrl.apply {
+                isLabelStatic = false
+                textAreaLabel = getString(R.string.label_video_url_placeholder)
+                textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
+            }
             // Remove listener and set the text so it will not trigger textWatcher
             if (isFirstLoaded) {
                 itemView.textFieldUrl.apply {
-                    textFieldInput.addTextChangedListener(textWatcher)
+                    textAreaInput.addTextChangedListener(textWatcher)
                     if (element.inputUrl.isNotEmpty()) setText(element.inputUrl)
                 }
                 isFirstLoaded = false
             } else {
                 itemView.textFieldUrl.apply {
-                    textFieldInput.removeTextChangedListener(textWatcher)
+                    textAreaInput.removeTextChangedListener(textWatcher)
                     replaceTextAndRestoreCursorPosition(element.inputUrl)
-                    textFieldInput.addTextChangedListener(textWatcher)
+                    textAreaInput.addTextChangedListener(textWatcher)
                     requestFocus()
                 }
             }
@@ -63,7 +72,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             loadLayout(element.inputUrl, element.inputImage, element.inputTitle,
                     element.inputDescription, element.errorMessage)
 
-            itemView.textFieldUrl.getSecondIcon().setOnClickListener {
+            itemView.textFieldUrl.textAreaIconClose.setOnClickListener {
                 itemView.textFieldUrl.clearFocus()
                 listener?.onDeleteClicked(element, adapterPosition)
             }
@@ -77,16 +86,16 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                                errorMessage: String) {
             itemView.apply {
                 cardThumbnail.visibility = if (inputTitle.isEmpty()) View.GONE else View.VISIBLE
-                textFieldUrl.textFieldIcon2.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
+                itemView.textFieldUrl.textAreaIconClose.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
                 imgThumbnail.urlSrc = imageUrl
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription
-                if (errorMessage.isNotEmpty() && !textFieldUrl.textFieldInput.text.isBlank()) {
-                    textFieldUrl.setError(true)
-                    textFieldUrl.setMessage(errorMessage)
+                if (errorMessage.isNotEmpty() && !textFieldUrl.textAreaInput.text.isBlank()) {
+                    textFieldUrl.isError = true
+                    textFieldUrl.textAreaMessage = errorMessage
                 } else {
-                    textFieldUrl.setError(false)
-                    textFieldUrl.setMessage("")
+                    textFieldUrl.isError = false
+                    textFieldUrl.textAreaMessage = ""
                 }
 
                 cardThumbnail.setOnClickListener { listener?.onThumbnailClicked(inputUrl) }

@@ -38,7 +38,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="center_horizontal"
-            tools:text="@string/activation_ovo_desc" />
+            tools:text="@string/wallet_activation_ovo_desc" />
 
         <Button
             android:id="@+id/activation_ovo_btn"

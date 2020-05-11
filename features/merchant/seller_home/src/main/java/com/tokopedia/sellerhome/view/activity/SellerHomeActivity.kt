@@ -71,7 +71,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         OtherMenuFragment.createInstance()
     }
 
-    private var currentSelectedMenu = 0
+    @FragmentType
+    private var currentSelectedMenu = FragmentType.NONE
     private var canExitApp = false
     private var lastProductMangePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
@@ -86,7 +87,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
         initInjector()
         setupBottomNav()
-        setupDefaultPage(savedInstanceState)
+        setupDefaultPage()
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
@@ -124,8 +125,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         statusBarCallback = callback
     }
 
-    private fun setupDefaultPage(savedInstanceState: Bundle?) {
-        if (null == savedInstanceState) {
+    private fun setupDefaultPage() {
+        if (intent?.data == null) {
             val homePage = PageFragment(FragmentType.HOME)
             sharedViewModel.setCurrentSelectedPage(homePage)
             showFragment(containerFragment)

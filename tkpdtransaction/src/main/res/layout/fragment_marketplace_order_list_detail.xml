@@ -103,17 +103,28 @@
                         android:layout_marginEnd="@dimen/dp_16"
                         android:background="@color/grey_300" />
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_16"
-                        android:orientation="horizontal">
+                        android:layout_margin="@dimen/dp_16">
 
                         <TextView
                             android:id="@+id/invoice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" />
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"/>
+                        
+                        <ImageView
+                            android:id="@+id/iv_copy_invoice"
+                            android:layout_width="@dimen/dp_16"
+                            android:layout_height="@dimen/dp_16"
+                            android:layout_marginStart="@dimen/dp_6"
+                            android:layout_marginLeft="@dimen/dp_6"
+                            app:srcCompat="@drawable/ic_copy"
+                            android:layout_toRightOf="@id/invoice"
+                            android:layout_toEndOf="@id/invoice"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:id="@+id/lihat"
@@ -121,9 +132,12 @@
                             android:layout_height="wrap_content"
                             android:text="@string/lihat_text"
                             android:textSize="@dimen/sp_12"
-                            android:textColor="@color/green_250" />
+                            android:textColor="@color/green_250"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
+                            tools:ignore="RelativeOverlap" />
 
-                    </LinearLayout>
+                    </RelativeLayout>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -148,6 +162,33 @@
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
                     android:visibility="gone" />
+                
+                <RelativeLayout
+                    android:id="@+id/rl_shop_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/shop_info_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:textColor="@color/black_70"
+                        android:textSize="@dimen/sp_16"/>
+                    
+                    <ImageView
+                        android:id="@+id/iv_shop_info"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_toRightOf="@id/shop_info_label"
+                        android:layout_toEndOf="@id/shop_info_label"
+                        android:layout_centerVertical="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_items"

@@ -102,12 +102,12 @@ class ProductManageViewModel @Inject constructor(
         get() = _multiEditProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
-    val productFiltersTab: LiveData<Result<GetFilterTabResult>>
-        get() = _productFiltersTab
     val editVariantPriceResult: LiveData<Result<EditVariantResult>>
         get() = _editVariantPriceResult
     val editVariantStockResult: LiveData<Result<EditVariantResult>>
         get() = _editVariantStockResult
+    val productFiltersTab: LiveData<Result<GetFilterTabResult>>
+        get() = _productFiltersTab
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -122,9 +122,9 @@ class ProductManageViewModel @Inject constructor(
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
-    private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
+    private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -238,17 +238,16 @@ class ProductManageViewModel @Inject constructor(
         getFilterTabJob?.cancel()
 
         launchCatchError(block = {
-            val selectedFilter = selectedFilterAndSort.value
-            val selectedFilterCount = selectedFilter?.selectedFilterCount ?: 0
-
             val response = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
                 getProductListMetaUseCase.setParams(userSessionInterface.shopId)
                 getProductListMetaUseCase.executeOnBackground()
+                    .productListMetaWrapper
+                    .productListMetaData
+                    .tabs
             }
 
-            val result = mapToFilterTabResult(response, selectedFilterCount)
-            _productFiltersTab.value = Success(result)
+            _productFiltersTab.apply { value = Success(mapToFilterTabResult(response)) }
         }, onError = {
             if(it is CancellationException) {
                 return@launchCatchError
@@ -472,7 +471,7 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun getTotalProductCount(): Int {
-       return (productFiltersTab.value as? Success<GetFilterTabResult>)
+       return (_productFiltersTab.value as? Success<GetFilterTabResult>)
            ?.data?.totalProductCount.orZero()
     }
 

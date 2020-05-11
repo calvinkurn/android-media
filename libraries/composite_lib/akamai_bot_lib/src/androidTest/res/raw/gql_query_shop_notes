@@ -1,0 +1,14 @@
+query ShopNotes {
+  shopNotes {
+    result {
+      id
+      title
+      content
+      isTerms
+      updateTime
+    }
+    error {
+      message
+    }
+  }
+}

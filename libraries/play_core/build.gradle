@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('play-core-1.6.4-IAR-SNAPSHOT.aar'))
+artifacts.add("default", file('play-core-1.7.3-IAR-SNAPSHOT.aar'))

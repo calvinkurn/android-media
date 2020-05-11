@@ -1,0 +1,33 @@
+query membershipStampProgress($shopId: Int!){
+  membershipStampProgress(shopID:$shopId) {
+    isUserRegistered
+    isShown
+    program {
+      id
+      cardID
+      sectionID
+      quests {
+        id
+        title
+        iconURL
+        questUserID
+        status
+        taskID
+        currentProgress
+        targetProgress
+        actionButton {
+          text
+          isShown
+        }
+      }
+    }
+    infoMessage {
+      title
+      cta {
+        text
+        url
+        appLink
+      }
+    }
+  }
+  }
