@@ -45,7 +45,7 @@ import java.util.*
 
 class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
 
-    var trackingUtil = TrackingHotelUtil()
+    private val trackingUtil: TrackingHotelUtil by lazy { TrackingHotelUtil() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_change_search, container, false)
@@ -74,14 +74,23 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.nightCount = countRoomDuration()
 
             renderView()
-
-            context?.let {ctx ->
-                trackingUtil.changeSearchPageLoaded(SCREEN_NAME, IrisSession(ctx).getSessionId(), UserSession(ctx).userId)
-            }
+            trackingUtil.openScreen(context, SCREEN_NAME)
         }
     }
 
     override fun onCheckAvailabilityClicked() {
+        val type: String = if (globalSearchModel.searchType.isNotEmpty()) globalSearchModel.searchType
+        else globalSearchModel.destinationType
+
+        trackingUtil.clickSaveChangeSearch(context,
+                type,
+                globalSearchModel.destinationName,
+                globalSearchModel.numOfRooms,
+                globalSearchModel.numOfGuests,
+                globalSearchModel.checkInDate,
+                globalSearchModel.checkOutDate,
+                SCREEN_NAME)
+
         when {
             globalSearchModel.destinationType.equals(HotelTypeEnum.PROPERTY.value, false) -> {
                 context?.let {
@@ -125,18 +134,11 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                     putExtra(SEARCH_TYPE, globalSearchModel.searchType)
                     putExtra(SEARCH_ID, globalSearchModel.searchId)
                 }
-
-                context?.let {
-                    val type = if (globalSearchModel.searchType.isNotEmpty()) globalSearchModel.searchType else globalSearchModel.destinationType
-                    trackingUtil.clickSaveChangeSearch(type, globalSearchModel.destinationName,
-                            globalSearchModel.numOfRooms, globalSearchModel.numOfGuests, globalSearchModel.checkInDate, globalSearchModel.checkOutDate,
-                            SCREEN_NAME, IrisSession(it).getSessionId(), UserSession(it).userId)
-                }
-
                 activity?.setResult(RESULT_OK, intent)
                 activity?.finish()
             }
         }
+
     }
 
     override fun renderView() {
