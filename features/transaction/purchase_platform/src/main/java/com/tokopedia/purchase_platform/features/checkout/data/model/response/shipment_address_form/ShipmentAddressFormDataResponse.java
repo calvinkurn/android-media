@@ -102,6 +102,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("potential_gained_points")
     @Expose
     private PotentialGainedPoints potentialGainedPoints;
+    @SerializedName("open_prerequisite_site")
+    @Expose
+    private boolean openPrerequisiteSite;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -214,5 +217,9 @@ public class ShipmentAddressFormDataResponse {
 
     public void setPotentialGainedPoints(PotentialGainedPoints potentialGainedPoints) {
         this.potentialGainedPoints = potentialGainedPoints;
+    }
+
+    public boolean isOpenPrerequisiteSite() {
+        return openPrerequisiteSite;
     }
 }

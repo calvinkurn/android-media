@@ -122,6 +122,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDat
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.dialog.ExpiredTimeDialog;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.utils.time.TimeHelper;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
@@ -210,7 +211,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private AlertDialog progressDialogNormal;
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
-    private Snackbar snackbarError;
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
     private String cornerId;
@@ -358,8 +358,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cdLayout = view.findViewById(R.id.partial_countdown);
         cdView = view.findViewById(R.id.count_down);
         cdText = view.findViewById(R.id.tv_count_down);
-
-        snackbarError = Snackbar.make(view, "", Snackbar.LENGTH_SHORT);
 
         progressDialogNormal = new AlertDialog.Builder(getActivity())
                 .setView(R.layout.purchase_platform_progress_dialog_view)
@@ -660,24 +658,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
             } else {
-                if (snackbarError == null) {
-                    snackbarError = Snackbar.make(getView(), "", BaseToaster.LENGTH_SHORT);
-                }
-                if (!snackbarError.isShownOrQueued()) {
-                    snackbarError.setText(message);
-                    TextView snackbarTextView = snackbarError.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-                    Button snackbarActionButton = snackbarError.getView().findViewById(com.google.android.material.R.id.snackbar_action);
-                    snackbarError.getView().setBackground(ContextCompat.getDrawable(getView().getContext(), com.tokopedia.design.R.drawable.bg_snackbar_error));
-                    snackbarTextView.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_secondary_54));
-                    snackbarActionButton.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_primary_70));
-                    snackbarTextView.setMaxLines(5);
-                    snackbarError.setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    }).show();
-                }
+                Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
             }
         }
     }
@@ -699,6 +680,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 });
 
+    }
+
+    @Override
+    public void onCacheExpired() {
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
