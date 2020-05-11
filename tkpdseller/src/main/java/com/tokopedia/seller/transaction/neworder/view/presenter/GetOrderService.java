@@ -9,12 +9,13 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.transaction.neworder.di.DaggerNewOrderWidgetComponent;
 import com.tokopedia.seller.transaction.neworder.di.NewOrderWidgetModule;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.GetNewOrderView;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -46,7 +47,8 @@ public class GetOrderService extends IntentService implements GetNewOrderView {
 
 
     public void getNewOrder() {
-        if(SessionHandler.isV4Login(this) && SessionHandler.isUserHasShop(this)) {
+        UserSessionInterface userSession = new UserSession(this);
+        if(userSession.isLoggedIn() && userSession.hasShop()) {
             presenter.getNewOrderAndCount();
         }else{
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);

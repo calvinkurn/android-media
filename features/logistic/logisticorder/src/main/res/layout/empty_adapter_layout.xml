@@ -14,7 +14,7 @@
             android:layout_width="@dimen/dp_8"
             android:layout_height="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            android:src="@drawable/circle_green" />
+            android:src="@drawable/circle_green_logistic" />
 
     </LinearLayout>
 

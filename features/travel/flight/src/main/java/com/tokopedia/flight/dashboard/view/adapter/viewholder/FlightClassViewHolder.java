@@ -5,13 +5,13 @@ import androidx.appcompat.widget.AppCompatTextView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 
 /**
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassViewHolder extends AbstractViewHolder<FlightClassViewModel> {
+public class FlightClassViewHolder extends AbstractViewHolder<FlightClassModel> {
     public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_class;
     private AppCompatTextView titleTextView;
     private AppCompatImageView arrowImageView;
@@ -25,7 +25,7 @@ public class FlightClassViewHolder extends AbstractViewHolder<FlightClassViewMod
     }
 
     @Override
-    public void bind(FlightClassViewModel element) {
+    public void bind(FlightClassModel element) {
         titleTextView.setText(String.valueOf(element.getTitle()));
         if (listenerCheckedClass != null && listenerCheckedClass.isItemChecked(element))
             arrowImageView.setVisibility(View.VISIBLE);
@@ -34,6 +34,6 @@ public class FlightClassViewHolder extends AbstractViewHolder<FlightClassViewMod
     }
 
     public interface ListenerCheckedClass {
-        boolean isItemChecked(FlightClassViewModel selectedItem);
+        boolean isItemChecked(FlightClassModel selectedItem);
     }
 }

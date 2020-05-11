@@ -9,7 +9,7 @@
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_52"
-        android:background="@drawable/bg_red_error_toast"
+        android:background="@drawable/gami_bg_red_error_toast"
         android:orientation="vertical">
 
 

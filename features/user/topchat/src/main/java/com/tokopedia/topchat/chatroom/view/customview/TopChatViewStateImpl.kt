@@ -39,6 +39,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 
 /**
  * @author : Steven 29/11/18
@@ -62,6 +63,7 @@ class TopChatViewStateImpl(
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
+    private var orderProgress: TransactionOrderProgressLayout? = view.findViewById(R.id.ll_transaction_progress)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -114,6 +116,14 @@ class TopChatViewStateImpl(
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         getAdapter().addHeaderDateIfDifferent(visitable)
         super.onReceiveMessageEvent(visitable)
+    }
+
+    override fun onKeyboardOpened() {
+        super.onKeyboardOpened()
+    }
+
+    override fun onKeyboardClosed() {
+        super.onKeyboardClosed()
     }
 
     private fun initHeaderLayout() {
