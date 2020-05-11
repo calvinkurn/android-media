@@ -31,12 +31,16 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
 
     implementation rootProject.ext.unifyDependencies.icon
 
@@ -45,20 +49,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.debugToolsDependencies.chuck
 }
 
 project.ext {
     artifactId = 'common'
     groupId = 'com.tokopedia.digital'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "common_digital-release"
 }
 

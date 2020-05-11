@@ -1,5 +1,7 @@
 package com.tokopedia.websocket
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -10,12 +12,23 @@ import com.google.gson.annotations.SerializedName
 data class WebSocketResponse(
         @SerializedName("type")
         @Expose
-        var type: String = "",
+        val type: String = "",
 
         @SerializedName("code")
         @Expose
-        var code: Int = 0,
+        val code: Int = 0,
 
         @SerializedName("data")
         @Expose
-        var jsonObject: JsonObject? = null)
+        val jsonElement: JsonElement? = null
+) {
+        val jsonObject: JsonObject?
+                get() = if (jsonElement?.isJsonObject == true) {
+                        jsonElement as JsonObject
+                } else null
+
+        val jsonArray: JsonArray?
+                get() = if (jsonElement?.isJsonArray == true) {
+                        jsonElement as JsonArray
+                } else null
+}

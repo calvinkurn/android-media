@@ -90,7 +90,22 @@
             android:id="@+id/button_download"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
+            app:unifyButtonSize="large"
             android:text="@string/start_download"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/button_cta"
+            tools:text="Continue without download"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:textColor="@color/font_black_secondary_54"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
     </LinearLayout>
 </ScrollView>

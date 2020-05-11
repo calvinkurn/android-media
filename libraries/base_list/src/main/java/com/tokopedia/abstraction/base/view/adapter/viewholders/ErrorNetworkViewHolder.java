@@ -3,9 +3,9 @@ package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
@@ -22,7 +22,7 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     private ImageView ivIcon;
     private TextView tvMessage;
     private TextView tvSubMessage;
-    private Button tvRetryButton;
+    private TextView tvRetryButton;
     private Context context;
 
     public ErrorNetworkViewHolder(View itemView) {
@@ -45,7 +45,7 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
         if (errorNetworkModel.getSubErrorMessage() != null && errorNetworkModel.getSubErrorMessage().length() > 0) {
             tvSubMessage.setText(errorNetworkModel.getSubErrorMessage());
         }
-        tvRetryButton.setOnClickListener(new View .OnClickListener() {
+        tvRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ErrorNetworkModel.OnRetryListener listener = errorNetworkModel.getOnRetryListener();

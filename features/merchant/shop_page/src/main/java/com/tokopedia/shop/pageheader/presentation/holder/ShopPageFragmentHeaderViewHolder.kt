@@ -16,8 +16,10 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.extension.formatToSimpleNumber
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
@@ -85,11 +87,17 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         updateFavoriteButton()
     }
 
-    fun updateShopTicker(shopInfo: ShopInfo, isMyShop: Boolean) {
-        if(shouldShowShopStatusTicker(shopInfo.statusInfo.statusTitle, shopInfo.statusInfo.statusMessage)){
-            showShopStatusTicker(shopInfo, isMyShop)
-        }else{
-            hideShopStatusTicker()
+    fun updateShopTicker(shopInfo: ShopInfo, shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean) {
+        when {
+            shouldShowShopStatusTicker(shopInfo.statusInfo.statusTitle, shopInfo.statusInfo.statusMessage) -> {
+                showShopStatusTicker(shopInfo, isMyShop)
+            }
+            shouldShowShopStatusTicker(shopOperationalHourStatus.tickerTitle, shopOperationalHourStatus.tickerMessage) -> {
+                showShopOperationalHourStatusTicker(shopOperationalHourStatus)
+            }
+            else -> {
+                hideShopStatusTicker()
+            }
         }
     }
 
@@ -128,6 +136,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         } else {
             view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
         }
+    }
+
+    private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus) {
+        view.tickerShopStatus.show()
+        view.tickerShopStatus.tickerType = Ticker.TYPE_ANNOUNCEMENT
+        view.tickerShopStatus.tickerTitle = shopOperationalHourStatus.tickerTitle
+        view.tickerShopStatus.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+        view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
     }
 
     private fun hideShopStatusTicker() {

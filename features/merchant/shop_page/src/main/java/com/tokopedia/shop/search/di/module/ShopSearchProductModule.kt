@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
-import com.tokopedia.shop.analytic.ShopPageTrackingOldShopSearchProduct
 import com.tokopedia.shop.search.ShopSearchProductConstant.UNIVERSE_SEARCH_QUERY
 import com.tokopedia.shop.search.di.scope.ShopSearchProductScope
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -39,12 +38,6 @@ class ShopSearchProductModule {
             context.resources,
             R.raw.gql_universe_search
     )
-
-    @ShopSearchProductScope
-    @Provides
-    fun provideShopPageTrackingShopSearchProduct(
-            trackingQueue: TrackingQueue
-    ) = ShopPageTrackingOldShopSearchProduct(trackingQueue)
 
     @ShopSearchProductScope
     @Provides

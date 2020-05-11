@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.tkpd.R
+import com.tokopedia.logisticaddaddress.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher

@@ -1,0 +1,16 @@
+{
+  sheetHowToGetV2(type: "reward-points") {
+    title
+    subTitle
+    sections {
+      title
+      categories {
+        icon
+        text
+        url
+        appLink
+        type
+      }
+    }
+  }
+}

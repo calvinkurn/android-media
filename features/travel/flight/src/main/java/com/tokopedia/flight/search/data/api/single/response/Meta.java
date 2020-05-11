@@ -33,6 +33,9 @@ public class Meta {
     @SerializedName("special_tag")
     @Expose
     private String specialTag;
+    @SerializedName("request_id")
+    @Expose
+    public String requestId;
 
     private String departureAirport; // merge result
     private String arrivalAirport; // merge result

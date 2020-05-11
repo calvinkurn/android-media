@@ -20,6 +20,9 @@ interface LoggerDao {
     @Query("DELETE FROM log_table WHERE timestamp == :ts")
     suspend fun deleteEntry(ts: Long)
 
+    @Delete
+    suspend fun deleteEntries(logger: List<Logger>)
+
     @Query("DELETE FROM LOG_TABLE WHERE timestamp <= :ts")
     suspend fun deleteExpiredData(ts: Long)
 
