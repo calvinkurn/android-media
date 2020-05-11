@@ -46,6 +46,13 @@ object ApplinkConstInternalPromo {
     const val PROMO_DETAIL_UMROH = "$INTERNAL_PROMO/detail/umroh"
 
     /**
+     * This const used to redirect to PromoCheckoutListEventActivity
+     * This const used to redirect to PromoCheckoutDetailEventActivity
+     */
+    const val PROMO_LIST_EVENT = "$INTERNAL_PROMO/list/event"
+    const val PROMO_DETAIL_EVENT = "$INTERNAL_PROMO/detail/event"
+
+    /**
     * Gamification
     * */
     private const val HOST_GLOBAL = "global"

@@ -6,19 +6,20 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity
-import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
+import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.di.FlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
@@ -56,13 +57,17 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         initBottomSheet()
     }
 
+    override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
+        // do nothing
+    }
+
     override fun onDepartureAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_departure_title))
+        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_title))
         startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE)
     }
 
     override fun onDestinationAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_arrival_title))
+        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_title))
         startActivityForResult(intent, REQUEST_CODE_AIRPORT_DESTINATION)
     }
 
@@ -111,19 +116,31 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
                 TAG_RETURN_CALENDAR)
     }
 
-    override fun onPassengerClicked(passengerModel: FlightPassengerViewModel?) {
-        passengerModel?.let {
-            val intent = FlightSelectPassengerActivity.getCallingIntent(requireContext(), it)
-            startActivityForResult(intent, REQUEST_CODE_SELECT_PASSENGER)
+    override fun onPassengerClicked(passengerModel: FlightPassengerModel?) {
+        val flightSelectPassengerBottomSheet = FlightSelectPassengerBottomSheet()
+        flightSelectPassengerBottomSheet.listener = object : FlightSelectPassengerBottomSheet.Listener {
+            override fun onSavedPassenger(passengerModel: FlightPassengerModel) {
+                mChildView.flightSearchFormView.setPassengerView(passengerModel)
+            }
         }
+        flightSelectPassengerBottomSheet.passengerModel = passengerModel
+        flightSelectPassengerBottomSheet.setShowListener { flightSelectPassengerBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        flightSelectPassengerBottomSheet.show(requireFragmentManager(), FlightSelectPassengerBottomSheet.TAG_SELECT_PASSENGER)
     }
 
     override fun onClassClicked(flightClassId: Int) {
-        val intent = FlightClassesActivity.getCallingIntent(requireContext(), flightClassId)
-        startActivityForResult(intent, REQUEST_CODE_SELECT_CLASSES)
+        val flightSelectClassBottomSheet = FlightSelectClassBottomSheet()
+        flightSelectClassBottomSheet.listener = object : FlightSelectClassBottomSheet.Listener {
+            override fun onClassSelected(classEntity: FlightClassModel) {
+                mChildView.flightSearchFormView.setClassView(classEntity)
+            }
+        }
+        flightSelectClassBottomSheet.setSelectedClass(flightClassId)
+        flightSelectClassBottomSheet.setShowListener { flightSelectClassBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        flightSelectClassBottomSheet.show(requireFragmentManager(), FlightSelectClassBottomSheet.TAG_SELECT_CLASS)
     }
 
-    override fun onSaveSearch(flightSearchData: FlightSearchPassDataViewModel) {
+    override fun onSaveSearch(flightSearchData: FlightSearchPassDataModel) {
         if (::listener.isInitialized) {
             listener.onSaveSearchParams(flightSearchData)
             dismiss()
@@ -136,27 +153,15 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_AIRPORT_DEPARTURE -> {
-                    val departureAirport = data?.getParcelableExtra<FlightAirportViewModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
+                    val departureAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
                     departureAirport?.let {
                         mChildView.flightSearchFormView.setOriginAirport(departureAirport)
                     }
                 }
                 REQUEST_CODE_AIRPORT_DESTINATION -> {
-                    val arrivalAirport = data?.getParcelableExtra<FlightAirportViewModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
+                    val arrivalAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
                     arrivalAirport?.let {
                         mChildView.flightSearchFormView.setDestinationAirport(arrivalAirport)
-                    }
-                }
-                REQUEST_CODE_SELECT_PASSENGER -> {
-                    val passengerModel = data?.getParcelableExtra<FlightPassengerViewModel>(FlightSelectPassengerActivity.EXTRA_PASS_DATA)
-                    passengerModel?.let {
-                        mChildView.flightSearchFormView.setPassengerView(it)
-                    }
-                }
-                REQUEST_CODE_SELECT_CLASSES -> {
-                    val classModel = data?.getParcelableExtra<FlightClassViewModel>(FlightClassesActivity.EXTRA_FLIGHT_CLASS)
-                    classModel?.let {
-                        mChildView.flightSearchFormView.setClassView(it)
                     }
                 }
             }
@@ -226,7 +231,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     }
 
     interface Listener {
-        fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataViewModel)
+        fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataModel)
     }
 
     companion object {
@@ -236,8 +241,6 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
 
         const val REQUEST_CODE_AIRPORT_DEPARTURE = 1
         const val REQUEST_CODE_AIRPORT_DESTINATION = 2
-        const val REQUEST_CODE_SELECT_PASSENGER = 3
-        const val REQUEST_CODE_SELECT_CLASSES = 4
 
         fun getInstance(): FlightSearchUniversalBottomSheet =
                 FlightSearchUniversalBottomSheet()
