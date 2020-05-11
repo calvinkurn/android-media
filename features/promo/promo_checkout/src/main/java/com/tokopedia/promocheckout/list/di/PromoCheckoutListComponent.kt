@@ -16,4 +16,5 @@ interface PromoCheckoutListComponent{
     fun inject(promoCheckoutListUmrahFragment: PromoCheckoutListUmrahFragment)
 
     fun userSession(): UserSession
+    fun inject(promoCheckoutListEventFragment: PromoCheckoutListEventFragment)
 }

@@ -3,10 +3,9 @@ package com.tokopedia.flight.dashboard.view.validator;
 import android.text.TextUtils;
 
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -25,15 +24,15 @@ public class FlightDashboardValidator {
     public FlightDashboardValidator() {
     }
 
-    public boolean validateDepartureNotEmtpty(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateDepartureNotEmtpty(FlightDashboardModel currentDashboardViewModel) {
         return currentDashboardViewModel.getDepartureAirport() != null;
     }
 
-    public boolean validateArrivalNotEmpty(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateArrivalNotEmpty(FlightDashboardModel currentDashboardViewModel) {
         return currentDashboardViewModel.getArrivalAirport() != null;
     }
 
-    public boolean validateArrivalAndDestinationNotSame(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateArrivalAndDestinationNotSame(FlightDashboardModel currentDashboardViewModel) {
         List<String> departureAirports = new ArrayList<>();
         if (!TextUtils.isEmpty(currentDashboardViewModel.getDepartureAirport().getAirportCode())) {
             departureAirports.add(currentDashboardViewModel.getDepartureAirport().getAirportCode());
@@ -55,21 +54,21 @@ public class FlightDashboardValidator {
         return commons.size() == 0;
     }
 
-    public boolean validateDepartureDateAtLeastToday(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateDepartureDateAtLeastToday(FlightDashboardModel currentDashboardViewModel) {
         Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
         return removeTime(FlightDateUtil.stringToDate(currentDashboardViewModel.getDepartureDate())).compareTo(removeTime(now.getTime())) >= 0;
     }
 
-    public boolean validateReturnDateShouldGreaterOrEqualDeparture(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateReturnDateShouldGreaterOrEqualDeparture(FlightDashboardModel currentDashboardViewModel) {
         return currentDashboardViewModel.isOneWay() || removeTime(FlightDateUtil.stringToDate(currentDashboardViewModel.getReturnDate())).compareTo(removeTime(FlightDateUtil.stringToDate(currentDashboardViewModel.getDepartureDate()))) >= 0;
     }
 
-    public boolean validatePassengerAtLeastOneAdult(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validatePassengerAtLeastOneAdult(FlightDashboardModel currentDashboardViewModel) {
         return currentDashboardViewModel.getFlightPassengerViewModel() != null &&
                 currentDashboardViewModel.getFlightPassengerViewModel().getAdult() > 0;
     }
 
-    public boolean validateFlightClassNotEmpty(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateFlightClassNotEmpty(FlightDashboardModel currentDashboardViewModel) {
         return currentDashboardViewModel.getFlightClass() != null;
     }
 
@@ -83,7 +82,7 @@ public class FlightDashboardValidator {
         return cal.getTime();
     }
 
-    public boolean validateAirportsShouldDifferentCity(FlightDashboardViewModel currentDashboardViewModel) {
+    public boolean validateAirportsShouldDifferentCity(FlightDashboardModel currentDashboardViewModel) {
         return currentDashboardViewModel.getArrivalAirport() != null && currentDashboardViewModel.getDepartureAirport() != null
                 && !currentDashboardViewModel.getArrivalAirport().getCityName()
                 .equalsIgnoreCase(currentDashboardViewModel.getDepartureAirport().getCityName());

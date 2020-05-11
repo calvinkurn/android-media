@@ -89,6 +89,7 @@ ext {
             traceroute              : ":libraries:traceroute",
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
+            mapviewer               : ":libraries:mapviewer",
             tokofix                 : ":libraries:tokofix"
     ]
 }

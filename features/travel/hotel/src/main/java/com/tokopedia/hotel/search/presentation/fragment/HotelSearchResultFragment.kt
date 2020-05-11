@@ -26,14 +26,13 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search.data.model.Filter
-import com.tokopedia.hotel.search.data.model.Property
-import com.tokopedia.hotel.search.data.model.PropertySearch
-import com.tokopedia.hotel.search.data.model.Sort
+import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.CHANGE_SEARCH_REQ_CODE
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
@@ -64,44 +63,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     var searchDestinationName = ""
     var searchDestinationType = ""
 
-    companion object {
-        private const val REQUEST_FILTER = 0x10
-        private const val REQUEST_CODE_DETAIL_HOTEL = 101
-
-        const val ARG_DESTINATION_ID = "arg_destination"
-        const val ARG_TYPE = "arg_type"
-        const val ARG_LAT = "arg_lat"
-        const val ARG_LONG = "arg_long"
-        const val ARG_CHECK_IN = "arg_check_in"
-        const val ARG_CHECK_OUT = "arg_check_out"
-        const val ARG_TOTAL_ROOM = "arg_total_room"
-        const val ARG_TOTAL_ADULT = "arg_total_adult"
-        const val ARG_TOTAL_CHILDREN = "arg_total_children"
-
-        const val ARG_DESTINATION_NAME = "arg_destination_name"
-
-        fun createInstance(destinationName: String = "", destinationID: Long = 0, type: String = "",
-                           latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
-                           checkOut: String = "", totalRoom: Int = 1, totalAdult: Int = 0,
-                           totalChildren: Int = 0): HotelSearchResultFragment {
-
-            return HotelSearchResultFragment().also {
-                it.arguments = Bundle().apply {
-                    putString(ARG_DESTINATION_NAME, destinationName)
-                    putLong(ARG_DESTINATION_ID, destinationID)
-                    putString(ARG_TYPE, type)
-                    putFloat(ARG_LAT, latitude)
-                    putFloat(ARG_LONG, longitude)
-                    putString(ARG_CHECK_IN, checkIn)
-                    putString(ARG_CHECK_OUT, checkOut)
-                    putInt(ARG_TOTAL_ROOM, totalRoom)
-                    putInt(ARG_TOTAL_ADULT, totalAdult)
-                    putInt(ARG_TOTAL_CHILDREN, totalChildren)
-                }
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -109,16 +70,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         searchResultviewModel = viewModelProvider.get(HotelSearchResultViewModel::class.java)
         arguments?.let {
-            searchResultviewModel.initSearchParam(it.getLong(ARG_DESTINATION_ID),
-                    it.getString(ARG_TYPE, ""),
-                    it.getFloat(ARG_LAT, 0f),
-                    it.getFloat(ARG_LONG, 0f),
-                    it.getString(ARG_CHECK_IN, ""),
-                    it.getString(ARG_CHECK_OUT, ""),
-                    it.getInt(ARG_TOTAL_ROOM, 1),
-                    it.getInt(ARG_TOTAL_ADULT, 0))
-            searchDestinationName = it.getString(ARG_DESTINATION_NAME, "")
-            searchDestinationType = it.getString(ARG_TYPE, "")
+            val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
+            searchResultviewModel.initSearchParam(hotelSearchModel)
+            searchDestinationName = hotelSearchModel.name
+            searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
         }
     }
 
@@ -174,7 +129,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
                         ?: ParamFilter()
 
-                trackingHotelUtil.hotelUserClickFilter(paramFilter, searchResultviewModel.filter)
+                trackingHotelUtil.hotelUserClickFilter(context, SEARCH_SCREEN_NAME)
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
@@ -186,18 +141,17 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
-        val baseListAdapter = HotelSearchResultAdapter(this, adapterTypeFactory)
-        return baseListAdapter
+        return HotelSearchResultAdapter(this, adapterTypeFactory)
     }
 
     private fun onSuccessGetResult(data: PropertySearch) {
         val searchParam = searchResultviewModel.searchParam
-        trackingHotelUtil.hotelViewHotelListImpression(
+        trackingHotelUtil.hotelViewHotelListImpression(context,
                 searchDestinationName,
                 searchDestinationType,
                 searchParam,
                 data.properties,
-                adapter.dataSize)
+                adapter.dataSize, SEARCH_SCREEN_NAME)
 
         val searchProperties = data.properties
 
@@ -236,7 +190,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
             override fun onSelect(sort: Sort) {
-                trackingHotelUtil.hotelUserClickSort(sort.displayName)
+                trackingHotelUtil.hotelUserClickSort(context, sort.displayName, SEARCH_SCREEN_NAME)
 
                 searchResultviewModel.addSort(sort)
                 if (sortMenu.isAdded) {
@@ -256,11 +210,13 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onItemClicked(property: Property, position: Int) {
         with(searchResultviewModel.searchParam) {
             trackingHotelUtil.chooseHotel(
+                    context,
                     searchDestinationName,
                     searchDestinationType,
                     this,
                     property,
-                    position)
+                    position,
+            SEARCH_SCREEN_NAME)
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
@@ -292,10 +248,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     }
 
-    fun onClickChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String) {
+    fun onClickChangeSearch(hotelSearchModel: HotelSearchModel, screenName: String) {
         context?.let {
-            trackingHotelUtil.hotelClickChangeSearch(type, name, totalRoom, totalGuest, checkIn, checkOut, screenName,
-                    IrisSession(it).getSessionId(), UserSession(it).userId)
+            val type = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
+            trackingHotelUtil.hotelClickChangeSearch(context, type,
+                    hotelSearchModel.name, hotelSearchModel.room, hotelSearchModel.adult,
+                    hotelSearchModel.checkIn, hotelSearchModel.checkOut, screenName)
         }
     }
 
@@ -332,4 +290,20 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun isAutoLoadEnabled(): Boolean = true
+
+    companion object {
+        private const val REQUEST_FILTER = 0x10
+        private const val REQUEST_CODE_DETAIL_HOTEL = 101
+
+        const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
+
+        fun createInstance(hotelSearchModel: HotelSearchModel): HotelSearchResultFragment {
+
+            return HotelSearchResultFragment().also {
+                it.arguments = Bundle().apply {
+                    putParcelable(ARG_HOTEL_SEARCH_MODEL, hotelSearchModel)
+                }
+            }
+        }
+    }
 }
