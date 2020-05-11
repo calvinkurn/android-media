@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.view.widget.voucherperiodbottomsheet
+package com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet
 
 import android.view.LayoutInflater
 import android.view.View

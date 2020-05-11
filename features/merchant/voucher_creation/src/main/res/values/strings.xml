@@ -172,4 +172,10 @@
     <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
     <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
     <string name="mvc_voucher_code_copied">Kode voucher sudah disalin</string>
+    <string name="mvc_voucher_review">Review voucher</string>
+    <string name="mvc_add_voucher">Tambah Voucher</string>
+    <string name="mvc_shown_period">Periode Tampil</string>
+    <string name="mvc_period">Periode</string>
+    <string name="mvc_not_selected_yet">Belum dipilih</string>
+    <string name="mvc_set_your_voucher_active_period"><![CDATA[Tentukan periode aktif voucher-mu. <a href="#"><font color="#03AC0E">Pilih Periode</font></a>]]></string>
 </resources>

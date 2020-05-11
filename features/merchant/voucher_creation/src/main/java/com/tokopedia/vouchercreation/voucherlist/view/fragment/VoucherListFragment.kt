@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +11,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -19,6 +20,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
+import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.model.*
@@ -35,7 +37,6 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.F
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -101,7 +102,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         setHasOptionsMenu(true)
 
         setupView()
-        showDummyData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -116,6 +116,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeMvcList
+
     override fun getAdapterTypeFactory(): VoucherListAdapterFactoryImpl {
         return VoucherListAdapterFactoryImpl(this)
     }
@@ -129,12 +131,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 .inject(this)
     }
 
+    override fun hasInitialSwipeRefresh(): Boolean = true
+
     override fun onItemClicked(t: Visitable<*>?) {
 
     }
 
     override fun loadData(page: Int) {
-
+        showDummyData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -145,6 +149,9 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             }
             R.id.menuMvcShowVoucherHistory -> {
                 fragmentListener?.switchFragment(false)
+            }
+            R.id.menuMvcAddVoucher -> {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -170,19 +177,26 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
-            is EditQuota -> showEditQuotaBottomSheet()
+            is EditQuota -> showEditQuotaBottomSheet(voucher)
             is ViewDetail -> viewVoucherDetail()
             is ShareVoucher -> showShareBottomSheet(voucher)
             is EditPeriod -> showEditPeriodBottomSheet(voucher)
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
+            is Duplicate -> duplicateVoucher(voucher)
+        }
+    }
+
+    private fun duplicateVoucher(voucher: VoucherUiModel) {
+        activity?.let {
+            startActivity(VoucherDetailActivity.createDuplicateIntent(it, VoucherDetailActivity.DUPLICATE_PAGE))
         }
     }
 
     private fun viewVoucherDetail() {
         activity?.let {
-            startActivity(Intent(it, VoucherDetailActivity::class.java))
+            startActivity(VoucherDetailActivity.createDetailIntent(it, VoucherDetailActivity.DETAIL_PAGE))
         }
     }
 
@@ -232,10 +246,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 .show(voucher)
     }
 
-    private fun showEditQuotaBottomSheet() {
+    private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        EditQuotaBottomSheet(parent).show(childFragmentManager)
+        EditQuotaBottomSheet(parent, voucher).show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
