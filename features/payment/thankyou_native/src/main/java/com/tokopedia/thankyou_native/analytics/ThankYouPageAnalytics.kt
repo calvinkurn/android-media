@@ -77,7 +77,7 @@ class ThankYouPageAnalytics {
             val productNodeMap = HashMap<String, Any?>()
             productNodeMap[ProductNodeTrackingKey.KEY_NAME] = item.productName
             productNodeMap[ProductNodeTrackingKey.KEY_ID] = item.productId
-            productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.priceStr
+            productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.price.toString()
             productNodeMap[ProductNodeTrackingKey.KEY_BRAND] = item.productBrand
             productNodeMap[ProductNodeTrackingKey.KEY_CATEGORY] = item.category
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
