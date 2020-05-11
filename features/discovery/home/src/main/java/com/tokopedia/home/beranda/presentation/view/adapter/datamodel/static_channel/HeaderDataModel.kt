@@ -23,7 +23,8 @@ data class HeaderDataModel(
                       var isPendingTokocashChecked: Boolean = false,
                       var isWalletDataError: Boolean = false,
                       var isTokoPointDataError: Boolean = false,
-                      var isUserLogin: Boolean = false) : Parcelable, HomeVisitable {
+                      var isUserLogin: Boolean = false
+) : Parcelable, HomeVisitable {
 
     fun setCache(cache: Boolean) {
         isCache = cache
@@ -90,14 +91,41 @@ data class HeaderDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is HeaderDataModel && homeHeaderWalletActionData == b.homeHeaderWalletActionData &&
-                    tokoPointDrawerData == b.tokoPointDrawerData &&
-                    tokopointsDrawerHomeData == b.tokopointsDrawerHomeData &&
-                    cashBackData == b.cashBackData
+        return equals(b)
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         return null
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HeaderDataModel
+
+        if (homeHeaderWalletActionData != other.homeHeaderWalletActionData) return false
+        if (tokoPointDrawerData != other.tokoPointDrawerData) return false
+        if (tokopointsDrawerHomeData != other.tokopointsDrawerHomeData) return false
+        if (cashBackData != other.cashBackData) return false
+        if (isPendingTokocashChecked != other.isPendingTokocashChecked) return false
+        if (isWalletDataError != other.isWalletDataError) return false
+        if (isTokoPointDataError != other.isTokoPointDataError) return false
+        if (isUserLogin != other.isUserLogin) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = homeHeaderWalletActionData?.hashCode() ?: 0
+        result = 31 * result + (tokoPointDrawerData?.hashCode() ?: 0)
+        result = 31 * result + (tokopointsDrawerHomeData?.hashCode() ?: 0)
+        result = 31 * result + (cashBackData?.hashCode() ?: 0)
+        result = 31 * result + isPendingTokocashChecked.hashCode()
+        result = 31 * result + isWalletDataError.hashCode()
+        result = 31 * result + isTokoPointDataError.hashCode()
+        result = 31 * result + isUserLogin.hashCode()
+        return result
     }
 
     companion object {

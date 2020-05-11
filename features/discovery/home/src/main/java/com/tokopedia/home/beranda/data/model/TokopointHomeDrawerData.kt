@@ -38,6 +38,34 @@ data class TokopointHomeDrawerData (
         return 0
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TokopointHomeDrawerData) return false
+
+        if (offFlag != other.offFlag) return false
+        if (hasNotification != other.hasNotification) return false
+        if (userTier != other.userTier) return false
+        if (rewardPointsStr != other.rewardPointsStr) return false
+        if (mainPageUrl != other.mainPageUrl) return false
+        if (mainPageTitle != other.mainPageTitle) return false
+        if (sumCoupon != other.sumCoupon) return false
+        if (sumCouponStr != other.sumCouponStr) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = offFlag
+        result = 31 * result + hasNotification
+        result = 31 * result + userTier.hashCode()
+        result = 31 * result + rewardPointsStr.hashCode()
+        result = 31 * result + mainPageUrl.hashCode()
+        result = 31 * result + mainPageTitle.hashCode()
+        result = 31 * result + sumCoupon
+        result = 31 * result + sumCouponStr.hashCode()
+        return result
+    }
+
     companion object CREATOR : Parcelable.Creator<TokopointHomeDrawerData> {
         override fun createFromParcel(parcel: Parcel): TokopointHomeDrawerData {
             return TokopointHomeDrawerData(parcel)
@@ -47,4 +75,6 @@ data class TokopointHomeDrawerData (
             return arrayOfNulls(size)
         }
     }
+
+
 }

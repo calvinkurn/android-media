@@ -40,18 +40,20 @@ import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -910,8 +912,8 @@ open class HomeViewModel @Inject constructor(
                     isWalletDataError = false,
                     homeHeaderWalletAction = homeHeaderWalletAction
             )
-            if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton != null && homeHeaderWalletAction.appLinkActionButton?.isNotEmpty() == true) {
-                _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton ?: ""))
+            if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
+                _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
             updateHeaderViewModel(
@@ -925,9 +927,7 @@ open class HomeViewModel @Inject constructor(
         if(getPendingCashBalanceJob?.isActive != true){
             getPendingCashBalanceJob = launchCatchError(coroutineContext, block={
                 val data = getPendingCashbackUseCase.executeOnBackground()
-                val cashBackData = CashBackData()
-                cashBackData.amount = data.amount
-                cashBackData.amountText = data.amountText
+                val cashBackData = CashBackData(data.amount, data.amountText)
                 updateHeaderViewModel(
                         isWalletDataError = false,
                         cashBackData = cashBackData,
@@ -1027,22 +1027,22 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
-        val data = HomeHeaderWalletAction()
-        data.isLinked = walletBalanceModel.link
-        data.balance = walletBalanceModel.balance
-        data.labelTitle = walletBalanceModel.titleText
-        data.appLinkBalance = walletBalanceModel.applinks
-        data.labelActionButton = walletBalanceModel.actionBalanceModel?.labelAction ?: ""
-        data.isVisibleActionButton = (walletBalanceModel.actionBalanceModel?.visibility == "1")
-        data.appLinkActionButton = walletBalanceModel.actionBalanceModel?.applinks ?: ""
-        data.abTags = if (walletBalanceModel.abTags == null) ArrayList() else walletBalanceModel.abTags
-        data.pointBalance = walletBalanceModel.pointBalance
-        data.rawPointBalance = walletBalanceModel.rawPointBalance
-        data.cashBalance = walletBalanceModel.cashBalance
-        data.rawCashBalance = walletBalanceModel.rawCashBalance
-        data.walletType = walletBalanceModel.walletType
-        data.isShowAnnouncement = walletBalanceModel.isShowAnnouncement
-        return data
+        return HomeHeaderWalletAction(
+                isLinked = walletBalanceModel.link,
+                balance = walletBalanceModel.balance,
+                labelTitle = walletBalanceModel.titleText,
+                appLinkBalance = walletBalanceModel.applinks,
+                labelActionButton = walletBalanceModel.actionBalanceModel?.labelAction ?: "",
+                isVisibleActionButton = (walletBalanceModel.actionBalanceModel?.visibility == "1"),
+                appLinkActionButton = walletBalanceModel.actionBalanceModel?.applinks ?: "",
+                abTags = walletBalanceModel.abTags ?: listOf(),
+                pointBalance = walletBalanceModel.pointBalance,
+                rawPointBalance = walletBalanceModel.rawPointBalance,
+                cashBalance = walletBalanceModel.cashBalance,
+                rawCashBalance = walletBalanceModel.rawCashBalance,
+                walletType = walletBalanceModel.walletType,
+                isShowAnnouncement = walletBalanceModel.isShowAnnouncement
+        )
     }
 
 }
