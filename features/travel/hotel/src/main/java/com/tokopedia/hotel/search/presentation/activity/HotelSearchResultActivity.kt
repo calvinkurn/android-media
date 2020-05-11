@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -104,6 +105,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         textView.layoutParams = param
         textView.text = resources.getString(R.string.hotel_search_result_change)
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500))
 
         wrapper.addView(textView)
