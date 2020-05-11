@@ -9,10 +9,11 @@ object PaymentVoid : PaymentStatus()
 object PaymentPreAuth : PaymentStatus()
 object PaymentExpired : PaymentStatus()
 object PaymentWaitingCOD : PaymentStatus()
+object Invalid : PaymentStatus()
 
 object PaymentStatusMapper {
 
-    fun getPaymentStatusByInt(paymentStatusInt: Int): PaymentStatus? {
+    fun getPaymentStatusByInt(paymentStatusInt: Int): PaymentStatus {
         return when (paymentStatusInt) {
             0 -> PaymentExpired
             1 -> PaymentActive
@@ -22,7 +23,7 @@ object PaymentStatusMapper {
             5 -> PaymentVoid
             6 -> PaymentPreAuth
             7 -> PaymentWaitingCOD
-            else -> null
+            else -> Invalid
         }
     }
 }

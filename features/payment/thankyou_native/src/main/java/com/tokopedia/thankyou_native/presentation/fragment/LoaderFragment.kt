@@ -16,12 +16,15 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.helper.Invalid
+import com.tokopedia.thankyou_native.helper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageDataLoadCallback
+import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class LoaderFragment : BaseDaggerFragment() {
@@ -59,6 +62,12 @@ class LoaderFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
+        loadThankPageData()
+    }
+
+    private fun loadThankPageData() {
+        loading_layout.visible()
+        globalError.gone()
         arguments?.let {
             if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
                 thanksPageDataViewModel.getThanksPageData(it.getLong(ThankYouPageActivity.ARG_PAYMENT_ID),
@@ -90,13 +99,27 @@ class LoaderFragment : BaseDaggerFragment() {
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
         loading_layout.gone()
         globalError.visible()
-        globalError.setType(GlobalError.MAINTENANCE)
+        return if (throwable is UnknownHostException) {
+            globalError.setType(GlobalError.NO_CONNECTION)
+            globalError.setActionClickListener {
+                loadThankPageData()
+            }
+        } else {
+            globalError.setType(GlobalError.SERVER_ERROR)
+        }
+
     }
 
+
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
-        sendThankYouPageAnalytics(data)
         loading_layout.gone()
-        callback?.onThankYouPageDataLoaded(data)
+        if (PaymentStatusMapper.getPaymentStatusByInt(data.paymentStatus) == Invalid) {
+            callback?.onInvalidThankYouPage()
+            return
+        } else {
+            sendThankYouPageAnalytics(data)
+            callback?.onThankYouPageDataLoaded(data)
+        }
     }
 
     private fun sendThankYouPageAnalytics(thanksPageData: ThanksPageData) {

@@ -17,6 +17,7 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.fragment.*
+import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import javax.inject.Inject
 
@@ -62,6 +63,11 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         } ?: kotlin.run {
             finish()
         }
+    }
+
+    override fun onInvalidThankYouPage() {
+        gotoHomePage()
+        finish()
     }
 
     fun getHeader(): HeaderUnify = thank_header
@@ -158,7 +164,3 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 }
 
-
-interface ThankYouPageDataLoadCallback {
-    fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData)
-}

@@ -38,10 +38,10 @@ class ThankYouPageAnalytics {
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData): MutableMap<String, Any> {
         return mutableMapOf(
-                ParentTrackingKey.KEY_EVENT to ParentTrackingKeyValue.KEY_EVENT_VALUE,
-                ParentTrackingKey.KEY_EVENT_CATEGORY to ParentTrackingKeyValue.KEY_EVENT_CATEGORY_VALUE,
-                ParentTrackingKey.KEY_EVENT_ACTION to "",
-                ParentTrackingKey.KEY_EVENT_LABEL to "",
+                ParentTrackingKey.KEY_EVENT to thanksPageData.event,
+                ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
+                ParentTrackingKey.KEY_EVENT_ACTION to thanksPageData.eventAction,
+                ParentTrackingKey.KEY_EVENT_LABEL to thanksPageData.eventLabel,
                 ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
                 ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
                 ParentTrackingKey.KEY_PAYMENT_TYPE to thanksPageData.paymentType,

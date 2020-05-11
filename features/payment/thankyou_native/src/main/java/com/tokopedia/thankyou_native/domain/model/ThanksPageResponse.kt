@@ -54,9 +54,15 @@ data class ThanksPageData(
         @SerializedName("business_unit")
         val businessUnit: String,
         @SerializedName("bebas_ongkir_dimension")
-        val bebasOngkirDimension: String
-
-
+        val bebasOngkirDimension: String,
+        @SerializedName("event")
+        val event: String,
+        @SerializedName("event_category")
+        val eventCategory: String,
+        @SerializedName("event_action")
+        val eventAction: String,
+        @SerializedName("event_label")
+        val eventLabel: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -77,6 +83,10 @@ data class ThanksPageData(
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
             parcel.createTypedArrayList(PaymentDetail) ?: arrayListOf(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -105,6 +115,10 @@ data class ThanksPageData(
         parcel.writeString(currentSite)
         parcel.writeString(businessUnit)
         parcel.writeString(bebasOngkirDimension)
+        parcel.writeString(event)
+        parcel.writeString(eventCategory)
+        parcel.writeString(eventAction)
+        parcel.writeString(eventLabel)
     }
 
     override fun describeContents(): Int {
