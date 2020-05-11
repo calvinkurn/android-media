@@ -48,7 +48,12 @@ class AddEditProductDescriptionViewModelTest {
 
         every {
             Uri.parse(any())
-        } returns videoUri
+        } answers {
+            if (usedYoutubeVideoUrl == youtubeVideoUrlFromApp ||
+                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsite ||
+                    usedYoutubeVideoUrl == unknownYoutubeUrl) videoUri
+            else throw NullPointerException()
+        }
 
         every {
             videoUri.lastPathSegment
@@ -57,8 +62,12 @@ class AddEditProductDescriptionViewModelTest {
         every {
             videoUri.host
         } answers {
-            if (usedYoutubeVideoUrl == youtubeVideoUrlFromApp) youtubeAppHost
-            else youtubeWebsiteHost
+            when (usedYoutubeVideoUrl) {
+                youtubeVideoUrlFromApp -> youtubeAppHost
+                youtubeVideoUrlFromWebsite -> youtubeWebsiteHost
+                unknownYoutubeUrl -> unknownYoutubeHost
+                else -> null
+            }
         }
 
         every {
@@ -76,9 +85,11 @@ class AddEditProductDescriptionViewModelTest {
 
     private val youtubeAppHost = "youtu.be"
     private val youtubeWebsiteHost = "www.youtube.com"
+    private val unknownYoutubeHost = "google.com"
     private val videoId = "8UzbKepncNk"
     private val youtubeVideoUrlFromApp = "https://$youtubeAppHost/$videoId"
     private val youtubeVideoUrlFromWebsite = "https://$youtubeWebsiteHost/watch?v=$videoId"
+    private val unknownYoutubeUrl = "https://$unknownYoutubeHost/$videoId"
     private var usedYoutubeVideoUrl = ""
 
     private val youtubeSuccessData = YoutubeVideoDetailModel()
@@ -157,6 +168,34 @@ class AddEditProductDescriptionViewModelTest {
 
         val result = viewModel.videoYoutube.value
         assert(result != null && result == Pair(0, Success(youtubeSuccessData)))
+    }
+
+    @Test
+    fun `Should failed get youtube data using unknown host`() {
+        usedYoutubeVideoUrl = unknownYoutubeUrl
+
+        coEvery {
+            getYoutubeVideoUseCase.executeOnBackground()
+        } returns youtubeSuccessRestResponseMap
+
+        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+
+        val result = viewModel.videoYoutube.value
+        assert(result != null && result.second is Fail)
+    }
+
+    @Test
+    fun `Should failed get youtube data using incorrect uri`() {
+        usedYoutubeVideoUrl = unknownYoutubeUrl
+
+        coEvery {
+            getYoutubeVideoUseCase.executeOnBackground()
+        } returns youtubeSuccessRestResponseMap
+
+        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+
+        val result = viewModel.videoYoutube.value
+        assert(result != null && result.second is Fail)
     }
 
     @Test
