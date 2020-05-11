@@ -13,8 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -45,7 +43,6 @@ import com.tokopedia.notifcenter.presentation.viewmodel.NotificationUpdateViewMo
 import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.util.viewModelProvider
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
 

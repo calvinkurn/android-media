@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModelProviders
 
 typealias Factory = ViewModelProvider.Factory
 
-inline fun <reified VM : ViewModel> Fragment.viewModelProvider(provider: Factory) {
-    ViewModelProviders
-            .of(this, provider)
-            .get(VM::class.java)
-}
+inline fun <reified VM : ViewModel> Fragment.viewModelProvider(
+        provider: Factory
+) = ViewModelProviders
+        .of(this, provider)
+        .get(VM::class.java)
