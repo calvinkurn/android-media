@@ -23,28 +23,28 @@ class AutoAdsQueryModule {
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_ADS_SHOP_INFO)
-    fun queryShopInfo(@ApplicationContext context: Context): String =
+    fun queryShopInfo(context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_shop_info)
 
     @AutoAdsScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_ADS_BID_INFO)
-    fun queryBidInfo(@ApplicationContext context: Context): String =
+    fun queryBidInfo(context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_bid_info)
 
     @AutoAdsScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_GET_AUTO_ADS)
-    fun queryGetAutoAds(@ApplicationContext context: Context): String =
+    fun queryGetAutoAds(context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_autoads)
 
     @AutoAdsScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_POST_AUTO_ADS)
-    fun queryPostAutoAds(@ApplicationContext context: Context): String =
+    fun queryPostAutoAds(context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_post_autoads)
 
 }
