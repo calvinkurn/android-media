@@ -16,7 +16,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
@@ -24,7 +27,6 @@ import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
-import com.tokopedia.vouchercreation.voucherlist.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
@@ -103,6 +105,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         setHasOptionsMenu(true)
 
         setupView()
+        observeVoucherList()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -118,6 +121,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeMvcList
+
+    override fun onSwipeRefresh() {
+        clearAllData()
+        super.onSwipeRefresh()
+    }
 
     override fun getAdapterTypeFactory(): VoucherListAdapterFactoryImpl {
         return VoucherListAdapterFactoryImpl(this)
@@ -139,7 +147,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun loadData(page: Int) {
-        showDummyData()
+        renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
+        mViewModel.getVoucherList()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -361,30 +370,32 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
-    private fun showDummyData() {
-        renderList(getDummyData())
-        //renderList(getVoucherListShimmer())
-    }
-
-    private fun getVoucherListShimmer(): List<Visitable<*>> {
-        return listOf(LoadingStateUiModel(isActiveVoucher))
-    }
-
-    private fun getDummyData(): List<Visitable<*>> {
-        val list = mutableListOf<Visitable<*>>()
-        /*list.add(NoResultStateUiModel)
-        list.add(ErrorStateUiModel)
-        list.add(EmptyStateUiModel(isActiveVoucher))*/
-        repeat(10) {
-            list.add(VoucherUiModel("Voucher Hura Nyoba Doang", "Cachback 10%", it % 2 == 0))
-        }
-        return list
-    }
-
     private inline fun <reified T : BottomSheetUnify> dismissBottomSheet(tag: String) {
         val bottomSheet = childFragmentManager.findFragmentByTag(tag)
         if (bottomSheet is T) {
             bottomSheet.dismiss()
+        }
+    }
+
+    private fun setOnSuccessGetVoucherList(vouchers: List<VoucherUiModel>) {
+        if (vouchers.isEmpty()) {
+            clearAllData()
+            renderList(listOf(EmptyStateUiModel(isActiveVoucher)))
+        } else {
+            renderList(vouchers)
+        }
+    }
+
+    private fun setOnErrorGetVoucherList() {
+
+    }
+
+    private fun observeVoucherList() {
+        observe(mViewModel.voucherList) {
+            when (it) {
+                is Success -> setOnSuccessGetVoucherList(it.data)
+                is Fail -> setOnErrorGetVoucherList()
+            }
         }
     }
 
