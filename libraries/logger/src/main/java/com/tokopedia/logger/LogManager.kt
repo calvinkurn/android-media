@@ -109,9 +109,10 @@ class LogManager(val application: Application) : CoroutineScope {
         }
 
         private fun runService() {
-            if (android.os.Build.VERSION.SDK_INT > 21) {
+            if (android.os.Build.VERSION.SDK_INT > 21 &&
+                ::jobScheduler.isInitialized && ::jobInfo.isInitialized) {
                 jobScheduler.schedule(jobInfo)
-            } else {
+            } else if (::pi.isInitialized){
                 pi.send()
             }
         }
