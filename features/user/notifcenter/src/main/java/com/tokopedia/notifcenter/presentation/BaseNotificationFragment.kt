@@ -143,7 +143,6 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
             if (it.stock < 1) {
                 ProductStockHandlerDialog(
                         element = element,
-                        userSession = userSession,
                         listener = this
                 ).show(childFragmentManager, TAG_PRODUCT_STOCK)
             }
