@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -18,10 +17,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTracker
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
-import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.entity.UserInfo
-import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
@@ -137,29 +134,19 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         when (bottomSheet) {
             is BottomSheetType.LongerContent -> showLongerContent(element)
             is BottomSheetType.ProductCheckout -> showProductCheckout(element)
-            is BottomSheetType.StockHandler -> {
-                //TODO reverted it
-                val fromJson = Gson().fromJson<NotificationCenterDetail>(
-                        Mock.notificationUpdateFakeResponse,
-                        NotificationCenterDetail::class.java
-                )
-                val viewModel = GetNotificationUpdateMapper().map(fromJson)
-                showStockHandlerDialog(viewModel.list.first())
-            }
+            is BottomSheetType.StockHandler -> showStockHandlerDialog(element)
         }
     }
 
     private fun showStockHandlerDialog(element: NotificationItemViewBean) {
         element.getAtcProduct()?.let {
             if (it.stock < 1) {
-
+                ProductStockHandlerDialog(
+                        element = element,
+                        userSession = userSession,
+                        listener = this
+                ).show(childFragmentManager, TAG_PRODUCT_STOCK)
             }
-            //TODO put it inside condition above
-            ProductStockHandlerDialog(
-                    element = element,
-                    userSession = userSession,
-                    listener = this
-            ).show(childFragmentManager, TAG_PRODUCT_STOCK)
         }
     }
 
