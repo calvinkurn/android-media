@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.any
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import rx.Observable
 import rx.Subscriber
+import java.lang.reflect.Type
 
 /**
  * Created by Lukas on 2019-07-04
@@ -149,9 +151,13 @@ class RecommendationPageTestViewModel {
         val spy = spyk(viewModel)
         val json = this.javaClass.classLoader?.getResourceAsStream(successJson)?.readBytes()?.toString(Charsets.UTF_8)
         val response = gson.fromJson(json, PrimaryProductEntity::class.java)
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(PrimaryProductEntity::class.java to response),
-                mapOf(PrimaryProductEntity::class.java to listOf()), false)
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = PrimaryProductEntity::class.java
+        result[objectType] = response
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns  gqlResponseSuccess
         spy.getPrimaryProduct(productsId)
         coVerify{ spy.getPrimaryProduct(productsId) }
