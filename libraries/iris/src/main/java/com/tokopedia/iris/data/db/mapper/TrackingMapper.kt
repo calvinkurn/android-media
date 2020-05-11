@@ -36,13 +36,15 @@ class TrackingMapper {
         return result.toString()
     }
 
-    fun transformListEvent(tracking: List<Tracking>): String {
+    fun transformListEvent(tracking: List<Tracking>): Pair<String, List<Tracking>> {
         val result = JSONObject()
         val data = JSONArray()
         var event = JSONArray()
+        val outputTracking = mutableListOf<Tracking>()
+        var done = false
         for (i in tracking.indices) {
             val item = tracking[i]
-            if (!item.event.isBlank() && (item.event.contains("event"))) {
+            if (!done && !item.event.isBlank() && (item.event.contains("event"))) {
                 val eventObject = JSONObject(item.event)
                 event.put(eventObject)
                 val nextItem: Tracking? = try {
@@ -65,13 +67,15 @@ class TrackingMapper {
                     if (event.length() > 0) {
                         row.put(EVENT_DATA, event)
                         data.put(row)
+                        outputTracking.addAll(tracking.subList(0, i+1))
                     }
                     event = JSONArray()
+                    done = true
                 }
             }
         }
         result.put("data", data)
-        return result.toString()
+        return (result.toString() to outputTracking)
     }
 
     companion object {

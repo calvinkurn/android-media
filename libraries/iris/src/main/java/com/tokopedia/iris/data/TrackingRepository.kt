@@ -132,16 +132,16 @@ class TrackingRepository(
                 break
             }
             // transform and send the data to server
-            val request: String = TrackingMapper().transformListEvent(data)
+            val (request, output) = TrackingMapper().transformListEvent(data)
             val requestBody = ApiService.parse(request)
             val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
-                IrisLogger.getInstance(context).putSendIrisEvent(request, data.size)
-                delete(data)
-                totalSentData += data.size
+                IrisLogger.getInstance(context).putSendIrisEvent(request, output.size)
+                delete(output)
+                totalSentData += output.size
 
                 // no need to loop, because it is already less than max row
-                if (data.size < maxRow) {
+                if (output.size < maxRow) {
                     break
                 }
             } else {
