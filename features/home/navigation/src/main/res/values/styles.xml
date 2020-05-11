@@ -1,7 +1,4 @@
 <resources>
-    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
-        <item name="android:windowBackground">@android:color/white</item>
-    </style>
 
     <style name="Tabs.Notification">
         <item name="footerIndicatorHeight">1dp</item>

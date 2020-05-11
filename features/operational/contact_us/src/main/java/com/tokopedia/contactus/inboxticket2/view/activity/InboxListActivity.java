@@ -3,20 +3,15 @@ package com.tokopedia.contactus.inboxticket2.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.app.TaskStackBuilder;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
@@ -28,7 +23,6 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 
 public class InboxListActivity extends InboxBaseActivity

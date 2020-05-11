@@ -26,7 +26,7 @@ public class KeywordAdapter extends RecyclerView.Adapter<KeywordAdapter.KeywordV
     private Context context;
     private int colorRed;
 
-    OnKeywordAdapterListener onKeywordAdapterListener;
+    private OnKeywordAdapterListener onKeywordAdapterListener;
 
     public interface OnKeywordAdapterListener {
         void onKeywordRemoved();

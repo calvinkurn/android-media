@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class PeopleService extends AuthService<PeopleApi> {
-    private static final String TAG = PeopleService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

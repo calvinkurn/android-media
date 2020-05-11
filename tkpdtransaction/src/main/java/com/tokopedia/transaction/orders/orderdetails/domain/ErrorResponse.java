@@ -4,7 +4,7 @@ package com.tokopedia.transaction.orders.orderdetails.domain;
 import java.io.IOException;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 
 public class ErrorResponse extends BaseResponseError {

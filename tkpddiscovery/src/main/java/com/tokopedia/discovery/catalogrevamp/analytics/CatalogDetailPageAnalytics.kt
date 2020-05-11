@@ -1,9 +1,9 @@
 package com.tokopedia.discovery.catalogrevamp.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.utils.CurrencyFormatHelper
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -87,7 +87,7 @@ class CatalogDetailPageAnalytics {
                     KEY_EVENT_LABEL, if (isTopAds) "" else "catalog product list",
                     KEY_ECOMMERCE, DataLayer.mapOf(
                     "currencyCode", "IDR",
-                    "impressions", DataLayer.listOf(list)
+                    "impressions", list
             ))
             tracker.sendEnhanceEcommerceEvent(map)
         }

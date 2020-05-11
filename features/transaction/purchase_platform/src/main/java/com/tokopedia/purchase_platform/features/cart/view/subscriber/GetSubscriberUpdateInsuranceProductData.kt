@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.UpdateInsuranceDataGqlResponse
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
@@ -20,13 +19,13 @@ class GetSubscriberUpdateInsuranceProductData(val view: ICartListView,
         if (graphqlResponse?.getData<UpdateInsuranceDataGqlResponse>(UpdateInsuranceDataGqlResponse::class.java) != null) {
             updateInsuranceDataGqlResponse = graphqlResponse.getData(UpdateInsuranceDataGqlResponse::class.java)
             if (updateInsuranceDataGqlResponse?.data?.updateCart?.status.equals(SUCCESS_RESPONSE_STATUS_VALUE, ignoreCase = true)) {
-                view.showToastMessageGreen(view.activity.resources.getString(R.string.update_insurance_data_success))
+                view.showMessageUpdateInsuranceProductSuccess()
                 val productIdList = ArrayList<Long>()
                 productIdList.add(productId)
                 view.removeInsuranceProductItem(productIdList)
                 presenter.getInsuranceTechCart()
             } else {
-                view.showToastMessageRed(updateInsuranceDataGqlResponse?.data?.updateTransactional?.errorMessage)
+                view.showToastMessageRed(updateInsuranceDataGqlResponse?.data?.updateTransactional?.errorMessage ?: "")
             }
         }
         view.hideProgressLoading()
@@ -37,9 +36,9 @@ class GetSubscriberUpdateInsuranceProductData(val view: ICartListView,
 
     }
 
-    override fun onError(e: Throwable?) {
+    override fun onError(e: Throwable) {
         view.hideProgressLoading()
-        view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e))
+        view.showToastMessageRed(e)
     }
 
 }

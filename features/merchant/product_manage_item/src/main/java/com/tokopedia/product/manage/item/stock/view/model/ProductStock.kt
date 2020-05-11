@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.item.stock.view.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class ProductStock(var isActive: Boolean = true, var stockCount: Int = 0, var sku: String = "") : Parcelable {
+data class ProductStock(var isActive: Boolean = true, var stockCount: Int = 1, var sku: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
             parcel.readInt(),

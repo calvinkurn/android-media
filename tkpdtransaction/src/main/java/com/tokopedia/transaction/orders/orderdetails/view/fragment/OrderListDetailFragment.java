@@ -6,10 +6,12 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
@@ -53,6 +56,8 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.transaction.util.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -69,6 +74,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    public static final String VOUCHER_CODE = "Kode Voucher";
 
     @Inject
     OrderListDetailPresenter presenter;
@@ -145,6 +151,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
+
     }
 
     @Override
@@ -194,17 +201,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if(!presenter.isValidUrl(invoice.invoiceUrl())){
+        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
-            try {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
         });
     }
 
@@ -218,6 +219,14 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(detail.label());
         doubleTextView.setBottomText(detail.value());
+        if (VOUCHER_CODE.equalsIgnoreCase(detail.label())) {
+            doubleTextView.setOnClickListener(view -> {
+                Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
+                Utils.vibrate(getContext());
+                Toaster.INSTANCE.showNormal(view, getString(R.string.title_voucher_code_copied), Toaster.INSTANCE.getToasterLength());
+
+            });
+        }
         detailContent.addView(doubleTextView);
     }
 
@@ -319,7 +328,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void showErrorMessage (String message) {
+    public void showErrorMessage(String message) {
 
     }
 
@@ -334,7 +343,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+    public void setRecommendation(Object recommendationResponse) {
+        RechargeWidgetResponse rechargeWidgetResponse = (RechargeWidgetResponse) recommendationResponse;
         if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null) {
             if (rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
                 ViewRecomendItems.setVisibility(View.GONE);
@@ -368,13 +378,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                try {
-                    startActivity(((UnifiedOrderListRouter) getActivity()
-                            .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(contactUs.helpUrl(), ORDER_LIST_URL_ENCODING)));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW,contactUs.helpUrl());
             }
 
             @Override
@@ -448,13 +452,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 }
                 RouteManager.route(getActivity(), newUri);
             } else if (uri != null && !uri.equals("")) {
-                try {
-                    startActivity(((UnifiedOrderListRouter) getActivity()
-                            .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(uri, ORDER_LIST_URL_ENCODING)));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         };
     }
@@ -466,7 +464,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setItems(List<Items> items,boolean isTradeIn) {
+    public void setItems(List<Items> items, boolean isTradeIn) {
 
     }
 

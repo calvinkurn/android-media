@@ -3,10 +3,10 @@ package com.tokopedia.seller.selling.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
@@ -21,7 +21,8 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.seller.R;
 
 import rx.Subscriber;
 
@@ -62,16 +63,6 @@ public class PeopleTxCenterImpl extends PeopleTxCenter {
                         new JobExecutor(),
                         new UIThread(),
                         notificationRepository);
-    }
-
-    @Override
-    public String getMessageTAG() {
-        return null;
-    }
-
-    @Override
-    public String getMessageTAG(Class<?> className) {
-        return null;
     }
 
     @Override

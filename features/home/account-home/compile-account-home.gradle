@@ -15,6 +15,9 @@ include ':features:top_ads:top_ads_management_common'
 include ':features:user:user_identification_common'
 include ':features:user:logout'
 include ':features:user:sessioncommon'
+include "features:fcm_common"
+include "features:discovery:discovery_common"
+include "features:im:common_promo"
 
 include ':libraries:analytics'
 include ':libraries:applink'
@@ -22,16 +25,26 @@ include ':libraries:base_list_seller'
 include ':libraries:cache_api'
 include ':libraries:cameraview'
 include ':libraries:common_network'
+include ':libraries:core_legacy'
 include ':libraries:date_picker_range'
 include ':libraries:image_picker'
 include ':libraries:imageuploader'
+include ':libraries:iris'
 include ':libraries:kotlin_extensions'
 include ':libraries:permissionchecker'
 include ':libraries:promotions_target'
 include ':libraries:remote_config'
+include ':libraries:testing'
 include ':libraries:track'
 include ':libraries:tracking_optimizer'
 include ':libraries:webview'
+include "libraries:play_core"
+include "libraries:base_list"
+include "libraries:analytics_debugger"
+include "libraries:device_info"
+include "libraries:weaver"
+include "libraries:instrumentation_test"
+include "libraries:cm_push_notifications"
 
 include ':tkpddesign'
 include ':tkpdabstraction'

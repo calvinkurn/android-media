@@ -74,7 +74,7 @@
                 android:layout_toLeftOf="@+id/ll_radio_button_container"
                 android:background="@color/white">
 
-                <include layout="@layout/item_recipient_address" />
+                <include layout="@layout/layout_address_normal" />
 
             </RelativeLayout>
 

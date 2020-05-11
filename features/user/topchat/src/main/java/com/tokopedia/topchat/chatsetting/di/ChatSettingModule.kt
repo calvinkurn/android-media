@@ -1,16 +1,15 @@
 package com.tokopedia.topchat.chatsetting.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,7 +18,12 @@ import javax.inject.Named
 
 @Module
 @ChatSettingScope
-class ChatSettingModule {
+class ChatSettingModule(val context: Context) {
+
+    @Provides
+    @ChatSettingScope
+    @TopchatContext
+    fun provideContext(): Context = context
 
     @ChatSettingScope
     @Provides
@@ -28,7 +32,7 @@ class ChatSettingModule {
     @ChatSettingScope
     @Provides
     @Named(ChatListQueriesConstant.QUERY_GET_CHAT_SETTING)
-    fun provideGqlQueryShopReputation(@ApplicationContext context: Context): String {
+    fun provideGqlQueryShopReputation(@TopchatContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_settings)
     }
 

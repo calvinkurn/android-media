@@ -9,15 +9,22 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
 class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener {
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
+    private lateinit var mDiscoveryFab: CustomTopChatView
     private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mPageComponentRecyclerView: RecyclerView
     var pageEndPoint = ""
@@ -45,6 +52,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     }
 
     private fun initView(view: View) {
+        mDiscoveryFab = view.findViewById(R.id.fab)
         mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
         mPageComponentRecyclerView.layoutManager = LinearLayoutManager(activity)
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
@@ -71,6 +79,25 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                 }
             }
         })
+
+        mDiscoveryViewModel.getDiscoveryFabLiveData().observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    it.data.data?.get(0)?.let { data ->
+                        setFloatingActionButton(data)
+                        setAnimationOnScroll()
+                    }
+                }
+
+                is Fail -> {
+                    mDiscoveryFab.hide()
+                }
+            }
+        })
+    }
+
+    private fun setAnimationOnScroll() {
+        mPageComponentRecyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
 
     override fun onChildViewDetachedFromWindow(view: View) {
@@ -79,5 +106,23 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
     override fun onChildViewAttachedToWindow(view: View) {
         (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewAttachedToWindow()
+    }
+
+    private fun setFloatingActionButton(data: DataItem) {
+        mDiscoveryFab.apply {
+            show()
+            showTextAnimation(data)
+            data.thumbnailUrlMobile?.let { showImageOnFab(context, it) }
+            setClick(data.applinks?.toEmptyStringIfNull().toString(), data.shopId?.toIntOrNull()
+                    ?: 0)
+        }
+    }
+
+    private fun setClick(appLinks: String, shopId: Int) {
+        mDiscoveryFab.getFabButton().setOnClickListener {
+            if (appLinks.isNotEmpty() && shopId != 0) {
+                activity?.let { it1 -> mDiscoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
+            }
+        }
     }
 }

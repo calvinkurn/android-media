@@ -2,7 +2,7 @@ package com.tokopedia.feedcomponent.util
 
 import android.content.Context
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.kotlin.extensions.view.debugTrace
+import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,7 +35,7 @@ object TimeConverter {
             getFormattedTime(context, postDate)
 
         } catch (e: ParseException) {
-            e.debugTrace()
+            Timber.d(e)
             postTime
         }
 

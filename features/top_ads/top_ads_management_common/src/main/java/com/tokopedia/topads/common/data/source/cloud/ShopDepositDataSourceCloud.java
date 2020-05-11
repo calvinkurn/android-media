@@ -1,6 +1,6 @@
 package com.tokopedia.topads.common.data.source.cloud;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.usecase.RequestParams;

@@ -25,4 +25,19 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
+
+        <!-- No backgrounds, titles or window float -->
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+    </style>
+
+    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
 </resources>

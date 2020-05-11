@@ -7,15 +7,17 @@ import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponRepository
+import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
+import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
+import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
-import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -27,7 +29,7 @@ class DiscoveryModule {
     @DiscoveryScope
     @Provides
     fun provideBaseRepository(): BaseRepository {
-        return BaseRepository.repositoryInstance
+        return BaseRepository()
     }
 
     @DiscoveryScope
@@ -40,6 +42,12 @@ class DiscoveryModule {
     @Provides
     fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository(provideGetStringMethod(context))
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun provideCustomTopChatRepository(@ApplicationContext context: Context): CustomTopChatRepository {
+        return CustomTopChatGqlRepository(provideGetStringMethod(context))
     }
 
     @DiscoveryScope

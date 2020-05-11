@@ -35,12 +35,12 @@ import javax.inject.Inject
 class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
         ShopNoteViewHolder.OnShopNoteViewHolderListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list, container, false)
+        return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
     }
 
-    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+    override fun getRecyclerViewResourceId() = com.tokopedia.baselist.R.id.recycler_view
 
-    override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.abstraction.R.id.swipe_refresh_layout
+    override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
     @Inject
     lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
@@ -75,7 +75,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
         shopSettingNoteListPresenter.getShopNotes()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (shopNoteModels == null) {
             menu!!.clear()
         } else if (shopNoteModels!!.size == 0 || getNonTermsCount(shopNoteModels!!) < MIN_DATA_TO_REORDER) {
@@ -95,7 +95,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
         return count
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         KeyboardHandler.DropKeyboard(context, view)
         if (item!!.itemId == R.id.menu_add) {
             onAddNoteButtonClicked()

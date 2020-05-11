@@ -40,6 +40,6 @@ interface Iris {
 
     fun setDeviceId(deviceId: String)
 
-    fun setAlarm(isTurnOn: Boolean)
+    fun setAlarm(isTurnOn: Boolean, force: Boolean)
 
 }

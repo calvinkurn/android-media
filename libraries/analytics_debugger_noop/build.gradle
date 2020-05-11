@@ -1,0 +1,12 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+
+project.ext {
+    artifactId = 'analytics-debugger-noop'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "analytics_debugger_noop-release"
+}
+
+apply from: '../../publish_local.gradle'

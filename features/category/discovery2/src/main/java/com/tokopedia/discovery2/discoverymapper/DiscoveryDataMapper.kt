@@ -11,6 +11,22 @@ import com.tokopedia.discovery2.data.cpmtopads.ProductItem
 
 class DiscoveryDataMapper {
 
+    companion object {
+
+        fun mapListToComponentList(itemList: List<com.tokopedia.discovery2.data.DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+            val list = ArrayList<ComponentsItem>()
+            itemList.forEach {
+                val componentsItem = ComponentsItem()
+                componentsItem.name = subComponentName
+                val dataItem = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
+                dataItem.add(it)
+                componentsItem.data = dataItem
+                list.add(componentsItem)
+            }
+            return list
+        }
+    }
+
     fun mapToCpmTopAdsData(headline: Headline, listComponentsItem: ArrayList<ComponentsItem>): CpmTopAdsData {
         val cpmTitleData = CpmTopAdsData()
         cpmTitleData.brandName = headline.name.toString()
@@ -33,7 +49,7 @@ class DiscoveryDataMapper {
 
     fun mapProductListToComponentsList(listOfProduct: ArrayList<ProductItem?>?): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        listOfProduct?.forEachIndexed() { index, element ->
+        listOfProduct?.forEachIndexed { index, element ->
             val componentsItem = ComponentsItem()
             componentsItem.name = getComponentName(index)
             val litDataItem = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
@@ -72,7 +88,7 @@ class DiscoveryDataMapper {
 
     fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
-        child?.forEach() {
+        child?.forEach {
             val componentsItem = ComponentsItem()
             componentsItem.name = "horizontal_category_navigation_item"
             val dataItemlist = mutableListOf<com.tokopedia.discovery2.data.DataItem>()

@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/tp_margin_medium">
+        android:paddingBottom="@dimen/dp_16">
 
         <ImageView
             android:id="@+id/img_banner"
@@ -28,11 +28,11 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="@dimen/tp_padding_small"
-            android:layout_marginTop="@dimen/tpromo_padding_regular"
-            android:paddingRight="@dimen/tp_padding_small"
+            android:paddingLeft="8dp"
+            android:layout_marginTop="@dimen/dp_12"
+            android:paddingRight="8dp"
             android:textColor="@color/clr_f531353b"
-            android:textSize="@dimen/tp_text_size_xsmall"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_banner" />
 
@@ -40,8 +40,8 @@
             android:id="@+id/img_points_stack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tp_margin_small"
-            android:layout_marginTop="@dimen/tp_margin_regular"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/slashed_price_tv"
             app:srcCompat="@drawable/ic_tokopoints_stack"/>
@@ -50,10 +50,10 @@
             android:id="@+id/slashed_price_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginLeft="8dp"
             android:textColor="@color/clr_61000000"
-            android:textSize="@dimen/tp_text_size_xxsmall"
-            android:layout_marginTop="@dimen/tp_margin_xsmall"
+            android:textSize="10sp"
+            android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@id/img_points_stack"
             app:layout_constraintTop_toBottomOf="@id/coupon_title_tv" />
 
@@ -61,12 +61,12 @@
             android:id="@+id/points_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tp_margin_small"
-            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/clr_ff5722"
-            android:textSize="@dimen/tp_text_size_small"
+            android:textSize="14sp"
             android:visibility="visible"
             app:layout_constraintStart_toEndOf="@id/img_points_stack"
             app:layout_constraintTop_toBottomOf="@id/slashed_price_tv"
@@ -76,11 +76,11 @@
             android:id="@+id/discount_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tp_margin_small"
-            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/clr_ea212d"
-            android:textSize="@dimen/tp_text_size_xsmall"
+            android:textSize="12sp"
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"
             android:paddingLeft="@dimen/dp_6"

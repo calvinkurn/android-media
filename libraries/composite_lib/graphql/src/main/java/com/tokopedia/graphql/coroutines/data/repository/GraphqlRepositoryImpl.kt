@@ -14,10 +14,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
 import timber.log.Timber
 import java.lang.reflect.Type
+import javax.inject.Inject
 import kotlin.Exception
 
-class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,
-                            private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
+class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStore: GraphqlCloudDataStore,
+                                                private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
@@ -41,7 +42,7 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
                     responseCloud?.let {
                         responseCache.originalResponse.addAll(it.originalResponse)
                     }
-                    GraphqlResponseInternal(responseCache.originalResponse, cacheStrategy.isSessionIncluded, responseCache.indexOfEmptyCached)
+                    GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     graphqlCloudDataStore.getResponse(requests, cacheStrategy)

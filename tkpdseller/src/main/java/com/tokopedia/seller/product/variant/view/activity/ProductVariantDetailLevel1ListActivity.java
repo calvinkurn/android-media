@@ -33,6 +33,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     public static final String EXTRA_STOCK_TYPE = "stock_typ";
     public static final String EXTRA_IS_OFFICIAL_STORE = "is_off_store";
     public static final String EXTRA_HAS_WHOLESALE = "has_wholesale";
+    public static final String EXTRA_IS_ADD = "EXTRA_IS_ADD";
 
     public static final String EXTRA_ACTION_SUBMIT = "sbmt";
 
@@ -53,15 +54,16 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     private @StockTypeDef int stockType;
     private boolean isOfficialStore;
     private boolean hasWholesale;
+    private boolean isAddStatus;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantDashboardViewModel productVariantDashboardViewModel,
                              String variantLv1Name, String variantLv2Name,
                              @CurrencyTypeDef int currencyType,
-                             @StockTypeDef int stockType, boolean isOfficialStore, boolean needRetainImage, boolean hasWholesale) {
+                             @StockTypeDef int stockType, boolean isOfficialStore, boolean needRetainImage, boolean hasWholesale, boolean isAddStatus) {
         Intent intent = getIntent(context, productVariantDashboardViewModel, variantLv1Name, variantLv2Name, currencyType,
                 stockType, isOfficialStore,
-                needRetainImage, hasWholesale);
+                needRetainImage, hasWholesale,isAddStatus);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEVEL1_LIST_REQUEST_CODE);
     }
 
@@ -69,7 +71,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
                                    ProductVariantDashboardViewModel productVariantDashboardViewModel,
                                    String variantLv1Name, String variantLv2Name, @CurrencyTypeDef int currencyType,
                                    @StockTypeDef int stockType, boolean isOfficialStore,
-                                   boolean needRetainImage, boolean hasWholesale) {
+                                   boolean needRetainImage, boolean hasWholesale, boolean isAddStatus) {
         Intent intent = new Intent(context, ProductVariantDetailLevel1ListActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_DATA, productVariantDashboardViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LV1_NAME, variantLv1Name);
@@ -79,6 +81,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
         intent.putExtra(EXTRA_STOCK_TYPE, stockType);
         intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
         intent.putExtra(EXTRA_HAS_WHOLESALE, hasWholesale);
+        intent.putExtra(EXTRA_IS_ADD, isAddStatus);
         return intent;
     }
 
@@ -99,7 +102,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
         stockType = intent.getIntExtra(EXTRA_STOCK_TYPE, StockTypeDef.TYPE_ACTIVE);
         isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
         hasWholesale  = intent.getBooleanExtra(EXTRA_HAS_WHOLESALE, false);
-
+        isAddStatus  = intent.getBooleanExtra(EXTRA_IS_ADD, false);
         super.onCreate(savedInstanceState);
 
     }
@@ -189,7 +192,7 @@ public class ProductVariantDetailLevel1ListActivity extends BaseSimpleActivity i
     @Override
     public void goToLeaf(ProductVariantCombinationViewModel productVariantCombinationViewModel) {
         ProductVariantDetailLevelLeafActivity.start(this, productVariantCombinationViewModel,null,
-                varLv2name, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale);
+                varLv2name, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale,isAddStatus);
     }
 
     @Override

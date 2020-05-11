@@ -1,6 +1,5 @@
 package com.tokopedia.interestpick.view.fragment
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -8,7 +7,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,21 +15,20 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter.Companion.SOURCE_ACCOUNTS
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interestpick.R
-import com.tokopedia.interestpick.R.id.*
 import com.tokopedia.interestpick.di.DaggerInterestPickComponent
-import com.tokopedia.interestpick.view.adapter.InterestPickAdapter
 import com.tokopedia.interestpick.view.listener.InterestPickContract
-import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
 import kotlinx.android.synthetic.main.fragment_interest_pick.*
-import java.lang.reflect.Method
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 03/09/18.
  */
 
-class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
+class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View, InterestPickAdapter.InterestPickItemListener {
 
     companion object {
         fun createInstance() = InterestPickFragment()
@@ -88,7 +85,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         progressBar.visibility = View.GONE
     }
 
-    override fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
+    override fun onSuccessGetInterest(interestList: ArrayList<InterestPickDataViewModel>,
                                       title: String) {
         for (item in interestList) {
             if (item.isSelected) {
@@ -108,9 +105,10 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     override fun onSuccessUpdateInterest() {
-        val selectedList = ArrayList<InterestPickItemViewModel>()
+        val selectedList = ArrayList<InterestPickDataViewModel>()
         for (item in adapter.getList()) {
             if (item.isSelected) {
+                item.isClickable = false
                 selectedList.add(item)
             }
         }
@@ -159,16 +157,6 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         }
     }
 
-    override fun onItemSelected(isSelected: Boolean) {
-        if (isSelected) {
-            selectedCount++
-        } else {
-            selectedCount--
-        }
-
-        updateSaveButtonState()
-    }
-
     private fun updateSaveButtonState() {
         if (selectedCount >= 1) {
             saveInterest.text = getString(R.string.interest_save)
@@ -180,21 +168,21 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     private fun initView() {
-        adapter = InterestPickAdapter(this)
+        adapter = InterestPickAdapter(this, SOURCE_ACCOUNTS)
         interestList.adapter = adapter
         saveInterest.setOnClickListener {
-            updateInterest()
+            presenter.updateInterest(adapter.getSelectedItemIdList())
         }
     }
 
-    private fun updateInterest() {
-        val selectedIds = ArrayList<Int>()
-        for (item in adapter.getList()) {
-            adapter.setItemUnClickable(item)
-            if (item.isSelected) {
-                selectedIds.add(item.categoryId)
-            }
-        }
-        presenter.updateInterest(selectedIds.toTypedArray())
+    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
+        selectedCount = adapter.getSelectedItemIdList().size
+        updateSaveButtonState()
+    }
+
+    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {
+    }
+
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
     }
 }

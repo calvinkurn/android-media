@@ -1,9 +1,9 @@
 package com.tokopedia.discovery.categoryrevamp.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.utils.CurrencyFormatHelper
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
@@ -11,36 +11,45 @@ import com.tokopedia.track.interfaces.Analytics
 
 class CategoryPageAnalytics {
 
-    val KEY_EVENT = "event"
-    val KEY_EVENT_CATEGORY = "eventCategory"
-    val KEY_EVENT_ACTION = "eventAction"
-    val KEY_EVENT_LABEL = "eventLabel"
-    val KEY_CATEGORY_ID = "categoryId"
-    val KEY_POSITION = "position"
-    val KEY_CREATIVE_URL = "creative_url"
-    val KEY_ECOMMERCE = "ecommerce"
-    val KEY_NAME = "name"
-    val KEY_ID = "id"
-    val KEY_LIST = "list"
-    val KEY_PROMO_CODE = "promo_code"
-    val KEY_CATEGORY = "category"
-    val KEY_CREATIVE = "creative"
-    val KEY_PROMO_ID = "promo_id"
-    val KEY_CURRENCY_CODE = "currencyCode"
-    val KEY_IMPRESSIONS = "impressions"
-    val KEY_PRICE = "price"
-    val KEY_BRAND = "brand"
-    val KEY_ATTRIBUTION = "attribution"
-    val KEY_VARIANT = "variant"
-    val KEY_PROMOTIONS = "promotions"
-    val KEY_PROMOCLICK = "promoClick"
-    val KEY_PRODUCTS = "products"
-    val KEY_ACTIONFIELD = "actionField"
-    val KEY_CLICK = "click"
-    val KEY_PROMOVIEW = "promoView"
+    private val KEY_EVENT = "event"
+    private val KEY_EVENT_CATEGORY = "eventCategory"
+    private val KEY_EVENT_ACTION = "eventAction"
+    private val KEY_EVENT_LABEL = "eventLabel"
+    private val KEY_CATEGORY_ID = "categoryId"
+    private val KEY_POSITION = "position"
+    private val KEY_CREATIVE_URL = "creative_url"
+    private val KEY_ECOMMERCE = "ecommerce"
+    private val KEY_NAME = "name"
+    private val KEY_ID = "id"
+    private val KEY_LIST = "list"
+    private val KEY_PROMO_CODE = "promo_code"
+    private val KEY_CATEGORY = "category"
+    private val KEY_CREATIVE = "creative"
+    private val KEY_PROMO_ID = "promo_id"
+    private val KEY_CURRENCY_CODE = "currencyCode"
+    private val KEY_IMPRESSIONS = "impressions"
+    private val KEY_PRICE = "price"
+    private val KEY_BRAND = "brand"
+    private val KEY_ATTRIBUTION = "attribution"
+    private val KEY_VARIANT = "variant"
+    private val KEY_PROMOTIONS = "promotions"
+    private val KEY_PROMOCLICK = "promoClick"
+    private val KEY_PRODUCTS = "products"
+    private val KEY_ACTIONFIELD = "actionField"
+    private val KEY_CLICK = "click"
+    private val KEY_PROMOVIEW = "promoView"
+    private val KEY_EVENT_BANNED_CLICK = "clickCategoryBanned"
+    private val KEY_EVENT_BANNED_VIEW = "viewCategoryBannedIris"
+    private val KEY_PRODUCT_GROUP_NAME = "productGroupName"
+    private val KEY_PRODUCT_GROUP_ID = "productGroupId"
+    private val KEY_SUBCATEGORY = "subcategory"
+    private val KEY_SUBCATEGORY_ID = "subcategoryId"
+    private val KEY_DIMENSION = "dimension61"
 
-    val EVENT_NAME_VALUE = "clickCategory"
-    val EVENT_CATEGORY_VALUE = "category page"
+    private val EVENT_NAME_VALUE = "clickCategory"
+    private val EVENT_CATEGORY_VALUE = "category page"
+    private val defaultSortFilterMostAppropriate = "ob=23"
+
 
     companion object {
         val catAnalyticsInstance: CategoryPageAnalytics by lazy { CategoryPageAnalytics() }
@@ -123,7 +132,7 @@ class CategoryPageAnalytics {
 
     // 8
 
-    fun eventClickSemuaThumbnail(category_id: String, displayName: String) {
+    fun eventClickSemuaThumbnail(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_NAME_VALUE,
@@ -206,7 +215,8 @@ class CategoryPageAnalytics {
                               price: Int,
                               position: Int,
                               categoryNamePath: String,
-                              pathList: String) {
+                              pathList: String,
+                              dimension: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, "productClick",
@@ -227,8 +237,9 @@ class CategoryPageAnalytics {
                 KEY_VARIANT, "",
                 KEY_LIST, pathList,
                 KEY_POSITION, position,
-                KEY_ATTRIBUTION, ""))))
-        )
+                KEY_ATTRIBUTION, "",
+                KEY_DIMENSION, if (dimension.isNotEmpty()) dimension else defaultSortFilterMostAppropriate))
+        )))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
@@ -258,6 +269,7 @@ class CategoryPageAnalytics {
             map[KEY_VARIANT] = ""
             map[KEY_LIST] = getProductItemPath(item.categoryBreadcrumb ?: "", departmentId)
             map[KEY_POSITION] = item.adapter_position
+            map[KEY_DIMENSION] = item.dimension ?: ""
             list.add(map)
         }
 
@@ -269,25 +281,30 @@ class CategoryPageAnalytics {
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, "IDR",
-                KEY_IMPRESSIONS, DataLayer.listOf(list)
+                KEY_IMPRESSIONS, list
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
     // 13
 
-    fun eventWishistClicked(category_id: String, product_id: String, isWishlisted: Boolean) {
+    fun eventWishistClicked(category_id: String,
+                            product_id: String,
+                            isWishlisted: Boolean,
+                            isLoggedIn: Boolean,
+                            isTopAds: Boolean) {
         val tracker = getTracker()
-        val eventAction: String = if (isWishlisted) {
-            "add wishlist"
+        var eventAction: String = if (isWishlisted) {
+            "add wishlist - other - "
         } else {
-            "remove wishlist"
+            "remove wishlist - other - "
         }
+        eventAction += getLoginType(isLoggedIn)
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_NAME_VALUE,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
                 KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, product_id,
+                KEY_EVENT_LABEL, product_id + " - " + getProductType(isTopAds),
                 KEY_CATEGORY_ID, category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
@@ -393,4 +410,61 @@ class CategoryPageAnalytics {
         return ""
     }
 
+    fun eventBukaClick(destinationUrl: String, categoryId: String) {
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        KEY_EVENT, KEY_EVENT_BANNED_CLICK,
+                        KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
+                        KEY_EVENT_ACTION, "click buka mobile web button",
+                        KEY_EVENT_LABEL, destinationUrl,
+                        KEY_CATEGORY_ID, categoryId
+                )
+        )
+    }
+
+    fun eventBukaView(destinationUrl: String, categoryId: String) {
+        val tracker = getTracker()
+        val map = DataLayer.mapOf(
+                KEY_EVENT, KEY_EVENT_BANNED_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
+                KEY_EVENT_ACTION, "buka mobile web button impression",
+                KEY_EVENT_LABEL, destinationUrl,
+                KEY_CATEGORY_ID, categoryId
+        )
+        tracker.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getLoginType(isUserLoggedIn: Boolean): String {
+        return if (isUserLoggedIn) {
+            "login"
+        } else {
+            "nonlogin"
+        }
+    }
+
+    private fun getProductType(isTopAds: Boolean): String {
+        return if (isTopAds) {
+            "topads"
+        } else {
+            "general"
+        }
+    }
+
+    fun createOpenScreenEventMap(parentId: String?,
+                                 parentName: String?,
+                                 categoryId: String,
+                                 categoryName: String): Map<String, String>? {
+        val map = HashMap<String, String>()
+        map[KEY_CATEGORY] = KEY_CATEGORY
+        map[KEY_CATEGORY_ID] = categoryId
+        map[KEY_PRODUCT_GROUP_NAME] = ""
+        map[KEY_PRODUCT_GROUP_ID] = ""
+        map[KEY_SUBCATEGORY] = parentName ?: categoryName
+        map[KEY_SUBCATEGORY_ID] = parentId ?: categoryId
+        if (parentId != null) {
+            map[KEY_PRODUCT_GROUP_NAME] = categoryName
+            map[KEY_PRODUCT_GROUP_ID] = categoryId
+        }
+        return map
+    }
 }

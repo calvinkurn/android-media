@@ -1,6 +1,7 @@
 package com.tokopedia.tradein.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
 
 public class DeviceDiagInputResponse {
     @SerializedName("insertTradeInDeviceDiag")

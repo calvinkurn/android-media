@@ -1,11 +1,12 @@
 package com.tokopedia.talk.common.adapter
 
-import androidx.recyclerview.widget.RecyclerView
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
@@ -20,9 +21,9 @@ class TalkProductAttachmentAdapter(private val listener: ProductAttachmentItemCl
     : RecyclerView.Adapter<TalkProductAttachmentAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val productImage: ImageView = itemView.findViewById(R.id.attach_product_chat_image)
-        val productName: TextView = itemView.findViewById(R.id.attach_product_chat_name)
-        val productPrice: TextView = itemView.findViewById(R.id.attach_product_chat_price)
+        val productImage: ImageView = itemView.findViewById(com.tokopedia.attachproduct.R.id.attach_product_chat_image)
+        val productName: TextView = itemView.findViewById(com.tokopedia.attachproduct.R.id.attach_product_chat_name)
+        val productPrice: TextView = itemView.findViewById(com.tokopedia.attachproduct.R.id.attach_product_chat_price)
     }
 
     interface ProductAttachmentItemClickListener {
@@ -37,8 +38,12 @@ class TalkProductAttachmentAdapter(private val listener: ProductAttachmentItemCl
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        ImageHandler.LoadImage(holder.productImage,
-                listProduct[position].productImage)
+        ImageHandler.loadImageRounded2(
+                holder.itemView.context,
+                holder.productImage,
+                listProduct[position].productImage,
+                8f * Resources.getSystem().displayMetrics.density
+        )
 
         holder.itemView.setOnClickListener {
             listener.onClickProductAttachment(listProduct[position])

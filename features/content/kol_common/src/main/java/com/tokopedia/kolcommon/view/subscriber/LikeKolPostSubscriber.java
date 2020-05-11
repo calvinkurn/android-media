@@ -1,6 +1,6 @@
 package com.tokopedia.kolcommon.view.subscriber;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;

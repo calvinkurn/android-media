@@ -2,6 +2,7 @@ package com.tokopedia.core.network.retrofit.utils;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
@@ -16,8 +17,6 @@ import com.tokopedia.core.network.CoreNetworkApplication;
 public class ServerErrorHandler {
     private static final String ACTION_FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
-    private static final String ACTION_SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
-    public static final String ACTION_FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
 
     public static final String STATUS_UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
     public static final String STATUS_REQUEST_DENIED = "REQUEST_DENIED";
@@ -50,12 +49,6 @@ public class ServerErrorHandler {
                 CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
                 CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 url, errorCode);
-    }
-
-    public static void showServerErrorSnackbar() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_SERVER_ERROR);
-        LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
     public static void showTimezoneErrorSnackbar() {

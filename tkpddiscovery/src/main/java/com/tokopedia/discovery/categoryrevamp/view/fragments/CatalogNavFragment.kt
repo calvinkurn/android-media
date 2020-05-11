@@ -16,17 +16,19 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -34,70 +36,46 @@ import kotlinx.android.synthetic.main.fragment_category_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
-class CatalogNavFragment : BaseCategorySectionFragment(),
+private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
+private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
+private const val REQUEST_CODE_GOTO_CATALOG_DETAIL = 124
+
+class CatalogNavFragment : BaseBannedProductFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         CatalogCardListener {
-
-    override fun getDepartMentId(): String {
-        return mDepartmentId
-    }
-
-    override fun setOnCatalogClicked(catalogID: String, catalogName: String) {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalDiscovery.CATALOG)
-        intent.putExtra(EXTRA_CATALOG_ID, catalogID)
-        intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, mDepartmentId)
-        intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, mDepartmentName)
-        startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL)
-    }
-
-    override fun getFilterRequestCode(): Int {
-        return REQUEST_ACTIVITY_FILTER_PRODUCT
-    }
-
-    override fun getSortRequestCode(): Int {
-        return REQUEST_ACTIVITY_SORT_PRODUCT
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var catalogNavViewModel: CatalogNavViewModel
-
+    private lateinit var catalogNavViewModel: CatalogNavViewModel
 
     var list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
-    lateinit var catalogTypeFactory: CatalogTypeFactory
+    private lateinit var catalogTypeFactory: CatalogTypeFactory
 
     var catalogNavListAdapter: CatalogNavListAdapter? = null
 
-    lateinit var categoryNavComponent: CategoryNavComponent
+    private lateinit var categoryNavComponent: CategoryNavComponent
 
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
-    private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
-    private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
-
-    var mDepartmentId: String = ""
-    var mDepartmentName: String = ""
-    val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
-    private val REQUEST_CODE_GOTO_CATALOG_DETAIL = 124
-
+    private var mDepartmentId: String = ""
+    private var mDepartmentName: String = ""
 
     companion object {
-        private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
-        private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
+        private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
 
         @JvmStatic
-        fun newInstance(departmentid: String, departmentName: String): Fragment {
+        fun newInstance(departmentId: String, departmentName: String): Fragment {
             val fragment = CatalogNavFragment()
             val bundle = Bundle()
-            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentid)
+            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentId)
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
             fragment.arguments = bundle
             return fragment
         }
-
     }
 
     override fun getAdapter(): BaseCategoryAdapter? {
@@ -105,7 +83,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return "category page - " + getDepartMentId();
+        return "category page - " + getDepartMentId()
     }
 
     override fun initInjector() {
@@ -114,22 +92,35 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
                         .baseAppComponent).build()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_category_nav, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+        categoryNavComponent.inject(this)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        categoryNavComponent.inject(this)
+    override fun getDataFromArguments() {
         arguments?.let {
             if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
                 mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
                 mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
             }
         }
+    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_category_nav, container, false)
+    }
+
+    override fun addFragmentView() {
+        view?.findViewById<View>(R.id.layout_banned_screen)?.hide()
+    }
+
+    override fun hideFragmentView() {
+        view?.findViewById<View>(R.id.swipe_refresh_layout)?.hide()
+    }
+
+    override fun initFragmentView() {
         initView()
         setUpAdapter()
         observeData()
@@ -137,8 +128,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun observeData() {
-
-        catalogNavViewModel.mCatalog.observe(this, Observer {
+        catalogNavViewModel.mCatalog.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
 
@@ -166,8 +156,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
             }
         })
 
-        catalogNavViewModel.mCatalogCount.observe(this@CatalogNavFragment, Observer {
-
+        catalogNavViewModel.mCatalogCount.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.toInt() > 0) {
                     txt_catalog_count.text = activity?.getString(R.string.category_nav_catalog_count, it)
@@ -178,7 +167,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
             }
         })
 
-        catalogNavViewModel.mDynamicFilterModel.observe(this@CatalogNavFragment, Observer {
+        catalogNavViewModel.mDynamicFilterModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderDynamicFilter(it.data.data)
@@ -192,15 +181,15 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.visibility = View.VISIBLE
+            layout_no_data.show()
+            txt_catalog_count.hide()
             txt_no_data_header.text = resources.getText(R.string.category_nav_catalog_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_catalog_no_data_description)
         } else {
-            layout_no_data.visibility = View.GONE
+            layout_no_data.hide()
+            txt_catalog_count.show()
         }
-
     }
-
 
     private fun createFilterParam(): RequestParams {
         val paramMap = RequestParams()
@@ -241,11 +230,9 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun initView() {
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
-            catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
-            fetchCatalogData(getCatalogListParams(0))
-        }
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        catalogNavViewModel = viewModelProvider.get(CatalogNavViewModel::class.java)
+        fetchCatalogData(getCatalogListParams(0))
     }
 
     private fun getCatalogListParams(page: Int): RequestParams {
@@ -261,16 +248,15 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         var pmin = ""
         var pmax = ""
         if (hashmap.containsKey("pmin")) {
-            pmin = hashmap.get("pmin") ?: ""
+            pmin = hashmap["pmin"] ?: ""
         }
         if (hashmap.containsKey("pmax")) {
-            pmax = hashmap.get("pmax") ?: ""
+            pmax = hashmap["pmax"] ?: ""
         }
 
         catalogMap.putObject("filter", AceFilterInput(pmin, pmax, mDepartmentId))
 
         return catalogMap
-
     }
 
     override fun onChangeList() {
@@ -285,9 +271,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalog_recyclerview.requestLayout()
     }
 
-
     data class AceFilterInput(var pmin: String, var pmax: String, var sc: String)
-
 
     override fun onSwipeToRefresh() {
         reloadData()
@@ -311,13 +295,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
 
-    override fun onDetach() {
-        super.onDetach()
-        catalogNavViewModel.onDetach()
-    }
-
     override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
-
     }
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
@@ -335,9 +313,31 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onDestroyView() {
-        catalog_recyclerview.layoutManager = null
-        catalog_recyclerview.adapter = null
+        catalog_recyclerview?.let {
+            it.layoutManager = null
+            it.adapter = null
+        }
         catalogNavListAdapter = null
         super.onDestroyView()
+    }
+
+    override fun getDepartMentId(): String {
+        return mDepartmentId
+    }
+
+    override fun setOnCatalogClicked(catalogID: String, catalogName: String) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalDiscovery.CATALOG)
+        intent.putExtra(EXTRA_CATALOG_ID, catalogID)
+        intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, mDepartmentId)
+        intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, mDepartmentName)
+        startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL)
+    }
+
+    override fun getFilterRequestCode(): Int {
+        return REQUEST_ACTIVITY_FILTER_PRODUCT
+    }
+
+    override fun getSortRequestCode(): Int {
+        return REQUEST_ACTIVITY_SORT_PRODUCT
     }
 }

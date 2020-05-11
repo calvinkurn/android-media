@@ -3,12 +3,12 @@ package com.tokopedia.purchase_platform.features.checkout.data.model.response.sh
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
+import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
-import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.PromoSuggestion;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +57,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_blackbox")
     @Expose
     private int isBlackbox;
-    @SerializedName("promo_suggestion")
-    @Expose
-    private PromoSuggestion promoSuggestion;
     @SerializedName("autoapply")
     @Expose
     private AutoApply autoApply;
@@ -71,7 +68,7 @@ public class ShipmentAddressFormDataResponse {
     private EgoldAttributes egoldAttributes;
     @SerializedName("autoapply_stack")
     @Expose
-    private AutoapplyStack autoapplyStack;
+    private AutoApplyStack autoapplyStack;
     @SerializedName("global_coupon_attr")
     @Expose
     private GlobalCouponAttr globalCouponAttr;
@@ -81,18 +78,30 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_ineligbile_promo_dialog_enabled")
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
-    @SerializedName("is_new_buyer")
-    @Expose
-    private boolean isNewBuyer;
     @SerializedName("disabled_features")
     @Expose
-    private List<CheckoutDisabledFeatures> disabledFeatures = new ArrayList<>();
+    private List<String> disabledFeatures = new ArrayList<>();
     @SerializedName("tickers")
     @Expose
     private List<Ticker> tickers = new ArrayList<>();
     @SerializedName("donation_checkbox_status")
     @Expose
     private boolean donationCheckboxStatus;
+    @SerializedName("campaign_timer")
+    @Expose
+    private CampaignTimer campaignTimer;
+    @SerializedName("addresses")
+    @Expose
+    private Addresses addresses;
+    @SerializedName("disabled_features_detail")
+    @Expose
+    private DisabledFeaturesDetail disabledFeaturesDetail;
+    @SerializedName("promo")
+    @Expose
+    private PromoSAFResponse promoSAFResponse;
+    @SerializedName("potential_gained_points")
+    @Expose
+    private PotentialGainedPoints potentialGainedPoints;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -151,10 +160,6 @@ public class ShipmentAddressFormDataResponse {
         return isBlackbox;
     }
 
-    public PromoSuggestion getPromoSuggestion() {
-        return promoSuggestion;
-    }
-
     @Deprecated
     public AutoApply getAutoApply() { return autoApply; }
 
@@ -165,7 +170,7 @@ public class ShipmentAddressFormDataResponse {
     public void setEgoldAttributes(EgoldAttributes egoldAttributes) {
         this.egoldAttributes = egoldAttributes;
     }
-    public AutoapplyStack getAutoapplyStack() { return autoapplyStack; }
+    public AutoApplyStack getAutoapplyStack() { return autoapplyStack; }
 
     public GlobalCouponAttr getGlobalCouponAttr() { return globalCouponAttr; }
 
@@ -177,11 +182,7 @@ public class ShipmentAddressFormDataResponse {
         return isIneligbilePromoDialogEnabled;
     }
 
-    public boolean isNewBuyer() {
-        return isNewBuyer;
-    }
-
-    public List<CheckoutDisabledFeatures> getDisabledFeatures() {
+    public List<String> getDisabledFeatures() {
         return disabledFeatures;
     }
 
@@ -191,5 +192,27 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isDonationCheckboxStatus() {
         return donationCheckboxStatus;
+    }
+
+    public CampaignTimer getCampaignTimer() {
+        return campaignTimer;
+    }
+
+    public Addresses getAddresses() {
+        return addresses;
+    }
+
+    public DisabledFeaturesDetail getDisabledFeaturesDetail() {
+        return disabledFeaturesDetail;
+    }
+
+    public PromoSAFResponse getPromoSAFResponse() { return promoSAFResponse; }
+
+    public void setPromoSAFResponse(PromoSAFResponse promoSAFResponse) { this.promoSAFResponse = promoSAFResponse; }
+
+    public PotentialGainedPoints getPotentialGainedPoints() { return potentialGainedPoints; }
+
+    public void setPotentialGainedPoints(PotentialGainedPoints potentialGainedPoints) {
+        this.potentialGainedPoints = potentialGainedPoints;
     }
 }

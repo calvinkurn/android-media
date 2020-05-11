@@ -6,7 +6,9 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ActivationItemViewHolder
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SmsSectionViewHolder
 
 class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecoration() {
 
@@ -16,9 +18,9 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
 
     init {
         context?.let {
-            divider = ContextCompat.getDrawable(it, com.tokopedia.design.R.drawable.bg_line_separator_thin)
+            divider = ContextCompat.getDrawable(it, R.drawable.setting_notif_bg_line_separator_thin)
             dividerHeight = context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_half)
-            dividerLeftPadding = context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_56)
+            dividerLeftPadding = context.resources.getDimensionPixelSize(R.dimen.setting_notif_dp_12)
         }
     }
 
@@ -30,10 +32,22 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
         for (childIndex in 0 until childCount) {
             val childView = parent.getChildAt(childIndex)
             val childViewHolder = parent.getChildViewHolder(childView)
-
-            if (childViewHolder is SettingSectionViewHolder) continue
-
             val childParams = childView.layoutParams as RecyclerView.LayoutParams
+
+            /*
+            * don't adding a divider for
+            * main section and sms section
+            * */
+            if (childViewHolder is SettingSectionViewHolder) continue
+            if (childViewHolder is SmsSectionViewHolder) continue
+
+            /*
+            * set full divider width for
+            * push notification activation
+            * */
+            if (childViewHolder is ActivationItemViewHolder) {
+                dividerLeftPadding = 0
+            }
 
             val left = parentPaddingLeft + dividerLeftPadding
             val right = parentPaddingRight

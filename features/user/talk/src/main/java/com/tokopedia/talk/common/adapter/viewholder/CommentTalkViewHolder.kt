@@ -60,7 +60,7 @@ class CommentTalkViewHolder(val v: View,
 
     init {
         reportTitle.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(reportTitle.getContext(),
-                R.drawable.ic_warning_alert), null, null, null)
+                com.tokopedia.design.R.drawable.ic_warning_alert), null, null, null)
     }
 
     override fun bind(element: ProductTalkItemViewModel?) {
@@ -77,7 +77,7 @@ class CommentTalkViewHolder(val v: View,
             }
             talkContent.text = MethodChecker.fromHtml(element.comment)
             if (element.isSending) itemView.setBackgroundResource(R.color.talk_send_background)
-            else itemView.setBackgroundResource(R.color.transparent)
+            else itemView.setBackgroundResource(com.tokopedia.design.R.color.transparent)
 
             if (element.hasSeparator) itemView.commentSeparator.visibility = View.VISIBLE
             else itemView.commentSeparator.visibility = View.GONE

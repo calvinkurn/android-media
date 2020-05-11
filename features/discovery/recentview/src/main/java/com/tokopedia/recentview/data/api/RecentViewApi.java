@@ -1,6 +1,6 @@
 package com.tokopedia.recentview.data.api;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.recentview.data.entity.RecentViewData;
 
 import retrofit2.Response;

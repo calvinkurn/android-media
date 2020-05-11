@@ -1,8 +1,13 @@
 package com.tokopedia.discovery.categoryrevamp.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.common_category.usecase.*
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -66,12 +71,12 @@ class CategoryNavUseCaseModule {
         return SubCategoryUseCase(context, graphqlUseCase)
     }
 
-    @CategoryNavScope
+    /*@CategoryNavScope
     @Provides
     fun provideCatatlogUseCase(context: Context, @Named("catalogGqlUseCase") graphqlUseCase
     : GraphqlUseCase): CatalogUseCase {
         return CatalogUseCase(context, graphqlUseCase)
-    }
+    }*/
 
     @CategoryNavScope
     @Provides
@@ -121,12 +126,35 @@ class CategoryNavUseCaseModule {
     fun getSubCategoryV3UseCase(context: Context, @Named("subCategoryV3GqlUseCaseObject") graphqlUseCase
     : GraphqlUseCase)
             : SubCategoryV3UseCase {
-        return SubCategoryV3UseCase(context,graphqlUseCase)
+        return SubCategoryV3UseCase(context, graphqlUseCase)
     }
 
+    @CategoryNavScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+    @CategoryNavScope
+    @Provides
+    fun provideResources(context: Context): Resources {
+        return context.resources
+    }
+
+    @CategoryNavScope
+    @Provides
+    fun provideGraphQlRepo(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @CategoryNavScope
+    @Provides
+    fun provideBaseRepository(): BaseRepository {
+        return BaseRepository()
+    }
+
+    @CategoryNavScope
+    @Provides
+    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
 
 }

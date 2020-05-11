@@ -8,23 +8,27 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.crashlytics.android.Crashlytics;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
+
+import kotlin.Unit;
 
 
 /**
@@ -44,8 +48,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
 
-    private GratificationSubscriber gratificationSubscriber;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +58,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
             }
         };
-        initShake();
     }
 
     @Override
@@ -65,8 +66,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         pauseFlag = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
-        unregisterShake();
-
     }
 
     @Override
@@ -87,29 +86,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         registerForceLogoutReceiver();
         registerInAppReceiver();
         checkIfForceLogoutMustShow();
-        registerShake();
-    }
-
-    protected void initShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).init();
-        }
-    }
-
-    protected void registerShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            String screenName = getScreenName();
-            if (screenName == null) {
-                screenName = this.getClass().getSimpleName();
-            }
-            ((AbstractionRouter) getApplication()).registerShake(screenName, this);
-        }
-    }
-
-    protected void unregisterShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).unregisterShake();
-        }
     }
 
     protected void sendScreenAnalytics() {
@@ -188,6 +164,31 @@ public abstract class BaseActivity extends AppCompatActivity implements
                         }
                     }
                 });
+
+//        createBottomSheet();
+    }
+
+    private void createBottomSheet() {
+        BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setCustomPeekHeight(900);
+        bottomSheetUnify.setOverlayClickDismiss(false);
+
+        View childView = View.inflate(this, R.layout.error_unauthorized, null);
+        bottomSheetUnify.setChild(childView);
+        UnifyButton unifyButton = childView.findViewById(R.id.unauthorized_button);
+
+        bottomSheetUnify.setCloseClickListener(view -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        unifyButton.setOnClickListener(view -> {
+            if (getApplication() instanceof AbstractionRouter) {
+                ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
+            }
+        });
+
+        bottomSheetUnify.show(getSupportFragmentManager(), "Unauthorized Force Logout");
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -226,17 +227,23 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (gratificationSubscriber == null) {
-            gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
+        if (getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).onNewIntent(this, intent);
         }
-        gratificationSubscriber.onNewIntent(this, intent);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (gratificationSubscriber != null) {
-            gratificationSubscriber.onActivityDestroyed(this);
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            String screenName = getScreenName();
+            if (screenName == null) {
+                screenName = this.getClass().getSimpleName();
+            }
         }
+    }
+
+    public boolean isAllowShake() {
+        return true;
     }
 }

@@ -1,0 +1,14 @@
+query topAdsAutoTopup($shopId: String!) {
+    topAdsAutoTopup(shop_id: $shopId){
+        data{
+            status
+            status_desc
+            tkpd_product_id
+        }
+        errors {
+            Code
+            Detail
+            Title
+        }
+    }
+}

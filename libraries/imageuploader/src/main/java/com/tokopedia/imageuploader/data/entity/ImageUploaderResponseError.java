@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException;
+import com.tokopedia.network.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 
 import java.io.IOException;
 import java.util.List;

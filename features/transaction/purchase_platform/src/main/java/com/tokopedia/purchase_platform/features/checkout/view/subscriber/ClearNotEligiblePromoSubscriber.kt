@@ -1,13 +1,12 @@
 package com.tokopedia.purchase_platform.features.checkout.view.subscriber
 
 import android.text.TextUtils
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
 import rx.Subscriber
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Irfan Khoirul on 2019-06-25.
@@ -16,7 +15,7 @@ import java.util.ArrayList
 class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
                                       val presenter: ShipmentPresenter,
                                       val checkoutType: Int,
-                                      val notEligiblePromoHolderdata: ArrayList<NotEligiblePromoHolderdata>) : Subscriber<GraphqlResponse>() {
+                                      val notEligiblePromoHolderdata: ArrayList<NotEligiblePromoHolderdata>) : Subscriber<ClearPromoUiModel>() {
 
     override fun onCompleted() {
     }
@@ -27,11 +26,11 @@ class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
         view?.removeIneligiblePromo(checkoutType, notEligiblePromoHolderdata)
     }
 
-    override fun onNext(response: GraphqlResponse?) {
+    override fun onNext(response: ClearPromoUiModel?) {
         view?.hideLoading()
-        val responseData = response?.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-        if (!TextUtils.isEmpty(responseData?.successData?.tickerMessage)) {
-            presenter.tickerAnnouncementHolderData.message = responseData?.successData?.tickerMessage ?: ""
+        if (!TextUtils.isEmpty(response?.successDataModel?.tickerMessage)) {
+            presenter.tickerAnnouncementHolderData.message = response?.successDataModel?.tickerMessage
+                    ?: ""
             view?.updateTickerAnnouncementMessage()
         }
         view?.removeIneligiblePromo(checkoutType, notEligiblePromoHolderdata)

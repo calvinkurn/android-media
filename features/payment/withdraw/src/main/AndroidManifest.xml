@@ -19,11 +19,6 @@
             </intent-filter>
         </activity>
 
-
-        <activity android:name=".view.activity.WithdrawPasswordActivity"
-            android:label="@string/title_action_withdraw"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
     </application>
 
 

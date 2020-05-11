@@ -1,10 +1,12 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
@@ -40,19 +42,20 @@ class QuickReplyViewHolder(itemView: View,
     private fun setMessage(element: QuickReplyListViewModel) {
         if (!element.message.isEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
-            if (message.text.toString().length > MESSAGE_LENGTH) {
+            message.post {
+                if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
+                    mesageBottom.visibility = View.VISIBLE
+                    mesageBottom.setOnClickListener {
+                        ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
+                    }
 
-                mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chatbot.R.drawable.left_bubble_with_stroke))
-                mesageBottom.visibility = View.VISIBLE
-                mesageBottom.setOnClickListener {
-                    ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
-
+                } else {
+                    mesageBottom.visibility = View.GONE
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,com.tokopedia.chat_common.R.drawable.left_bubble))
                 }
-
-            } else {
-                mesageBottom.visibility = View.GONE
-                mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.left_bubble))
             }
+
         }
     }
 
@@ -61,9 +64,6 @@ class QuickReplyViewHolder(itemView: View,
     }
 
     companion object {
-
-        const val MESSAGE_LENGTH= 170
-
         val LAYOUT = R.layout.quick_reply_chat_layout
     }
 }

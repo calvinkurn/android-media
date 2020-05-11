@@ -13,6 +13,8 @@ query OfficialStoreFeaturedShop($categoryAliasID: Int) {
         logoUrl
         imageUrl
         additionalInformation
+        featuredBrandId
+        campaignCode
       }
     }
 }

@@ -225,4 +225,18 @@
         <item name="android:textColorSecondary">#bfbfbf</item>
     </style>
 
+    <style name="ToolbarText.SansSerifMedium" parent="ToolbarText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="ToolbarSubtitleText.SansSerifMedium" parent="ToolbarSubtitleText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="checkBoxStyleSeller" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorSecondary">@color/black_12</item>
+    </style>
 </resources>

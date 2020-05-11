@@ -17,7 +17,6 @@ public class Campaign {
         campaignMap.put(AppEventTracking.GTM.UTM_CAMPAIGN, "");
         campaignMap.put(AppEventTracking.GTM.UTM_CONTENT, "");
         campaignMap.put(AppEventTracking.GTM.UTM_TERM, "");
-        campaignMap.put(AppEventTracking.GTM.UTM_GCLID, "");
         campaignMap.put(AppEventTracking.GTM.X_CLID, "");
         campaignMap.put(AppEventTracking.GTM.X_ATTR, "");
     }

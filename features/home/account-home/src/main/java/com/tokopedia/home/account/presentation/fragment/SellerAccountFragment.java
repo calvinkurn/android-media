@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
@@ -25,6 +24,7 @@ import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -90,10 +90,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onResume() {
         super.onResume();
-        if (isOpenShop) {
-            getData();
-            isOpenShop = false;
-        }
+        isLoaded = false;
+        getData();
     }
 
     @Override
@@ -102,30 +100,34 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        if (getContext() != null) {
-            GraphqlClient.init(getContext());
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            isLoaded = false;
             getData();
-            swipeRefreshLayout.setOnRefreshListener(this::getData);
-        }
+        });
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            if (!isLoaded) {
-                getData();
-                isLoaded = !isLoaded;
-            }
+            getData();
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
         }
     }
 
     private void getData() {
-        String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .new_query_saldo_balance);
-        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
-                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit), saldoQuery);
+        if (!isLoaded && getContext() != null) {
+            String saldoQuery = GraphqlHelper.loadRawString(
+                    getContext().getResources(),
+                    R.raw.new_query_saldo_balance);
+            presenter.getSellerData(
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit),
+                    saldoQuery,
+                    GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_shop_location)
+            );
+            isLoaded = !isLoaded;
+        }
     }
 
     @Override
@@ -180,13 +182,14 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(Throwable e, String errorCode) {
         if (getView() != null && getContext() != null && getUserVisibleHint()) {
-            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
+            String message = String.format("%s (%s)", ErrorHandler.getErrorMessage(getActivity(), e), errorCode);
+            ToasterError.make(getView(), message)
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
-
+        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.getUserId(), userSession.getEmail(), errorCode);
         fpmSeller.stopTrace();
     }
 
@@ -202,11 +205,17 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public boolean isLightThemeStatusBar() {
+        return false;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == OPEN_SHOP_SUCCESS){
+        if (resultCode == OPEN_SHOP_SUCCESS) {
+            isLoaded = false;
             getData();
-        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION){
+        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION) {
             userSession.setIsMSISDNVerified(true);
             moveToCreateShop();
         }
@@ -243,6 +252,11 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     public void onProductRecommendationWishlistClicked(@NotNull RecommendationItem product, boolean wishlistStatus, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
+
+    }
+
+    @Override
+    public void onProductRecommendationThreeDotsClicked(@NotNull RecommendationItem product, int adapterPosition) {
 
     }
 }

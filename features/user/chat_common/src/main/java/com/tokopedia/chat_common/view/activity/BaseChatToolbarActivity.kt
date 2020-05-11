@@ -4,15 +4,16 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 
 /**
@@ -27,10 +28,9 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupToolbar()
-
     }
 
-    protected fun setupToolbar() {
+    protected open fun setupToolbar() {
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(R.layout.header_chat, null)
         toolbar.removeAllViews()
@@ -60,7 +60,6 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             toolbar.elevation = 10f
         }
 
-
         intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
 
             ImageHandler.loadImageCircle2(this@BaseChatToolbarActivity, findViewById<ImageView>(R.id.user_avatar), it.image)
@@ -80,5 +79,13 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
 
     override fun getTagFragment(): String {
         return TAG_FRAGMENT
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        if (fragment != null && fragment is BaseChatActivityListener && fragment.onBackPressed()) {
+            return
+        }
+        super.onBackPressed()
     }
 }

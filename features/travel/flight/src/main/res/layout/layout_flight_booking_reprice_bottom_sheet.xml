@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_2"
+    tools:ignore="MissingDefaultResource">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_booking_reprice_bottom_sheet_description"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/flight_booking_price_before"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_before_reprice_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            tools:text="Rp45.000.000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/flight_booking_price_after"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_after_reprice_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp30.000.000" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_booking_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_continue_pay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/flight_booking_action_proceed_checkout"
+        app:unifyButtonType="transaction" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_find_new_ticket"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/flight_booking_action_find_another_ticket"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost"
+        android:layout_marginBottom="@dimen/dp_16"/>
+</LinearLayout>

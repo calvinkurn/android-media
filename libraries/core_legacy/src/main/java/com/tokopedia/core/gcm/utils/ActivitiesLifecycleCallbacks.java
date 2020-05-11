@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
-import com.tkpd.library.utils.legacy.CommonUtils;
+import timber.log.Timber;
 
 /**
  * @author  by alvarisi on 1/9/17.
@@ -29,34 +30,34 @@ public class ActivitiesLifecycleCallbacks {
 
         activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
             @Override public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                CommonUtils.dumper("onActivityCreated " + activity.getLocalClassName());
+                Timber.d("onActivityCreated " + activity.getLocalClassName());
                 liveActivityOrNull = activity;
             }
 
             @Override public void onActivityStarted(Activity activity) {
-                CommonUtils.dumper("onActivityStarted " + activity.getLocalClassName());
+                Timber.d("onActivityStarted " + activity.getLocalClassName());
             }
 
             @Override public void onActivityResumed(Activity activity) {
                 liveActivityOrNull = activity;
-                CommonUtils.dumper("onActivityResumed " + activity.getLocalClassName());
+                Timber.d("onActivityResumed " + activity.getLocalClassName());
             }
 
             @Override public void onActivityPaused(Activity activity) {
                 liveActivityOrNull = null;
-                CommonUtils.dumper("onActivityPaused " + activity.getLocalClassName());
+                Timber.d("onActivityPaused " + activity.getLocalClassName());
             }
 
             @Override public void onActivityStopped(Activity activity) {
-                CommonUtils.dumper("onActivityStopped " + activity.getLocalClassName());
+                Timber.d("onActivityStopped " + activity.getLocalClassName());
             }
 
             @Override public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                CommonUtils.dumper("onActivitySaveInstanceState " + activity.getLocalClassName());
+                Timber.d("onActivitySaveInstanceState " + activity.getLocalClassName());
             }
 
             @Override public void onActivityDestroyed(Activity activity) {
-                CommonUtils.dumper("onActivityDestroyed " + activity.getLocalClassName());
+                Timber.d("onActivityDestroyed " + activity.getLocalClassName());
             }
         };
 
@@ -70,10 +71,6 @@ public class ActivitiesLifecycleCallbacks {
 
     public boolean isAppOnBackground() {
         return getLiveActivityOrNull() == null;
-    }
-
-    Application getApplication() {
-        return application;
     }
 
     public Context getContext(){
