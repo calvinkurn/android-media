@@ -467,6 +467,7 @@ public interface ApplinkConst {
         String ORDER_DETAIL = "tokopedia://digital/order/{order_id}";
         String ORDER_OMS_DETAIL = "tokopedia://order/{order_id}";
         String ORDER_MARKETPLACE_DETAIL = "tokopedia://marketplace/order/{order_id}";
+        String ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE = "tokopedia://marketplace/order?payment_id={payment_id}&cart_string={cart_string}";
         String ORDER_OMS_DETAIL_UPSTREAM = "tokopedia://order/{order_id}?upstream={upstream}";
 
         String EXTRA_SHOP_ID = "shop_id";
