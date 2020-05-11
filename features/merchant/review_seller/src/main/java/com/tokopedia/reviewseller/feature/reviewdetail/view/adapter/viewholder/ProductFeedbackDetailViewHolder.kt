@@ -112,9 +112,9 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         if (element.replyText?.isNotEmpty() == true) {
 
             if (element.autoReply == isAutoReply) {
-                tvReplyUser?.text = getString(R.string.otomatis_reply)
+                tvReplyUser?.text = getString(R.string.user_reply)
             } else {
-                tvReplyUser?.text = String.format(getString(R.string.user_reply_feedback), element.sellerUser.orEmpty())
+                tvReplyUser?.text = getString(R.string.otomatis_reply)
             }
             tvReplyDate?.text = element.replyTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
 

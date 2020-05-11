@@ -3,7 +3,6 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
@@ -34,21 +33,17 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
         countSortFilter = element.sortFilterItemList.count {
             it.isSelected
         }
-
-        if(element.sortFilterItemList.isEmpty()) {
-            sortFilterTopics.hide()
-        } else {
-            sortFilterTopics.show()
-            sortFilterTopics.apply {
-                sortFilterItems.removeAllViews()
-                addItem(dataItemSortFilter(element.sortFilterItemList))
-                indicatorCounter = countSortFilter
-                parentListener = {
-                    fragmentListener.onParentTopicFilterClicked()
-                }
+        sortFilterTopics.show()
+        sortFilterTopics.apply {
+            sortFilterItems.removeAllViews()
+            addItem(dataItemSortFilter(element.sortFilterItemList))
+            indicatorCounter = countSortFilter
+            parentListener = {
+                fragmentListener.onParentTopicFilterClicked()
             }
-            setReviewCount(element.countFeedback.orZero())
         }
+        setReviewCount(element.countFeedback.orZero())
+
     }
 
     override fun bind(element: TopicUiModel?, payloads: MutableList<Any>) {

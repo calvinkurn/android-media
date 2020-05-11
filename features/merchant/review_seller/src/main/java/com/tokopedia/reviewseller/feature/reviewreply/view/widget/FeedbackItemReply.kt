@@ -16,9 +16,7 @@ import com.tokopedia.reviewseller.common.util.getReviewStar
 import com.tokopedia.reviewseller.common.util.toRelativeDayAndWeek
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewReplyFeedbackImageAdapter
-import kotlinx.android.synthetic.main.fragment_seller_review_reply.view.*
 import kotlinx.android.synthetic.main.widget_reply_feedback_item.view.*
-import kotlinx.android.synthetic.main.widget_reply_textbox.view.*
 
 class FeedbackItemReply : BaseCustomView {
 
@@ -47,34 +45,22 @@ class FeedbackItemReply : BaseCustomView {
         View.inflate(context, R.layout.widget_reply_feedback_item, this)
     }
 
-    fun setData(data: FeedbackUiModel, isReply: Boolean) {
-        if (!isReply) {
-            setReplyView(data)
-        } else {
-            reviewReplyTextBoxWidget?.show()
-            groupReply?.hide()
-        }
-
+    fun setData(data: FeedbackUiModel) {
         ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
         tvFeedbackUser?.text = MethodChecker.fromHtml(context.getString(R.string.label_name_reviewer_builder, data.reviewerName.orEmpty()))
         tvFeedbackDate?.text = data.reviewTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
         setupFeedbackReview(data.reviewText.orEmpty(), data.feedbackID.toString())
         setImageAttachment(data)
+        setReplyView(data)
     }
 
     private fun setReplyView(data: FeedbackUiModel) {
-        groupReply?.show()
-        reviewReplyTextBoxWidget?.hide()
         tvReplyComment?.text = data.replyText
         tvReplyDate?.text = data.replyTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
         if (data.autoReply == isAutoReply) {
-            tvReplyUser?.text = context?.getString(R.string.otomatis_reply)
+            tvReplyUser?.text = context?.getString(R.string.user_reply)
         } else {
-            tvReplyUser?.text = String.format(context?.getString(R.string.user_reply_feedback).orEmpty(), data.sellerUser.orEmpty())
-        }
-        tvReplyEdit?.setOnClickListener {
-            reviewReplyTextBoxWidget?.show()
-            replyEditText?.setText(data.replyText.orEmpty())
+            tvReplyUser?.text = context?.getString(R.string.otomatis_reply)
         }
     }
 

@@ -150,7 +150,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
         initSearchBar()
@@ -205,7 +204,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun loadInitialData() {
-        clearAllData()
+        reviewSellerAdapter.clearAllElements()
         rvRatingProduct?.visible()
         filter_and_sort_layout?.hide()
         search_bar_layout?.hide()

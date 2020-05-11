@@ -510,7 +510,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                             startActivity(Intent(context, SellerReviewReplyActivity::class.java).apply {
                                 putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
                                 putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, userSession.shopId.orEmpty())
-                                putExtra(SellerReviewReplyFragment.IS_REPLY_REVIEW, isEmptyReply)
+                                putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
                             })
                             bottomSheetOptionFeedback?.dismiss()
                         }

@@ -62,8 +62,8 @@ class SellerReviewListViewModel @Inject constructor(
                     })
 
             productRatingOverall.await()?.let {
-                _productRatingOverall.postValue(Success(it))
                 reviewProductList.await()?.also { reviewProductData ->
+                    _productRatingOverall.postValue(Success(it))
                     _reviewProductList.postValue(Success(reviewProductData))
                 }
             }
