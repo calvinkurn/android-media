@@ -16,7 +16,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 
@@ -25,6 +24,7 @@ import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
@@ -65,7 +65,7 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun getComponent(context: Context): AutoAdsComponent = DaggerAutoAdsComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).autoAdsQueryModule(AutoAdsQueryModule(context)).build()
 
     private fun initView(context: Context) {
         getComponent(context).inject(this)

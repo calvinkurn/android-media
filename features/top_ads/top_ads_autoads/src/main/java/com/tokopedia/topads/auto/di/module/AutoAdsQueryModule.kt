@@ -1,7 +1,6 @@
 package com.tokopedia.topads.auto.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsScope
@@ -17,34 +16,40 @@ import dagger.multibindings.StringKey
  */
 @Module
 @AutoAdsScope
-class AutoAdsQueryModule {
+class AutoAdsQueryModule(val context: Context) {
 
     @AutoAdsScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_ADS_SHOP_INFO)
-    fun queryShopInfo(context: Context): String =
+    fun queryShopInfo(): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_shop_info)
 
     @AutoAdsScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_ADS_BID_INFO)
-    fun queryBidInfo(context: Context): String =
+    fun queryBidInfo(): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_bid_info)
 
     @AutoAdsScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_GET_AUTO_ADS)
-    fun queryGetAutoAds(context: Context): String =
+    fun queryGetAutoAds(): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_autoads)
 
     @AutoAdsScope
     @Provides
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_POST_AUTO_ADS)
-    fun queryPostAutoAds(context: Context): String =
+    fun queryPostAutoAds(): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_post_autoads)
+
+
+    @Provides
+    fun providesContext():Context{
+        return context
+    }
 
 }
