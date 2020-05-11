@@ -14,14 +14,17 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_PDP
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
@@ -64,6 +67,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
+    private var isRoomListLoaded = false
+    private var isHotelInfoLoaded = false
+    private var isHotelReviewLoaded = false
+
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
     private var hotelName: String = ""
@@ -85,6 +94,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_PDP)
+
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
@@ -103,8 +114,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
                 hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
-                hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE,
-                        HotelHomepageActivity.TYPE_PROPERTY)
+                hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, HotelTypeEnum.PROPERTY.value)
                 isDirectPayment = it.getBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, true)
             }
             isButtonEnabled = it.getBoolean(EXTRA_SHOW_ROOM, true)
@@ -157,6 +167,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     showErrorView(it.throwable)
                 }
             }
+            isRoomListLoaded = true
+            stopTrace()
         })
 
         detailViewModel.hotelInfoResult.observe(this, Observer {
@@ -172,6 +184,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     showErrorView(it.throwable)
                 }
             }
+            isHotelInfoLoaded = true
+            stopTrace()
         })
 
         detailViewModel.hotelReviewResult.observe(this, Observer {
@@ -185,6 +199,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     showErrorView(it.throwable)
                 }
             }
+            isHotelReviewLoaded = true
+            stopTrace()
         })
     }
 
@@ -229,6 +245,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun showErrorView(e: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
+            stopTrace()
+
             container_content.visibility = View.GONE
             container_error.visibility = View.VISIBLE
 
@@ -599,6 +617,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun hideRoomNotAvailableContainerBottom() {
         container_room_not_available.visibility = View.GONE
+    }
+
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            if (isHotelInfoLoaded && isHotelReviewLoaded && isRoomListLoaded) {
+                performanceMonitoring?.stopTrace()
+                isTraceStop = true
+            }
+        }
     }
 
     companion object {
