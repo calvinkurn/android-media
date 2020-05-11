@@ -10,6 +10,12 @@ query ace_search_product($params: String!) {
           isActive
         }
         isStockEmpty
+        shop {
+          id
+          name
+          url
+          location
+        }
       }
     }
   }
