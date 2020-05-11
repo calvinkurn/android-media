@@ -43,7 +43,6 @@ class ProductVariantPriceViewHolder(
             setFirstIcon(R.drawable.ic_system_action_close_normal_24)
             getFirstIcon().setOnClickListener {
                 textFieldInput.text.clear()
-                hidePriceError()
             }
         }
     }
