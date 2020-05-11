@@ -34,6 +34,7 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
+import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity.Companion.HOTEL_BOOKING_SCREEN_NAME
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -221,7 +222,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
                                 }
                                 TickerCheckoutView.State.ACTIVE -> {
-                                    trackingHotelUtil.hotelApplyPromo(promoCode)
+                                    trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
                                     setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                                             itemPromoData?.title.toEmptyStringIfNull(),
                                             itemPromoData?.description.toEmptyStringIfNull())
@@ -463,11 +464,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                 setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                         cart.appliedVoucher.titleDescription,
                         cart.appliedVoucher.message)
-                trackingHotelUtil.hotelApplyPromo(promoCode)
+                trackingHotelUtil.hotelApplyPromo(context, promoCode, HOTEL_BOOKING_SCREEN_NAME)
             } else {
-                setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                        "",
-                        "")
+                setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
             }
 
             booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
@@ -602,8 +601,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.guestName = tv_guest_input.getEditableValue()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.getEditableValue().toString()
-            trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName, roomCount, guestCount,
-                    hotelBookingPageModel.isForOtherGuest == 0)
+            trackingHotelUtil.hotelClickNext(context, hotelCart, destinationType, destinationName, roomCount, guestCount,
+                    hotelBookingPageModel.isForOtherGuest == 0, HOTEL_BOOKING_SCREEN_NAME)
 
             hotelBookingPageModel.promoCode = promoCode
 
