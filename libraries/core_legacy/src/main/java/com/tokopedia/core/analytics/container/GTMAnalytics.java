@@ -59,7 +59,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
-
+    private String mGclid = null;
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
@@ -92,7 +92,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
-        pushGeneral(clone(value));
+        pushGeneralEcommerce(clone(value));
 
         StringBuilder stacktrace = new StringBuilder();
 
@@ -971,6 +971,7 @@ public class GTMAnalytics extends ContextAnalytics {
         String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
         if(!TextUtils.isEmpty(gclid)) {
             bundle.putString("gclid", gclid);
+            mGclid = gclid;
         }
         bundle.putString("utmSource", (String) param.get(AppEventTracking.GTM.UTM_SOURCE));
         bundle.putString("utmMedium", (String) param.get(AppEventTracking.GTM.UTM_MEDIUM));
@@ -1026,6 +1027,35 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribe(getDefaultSubscriber());
     }
 
+
+    private void pushGeneralEcommerce(Map<String, Object> values) {
+        Map<String, Object> data = new HashMap<>(values);
+        Observable.just(data)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(it -> {
+                    String eventName = keyEvent(clone(values));
+                    if (eventName == null || mGclid == null) {
+                        pushIris("", it);
+                    } else {
+                    addGclIdIfNeeded(eventName, it);
+                    }
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
+    }
+
+    private void addGclIdIfNeeded(String eventName, Map<String, Object> values){
+        switch (eventName.toLowerCase()) {
+            case FirebaseAnalytics.Event.ADD_TO_CART:
+            case ADDTOCART:
+            case FirebaseAnalytics.Event.VIEW_ITEM:
+            case VIEWPRODUCT:
+            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+            case TRANSACTION:
+                values.put("GCLID", mGclid);
+        }
+    }
 
     public void eventOnline(String uid) {
         pushEvent(
