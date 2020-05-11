@@ -35,7 +35,9 @@ class EventPDPAboutViewHolder(view: View, val onBindItemListener: OnBindItemList
 
                 if(!element.sectionData.content.isNullOrEmpty() && !element.sectionData.section.isNullOrEmpty()) {
                     btn_event_pdp_about_see_all.setOnClickListener {
-                        onBindItemListener.seeAllAbout(element.sectionData.content[0].valueText, element.sectionData.section)
+                        element.sectionData.content.firstOrNull()?.let {
+                            onBindItemListener.seeAllAbout(it.valueText, element.sectionData.section)
+                        }
                     }
                 } else {
                     btn_event_pdp_about_see_all.gone()

@@ -23,9 +23,9 @@ object EventDateMapper{
 
     fun getActiveDate(productDetailData: ProductDetailData): List<Date>{
         var listActiveDate : MutableList<Date> = mutableListOf()
-        val schedule = productDetailData.schedules
-        for (i in 0..schedule.size-1){
-            listActiveDate.add(Date(schedule[i].schedule.startDate.toLong() * 1000))
+        val schedules = productDetailData.schedules
+        for (schedule in schedules){
+            listActiveDate.add(Date(schedule.schedule.startDate.toLong() * 1000))
         }
 
         return listActiveDate

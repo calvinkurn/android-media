@@ -8,7 +8,7 @@ import java.io.Serializable
 data class EventProductDetailEntity (
         @SerializedName("event_product_detail")
         @Expose
-        val EventProductDetail : EventProductDetail = EventProductDetail()
+        val eventProductDetail : EventProductDetail = EventProductDetail()
 )
 
 data class EventProductDetail(

@@ -141,7 +141,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 val error = it
                 view?.let {
                     progressDialog.dismiss()
-                    Toaster.make(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,  it.context.getString(R.string.ent_checkout_error))
+                    Toaster.make(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
                 }
             }
         })
@@ -194,14 +194,16 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         pg_event_checkout.gone()
         container_checkout.show()
 
-        renderDesc(eventProductDetailEntity.EventProductDetail.productDetailData)
+        renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderPassenger()
-        renderSummary(eventProductDetailEntity.EventProductDetail.productDetailData)
-        renderFooter(eventProductDetailEntity.EventProductDetail.productDetailData)
+        renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
+        renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
     }
 
     private fun renderDesc(pdp: ProductDetailData) {
-        tg_event_checkout_date.text = getDateString(DATE_FORMAT, pdp.schedules[0].schedule.startDate.toInt())
+        pdp.schedules.firstOrNull()?.let {
+            tg_event_checkout_date.text = getDateString(DATE_FORMAT, it.schedule.startDate.toInt())
+        }
         tg_event_checkout_name.text = pdp.displayName
         tg_event_checkout_packet.text = getPackage(scheduleID, groupID, packetID, pdp).displayName
         iv_event_checkout_image.loadImageRounded(pdp.imageApp, 25f)
@@ -219,7 +221,8 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
     private fun renderSummary(pdp: ProductDetailData) {
         val schedule: Schedule = getSchedule(scheduleID, pdp)
-        tg_event_checkout_summary_packet.text = "${getPackage(scheduleID, groupID, packetID, pdp).displayName}  (x$amount)"
+        tg_event_checkout_summary_packet.text = getString(R.string.ent_checkout_summary_packet,
+                getPackage(scheduleID, groupID, packetID, pdp).displayName,amount)
         tg_event_checkout_summary_price.text = getRupiahFormat(getPackage(scheduleID, groupID, packetID, pdp).salesPrice.toInt() * amount)
         tg_event_checkout_summary_price_price.text = getRupiahFormat(getPackage(scheduleID, groupID, packetID, pdp).salesPrice.toInt() * amount)
 
@@ -231,7 +234,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             )
         }
 
-        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp,amount)
+        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp, amount)
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
@@ -246,12 +249,12 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 val view = it
                 context?.let {
                     if (!userSessionInterface.isLoggedIn) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,  it.getString(R.string.ent_checkout_error))
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else if (forms.isEmpty()) {
-                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,  it.getString(R.string.ent_checkout_error))
+                        Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
-                        eventPDPTracking.onClickCheckoutButton(getPackage(scheduleID, groupID, packetID, productDetailData), productDetailData,amount)
+                        eventPDPTracking.onClickCheckoutButton(getPackage(scheduleID, groupID, packetID, productDetailData), productDetailData, amount)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
                         eventCheckoutViewModel.checkVerify(true, getVerifyMapped(productDetailData))
@@ -261,23 +264,23 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderPromo(productDetailData: ProductDetailData){
+    private fun renderPromo(productDetailData: ProductDetailData) {
 
         ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
         ticker_event_checkout_promo.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickDetailPromo() {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_EVENT)
-                intent.putExtra(EXTRA_IS_USE,true)
+                intent.putExtra(EXTRA_IS_USE, true)
                 intent.putExtra(EXTRA_KUPON_CODE, promoCode)
-                intent.putExtra(EXTRA_EVENT_VERIFY,getVerifyMapped(productDetailData))
+                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyMapped(productDetailData))
 
                 startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
             }
 
             override fun onClickUsePromo() {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_EVENT)
-                intent.putExtra(EXTRA_COUPON_ACTIVE,true)
-                intent.putExtra(PAGE_TRACKING,1)
+                intent.putExtra(EXTRA_COUPON_ACTIVE, true)
+                intent.putExtra(PAGE_TRACKING, 1)
                 intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
                 intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyMapped(productDetailData))
                 startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
@@ -343,7 +346,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                     forms = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
                     setPassengerData(forms)
                 }
-            } else if(requestCode == PROMO_EXTRA_LIST_ACTIVITY_RESULT){
+            } else if (requestCode == PROMO_EXTRA_LIST_ACTIVITY_RESULT) {
                 data?.let {
                     if (it.hasExtra(EXTRA_PROMO_DATA)) {
                         val itemPromoData = it.getParcelableExtra<PromoData>(EXTRA_PROMO_DATA)
@@ -391,16 +394,16 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     private fun setPassengerData(list: List<Form>) {
         widget_event_checkout_pessanger.renderRecycleView(list)
 
-        for (i in 0..list.size-1) {
-            when (list[i].title) {
+        for (item in list) {
+            when (item.title) {
                 PASSENGER_NAME -> {
-                    list[i].value.let {
+                    item.value.let {
                         name = it
                     }
                 }
 
                 PASSENGER_EMAIL -> {
-                    list[i].value.let {
+                    item.value.let {
                         email = it
                     }
                 }
@@ -426,7 +429,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     }
 
 
-    fun getVerifyMapped(productDetailData: ProductDetailData): EventVerifyBody{
+    fun getVerifyMapped(productDetailData: ProductDetailData): EventVerifyBody {
         if (name.isEmpty()) name = userSessionInterface.name
         if (email.isEmpty()) email = userSessionInterface.email
 

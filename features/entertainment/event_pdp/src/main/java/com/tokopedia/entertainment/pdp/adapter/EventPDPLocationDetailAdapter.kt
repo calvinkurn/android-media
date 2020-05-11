@@ -19,8 +19,7 @@ class EventPDPLocationDetailAdapter(): RecyclerView.Adapter<EventPDPLocationDeta
             with(itemView) {
                 tg_event_pdp_how_to_get_there_number.text = valueBullet.bullet
                 tg_event_pdp_how_to_get_there_desc.
-                        setText(Html.fromHtml("<font color='black'><b>" + valueBullet.title + "</b></font>" + " " +
-                                " "+ valueBullet.description))
+                        setText(Html.fromHtml(resources.getString(R.string.ent_checkout_location_span, valueBullet.title,valueBullet.description)))
             }
         }
     }

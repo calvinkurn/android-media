@@ -53,8 +53,8 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
             txtPrice_ticket.text = CurrencyFormatter.getRupiahFormat(items.salesPrice.toLong())
 
 
-            txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isHabis) View.GONE else View.VISIBLE
-            txtHabis_ticket.visibility = if(items.scheduleStatusBahasa == items.isHabis) View.VISIBLE else View.GONE
+            txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.GONE else View.VISIBLE
+            txtHabis_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.VISIBLE else View.GONE
 
 
             quantityEditor.minValue = items.minQty.toInt()
@@ -120,8 +120,8 @@ class PackageViewHolder(view: View): AbstractViewHolder<Package>(view) {
                 eventPDPTracking.onClickPackage(items, itemView.quantityEditor.getValue())
             } else {
                 itemView.clearFocus()
-                itemView.txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isHabis) View.GONE else View.VISIBLE
-                itemView.txtHabis_ticket.visibility = if(items.scheduleStatusBahasa == items.isHabis) View.VISIBLE else View.GONE
+                itemView.txtPilih_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.GONE else View.VISIBLE
+                itemView.txtHabis_ticket.visibility = if(items.scheduleStatusBahasa == items.isEmpty) View.VISIBLE else View.GONE
                 itemView.greenDivider.visibility = View.GONE
                 itemView.bgTicket.background = ContextCompat.getDrawable(context, R.drawable.ent_pdp_ticket_normal_bg)
                 itemView.quantityEditor.clearFocus()

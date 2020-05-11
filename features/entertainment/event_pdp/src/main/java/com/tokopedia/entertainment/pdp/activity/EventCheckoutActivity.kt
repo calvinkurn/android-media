@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.di.DaggerEventPDPComponent
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.fragment.EventCheckoutFragment
@@ -51,7 +52,7 @@ class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPCompone
         if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
             if (data != null) {
                 this.let {
-                    val url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true"
+                    val url = getString(R.string.ent_checkout_to_order_detail,data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL))
                     RouteManager.route(it, url)
                     finish()
                 }

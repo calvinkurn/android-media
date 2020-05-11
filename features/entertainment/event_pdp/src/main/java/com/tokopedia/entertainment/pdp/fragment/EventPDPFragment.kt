@@ -115,7 +115,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         })
 
         eventPDPViewModel.eventProductDetail.observe(this, Observer {
-            productDetailData = it.EventProductDetail.productDetailData
+            productDetailData = it.eventProductDetail.productDetailData
             context?.let {
                 renderView(it, productDetailData)
             }
@@ -209,10 +209,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
 
                 view.bottom_sheet_calendar.apply {
-                    calendarPickerView?.init(Date(productDetailData.minStartDate.toLong() * 1000),
-                            Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData))
-                            ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-                            ?.withSelectedDate(getActiveDate(productDetailData)[0])
+                    getActiveDate(productDetailData).firstOrNull()?.let {
+                        calendarPickerView?.init(Date(productDetailData.minStartDate.toLong() * 1000),
+                                Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData))
+                                ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                                ?.withSelectedDate(it)
+                    }
 
                     calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                         override fun onDateSelected(date: Date) {
@@ -314,8 +316,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         val startDate = getStartDate(productDetailData)
         val endDate = getEndDate(productDetailData)
         context?.let {
-            RouteManager.route(it,
-                    "${ApplinkConstInternalEntertainment.EVENT_PACKAGE}/$urlPDP?selectedDate=$selectedDate&startDate=$startDate&endDate=$endDate")
+            RouteManager.route(it, getString(R.string.ent_pdp_param_to_package,ApplinkConstInternalEntertainment.EVENT_PACKAGE,urlPDP,selectedDate,startDate,endDate))
         }
     }
 

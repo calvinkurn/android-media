@@ -47,7 +47,7 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
             when (data) {
                 is Success -> {
                     if(selectedDate.isNotBlank()){
-                        data.data.eventProductDetailEntity.EventProductDetail.productDetailData.schedules.forEach {
+                        data.data.eventProductDetailEntity.eventProductDetail.productDetailData.schedules.forEach {
                             if(EventDateUtil.convertUnixToToday(it.schedule.startDate.toLong()) == selectedDate.toLong()){
                                 EXTRA_SCHEDULE_ID = it.schedule.id
                                 it.groups.forEach {
@@ -58,8 +58,8 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                             listsActiveDate.add(Date(it.schedule.startDate.toLong()*1000L))
                         }
                     } else{
-                        if(data.data.eventProductDetailEntity.EventProductDetail.productDetailData.schedules.size == 1) {
-                            data.data.eventProductDetailEntity.EventProductDetail.productDetailData.schedules.forEach {
+                        if(data.data.eventProductDetailEntity.eventProductDetail.productDetailData.schedules.size == 1) {
+                            data.data.eventProductDetailEntity.eventProductDetail.productDetailData.schedules.forEach {
                                 EXTRA_SCHEDULE_ID = it.schedule.id
                                 it.groups.forEach {
                                     EXTRA_GROUPS_ID = it.id
@@ -68,8 +68,8 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                             }
                         }
                     }
-                    if(data.data.eventProductDetailEntity.EventProductDetail.productDetailData.category.isNotEmpty())
-                        categoryData = data.data.eventProductDetailEntity.EventProductDetail.productDetailData.category[0]
+                    if(data.data.eventProductDetailEntity.eventProductDetail.productDetailData.category.isNotEmpty())
+                        categoryData = data.data.eventProductDetailEntity.eventProductDetail.productDetailData.category[0]
                     _ticketModel.value = lists
                 }
                 is Fail -> {

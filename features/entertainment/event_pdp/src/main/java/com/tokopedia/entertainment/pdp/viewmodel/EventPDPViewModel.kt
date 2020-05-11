@@ -131,8 +131,8 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     private fun mapperHighlight(result: EventPDPContentCombined): EventPDPHighlightEntity {
         val list: MutableList<Highlight> = mutableListOf()
-        val pdpData = result.eventProductDetailEntity.EventProductDetail.productDetailData
-        val facilities = result.eventProductDetailEntity.EventProductDetail.productDetailData.facilities.sortedBy { it.priority }
+        val pdpData = result.eventProductDetailEntity.eventProductDetail.productDetailData
+        val facilities = result.eventProductDetailEntity.eventProductDetail.productDetailData.facilities.sortedBy { it.priority }
         if (!facilities.isNullOrEmpty()) {
             for (i in facilities.indices) {
                 if (facilities[i].type == typeHighlight)
@@ -146,7 +146,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     private fun mapperFacilities(result: EventPDPContentCombined): EventPDPFacilitiesEntity {
         val list: MutableList<Facilities> = mutableListOf()
-        val facilities = result.eventProductDetailEntity.EventProductDetail.productDetailData.facilities.sortedBy { it.priority }
+        val facilities = result.eventProductDetailEntity.eventProductDetail.productDetailData.facilities.sortedBy { it.priority }
         if (!facilities.isNullOrEmpty()) {
             for (i in facilities.indices) {
                 if (facilities[i].type == typeFacilities)
@@ -165,15 +165,15 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                     section = sectionsData[i]
             }
         }
-        return EventPDPAboutEntity(result.eventProductDetailEntity.EventProductDetail.productDetailData.longRichDesc, section)
+        return EventPDPAboutEntity(result.eventProductDetailEntity.eventProductDetail.productDetailData.longRichDesc, section)
     }
 
     private fun mapperLocationDetail(result: EventPDPContentCombined): EventPDPLocationDetailEntity {
         var section = SectionData()
         var outlet = Outlet()
         val sectionsData = result.eventContentByIds.eventContentById.data.sectionData
-        if(result.eventProductDetailEntity.EventProductDetail.productDetailData.outlets.isNotEmpty()) {
-            outlet = result.eventProductDetailEntity.EventProductDetail.productDetailData.outlets[0]
+        if(result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets.isNotEmpty()) {
+            outlet = result.eventProductDetailEntity.eventProductDetail.productDetailData.outlets[0]
             for (i in sectionsData.indices) {
                 if (sectionsData[i].section.equals(SECTION_LOCATION))
                     section = sectionsData[i]

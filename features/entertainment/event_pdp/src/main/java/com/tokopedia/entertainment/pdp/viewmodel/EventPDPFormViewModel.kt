@@ -32,7 +32,7 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
         launch {
             when(val data = usecase.executeUseCase(getRawQueryPDP(), getRawQueryContent(), false, url)){
                 is Success -> {
-                    data.data.eventProductDetailEntity.EventProductDetail.productDetailData.forms.forEach {
+                    data.data.eventProductDetailEntity.eventProductDetail.productDetailData.forms.forEach {
                         formData.add(it)
                     }
                     mFormDataMutable.value = formData

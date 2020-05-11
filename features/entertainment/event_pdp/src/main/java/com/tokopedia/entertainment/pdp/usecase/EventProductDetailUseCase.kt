@@ -27,7 +27,7 @@ class EventProductDetailUseCase @Inject constructor(private val useCase: MultiRe
 
             val pdpData = useCase.executeOnBackground().getSuccessData<EventProductDetailEntity>()
 
-            val contentRequest = GraphqlRequest(rawQueryContent, EventContentByIdEntity::class.java, mapOf(TYPE_VALUE to pdpData.EventProductDetail.productDetailData.id))
+            val contentRequest = GraphqlRequest(rawQueryContent, EventContentByIdEntity::class.java, mapOf(TYPE_VALUE to pdpData.eventProductDetail.productDetailData.id))
             useCase.addRequest(contentRequest)
             val contentData = useCase.executeOnBackground().getSuccessData<EventContentByIdEntity>()
 

@@ -24,6 +24,8 @@ object EventPDPOpenHourMapper{
 
     fun splitOpenHour(openHour : String): OpenHour{
         val splitHour = openHour.split("(")
-        return OpenHour(splitHour[0], splitHour[1].substringBefore(")"))
+        return if(splitHour.isNotEmpty())
+         OpenHour(splitHour[0], splitHour[1].substringBefore(")"))
+        else OpenHour("","")
     }
 }
