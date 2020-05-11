@@ -79,6 +79,18 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
     }
 
     override fun onCheckAvailabilityClicked() {
+        val type: String = if (globalSearchModel.searchType.isNotEmpty()) globalSearchModel.searchType
+        else globalSearchModel.destinationType
+
+        trackingUtil.clickSaveChangeSearch(context,
+                type,
+                globalSearchModel.destinationName,
+                globalSearchModel.numOfRooms,
+                globalSearchModel.numOfGuests,
+                globalSearchModel.checkInDate,
+                globalSearchModel.checkOutDate,
+                SCREEN_NAME)
+
         when {
             globalSearchModel.destinationType.equals(HotelTypeEnum.PROPERTY.value, false) -> {
                 context?.let {
@@ -122,20 +134,11 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                     putExtra(SEARCH_TYPE, globalSearchModel.searchType)
                     putExtra(SEARCH_ID, globalSearchModel.searchId)
                 }
-
-            trackingUtil.clickSaveChangeSearch(context,
-                    globalSearchModel.destinationType,
-                    globalSearchModel.destinationName,
-                    globalSearchModel.numOfRooms,
-                    globalSearchModel.numOfGuests,
-                    globalSearchModel.checkInDate,
-                    globalSearchModel.checkOutDate,
-                    SCREEN_NAME)
-
                 activity?.setResult(RESULT_OK, intent)
                 activity?.finish()
             }
         }
+
     }
 
     override fun renderView() {

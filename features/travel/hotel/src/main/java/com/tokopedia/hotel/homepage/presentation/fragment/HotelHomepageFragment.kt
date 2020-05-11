@@ -31,7 +31,6 @@ import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.HOMEPAGE_SCREEN_NAME
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
@@ -343,7 +342,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "", searchId: String = "") {
-        val tempType = if (searchType.isNotEmpty) searchType else type
+        val tempType = if (searchType.isNotEmpty()) searchType else type
         trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
 
         hotelHomepageModel.locName = name
