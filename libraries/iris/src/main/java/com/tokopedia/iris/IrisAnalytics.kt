@@ -106,7 +106,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 try {
-                    saveEventSuspend(bundleToMap(bundle))
+                    saveEventSuspend(Utils.bundleToMap(bundle))
                 } catch (e: Exception) {
                     Timber.e("P1#IRIS#saveEvent %s", e.toString())
                 }
@@ -128,23 +128,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         setAlarm(true, force = false)
     }
 
-    private fun bundleToMap(extras: Bundle): Map<String, Any> {
-        val map: MutableMap<String, Any> = HashMap()
-        val ks: Set<String> = extras.keySet()
-        val iterator = ks.iterator()
-        while (iterator.hasNext()) {
-            val key = iterator.next()
-            val value = extras[key]
-            if (value != null) {
-                if (value is Bundle) {
-                    map[key] = bundleToMap(value)
-                } else {
-                    map[key] = extras.get(key) ?: ""
-                }
-            }
-        }
-        return map
-    }
 
     @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(input)"))
     override fun sendEvent(map: Map<String, Any>) {
