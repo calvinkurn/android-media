@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,10 +19,8 @@ import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
-import com.tokopedia.play.ui.youtube.YouTubeComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.DistinctEventObserver
-import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.util.video.PlayVideoUtil
@@ -204,7 +201,6 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     private fun initComponents(container: ViewGroup) {
         layoutManager = PlayVideoLayoutManagerImpl(
                 container = container,
-                orientation = orientation,
                 videoOrientation = playViewModel.videoOrientation,
                 viewInitializer = this
         )

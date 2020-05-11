@@ -34,10 +34,8 @@ import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.sizecontainer.SizeContainerComponent
-import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.ui.videocontrol.VideoControlMiniComponent
 import com.tokopedia.play.ui.videocontrol.interaction.VideoControlInteractionEvent
-import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
 import com.tokopedia.play.ui.videosettings.VideoSettingsMiniComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
@@ -47,7 +45,6 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
-import com.tokopedia.play.view.layout.interaction.userinteraction.PlayUserInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
 import com.tokopedia.play.view.layout.interaction.miniinteraction.PlayMiniInteractionLayoutManager
 import com.tokopedia.play.view.type.ScreenOrientation

@@ -2,43 +2,79 @@ package com.tokopedia.play.view.layout.video
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
+import com.tokopedia.play.R
+import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
- * Created by jegul on 16/04/20
+ * Created by jegul on 24/04/20
  */
 class PlayVideoLayoutManagerImpl(
         container: ViewGroup,
-        orientation: ScreenOrientation,
-        videoOrientation: VideoOrientation,
+        private val videoOrientation: VideoOrientation,
         viewInitializer: PlayVideoViewInitializer
 ) : PlayVideoLayoutManager {
 
-    private val manager = if (orientation.isLandscape) PlayVideoLandscapeManager(
-            container = container,
-            viewInitializer = viewInitializer
-    ) else PlayVideoPortraitManager(
-            container = container,
-            videoOrientation = videoOrientation,
-            viewInitializer = viewInitializer
-    )
+    @IdRes private val videoComponentId: Int = viewInitializer.onInitVideo(container)
+    @IdRes private val videoLoadingComponentId: Int = viewInitializer.onInitVideoLoading(container)
+    @IdRes private val oneTapComponentId: Int = viewInitializer.onInitOneTap(container)
+    @IdRes private val overlayVideoComponentId: Int = viewInitializer.onInitOverlayVideo(container)
 
     override fun layoutView(view: View) {
-        manager.layoutView(view)
+        layoutVideo(container = view, id = videoComponentId)
+        layoutVideoLoading(container = view, id = videoLoadingComponentId)
+        layoutOneTap(container = view, id = oneTapComponentId)
+        layoutOverlayVideo(container = view, id = overlayVideoComponentId)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
-        manager.setupInsets(view, insets)
+
     }
 
     override fun onDestroy() {
-        manager.onDestroy()
+
     }
 
     override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
-        manager.onOrientationChanged(view, orientation, videoOrientation, videoPlayer)
+    }
+
+    private fun layoutVideo(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutVideoLoading(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        }
+    }
+
+    private fun layoutOneTap(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, R.id.gl_one_tap_post, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutOverlayVideo(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        }
     }
 }

@@ -29,7 +29,6 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.*
-import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -66,8 +65,8 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
-import com.tokopedia.play.view.layout.interaction.userinteraction.PlayUserInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
+import com.tokopedia.play.view.layout.interaction.userinteraction.PlayUserInteractionLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
@@ -103,8 +102,6 @@ class PlayUserInteractionFragment :
 {
 
     companion object {
-        private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
-
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
@@ -521,7 +518,6 @@ class PlayUserInteractionFragment :
     private fun initComponents(container: ViewGroup) {
         layoutManager = PlayUserInteractionLayoutManager(
                 container = container,
-                orientation = orientation,
                 videoOrientation = playViewModel.videoOrientation,
                 viewInitializer = this
         )
