@@ -6,33 +6,34 @@ import com.google.gson.annotations.SerializedName
 data class ProductHighlightItem(
         @Expose
         @SerializedName("ace_search_product")
-        var aceProduct: ProductHighlight = ProductHighlight()
+        val aceProduct: ProductHighlight = ProductHighlight()
 )
 
 data class ProductHighlight(
         @Expose
         @SerializedName("data")
-        var data: ProductHighlightData = ProductHighlightData()
+        val data: ProductHighlightData = ProductHighlightData()
 )
 
 data class ProductHighlightData(
         @Expose
         @SerializedName("products")
-        var products: List<HighlightProducts> = emptyList()
+        val products: List<HighlightProducts> = emptyList()
 )
 
 data class HighlightProducts(
-        @Expose @SerializedName("id") var id: Int = 0,
-        @Expose @SerializedName("name") var name: String = "",
-        @Expose @SerializedName("imageURL") var imageURL: String = "",
-        @Expose @SerializedName("price") var price: String = "",
-        @Expose @SerializedName("isStockEmpty") var isStockEmpty: Boolean = false,
-        @Expose @SerializedName("freeOngkir") var freeOngkir: ProductFreeOngkir? = null,
-        @Expose @SerializedName("originalPrice") var originalPrice: String = "",
-        @Expose @SerializedName("discountPercentage") var discountPercentage: Int = 0
+        @Expose @SerializedName("id") val id: Int = 0,
+        @Expose @SerializedName("name") val name: String = "",
+        @Expose @SerializedName("imageURL") val imageURL: String = "",
+        @Expose @SerializedName("price") val price: String = "",
+        @Expose @SerializedName("isStockEmpty") val isStockEmpty: Boolean = false,
+        @Expose @SerializedName("freeOngkir") val freeOngkir: ProductFreeOngkir? = null,
+        @Expose @SerializedName("originalPrice") val originalPrice: String = "",
+        @Expose @SerializedName("discountPercentage") val discountPercentage: Int = 0,
+        @Expose @SerializedName("shop") val shop: Shop? = null
 )
 
 data class ProductFreeOngkir(
-        @Expose @SerializedName("imgURL") var imgURL: String = "",
-        @Expose @SerializedName("isActive") var isActive: Boolean = false
+        @Expose @SerializedName("imgURL") val imgURL: String = "",
+        @Expose @SerializedName("isActive") val isActive: Boolean = false
 )
