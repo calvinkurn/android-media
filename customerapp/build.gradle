@@ -50,10 +50,6 @@ def devMode() {
     return !project.hasProperty('tkpdBuildType')
 }
 
-def isDebugable() {
-    return "true"
-}
-
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -174,7 +170,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
-            debuggable isDebugable().toBoolean()
+            debuggable = isDebugable(project).toBoolean()
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
             if (isFirebasePerformanceLogEnabled().toBoolean()) {

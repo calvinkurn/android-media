@@ -28,3 +28,9 @@ def allowDistributionLocal() {
     return "false";
 }
 preBuild.dependsOn configDebugTools
+
+ext {
+    isDebugable = {Project project->
+        return "true"
+    }
+}
