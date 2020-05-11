@@ -217,7 +217,7 @@ class HomeFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override val trackingQueue: TrackingQueue? = null
+    override var trackingQueue: TrackingQueue? = null
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
@@ -283,6 +283,7 @@ class HomeFragment : BaseDaggerFragment(),
             irisAnalytics = getInstance(it)
             irisSession = IrisSession(it)
             remoteConfig = FirebaseRemoteConfigImpl(it)
+            trackingQueue = TrackingQueue(it)
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
