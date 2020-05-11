@@ -10,20 +10,20 @@ import com.google.gson.annotations.SerializedName
 open class AttributesCheckout (
     @SerializedName("redirect_url")
     @Expose
-    open val redirectUrl: String? = null,
+    var redirectUrl: String? = null,
     @SerializedName("callback_url_success")
     @Expose
-    open val callbackUrlSuccess: String? = null,
+    var callbackUrlSuccess: String? = null,
     @SerializedName("callback_url_failed")
     @Expose
-    open val callbackUrlFailed: String? = null,
+    var callbackUrlFailed: String? = null,
     @SerializedName("query_string")
     @Expose
-    open val queryString: String? = null,
+    var queryString: String? = null,
     @SerializedName("parameter")
     @Expose
-    open val parameter: Parameter? = null,
+    var parameter: Parameter? = null,
     @SerializedName("thanks_url")
     @Expose
-    open val thanksUrl: String? = null
+    var thanksUrl: String? = null
 )

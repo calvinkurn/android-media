@@ -39,19 +39,25 @@ data class RechargeMultiCheckoutResponse(
     }
 
     data class MultiCheckoutResponseAttributes(
-            override val redirectUrl: String = "",
-            override val callbackUrlSuccess: String = "",
-            override val callbackUrlFailed: String = "",
-            override val queryString: String = "",
-            override val parameter: Parameter = Parameter(),
-            override val thanksUrl: String = "",
             @SerializedName("all_success")
             @Expose
             val allSuccess: Boolean = false,
             @SerializedName("errors")
             @Expose
             val errors: List<Error> = listOf()
-    ): AttributesCheckout(redirectUrl, callbackUrlSuccess, callbackUrlFailed, queryString, parameter, thanksUrl)
+    ): AttributesCheckout() {
+        constructor(allSuccess: Boolean, errors: List<Error>, redirectUrl: String = "",
+                    callbackUrlSuccess: String = "", callbackUrlFailed: String = "",
+                    queryString: String = "", parameter: Parameter = Parameter(),
+                    thanksUrl: String = ""): this(allSuccess, errors) {
+            this.redirectUrl = redirectUrl
+            this.callbackUrlSuccess = callbackUrlSuccess
+            this.callbackUrlFailed = callbackUrlFailed
+            this.queryString = queryString
+            this.parameter = parameter
+            this.thanksUrl = thanksUrl
+        }
+    }
 
     data class Error(
             @SerializedName("index")
