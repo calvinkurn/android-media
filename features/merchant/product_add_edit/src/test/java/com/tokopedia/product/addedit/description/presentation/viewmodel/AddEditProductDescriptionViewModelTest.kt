@@ -7,6 +7,7 @@ import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantCombinationViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionChild
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -99,7 +100,7 @@ class AddEditProductDescriptionViewModelTest {
     )
 
     @Test
-    fun `Should success get product variant`() {
+    fun `When get product variant usecase is success expect return product variant`() {
         val successResult = listOf(ProductVariantByCatModel(), ProductVariantByCatModel(), ProductVariantByCatModel())
 
         coEvery {
@@ -117,7 +118,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should failed get product variant`() {
+    fun `When get product variant usecase is throwing an error expect null`() {
         val throwable = Throwable("")
 
         coEvery {
@@ -135,7 +136,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should success get youtube data using url from youtube app`() {
+    fun `When user insert url from youtube app and usecase is success expect youtube video data`() {
         usedYoutubeVideoUrl = youtubeVideoUrlFromApp
 
         coEvery {
@@ -153,7 +154,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should success get youtube data using url from youtube website`() {
+    fun `When user insert url from youtube web and usecase is success expect youtube video data`() {
         usedYoutubeVideoUrl = youtubeVideoUrlFromWebsite
 
         coEvery {
@@ -171,12 +172,8 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should failed get youtube data using unknown host`() {
+    fun `When user insert url with unknown host expect failed get youtube video data`() {
         usedYoutubeVideoUrl = unknownYoutubeUrl
-
-        coEvery {
-            getYoutubeVideoUseCase.executeOnBackground()
-        } returns youtubeSuccessRestResponseMap
 
         viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
 
@@ -185,12 +182,8 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should failed get youtube data using incorrect uri`() {
+    fun `When the url is null expect failed get youtube video data`() {
         usedYoutubeVideoUrl = unknownYoutubeUrl
-
-        coEvery {
-            getYoutubeVideoUseCase.executeOnBackground()
-        } returns youtubeSuccessRestResponseMap
 
         viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
 
@@ -199,11 +192,11 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should failed get youtube data`() {
+    fun `When get youtube video usecase is throwing an error expect failed get youtube video data`() {
         val throwable = Throwable("")
 
         coEvery {
-            getProductVariantUseCase.executeOnBackground()
+            getYoutubeVideoUseCase.executeOnBackground()
         } throws throwable
 
         viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
@@ -214,7 +207,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should produce duplicate video error message`() {
+    fun `When there are 2 or more same video url expect produce duplicate video error message`() {
         val addedVideoUrls = mutableListOf(
                 VideoLinkModel("https://youtu.be/$videoId"),
                 VideoLinkModel("https://youtu.be/$videoId")
@@ -228,7 +221,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should not produce duplicate video error message`() {
+    fun `When every video url is unique expect not produce duplicate video error message`() {
         val addedVideoUrls = mutableListOf(
                 VideoLinkModel("https://youtu.be/d1kf1887aKl")
         )
@@ -238,7 +231,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return false on validate video input`() {
+    fun `When there are one or more video link model with error message expect return false on validate video input`() {
         val videoUrls = mutableListOf(
                 VideoLinkModel(errorMessage = "Pastikan link Youtube kamu benar")
         )
@@ -247,7 +240,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return true on validate video input`() {
+    fun `When every video link model is not containing an error message expect return true on validate video input`() {
         val videoUrls = mutableListOf(
                 VideoLinkModel("https://youtu.be/$videoId")
         )
@@ -256,30 +249,25 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should set variant name and count`() {
-        val productVariants = arrayListOf(mockk<ProductVariantCombinationViewModel>(relaxed = true))
-        val productVariantOptionParent = ProductVariantOptionParent(productVariantOptionChild = arrayListOf(mockk(relaxed = true)))
-        val variantOptionParents = arrayListOf(productVariantOptionParent)
+    fun `When product variant is not empty expect set variant name and count`() {
+        val productVariantOptionParent1 = ProductVariantOptionParent(name = "Warna", productVariantOptionChild = listOf(ProductVariantOptionChild(value = "Kuning"), ProductVariantOptionChild(value = "Ungu")))
+        val productVariantOptionParent2 = ProductVariantOptionParent(name = "Ukuran", productVariantOptionChild = listOf(ProductVariantOptionChild(value = "XL"), ProductVariantOptionChild(value = "M")))
+        val productVariant1 = ProductVariantCombinationViewModel(opt = listOf(1, 2), level1String = "Kuning", level2String = "XL")
+        val productVariant2 = ProductVariantCombinationViewModel(opt = listOf(3, 4), level1String = "Ungu", level2String = "M")
+        val productVariants = arrayListOf(productVariant1, productVariant2)
+        val productVariantOptionParents = arrayListOf(productVariantOptionParent1, productVariantOptionParent2)
 
-        every {
-            viewModel["mapVariantOption"](variantOptionParents)
-        } returns arrayListOf<ProductVariantOptionParent>()
+        viewModel.setVariantInput(productVariants, productVariantOptionParents, null)
 
-        every {
-            viewModel["mapProductVariant"](productVariants, variantOptionParents)
-        } returns arrayListOf<ProductVariantCombinationViewModel>()
-
-        viewModel.setVariantInput(productVariants, variantOptionParents, null)
-
-        verify {
-            viewModel["mapVariantOption"](variantOptionParents)
-            viewModel["mapProductVariant"](productVariants, variantOptionParents)
-            viewModel["setVariantNamesAndCount"](productVariants, variantOptionParents)
-        }
+        assert(viewModel.variantCountList[0] == 2 &&
+                viewModel.variantCountList[1] == 2 &&
+                viewModel.variantNameList[0] == productVariantOptionParent1.name &&
+                viewModel.variantNameList[1] == productVariantOptionParent2.name
+        )
     }
 
     @Test
-    fun `Should reset variant name and count`() {
+    fun `When product variant is empty expect resetting variant name and count`() {
         val productVariant = arrayListOf<ProductVariantCombinationViewModel>()
         val variantOptionParent = arrayListOf<ProductVariantOptionParent>()
 
@@ -293,7 +281,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return message variant has been added with 2 level`() {
+    fun `When user already add 2 variant expect return message variant has been added with 2 level on getVariantSelectedMessage`() {
         viewModel.variantNameList[0] = "Variant 1"
         viewModel.variantCountList[0] = 1
         viewModel.variantNameList[1] = "Variant 2"
@@ -305,7 +293,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return message variant has been added with 1 level`() {
+    fun `When user already add 1 variant expect return message variant has been added with 1 level on getVariantSelectedMessage`() {
         viewModel.variantNameList[0] = "Variant 1"
         viewModel.variantCountList[0] = 1
 
@@ -315,7 +303,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return message empty selected variant`() {
+    fun `When user is not yet add any variant expect return message empty selected variant on getVariantSelectedMessage`() {
         viewModel.variantNameList.fill("")
 
         every { resourceProvider.getVariantEmptyMessage() } returns "Tambah varian warna, ukuran atau tipe lain agar pembeli mudah memilih"
@@ -324,7 +312,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return "Ubah Varian" message on variant button`() {
+    fun `When user already add variant expect return "Ubah Varian" message on getVariantButtonMessage`() {
         viewModel.variantNameList.fill("some random string")
 
         every { resourceProvider.getVariantButtonAddedMessage() } returns "Ubah varian"
@@ -333,7 +321,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return "Tambah Varian" message on variant button`() {
+    fun `When user is not yet add variant expect return "Tambah Varian" message on getVariantButtonMessage`() {
         viewModel.variantNameList.fill("")
 
         every { resourceProvider.getVariantButtonEmptyMessage() } returns "Tambah varian"
@@ -342,14 +330,14 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return status stock view variant type warehouse`() {
+    fun `When status is non-aktif expect return status stock view variant type warehouse on getStatusStockViewVariant`() {
         viewModel.productInputModel.detailInputModel.status = 0
 
         assert(viewModel.getStatusStockViewVariant() == AddEditProductDescriptionViewModel.TYPE_WAREHOUSE)
     }
 
     @Test
-    fun `Should return status stock view variant type active limited`() {
+    fun `When status is aktif and stock is not empty expect return status stock view variant type active limited on getStatusStockViewVariant`() {
         viewModel.productInputModel.detailInputModel.status = 1
         viewModel.productInputModel.detailInputModel.stock = 1
 
@@ -357,7 +345,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should return status stock view variant type active`() {
+    fun `When status is aktif and stock is empty expect return status stock view variant type active on getStatusStockViewVariant`() {
         viewModel.productInputModel.detailInputModel.status = 1
         viewModel.productInputModel.detailInputModel.stock = 0
 
@@ -365,13 +353,13 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should not disable remove variant in edit mode`() {
+    fun `When in edit mode and user is not yet add any variant expect return false on checkOriginalVariantLevel`() {
         viewModel.isEditMode = true
         assert(!viewModel.checkOriginalVariantLevel())
     }
 
     @Test
-    fun `Should disable remove variant in edit mode`() {
+    fun `When in edit mode and user already add some variant expect return true on checkOriginalVariantLevel`() {
         viewModel.isEditMode = true
         viewModel.variantInputModel.productVariant.add(mockk(relaxed = true))
         viewModel.variantInputModel.variantOptionParent.add(mockk(relaxed = true))
@@ -379,7 +367,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `Should update variant name and count`() {
+    fun `when product input model is updated expect update variant name and count`() {
         val productVariantOptionParent1 = ProductVariantOptionParent(name = "Warna")
         val productVariantOptionParent2 = ProductVariantOptionParent(name = "Ukuran")
         val productVariant1 = ProductVariantCombinationViewModel(opt = listOf(1, 2))
