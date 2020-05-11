@@ -670,8 +670,8 @@ class HomeFragment : BaseDaggerFragment(),
 
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
-        viewModel.requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
-            context?.let {
+        context?.let {
+            viewModel.requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
                 Glide.with(it)
                         .asBitmap()
                         .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
@@ -685,9 +685,8 @@ class HomeFragment : BaseDaggerFragment(),
                                 viewModel.clearPlayBanner()
                             }
                         })
-            }
-
-        })
+            })
+        }
     }
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
