@@ -33,9 +33,6 @@ class ProductContentViewHolder(private val view: View,
         header = PartialSnapshotView(view, listener)
     }
 
-    init {
-    }
-
     override fun bind(element: ProductContentDataModel) {
         initializeClickListener(element)
 
@@ -43,14 +40,13 @@ class ProductContentViewHolder(private val view: View,
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording
-                    ?: "")
+            header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording ?: "")
             header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
         }
 
-        renderWishlist(element.isAllowManage, element.isWishlisted)
-        renderTradein(element.showTradeIn())
-        renderCod(element.showCod())
+        header?.updateWishlist(element.isWishlisted)
+        header?.renderTradein(element.showTradeIn())
+        header?.renderCod(element.showCod())
     }
 
     override fun bind(element: ProductContentDataModel?, payloads: MutableList<Any>) {
@@ -60,10 +56,8 @@ class ProductContentViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
-            ProductDetailConstant.PAYLOAD_P3 -> {
-                renderCod(element.showCod())
-            }
+            ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted)
+            ProductDetailConstant.PAYLOAD_P3 -> header?.renderCod(element.showCod())
         }
     }
 
@@ -73,41 +67,6 @@ class ProductContentViewHolder(private val view: View,
         }
         fab_detail_pdp.setOnClickListener {
             listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
-        }
-    }
-
-    private fun renderCod(shouldShowCod: Boolean) = with(view) {
-        header?.renderCod(shouldShowCod)
-    }
-
-    private fun renderTradein(shouldShowTradein: Boolean) = with(view) {
-        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
-        header?.renderTradein(shouldShowTradein)
-    }
-
-    private fun renderWishlist(isAllowManage: Int, wishlisted: Boolean) {
-        view.context?.let {
-            view.fab_detail_pdp.hide()
-            if (isAllowManage == 1) {
-                view.fab_detail_pdp.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
-                view.fab_detail_pdp.show()
-            } else {
-                updateWishlist(wishlisted)
-            }
-        }
-    }
-
-    private fun updateWishlist(wishlisted: Boolean) = with(view) {
-        if (wishlisted) {
-            fab_detail_pdp.hide()
-            fab_detail_pdp.isActivated = true
-            fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_selected_pdp))
-            fab_detail_pdp.show()
-        } else {
-            fab_detail_pdp.hide()
-            fab_detail_pdp.isActivated = false
-            fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_unselected_pdp))
-            fab_detail_pdp.show()
         }
     }
 

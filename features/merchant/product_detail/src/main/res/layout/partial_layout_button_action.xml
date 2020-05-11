@@ -118,12 +118,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/seller_button_container"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/white"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="visible">
@@ -131,7 +128,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_edit_product"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_8"
             android:text="@string/edit_product_text"
             android:visibility="visible"
@@ -147,8 +144,8 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_top_ads"
             android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_8"
-            android:layout_height="@dimen/dp_0"
             android:text="@string/promote_topads"
             android:gravity="center"
             app:layout_constraintStart_toEndOf="@+id/btn_edit_product"
@@ -157,7 +154,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:unifyButtonVariant="filled"
             app:unifyButtonSize="medium"
-            app:unifyButtonType="main"
+            app:unifyButtonType="transaction"
             android:visibility="visible"
             />
 

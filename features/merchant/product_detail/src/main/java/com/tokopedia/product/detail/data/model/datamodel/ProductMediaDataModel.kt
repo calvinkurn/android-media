@@ -6,7 +6,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductMediaDataModel(
         val type: String = "",
         val name: String = "",
-        val listOfMedia: List<MediaDataModel> = listOf(),
+        var listOfMedia: List<MediaDataModel> = listOf(),
         var shouldRefreshViewPagger: Boolean = true,
         var shouldRenderImageVariant: Boolean = true,
         var statusTitle: String = "",

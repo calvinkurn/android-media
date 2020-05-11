@@ -1,12 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -43,9 +40,9 @@ class ProductSnapshotViewHolder(private val view: View,
                 view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                         it.basic.status)
             }
-            renderWishlist(element.isAllowManage, element.isWishlisted)
-            renderTradein(element.showTradeIn())
-            renderCod(element.showCod())
+            header?.updateWishlist(element.isWishlisted)
+            header?.renderTradein(element.showTradeIn())
+            header?.renderCod(element.showCod())
 
             element.media?.let {
                 view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(),
@@ -66,9 +63,9 @@ class ProductSnapshotViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
-            ProductDetailConstant.PAYLOAD_P3 -> renderCod(element.showCod())
-            ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> view.view_picture_search_bar.updateImage(element.media)
+            ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted)
+            ProductDetailConstant.PAYLOAD_P3 -> header?.renderCod(element.showCod())
+            ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> view.view_picture_search_bar.updateImage(element.media)
         }
     }
 
@@ -78,40 +75,6 @@ class ProductSnapshotViewHolder(private val view: View,
         }
         fab_detail_pdp.setOnClickListener {
             listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
-        }
-    }
-
-    private fun renderCod(shouldShowCod: Boolean) = with(view){
-        header?.renderCod(shouldShowCod)
-    }
-
-    private fun renderTradein(shouldShowTradein: Boolean) = with(view) {
-        header?.renderTradein(shouldShowTradein)
-    }
-
-    private fun renderWishlist(isAllowManage: Int, wishlisted: Boolean) {
-        view.context?.let {
-            view.fab_detail_pdp.hide()
-            if (isAllowManage == 1) {
-                view.fab_detail_pdp.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
-                view.fab_detail_pdp.show()
-            } else {
-                updateWishlist(wishlisted)
-            }
-        }
-    }
-
-    private fun updateWishlist(wishlisted: Boolean) = with(view) {
-        if (wishlisted) {
-            fab_detail_pdp.hide()
-            fab_detail_pdp.isActivated = true
-            fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_selected_pdp))
-            fab_detail_pdp.show()
-        } else {
-            fab_detail_pdp.hide()
-            fab_detail_pdp.isActivated = false
-            fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_unselected_pdp))
-            fab_detail_pdp.show()
         }
     }
 

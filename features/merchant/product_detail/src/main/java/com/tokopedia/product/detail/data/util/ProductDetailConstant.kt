@@ -79,7 +79,7 @@ object ProductDetailConstant {
     const val PAYLOAD_P3 = 2
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    const val PAYLOAD_VARIANT_SELECTED = 5
+    const val PAYLOAD_UPDATE_IMAGE = 5
     const val PAYLOAD_FULLFILLMENT = 192
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
@@ -132,6 +132,8 @@ object ProductDetailConstant {
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
+    const val BASIC_CONTENT = "basic_content"
+    const val MEDIA = "media"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

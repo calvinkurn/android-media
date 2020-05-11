@@ -69,6 +69,12 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.BASIC_CONTENT -> {
+                    listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.MEDIA -> {
+                    listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent

@@ -32,6 +32,28 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyBasicContentWithPayloads(contentData: ProductContentDataModel?, payload: Int? = null) {
+        contentData?.let {
+            val indexOfContent = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfContent, payload)
+            } else {
+                notifyItemChanged(indexOfContent)
+            }
+        }
+    }
+
+    fun notifyMediaWithPayload(contentData: ProductMediaDataModel?, payload: Int? = null) {
+        contentData?.let {
+            val indexOfMedia = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfMedia, payload)
+            } else {
+                notifyItemChanged(indexOfMedia)
+            }
+        }
+    }
+
     fun notifyShopInfo(shopInfoData: ProductShopInfoDataModel?, payload: Int) {
         shopInfoData?.let {
             val indexOfShopInfo = list.indexOf(shopInfoData)

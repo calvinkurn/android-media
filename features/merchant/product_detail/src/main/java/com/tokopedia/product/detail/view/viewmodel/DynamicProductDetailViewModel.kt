@@ -119,7 +119,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = _productInfoP3RateEstimate
 
     private val _p3VariantResponse = MediatorLiveData<ProductInfoP3Variant>()
-    val p3VariantResponse : LiveData<ProductInfoP3Variant>
+    val p3VariantResponse: LiveData<ProductInfoP3Variant>
         get() = _p3VariantResponse
 
     private val _loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
@@ -192,7 +192,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var deviceId: String = userSessionInterface.deviceId
 
     init {
-        _p3VariantResponse.addSource(_p2General){ p2General ->
+        _p3VariantResponse.addSource(_p2General) { p2General ->
             launchCatchError(block = {
                 getDynamicProductInfoP1?.let { p1 ->
                     val isVariant = p1.data.variant.isVariant && p2General.variantResp != null
@@ -201,7 +201,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         _p3VariantResponse.postValue(it)
                     }
                 }
-            }){
+            }) {
                 Timber.d(it)
             }
         }
@@ -450,9 +450,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private suspend fun getProductInfoP3Variant(isVariant: Boolean): ProductInfoP3Variant {
-            getProductInfoP3VariantUseCase.requestParams = GetProductInfoP3VariantUseCase.createParams(isVariant, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
-            getProductInfoP3VariantUseCase.setRefresh(forceRefresh)
-            return getProductInfoP3VariantUseCase.executeOnBackground()
+        getProductInfoP3VariantUseCase.requestParams = GetProductInfoP3VariantUseCase.createParams(isVariant, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
+        getProductInfoP3VariantUseCase.setRefresh(forceRefresh)
+        return getProductInfoP3VariantUseCase.executeOnBackground()
     }
 
     private suspend fun getProductInfoP3RateEstimate(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
@@ -490,6 +490,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
                 it
             } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
+                it
+            } else if (it.name() == ProductDetailConstant.PRODUCT_SNAPSHOT) {
                 it
             } else {
                 null
@@ -762,7 +764,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3RateEstimate(weight: Float, shopDomain: String, origin: String?, needRequestCod:Boolean): ProductInfoP3 {
+    private suspend fun getProductInfoP3RateEstimate(weight: Float, shopDomain: String, origin: String?, needRequestCod: Boolean): ProductInfoP3 {
         getProductInfoP3RateEstimateUseCase.mapOfParam = GetProductInfoP3RateEstimateUseCase.createParams(weight, shopDomain, origin, needRequestCod)
         getProductInfoP3RateEstimateUseCase.setRefresh(forceRefresh)
         return getProductInfoP3RateEstimateUseCase.executeOnBackground()

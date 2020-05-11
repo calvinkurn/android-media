@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     app:layout_constraintTop_toBottomOf="@+id/view_picture_search_bar">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -224,7 +225,6 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_22"
         android:layout_marginRight="@dimen/dp_22"
-        android:textColor="@color/black"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_5"
         app:typographyType="heading_3"
@@ -332,7 +332,6 @@
         tools:text="Stok tersedia ( >100 )"
         tools:visibility="visible" />
 
-
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"
@@ -348,4 +347,4 @@
         app:layout_constraintTop_toBottomOf="@+id/text_stock_available"
         tools:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

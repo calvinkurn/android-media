@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
@@ -30,8 +29,9 @@ class ProductMediaViewHolder(private val view: View,
             viewMediaPager.renderData(element.listOfMedia, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), getComponentTrackData(element),
                     listener::onImageClickedTrack, listener.getLifecycleFragment())
 
-            view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
+            viewMediaPager.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                     element.basicStatus)
+            element.shouldRefreshViewPagger = false
         }
     }
 
@@ -42,8 +42,8 @@ class ProductMediaViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> {
-                view.view_picture_search_bar.updateImage(element.listOfMedia)
+            ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
+                view.viewMediaPager.updateImage(element.listOfMedia)
             }
         }
     }
