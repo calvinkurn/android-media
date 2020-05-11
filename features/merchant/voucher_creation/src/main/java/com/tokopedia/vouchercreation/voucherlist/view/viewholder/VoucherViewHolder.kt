@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
 
 /**
@@ -26,7 +26,7 @@ class VoucherViewHolder(
         with(itemView) {
             imgVoucherType.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
             tvVoucherName.text = element.name
-            tvVoucherDescription.text = element.description
+            tvVoucherDescription.text = element.discountAmtFormatted
 
             btnMore.setOnClickListener {
                 listener.onMoreMenuClickListener(element)

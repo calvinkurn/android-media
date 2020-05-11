@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.model
+package com.tokopedia.vouchercreation.voucherlist.model.ui
 
 /**
  * Created By @ilhamsuaib on 11/05/20

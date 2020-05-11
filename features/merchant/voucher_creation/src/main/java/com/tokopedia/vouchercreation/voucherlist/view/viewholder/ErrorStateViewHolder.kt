@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.ErrorStateUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.ErrorStateUiModel
 
 /**
  * Created By @ilhamsuaib on 26/04/20

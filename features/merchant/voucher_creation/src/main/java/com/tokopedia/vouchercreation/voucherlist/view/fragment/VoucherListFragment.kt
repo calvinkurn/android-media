@@ -23,10 +23,11 @@ import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadV
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
-import com.tokopedia.vouchercreation.voucherlist.model.*
-import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
-import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
-import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.*
+import com.tokopedia.vouchercreation.voucherlist.model.ui.*
+import com.tokopedia.vouchercreation.voucherlist.ui.*
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
+import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel

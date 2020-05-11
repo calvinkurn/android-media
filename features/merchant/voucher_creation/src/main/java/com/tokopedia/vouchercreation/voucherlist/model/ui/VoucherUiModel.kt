@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.model
+package com.tokopedia.vouchercreation.voucherlist.model.ui
 
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactory
 
@@ -10,7 +10,6 @@ data class VoucherUiModel(
         val id: Int,
         val shopId: Int,
         val name: String,
-        val description: String,
         val type: Int,
         val typeFormatted: String,
         val image: String,

@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 
 /**
  * Created By @ilhamsuaib on 27/04/20

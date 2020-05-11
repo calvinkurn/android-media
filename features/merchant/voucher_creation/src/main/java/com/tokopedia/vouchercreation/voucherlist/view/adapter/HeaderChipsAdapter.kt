@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.HeaderChipFactoryImpl
 
 /**

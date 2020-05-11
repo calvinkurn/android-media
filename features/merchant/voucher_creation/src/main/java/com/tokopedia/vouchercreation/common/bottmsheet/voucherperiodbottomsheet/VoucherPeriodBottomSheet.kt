@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.view.*
 
 /**
@@ -38,7 +38,7 @@ class VoucherPeriodBottomSheet(
     private fun setupView(view: View) = with(view) {
         imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
         tvMvcVoucherName.text = voucher.name
-        tvMvcVoucherDescription.text = voucher.description
+        tvMvcVoucherDescription.text = voucher.discountAmtFormatted
 
         edtMvcStartDate.setOnClickListener {
             showDatePicker {

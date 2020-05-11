@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.BaseFilterUiModel.FilterGroup
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel.FilterGroup
 import kotlinx.android.synthetic.main.item_mvc_filter_group.view.*
 
 /**
