@@ -406,7 +406,7 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
     }
 
     private fun observeTotalLikes() {
-        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer(::setTotalLikes))
+        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver(::setTotalLikes))
     }
 
     private fun observeVideoProperty() {

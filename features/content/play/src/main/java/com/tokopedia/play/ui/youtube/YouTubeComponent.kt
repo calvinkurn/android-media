@@ -108,6 +108,6 @@ open class YouTubeComponent(
             YouTubeView(container, fragmentManager, this)
 
     companion object {
-        private const val YOUTUBE_DELAY = 1000L
+        private const val YOUTUBE_DELAY = 1300L
     }
 }

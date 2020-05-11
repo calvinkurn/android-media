@@ -334,7 +334,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeQuickReply() {
-        playViewModel.observableQuickReply.observe(viewLifecycleOwner, Observer(::setQuickReply))
+        playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver(::setQuickReply))
     }
 
     private fun observeVideoStream() {
@@ -348,15 +348,15 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeToolbarInfo() {
-        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer(::setPartnerInfo))
+        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver(::setPartnerInfo))
     }
 
     private fun observeTotalLikes() {
-        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer(::setTotalLikes))
+        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver(::setTotalLikes))
     }
 
     private fun observeTotalViews() {
-        playViewModel.observableTotalViews.observe(viewLifecycleOwner, Observer(::setTotalView))
+        playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver(::setTotalView))
     }
 
     private fun observeNewChat() {
@@ -387,7 +387,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer(::setPinned))
+        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver(::setPinned))
     }
 
     private fun observeLoggedInInteractionEvent() {
@@ -468,7 +468,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun observeCartInfo() {
-        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, Observer(::setCartInfo))
+        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, DistinctObserver(::setCartInfo))
     }
     //endregion
 

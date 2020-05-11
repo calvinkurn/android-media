@@ -162,7 +162,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer(::delegateVideoProperty))
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver(::delegateVideoProperty))
     }
 
     private fun observeOneTapOnboarding() {
@@ -196,7 +196,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     }
 
     private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver(::setVideoStream))
     }
     //endregion
 
