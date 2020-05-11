@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_apps">
+    android:background="@color/background_apps"
+    android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -36,6 +37,10 @@
                 app:tckv_indicator_on_color="@color/tkpd_main_green"
                 tools:visibility="visible" />
 
+            <include layout="@layout/include_flight_search_title_route" />
+
+            <include layout="@layout/include_flight_quick_filter" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
@@ -45,7 +50,4 @@
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-
-    <include layout="@layout/include_filter_bottom_action_view" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

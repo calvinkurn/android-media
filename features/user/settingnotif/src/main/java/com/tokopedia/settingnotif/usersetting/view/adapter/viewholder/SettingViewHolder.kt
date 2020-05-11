@@ -11,7 +11,9 @@ abstract class SettingViewHolder<T : BaseSetting>(
         val settingListener: SettingListener
 ) : AbstractViewHolder<T>(itemView) {
 
-    protected val settingSwitch: Switch? = getSwitchView(itemView)
+    protected val settingSwitch: Switch? by lazy {
+        getSwitchView(itemView)
+    }
 
     abstract fun getSwitchView(itemView: View?): Switch?
 
@@ -24,7 +26,6 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     override fun bind(element: T?) {
         if (element == null) return
-
         settingSwitch?.isChecked = element.status
         settingSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (element.status != isChecked) {
@@ -42,8 +43,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     override fun bind(element: T, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-
-        val payload = payloads[0]
+        val payload = payloads.first()
         if (payload == PAYLOAD_SWITCH) {
             settingSwitch?.isChecked = element.status
         }
@@ -67,9 +67,9 @@ abstract class SettingViewHolder<T : BaseSetting>(
     abstract fun getUpdatedSettingIds(element: T, checked: Boolean): List<Map<String, Any>>
 
     companion object {
-        val PAYLOAD_SWITCH = "payload_switch"
-        val PARAM_SETTING_KEY = "name"
-        val PARAM_SETTING_VALUE = "value"
+        const val PAYLOAD_SWITCH = "payload_switch"
+        const val PARAM_SETTING_KEY = "name"
+        const val PARAM_SETTING_VALUE = "value"
     }
 
 }

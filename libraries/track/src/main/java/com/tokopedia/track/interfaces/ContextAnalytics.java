@@ -53,7 +53,7 @@ public abstract class ContextAnalytics implements Analytics {
      */
     public void sendRegistrationStartEvent(String medium){}
 
-    public void sendMoengageRegisterEvent(String fullName, String mobileNo){}
+    public void sendMoengageRegisterEvent(String fullName, String userId, String email, String loginMethod, String phoneNumber,boolean isGoldMerchant,String shopId,String shopName){}
 
     public void sendAppsflyerRegisterEvent(String userId, String method){}
 

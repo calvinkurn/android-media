@@ -13,33 +13,37 @@ import javax.inject.Inject
 
 class SetUserSettingUseCase @Inject constructor(
         val context: Context?,
-        val gqlUseCase: GraphqlUseCase
+        private val useCase: GraphqlUseCase
 ) : UseCase<SetUserSettingResponse>() {
 
-    private val PARAM_TYPE = "type"
-    private val PARAM_DATA = "data"
-
     override fun createObservable(params: RequestParams?): Observable<SetUserSettingResponse> {
-        if (context == null) {
-            return Observable.error(IllegalStateException("Something error. Try again later"))
-        }
+        if (context == null) return Observable.error(IllegalStateException("Something error. Try again later"))
 
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_set_user_setting)
-        val gqlRequest = GraphqlRequest(query, SetUserSettingResponse::class.java, params?.parameters)
+        val request = GraphqlRequest(query, SetUserSettingResponse::class.java, params?.parameters)
 
-        gqlUseCase.clearRequest()
-        gqlUseCase.addRequest(gqlRequest)
+        useCase.clearRequest()
+        useCase.addRequest(request)
 
-        return gqlUseCase.createObservable(RequestParams.EMPTY)
-                .map { gqlResponse ->
-                    gqlResponse.getData<SetUserSettingResponse>(SetUserSettingResponse::class.java)
-                }
+        return useCase.createObservable(RequestParams.EMPTY).map { gqlResponse ->
+            gqlResponse.getData<SetUserSettingResponse>(
+                    SetUserSettingResponse::class.java
+            )
+        }
     }
 
-    fun createParams(notificationType: String, updatedSettingIds: List<Map<String, Any>>): RequestParams {
-        return RequestParams.create().apply {
-            putString(PARAM_TYPE, notificationType)
-            putObject(PARAM_DATA, updatedSettingIds)
+    companion object {
+        private const val PARAM_TYPE = "type"
+        private const val PARAM_DATA = "data"
+
+        fun params(
+                notificationType: String,
+                updatedSettingIds: List<Map<String, Any>>
+        ): RequestParams {
+            return RequestParams.create().apply {
+                putString(PARAM_TYPE, notificationType)
+                putObject(PARAM_DATA, updatedSettingIds)
+            }
         }
     }
 

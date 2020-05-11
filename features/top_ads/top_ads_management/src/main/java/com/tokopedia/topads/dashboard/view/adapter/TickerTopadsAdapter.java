@@ -12,9 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.style.WebViewURLSpan;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.TopAdsWebViewActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -80,7 +81,7 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
                     webViewSpan.setListener(new WebViewURLSpan.OnClickListener() {
                         @Override
                         public void onClick(@NotNull String url) {
-                            itemView.getContext().startActivity(TopAdsWebViewActivity.createIntent(itemView.getContext(), url));
+                            RouteManager.route(itemView.getContext(), ApplinkConstInternalGlobal.WEBVIEW, url);
                         }
 
                         @Override

@@ -25,39 +25,35 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     private var checkInDate: String = ""
     private var checkOutDate: String = ""
-    private var propertyId: Int = 0
+    private var propertyId: Long = 0
     private var roomCount: Int = 1
     private var adultCount: Int = 1
     private var destinationType: String = ""
     private var destinationName: String = ""
-    private var isDirectPayment: Boolean =  true
+    private var isDirectPayment: Boolean = true
+    private var showRoom = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
-            propertyId = uri.lastPathSegment.toInt()
-            if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) {
-                checkInDate = uri.getQueryParameter(PARAM_CHECK_IN)
-                checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT)
-                roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT).toInt()
-                adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT).toInt()
-            } else if (!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && uri.getQueryParameter(PARAM_SHOW_ROOM).toInt() == 1) {
-                    val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
-                    val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
-                    val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
-                    checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
-                    checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-            }
+            propertyId = uri.lastPathSegment.toLong()
+            if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkInDate = uri.getQueryParameter(PARAM_CHECK_IN)
+            if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT)
+            if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT).toInt()
+            if (!uri.getQueryParameter(PARAM_ADULT_COUNT).isNullOrEmpty()) adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT).toInt()
+
+            showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && uri.getQueryParameter(PARAM_SHOW_ROOM).toInt() == 0)
+
         } else {
             with(intent) {
                 checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE)
                 checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE)
-                propertyId = getIntExtra(EXTRA_PROPERTY_ID, 0)
+                propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
                 roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
                 adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
                 destinationType = getStringExtra(EXTRA_DESTINATION_TYPE)
                 destinationName = getStringExtra(EXTRA_DESTINATION_NAME)
-                isDirectPayment =  getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
+                isDirectPayment = getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
             }
         }
         checkParameter()
@@ -78,7 +74,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     override fun getNewFragment(): Fragment =
             HotelDetailFragment.getInstance(checkInDate, checkOutDate, propertyId, roomCount,
-                    adultCount, destinationType, destinationName, isDirectPayment)
+                    adultCount, destinationType, destinationName, isDirectPayment, showRoom)
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()
@@ -106,7 +102,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
         const val PDP_SCREEN_NAME = "/hotel/pdp"
 
-        fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
+        fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                              adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean = true): Intent =
                 Intent(context, HotelDetailActivity::class.java)
                         .putExtra(EXTRA_CHECK_IN_DATE, checkInDate)

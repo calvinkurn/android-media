@@ -23,7 +23,8 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         const val VIEW_SHIMMER = 2
         const val SHIMMER_ITEM_COUNT = 3
     }
-    val viewMap = HashMap<Int, Boolean>()
+
+    private var isCpmImpressionSent: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -78,7 +79,7 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
                 item.badge_url,
                 R.drawable.loading_page)
         holder.shopCpmParent.setOnClickListener {
-            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item)
+            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item)
         }
     }
 
@@ -90,7 +91,7 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
                 holder.productImage,
                 item.image, R.drawable.loading_page)
         holder.productCpmParent.setOnClickListener {
-            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item)
+            cpmTopAdsListener.onCpmClicked(item.applinks ?: "", item.click_url ?: "", item)
         }
     }
 
@@ -138,11 +139,11 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
+        // one time impression only for shop item
         val position = holder.adapterPosition
-        if (!viewMap.containsKey(position) && viewMap.size > 0) {
-            viewMap[position] = true
-            val item = cpmItemList[position]
-            cpmTopAdsListener.onCpmImpression(item)
+        if (!isCpmImpressionSent && holder.itemViewType == VIEW_SHOP) {
+            isCpmImpressionSent = true
+            cpmTopAdsListener.onCpmImpression(cpmItemList[position].impression_url ?: "")
         }
     }
 }

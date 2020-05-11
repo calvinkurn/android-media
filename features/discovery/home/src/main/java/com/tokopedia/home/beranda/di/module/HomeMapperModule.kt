@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -24,6 +24,6 @@ class HomeMapperModule {
 
     @HomeScope
     @Provides
-    fun provideHomeFeedMapper(): HomeFeedMapper = HomeFeedMapper()
+    fun provideHomRecommendationMapper() = HomeRecommendationMapper()
 
 }

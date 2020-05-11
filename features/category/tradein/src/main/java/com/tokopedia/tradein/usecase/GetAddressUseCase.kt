@@ -1,7 +1,6 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.tradein.R
@@ -11,11 +10,10 @@ import com.tokopedia.tradein.repository.TradeInRepository
 import javax.inject.Inject
 
 class GetAddressUseCase @Inject constructor(
-        @ApplicationContext private val context: Context,
-        private val repository: TradeInRepository){
+        private val repository: TradeInRepository) {
 
-    suspend fun getAddress(): AddressResult {
-        val response = repository.getGQLData(getQuery(), ResponseData::class.java, createRequestParams()) as ResponseData
+    suspend fun getAddress(resources: Resources?): AddressResult {
+        val response = repository.getGQLData(getQuery(resources), ResponseData::class.java, createRequestParams())
         var addressData: ResponseData.KeroGetAddress.Data? = null
         var token: Token? = null
         response.let {
@@ -34,8 +32,8 @@ class GetAddressUseCase @Inject constructor(
         return AddressResult(addressData, token)
     }
 
-    private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tradein_address_corner)
+    private fun getQuery(resources: Resources?): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.tradein_address_corner)
     }
 
     fun createRequestParams(): Map<String, Any> {

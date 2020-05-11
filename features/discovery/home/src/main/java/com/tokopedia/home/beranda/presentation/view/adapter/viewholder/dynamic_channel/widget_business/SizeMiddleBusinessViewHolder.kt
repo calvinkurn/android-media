@@ -4,13 +4,12 @@ import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_mid_business.view.*
 
 class SizeMiddleBusinessViewHolder (
-        itemView: View?,
-        listener: BusinessUnitItemView
+        itemView: View,
+        listener: BusinessUnitItemViewListener
 ) : SizeSmallBusinessViewHolder(itemView, listener) {
 
     companion object {

@@ -44,14 +44,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         setAdditionalETollOperatorName(builder.additionalETollOperatorName);
     }
 
-    public String getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(String menuId) {
-        this.menuId = menuId;
-    }
-
     public String getCategoryId() {
         return categoryId;
     }
@@ -82,6 +74,14 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
     public void setClientNumber(String clientNumber) {
         this.clientNumber = clientNumber;
+    }
+
+    public String getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(String menuId) {
+        this.menuId = menuId;
     }
 
     public boolean isFromWidget() {
@@ -148,57 +148,55 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.additionalETollOperatorName = additionalETollOperatorName;
     }
 
+    protected DigitalCategoryDetailPassData(Parcel in) {
+        categoryId = in.readString();
+        operatorId = in.readString();
+        productId = in.readString();
+        clientNumber = in.readString();
+        menuId = in.readString();
+        isFromWidget = in.readByte() != 0;
+        isCouponApplied = in.readByte() != 0;
+        url = in.readString();
+        appLinks = in.readString();
+        categoryName = in.readString();
+        additionalETollBalance = in.readString();
+        additionalETollLastUpdatedDate = in.readString();
+        additionalETollOperatorName = in.readString();
+    }
+
+    public static final Creator<DigitalCategoryDetailPassData> CREATOR = new Creator<DigitalCategoryDetailPassData>() {
+        @Override
+        public DigitalCategoryDetailPassData createFromParcel(Parcel in) {
+            return new DigitalCategoryDetailPassData(in);
+        }
+
+        @Override
+        public DigitalCategoryDetailPassData[] newArray(int size) {
+            return new DigitalCategoryDetailPassData[size];
+        }
+    };
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.categoryId);
-        dest.writeString(this.operatorId);
-        dest.writeString(this.productId);
-        dest.writeString(this.menuId);
-        dest.writeString(this.clientNumber);
-        dest.writeByte((byte) (isFromWidget ? 1 : 0));
-        dest.writeByte((byte) (isCouponApplied ? 1 : 0));
-        dest.writeString(this.url);
-        dest.writeString(this.appLinks);
-        dest.writeString(this.categoryName);
-        dest.writeString(this.additionalETollBalance);
-        dest.writeString(this.additionalETollLastUpdatedDate);
-        dest.writeString(this.additionalETollOperatorName);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(categoryId);
+        parcel.writeString(operatorId);
+        parcel.writeString(productId);
+        parcel.writeString(clientNumber);
+        parcel.writeString(menuId);
+        parcel.writeByte((byte) (isFromWidget ? 1 : 0));
+        parcel.writeByte((byte) (isCouponApplied ? 1 : 0));
+        parcel.writeString(url);
+        parcel.writeString(appLinks);
+        parcel.writeString(categoryName);
+        parcel.writeString(additionalETollBalance);
+        parcel.writeString(additionalETollLastUpdatedDate);
+        parcel.writeString(additionalETollOperatorName);
     }
-
-    protected DigitalCategoryDetailPassData(Parcel in) {
-        this.categoryId = in.readString();
-        this.operatorId = in.readString();
-        this.productId = in.readString();
-        this.menuId = in.readString();
-        this.clientNumber = in.readString();
-        this.isFromWidget = in.readByte() != 0;
-        this.isCouponApplied = in.readByte() != 0;
-        this.url = in.readString();
-        this.appLinks = in.readString();
-        this.categoryName = in.readString();
-        this.additionalETollBalance = in.readString();
-        this.additionalETollLastUpdatedDate = in.readString();
-        this.additionalETollOperatorName = in.readString();
-    }
-
-    public static final Creator<DigitalCategoryDetailPassData> CREATOR =
-            new Creator<DigitalCategoryDetailPassData>() {
-                @Override
-                public DigitalCategoryDetailPassData createFromParcel(Parcel source) {
-                    return new DigitalCategoryDetailPassData(source);
-                }
-
-                @Override
-                public DigitalCategoryDetailPassData[] newArray(int size) {
-                    return new DigitalCategoryDetailPassData[size];
-                }
-            };
-
 
     public static final class Builder {
         private String categoryId;

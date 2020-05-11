@@ -62,7 +62,7 @@ class ContainerFragment : Fragment() {
     private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
     private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf()) }
     private val chatFragment: Fragment? by lazy { sellerHomeRouter?.getChatListFragment() }
-    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER) }
+    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER) }
 
     @FragmentType
     private var currentFragmentType: Int = 0
@@ -88,7 +88,6 @@ class ContainerFragment : Fragment() {
 
         setupView()
         observeCurrentSelectedPage()
-        setupDefaultPage()
     }
 
     private fun setupView() = view?.run {
@@ -107,10 +106,6 @@ class ContainerFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun setupDefaultPage() {
-        sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
     }
 
     private fun observeCurrentSelectedPage() {

@@ -1,0 +1,19 @@
+query QueryRecommenParams($pageName:String!){
+  gamiRecommendationParam(GamiRecommendationParamInput:{PageName: $pageName}){
+    ProductIDs
+    PageName
+    PageNumber
+    CategoryIDs
+    XSource
+    Mv
+    Os
+    PowerBadge
+    PowerMerchant
+    HasDiscount
+    ShopId
+    PriceMin
+    PriceMax
+    Ref
+    QueryParam
+  }
+}
