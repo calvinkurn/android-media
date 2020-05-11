@@ -174,11 +174,11 @@ class PlayViewModel @Inject constructor(
             }
         }
         addSource(observableProductSheetContent) {
-            if (it is PlayResult.Success && it.data.productList.isNullOrEmpty()) {
-                val pinnedMessage = _observablePinnedMessage.value
-                if (pinnedMessage != null) _observablePinnedMessage.value = _observablePinnedMessage.value
-                else _observablePinned.value = PinnedRemoveUiModel
-            } else _observablePinnedProduct.value = _observablePinnedProduct.value
+            _observablePinned.value = getPinnedModel(
+                    pinnedMessage = _observablePinnedMessage.value,
+                    pinnedProduct = _observablePinnedProduct.value,
+                    productSheetResult = it
+            )
         }
         addSource(observableEvent) {
             if (it.isFreeze || it.isBanned) doOnForbidden()
@@ -202,20 +202,18 @@ class PlayViewModel @Inject constructor(
         stateHandler.observeForever(stateHandlerObserver)
 
         _observablePinned.addSource(_observablePinnedMessage) {
-            if (_observablePinnedProduct.value == null) {
-                if (it == null) _observablePinned.value = PinnedRemoveUiModel
-                else if (_observablePinned.value != it) _observablePinned.value = it
-            }
+            _observablePinned.value = getPinnedModel(
+                    pinnedMessage = it,
+                    pinnedProduct = _observablePinnedProduct.value,
+                    productSheetResult = _observableProductSheetContent.value
+            )
         }
         _observablePinned.addSource(_observablePinnedProduct) {
-            val productSheet = _observableProductSheetContent.value
-            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty() && it != null) {
-                if (_observablePinned.value != it) _observablePinned.value = it
-            } else {
-                val pinnedMessage = _observablePinnedMessage.value
-                if (pinnedMessage != null) _observablePinnedMessage.value = _observablePinnedMessage.value
-                else _observablePinned.value = PinnedRemoveUiModel
-            }
+            _observablePinned.value = getPinnedModel(
+                    pinnedMessage = _observablePinnedMessage.value,
+                    pinnedProduct = it,
+                    productSheetResult = _observableProductSheetContent.value
+            )
         }
 
         _observableChatList.value = mutableListOf()
@@ -658,6 +656,15 @@ class PlayViewModel @Inject constructor(
         destroy()
         stopPlayer()
         hideInsets(isKeyboardHandled = false)
+    }
+
+    private fun getPinnedModel(
+            pinnedMessage: PinnedMessageUiModel?,
+            pinnedProduct: PinnedProductUiModel?,
+            productSheetResult: PlayResult<ProductSheetUiModel>?
+    ): PinnedUiModel {
+        return if (pinnedProduct != null && productSheetResult is PlayResult.Success && !productSheetResult.data.productList.isNullOrEmpty()) pinnedProduct
+        else pinnedMessage ?: PinnedRemoveUiModel
     }
     //endregion
 
