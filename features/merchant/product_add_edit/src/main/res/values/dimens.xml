@@ -33,7 +33,4 @@
     <dimen name="tooltip_image_size">64dp</dimen>
     <dimen name="tooltip_divider_padding_left">109dp</dimen>
 
-    <!--  video dimens  -->
-    <dimen name="video_clear_icon_size">32dp</dimen>
-
 </resources>

@@ -6,7 +6,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.replaceTextAndRestoreCursorPosition
 import com.tokopedia.product.addedit.common.util.setText
@@ -48,16 +47,11 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             itemView.textFieldUrl.textAreaInput.apply {
                 maxLines = 1
                 setSingleLine(true)
-                setMargin(0, 0, context.resources.getDimension(R.dimen.layout_lvl2).toInt(), 0)
             }
             itemView.textFieldUrl.apply {
                 isLabelStatic = false
                 textAreaLabel = getString(R.string.label_video_url_placeholder)
                 textAreaPlaceholder = getString(R.string.label_video_url_placeholder)
-                textAreaIconClose.layoutParams.apply {
-                    width = context.resources.getDimension(R.dimen.video_clear_icon_size).toInt()
-                    height = context.resources.getDimension(R.dimen.video_clear_icon_size).toInt()
-                }
             }
             // Remove listener and set the text so it will not trigger textWatcher
             if (isFirstLoaded) {
