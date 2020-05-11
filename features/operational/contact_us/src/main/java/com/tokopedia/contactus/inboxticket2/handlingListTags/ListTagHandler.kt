@@ -12,7 +12,6 @@ class ListTagHandler : Html.TagHandler {
 
     private val list = Stack<IListTags>()
 
-
     override fun handleTag(
             opening: Boolean,
             tag: String,
@@ -39,7 +38,6 @@ class ListTagHandler : Html.TagHandler {
 
         }
     }
-
 }
 
 
