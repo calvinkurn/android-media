@@ -18,6 +18,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
+import com.tokopedia.contactus.inboxticket2.handlingListTags.HtmlUtil
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter.DetailViewHolder
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
@@ -145,7 +146,7 @@ class InboxDetailAdapter(private val mContext: Context,
                     tvComment?.text = utils.getHighlightText(searchText ?: "",
                             item.messagePlaintext ?: "")
                 } else {
-                    tvComment?.text = MethodChecker.fromHtml(item.message)
+                    tvComment?.text = HtmlUtil.fromHtml(item.message ?: "")
                 }
                 tvComment?.show()
                 if (position == commentList.size - 1 && needAttachment) {
