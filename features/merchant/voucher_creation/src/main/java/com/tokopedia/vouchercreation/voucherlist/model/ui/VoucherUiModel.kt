@@ -46,4 +46,6 @@ data class VoucherUiModel(
     override fun type(typeFactory: VoucherListAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun isOngoingPromo() = status == VoucherStatusConst.ONGOING
 }

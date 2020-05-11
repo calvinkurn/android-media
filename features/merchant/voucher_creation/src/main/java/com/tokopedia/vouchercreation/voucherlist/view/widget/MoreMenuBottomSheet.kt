@@ -50,7 +50,7 @@ class MoreMenuBottomSheet(
 
     fun show(isActiveVoucher: Boolean, fm: FragmentManager) {
         val getMenuItem = if (isActiveVoucher) {
-            if (voucher?.status == VoucherStatusConst.ON_GOING) {
+            if (voucher?.isOngoingPromo() == true) {
                 getOngoingVoucherMenu()
             } else {
                 getPendingVoucherMenu()
