@@ -75,22 +75,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_12dp"
             android:layout_marginLeft="@dimen/mvc_dimen_12dp"
-            android:text="Hura Hura Hujan Rejeki"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgVoucherType"
             app:layout_constraintTop_toTopOf="@+id/imgVoucherType"
-            app:typographyType="heading_5" />
+            app:typographyType="heading_5"
+            tools:text="Hura Hura Hujan Rejeki" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvVoucherDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cashback 10%"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toStartOf="@+id/tvVoucherName"
             app:layout_constraintTop_toBottomOf="@+id/tvVoucherName"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text="Cashback 10%" />
 
         <View
             android:id="@+id/viewVoucherCode"

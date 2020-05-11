@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcInfoTitle"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -18,11 +18,28 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         android:ellipsize="end"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvMvcInfoCta"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         tools:text="Info Voucher" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcInfoCta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:ellipsize="end"
+        android:padding="@dimen/spacing_lvl2"
+        android:text="@string/mvc_create_promo_code_change"
+        android:textColor="@color/light_G500"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tvMvcInfoTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvMvcInfoTitle"
+        app:typographyType="heading_5"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMvcSubInfo"
