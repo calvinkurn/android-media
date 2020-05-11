@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
@@ -22,6 +23,8 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
 
     private var attachmentMenu: ChatMenuAttachmentView? = null
     private var stickerMenu: ChatMenuStickerView? = null
+    private var previousSelectedMenu: ViewGroup? = null
+    private var selectedMenu: ViewGroup? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -53,22 +56,26 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     }
 
     fun toggleAttachmentMenu() {
+        selectedMenu = attachmentMenu
         toggleMenu {
+            previousSelectedMenu = selectedMenu
             attachmentMenu?.show()
             stickerMenu?.hide()
         }
     }
 
     fun toggleStickerMenu() {
+        selectedMenu = stickerMenu
         toggleMenu {
-            attachmentMenu?.hide()
+            previousSelectedMenu = selectedMenu
             stickerMenu?.show()
+            attachmentMenu?.hide()
         }
     }
 
     private fun toggleMenu(onShow: () -> Unit) {
         if (isShowing) return
-        if (isVisible) {
+        if (isVisible && previousSelectedMenu == selectedMenu) {
             hideMenu()
         } else {
             onShow()
