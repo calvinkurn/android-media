@@ -31,6 +31,9 @@ preBuild.dependsOn configDebugTools
 
 ext {
     isDebugable = {Project project->
-        return project.hasProperty('enableDebug')
+        if (project.hasProperty('enableDebug') && enableDebug == "true") {
+            return "true";
+        }
+        return "false";
     }
 }
