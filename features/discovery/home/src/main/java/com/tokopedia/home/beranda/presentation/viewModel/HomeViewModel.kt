@@ -969,9 +969,7 @@ open class HomeViewModel @Inject constructor(
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
-//                    withContext(homeDispatcher.ui()) {
                         _homeLiveData.value = homeDataModel
-//                    }
                 }
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()
@@ -993,9 +991,7 @@ open class HomeViewModel @Inject constructor(
                             }
                             ACTION_DELETE -> newList.remove(homeVisitable)
                         }
-//                        withContext(homeDispatcher.ui()) {
-                            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-//                        }
+                        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
                     }
                 }
             }
