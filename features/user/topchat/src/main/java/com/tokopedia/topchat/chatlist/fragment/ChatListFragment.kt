@@ -352,7 +352,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun fpmStopTrace() {
-        if (isFirstPage()) {
+        if (::performanceMonitoring.isInitialized && isFirstPage()) {
             performanceMonitoring.stopTrace()
         }
     }
