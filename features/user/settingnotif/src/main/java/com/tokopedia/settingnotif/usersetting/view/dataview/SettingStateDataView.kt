@@ -25,7 +25,8 @@ object SettingStateDataView {
 
         // if buyer setting section is exists, then there are some setting items need to be removed
         buyerSettingSection?.run {
-            return items.filter { it != buyerSettingSection } // remove buyer setting section from setting items
+            // remove buyer setting section from setting items
+            return items.filter { it != buyerSettingSection }
                     // remove buyer setting items from setting items
                     .filter { setting -> buyerSettingSection.listSettings.find { setting == it } == null }
         }
