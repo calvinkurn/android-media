@@ -227,7 +227,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             variables.put(START_DATE, getView().getStartDate());
             variables.put(END_DATE, getView().getEndDate());
             variables.put(SORT, "");
-            variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
+            if(orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
+            }
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderlist_marketplace), Data.class, variables, false);
@@ -474,12 +476,18 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
         int productId = 0;
         int shopId = 0;
+        String productName = "";
+        String productCategory = "";
+        String productPrice = "";
         String externalSource = "";
         String clickUrl = "";
         if (productModel instanceof OrderListRecomViewModel) {
             OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
             productId = orderListRecomViewModel.getRecommendationItem().getProductId();
             shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
+            productName = orderListRecomViewModel.getRecommendationItem().getName();
+            productCategory = orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs();
+            productPrice = orderListRecomViewModel.getRecommendationItem().getPrice();
             externalSource = "recommendation_list";
             clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
         }
@@ -494,6 +502,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         addToCartRequestParams.setNotes("");
         addToCartRequestParams.setWarehouseId(0);
         addToCartRequestParams.setAtcFromExternalSource(externalSource);
+        addToCartRequestParams.setProductName(productName);
+        addToCartRequestParams.setCategory(productCategory);
+        addToCartRequestParams.setPrice(productPrice);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);

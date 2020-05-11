@@ -2,7 +2,7 @@ package com.tokopedia.opportunity.domain.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShipment;
+import com.tokopedia.opportunity.data.entity.opportunitydata.OrderShipment;
 
 /**
  * Created by nakama on 27/03/18.

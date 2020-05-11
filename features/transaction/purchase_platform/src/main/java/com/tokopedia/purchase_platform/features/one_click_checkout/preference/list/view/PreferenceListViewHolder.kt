@@ -47,12 +47,12 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
                 lblMainPreference.visible()
                 cbMainPreference.isChecked = true
                 cbMainPreference.isEnabled = false
-                cbMainPreference.setOnCheckedChangeListener { _, _ -> }
+                cbMainPreference.setOnClickListener {  }
             } else {
                 lblMainPreference.gone()
                 cbMainPreference.isChecked = false
                 cbMainPreference.isEnabled = true
-                cbMainPreference.setOnCheckedChangeListener { _, isChecked ->
+                cbMainPreference.setOnClickListener {
                     listener.onPreferenceSelected(preference)
                 }
             }
