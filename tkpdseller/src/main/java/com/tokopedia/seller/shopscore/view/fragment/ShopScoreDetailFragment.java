@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.seller.R;
@@ -194,7 +194,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
                         getString(R.string.error_title_shop_score_failed),
                         getString(R.string.error_subtitle_shop_score_failed),
                         getString(R.string.label_try_again),
-                        R.drawable.ic_error_network,
+                        R.drawable.unify_globalerrors_connection,
                         retryLoadShopScore
                 );
     }

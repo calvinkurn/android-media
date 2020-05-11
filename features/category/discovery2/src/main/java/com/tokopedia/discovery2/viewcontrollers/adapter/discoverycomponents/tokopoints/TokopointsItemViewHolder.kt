@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), View.OnClickListener {
 
@@ -29,7 +30,7 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
             initView()
             couponTitleTv.text = item.title
             ImageHandler.LoadImage(bannerImageView, item.thumbnailUrlMobile)
-            if (item.pointsSlash != null && item.pointsSlash > 0 && item.pointsSlashStr?.isNotEmpty()!!) {
+            if (item.pointsSlash.toIntOrZero() > 0 && (item.pointsSlashStr?:"").isNotEmpty()) {
                 slashedPriceTv.text = item.pointsSlashStr
                 pointsValueTv.text = item.pointsStr
 

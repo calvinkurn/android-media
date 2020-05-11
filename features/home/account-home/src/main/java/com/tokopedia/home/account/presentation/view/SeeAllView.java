@@ -8,19 +8,22 @@ import android.view.View;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.MenuGridAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.MenuGridSpacingDecoration;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.RC_FOOD_AND_VOUCHER_ICON_ENABLE;
 import static com.tokopedia.home.account.AccountConstants.RC_GIFTCARD_ENABLE;
+import static com.tokopedia.home.account.AccountConstants.RC_LOCALSERVICE_ENABLE;
 
 /**
  * @author by alvinatin on 01/08/18.
@@ -70,6 +73,11 @@ public class SeeAllView extends BottomSheets {
     }
 
     private List<MenuGridItemViewModel> createItems() {
+        RemoteConfig remoteConfig = null;
+        if (getActivity() != null) {
+            remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        }
+
         List<MenuGridItemViewModel> list = new ArrayList<>();
 
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
@@ -112,15 +120,17 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_deals,
-                getContext().getString(R.string.title_menu_deals),
-                ApplinkConst.DEALS_ORDER,
-                0,
-                PEMBELI,
-                getContext().getString(R.string.title_menu_transaction)
-        );
-        list.add(gridItem);
+        if (remoteConfig != null && remoteConfig.getBoolean(RC_FOOD_AND_VOUCHER_ICON_ENABLE, false)) {
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_food_voucher,
+                    getContext().getString(R.string.title_menu_deals),
+                    ApplinkConst.DEALS_ORDER,
+                    0,
+                    PEMBELI,
+                    getContext().getString(R.string.title_menu_transaction)
+            );
+            list.add(gridItem);
+        }
 
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_event,
@@ -156,7 +166,7 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
-        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_GIFTCARD_ENABLE, false)) {
+        if (remoteConfig != null && remoteConfig.getBoolean(RC_GIFTCARD_ENABLE, false)) {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_giftcard,
                     getContext().getString(R.string.title_menu_gift_card),
@@ -197,6 +207,20 @@ public class SeeAllView extends BottomSheets {
                 getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
+
+        if (remoteConfig != null && remoteConfig.getBoolean(RC_LOCALSERVICE_ENABLE, false)) {
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_local_service_order,
+                    getContext().getString(R.string.title_menu_localservice),
+                    String.format("%s?allow_override=false&url=%s",
+                            ApplinkConst.WEBVIEW,
+                            AccountHomeUrl.LOCALSERVICE_TX_URL),
+                    0,
+                    PEMBELI,
+                    getContext().getString(R.string.title_menu_transaction)
+            );
+            list.add(gridItem);
+        }
 
         return list;
     }

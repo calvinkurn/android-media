@@ -206,7 +206,7 @@
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
                     android:background="@color/white"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:visibility="visible" />
 
                 <LinearLayout

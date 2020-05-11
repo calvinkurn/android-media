@@ -15,21 +15,17 @@ import javax.inject.Inject
 
 class GetLendingDataUseCase @Inject constructor(@ApplicationContext context: Context) {
 
-    val graphqlUseCase = GraphqlUseCase()
-    val mContext = context
+    private val graphqlUseCase = GraphqlUseCase()
+    private val mContext = context
 
     fun unsubscribe() {
-        if (graphqlUseCase != null) {
-            graphqlUseCase.unsubscribe()
-        }
+        graphqlUseCase.unsubscribe()
     }
 
     private val cacheDuration: Long = TimeUnit.HOURS.toSeconds(1)
 
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
-
         graphqlUseCase.clearRequest()
-
         val usableRequestMap = HashMap<String, Any>()
         val graphqlRequestForUsable = GraphqlRequest(
                 GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.instantloan.R.raw.query_lending_data),
@@ -39,6 +35,5 @@ class GetLendingDataUseCase @Inject constructor(@ApplicationContext context: Con
         graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.addRequest(graphqlRequestForUsable)
         graphqlUseCase.execute(subscriber)
-
     }
 }

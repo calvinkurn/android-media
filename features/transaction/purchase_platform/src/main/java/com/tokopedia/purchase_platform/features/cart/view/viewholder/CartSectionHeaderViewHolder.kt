@@ -5,14 +5,14 @@ import android.text.TextUtils
 import android.view.View
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartSectionHeaderHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartSectionHeaderHolderData
 import kotlinx.android.synthetic.main.item_cart_section_header.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartSectionHeaderViewHolder(val view: View, val listener: ActionListener) : RecyclerView.ViewHolder(view) {
+class CartSectionHeaderViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val LAYOUT = R.layout.item_cart_section_header
@@ -24,7 +24,7 @@ class CartSectionHeaderViewHolder(val view: View, val listener: ActionListener) 
             itemView.label_show_all.visibility = View.GONE
         } else {
             itemView.label_show_all.setOnClickListener {
-                listener.onShowAllItem(element.showAllAppLink)
+                listener?.onShowAllItem(element.showAllAppLink)
             }
             itemView.label_show_all.visibility = View.VISIBLE
         }

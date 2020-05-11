@@ -25,6 +25,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.functions.Func1
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -37,6 +38,9 @@ class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext priv
                                                   private val userSession: UserSessionInterface)
     : UseCase<WalletBalanceModel>() {
 
+    //ovo cache 15 seconds as PM requirement
+    private val ovoCacheExpiredTime: Long = 15
+
     override fun createObservable(requestParams: RequestParams): Observable<WalletBalanceModel> {
         return Observable.just(requestParams)
                 .flatMap(Func1<RequestParams, Observable<GraphqlResponse>> {
@@ -45,7 +49,7 @@ class GetWalletBalanceUseCase @Inject constructor(@param:ApplicationContext priv
                         graphqlUseCase.clearRequest()
                         graphqlUseCase.addRequest(GraphqlRequest(query, WalletBalanceResponse::class.java, false))
                         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                                .setExpiryTime(TimeUnit.SECONDS.toMillis(ovoCacheExpiredTime)).build())
                         return@Func1 graphqlUseCase.createObservable(null)
                     }
                     Observable.error(Exception("Query variable are empty"))

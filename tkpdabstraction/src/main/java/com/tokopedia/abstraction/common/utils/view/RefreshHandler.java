@@ -29,14 +29,14 @@ public class RefreshHandler {
 		swipeToRefresh.setOnRefreshListener(onSwipeRefresh());
 	}
 
-	public RefreshHandler(Activity context, View view, OnRefreshHandlerListener RefreshListener) {
-		swipeToRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+	public RefreshHandler(Activity context, SwipeToRefresh swipeToRefresh, OnRefreshHandlerListener RefreshListener) {
+		swipeToRefreshLayout = swipeToRefresh;
 		this.RefreshHandlerListener = RefreshListener;
 		swipeToRefreshLayout.setOnRefreshListener(onSwipeRefresh());
 	}
 
-	public void setView(View view) {
-		swipeToRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+	public void setView(SwipeToRefresh swipeToRefresh) {
+		swipeToRefreshLayout = swipeToRefresh;
 		swipeToRefreshLayout.setOnRefreshListener(onSwipeRefresh());
 	}
 

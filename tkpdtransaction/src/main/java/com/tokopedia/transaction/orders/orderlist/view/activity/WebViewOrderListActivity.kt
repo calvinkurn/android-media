@@ -18,20 +18,5 @@ class WebViewOrderListActivity : BaseDownloadAppLinkActivity() {
         private fun getDownlodableExtensions(): String {
             return INSURANCE_EXTENSIONS;
         }
-        @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
-        @JvmStatic
-        fun getOrderListIntent(context: Context, extras: Bundle): Intent {
-
-            var webUrl = extras.getString(
-                    KEY_APP_LINK_QUERY_URL, TokopediaUrl.getInstance().WEB
-            )
-
-            if (TextUtils.isEmpty(webUrl)) {
-                webUrl = TokopediaUrl.getInstance().WEB
-            }
-
-            return newIntent(context, webUrl, true, getDownlodableExtensions())
-        }
-
     }
 }

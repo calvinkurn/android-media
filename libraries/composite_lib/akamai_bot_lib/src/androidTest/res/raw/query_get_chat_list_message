@@ -1,0 +1,28 @@
+query get_existing_message_id($page: Int!, $perPage: Int!, $filter: String!, $tab: String!) {
+  chatListMessage(filter: $filter, page: $page, tab: $tab, perPage: $perPage) {
+    list{
+          msgID
+          messageKey
+          attributes {
+            contact {
+              id
+              role
+              domain
+              name
+              shopStatus
+              tag
+              thumbnail
+            }
+            lastReplyMessage
+            lastReplyTimeStr
+            readStatus
+            unreads
+            fraudStatus
+            pinStatus
+          }
+        }
+    hasNext
+    pagingNext
+    showTimeMachine
+  }
+}

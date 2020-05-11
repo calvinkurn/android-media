@@ -2,9 +2,4 @@
 <resources>
 
     <color name="trans_black_40">#66000000</color>
-    <color name="trans_black_20">#16000000</color>
-    <color name="trans_black_70">#B3000000</color>
-    <color name="trans_black_90">#E6000000</color>
-    <color name="trans_masking">#E6f2f2f2</color>
-
 </resources>

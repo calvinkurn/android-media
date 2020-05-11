@@ -1,11 +1,9 @@
 package com.tokopedia.discovery2.repository.pushstatus.pushstatus
 
+import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.cpmtopads.CpmTopAdsResponse
 import com.tokopedia.discovery2.data.push.PushStatusResponse
 import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
-import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.tradein_common.repository.BaseRepository
 import javax.inject.Inject
 
 

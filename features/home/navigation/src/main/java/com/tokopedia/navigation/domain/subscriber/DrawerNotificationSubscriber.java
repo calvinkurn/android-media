@@ -1,11 +1,11 @@
 package com.tokopedia.navigation.domain.subscriber;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
-import com.tokopedia.navigation.data.mapper.NotificationMapper;
+import com.tokopedia.navigation.data.mapper.NotificationRequestMapper;
 import com.tokopedia.navigation.presentation.view.NotificationView;
 
 import java.net.ConnectException;
@@ -40,7 +40,7 @@ public class DrawerNotificationSubscriber extends Subscriber<NotificationEntity>
         if (entity != null) {
             this.notificationView.renderNotification(entity.getNotifications(),
                     entity.getNotifcenterUnread(),
-                    NotificationMapper.isHasShop(entity));
+                    NotificationRequestMapper.isHasShop(entity));
         }
     }
 

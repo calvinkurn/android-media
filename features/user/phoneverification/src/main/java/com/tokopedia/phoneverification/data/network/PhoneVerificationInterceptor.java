@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import androidx.collection.ArrayMap;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.network.NetworkRouter;

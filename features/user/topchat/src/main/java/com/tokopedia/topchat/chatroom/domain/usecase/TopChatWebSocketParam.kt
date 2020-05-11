@@ -1,10 +1,14 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 
 /**
@@ -13,15 +17,42 @@ import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 
 object TopChatWebSocketParam {
 
-    fun generateParamSendMessage(thisMessageId: String, messageText: String, startTime: String): String {
-        val json = JsonObject()
-        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
-        val data = JsonObject()
-        data.addProperty("message_id", thisMessageId.toIntOrZero())
-        data.addProperty("message", messageText)
-        data.addProperty("start_time", startTime)
+    fun generateParamSendMessage(
+            thisMessageId: String,
+            messageText: String,
+            startTime: String,
+            attachments: List<SendablePreview>
+    ): String {
+        val json = JsonObject().apply {
+            addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+        }
+        val data = JsonObject().apply {
+            addProperty("message_id", thisMessageId.toIntOrZero())
+            addProperty("message", messageText)
+            addProperty("source", "inbox")
+            addProperty("start_time", startTime)
+            if (attachments.isNotEmpty()) {
+                add("extras", createProductExtrasAttachments(attachments))
+            }
+        }
         json.add("data", data)
         return json.toString()
+    }
+
+    private fun createProductExtrasAttachments(attachments: List<SendablePreview>): JsonElement {
+        val extrasProducts = JsonArray()
+        attachments.forEach { attachment ->
+            if (attachment is SendableProductPreview) {
+                val product = JsonObject().apply {
+                    addProperty("url", attachment.productUrl)
+                    addProperty("product_id", attachment.productId.toInt())
+                }
+                extrasProducts.add(product)
+            }
+        }
+        return JsonObject().apply {
+            add("extras_product", extrasProducts)
+        }
     }
 
 

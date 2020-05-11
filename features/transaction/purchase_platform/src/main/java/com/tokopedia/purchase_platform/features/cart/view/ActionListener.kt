@@ -1,8 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 
 /**
  * Created by Irfan Khoirul on 2019-05-29.
@@ -18,15 +17,9 @@ interface ActionListener {
 
     fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
 
-    fun onVoucherMerchantPromoClicked(`object`: Any)
-
-    fun onCancelVoucherMerchantClicked(promoMerchantCode: String, position: Int, ignoreAPIResponse: Boolean)
-
     fun onCartDataEnableToCheckout()
 
-    fun onCartDataDisableToCheckout(message: String)
-
-    fun onCartItemTickerErrorActionClicked(data: CartItemTickerErrorHolderData, position: Int)
+    fun onCartDataDisableToCheckout()
 
     fun onShowAllItem(appLink: String)
 
@@ -50,7 +43,9 @@ interface ActionListener {
 
     fun onRecentViewProductClicked(productId: String)
 
-    fun onRecommendationProductClicked(productId: String)
+    fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String)
+
+    fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String)
 
     fun onButtonAddToCartClicked(productModel: Any)
 
@@ -66,5 +61,9 @@ interface ActionListener {
 
     fun onSeeErrorProductsClicked()
 
-    fun onTickerDescriptionUrlClicked(url: String)
+    fun onTobaccoLiteUrlClicked(url: String)
+
+    fun onShowTickerTobacco()
+
+    fun onCartShopNameChecked(isAllChecked: Boolean)
 }

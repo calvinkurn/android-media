@@ -19,5 +19,8 @@ data class TemplateFooter (
     val share: Boolean = false,
     @SerializedName("ctaLink")
     @Expose
-    val ctaLink: Boolean = false
+    val ctaLink: Boolean = false,
+    @SerializedName("stats")
+    @Expose
+    val stats: Boolean = false
 )

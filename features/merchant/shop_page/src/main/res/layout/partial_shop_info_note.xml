@@ -7,19 +7,17 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8"
     android:paddingTop="@dimen/dp_16">
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/noteLabelView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="@dimen/dp_32"
         app:lv_title="@string/shop_note_title"
         app:lv_title_text_size="@dimen/sp_16"
         app:lv_title_color="@color/black"
         app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/tkpd_main_green"
-        app:lv_content="@string/shop_info_label_manage_note" />
+        app:lv_content_color="@color/tkpd_main_green" />
 
     <FrameLayout
         android:layout_width="match_parent"

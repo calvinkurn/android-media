@@ -8,14 +8,15 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.UmrahValueLabelEntity
-import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
+import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailButtonModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,18 +25,18 @@ import javax.inject.Inject
  * @author by furqan on 08/10/2019
  */
 class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                    dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                                    private val dispatcher: UmrahDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
-    val myWidgetData = MutableLiveData<Result<MyUmrahWidgetModel>>()
+    val myWidgetData = MutableLiveData<Result<UmrahMyUmrahWidgetModel>>()
 
     fun getOrderDetail(rawQuery: String, orderId: String) {
         val params = mapOf(PARAM_ORDER_ID to orderId,
                 PARAM_ORDER_CATEGORY_STR to UMRAH_CATEGORY)
 
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.Main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, UmrahOrderDetailsEntity.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<UmrahOrderDetailsEntity.Response>()
@@ -49,7 +50,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         val params = mapOf(PARAM_ORDER_ID to orderId)
 
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.Main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, MyUmrahEntity.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<MyUmrahEntity.Response>()
@@ -104,18 +105,18 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         return data
     }
 
-    fun transformToButtonModel(actionButtons: List<UmrahOrderDetailsEntity.ActionButton>): List<UmrahOrderDetailButtonViewModel> {
-        val data = arrayListOf<UmrahOrderDetailButtonViewModel>()
+    fun transformToButtonModel(actionButtons: List<UmrahOrderDetailsEntity.ActionButton>): List<UmrahOrderDetailButtonModel> {
+        val data = arrayListOf<UmrahOrderDetailButtonModel>()
 
         for (item in actionButtons) {
-            data.add(UmrahOrderDetailButtonViewModel(item.label, item.buttonType, item.body.appUrl))
+            data.add(UmrahOrderDetailButtonModel(item.label, item.buttonType, item.body.appUrl))
         }
 
         return data
     }
 
-    private fun transformToMyUmrahWidgetModel(data: MyUmrahEntity): MyUmrahWidgetModel =
-            MyUmrahWidgetModel(data.header, data.subHeader, data.nextActionText, data.mainButton.text, data.mainButton.link)
+    private fun transformToMyUmrahWidgetModel(data: MyUmrahEntity): UmrahMyUmrahWidgetModel =
+            UmrahMyUmrahWidgetModel(data.header, data.subHeader, data.nextActionText, data.mainButton.text, data.mainButton.link)
 
     companion object {
         const val PARAM_ORDER_ID = "orderId"

@@ -6,14 +6,14 @@ import android.view.View
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartRecentViewAdapter
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewHolderData
 import kotlinx.android.synthetic.main.item_cart_recent_view.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartRecentViewViewHolder(val view: View, val listener: ActionListener) : RecyclerView.ViewHolder(view) {
+class CartRecentViewViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
 
     var recentViewAdapter: CartRecentViewAdapter? = null
 

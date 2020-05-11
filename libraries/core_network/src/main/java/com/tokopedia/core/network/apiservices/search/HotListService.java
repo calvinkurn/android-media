@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class HotListService extends AuthService<HotListApi> {
-    private static final String TAG = HotListService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 
 /**
@@ -25,8 +26,10 @@ class AddPhoneActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSet
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+        return DaggerProfileCompletionSettingComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+                    .build()
     }
 
 }

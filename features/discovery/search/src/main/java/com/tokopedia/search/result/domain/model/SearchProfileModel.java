@@ -40,6 +40,9 @@ public class SearchProfileModel {
         @SerializedName("profiles")
         @Expose
         private List<Profile> profiles = new ArrayList<>();
+        @SerializedName("top_profile")
+        @Expose
+        private List<Profile> topProfile = new ArrayList<>();
 
         public String getQuery() {
             return query;
@@ -89,6 +92,13 @@ public class SearchProfileModel {
             this.profiles = profiles;
         }
 
+        public List<Profile> getTopProfile() {
+            return topProfile;
+        }
+
+        public void setTopProfile(List<Profile> topProfile) {
+            this.topProfile = topProfile;
+        }
     }
 
     public class Profile {

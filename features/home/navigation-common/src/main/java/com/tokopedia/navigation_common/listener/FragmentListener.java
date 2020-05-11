@@ -6,4 +6,5 @@ package com.tokopedia.navigation_common.listener;
 
 public interface FragmentListener {
     void onScrollToTop();
+    boolean isLightThemeStatusBar();
 }

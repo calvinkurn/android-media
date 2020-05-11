@@ -3,8 +3,10 @@ package com.tokopedia.officialstore.official.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
@@ -12,7 +14,8 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 
 class OfficialHomeAdapterTypeFactory(
         private val recommendationListener: RecommendationListener,
-        private val dcEventHandler: DynamicChannelEventHandler
+        private val dcEventHandler: DynamicChannelEventHandler,
+        private val featuredShopListener: FeaturedShopListener
 ) : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
@@ -40,23 +43,30 @@ class OfficialHomeAdapterTypeFactory(
     }
 
     override fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int {
-        return ProductRecommendationTitleViewHolder.LAYOUT
+        return OfficialProductRecommendationTitleViewHolder.LAYOUT
     }
 
     override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
-        return ProductRecommendationViewHolder.LAYOUT
+        return OfficialProductRecommendationViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingModel): Int {
+        return OfficialLoadingContentViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(parent)
-            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
+            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent, featuredShopListener)
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(parent, dcEventHandler)
             DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(parent, dcEventHandler)
-            ProductRecommendationTitleViewHolder.LAYOUT -> ProductRecommendationTitleViewHolder(parent)
-            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(parent, recommendationListener)
+            DynamicChannelMixLeftViewHolder.LAYOUT -> DynamicChannelMixLeftViewHolder(parent, dcEventHandler)
+            DynamicChannelMixTopViewHolder.LAYOUT -> DynamicChannelMixTopViewHolder(parent, dcEventHandler)
+            OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(parent)
+            OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(parent, recommendationListener)
+            OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

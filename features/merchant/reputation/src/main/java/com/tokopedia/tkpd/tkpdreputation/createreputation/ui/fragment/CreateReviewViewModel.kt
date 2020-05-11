@@ -45,12 +45,12 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     val getSubmitReviewResponse: LiveData<LoadingDataState<SendReviewValidateDomain>> = submitReviewResponse
 
     fun submitReview(reviewId: String, reputationId: String, productId: String, shopId: String, reviewDesc: String,
-                     ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean) {
+                     ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean, utmSource: String) {
 
         if (listOfImages.isEmpty()) {
-            sendReviewWithoutImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous)
+            sendReviewWithoutImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, utmSource)
         } else {
-            sendReviewWithImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages)
+            sendReviewWithImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages, utmSource)
         }
     }
 
@@ -96,10 +96,10 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     }
 
     private fun sendReviewWithoutImage(reviewId: String, reputationId: String, productId: String, shopId: String,
-                                       reviewDesc: String, ratingCount: Float, isAnonymous: Boolean) {
+                                       reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, utmSource: String) {
         submitReviewResponse.value = LoadingView
         sendReviewWithoutImage.execute(SendReviewValidateUseCase.getParam(reviewId, productId,
-                reputationId, shopId, ratingCount.toString(), reviewDesc, isAnonymous)
+                reputationId, shopId, ratingCount.toString(), reviewDesc, isAnonymous, utmSource)
                 , object : Subscriber<SendReviewValidateDomain>() {
             override fun onNext(data: SendReviewValidateDomain) {
                 submitReviewResponse.value = Success(data)
@@ -117,10 +117,10 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     }
 
     private fun sendReviewWithImage(reviewId: String, reputationId: String, productId: String, shopId: String,
-                                    reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, listOfImages: List<String>) {
+                                    reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
         submitReviewResponse.value = LoadingView
         sendReviewWithImage.execute(SendReviewUseCase.getParam(reviewId, productId, reputationId, shopId, ratingCount.toString(),
-                reviewDesc, mapImageToObjectUpload(listOfImages), listOf(), isAnonymous), object : Subscriber<SendReviewDomain>() {
+                reviewDesc, mapImageToObjectUpload(listOfImages), listOf(), isAnonymous, utmSource), object : Subscriber<SendReviewDomain>() {
             override fun onNext(data: SendReviewDomain) {
                 if (data.isSuccess) {
                     submitReviewResponse.value = Success(SendReviewValidateDomain("", 0, if (data.isSuccess) 1 else 0))

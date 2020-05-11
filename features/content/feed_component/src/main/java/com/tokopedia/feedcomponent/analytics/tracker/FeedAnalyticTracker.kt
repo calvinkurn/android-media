@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.analytics.tracker
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
@@ -61,13 +63,17 @@ class FeedAnalyticTracker
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
 
         const val CONTENT_DETAIL = "$USER_PROFILE_SOCIALCOMMERCE - content detail"
+        const val MY_CONTENT_DETAIL = "$MY_PROFILE_SOCIALCOMMERCE - content detail"
 
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
         const val CONTENT_INTEREST_PICK = "content interest pick"
+        const val CATEGORY_FEED_TIMELINE = "content feed timeline"
+        const val CATEGORY_FEED_TIMELINE_FEED_DETAIL = "content feed timeline - product detail"
     }
 
     private object Action {
+        const val CLICK = "click"
         const val CLICK_BUY = "click beli"
         const val CLICK_SEE = "click lihat"
         const val CLICK_MEDIA = "click media"
@@ -85,10 +91,23 @@ class FeedAnalyticTracker
         const val CLICK_FOLLOW = "click follow"
         const val CLICK_UNFOLLOW = "click unfollow"
         const val CLICK_FOLLOW_ALL = "click follow semua"
+        const val CLICK_FEED_PRODUCT_DETAIL = "click - shop"
+        const val CLICK_CONTENT_DETAIL_SHOP = "click - shop"
+        const val CLICK_CONTENT_DETAIL_AFFILIATE = "click - user"
 
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
         const val IMPRESSION_POST = "impression post"
+
+
+        const val PARAM_ACTION_LOGIN = "login"
+        const val PARAM_ACTION_NONLOGIN = "nonlogin"
+        const val ACTION_FEED_RECOM_USER = "avatar - %s recommendation - %s"
+        const val ACTION_CLICK_FEED_AVATAR = "click avatar - %s - %s - %s"
+        const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
+        const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
+        const val FORMAT_TWO_PARAM = "%s - %s"
+
 
         object Field {
             object List {
@@ -102,6 +121,7 @@ class FeedAnalyticTracker
 
     object Screen {
         const val FEED = "/feed"
+        const val FEED_SHOP = "/shop-feed"
         const val MEDIA_PREVIEW = "$FEED/media-preview"
         const val TRENDING = "$FEED/trending-tab"
         const val HASHTAG = "$FEED/hashtag"
@@ -109,7 +129,11 @@ class FeedAnalyticTracker
         const val USER_PROFILE_PAGE = "/user profile page"
         const val USER_PROFILE_PAGE_DETAIL = "$USER_PROFILE_PAGE detail"
         const val INTEREST_PICK_DETAIL = "/feed/interest-pick"
+        const val HOME_FEED_SCREEN = "/feed"
         const val ONBOARDING_PROFILE_RECOM = "/feed/profile-recom"
+
+        const val SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+        const val SCREEN_DIMENSION_IS_FEED_EMPTY = "isFeedEmpty"
     }
 
     private object Promotion {
@@ -117,6 +141,10 @@ class FeedAnalyticTracker
         const val NAME = "name"
         const val CREATIVE = "creative"
         const val POSITION = "position"
+        const val CREATIVE_URL = "creative_url"
+        const val CATEGORY = "category"
+        const val PROMO_ID = "promo_id"
+        const val PROMO_CODE = "promo_code"
     }
 
     private object Product {
@@ -146,6 +174,86 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_USER_RECOM = "/feed follow recom - user recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM = "/feed follow recom - {usertype} recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
+    //    screenshot 47
+    fun eventContentDetailClickShopNameAvatar(activityId: String, shopId: String) {
+        trackGeneralEvent(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (shopId.equals(userSessionInterface.shopId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+                Action.CLICK_CONTENT_DETAIL_SHOP,
+                String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
+    //    screenshot 47
+    fun eventContentDetailClickAffiliateNameAvatar(activityId: String, userId: String) {
+        trackGeneralEvent(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (userId.equals(userSessionInterface.userId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+                Action.CLICK_CONTENT_DETAIL_AFFILIATE,
+                String.format(Action.FORMAT_TWO_PARAM, userId, activityId)
+        )
+    }
+
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 21
+    fun eventClickFeedProfileRecommendation(targetId: String, targetType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                Action.CLICK,
+                String.format(Action.ACTION_FEED_RECOM_USER, targetType, targetId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 19
+    fun eventClickFeedAvatar(activityId: String, activityName: String, targetId: String, targetType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                String.format(Action.ACTION_CLICK_FEED_AVATAR, targetType, activityName,
+                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
+                String.format(Action.FORMAT_TWO_PARAM, targetId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 31
+    fun eventClickMediaPreviewAvatar(targetId: String, targetType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                String.format(Action.ACTION_CLICK_MEDIAPREVIEW_AVATAR, targetType,
+                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
+                targetId
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 15
+    fun eventClickFeedDetailAvatar(activityId: String, shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE_FEED_DETAIL,
+                Action.CLICK_FEED_PRODUCT_DETAIL,
+                String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+        )
+    }
+
+    //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
+    //    screenshot 7
+    fun eventClickTopadsPromoted(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CATEGORY_FEED_TIMELINE,
+                Action.ACTION_CLICK_TOPADS_PROMOTED,
+                shopId
+        )
     }
 
     /**
@@ -211,6 +319,17 @@ class FeedAnalyticTracker
      */
     fun eventOpenInterestPickDetail() {
         trackOpenScreenEvent(Screen.INTEREST_PICK_DETAIL)
+    }
+
+    /**
+     *
+     *  * docs: https://docs.google.com/spreadsheets/d/1IRr-k5qfzFUz43mbkZDRtjKPAbXVrWDlHus5gCIqzFg/edit#gid=1450459047
+     *
+     */
+    fun eventOpenFeedPlusFragment(isLoggedInStatus: Boolean, isFeedEmpty: Boolean) {
+        trackOpenScreenEventC2s(Screen.HOME_FEED_SCREEN,
+                isLoggedInStatus = isLoggedInStatus.toString(),
+                isFeedEmpty = isFeedEmpty.toString())
     }
 
     /**
@@ -579,6 +698,80 @@ class FeedAnalyticTracker
     }
 
     /**
+     * row 5 for feed page
+     * row 26 for shop feed page
+     * docs: https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
+     * Screenshot xx (not included)
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventImageImpressionPost(screenName: String, activityId: String, activityName: String, mediaType: String,
+                                 imageUrl: String, recomId: Int, rowNumber: Int ) {
+        var eventCategory = ""
+        var promotionsNameInitial = ""
+        var eventLabel = ""
+        when(screenName) {
+            Screen.FEED -> {
+                eventCategory = Category.CONTENT_FEED_TIMELINE
+                promotionsNameInitial = "/content feed"
+                eventLabel = "$activityId - $recomId"
+            }
+            Screen.FEED_SHOP -> {
+                eventCategory = Category.CONTENT_FEED_SHOP_PAGE
+                promotionsNameInitial = "/feed shop page"
+                eventLabel = activityId
+            }
+        }
+        trackEnhancedEcommerceEvent(
+                Event.PROMO_VIEW,
+                eventCategory,
+                "${Action.IMPRESSION_POST} - $activityName - $mediaType",
+                eventLabel,
+                getPromoViewData(getPromotionsData(
+                        listOf(getPromotionData(
+                                activityId,
+                                "$promotionsNameInitial - $activityName - $mediaType",
+                                imageUrl,
+                                rowNumber))
+                ))
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
+     * Screenshot xx (not included)
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventShopPageClickPost(activityId: String, activityName: String, mediaType: String, imageUrl: String, rowNumber: Int) {
+        eventClickReadMore(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_SHOP_PAGE,
+                activityId,
+                activityName,
+                mediaType
+        )
+        trackEnhancedEcommerceEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_SHOP_PAGE,
+                Action.CLICK,
+                String.format("post - %s - %s - %s", activityName, activityId, mediaType),
+                getPromoClickData(getPromotionsData(
+                        listOf(getPromotionData(
+                                activityId,
+                                String.format("/feed shop page - %s - %s", activityName, mediaType),
+                                imageUrl,
+                                rowNumber))
+                ))
+                )
+    }
+
+    /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Screenshot 4
@@ -866,6 +1059,18 @@ class FeedAnalyticTracker
         )
     }
 
+    private fun trackOpenScreenEventC2s(screenName: String,
+                                        isLoggedInStatus: String,
+                                        isFeedEmpty: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+                screenName,
+                mapOf(
+                        SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus,
+                        SCREEN_DIMENSION_IS_FEED_EMPTY to isFeedEmpty
+                )
+        )
+    }
+
     private fun trackEnhancedEcommerceEvent(
             eventName: String,
             eventCategory: String,
@@ -908,13 +1113,20 @@ class FeedAnalyticTracker
             id: String,
             name: String,
             creative: String,
-            position: Int
+            position: Int,
+            creativeUrl: String = "",
+            category: String = "",
+            promoId: String = "",
+            promoCode: String = ""
     ): Map<String, Any> = DataLayer.mapOf(
             Promotion.ID, id,
             Promotion.NAME, name,
             Promotion.CREATIVE, creative,
-            Promotion.POSITION, position
-    )
+            Promotion.POSITION, position,
+            Promotion.CREATIVE_URL, creativeUrl,
+            Promotion.CATEGORY, category,
+            Promotion.PROMO_ID, promoId,
+            Promotion.PROMO_CODE, promoCode)
 
     private fun getAddData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.ADD, data)
 

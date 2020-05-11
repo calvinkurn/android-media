@@ -10,10 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,28 +20,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
@@ -73,6 +69,9 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 /**
  * Created by Tkpd_Eka on 2/12/2015.
@@ -121,16 +120,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     @Override
     public void showProgress() {
         progressDialog.showDialog();
-    }
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-        progressDialog.dismiss();
     }
 
     @Override
@@ -453,10 +442,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         }
     }
 
-    private void loadViewHolder() {
-        holder = (ViewHolder) rootView.getTag();
-    }
-
     private void setListener() {
         if (!isProcessed) holder.AcceptButton.setOnClickListener(onAcceptClick());
         holder.RejectButton.setOnClickListener(onRejectListener());
@@ -501,10 +486,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private void actionOpenBuyer() {
-        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
-            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                    .getTopProfileIntent(getActivity(), userId));
-        }
+        startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, userId));
     }
 
 
@@ -554,11 +536,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     private View.OnClickListener onInvoiceListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppUtils.InvoiceDialog(activity, invoiceUri, invoicePdf, holder.Invoice.getText().toString());
-            }
+        return v -> {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
+            intent.putExtra(KEY_URL, invoiceUri);
+            intent.putExtra(KEY_TITLE, "Invoice");
+            startActivity(intent);
         };
     }
 
@@ -870,14 +852,4 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         }
         return list;
     }
-
-    private ProductPass getProductDataToPass(int position) {
-        return ProductPass.Builder.aProductPass()
-                .setProductPrice(order.getOrderProducts().get(position).getProductPrice())
-                .setProductId(order.getOrderProducts().get(position).getProductId())
-                .setProductName(order.getOrderProducts().get(position).getProductName())
-                .setProductImage(order.getOrderProducts().get(position).getProductPicture())
-                .build();
-    }
-
 }

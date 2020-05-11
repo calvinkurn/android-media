@@ -84,7 +84,9 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
     public void postLikeDislikeReview(String reviewId, int likeStatus, String productId){
         getView().showProgressLoading();
-        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, userSession.getShopId()),
+        String shopId = userSession.getShopId();
+        if(TextUtils.isEmpty(shopId)) shopId = "0";
+        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, shopId),
                 getSubscriberPostLikeDislike(reviewId, likeStatus));
     }
 

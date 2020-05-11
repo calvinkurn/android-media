@@ -21,7 +21,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
@@ -29,7 +28,6 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
@@ -155,7 +153,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         sendMessageEditText = view.findViewById(R.id.new_comment)
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
-            analytics.trackSendCommentTalk(source)
+            analytics.trackSendCommentTalk(
+                    source,
+                    talkId,
+                    adapter.list.filterIsInstance(InboxTalkItemViewModel::class.java).firstOrNull()?.productHeader?.productId ?: "0")
             KeyboardHandler.DropKeyboard(context, view)
             if (userSession.isLoggedIn) {
                 presenter.sendComment(talkId,
@@ -333,8 +334,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private fun goToLogin() {
         context?.applicationContext?.run {
-            val intent = (this as TalkRouter).getLoginIntent(this)
-            this@TalkDetailsFragment.startActivity(intent)
+            RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 
@@ -376,7 +376,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
@@ -428,7 +428,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
@@ -665,16 +665,14 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileInDetail(source)
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
-            this@TalkDetailsFragment.startActivity(intent)
+        activity?.run {
+            RouteManager.route(this, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
-            this@TalkDetailsFragment.startActivity(intent)
+        activity?.run {
+            RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }
 
@@ -721,8 +719,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun handleBranchIOLinkClick(url: String) {
         activity?.run {
-            val talkRouter = this.applicationContext as TalkRouter
-            val intent = talkRouter.getSplashScreenIntent(this)
+            val intent = RouteManager.getIntent(this, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)

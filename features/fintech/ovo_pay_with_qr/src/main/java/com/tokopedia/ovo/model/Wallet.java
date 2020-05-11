@@ -6,12 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Wallet {
-    @SerializedName("balance")
-    @Expose
-    private String balance;
-    @SerializedName("rawBalance")
-    @Expose
-    private Integer rawBalance;
     @SerializedName("cash_balance")
     @Expose
     private String cash_balance;
@@ -21,23 +15,12 @@ public class Wallet {
     @SerializedName("point_balance")
     @Expose
     private String point_balance;
-    @SerializedName("raw_point_balance")
-    @Expose
-    private Integer raw_point_balance;
     @SerializedName("errors")
     @Expose
     private List<WalletErrors> errors;
 
     public List<WalletErrors> getErrors() {
         return errors;
-    }
-
-    public String getBalance() {
-        return balance;
-    }
-
-    public Integer getRawBalance() {
-        return rawBalance;
     }
 
     public String getCashBalance() {
@@ -52,7 +35,4 @@ public class Wallet {
         return point_balance;
     }
 
-    public Integer getRawPointBalance() {
-        return raw_point_balance;
-    }
 }

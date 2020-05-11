@@ -40,16 +40,22 @@ class FilterControllerTest {
     private val jakartaBaratOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_BARAT_VALUE, "Jakarta Barat"))
     private val tangerangOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, TANGERANG_VALUE, "Tangerang"))
     private val bandungOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, BANDUNG_VALUE, "Bandung"))
-    private val semuaHandphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, SEMUA_HANDPHONE_VALUE, "Semua Handphone"))
+    private val semuaHandphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, SEMUA_HANDPHONE_VALUE, "Semua Handphone")).also {
+        it.isPopular = true
+    }
     private val handphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_BESAR_VALUE, "Handphone Besar"))
     private val semuaHandphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, SEMUA_HANDPHONE_BESAR_VALUE, "Semua Handphone Besar"))
-    private val handphoneEnamInchOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_ENAM_INCH, "Handphone Enam Inch"))
+    private val handphoneEnamInchOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_ENAM_INCH, "Handphone Enam Inch")).also {
+        it.isPopular = true
+    }
     private val handphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_VALUE, "Handphone")).also{
         it.levelTwoCategoryList = createHandphoneCategoryLevels()
+        it.isPopular = true
     }
     private val tvLCDOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_LCD_VALUE, "TV"))
     private val tvOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_VALUE, "TV")).also {
         it.levelTwoCategoryList = createTVCategoryLevels()
+        it.isPopular = true
     }
 
     private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
@@ -86,6 +92,7 @@ class FilterControllerTest {
             key = option.key
             value = option.value
             name = option.name
+            isPopular = option.isPopular
             levelThreeCategoryList = createLevelThreeCategoryList(levelThreeCategoryOptionList)
         }
     }
@@ -105,6 +112,7 @@ class FilterControllerTest {
             key = option.key
             value = option.value
             name = option.name
+            isPopular = option.isPopular
         }
     }
 
@@ -706,6 +714,92 @@ class FilterControllerTest {
             assert(actualMap[expectedMapEntry.key] == expectedMapEntry.value) {
                 "Testing get active filter map, comparing value for key ${expectedMapEntry.key}. Expected value: ${expectedMapEntry.value}, actual value: ${actualMap[expectedMapEntry.key]}"
             }
+        }
+    }
+
+    @Test
+    fun getSelectedAndPopularOptions() {
+        categoryOptions.add(handphoneOption)
+        categoryOptions.add(tvOption)
+        val categoryFilter = createFilterWithOptions(categoryOptions)
+
+        val optionList = filterController.getSelectedAndPopularOptions(categoryFilter)
+
+        val expectedOptionList = mutableListOf<Option>().also {
+            it.add(handphoneOption)
+            it.add(tvOption)
+            it.add(semuaHandphoneOption)
+            it.add(handphoneEnamInchOption)
+        }
+
+        optionList.assertOptionsInOrder(expectedOptionList)
+    }
+
+    private fun List<Option>.assertOptionsInOrder(expectedOptionList: List<Option>) {
+        expectedOptionList.forEachIndexed { index, option ->
+            assert(option == this[index]) {
+                "Option at index $index is: ${this[index].uniqueId}, expected: ${option.uniqueId}"
+            }
+        }
+
+        assert(this.size == expectedOptionList.size) {
+            "Actual list size ${this.size} is different with expected size ${expectedOptionList.size}"
+        }
+    }
+
+    @Test
+    fun `test appendFilterList`() {
+        val parameter = createParameterWithJabodetabekOptionSelected()
+
+        `Given initialized FilterController only with quick filters`(parameter)
+
+        `When FilterController add new filter`(parameter)
+
+        `Then verify FilterController getFilterViewState is refreshed with new filter`()
+    }
+
+    private fun `Given initialized FilterController only with quick filters`(parameter: Map<String, String>) {
+        val quickFilterList = createQuickFilterList()
+
+        filterController.initFilterController(parameter, quickFilterList)
+
+        assert(filterController.getFilterViewState(jakartaOption)) {
+            "Jakarta Option should be selected"
+        }
+    }
+
+    private fun createParameterWithJabodetabekOptionSelected(): Map<String, String> {
+        val parameter = mutableMapOf<String, String>()
+        parameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        parameter[SearchApiConst.FCITY] = JABODETABEK_VALUE
+
+        return parameter
+    }
+
+    private fun createQuickFilterList(): List<Filter> {
+        // Quick filter usually has multiple filters with only 1 option per filter
+
+        val jakartaOptionList = mutableListOf<Option>().also { it.add(jakartaOption) }
+        val officialOptionList = mutableListOf<Option>().also { it.add(officialOption) }
+
+        return mutableListOf<Filter>().also {
+            it.add(createFilterWithOptions(jakartaOptionList))
+            it.add(createFilterWithOptions(officialOptionList))
+        }
+    }
+
+    private fun `When FilterController add new filter`(parameter: Map<String, String>) {
+        val filterList = createFilterList()
+        filterController.appendFilterList(parameter, filterList)
+    }
+
+    private fun `Then verify FilterController getFilterViewState is refreshed with new filter`() {
+        assert(!filterController.getFilterViewState(jakartaOption)) {
+            "Jakarta Option should not be selected anymore"
+        }
+
+        assert(filterController.getFilterViewState(jabodetabekOption)) {
+            "Jabodetabek Option should now be selected"
         }
     }
 }

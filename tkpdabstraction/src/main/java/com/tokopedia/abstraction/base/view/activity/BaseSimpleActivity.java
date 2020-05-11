@@ -41,7 +41,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
     }
 
     protected int getParentViewResourceID(){
-        return R.id.parent_view;
+        return com.tokopedia.abstraction.R.id.parent_view;
     }
 
     @Nullable

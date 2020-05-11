@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import com.google.android.material.tabs.TabLayout;
+import org.jetbrains.annotations.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -21,14 +23,24 @@ import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
+import com.tokopedia.transaction.orders.orderlist.data.ticker.TickerResponse;
+import com.tokopedia.transaction.orders.orderlist.data.ticker.TickersItem;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifycomponents.ticker.TickerData;
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback;
 import com.tokopedia.user.session.UserSession;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderListActivity extends BaseSimpleActivity
@@ -41,12 +53,24 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
+    private TickerPagerAdapter tickerPagerAdapter;
+    private Ticker tickerAnnouncement;
+    private Context context;
+    private static final String TICKER_URL = "https://m.tokopedia.com/myorder/buyer/ticker-info?id=";
+    private static final String SPANNABLE = "[info selengkapnya]";
+    public static final String KEY_TITLE = "title";
     OrderListAnalytics orderListAnalytics;
 
     @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
         return getMarketPlaceIntent(context, extras);
 
+    }
+
+    @DeepLink(ApplinkConst.ORDER_LIST_WEBVIEW)
+    public static Intent getOrderList(Context context, Bundle extras) {
+        Intent intent = new Intent(context, OrderListActivity.class);
+        return intent.putExtras(extras);
     }
 
     @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
@@ -136,6 +160,7 @@ public class OrderListActivity extends BaseSimpleActivity
     protected void initVar() {
         tabLayout = findViewById(R.id.indicator);
         viewPager = findViewById(R.id.pager);
+        tickerAnnouncement = findViewById(R.id.ticker_announcement);
         presenter = new OrderListInitPresenterImpl(this, new GraphqlUseCase());
     }
 
@@ -156,8 +181,15 @@ public class OrderListActivity extends BaseSimpleActivity
         super.onCreate(savedInstanceState);
         initVar();
         Bundle bundle = getIntent().getExtras();
+        context = this;
         if (bundle != null) {
-            orderCategory = bundle.getString(ORDER_CATEGORY);
+            String url = bundle.getString("url");
+            if (url != null && (Uri.parse(url).getQueryParameter("tab") != null))
+                orderCategory = Uri.parse(url).getQueryParameter("tab");
+            else if (bundle.getString(ORDER_CATEGORY) != null)
+                orderCategory = bundle.getString(ORDER_CATEGORY);
+            else
+                orderCategory = OrderCategory.MARKETPLACE;
         }
         orderListAnalytics = new OrderListAnalytics();
         UserSession userSession = new UserSession(this);
@@ -165,6 +197,7 @@ public class OrderListActivity extends BaseSimpleActivity
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
             presenter.getInitData();
+            presenter.getTickerInfo();
         }
 
     }
@@ -208,6 +241,62 @@ public class OrderListActivity extends BaseSimpleActivity
         viewPager.setCurrentItem(position);
         orderListAnalytics.sendPageClickEvent("order -list");
     }
+
+
+    @Override
+    public void updateTicker(TickerResponse tickerResponse) {
+        List<TickersItem> tickersItemList;
+        ArrayList<TickerData> tickerData = new ArrayList<>();
+        tickersItemList = tickerResponse.getOrderTickers().getTickers();
+        if (tickersItemList.size() != 0) {
+            tickerAnnouncement.setVisibility(View.VISIBLE);
+            if (tickersItemList.size() > 1) {
+                orderListAnalytics.sendViewTickerEvent();
+                for (TickersItem tickersItem : tickersItemList) {
+                    String url = TICKER_URL + tickersItem.getId();
+                    String ticker_des = tickersItem.getShortDesc() + " "+SPANNABLE + "{" + url + "}";
+                    tickerData.add(new TickerData("", ticker_des, Ticker.TYPE_ANNOUNCEMENT, true, tickersItem));
+                }
+
+                tickerPagerAdapter = new TickerPagerAdapter(this, tickerData);
+                tickerPagerAdapter.setPagerDescriptionClickEvent(new TickerPagerCallback() {
+                    @Override
+                    public void onPageDescriptionViewClick(@NotNull CharSequence charSequence, @Nullable Object ticker) {
+                        TickersItem tickersItem = (TickersItem) ticker;
+                        orderListAnalytics.sendClickTickerEvent(tickersItem.getId().toString());
+                        Intent intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
+                        intent.putExtra(KEY_TITLE, getResources().getString(R.string.tkpdtransaction_web_title));
+                        startActivity(intent);
+                    }
+                });
+                tickerAnnouncement.setAutoSliderActive(true);
+                tickerAnnouncement.setAutoSlideDelay(5000);
+                tickerAnnouncement.addPagerView(tickerPagerAdapter, tickerData);
+            } else {
+                String url = TICKER_URL + tickersItemList.get(0).getId();
+                String ticker_des = tickersItemList.get(0).getShortDesc() + SPANNABLE + "{" + url + "}";
+                tickerAnnouncement.setTextDescription(ticker_des);
+                tickerAnnouncement.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+
+                        Intent intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
+                        intent.putExtra(KEY_TITLE, getResources().getString(R.string.tkpdtransaction_web_title));
+                        startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void onDismiss() {
+                        orderListAnalytics.sendClickCloseTickerEvent();
+
+                    }
+                });
+
+            }
+        }
+    }
+
 
     @Override
     protected Fragment getNewFragment() {

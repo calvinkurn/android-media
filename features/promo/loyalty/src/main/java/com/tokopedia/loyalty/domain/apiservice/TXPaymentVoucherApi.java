@@ -2,7 +2,6 @@ package com.tokopedia.loyalty.domain.apiservice;
 
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.Map;

@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartWishlistItemViewHolder
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartWishlistAdapter(val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CartWishlistAdapter(val actionListener: ActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var wishlistItemHoldeDataList: List<CartWishlistItemHolderData> = arrayListOf()
 

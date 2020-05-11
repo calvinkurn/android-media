@@ -1,7 +1,7 @@
 package com.tokopedia.profile.analytics
 
 import android.app.Activity
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackApp

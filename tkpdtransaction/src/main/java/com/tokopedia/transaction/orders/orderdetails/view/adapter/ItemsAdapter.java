@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +22,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.ApplinkOMSConstant;
+import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
-import com.tokopedia.transaction.orders.orderdetails.data.Body;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
-import com.tokopedia.transaction.orders.orderdetails.data.Header;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListwebViewActivity;
@@ -38,8 +36,10 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface, RedeemVoucherView.SetTapActionDeals {
 
@@ -50,9 +50,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
     public static final String KEY_RETRY = "Cek Ulang";
-    private static final int DEALS_CATEGORY_ID = 35;
+    public static final int DEALS_CATEGORY_ID = 35;
     private static final int EVENTS_CATEGORY_ID_1 = 32;
     private static final int EVENTS_CATEGORY_ID_2 = 23;
+    private static final int EVENTS_CATEGORY_INSURANCE = 1301;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
@@ -60,6 +61,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM_DEALS_SHORT = 2;
     public static final int ITEM_EVENTS = 3;
     private static final int ITEM_DEFAULT = 4;
+    private static final int ITEM_INSURANCE = 5;
     private String Insurance_File_Name = "E-policy Asuransi";
     OrderListDetailPresenter presenter;
     public static String categoryDeals = "deal";
@@ -68,6 +70,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private int position;
     private String orderId;
     private PermissionCheckerHelper permissionCheckerHelper;
+    public static final int TEXT_SIZE_LARGE = 14;
     private int totalTicketCount;
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
@@ -107,6 +110,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
                 holder = new ItemViewHolder(v, viewType);
                 break;
+            case ITEM_INSURANCE:
+                v = inflater.inflate(R.layout.voucher_item_insurance, parent, false);
+                holder = new ItemViewHolder(v, viewType);
+                break;
             case ITEM_DEFAULT:
                 v = inflater.inflate(R.layout.voucher_item_default, parent, false);
                 holder = new DefaultViewHolder(v, viewType);
@@ -139,6 +146,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2) {
             return ITEM_EVENTS;
+        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_INSURANCE) {
+            return ITEM_INSURANCE;
         } else {
             return ITEM_DEFAULT;
         }
@@ -182,11 +191,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         context.startActivity(intent);
                     }
                 }
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                setEventDetails.openShowQRFragment(actionButton, item);
             }
         }
 
     }
-
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
@@ -195,9 +205,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView brandName;
         private TextView cityName;
         private TextView validDate;
+        private TextView productQuantity;
+        private TextView productPrice;
         private ProgressBar progressBar;
         private LinearLayout tapActionLayoutDeals, tapActionLayoutEvents;
-        private LinearLayout actionLayout;
+        private LinearLayout statusDetail;
         private LinearLayout voucherCodeLayout;
         private CustomTicketView customTicketView;
         private CustomTicketView customTicketView1;
@@ -231,8 +243,36 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tapActionLayoutEvents = itemView.findViewById(R.id.tapAction_events);
                 llValid = itemView.findViewById(R.id.ll_valid);
             }
-            itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            progressBar = itemView.findViewById(R.id.prog_bar);
+
+            if (itemType == ITEM_INSURANCE) {
+                dealImage = itemView.findViewById(R.id.img_product);
+                dealsDetails = itemView.findViewById(R.id.txt_product_name);
+                brandName = itemView.findViewById(R.id.txt_product_name);
+                productQuantity = itemView.findViewById(R.id.txt_quantity);
+                productPrice = itemView.findViewById(R.id.txt_item_price);
+                statusDetail = itemView.findViewById(R.id.status_detail);
+
+            } else if (itemType != ITEM_INSURANCE) {
+                itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                progressBar = itemView.findViewById(R.id.prog_bar);
+            }
+
+        }
+
+        private void setProductDetails(Map<String, String> map) {
+
+            Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, String> entry = it.next();
+                DoubleTextView doubleTextView = new DoubleTextView(context, LinearLayout.HORIZONTAL);
+                doubleTextView.setTopText(entry.getKey());
+                doubleTextView.setTopTextColor(context.getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setBottomText(entry.getValue());
+                doubleTextView.setBottomTextColor(context.getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextStyle("bold");
+                doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
+                statusDetail.addView(doubleTextView);
+            }
 
         }
 
@@ -256,6 +296,35 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         dealsDetails.setText(metaDataInfo.getEntityProductName());
                     }
+                }
+                if (itemType == ITEM_INSURANCE) {
+
+                    if (TextUtils.isEmpty(metaDataInfo.getProuductImage())) {
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                    } else {
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProuductImage(), R.color.grey_1100, R.color.grey_1100);
+                    }
+                    if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
+                        dealsDetails.setText(item.getTitle());
+                    } else {
+
+                        dealsDetails.setText(metaDataInfo.getProductName());
+                    }
+
+                    setEventDetails.setDetailTitle(context.getResources().getString(R.string.insurance_detail_label));
+                    productQuantity.setText(metaDataInfo.getProductQuantity());
+                    productPrice.setText(metaDataInfo.getProductPrice());
+                    String productCategory = presenter.getProductCategory();
+                    Map<String, String> map = new LinkedHashMap<>();
+                    map.put(context.getResources().getString(R.string.product_category), productCategory);
+                    map.put(context.getResources().getString(R.string.insurance_type), metaDataInfo.getInsuranceType());
+                    map.put(context.getResources().getString(R.string.insurance_quantity), metaDataInfo.getProductQuantity());
+                    map.put(context.getResources().getString(R.string.insurance_length), metaDataInfo.getInsuranceLength());
+                    map.put(context.getResources().getString(R.string.insurance_price), metaDataInfo.getPremiumPrice());
+                    setProductDetails(map);
+                    setEventDetails.setInsuranceDetail();
+
+
                 }
                 if (itemType == ITEM_DEALS) {
                     presenter.sendThankYouEvent(metaDataInfo, ITEM_DEALS);
@@ -358,11 +427,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     tapActionLayoutDeals.setVisibility(View.VISIBLE);
                     tapActionLayoutDeals.removeAllViews();
                     int size = item.getTapActions().size();
+
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getTapActions().get(i);
-                        RedeemVoucherView redeemVoucherView;
-                        redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
-                        tapActionLayoutDeals.addView(redeemVoucherView);
+                        if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
+                            RedeemVoucherView redeemVoucherView;
+                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
+                            tapActionLayoutDeals.addView(redeemVoucherView);
+                        } else {
+                            String[] voucherCodes = actionButton.getHeaderObject().getVoucherCodes().split(",");
+                            for (int j = 0; j < voucherCodes.length; j++) {
+                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[j], j, actionButton.getHeaderObject().getItemLabel(), voucherCodes.length);
+                                tapActionLayoutDeals.addView(bookingCodeView);
+                            }
+                        }
                     }
                 }
 
@@ -460,24 +538,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         private boolean isDownloadable(ActionButton actionButton) {
-
-            Header header = null;
-
             if (!TextUtils.isEmpty(actionButton.getHeader())) {
-                Gson gson = new Gson();
-                header = gson.fromJson(actionButton.getHeader(), Header.class);
-
-                if (header.getContentType().equalsIgnoreCase(CONTENT_TYPE)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return actionButton.getHeaderObject() != null && actionButton.getHeaderObject().getContentType() != null
+                        && actionButton.getHeaderObject().getContentType().equalsIgnoreCase(CONTENT_TYPE);
             }
             return false;
         }
 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
@@ -541,6 +609,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void openShowQRFragment(ActionButton actionButton, Items item);
 
         void setDetailTitle(String title);
+
+        void setInsuranceDetail();
 
     }
 
@@ -722,7 +792,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-
             TextView tapActionTextView = new TextView(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);

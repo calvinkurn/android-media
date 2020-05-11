@@ -7,7 +7,6 @@ import android.util.Base64;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
@@ -19,6 +18,8 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 
@@ -32,6 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 3/10/17.
@@ -62,18 +64,19 @@ public class FingerprintInterceptor implements Interceptor {
     }
 
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
+        UserSessionInterface userSession = new UserSession(context);
         String json = getFingerPrintJson();
 
         SessionHandler session = RouterUtils.getRouterFromContext(context).legacySessionHandler();
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
-        if (session.isV4Login()) {
+        if (userSession.isLoggedIn()) {
             newRequest.addHeader(KEY_USER_ID, session.getLoginID());
             newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + session.getLoginID()));
         } else {
             newRequest.addHeader(KEY_USER_ID, "0");
             newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + "0"));
         }
-        newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken());
+        newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, getGoogleAdId(context));
 
@@ -82,7 +85,7 @@ public class FingerprintInterceptor implements Interceptor {
 
     private String getFingerPrintJson() {
         String json = "";
-        CommonUtils.dumper("Fingerpint is running");
+        Timber.d("Fingerpint is running");
         try {
             GetFingerprintUseCase getFingerprintUseCase;
             FingerprintRepository fpRepo = new FingerprintDataRepository(context);

@@ -1,0 +1,48 @@
+package com.tokopedia.flight.review.view.presenter;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by alvarisi on 11/29/17.
+ */
+
+public interface FlightBaseBookingContact {
+    interface View extends CustomerView {
+        void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice);
+
+        void hideUpdatePriceLoading(); /*showUpdateDataLoading*/
+
+        String getString(int flightbooking_price_adult_label);
+
+        void showUpdatePriceLoading();
+
+        FlightDetailViewModel getDepartureFlightDetailViewModel();
+
+        FlightDetailViewModel getReturnFlightDetailViewModel();
+
+        List<FlightBookingPassengerViewModel> getFlightBookingPassengers();
+
+        void renderPriceListDetails(List<SimpleViewModel> simpleViewModels);
+
+        void renderFinishTimeCountDown(Date date);
+
+        void showUpdateDataErrorStateLayout(Throwable t);
+
+        void showExpireTransactionDialog(String message);
+
+        void setCartId(String id);
+
+        void showSoldOutDialog();
+    }
+
+    interface Presenter<T extends View> extends CustomerPresenter<T> {
+        void onUpdateCart();
+    }
+}

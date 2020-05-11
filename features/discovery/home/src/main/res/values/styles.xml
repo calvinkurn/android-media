@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -6,18 +6,5 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="home_channel_badge_style">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">10sp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/black_54</item>
-        <item name="android:background">@drawable/background_home_channel_badge</item>
-        <item name="android:paddingTop">@dimen/padding_vs</item>
-        <item name="android:paddingLeft">@dimen/padding_ms</item>
-        <item name="android:paddingRight">@dimen/padding_ms</item>
-        <item name="android:paddingBottom">@dimen/padding_vs</item>
     </style>
 </resources>

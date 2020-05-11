@@ -1,0 +1,22 @@
+mutation WebHookPushNotification(
+    $trans_id: String!,
+    $user_trans_id: String!,
+    $recipient_id: String!,
+    $status: String!,
+    $shop_id: String!,
+    $blast_id: String!,
+    $data: String!
+) {
+    notifier_sendWebhookPushNotification(
+        trans_id: $trans_id,
+        user_trans_id: $user_trans_id,
+        recipient_id: $recipient_id,
+        status: $status,
+        shop_id: $shop_id,
+        blast_id: $blast_id,
+        data: $data
+    ){
+          is_success
+          error_message
+    }
+}

@@ -1,6 +1,7 @@
 package com.tokopedia.usecase;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -16,8 +17,15 @@ public abstract class UseCase<T> implements Interactor<T> {
 
     protected Subscription subscription = Subscriptions.empty();
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private Scheduler ioSchedulers = Schedulers.io();
+    private Scheduler mainThread = AndroidSchedulers.mainThread();
 
     public UseCase() {
+    }
+
+    public UseCase(Scheduler ioSchedulers, Scheduler mainThread) {
+        this.ioSchedulers = ioSchedulers;
+        this.mainThread = mainThread;
     }
 
     public abstract Observable<T> createObservable(RequestParams requestParams);
@@ -57,14 +65,14 @@ public abstract class UseCase<T> implements Interactor<T> {
             if (sync) {
                 observable = Observable.just(createObservable(requestParams)
                         .defaultIfEmpty(null).toBlocking().first())
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
+                        .subscribeOn(ioSchedulers)
+                        .unsubscribeOn(ioSchedulers)
+                        .observeOn(mainThread);
             } else {
                 observable = createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
+                        .subscribeOn(ioSchedulers)
+                        .unsubscribeOn(ioSchedulers)
+                        .observeOn(mainThread);
             }
             if (subscriber != null) {
                 subscription = observable.subscribe(subscriber);

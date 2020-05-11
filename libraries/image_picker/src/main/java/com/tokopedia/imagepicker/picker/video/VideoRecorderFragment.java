@@ -12,18 +12,18 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.VideoResult;
+import com.otaliastudios.cameraview.controls.Audio;
+import com.otaliastudios.cameraview.controls.Flash;
+import com.otaliastudios.cameraview.controls.Mode;
+import com.otaliastudios.cameraview.gesture.Gesture;
+import com.otaliastudios.cameraview.gesture.GestureAction;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.cameraview.Audio;
-import com.tokopedia.cameraview.CameraListener;
-import com.tokopedia.cameraview.CameraOptions;
-import com.tokopedia.cameraview.CameraView;
-import com.tokopedia.cameraview.Flash;
-import com.tokopedia.cameraview.Gesture;
-import com.tokopedia.cameraview.GestureAction;
-import com.tokopedia.cameraview.Mode;
-import com.tokopedia.cameraview.VideoResult;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.util.VideoUtils;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
@@ -120,7 +120,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
         cameraView.setAudio(Audio.ON);
         cameraView.clearCameraListeners();
         cameraView.addCameraListener(cameraListener());
-        cameraView.mapGesture(Gesture.TAP, GestureAction.FOCUS_WITH_MARKER);
+        cameraView.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS);
     }
 
     @Override

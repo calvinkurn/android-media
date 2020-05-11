@@ -24,9 +24,6 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
         promoCheckoutListFlightPresenter.attachView(this)
     }
 
-    override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
-    }
-
     override fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
         startActivityForResult(PromoCheckoutDetailFlightActivity.newInstance(
                 activity, promoCheckoutListModel?.code ?: "", cartID, false, pageTracking), REQUEST_CODE_PROMO_DETAIL)

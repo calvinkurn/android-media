@@ -25,16 +25,18 @@ import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.core.view.MotionEventCompat;
-import androidx.core.view.ViewConfigurationCompat;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.ViewConfigurationCompat;
+import androidx.viewpager.widget.ViewPager;
+
 import com.tokopedia.core2.R;
+
+import timber.log.Timber;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.widget.LinearLayout.HORIZONTAL;
@@ -311,7 +313,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
                     try {
                         mLastMotionX = x;
                         if (mViewPager.isFakeDragging() || mViewPager.beginFakeDrag()) {
-                            CommonUtils.dumper("Vishal before fake dragging");
+                            Timber.d("Vishal before fake dragging");
                             mViewPager.fakeDragBy(deltaX);
                         }
                     } catch (Exception ex) {

@@ -51,6 +51,8 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var orderListBtnOverflow = itemView?.findViewById<LinearLayout>(R.id.order_list_but_overflow)
     var conditionalInfoLayout = itemView?.findViewById<LinearLayout>(R.id.conditional_info_layout)
     var conditionalInfoText = itemView?.findViewById<TextView>(R.id.conditional_info)
+    var conditionalInfoLayoutBottom = itemView?.findViewById<LinearLayout>(R.id.conditional_info_layout_bottom)
+    var conditionalInfoTextBottom = itemView?.findViewById<TextView>(R.id.conditional_info_bottom)
     var imgShopAvatar = itemView?.findViewById<ImageView>(R.id.shop_avatar)
     var categoryName = itemView?.findViewById<TextView>(R.id.category_name)
     var title = itemView?.findViewById<TextView>(R.id.title)
@@ -116,8 +118,12 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 is SetConditionalInfo -> {
                     setConditionalInfo(it.successConditionalText, it.successCondInfoVisibility, it.color)
                 }
+                is SetConditionalInfoBottom -> {
+                    setConditionalInfoBottom(it.successConditionalText, it.successCondInfoVisibility, it.color)
+                }
                 is SetFailStatusBgColor -> {
-                    status?.setBackgroundColor(android.graphics.Color.parseColor(it.statusColor))
+                    if(it.statusColor.isNotEmpty())
+                        status?.setBackgroundColor(android.graphics.Color.parseColor(it.statusColor))
                 }
                 is SetStatus -> {
                     status?.text = it.statusText
@@ -170,18 +176,42 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setConditionalInfo(successConditionalText: String?, successCondInfoVisibility: Int, color: Color?) {
         if (successConditionalText != null) {
             conditionalInfoLayout?.visibility = successCondInfoVisibility
-            val shape = GradientDrawable()
-            shape.apply {
-                this.shape = GradientDrawable.RECTANGLE
-                shape.cornerRadius = cornerRadiusValue
-                setColor(android.graphics.Color.parseColor(color?.background()))
-                setStroke(1, android.graphics.Color.parseColor(color?.border()))
+            val shape = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = cornerRadiusValue
+                if(color?.background()?.isNotEmpty() == true)
+                    setColor(android.graphics.Color.parseColor(color.background()))
+                if(color?.border()?.isNotEmpty() == true)
+                    setStroke(1, android.graphics.Color.parseColor(color?.border()))
             }
             conditionalInfoText?.background = shape
             conditionalInfoText?.setPadding(padding16, padding16, padding16, padding16)
             conditionalInfoText?.text = successConditionalText
         } else {
             conditionalInfoLayout?.hide()
+        }
+    }
+
+    private fun setConditionalInfoBottom(successConditionalText: String?, successCondInfoVisibility: Int, color: Color?) {
+        if (successConditionalText != null) {
+            conditionalInfoLayoutBottom?.visibility = successCondInfoVisibility
+            val shape = GradientDrawable().apply {
+                this.shape = GradientDrawable.RECTANGLE
+                cornerRadius = cornerRadiusValue
+                color?.let {
+                    if (!it.background().isNullOrEmpty()) {
+                        setColor(android.graphics.Color.parseColor(it.background()))
+                    }
+                    if (!it.border().isNullOrEmpty()) {
+                        setStroke(1, android.graphics.Color.parseColor(it.border()))
+                    }
+                }
+            }
+            conditionalInfoTextBottom?.background = shape
+            conditionalInfoTextBottom?.setPadding(padding16, padding16, padding16, padding16)
+            conditionalInfoTextBottom?.text = successConditionalText
+        } else {
+            conditionalInfoLayoutBottom?.hide()
         }
     }
 
@@ -211,8 +241,10 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setClickListeners(order: Order) {
         orderListBtnOverflow?.setOnClickListener {
             val popup = PopupMenu(it.context, it)
-            popup.menu.add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan")
-            popup.menu.add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail")
+            popup.menu.add(Menu.NONE, R.id.action_bantuan,
+                    Menu.NONE, itemView.context.getResources().getString(R.string.tokopedia_care))
+            popup.menu.add(Menu.NONE, R.id.action_order_detail,
+                    Menu.NONE, itemView.context.getResources().getString(R.string.lihat_order_detail))
             popup.setOnMenuItemClickListener(OnMenuPopupClicked(it.context, order))
             popup.show()
         }
@@ -220,8 +252,13 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             if (!TextUtils.isEmpty(appLink)) {
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
                 orderListAnalytics.sendPageClickEvent("order - detail")
+                orderListAnalytics.sendProductViewEvent(order, categoryName?.text.toString(), this.position, total?.text.toString())
 
-                RouteManager.route(itemView.context, "${appLink}?upstream=${order.upstream}")
+                var separator = "?"
+                if(appLink.contains(separator)){
+                    separator = "&"
+                }
+                RouteManager.route(itemView.context, "${appLink}${separator}upstream=${order.upstream}")
             }
         }
     }
@@ -241,7 +278,11 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 }
                 R.id.action_order_detail -> {
                     if (order.appLink.isNotEmpty()) {
-                        RouteManager.route(context, "${order.appLink}?upstream=${order.upstream}")
+                        var separator = "?"
+                        if(order.appLink.contains(separator)){
+                            separator = "&"
+                        }
+                        RouteManager.route(context, "${order.appLink}${separator}upstream=${order.upstream}")
                     }
                     true
                 }

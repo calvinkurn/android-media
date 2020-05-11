@@ -83,7 +83,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
                 onBackPressed()
@@ -338,8 +338,5 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(registerShake)
      * @method(unregisterShake)
      */
-    override fun initShake() {}
-    override fun registerShake() {}
-    override fun unregisterShake() {}
 
 }

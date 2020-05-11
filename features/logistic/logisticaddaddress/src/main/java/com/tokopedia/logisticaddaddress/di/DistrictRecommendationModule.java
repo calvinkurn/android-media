@@ -2,14 +2,13 @@ package com.tokopedia.logisticaddaddress.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.logisticaddaddress.data.mapper.DistrictRecommendationEntityMapper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logisticaddaddress.data.repository.DistrictRecommendationRepository;
 import com.tokopedia.logisticaddaddress.data.repository.ShopAddressRepository;
 import com.tokopedia.logisticaddaddress.data.service.KeroApi;
@@ -18,6 +17,7 @@ import com.tokopedia.logisticaddaddress.data.source.DistrictRecommendationDataSt
 import com.tokopedia.logisticaddaddress.data.source.ShopAddressDataSource;
 import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider;
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider;
+import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationEntityMapper;
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
@@ -30,6 +30,7 @@ import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -111,8 +112,10 @@ public class DistrictRecommendationModule {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
-            Interceptor chuckInterceptor = new ChuckInterceptor(context)
-                    .showNotification(abstractionRouter.isAllowLogOnChuckInterceptorNotification());
+            ChuckerCollector collector = new ChuckerCollector(
+                    context, abstractionRouter.isAllowLogOnChuckInterceptorNotification());
+
+            Interceptor chuckInterceptor = new ChuckerInterceptor(context, collector);
             builder.addInterceptor(chuckInterceptor);
         }
         return builder.build();

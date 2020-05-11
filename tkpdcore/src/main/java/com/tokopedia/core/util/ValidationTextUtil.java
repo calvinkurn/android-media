@@ -4,9 +4,8 @@ package com.tokopedia.core.util;
  * Created by Angga.Prasetiyo on 10/09/2015.
  */
 public class ValidationTextUtil {
-    private static final String TAG = ValidationTextUtil.class.getSimpleName();
 
-    public static boolean isValidText(int minChar, String text) {
+    private static boolean isValidText(int minChar, String text) {
         return text.length() >= minChar;
     }
 

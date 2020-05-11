@@ -1,6 +1,5 @@
 package com.tokopedia.core.database.model;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -14,12 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 import org.parceler.Parcels;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * @since 27/11/2015
@@ -92,21 +85,9 @@ public class PagingHandler implements PaginHandlerRotation {
             this.uriPrevious = uriPrevious;
         }
 
-        public int getStartIndex() {
-            return startIndex;
-        }
-
 		public void setStartIndex(int startIndex) {
 			this.startIndex = startIndex;
 		}
-
-        public String getUriCurrent() {
-            return uriCurrent;
-        }
-
-        public void setUriCurrent(String uriCurrent) {
-            this.uriCurrent = uriCurrent;
-        }
 
 		@Override
 		public int describeContents() {
@@ -120,35 +101,6 @@ public class PagingHandler implements PaginHandlerRotation {
 			dest.writeString(uriPrevious);
 			dest.writeString(uriCurrent);
 		}
-	}
-
-	public static PagingHandlerModel createPagingHandlerModel(int startIndex, String uriNext, String uriPrevious, String uriCurrent){
-		PagingHandlerModel result = new PagingHandlerModel();
-		result.setStartIndex(startIndex);
-		result.setUriNext(uriNext);
-		result.setUriPrevious(uriPrevious);
-		result.setUriCurrent(uriCurrent);
-		return result;
-	}
-
-	public static final String PAGING_KEY = "paging";
-
-    public static boolean CheckHasNext(JSONObject Result) {
-
-        PagingHandlerModel pagingHandlerModel = new GsonBuilder().create().fromJson(Result.toString(), PagingHandlerModel.class);
-
-        return CheckHasNext(pagingHandlerModel);
-    }
-
-    public static boolean CheckHasNext(PagingHandlerModel pagingHandlerModel) {
-        return CheckHasNext(pagingHandlerModel.uriNext);
-    }
-
-	public static boolean CheckHasNext(String uriNext){
-		if(uriNext!=null&&!uriNext.equals("0")&& !uriNext.equals("")){
-			return true;
-		}
-		return false;
 	}
 
     @Deprecated
@@ -169,26 +121,6 @@ public class PagingHandler implements PaginHandlerRotation {
         }
     }
 
-	public static String getLastBitFromUrl(final String url){
-		// return url.replaceFirst("[^?]*/(.*?)(?:\\?.*)","$1);" <-- incorrect
-		return url.replaceFirst(".*/([^/?]+).*", "$1");
-	}
-
-	public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
-		Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-		String query = url.getQuery();
-		if(query != null) {
-			String[] pairs = query.split("&");
-			if (pairs != null) {
-				for (String pair : pairs) {
-					int idx = pair.indexOf("=");
-					query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
-				}
-			}
-		}
-		return query_pairs;
-	}
-
 	/**
 	 * since 11-11-2015, paging has change its structure
 	 * please change to @see PagingHandler#setNewParameter
@@ -207,27 +139,6 @@ public class PagingHandler implements PaginHandlerRotation {
 			e.printStackTrace();
 		}
 		hasNext = Result.has("uri_next");
-//		if(hasNext){
-//			try {
-//				Uri urinext = Uri.parse(Result.getString("uri_next"));
-//				String query = urinext.getQuery();
-//				String[] querys = query.split("&");
-//				String Temp;
-//				for(String q : querys){
-//					Temp = q.split("=")[0];
-//					if(Temp.equals("page"))
-//						NextPage = Integer.parseInt(q.split("=")[1]);
-//				}
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		else
-//			NextPage = -1;
-    }
-
-    public PagingHandlerModel getPagingHandlerModel() {
-        return pagingHandlerModel;
     }
 
     public void setPagingHandlerModel(PagingHandlerModel pagingHandlerModel) {
@@ -316,9 +227,5 @@ public class PagingHandler implements PaginHandlerRotation {
 		PagingHandlerModel p = Parcels.unwrap(retrieved.getParcelable(PAGING_ACE));
 		setPagingHandlerModel(p);
 		return retrieved.getInt(PAGING_INDEX, defaultPagingIndex);
-	}
-
-	public int getNextPage() {
-		return Integer.parseInt(Uri.parse(pagingHandlerModel.getUriNext()).getQueryParameter("page"));
 	}
 }

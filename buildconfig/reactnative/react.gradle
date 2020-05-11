@@ -44,8 +44,6 @@ def getHermesCommand = {
         return hermesCommand
     }
 
-    project.logger.lifecycle('recat.gradle, hermes command')
-
     // Execution on Windows fails with / as separator
     return hermesCommand
             .replaceAll("%OS-BIN%", getHermesOSBin())
@@ -139,7 +137,6 @@ afterEvaluate {
             }
 
             if (enableHermes) {
-                project.logger.lifecycle('react.gradle, hermes included')
                 doLast {
                     def hermesFlags;
                     exec {

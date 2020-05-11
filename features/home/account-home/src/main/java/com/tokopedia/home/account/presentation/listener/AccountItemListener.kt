@@ -1,13 +1,6 @@
 package com.tokopedia.home.account.presentation.listener
 
-import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel
-import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel
-import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel
+import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -45,6 +38,9 @@ interface AccountItemListener {
     fun onTokopediaPayLeftItemClicked(label: String, applink: String, bsData: TokopediaPayBSModel,
                                       isLinked: Boolean, walletType: String)
 
+    fun onTokopediaPayCentreItemClicked(label: String, applink: String, bsData: TokopediaPayBSModel,
+                                      isLinked: Boolean, walletType: String)
+
     fun onTokopediaPayRightItemClicked(isRightSaldo: Boolean, label: String, vccStatus: String, applink: String, bsData: TokopediaPayBSModel)
 
     fun onDepositClicked(element: SellerSaldoViewModel)
@@ -75,6 +71,8 @@ interface AccountItemListener {
 
     fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: ((Boolean, Throwable?) -> Unit))
 
+    fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int)
+
     fun onPowerMerchantSettingClicked()
 
     fun onTokomemberClicked()
@@ -82,4 +80,6 @@ interface AccountItemListener {
     fun onAccountItemImpression(data: HashMap<String, Any>)
 
     fun getTrackingQueue(): TrackingQueue
+
+    fun openRekeningPremiumWebLink(rekeningPremiumViewModel: RekeningPremiumViewModel)
 }

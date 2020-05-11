@@ -21,20 +21,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.router.home.HomeRouter;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -205,12 +203,7 @@ public class BuildAndShowNotification {
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        Intent homeIntent = null;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = TkpdCoreRouter.getSellerHomeActivity(mContext);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(mContext);
-        }
+        Intent homeIntent = ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeIntent(mContext);
         homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         stackBuilder.addNextIntent(homeIntent);
 
@@ -470,18 +463,5 @@ public class BuildAndShowNotification {
 
     public interface OnGetFileListener {
         void onFileReady(File file);
-    }
-
-    private Bitmap getBitmap(String url) {
-        try {
-            return Glide.with(mContext)
-                    .asBitmap()
-                    .load(url)
-                    .submit(60, 60)
-                    .get(3, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

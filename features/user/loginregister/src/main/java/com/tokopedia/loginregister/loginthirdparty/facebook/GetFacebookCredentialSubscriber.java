@@ -11,7 +11,9 @@ public class GetFacebookCredentialSubscriber {
     public interface GetFacebookCredentialListener {
         void onErrorGetFacebookCredential(Exception errorMessage);
 
-        void onSuccessGetFacebookCredential(AccessToken accessToken, String email);
+        void onSuccessGetFacebookEmailCredential(AccessToken accessToken, String email);
+
+        void onSuccessGetFacebookPhoneCredential(AccessToken accessToken, String phone);
     }
 
     private final GetFacebookCredentialListener viewListener;
@@ -24,7 +26,11 @@ public class GetFacebookCredentialSubscriber {
         viewListener.onErrorGetFacebookCredential(e);
     }
 
-    public void onSuccess(AccessToken accessToken, String email) {
-        viewListener.onSuccessGetFacebookCredential(accessToken, email);
+    public void onSuccessEmail(AccessToken accessToken, String email) {
+        viewListener.onSuccessGetFacebookEmailCredential(accessToken, email);
+    }
+
+    public void onSuccessPhone(AccessToken accessToken, String phone){
+        viewListener.onSuccessGetFacebookPhoneCredential(accessToken, phone);
     }
 }

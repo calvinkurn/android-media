@@ -13,10 +13,6 @@ import rx.Observable
 interface CommonPurchaseApi {
 
     @FormUrlEncoded
-    @POST(CommonPurchaseApiUrl.PATH_CHECKOUT)
-    fun checkout(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
-
-    @FormUrlEncoded
     @POST(CommonPurchaseApiUrl.PATH_SHIPPING_ADDRESS)
     fun postSetShippingAddress(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 

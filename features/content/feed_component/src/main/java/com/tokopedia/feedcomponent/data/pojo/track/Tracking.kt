@@ -18,5 +18,15 @@ data class Tracking(
         val type: String = "",
         @SerializedName("source")
         @Expose
-        val source: String = ""
-)
+        val source: String = "",
+        @SerializedName("viewType")
+        @Expose
+        val viewType: String = "",
+        @SerializedName("recomID")
+        @Expose
+        val recomID: Int = 0
+) {
+        fun copy(): Tracking {
+                return Tracking(clickURL, viewURL, type, source)
+        }
+}

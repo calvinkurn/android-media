@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.addeditaccount.domain.mapper
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.settingbank.addeditaccount.domain.pojo.AddBankAccountPojo
 import retrofit2.Response

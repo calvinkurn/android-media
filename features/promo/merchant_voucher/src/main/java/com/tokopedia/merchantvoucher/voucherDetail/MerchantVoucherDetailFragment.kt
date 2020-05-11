@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
@@ -76,8 +77,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        voucherId = arguments!!.getInt(MerchantVoucherDetailFragment.EXTRA_VOUCHER_ID)
-        merchantVoucherViewModel = arguments!!.getParcelable(MerchantVoucherDetailFragment.EXTRA_VOUCHER)
+        voucherId = arguments!!.getInt(EXTRA_VOUCHER_ID)
+        merchantVoucherViewModel = arguments!!.getParcelable(EXTRA_VOUCHER)
         voucherShopId = arguments!!.getString(EXTRA_SHOP_ID)
         super.onCreate(savedInstanceState)
         activity?.run {
@@ -93,7 +94,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadVoucherDetail()
-        tvSeeCart.setOnClickListener { it ->
+        tvSeeCart.setOnClickListener {
             if (RouteManager.isSupportApplink(context!!, ApplinkConst.CART)) {
                 val intent = RouteManager.getIntent(context!!, ApplinkConst.CART)
                 intent?.run {
@@ -101,8 +102,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
-        btnUseVoucher.setOnClickListener { _ ->
-            merchantVoucherTracking?.clickUseVoucherFromDetail()
+        btnUseVoucher.setOnClickListener {
+            merchantVoucherTracking?.clickUseVoucherFromDetail(voucherId.toString())
 
             //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
             /*if (!presenter.isLogin()) {
@@ -121,11 +122,12 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 copyVoucherCodeToClipboard()
                 val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                         Snackbar.LENGTH_LONG)
-                snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
+                snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
                 snackbar.setActionTextColor(Color.WHITE)
                 snackbar.show()
             }
         }
+        btnUseVoucher.hide()
     }
 
     private fun copyVoucherCodeToClipboard() {

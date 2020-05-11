@@ -1,18 +1,19 @@
 package com.tokopedia.seller.product.variant.view.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.seller.R;
-import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,10 +72,10 @@ public class ProductVariantDetailLevel1ListAdapter extends
 
             if (productVariantCombinationViewModel.getStock() == 0) {
                 if (productVariantCombinationViewModel.isActive()) {
-                    lvStock.setContent(context.getString(R.string.product_variant_stock_always_available));
+                    lvStock.setContent(String.valueOf(productVariantCombinationViewModel.getStock()));
                     vStatus.setVisibility(View.GONE);
                 } else {
-                    lvStock.setContent(context.getString(R.string.product_variant_stock_empty));
+                    lvStock.setContent(String.valueOf(productVariantCombinationViewModel.getStock()));
                     vStatus.setVisibility(View.VISIBLE);
                 }
             } else {

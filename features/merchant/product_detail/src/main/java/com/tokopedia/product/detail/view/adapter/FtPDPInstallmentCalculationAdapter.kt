@@ -4,7 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -188,20 +192,5 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
         internal val ivMainIcon: ImageView = view.findViewById(R.id.iv_installment_main_icon)
         internal val flInstructionTickerView = view.findViewById<FrameLayout>(R.id.ft_installment_ticker_view)
         internal val llTncDescription: LinearLayout = view.findViewById(R.id.ll_tnc_description)
-
-        private var expandLayout = true
-
-        /*init {
-            rlMainContainer.setOnClickListener {
-                if (expandLayout) {
-                    ivInstallmentToggle.animate().rotation(180f).duration = 300
-                    llInstallmentContainer.show()
-                } else {
-                    ivInstallmentToggle.animate().rotation(0f).duration = 300
-                    llInstallmentContainer.hide()
-                }
-                expandLayout = !expandLayout
-            }
-        }*/
     }
 }

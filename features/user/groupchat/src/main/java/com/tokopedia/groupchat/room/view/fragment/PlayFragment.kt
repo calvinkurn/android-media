@@ -1,22 +1,26 @@
 package com.tokopedia.groupchat.room.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import com.google.android.material.snackbar.Snackbar
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -37,6 +41,7 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
@@ -66,6 +71,16 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         ChatroomContract.DynamicButtonItem.InteractiveButtonListener{
 
     private var snackBarWebSocket: Snackbar? = null
+    private var isSnackbarEnded = true
+
+    private val snackBarCallback = object: Snackbar.Callback() {
+        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+            isSnackbarEnded = true
+        }
+    }
+
+    private val isPortrait: Boolean
+        get() = activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_PORTRAIT
 
     companion object {
 
@@ -152,14 +167,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         loadFirstTime()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.run {
             inflate(R.menu.group_chat_room_menu, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         item?.let {
             return when {
                 it.itemId == android.R.id.home -> {
@@ -311,7 +326,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onErrorGetInfo(): (String) -> Unit {
+    private fun onErrorGetInfo(): (Int) -> Unit {
         return {
             performanceMonitoring.stopTrace()
             viewState.onErrorGetInfo(it)
@@ -409,8 +424,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         userSession.gcToken = groupChatToken
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     fun backPress() {
-        if (exitDialog != null && !viewState.errorViewShown()) {
+        if (activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            viewState.exitFullScreen()
+        else if (exitDialog != null && !viewState.errorViewShown()) {
             exitDialog!!.show()
         } else {
             activity?.finish()
@@ -544,6 +562,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
+    override fun onChatDisabled(chatPermitViewModel: ChatPermitViewModel) {
+        viewState.setChatPermitDisabled(chatPermitViewModel)
+    }
+
     override fun handleEvent(it: EventGroupChatViewModel) {
         when {
             it.isFreeze -> {
@@ -591,16 +613,22 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun setSnackBarConnectingWebSocket() {
         if (userSession.isLoggedIn && !viewState.errorViewShown()) {
             snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
+            isSnackbarEnded = false
+            snackBarWebSocket?.removeCallback(snackBarCallback)
+            snackBarWebSocket?.addCallback(snackBarCallback)
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
-                it.show()
+                if (isPortrait) it.show()
             }
         }
     }
 
     override fun setSnackBarRetryConnectingWebSocket() {
         if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
+            if (isPortrait) snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
+            isSnackbarEnded = false
+            snackBarWebSocket?.removeCallback(snackBarCallback)
+            snackBarWebSocket?.addCallback(snackBarCallback)
             snackBarWebSocket?.let {
                 it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
                 it.setAction(getString(R.string.retry)) {
@@ -834,6 +862,14 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return ""
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && !isSnackbarEnded) snackBarWebSocket?.show()
+        else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) snackBarWebSocket?.dismiss()
+
+        viewState.onOrientationChanged(newConfig.orientation)
+    }
+
     fun dismissDialog() {
         exitDialog?.dismiss()
         viewState.dismissAllBottomSheet()
@@ -841,6 +877,16 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun hasVideoVertical(): Boolean {
         return viewState?.verticalVideoShown()
+    }
+
+    override fun showChatDisabledError() {
+        if (activity != null) {
+            KeyboardHandler.hideSoftKeyboard(activity)
+            viewState.onKeyboardHidden()
+        }
+        viewState.onChatDisabledError(
+                message = getString(R.string.play_chat_blocked_message),
+                action = getString(R.string.play_chat_blocked_button))
     }
 
     fun isChannelActive(): Boolean {

@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;

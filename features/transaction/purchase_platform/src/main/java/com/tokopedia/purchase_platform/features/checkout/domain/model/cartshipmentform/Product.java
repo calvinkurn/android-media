@@ -51,9 +51,11 @@ public class Product implements Parcelable {
     private int productCatalogId;
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
     private String productPreOrderInfo;
-    private TradeInInfo tradeInInfo;
+    private TradeInInfoData tradeInInfoData;
     private boolean freeShipping;
     private String freeShippingBadgeUrl;
+    private boolean showTicker;
+    private String tickerMessage;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -361,12 +363,12 @@ public class Product implements Parcelable {
         return purchaseProtectionPlanData;
     }
 
-    public TradeInInfo getTradeInInfo() {
-        return tradeInInfo;
+    public TradeInInfoData getTradeInInfoData() {
+        return tradeInInfoData;
     }
 
-    public void setTradeInInfo(TradeInInfo tradeInInfo) {
-        this.tradeInInfo = tradeInInfo;
+    public void setTradeInInfoData(TradeInInfoData tradeInInfoData) {
+        this.tradeInInfoData = tradeInInfoData;
     }
 
     public boolean isFreeShipping() {
@@ -383,6 +385,22 @@ public class Product implements Parcelable {
 
     public void setFreeShippingBadgeUrl(String freeShippingBadgeUrl) {
         this.freeShippingBadgeUrl = freeShippingBadgeUrl;
+    }
+
+    public boolean isShowTicker() {
+        return showTicker;
+    }
+
+    public void setShowTicker(boolean showTicker) {
+        this.showTicker = showTicker;
+    }
+
+    public String getTickerMessage() {
+        return tickerMessage;
+    }
+
+    public void setTickerMessage(String tickerMessage) {
+        this.tickerMessage = tickerMessage;
     }
 
     public Product() {
@@ -432,10 +450,11 @@ public class Product implements Parcelable {
         dest.writeInt(this.productCatalogId);
         dest.writeParcelable(this.purchaseProtectionPlanData, flags);
         dest.writeString(this.productPreOrderInfo);
-        dest.writeParcelable(this.analyticsProductCheckoutData, flags);
-        dest.writeParcelable(this.tradeInInfo, flags);
+        dest.writeParcelable(this.tradeInInfoData, flags);
         dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
         dest.writeString(this.freeShippingBadgeUrl);
+        dest.writeByte(this.showTicker ? (byte) 1 : (byte) 0);
+        dest.writeString(this.tickerMessage);
     }
 
     protected Product(Parcel in) {
@@ -476,10 +495,11 @@ public class Product implements Parcelable {
         this.productCatalogId = in.readInt();
         this.purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
         this.productPreOrderInfo = in.readString();
-        this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
-        this.tradeInInfo = in.readParcelable(TradeInInfo.class.getClassLoader());
+        this.tradeInInfoData = in.readParcelable(TradeInInfoData.class.getClassLoader());
         this.freeShipping = in.readByte() != 0;
         this.freeShippingBadgeUrl = in.readString();
+        this.showTicker = in.readByte() != 0;
+        this.tickerMessage = in.readString();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

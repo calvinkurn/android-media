@@ -18,8 +18,8 @@ class LendingPartnerPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm)
         notifyDataSetChanged()
     }
 
-    override fun getItem(position: Int): Fragment? {
-        return partnerDataPageItem[position].fragment
+    override fun getItem(position: Int): Fragment {
+        return partnerDataPageItem[position].fragment ?: Fragment()
     }
 
     override fun getItemPosition(any: Any): Int {
@@ -37,7 +37,7 @@ class LendingPartnerPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm)
         }
         val fragment = any as Fragment
         val pager = container as HeightWrappingViewPager?
-        if (fragment != null && fragment.view != null) {
+        if (fragment.view != null) {
             pager!!.onPageChanged(fragment.view!!)
         }
     }

@@ -100,14 +100,6 @@ public class KycUtil {
         context.startActivity(Intent.createChooser(intent, Constants.Values.CHOOSER_TTL_CALL));
     }
 
-    public static AlertDialog.Builder getErrorDialogBuilder(Activity context, View.OnClickListener onClickListener){
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-        LayoutInflater inflater = context.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.error_layout, null);
-        dialogView.findViewById(R.id.error_btn_confirm).setOnClickListener(onClickListener);
-        dialogBuilder.setView(dialogView);
-        return dialogBuilder;
-    }
 
     public static AlertDialog.Builder getKycConfirmSubmitAlertDialog(Activity context, View.OnClickListener onClickListener){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);

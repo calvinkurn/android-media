@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_16">
 
     <TextView style="@style/TextView.Micro.BlackSecondary"
         android:lineSpacingExtra="@dimen/sp_6"

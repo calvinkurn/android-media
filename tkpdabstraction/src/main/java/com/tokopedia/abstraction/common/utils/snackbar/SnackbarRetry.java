@@ -26,16 +26,6 @@ public class SnackbarRetry {
         });
     }
 
-    public void resumeRetrySnackbar() {
-        if (!isRetryClicked) {
-            showRetrySnackbar();
-        }
-    }
-
-    public void pauseRetrySnackbar() {
-        hideRetrySnackbar();
-    }
-
     public void showRetrySnackbar() {
         isRetryClicked = false;
         snackBar.show();
@@ -47,10 +37,6 @@ public class SnackbarRetry {
 
     public boolean isShown(){
         return snackBar.isShown();
-    }
-
-    public void addOnAttachStateChangeListener(View.OnAttachStateChangeListener onAttachStateChangeListener) {
-        snackBar.getView().addOnAttachStateChangeListener(onAttachStateChangeListener);
     }
 
     public void setColorActionRetry(@ColorInt int colorActionRetry){

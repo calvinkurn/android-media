@@ -6,7 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.utils.Utils
+import com.tokopedia.discovery2.Utils
 
 class BannerItem(val bannerItemData: DataItem, val constraintLayout: ConstraintLayout,
                  val constraintSet: ConstraintSet, val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH, val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, val index: Int,

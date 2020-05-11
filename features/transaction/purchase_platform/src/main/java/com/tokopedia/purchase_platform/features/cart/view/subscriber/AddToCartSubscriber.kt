@@ -1,10 +1,8 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import rx.Subscriber
 
 /**
@@ -23,11 +21,7 @@ class AddToCartSubscriber(val view: ICartListView?,
         e.printStackTrace()
         if (view != null) {
             view.hideProgressLoading()
-            var errorMessage = e.message
-            if (e !is CartResponseErrorException) {
-                errorMessage = ErrorHandler.getErrorMessage(view.activity, e)
-            }
-            view.showToastMessageRed(errorMessage)
+            view.showToastMessageRed(e)
         }
     }
 
@@ -36,6 +30,8 @@ class AddToCartSubscriber(val view: ICartListView?,
             view.hideProgressLoading()
             if (addToCartDataModel.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartDataModel.data.success == 1) {
                 view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
+                view.resetRecentViewList()
+                presenter.processUpdateCartCounter()
                 presenter.processInitialGetCartData("0", false, false)
                 if (addToCartDataModel.data.message.size > 0) {
                     view.showToastMessageGreen(addToCartDataModel.data.message[0])
