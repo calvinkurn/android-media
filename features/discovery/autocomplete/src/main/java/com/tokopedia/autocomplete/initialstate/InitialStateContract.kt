@@ -15,12 +15,12 @@ interface InitialStateContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun getInitialStateData(searchParameter: SearchParameter)
+        fun getInitialStateData()
 
         fun deleteRecentSearchItem(keyword: String)
 
         fun deleteAllRecentSearch()
 
-        fun refreshPopularSearch(searchParameter: SearchParameter)
+        fun refreshPopularSearch()
     }
 }

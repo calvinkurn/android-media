@@ -56,4 +56,7 @@ class ProductProfile {
     @SerializedName("wishlist")
     @Expose
     val wishList: Boolean = false
+    @SerializedName("list_image_url")
+    @Expose
+    val images: List<String> = emptyList()
 }

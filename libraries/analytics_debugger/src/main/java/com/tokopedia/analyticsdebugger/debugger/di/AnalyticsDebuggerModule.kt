@@ -4,10 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.analyticsdebugger.debugger.domain.*
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
-import com.tokopedia.analyticsdebugger.debugger.ui.presenter.AnalyticsDebuggerPresenter
-import com.tokopedia.analyticsdebugger.debugger.ui.presenter.AnalyticsGtmErrorDebuggerPresenter
-import com.tokopedia.analyticsdebugger.debugger.ui.presenter.AnalyticsIrisSaveDebuggerPresenter
-import com.tokopedia.analyticsdebugger.debugger.ui.presenter.AnalyticsIrisSendDebuggerPresenter
+import com.tokopedia.analyticsdebugger.debugger.ui.presenter.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -25,9 +22,24 @@ class AnalyticsDebuggerModule {
 
     @Provides
     @Named(NAMED_GTM_ANALYTICS)
-    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase?,
-                         deleteGtmLogUseCase: DeleteGtmLogUseCase?): AnalyticsDebugger.Presenter {
+    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase,
+                         deleteGtmLogUseCase: DeleteGtmLogUseCase): AnalyticsDebugger.Presenter {
         return AnalyticsDebuggerPresenter(getGtmLogUseCase, deleteGtmLogUseCase)
+    }
+
+    @Provides
+    @Named(NAMED_FPM_ANALYTICS)
+    fun provideFpmPresenter(getFpmLogUseCase: GetFpmLogUseCase,
+                            deleteFpmLogUseCase: DeleteFpmLogUseCase,
+                            getFpmAllDataUseCase: GetFpmAllDataUseCase): FpmDebugger.Presenter {
+        return FpmDebuggerPresenter(getFpmLogUseCase, deleteFpmLogUseCase, getFpmAllDataUseCase)
+    }
+
+    @Provides
+    @Named(NAMED_APPLINK)
+    fun provideApplinkPresenter(getApplinkLogUseCase: GetApplinkLogUseCase,
+                            deleteApplinkLogUseCase: DeleteApplinkLogUseCase): ApplinkDebugger.Presenter {
+        return ApplinkDebuggerPresenter(getApplinkLogUseCase, deleteApplinkLogUseCase)
     }
 
     @Provides

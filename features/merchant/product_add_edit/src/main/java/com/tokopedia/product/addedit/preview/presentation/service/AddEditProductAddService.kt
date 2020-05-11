@@ -17,6 +17,7 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import kotlinx.coroutines.Dispatchers
@@ -41,26 +42,19 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     protected var productInputModel: ProductInputModel = ProductInputModel()
 
     companion object {
-        fun startService(context: Context,
-                         cacheId: String,
-                         draftId: Long
-        ) {
+        fun startService(context: Context, cacheId: String) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
                 putExtra(AddEditProductUploadConstant.EXTRA_CACHE_ID, cacheId)
-                putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT_ID, draftId)
             }
             enqueueWork(context, AddEditProductAddService::class.java, JOB_ID, work)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
-        val draftId = intent.getLongExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT_ID, 0)
         val cacheId = intent.getStringExtra(AddEditProductUploadConstant.EXTRA_CACHE_ID) ?: ""
 
         val saveInstanceCacheManager = SaveInstanceCacheManager(this, cacheId)
-        productInputModel = saveInstanceCacheManager.get(ProductInputModel.TAG, ProductInputModel::class.java) ?: ProductInputModel()
-        productInputModel.draftId = draftId
-
+        productInputModel = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
         // (1)
         saveProductToDraft()
     }

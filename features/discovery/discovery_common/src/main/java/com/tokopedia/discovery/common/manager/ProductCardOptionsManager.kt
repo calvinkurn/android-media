@@ -38,7 +38,7 @@ fun showProductCardOptions(fragment: Fragment, productCardOptionsModel: ProductC
     }
 }
 
-fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?, wishlistCallback: ProductCardOptionsWishlistCallback?) {
+fun handleProductCardOptionsActivityResult(requestCode: Int, resultCode: Int, data: Intent?, wishlistCallback: ProductCardOptionsWishlistCallback?) {
     if (requestCode == PRODUCT_CARD_OPTIONS_REQUEST_CODE) {
         handleRequestFromProductCardOptions(resultCode, data, wishlistCallback)
     }

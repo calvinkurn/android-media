@@ -2,10 +2,8 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 
 import androidx.annotation.LayoutRes
 import android.view.View
-import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 
@@ -14,7 +12,6 @@ class ParentSettingViewHolder(
         settingListener: SettingListener
 ) : SettingViewHolder<ParentSetting>(itemView, settingListener) {
 
-    private val settingIcon: ImageView? = itemView?.findViewById(R.id.iv_icon)
     private val switchTitle: TextView? = itemView?.findViewById(R.id.tv_sw_title)
     private val description: TextView? = itemView?.findViewById(R.id.tv_desc)
 
@@ -27,7 +24,6 @@ class ParentSettingViewHolder(
         super.bind(element)
         setSettingTitle(element)
         setSettingDesc(element)
-        setSettingIcon(element)
     }
 
     private fun setSettingTitle(element: ParentSetting) {
@@ -41,11 +37,6 @@ class ParentSettingViewHolder(
         } else {
             description?.visibility = View.GONE
         }
-    }
-
-    private fun setSettingIcon(element: ParentSetting) {
-        val iconSettingUrl = element.icon
-        ImageHandler.LoadImage(settingIcon, iconSettingUrl)
     }
 
     override fun updateSiblingAndChild(element: ParentSetting, checked: Boolean) {
@@ -65,7 +56,9 @@ class ParentSettingViewHolder(
         if (childToChangeIndex.isEmpty()) return
 
         val currentSettingPosition = adapterPosition
-        val childToChangeAdapterIndex = childToChangeIndex.map { index -> currentSettingPosition + 1 + index }
+        val childToChangeAdapterIndex = childToChangeIndex.map {
+            index -> currentSettingPosition + 1 + index
+        }
         settingListener.updateSettingView(childToChangeAdapterIndex)
     }
 
@@ -86,7 +79,6 @@ class ParentSettingViewHolder(
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_parent_setting
+        @LayoutRes val LAYOUT = R.layout.item_parent_setting
     }
 }

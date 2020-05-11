@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
  */
 class RegionData(@SerializedName("id")
                  @Expose
-                 val id: Int = 0,
+                 val id: Long = 0,
                  @SerializedName("name")
                  @Expose
                  val name: String = "",
@@ -19,12 +19,12 @@ class RegionData(@SerializedName("id")
                  val countryName: String = "") : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
+            parcel.readLong(),
             parcel.readString(),
             parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
+        parcel.writeLong(id)
         parcel.writeString(name)
         parcel.writeString(countryName)
     }

@@ -44,6 +44,7 @@ class ResourceDownloadRunnable(
 
                     override fun onResponse(call: Call?, response: Response) {
                         if (!response.isSuccessful) {
+                            task.handleDownloadState(DOWNLOAD_STATE_FAILED)
                             throw IOException("Failed to download file: $response")
                         }
                         val byteArray: ByteArray? = response.body()?.bytes()

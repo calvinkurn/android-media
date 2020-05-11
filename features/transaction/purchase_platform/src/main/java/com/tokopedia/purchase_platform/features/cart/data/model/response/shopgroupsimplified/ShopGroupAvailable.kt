@@ -38,6 +38,9 @@ data class ShopGroupAvailable(
         val hasPromoList: Boolean = false,
 
         @SerializedName("checkbox_state")
-        val checkboxState: Boolean = false
+        val checkboxState: Boolean = false,
+
+        @SerializedName("promo_codes")
+        val promoCodes: List<String> = emptyList()
 
 )

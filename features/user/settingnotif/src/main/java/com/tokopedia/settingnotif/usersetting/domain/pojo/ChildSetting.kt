@@ -1,7 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.domain.pojo
 
 
-import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 
 class ChildSetting(
         name: String,

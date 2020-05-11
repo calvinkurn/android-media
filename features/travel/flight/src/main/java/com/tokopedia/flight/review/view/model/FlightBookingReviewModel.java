@@ -51,6 +51,7 @@ public class FlightBookingReviewModel implements Parcelable {
     private String departureTripId;
     private FlightBookingVoucherViewModel voucherViewModel;
     private List<FlightInsuranceViewModel> insuranceIds;
+    private String requestId;
 
     public FlightBookingReviewModel(FlightBookingParamViewModel flightBookingParamViewModel,
                                     FlightBookingCartData flightBookingCartData,
@@ -59,7 +60,8 @@ public class FlightBookingReviewModel implements Parcelable {
                                     String luggagePrefix,
                                     String mealPrefix,
                                     String birthdatePrefix,
-                                    String passportNumberPrefix) {
+                                    String passportNumberPrefix,
+                                    String requestId) {
         setId(flightBookingParamViewModel.getId());
         setDetailViewModelListDeparture(flightBookingCartData.getDepartureTrip());
         setDetailViewModelListReturn(flightBookingCartData.getReturnTrip());
@@ -92,6 +94,7 @@ public class FlightBookingReviewModel implements Parcelable {
         setReturnDate(flightBookingParamViewModel.getSearchParam().getReturnDate());
         setVoucherViewModel(flightBookingCartData.getVoucherViewModel());
         setInsuranceIds(flightBookingParamViewModel.getInsurances());
+        setRequestId(requestId);
     }
 
     protected FlightBookingReviewModel(Parcel in) {
@@ -119,6 +122,7 @@ public class FlightBookingReviewModel implements Parcelable {
         departureTripId = in.readString();
         voucherViewModel = in.readParcelable(FlightBookingVoucherViewModel.class.getClassLoader());
         insuranceIds = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
+        requestId = in.readString();
     }
 
     @Override
@@ -147,6 +151,7 @@ public class FlightBookingReviewModel implements Parcelable {
         dest.writeString(departureTripId);
         dest.writeParcelable(voucherViewModel, flags);
         dest.writeTypedList(insuranceIds);
+        dest.writeString(requestId);
     }
 
     @Override
@@ -356,6 +361,14 @@ public class FlightBookingReviewModel implements Parcelable {
 
     public void setVoucherViewModel(FlightBookingVoucherViewModel voucherViewModel) {
         this.voucherViewModel = voucherViewModel;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     private List<FlightDetailPassenger> generateFlightDetailPassenger(List<FlightBookingPassengerViewModel> passengerViewModels,

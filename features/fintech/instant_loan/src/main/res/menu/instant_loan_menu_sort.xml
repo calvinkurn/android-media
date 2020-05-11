@@ -5,6 +5,6 @@
         android:id="@+id/il_action_close"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:icon="@drawable/ic_close_24dp"
-        android:title="@string/title_close"/>
+        android:icon="@drawable/ic_close_default"
+        android:title="@string/il_title_close"/>
 </menu>

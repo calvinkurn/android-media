@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.productcard.ProductCardGridView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/carouselProductCardItem"
+    android:layout_width="@dimen/carousel_product_card_grid_width"
+    android:layout_height="match_parent">
+
+</com.tokopedia.productcard.ProductCardGridView>

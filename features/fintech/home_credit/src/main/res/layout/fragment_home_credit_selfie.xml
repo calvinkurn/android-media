@@ -71,7 +71,7 @@
             <ImageView
                 android:id="@+id/selfieid_cutout"
                 android:layout_width="match_parent"
-                android:src="@drawable/selfieid_cutout"
+                app:srcCompat="@drawable/selfieid_cutout"
                 android:scaleType="centerCrop"
                 android:layout_height="match_parent" />
 

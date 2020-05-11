@@ -1,0 +1,26 @@
+{
+  affiliateCPAExploreSections(limit: 5) {
+    explore_page_section {
+      type
+      title
+      subtitle
+      items {
+        title
+        subtitle
+        image
+        fav_icon
+        app_link
+        web_link
+        lite_link
+        ad_id
+        category_id
+        product_id
+        commission_value
+        commission_percent
+        commission_value_display
+        commission_percent_display
+        user_id
+      }
+    }
+  }
+}
