@@ -364,5 +364,4 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     public void setCashbackAmount(int cashbackAmount) {
         this.cashbackAmount = cashbackAmount;
     }
-
 }

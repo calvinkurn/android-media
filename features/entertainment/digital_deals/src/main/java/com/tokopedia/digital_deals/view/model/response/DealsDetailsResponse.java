@@ -157,6 +157,9 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("app_url")
     @Expose
     private String appUrl;
+    @SerializedName("custom_text_1")
+    @Expose
+    public int customText1;
 
 
     public final static Parcelable.Creator<DealsDetailsResponse> CREATOR = new Creator<DealsDetailsResponse>() {

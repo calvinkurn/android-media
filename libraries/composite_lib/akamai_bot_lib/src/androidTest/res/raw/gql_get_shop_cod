@@ -1,0 +1,8 @@
+query getShopCODStatus($shopID: String!){
+    shopFeature(shopID: $shopID, type: 1) {
+        data {
+            value
+            title
+        }
+    }
+}

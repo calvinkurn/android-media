@@ -5,5 +5,7 @@ enum class UploadErrorState {
     MAX_SIZE,
     TINY_RES,
     LARGE_RES,
-    EXT_ISSUE
+    EXT_ISSUE,
+    TIME_OUT,
+    NETWORK_ERROR
 }

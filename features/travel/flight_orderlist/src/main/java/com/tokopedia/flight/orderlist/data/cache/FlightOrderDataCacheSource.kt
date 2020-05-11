@@ -1,8 +1,8 @@
 package com.tokopedia.flight.orderlist.data.cache
 
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity
 import rx.Observable
 import java.util.concurrent.TimeUnit
@@ -11,16 +11,14 @@ import javax.inject.Inject
 /**
  * @author by furqan on 27/04/18.
  */
-
-class FlightOrderDataCacheSource @Inject
-constructor(private val cacheManager: CacheManager) {
+class FlightOrderDataCacheSource @Inject constructor() {
 
     val isExpired: Observable<Boolean>
-        get() = Observable.just(cacheManager.isExpired(FLIGHT_DETAIL_CACHE_KEY))
+        get() = Observable.just(PersistentCacheManager.instance.isExpired(FLIGHT_DETAIL_CACHE_KEY))
 
     val cache: Observable<OrderEntity>
         get() {
-            val jsonString = cacheManager.get(FLIGHT_DETAIL_CACHE_KEY)
+            val jsonString = PersistentCacheManager.instance.getString(FLIGHT_DETAIL_CACHE_KEY)
             val type = object : TypeToken<OrderEntity>() {
 
             }.type
@@ -29,18 +27,18 @@ constructor(private val cacheManager: CacheManager) {
         }
 
     fun deleteCache(): Observable<Boolean> {
-        cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY)
+        PersistentCacheManager.instance.delete(FLIGHT_DETAIL_CACHE_KEY)
         return Observable.just(true)
     }
 
     fun saveCache(orderEntity: OrderEntity) {
-        cacheManager.delete(FLIGHT_DETAIL_CACHE_KEY)
+        PersistentCacheManager.instance.delete(FLIGHT_DETAIL_CACHE_KEY)
 
         val type = object : TypeToken<OrderEntity>() {
 
         }.type
 
-        cacheManager.save(FLIGHT_DETAIL_CACHE_KEY,
+        PersistentCacheManager.instance.put(FLIGHT_DETAIL_CACHE_KEY,
                 CacheUtil.convertModelToString(orderEntity, type),
                 FLIGHT_DETAIL_CACHE_TIMEOUT)
     }

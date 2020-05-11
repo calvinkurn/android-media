@@ -1,0 +1,22 @@
+query GetUserSetting {
+    notifier_notificationGetUserAllSettings {
+    sellernotif {
+      section
+      icon
+      list_settings {
+        name
+        icon
+        key
+        status
+        description
+        list_settings {
+          name
+          icon
+          key
+          status
+          description
+        }
+      }
+    }
+  }
+}

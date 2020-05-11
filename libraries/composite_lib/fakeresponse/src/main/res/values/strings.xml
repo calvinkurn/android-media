@@ -1,0 +1,19 @@
+<resources>
+    <string name="gql_name">FakeResponse</string>
+    <string name="gql_save">Save</string>
+    <string name="gql_reset">Reset</string>
+    <string name="gql_export">Export</string>
+    <string name="gql_import">Import</string>
+    <string name="gql_search">Search</string>
+    <string name="gql_share">Share</string>
+    <string name="gql_send">Send</string>
+    <string name="gql_text">GQL</string>
+    <string name="gql_rest_text">REST</string>
+    <string name="gql_chuck_text">CHUCK</string>
+    <string name="gql_paste_text">Paste text</string>
+    <string name="gql_clear_records">Clear records</string>
+    <string name="gql_add_record">Add gql record</string>
+    <string name="gql_add_rest_record">Add rest record</string>
+    <string name="rahullohra_gql_testing" translatable="false">rahullohra_gql_testing</string>
+    <string name="gql_pretty" translatable="false">Pretty</string>
+</resources>

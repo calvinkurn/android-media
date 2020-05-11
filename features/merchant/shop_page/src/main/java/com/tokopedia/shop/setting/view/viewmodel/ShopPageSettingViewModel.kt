@@ -13,7 +13,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
-import com.tokopedia.shop.oldpage.data.model.ShopInfoShopBadgeFeedWhitelist
+import com.tokopedia.shop.pageheader.data.model.ShopInfoShopBadgeFeedWhitelist
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

@@ -16,7 +16,7 @@
     <string name="title_touch_id_setting">Touch ID</string>
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
     <string name="title_privacy_setting">Kebijakan Privasi</string>
-    <string name="title_help_center_setting">Pusat Bantuan</string>
+    <string name="title_help_center_setting">Tokopedia Care</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="account_home_subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
     <string name="subtitle_template_setting">Nikmati Transaksi Mudah dan Cepat</string>
@@ -47,7 +47,8 @@
     <string name="screentitle_notification_setting">Atur Notifikasi</string>
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
-    <string name="title_favorite_page">Favorit</string>
+    <string name="title_occ_preference_setting">Beli Langsung</string>
+    <string name="subtitle_occ_preference_setting">Atur pengiriman &amp; pembayaranmu favoritmu</string>
 
     <string name="label_chat">Chat</string>
     <string name="label_chat_admin">Chat Tokopedia Administrator</string>
@@ -126,10 +127,10 @@
     <string name="label_menu_wallet_referral">Bagikan Aplikasi ini ke teman Anda</string>
     <string name="title_menu_help">Bantuan</string>
     <string name="title_menu_resolution_center">Pusat Bantuan</string>
-    <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
+    <string name="label_menu_resolution_center">Lihat solusi terbaik dari Tokopedia Care</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top-up & Tagihan]]></string>
     <string name="title_menu_market_place">Belanja</string>
-    <string name="title_menu_deals">Deals</string>
+    <string name="title_menu_deals">Food &amp; Voucher</string>
     <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
     <string name="title_menu_hotel">Hotel</string>
@@ -156,9 +157,7 @@
     <string name="title_menu_product_draft">Draft Produk</string>
     <string name="label_menu_product_draft">Selesaikan kelengkapan detail Produk</string>
     <string name="title_menu_other_features">Fitur Lainnya</string>
-    <string name="title_menu_opportunity">Peluang Pesanan</string>
-    <string name="label_menu_opportunity">Pesanan yang dibatalkan penjual lain</string>
-    <string name="title_menu_seller_center">Pusat Seller</string>
+    <string name="title_menu_seller_center">Pusat Edukasi Seller</string>
     <string name="title_menu_topads">TopAds</string>
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
@@ -191,7 +190,7 @@
     <string name="top_features">Top Features</string>
     <string name="topads_desc">Media iklan Produk dan Toko</string>
     <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
-    <string name="seller_center">Pusat Seller</string>
+    <string name="seller_center">Pusat Edukasi Seller</string>
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
@@ -235,6 +234,7 @@
     <string name="account_home_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="title_about_us">Tentang Tokopedia</string>
     <string name="label_tokopedia_pay_action">Atur</string>
 
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>

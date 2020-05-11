@@ -72,12 +72,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
         }
 
-
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
             hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
                     ?: HotelHomepageModel()
         } else if (arguments != null && arguments?.containsKey(EXTRA_PARAM_TYPE) == true) {
-            hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
+            hotelHomepageModel.locId = arguments?.getLong(EXTRA_PARAM_ID) ?: 4712
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
             hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT, 1) ?: 1
@@ -99,7 +98,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -188,7 +186,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                 } else {
                     onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                            data.getIntExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
                             data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
                 }
             }
@@ -305,7 +303,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
+    private fun onDestinationChanged(name: String, destinationId: Long, type: String) {
         trackingHotelUtil.hotelSelectDestination(type, name)
 
         hotelHomepageModel.locName = name
@@ -470,10 +468,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
-        fun getInstance(id: Int, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
+        fun getInstance(id: Long, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
                     it.arguments = Bundle().apply {
-                        putInt(EXTRA_PARAM_ID, id)
+                        putLong(EXTRA_PARAM_ID, id)
                         putString(EXTRA_PARAM_NAME, name)
                         putString(EXTRA_PARAM_TYPE, type)
                         if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)

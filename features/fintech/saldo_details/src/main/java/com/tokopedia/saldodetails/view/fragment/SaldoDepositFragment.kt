@@ -55,7 +55,7 @@ import javax.inject.Inject
 class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
-        val REQUEST_WITHDRAW_CODE = 1
+        val REQUEST_WITHDRAW_CODE = 3333
 
         val IS_SELLER_ENABLED = "is_user_enabled"
         val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
@@ -599,8 +599,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     override fun initInjector() {
 
         activity?.let {
-            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it.application)
-            saldoDetailsComponent!!.inject(this)
+            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+            saldoDetailsComponent.inject(this)
 
 
             if (context is AppCompatActivity) {
@@ -830,6 +830,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     fun refresh() {
+        if (::saldoDetailViewModel.isInitialized)
+            saldoDetailViewModel.getUserSaldoBalance()
         saldoHistoryFragment!!.onRefresh()
     }
 
