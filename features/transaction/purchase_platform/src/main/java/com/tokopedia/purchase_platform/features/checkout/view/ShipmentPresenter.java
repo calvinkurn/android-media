@@ -895,6 +895,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                                setCouponStateChanged(true);
                                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
+                                               validateBBO(validateUsePromoRevampUiModel);
                                                updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                                if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
                                                    String message = "";
@@ -1215,6 +1216,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (getView() != null) {
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
+                                    validateBBO(validateUsePromoRevampUiModel);
                                     if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
                                         getView().renderPromoCheckoutFromCourierSuccess(validateUsePromoRevampUiModel, itemPosition, noToast);
                                     } else {
