@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 
-class MultiCheckoutRequest (
+data class MultiCheckoutRequest (
     @SerializedName("attributes")
     @Expose
     val attributes: MultiCheckoutRequestAttributes = MultiCheckoutRequestAttributes()
 ) {
 
-    class MultiCheckoutRequestAttributes (
+    data class MultiCheckoutRequestAttributes (
         @SerializedName("identifier")
         @Expose
         val identifier: RequestBodyIdentifier = RequestBodyIdentifier(),
@@ -20,7 +20,7 @@ class MultiCheckoutRequest (
         val items: List<MultiCheckoutRequestItem> = listOf()
     )
 
-    class MultiCheckoutRequestItem (
+    data class MultiCheckoutRequestItem (
         @SerializedName("index")
         @Expose
         val index: Int = 0,

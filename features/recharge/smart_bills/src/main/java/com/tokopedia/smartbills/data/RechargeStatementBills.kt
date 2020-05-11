@@ -3,7 +3,7 @@ package com.tokopedia.smartbills.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RechargeStatementBills(
+data class RechargeStatementBills(
         @SerializedName("total")
         @Expose
         val total: Int = 0,
@@ -29,13 +29,13 @@ class RechargeStatementBills(
         @Expose
         val bills: List<RechargeBills> = listOf()
 ) {
-    class Response(
+    data class Response(
             @SerializedName("rechargeStatementBills")
             @Expose
             val response: RechargeStatementBills = RechargeStatementBills()
     )
 
-    class Summaries(
+    data class Summaries(
             @SerializedName("categoryID")
             @Expose
             val categoryID: Int = 0,

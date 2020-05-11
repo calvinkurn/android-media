@@ -6,7 +6,7 @@ import com.tokopedia.common.payment.model.TopPayBaseModel
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
 import com.tokopedia.common_digital.cart.data.entity.response.Parameter
 
-class RechargeMultiCheckoutResponse(
+data class RechargeMultiCheckoutResponse(
     @SerializedName("type")
     @Expose
     val type: String = "",
@@ -38,16 +38,22 @@ class RechargeMultiCheckoutResponse(
         return id
     }
 
-    class MultiCheckoutResponseAttributes: AttributesCheckout() {
+    data class MultiCheckoutResponseAttributes(
+            override val redirectUrl: String = "",
+            override val callbackUrlSuccess: String = "",
+            override val callbackUrlFailed: String = "",
+            override val queryString: String = "",
+            override val parameter: Parameter = Parameter(),
+            override val thanksUrl: String = "",
             @SerializedName("all_success")
             @Expose
-            var allSuccess: Boolean = false
+            val allSuccess: Boolean = false,
             @SerializedName("errors")
             @Expose
-            var errors: List<Error> = listOf()
-    }
+            val errors: List<Error> = listOf()
+    ): AttributesCheckout(redirectUrl, callbackUrlSuccess, callbackUrlFailed, queryString, parameter, thanksUrl)
 
-    class Error(
+    data class Error(
             @SerializedName("index")
             @Expose
             val index: Int = -1,

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
-class RechargeBills(
+data class RechargeBills(
         @SerializedName("index")
         @Expose
         val index: Int = -1,

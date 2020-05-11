@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by User on 11/8/2017.
  */
-class DataRequest<T> (
+data class DataRequest<T> (
     @SerializedName("data")
     var data: T? = null
 )

@@ -24,7 +24,8 @@
                 android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tickerType="announcement" />
+                app:tickerType="announcement"
+                android:visibility="gone" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_smart_bills_title"
