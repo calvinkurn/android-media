@@ -14,14 +14,17 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.TRACKING_HOTEL_PDP
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
@@ -30,8 +33,9 @@ import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity.Companion.PDP_SCREEN_NAME
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailAllFacilityActivity
-import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailMapActivity
+import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
@@ -50,6 +54,7 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.ceil
 import kotlin.math.round
 
 /**
@@ -63,6 +68,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
+
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStop = false
+    private var isRoomListLoaded = false
+    private var isHotelInfoLoaded = false
+    private var isHotelReviewLoaded = false
 
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
@@ -85,6 +96,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_PDP)
+
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
@@ -103,8 +116,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
                 hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
-                hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE,
-                        HotelHomepageActivity.TYPE_PROPERTY)
+                hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, HotelTypeEnum.PROPERTY.value)
                 isDirectPayment = it.getBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, true)
             }
             isButtonEnabled = it.getBoolean(EXTRA_SHOW_ROOM, true)
@@ -157,6 +169,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     showErrorView(it.throwable)
                 }
             }
+            isRoomListLoaded = true
+            stopTrace()
         })
 
         detailViewModel.hotelInfoResult.observe(this, Observer {
@@ -172,6 +186,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     showErrorView(it.throwable)
                 }
             }
+            isHotelInfoLoaded = true
+            stopTrace()
         })
 
         detailViewModel.hotelReviewResult.observe(this, Observer {
@@ -185,6 +201,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     showErrorView(it.throwable)
                 }
             }
+            isHotelReviewLoaded = true
+            stopTrace()
         })
     }
 
@@ -229,6 +247,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun showErrorView(e: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
+            stopTrace()
+
             container_content.visibility = View.GONE
             container_error.visibility = View.VISIBLE
 
@@ -298,8 +318,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         btn_hotel_detail_show.setOnClickListener {
             context?.run {
-                startActivity(HotelDetailMapActivity.getCallingIntent(this, data.property.name,
-                        data.property.latitude, data.property.longitude, data.property.address))
+                startActivity(MapViewerActivity.getCallingIntent(this, data.property.name,
+                        data.property.latitude, data.property.longitude, data.property.address,HOTEL_PIN))
             }
         }
 
@@ -374,7 +394,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun onPhotoClicked() {
-        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPriceAmount)
+        trackingHotelUtil.hotelClickHotelPhoto(context, hotelId, roomPriceAmount, PDP_SCREEN_NAME)
     }
 
     private fun setupReviewLayout(data: HotelReview.ReviewData) {
@@ -423,7 +443,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             rv_best_review.adapter = detailReviewAdapter
 
             tv_hotel_detail_all_reviews.setOnClickListener {
-                trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPriceAmount)
+                trackingHotelUtil.hotelClickHotelReviews(context, hotelId, roomPriceAmount, PDP_SCREEN_NAME)
                 context?.run {
                     startActivityForResult(HotelReviewActivity.getCallingIntent(this, hotelHomepageModel.locId), RESULT_REVIEW)
                 }
@@ -515,7 +535,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
                 btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
-                    trackingHotelUtil.hotelChooseViewRoom(hotelHomepageModel, hotelId, hotelName)
+                    trackingHotelUtil.hotelChooseViewRoom(context, hotelHomepageModel, hotelId, hotelName, PDP_SCREEN_NAME)
                     context?.run {
                         startActivityForResult(HotelRoomListActivity.createInstance(this, hotelHomepageModel.locId, hotelName,
                                 hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
@@ -527,11 +547,13 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 btn_see_room.isEnabled = false
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
-            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", data.first().additionalPropertyInfo.isDirectPayment)
         } else {
             showRoomNotAvailableContainerBottom()
-            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", isDirectPayment)
         }
+
+        trackingHotelUtil.hotelViewDetails(context, hotelHomepageModel, hotelName, hotelId, isAvailable,
+                ceil(data.firstOrNull()?.roomPrice?.priceAmount ?: 0.0).toInt().toString(),
+                data.firstOrNull()?.additionalPropertyInfo?.isDirectPayment ?: isDirectPayment, PDP_SCREEN_NAME)
 
         if (!isButtonEnabled) {
             btn_see_room.isEnabled = false
@@ -601,6 +623,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         container_room_not_available.visibility = View.GONE
     }
 
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            if (isHotelInfoLoaded && isHotelReviewLoaded && isRoomListLoaded) {
+                performanceMonitoring?.stopTrace()
+                isTraceStop = true
+            }
+        }
+    }
+
     companion object {
 
         const val REQUEST_CODE_GLOBAL_SEARCH = 103
@@ -609,6 +640,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
 
         const val EXTRA_SHOW_ROOM = "EXTRA_SHOW_ROOM"
+
+        const val HOTEL_PIN = "HOTEL_PIN"
 
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
