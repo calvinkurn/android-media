@@ -90,25 +90,26 @@ data class HomeHeaderWalletAction(
 
     override fun hashCode(): Int {
         var result = labelTitle.hashCode()
-        result = 31 * result + balance.hashCode()
-        result = 31 * result + redirectUrlBalance.hashCode()
-        result = 31 * result + appLinkBalance.hashCode()
-        result = 31 * result + typeAction
-        result = 31 * result + isVisibleActionButton.hashCode()
-        result = 31 * result + labelActionButton.hashCode()
-        result = 31 * result + appLinkActionButton.hashCode()
-        result = 31 * result + isLinked.hashCode()
-        result = 31 * result + abTags.hashCode()
-        result = 31 * result + pointBalance.hashCode()
-        result = 31 * result + rawPointBalance
-        result = 31 * result + cashBalance.hashCode()
-        result = 31 * result + rawCashBalance
-        result = 31 * result + walletType.hashCode()
-        result = 31 * result + isShowAnnouncement.hashCode()
+        result = HASH_CODE * result + balance.hashCode()
+        result = HASH_CODE * result + redirectUrlBalance.hashCode()
+        result = HASH_CODE * result + appLinkBalance.hashCode()
+        result = HASH_CODE * result + typeAction
+        result = HASH_CODE * result + isVisibleActionButton.hashCode()
+        result = HASH_CODE * result + labelActionButton.hashCode()
+        result = HASH_CODE * result + appLinkActionButton.hashCode()
+        result = HASH_CODE * result + isLinked.hashCode()
+        result = HASH_CODE * result + abTags.hashCode()
+        result = HASH_CODE * result + pointBalance.hashCode()
+        result = HASH_CODE * result + rawPointBalance
+        result = HASH_CODE * result + cashBalance.hashCode()
+        result = HASH_CODE * result + rawCashBalance
+        result = HASH_CODE * result + walletType.hashCode()
+        result = HASH_CODE * result + isShowAnnouncement.hashCode()
         return result
     }
 
     companion object CREATOR : Parcelable.Creator<HomeHeaderWalletAction> {
+        private const val HASH_CODE = 31
         override fun createFromParcel(parcel: Parcel): HomeHeaderWalletAction {
             return HomeHeaderWalletAction(parcel)
         }

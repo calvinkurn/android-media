@@ -118,18 +118,18 @@ data class HeaderDataModel(
 
     override fun hashCode(): Int {
         var result = homeHeaderWalletActionData?.hashCode() ?: 0
-        result = 31 * result + (tokoPointDrawerData?.hashCode() ?: 0)
-        result = 31 * result + (tokopointsDrawerHomeData?.hashCode() ?: 0)
-        result = 31 * result + (cashBackData?.hashCode() ?: 0)
-        result = 31 * result + isPendingTokocashChecked.hashCode()
-        result = 31 * result + isWalletDataError.hashCode()
-        result = 31 * result + isTokoPointDataError.hashCode()
-        result = 31 * result + isUserLogin.hashCode()
+        result = HASH_CODE * result + (tokoPointDrawerData?.hashCode() ?: 0)
+        result = HASH_CODE * result + (tokopointsDrawerHomeData?.hashCode() ?: 0)
+        result = HASH_CODE * result + (cashBackData?.hashCode() ?: 0)
+        result = HASH_CODE * result + isPendingTokocashChecked.hashCode()
+        result = HASH_CODE * result + isWalletDataError.hashCode()
+        result = HASH_CODE * result + isTokoPointDataError.hashCode()
+        result = HASH_CODE * result + isUserLogin.hashCode()
         return result
     }
 
     companion object {
-
+        private const val HASH_CODE = 31
         @JvmField
         val CREATOR: Parcelable.Creator<HeaderDataModel> = object : Parcelable.Creator<HeaderDataModel> {
             override fun createFromParcel(`in`: Parcel): HeaderDataModel {

@@ -56,17 +56,18 @@ data class TokopointHomeDrawerData (
 
     override fun hashCode(): Int {
         var result = offFlag
-        result = 31 * result + hasNotification
-        result = 31 * result + userTier.hashCode()
-        result = 31 * result + rewardPointsStr.hashCode()
-        result = 31 * result + mainPageUrl.hashCode()
-        result = 31 * result + mainPageTitle.hashCode()
-        result = 31 * result + sumCoupon
-        result = 31 * result + sumCouponStr.hashCode()
+        result = HASH_CODE * result + hasNotification
+        result = HASH_CODE * result + userTier.hashCode()
+        result = HASH_CODE * result + rewardPointsStr.hashCode()
+        result = HASH_CODE * result + mainPageUrl.hashCode()
+        result = HASH_CODE * result + mainPageTitle.hashCode()
+        result = HASH_CODE * result + sumCoupon
+        result = HASH_CODE * result + sumCouponStr.hashCode()
         return result
     }
 
     companion object CREATOR : Parcelable.Creator<TokopointHomeDrawerData> {
+        private const val HASH_CODE = 31
         override fun createFromParcel(parcel: Parcel): TokopointHomeDrawerData {
             return TokopointHomeDrawerData(parcel)
         }
