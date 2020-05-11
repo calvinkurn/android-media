@@ -67,6 +67,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
@@ -93,10 +94,11 @@ import javax.inject.Inject
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
+class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
+        SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener, TransactionOrderProgressLayout.Listener {
+        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
+        TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -164,6 +166,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
                 view,
+                this,
                 this,
                 this,
                 this,
@@ -1066,5 +1069,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 arguments = bundle
             }
         }
+    }
+
+    override fun onStickerOpened() {
+        getViewState().onStickerOpened()
+    }
+
+    override fun onStickerClosed() {
+        getViewState().onStickerClosed()
     }
 }

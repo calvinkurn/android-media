@@ -28,6 +28,7 @@ import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
@@ -52,6 +53,7 @@ class TopChatViewStateImpl(
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
         private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+        private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
@@ -126,6 +128,22 @@ class TopChatViewStateImpl(
     }
 
     private fun setupChatStickerMenu() {
+        chatMenu?.setStickerListener(stickerMenuListener)
+        chatStickerMenuButton?.setOnClickListener {
+            chatMenu?.toggleStickerMenu()
+        }
+    }
+
+    override fun onStickerOpened() {
+        chatStickerMenuButton?.setImageResource(R.drawable.ic_arrow_up)
+        chatStickerMenuButton?.setOnClickListener {
+            replyEditText.requestFocus()
+            chatMenu?.showKeyboard(replyEditText)
+        }
+    }
+
+    override fun onStickerClosed() {
+        chatStickerMenuButton?.setImageResource(R.drawable.ic_topchat_sticker)
         chatStickerMenuButton?.setOnClickListener {
             chatMenu?.toggleStickerMenu()
         }

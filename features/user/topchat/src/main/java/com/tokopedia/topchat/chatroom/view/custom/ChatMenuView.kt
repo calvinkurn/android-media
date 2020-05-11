@@ -86,6 +86,8 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     fun hideMenu() {
         if (isVisible && !isShowing) {
             isVisible = false
+            attachmentMenu?.hide()
+            stickerMenu?.hide()
             hide()
         }
     }
@@ -112,6 +114,11 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
+    fun showKeyboard(view: View?) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    }
+
     fun showMenuDelayed() {
         if (showDelayed) {
             showMenuImmediately()
@@ -120,6 +127,10 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
 
     fun addVoucherAttachmentMenu() {
         attachmentMenu?.addVoucherAttachmentMenu()
+    }
+
+    fun setStickerListener(stickerMenuListener: ChatMenuStickerView.StickerMenuListener?) {
+        stickerMenu?.listener = stickerMenuListener
     }
 
     companion object {

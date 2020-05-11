@@ -27,4 +27,8 @@ interface TopChatViewState : BaseChatViewState {
 
     fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel
 
+    fun onStickerOpened()
+
+    fun onStickerClosed()
+
 }
