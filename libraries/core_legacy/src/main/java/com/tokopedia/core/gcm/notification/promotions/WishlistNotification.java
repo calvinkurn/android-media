@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
@@ -22,10 +24,10 @@ public class WishlistNotification extends BasePromoNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                new Intent(mContext, TkpdCoreRouter.getSimpleHomeActivityClass()),
+                new Intent(mContext, ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeClass()),
                 data
         );
-        mNotificationPass.classParentStack = TkpdCoreRouter.getSimpleHomeActivityClass();
+        mNotificationPass.classParentStack = ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeClass();
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, "");
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
@@ -36,7 +38,8 @@ public class WishlistNotification extends BasePromoNotification {
 
     @Override
     protected void showNotification(Bundle inComingBundle) {
-        if (sessionHandler.isV4Login()) {
+        UserSessionInterface userSession = new UserSession(mContext);
+        if (userSession.isLoggedIn()) {
             super.showNotification(inComingBundle);
         }
     }

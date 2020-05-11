@@ -11,18 +11,15 @@ import android.widget.ListView;
 import androidx.annotation.Nullable;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
@@ -57,16 +54,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     }
 
     public FragmentSellingTxCenter() {
-    }
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-
     }
 
     @Override

@@ -20,14 +20,12 @@ import rx.observers.AssertableSubscriber
 
 object DeleteCartUseCaseTest : Spek({
 
-    val clearCacheAutoApplyStackUseCase = mockk<ClearCacheAutoApplyStackUseCase>()
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val updateCartCounterUseCase = mockk<UpdateCartCounterUseCase>()
-    val useCase by memoized { DeleteCartUseCase(clearCacheAutoApplyStackUseCase, updateCartCounterUseCase, graphqlUseCase, TestSchedulers) }
+    val useCase by memoized { DeleteCartUseCase(updateCartCounterUseCase, graphqlUseCase, TestSchedulers) }
 
     val params = RequestParams().apply {
         putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, RemoveCartRequest())
-        putObject(DeleteCartUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, ArrayList<String>())
     }
 
     Feature("Delete Cart Use Case without promo") {

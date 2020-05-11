@@ -4,22 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.common_category.customview.SearchNavigationView
+import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
-import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
+import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailProductListingFragment
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -28,6 +28,7 @@ import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 
 class CatalogDetailPageActivity : BaseActivity(),
@@ -35,7 +36,7 @@ class CatalogDetailPageActivity : BaseActivity(),
         CategoryNavigationListener,
         BottomSheetListener,
         SearchNavigationView.SearchNavClickListener,
-        BaseCategorySectionFragment.SortAppliedListener{
+        BaseCategorySectionFragment.SortAppliedListener {
     private var catalogId: String = ""
     private var shareData: LinkerData? = null
     private var searchNavContainer: SearchNavigationView? = null
@@ -86,7 +87,7 @@ class CatalogDetailPageActivity : BaseActivity(),
 
     private fun getNewCatalogDetailListingFragment(catalogName: String, departmentId: String): Fragment {
         val departmentName: String? = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
-        val fragment : BaseCategorySectionFragment = CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
+        val fragment: BaseCategorySectionFragment = CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
         fragment.setSortListener(this)
         return fragment
     }
@@ -197,7 +198,7 @@ class CatalogDetailPageActivity : BaseActivity(),
         }
     }
 
-    override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String, departmentId:String) {
+    override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String, departmentId: String) {
         this.shareData = shareData
         this.catalogName = catalogName
         title_toolbar.text = catalogName

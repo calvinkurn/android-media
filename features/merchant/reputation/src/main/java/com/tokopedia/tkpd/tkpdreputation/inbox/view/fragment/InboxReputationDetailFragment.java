@@ -28,12 +28,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -509,17 +510,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProfile(int reviewerId) {
-        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
-            startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                    .getTopProfileIntent(getActivity(),
-                            String.valueOf(reviewerId)));
-        }
+    public void onGoToProfile(int reviewerId) { ;
+        startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, String.valueOf(reviewerId)));
     }
 
     @Override
     public void onGoToShopInfo(int shopId) {
-        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }
 
@@ -566,16 +563,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int shopId) {
-        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }
 
     @Override
     public void onGoToPeopleProfile(int userId) {
-        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
-            startActivity(((ReputationRouter) getActivity().getApplicationContext())
-                    .getTopProfileIntent(getActivity(), String.valueOf(userId)));
-        }
+        startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, String.valueOf(userId)));
     }
 
     @Override

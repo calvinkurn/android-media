@@ -12,29 +12,29 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.common_category.customview.SearchNavigationView
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
+import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
+import com.tokopedia.common_category.interfaces.CategoryNavigationListener
+import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.core.gcm.Constants
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -48,7 +48,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import javax.inject.Inject
@@ -60,7 +59,8 @@ private const val EXTRA_PARENT_NAME = " PARENT_NAME"
 private const val STATE_GRID = 1
 private const val STATE_LIST = 2
 private const val STATE_BIG = 3
-
+private const val DEPARTMENT_ID = "DEPARTMENT_ID"
+private const val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
@@ -97,6 +97,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     lateinit var categoryNavViewModel: CategoryNavViewModel
 
     object DeepLinkIntents {
+
         @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL, ApplinkConstInternalDiscovery.DISCOVERY_CATEGORY_DETAIL_MARKETPLACE)
         @JvmStatic
         fun getCallingCategoryIntent(context: Context?, bundle: Bundle): Intent? {
@@ -137,7 +138,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         }
 
         @JvmStatic
-        fun getCategoryIntentWithFilter(context: Context,
+        fun  getCategoryIntentWithFilter(context: Context,
                                         categoryUrl: String): Intent {
             val intent = Intent(context, CategoryNavActivity::class.java)
             intent.putExtra(EXTRA_CATEGORY_URL, categoryUrl)
@@ -160,7 +161,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_nav)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
-        searchNavContainer = findViewById(R.id.search_nav_container)
+        searchNavContainer = findViewById(R.id.category_search_nav_container)
         initInjector()
         prepareView()
         handleIntent(intent)
@@ -332,8 +333,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         hideBottomNavigation()
         view_pager_container.hide()
         layout_no_data.show()
-        txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-        txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
     }
 
     private fun initBottomSheetListener() {
