@@ -17,7 +17,6 @@ public interface Constants {
     String ARG_NOTIFICATION_TARGET_USER_ID = "to_user_id";
     String ARG_NOTIFICATION_CART_EXISTS = "is_cart_exists";
     String ARG_NOTIFICATION_APPLINK = "applinks";
-    String ARG_NOTIFICATION_ISPROMO = "ispromo";
     String ARG_NOTIFICATION_APPLINK_MESSAGE = "message";
     String ARG_NOTIFICATION_APPLINK_SELLER_INFO = "seller_info";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
