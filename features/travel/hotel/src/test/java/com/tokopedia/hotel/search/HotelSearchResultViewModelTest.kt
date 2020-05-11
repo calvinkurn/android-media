@@ -178,7 +178,6 @@ class HotelSearchResultViewModelTest {
         assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
         assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
         assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
-//        assert(hotelSearchResultViewModel.searchParam.location.searchType == searchType)
 
     }
 

@@ -205,8 +205,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_DESTINATION_NAME, popularSearch.name)
         intent.putExtra(HOTEL_DESTINATION_ID, popularSearch.destinationId)
         intent.putExtra(HOTEL_DESTINATION_TYPE, popularSearch.type)
-//        intent.putExtra(HOTEL_DESTINATION_SEARCH_ID, popularSearch.searchId)
-//        intent.putExtra(HOTEL_DESTINATION_SEARCH_TYPE, popularSearch.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
         activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,
@@ -241,8 +239,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         intent.putExtra(HOTEL_DESTINATION_NAME, recentSearch.property.value)
         intent.putExtra(HOTEL_DESTINATION_ID, recentSearch.property.id.toLong())
         intent.putExtra(HOTEL_DESTINATION_TYPE, recentSearch.property.type)
-//        intent.putExtra(HOTEL_DESTINATION_SEARCH_ID, recentSearch.property.id)
-//        intent.putExtra(HOTEL_DESTINATION_SEARCH_TYPE, recentSearch.property.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
         activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_anim_stay,

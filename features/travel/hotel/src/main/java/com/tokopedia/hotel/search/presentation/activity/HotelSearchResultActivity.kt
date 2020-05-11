@@ -45,8 +45,6 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         if (uri != null) {
             //for newer applink
             if (!uri.getQueryParameter(PARAM_ID).isNullOrEmpty()) {
-//                hotelSearchModel.searchId = uri.getQueryParameter(PARAM_ID) ?: ""
-//                hotelSearchModel.searchType = uri.getQueryParameter(PARAM_TYPE) ?: ""
                 hotelSearchModel.name = uri.getQueryParameter(PARAM_NAME) ?: ""
             } else {
                 // for older applink
@@ -181,14 +179,11 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                             checkOut = it.getStringExtra(HotelChangeSearchActivity.CHECK_OUT_DATE),
                             room = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_ROOMS, 1),
                             adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0))
-//                            searchType = it.getStringExtra(HotelChangeSearchActivity.SEARCH_TYPE),
-//                            searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID))
 
                     (fragment as HotelSearchResultFragment).let { searchFragment ->
                         searchFragment.searchResultviewModel.initSearchParam(hotelSearchModel)
                         searchFragment.searchDestinationName = hotelSearchModel.name
                         searchFragment.searchDestinationType = hotelSearchModel.type
-//                        searchFragment.searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
 
                         setUpTitleAndSubtitle()
                         searchFragment.changeSearchParam()

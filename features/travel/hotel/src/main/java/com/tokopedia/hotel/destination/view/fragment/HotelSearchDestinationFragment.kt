@@ -92,8 +92,6 @@ class HotelSearchDestinationFragment : BaseListFragment<SearchDestination, Searc
         val intent = Intent()
         intent.putExtra(HOTEL_DESTINATION_TYPE, searchDestination.type)
         intent.putExtra(HOTEL_DESTINATION_ID, searchDestination.id)
-//        intent.putExtra(HOTEL_DESTINATION_SEARCH_TYPE, searchDestination.searchType)
-//        intent.putExtra(HOTEL_DESTINATION_SEARCH_ID, searchDestination.searchId)
         intent.putExtra(HOTEL_DESTINATION_NAME, searchDestination.name)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

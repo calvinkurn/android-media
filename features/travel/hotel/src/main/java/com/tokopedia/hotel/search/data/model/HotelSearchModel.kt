@@ -16,8 +16,6 @@ data class HotelSearchModel(
         var adult: Int = 1,
         var lat: Float = 0f,
         var long: Float = 0f
-//        var searchType: String = "",
-//        var searchId: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),

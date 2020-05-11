@@ -72,7 +72,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             searchResultviewModel.initSearchParam(hotelSearchModel)
             searchDestinationName = hotelSearchModel.name
             searchDestinationType = hotelSearchModel.type
-//            searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
         }
     }
 
@@ -247,7 +246,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     fun onClickChangeSearch(hotelSearchModel: HotelSearchModel, screenName: String) {
         context?.let {
             val type = hotelSearchModel.type
-//            val type = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
             trackingHotelUtil.hotelClickChangeSearch(context, type,
                     hotelSearchModel.name, hotelSearchModel.room, hotelSearchModel.adult,
                     hotelSearchModel.checkIn, hotelSearchModel.checkOut, screenName)

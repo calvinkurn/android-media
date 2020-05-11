@@ -401,8 +401,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             checkOut = hotelHomepageModel.checkOutDate,
                             room = hotelHomepageModel.roomCount,
                             adult = hotelHomepageModel.adultCount)
-//                            searchType = hotelHomepageModel.searchType,
-//                            searchId = hotelHomepageModel.searchId)
                     startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }

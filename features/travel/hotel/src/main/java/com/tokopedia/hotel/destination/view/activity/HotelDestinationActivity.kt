@@ -115,8 +115,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         const val HOTEL_DESTINATION_NAME = "name"
         const val HOTEL_DESTINATION_ID = "id"
         const val HOTEL_DESTINATION_TYPE = "type"
-//        const val HOTEL_DESTINATION_SEARCH_TYPE = "search_type"
-//        const val HOTEL_DESTINATION_SEARCH_ID = "search_id"
         const val HOTEL_CURRENT_LOCATION_LANG = "lang"
         const val HOTEL_CURRENT_LOCATION_LAT = "lat"
 
