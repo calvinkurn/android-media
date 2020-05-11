@@ -106,6 +106,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
         if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
         } else {
@@ -150,6 +151,7 @@ class AddEditProductDescriptionFragment:
                 Uri.parse("${AddEditProductConstants.HTTP_PREFIX}://${url}")
             }
             startActivity(Intent(Intent.ACTION_VIEW, uri))
+            // you must compare isEditMode and isAddMode to obtain actual editing status
             if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickPlayVideo(shopId)
             }
@@ -182,6 +184,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.isEditMode = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_IS_EDITING_PRODUCT, Boolean::class.java, false) ?: false
             descriptionViewModel.isAddMode = saveInstanceCacheManager.get(AddEditProductPreviewConstants.EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
         }
+        // you must compare isEditMode and isAddMode to obtain actual adding status
         if (descriptionViewModel.isAddMode || !descriptionViewModel.isEditMode) {
             ProductAddDescriptionTracking.trackScreen()
         }
@@ -219,6 +222,7 @@ class AddEditProductDescriptionFragment:
 
         textViewAddVideo.setOnClickListener {
             if (getFilteredValidVideoLink().size == adapter.dataSize) {
+                // you must compare isEditMode and isAddMode to obtain actual editing status
                 if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                     ProductEditDescriptionTracking.clickAddVideoLink(shopId)
                 } else {
@@ -237,6 +241,7 @@ class AddEditProductDescriptionFragment:
         }
 
         tvAddVariant.setOnClickListener {
+            // you must compare isEditMode and isAddMode to obtain actual editing status
             if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickAddProductVariant(shopId)
             } else {
@@ -309,6 +314,7 @@ class AddEditProductDescriptionFragment:
     }
 
     fun onBackPressed() {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
         if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickBack(shopId)
         } else {
@@ -460,6 +466,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showDescriptionTips() {
+        // you must compare isEditMode and isAddMode to obtain actual adding status
         if (!descriptionViewModel.isEditMode || descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
         }
@@ -481,6 +488,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showVariantTips() {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
         if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickHelpVariant(shopId)
         } else {
@@ -529,7 +537,7 @@ class AddEditProductDescriptionFragment:
                 put(EXTRA_DEFAULT_SKU, "")
                 put(EXTRA_NEED_RETAIN_IMAGE, false)
                 put(EXTRA_HAS_WHOLESALE, descriptionViewModel.hasWholesale)
-                put(EXTRA_IS_ADD, descriptionViewModel.isAddMode)
+                put(EXTRA_IS_ADD, !descriptionViewModel.isEditMode || descriptionViewModel.isAddMode)
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {
@@ -543,6 +551,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun moveToShipmentActivity() {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
         if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickContinue(shopId)
         } else {
@@ -579,6 +588,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun submitInputEdit() {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
         if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickContinue(shopId)
         } else {

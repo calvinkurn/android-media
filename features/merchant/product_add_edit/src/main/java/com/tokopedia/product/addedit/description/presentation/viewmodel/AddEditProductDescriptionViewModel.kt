@@ -297,7 +297,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     // disable removing variant when in edit mode and if product have a variant
     fun checkOriginalVariantLevel(): Boolean {
-        if (isEditMode) {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
+        if (isEditMode && !isAddMode) {
             if (variantInputModel.productVariant.size > 0) {
                 return variantInputModel.variantOptionParent.getOrNull(0) != null
             }

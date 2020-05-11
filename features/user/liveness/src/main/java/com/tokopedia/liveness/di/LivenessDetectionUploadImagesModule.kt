@@ -96,12 +96,12 @@ class LivenessDetectionUploadImagesModule {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(errorHandlerInterceptor)
         builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(chuckerInterceptor)
         builder.addInterceptor(AkamaiBotInterceptor(context))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             builder.addInterceptor(loggingInterceptor)
+            builder.addInterceptor(chuckerInterceptor)
         }
         builder.readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
         builder.connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
