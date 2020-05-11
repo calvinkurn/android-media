@@ -17,9 +17,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.uri.DeeplinkUtils.getDataUri
+import com.tokopedia.utils.uri.DeeplinkUtils.getExtraReferrer
+import com.tokopedia.utils.uri.DeeplinkUtils.getReferrerCompatible
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import java.lang.Exception
+import timber.log.Timber
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -92,7 +95,17 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        if (::url.isInitialized) {
+            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        } else {
+            val referrer = getReferrerCompatible(this)
+            val extraReferrer = getExtraReferrer(this)
+            val uri = getDataUri(this)
+            Timber.w("P1#DEEPLINK_OPEN_APP#NULL_URL_%s;referrer='%s';extra_referrer='%s';uri='%s'",
+                javaClass.simpleName, referrer, extraReferrer.toString(), uri.toString())
+            this.finish()
+            return Fragment()
+        }
     }
 
     override fun onResume() {
