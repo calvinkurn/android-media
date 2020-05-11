@@ -111,8 +111,8 @@ class ProductInfoViewHolder(private val view: View,
     private fun onBranchClicked(url: String) {
         if (!GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(view.context, ApplinkConst.CONSUMER_SPLASH_SCREEN)
-            intent.putExtra("branch", url)
-            intent.putExtra("branch_force_new_session", true)
+            intent.putExtra(RouteManager.BRANCH, url)
+            intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
             view.context.startActivity(intent)
         }
     }

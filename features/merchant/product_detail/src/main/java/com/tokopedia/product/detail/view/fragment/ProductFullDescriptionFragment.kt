@@ -108,8 +108,8 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
     override fun onBranchClicked(url: String) {
         if (!GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
-            intent.putExtra("branch", url)
-            intent.putExtra("branch_force_new_session", true)
+            intent.putExtra(RouteManager.BRANCH, url)
+            intent.putExtra(RouteManager.BRANCH_FORCE_NEW_SESSION, true)
             startActivity(intent)
         }
     }
