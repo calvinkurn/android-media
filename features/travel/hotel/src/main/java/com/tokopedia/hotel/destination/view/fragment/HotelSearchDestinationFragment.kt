@@ -19,8 +19,6 @@ import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
-//import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
-//import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_TYPE
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationListener
 import com.tokopedia.hotel.destination.view.adapter.SearchDestinationTypeFactory

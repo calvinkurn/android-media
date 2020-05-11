@@ -34,8 +34,6 @@ import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Co
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_CURRENT_LOCATION_LAT
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_ID
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
-//import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_ID
-//import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_TYPE
 import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
