@@ -24,13 +24,13 @@ object SettingStateDataView {
                 .find { it.title == SettingFieldFragment.BUYING_TRANSACTION_SECTION_TITLE }
 
         // if buyer setting section is exists, then there are some setting items need to be removed
-        buyerSettingSection?.run {
+        return if (buyerSettingSection != null) {
             // remove buyer setting section from setting items
-            return items.filter { it != buyerSettingSection }
+            items.filter { it != buyerSettingSection }
                     // remove buyer setting items from setting items
                     .filter { setting -> buyerSettingSection.listSettings.find { setting == it } == null }
+        } else {
+            items
         }
-
-        return items
     }
 }
