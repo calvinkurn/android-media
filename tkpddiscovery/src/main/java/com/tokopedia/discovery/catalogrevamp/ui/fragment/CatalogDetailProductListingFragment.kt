@@ -28,28 +28,28 @@ import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.di.CatalogComponent
 import com.tokopedia.discovery.catalogrevamp.di.DaggerCatalogComponent
 import com.tokopedia.discovery.catalogrevamp.viewmodel.CatalogDetailProductListingViewModel
-import com.tokopedia.common_category.model.filter.DAFilterQueryType
-import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
@@ -289,9 +289,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.visibility = View.VISIBLE
-            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+            layout_no_data.show()
         } else {
             layout_no_data.visibility = View.GONE
         }

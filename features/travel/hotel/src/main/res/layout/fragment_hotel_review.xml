@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Neutral_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentScrim="@color/white"
+            app:contentScrim="@color/Neutral_N0"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
@@ -29,11 +29,11 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_16">
+                    android:paddingLeft="@dimen/layout_lvl2"
+                    android:paddingRight="@dimen/layout_lvl2"
+                    android:paddingBottom="@dimen/layout_lvl2">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/review_point_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -41,47 +41,50 @@
                         android:textSize="@dimen/dp_28"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:weight="medium"
+                        app:typographyType="heading_1"
                         tools:text="8,6" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/review_headline_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/dp_4"
-                        android:paddingLeft="@dimen/dp_4"
-                        android:paddingBottom="@dimen/dp_4"
+                        android:paddingStart="@dimen/spacing_lvl2"
+                        android:paddingLeft="@dimen/spacing_lvl2"
+                        android:paddingBottom="@dimen/spacing_lvl2"
                         android:textColor="@color/blue_booking"
                         app:layout_constraintBottom_toBottomOf="@+id/review_point_text_view"
                         app:layout_constraintLeft_toRightOf="@+id/review_point_text_view"
                         app:layout_constraintStart_toEndOf="@+id/review_point_text_view"
+                        app:typographyType="body_2"
                         tools:text="Mengesankan" />
 
                     <ImageView
                         android:id="@+id/booking_logo"
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_width="@dimen/hotel_20dp"
+                        android:layout_height="@dimen/hotel_20dp"
+                        android:layout_marginTop="@dimen/layout_lvl1"
                         app:layout_constraintTop_toBottomOf="@+id/review_point_text_view"
                         app:srcCompat="@drawable/ic_booking_logo" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_6"
-                        android:layout_marginLeft="@dimen/dp_6"
+                        android:layout_marginStart="@dimen/hotel_6dp"
+                        android:layout_marginLeft="@dimen/hotel_6dp"
                         android:text="Booking.com"
-                        app:fontSize="micro"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Neutral_N700_68"
                         app:layout_constraintBottom_toBottomOf="@+id/booking_logo"
                         app:layout_constraintStart_toEndOf="@+id/booking_logo"
                         app:layout_constraintTop_toTopOf="@+id/booking_logo" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/review_total_count_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="8.230 Ulasan"
-                        app:fontSize="micro"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3"
                         app:layout_constraintBottom_toBottomOf="@+id/booking_logo"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -90,22 +93,24 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="@drawable/bg_line_separator" />
+                    android:layout_height="@dimen/hotel_1dp"
+                    android:background="@drawable/bg_hotel_line_seperator" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/dp_16">
+                    android:padding="@dimen/layout_lvl2">
 
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:layout_width="0dp"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:text="Hanya ulasan dari Indonesia"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="body_2"
+                        android:textColor="@color/Neutral_N700_68"/>
 
                     <Switch
                         android:id="@+id/indonesia_review_switch"
@@ -126,27 +131,27 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@drawable/bg_line_separator" />
+            android:layout_height="@dimen/hotel_1dp"
+            android:background="@drawable/bg_hotel_line_seperator" />
 
         <com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView
             android:id="@+id/filter_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top"
-            android:paddingBottom="@dimen/dp_12"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
+            android:paddingBottom="@dimen/hotel_12dp"
+            app:contentInsetLeft="@dimen/layout_lvl0"
+            app:contentInsetStart="@dimen/layout_lvl0"
+            app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
             app:layout_anchor="@+id/review_meta_layout"
             app:layout_collapseMode="pin"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12" />
+            android:paddingLeft="@dimen/hotel_12dp"
+            android:paddingRight="@dimen/hotel_12dp" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@drawable/bg_line_separator" />
+            android:layout_height="@dimen/hotel_1dp"
+            android:background="@drawable/bg_hotel_line_seperator" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

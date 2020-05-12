@@ -1,11 +1,9 @@
 package com.tokopedia.topads.auto.view.widget
 
 import android.app.Activity
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
-
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.topads.auto.R
 
 /**
