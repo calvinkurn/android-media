@@ -94,13 +94,8 @@ public class GTMAnalytics extends ContextAnalytics {
         clearEnhanceEcommerce();
         pushGeneralEcommerce(clone(value));
 
-        StringBuilder stacktrace = new StringBuilder();
-
         // V5
         try {
-            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-                stacktrace.append(String.format("%s\n", ste.toString()));
-            }
 
             String keyEvent = keyEvent(clone(value));
 
@@ -109,6 +104,10 @@ public class GTMAnalytics extends ContextAnalytics {
                 return;
             pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         } catch (Exception e) {
+            StringBuilder stacktrace = new StringBuilder();
+            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                stacktrace.append(String.format("%s\n", ste.toString()));
+            }
             GtmLogger.getInstance(context).saveError(stacktrace.toString());
             if (e != null && !TextUtils.isEmpty(e.getMessage())) {
                 Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
@@ -827,6 +826,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private static Map<String, Object> bundleToMap(Bundle extras) {
         Map<String, Object> map = new HashMap<>();
+
         Set<String> ks = extras.keySet();
         for (String key : ks) {
             Object object = extras.get(key);
