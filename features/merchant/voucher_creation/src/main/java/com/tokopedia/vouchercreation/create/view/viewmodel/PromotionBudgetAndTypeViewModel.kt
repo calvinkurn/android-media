@@ -4,8 +4,10 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
+import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,5 +32,16 @@ class PromotionBudgetAndTypeViewModel @Inject constructor(
     fun setBannerVoucher(uiModel: BannerVoucherUiModel<PromotionTypeBudgetTypeFactory>) {
         mBannerVoucherLiveData.value = uiModel
     }
+
+    fun drawBanner(painter: VoucherPreviewPainter,
+                   uiModel: BannerVoucherUiModel<PromotionTypeBudgetTypeFactory>,
+                   resource: Bitmap) {
+        launchCatchError(block = {
+            painter.drawInitial(uiModel, resource)
+        }, onError = {
+
+        })
+    }
+
 
 }

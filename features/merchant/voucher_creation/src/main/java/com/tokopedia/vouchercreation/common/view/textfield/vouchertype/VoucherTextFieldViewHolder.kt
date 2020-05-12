@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.common.view.textfield
+package com.tokopedia.vouchercreation.common.view.textfield.vouchertype
 
 import android.text.Editable
 import android.text.InputType

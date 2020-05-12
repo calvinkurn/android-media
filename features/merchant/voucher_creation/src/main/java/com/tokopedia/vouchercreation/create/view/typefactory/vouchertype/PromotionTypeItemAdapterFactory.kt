@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.vouchercreation.common.view.VoucherCommonTypeFactory
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationViewHolder
-import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldUiModel
-import com.tokopedia.vouchercreation.common.view.textfield.VoucherTextFieldViewHolder
+import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
+import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldViewHolder
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel

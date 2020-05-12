@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.LayoutRes
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.view.VoucherCustomView
 
 class NextStepButton @JvmOverloads constructor(
         context: Context,

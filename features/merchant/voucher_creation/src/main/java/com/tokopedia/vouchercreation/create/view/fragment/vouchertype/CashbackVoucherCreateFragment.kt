@@ -30,7 +30,7 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import javax.inject.Inject
 
-class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
+class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
                                     private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                     private val viewContext: Context) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
@@ -255,7 +255,7 @@ class CashbackVoucherCreateFragment(onNextStep: () -> Unit,
     }
 
     private fun onNext() {
-
+        onNextStep()
     }
 
     /**

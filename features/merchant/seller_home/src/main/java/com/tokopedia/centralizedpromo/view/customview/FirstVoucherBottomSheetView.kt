@@ -25,7 +25,8 @@ class FirstVoucherBottomSheetView(context: Context) : ConstraintLayout(context) 
 
     private fun setupOnClick() {
         firstVoucherButton.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+            //Should be CREATE_VOUCHER, but will change to LIST for bugbash purpose
+            RouteManager.route(context, ApplinkConstInternalSellerapp.VOUCHER_LIST)
         }
     }
 

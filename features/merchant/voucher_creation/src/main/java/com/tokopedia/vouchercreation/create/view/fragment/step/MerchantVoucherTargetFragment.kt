@@ -1,9 +1,5 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -64,9 +60,7 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
 
     private var lastClickedVoucherDisplayType = VoucherTargetCardType.PUBLIC
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_merchant_voucher_target, container, false)
-    }
+    override var layoutRes: Int = R.layout.fragment_merchant_voucher_target
 
     override fun getScreenName(): String = ""
 

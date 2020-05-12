@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.view.customview
+package com.tokopedia.vouchercreation.common.view
 
 import android.content.Context
 import android.content.res.TypedArray

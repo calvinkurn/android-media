@@ -104,6 +104,7 @@
     <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; Rp%s</string>
     <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga &lt;b>lebih besar dari Rp%s&lt;/b> untuk menarik lebih banyak calon pembeli.</string>
     <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
+    <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
     <string name="mvc_no_active_voucher">Gak ada voucher aktif</string>
     <string name="mvc_list_empty_state_description">Yuk, gunakan Voucher Toko untuk meningkatkan peluang penjualan tokomu.</string>
     <string name="mvc_create_voucher">Buat Voucher</string>
@@ -156,6 +157,7 @@
     <string name="mvc_rp_value">Rp%s</string>
     <string name="mvc_percent">&#37;</string>
     <string name="mvc_start_date">Tanggal Mulai</string>
+    <string name="mvc_end_date">Tanggal Berakhir</string>
     <string name="mvc_spending_so_far">Pengeluaran hingga saat ini</string>
     <string name="mvc_used_voucher">Voucher terpakai</string>
     <string name="mvc_promo_performance">Performa promo</string>

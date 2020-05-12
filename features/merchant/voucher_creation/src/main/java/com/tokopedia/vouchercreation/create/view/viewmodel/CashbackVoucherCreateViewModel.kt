@@ -18,9 +18,6 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val mActiveCashbackPromoTypeLiveData = MutableLiveData<CashbackType>().apply {
-        value = CashbackType.Rupiah
-    }
     private val mRupiahMaximumDiscountLiveData = MutableLiveData<Int>()
     private val mRupiahMinimumPurchaseLiveData = MutableLiveData<Int>()
     private val mRupiahVoucherQuotaLiveData = MutableLiveData<Int>()
@@ -53,12 +50,14 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     val percentageErrorPairList : LiveData<Array<Pair<Boolean, String>?>>
         get() = mPercentageErrorPairList
 
-    private val mCashbackTypeLiveData = MutableLiveData<CashbackType>()
+    private val mCashbackTypeLiveData = MutableLiveData<CashbackType>().apply {
+        value = CashbackType.Rupiah
+    }
     val cashbackTypeData: LiveData<CashbackType>
         get() = mCashbackTypeLiveData
 
     private val mExpenseEstimationLiveData: LiveData<Int> = MediatorLiveData<Int>().apply {
-        addSource(mActiveCashbackPromoTypeLiveData) { cashbackType ->
+        addSource(mCashbackTypeLiveData) { cashbackType ->
             value = when(cashbackType) {
                 CashbackType.Rupiah -> {
                     mRupiahMaximumDiscountLiveData.value.toZeroIfNull() * mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
@@ -120,29 +119,39 @@ class CashbackVoucherCreateViewModel @Inject constructor(
 
     private val mVoucherImageValueLiveData = MediatorLiveData<VoucherImageType>().apply {
         addSource(mRupiahMaximumDiscountLiveData) { amount ->
-            value = VoucherImageType.Rupiah(amount)
+            if (mCashbackTypeLiveData.value == CashbackType.Rupiah) {
+                value = VoucherImageType.Rupiah(amount)
+            }
         }
         addSource(mPercentageDiscountAmountLiveData) { percentage ->
-            mPercentageMaximumDiscountLiveData.value?.let { amount ->
-                value = VoucherImageType.Percentage(amount, percentage)
+            if (mCashbackTypeLiveData.value == CashbackType.Percentage) {
+                mPercentageMaximumDiscountLiveData.value?.let { amount ->
+                    value = VoucherImageType.Percentage(amount, percentage)
+                }
             }
         }
         addSource(mPercentageMaximumDiscountLiveData) { amount ->
-            mPercentageDiscountAmountLiveData.value?.let { percentage ->
-                value = VoucherImageType.Percentage(amount, percentage)
+            if (mCashbackTypeLiveData.value == CashbackType.Percentage) {
+                mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                    value = VoucherImageType.Percentage(amount, percentage)
+                }
             }
         }
-        addSource(mActiveCashbackPromoTypeLiveData) { type ->
-            when(type) {
-                CashbackType.Rupiah -> {
-                    mRupiahMaximumDiscountLiveData.value?.let { amount ->
-                        value = VoucherImageType.Rupiah(amount)
-                    }
-                }
-                CashbackType.Percentage -> {
-                    mPercentageDiscountAmountLiveData.value?.let { percentage ->
-                        mPercentageMaximumDiscountLiveData.value?.let { amount ->
-                            value = VoucherImageType.Percentage(amount, percentage)
+        addSource(mCashbackTypeLiveData) { type ->
+            mIsFirstTimeDrawLiveData.value?.let { isFirstTimeDraw ->
+                if (!isFirstTimeDraw) {
+                    when(type) {
+                        CashbackType.Rupiah -> {
+                            mRupiahMaximumDiscountLiveData.value?.let { amount ->
+                                value = VoucherImageType.Rupiah(amount)
+                            }
+                        }
+                        CashbackType.Percentage -> {
+                            mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                                mPercentageMaximumDiscountLiveData.value?.let { amount ->
+                                    value = VoucherImageType.Percentage(amount, percentage)
+                                }
+                            }
                         }
                     }
                 }
@@ -151,6 +160,10 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     }
     val voucherImageValueLiveData: LiveData<VoucherImageType>
         get() = mVoucherImageValueLiveData
+
+    private val mIsFirstTimeDrawLiveData = MutableLiveData<Boolean>().apply {
+        value = true
+    }
 
     fun<T> addTextFieldValueToCalculation(value: Int?, type: T) {
         when(type) {
@@ -179,21 +192,26 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     }
 
     fun refreshImageType() {
-        mActiveCashbackPromoTypeLiveData.value?.let { type ->
-            when(type) {
-                CashbackType.Rupiah -> {
-                    mRupiahMaximumDiscountLiveData.value?.let { amount ->
-                        mVoucherImageValueLiveData.value = VoucherImageType.Rupiah(amount)
-                    }
-                }
-                CashbackType.Percentage -> {
-                    mPercentageDiscountAmountLiveData.value?.let { percentage ->
-                        mPercentageMaximumDiscountLiveData.value?.let { amount ->
-                            mVoucherImageValueLiveData.value = VoucherImageType.Percentage(amount, percentage)
+        mIsFirstTimeDrawLiveData.value?.let { isFirstTimeDraw ->
+            if (!isFirstTimeDraw) {
+                mCashbackTypeLiveData.value?.let { type ->
+                    when(type) {
+                        CashbackType.Rupiah -> {
+                            mRupiahMaximumDiscountLiveData.value?.let { amount ->
+                                mVoucherImageValueLiveData.value = VoucherImageType.Rupiah(amount)
+                            }
+                        }
+                        CashbackType.Percentage -> {
+                            mPercentageDiscountAmountLiveData.value?.let { percentage ->
+                                mPercentageMaximumDiscountLiveData.value?.let { amount ->
+                                    mVoucherImageValueLiveData.value = VoucherImageType.Percentage(amount, percentage)
+                                }
+                            }
                         }
                     }
                 }
             }
+            mIsFirstTimeDrawLiveData.value = false
         }
     }
 
@@ -253,7 +271,6 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                 )
             }
         }
-        mActiveCashbackPromoTypeLiveData.value = cashbackType
     }
 
     fun checkRupiahMinimumPurchase(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {

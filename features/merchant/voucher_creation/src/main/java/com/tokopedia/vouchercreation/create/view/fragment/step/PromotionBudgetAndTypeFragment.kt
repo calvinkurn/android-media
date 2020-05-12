@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -10,6 +11,7 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
@@ -28,12 +30,14 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTyp
 import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
-class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
+class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
+                                     private val setVoucherBitmap: (Bitmap) -> Unit)
     : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>(onNextStep, false) {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNext: () -> Unit) = PromotionBudgetAndTypeFragment(onNext)
+        fun createInstance(onNext: () -> Unit,
+                           setVoucherBitmap: (Bitmap) -> Unit) = PromotionBudgetAndTypeFragment(onNext, setVoucherBitmap)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
 
@@ -111,6 +115,11 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModelStore.clear()
+    }
+
     private fun setupBottomSheet() {
         context?.run {
             addBottomSheetView(CreateVoucherBottomSheetType.GENERAL_EXPENSE_INFO, generalExpensesInfoBottomSheetFragment)
@@ -118,10 +127,14 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
     }
 
     private fun observeLiveData() {
-
+        viewLifecycleOwner.observe(viewModel.bannerBitmapLiveData) { bitmap ->
+            bannerImage?.setImageBitmap(bitmap)
+            setVoucherBitmap(bitmap)
+        }
     }
 
     private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
+        var canSetBitmap = true
         bannerImage?.run {
             bannerVoucherUiModel.imageType = voucherImageType
             Glide.with(context)
@@ -134,15 +147,24 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {})
 
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             val bitmap = resource.toBitmap()
-//                            painter?.clearValue()
                             if (painter == null) {
-                                painter = VoucherPreviewPainter(context, bitmap)
+                                painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner)
                             }
-                            setImageBitmap(painter?.drawInitial(bannerVoucherUiModel, bitmap))
+                            if (canSetBitmap) {
+                                canSetBitmap = false
+                                painter?.let {
+                                    viewModel.drawBanner(it, bannerVoucherUiModel, resource.toBitmap())
+                                }
+                            }
                             return false
                         }
                     })
                     .submit()
         }
+    }
+
+    private fun onSuccessGetBanner(bitmap: Bitmap) {
+        bannerImage?.setImageBitmap(bitmap)
+        setVoucherBitmap(bitmap)
     }
 }

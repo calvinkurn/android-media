@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.view.VoucherCustomView
 import kotlinx.android.synthetic.main.mvc_double_line_info.view.*
 
 class DoubleLineInfoView @JvmOverloads constructor(
