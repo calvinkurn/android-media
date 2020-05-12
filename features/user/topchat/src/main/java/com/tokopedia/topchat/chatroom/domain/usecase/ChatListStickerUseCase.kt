@@ -11,7 +11,7 @@ class ChatListStickerUseCase @Inject constructor(
         private val cacheManager: TopchatCacheManager
 ) {
 
-    private val cacheKey = ChatListGroupStickerUseCase::class.java.simpleName
+    private val cacheKey = ChatListStickerUseCase::class.java.simpleName
     private val paramGroupUID = "groupUUID"
     private val paramLimit = "limit"
     private val defaultParamLimit = 16

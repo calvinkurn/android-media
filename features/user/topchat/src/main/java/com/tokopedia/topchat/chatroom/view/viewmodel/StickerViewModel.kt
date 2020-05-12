@@ -22,7 +22,7 @@ class StickerViewModel @Inject constructor(
     }
 
     private fun onLoadSticker(stickers: List<Sticker>) {
-
+        _stickers.value = stickers
     }
 
     private fun onSuccessLoadSticker(stickers: List<Sticker>) {
