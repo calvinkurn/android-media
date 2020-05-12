@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.helper.benchmark
 
+//Please refer to this https://developer.android.com/topic/performance/tracing/command-line
+
 //Viewholders
 const val TRACE_ON_BIND_BANNER_VIEWHOLDER = "onBind.BannerViewHolder"
 const val TRACE_ON_BIND_DYNAMIC_ICON_VIEWHOLDER = "onBind.DynamicIconSectionViewHolder"

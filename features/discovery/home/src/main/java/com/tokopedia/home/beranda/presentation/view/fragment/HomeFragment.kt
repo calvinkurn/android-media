@@ -152,7 +152,7 @@ import javax.inject.Inject
  * @author by errysuprayogi on 11/27/17.
  */
 @SuppressLint("SyntheticAccessor")
-class HomeFragment : BaseDaggerFragment(),
+open class HomeFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
         CountDownListener,
