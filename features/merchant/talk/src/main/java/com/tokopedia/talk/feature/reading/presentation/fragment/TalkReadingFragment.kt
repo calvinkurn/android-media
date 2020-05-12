@@ -390,16 +390,22 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun onSuccessCreateQuestion() {
         showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        loadInitialData()
+        if(!isLoadingInitialData) {
+            loadInitialData()
+            showPageLoading()
+        }
     }
 
     private fun onSuccessDeleteQuestion() {
         showSuccessToaster(getString(R.string.delete_question_toaster_success))
-        loadInitialData()
+        if(!isLoadingInitialData) {
+            loadInitialData()
+            showPageLoading()
+        }
     }
 
     private fun showSuccessToaster(message: String) {
-        view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.talk_ok)) }
+        view?.let { Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok)) }
     }
 
     private fun showErrorToaster() {

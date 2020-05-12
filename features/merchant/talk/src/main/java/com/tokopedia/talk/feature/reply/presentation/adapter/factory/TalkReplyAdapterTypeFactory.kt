@@ -4,8 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyAnswerCountModel
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
+import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyAnswerCountViewHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyEmptyViewHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyViewHolder
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
@@ -26,10 +28,15 @@ class TalkReplyAdapterTypeFactory(
         return TalkReplyEmptyViewHolder.LAYOUT
     }
 
+    override fun type(talkReplyAnswerCountModel: TalkReplyAnswerCountModel): Int {
+        return TalkReplyAnswerCountViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, attachedProductCardListener, onKebabClickedListener, threadListener)
             TalkReplyEmptyViewHolder.LAYOUT -> TalkReplyEmptyViewHolder(parent)
+            TalkReplyAnswerCountViewHolder.LAYOUT -> TalkReplyAnswerCountViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

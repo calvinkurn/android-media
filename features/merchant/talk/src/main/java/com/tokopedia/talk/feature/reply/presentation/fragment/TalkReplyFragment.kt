@@ -39,6 +39,7 @@ import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
+import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyAnswerCountModel
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyProductHeaderModel
@@ -294,6 +295,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
         pageError.readingConnectionErrorRetryButton.setOnClickListener {
+            showPageLoading()
             getDiscussionData()
         }
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
@@ -537,10 +539,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         talkReplyHeader.bind(talkReplyHeaderModel, this, this)
     }
 
-    private fun bindTotalAnswers(totalAnswers: Int) {
-        talkReplyTotalAnswers.text = String.format(getString(R.string.reply_total_answer), totalAnswers)
-    }
-
     private fun initDialog(dialog: DialogUnify, commentId: String) {
         if(commentId.isNotBlank()) {
             dialog.setDescription(getString(R.string.delete_dialog_content))
@@ -565,14 +563,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onAnswersEmpty(userId: Int) {
-        talkReplyTotalAnswers.visibility = View.GONE
         showEmpty(userId)
     }
 
     private fun showAnswers(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
-        bindTotalAnswers(discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.totalAnswer)
-        adapter?.displayAnswers(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper))
-        talkReplyTotalAnswers.visibility = View.VISIBLE
+        adapter?.displayAnswers(TalkReplyAnswerCountModel(discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.totalAnswer),
+                    TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper))
         talkReplyRecyclerView.visibility = View.VISIBLE
     }
 
