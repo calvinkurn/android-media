@@ -116,9 +116,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
+    }
+
+    private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
+        TopChatAnalytics.FPM_CHAT_LIST_SELLERAPP
+    } else {
+        TopChatAnalytics.FPM_CHAT_LIST
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -369,11 +375,20 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
+        fpmStopTrace()
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
-
+        fpmStopTrace()
     }
+
+    private fun fpmStopTrace() {
+        if (::performanceMonitoring.isInitialized && isFirstPage()) {
+            performanceMonitoring.stopTrace()
+        }
+    }
+
+    private fun isFirstPage(): Boolean = currentPage == 1
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
