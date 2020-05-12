@@ -96,6 +96,11 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
         lihatFlashSaleTimerViewModel.stopTimer()
     }
 
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        lihatFlashSaleTimerViewModel.startTimer()
+    }
+
     override fun onClick(v: View?) {
         lihatFlashSaleTimerViewModel.onLihatSemuaClicked()
     }

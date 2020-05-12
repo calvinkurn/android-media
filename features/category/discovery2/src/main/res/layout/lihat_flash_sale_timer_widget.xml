@@ -8,8 +8,7 @@
     android:paddingRight="@dimen/dp_16">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        style="@style/MatchParent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/lihat_semua_tv"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,11 +38,12 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hours_separator_text_view"
             style="@style/TimerSeparatorStyle"
+            android:layout_height="0dp"
             android:textColor="@color/clr_fd412b"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="@id/minutes_layout"
+            app:layout_constraintBottom_toBottomOf="@id/hours_layout"
+            app:layout_constraintRight_toLeftOf="@id/minutes_layout"
             app:layout_constraintStart_toEndOf="@id/hours_layout"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/hours_layout" />
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -58,11 +58,12 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/minutes_separator_text_view"
             style="@style/TimerSeparatorStyle"
+            android:layout_height="0dp"
             android:textColor="@color/clr_fd412b"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/minutes_layout"
             app:layout_constraintEnd_toStartOf="@id/seconds_layout"
             app:layout_constraintStart_toEndOf="@id/minutes_layout"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/minutes_layout" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seconds_layout"
