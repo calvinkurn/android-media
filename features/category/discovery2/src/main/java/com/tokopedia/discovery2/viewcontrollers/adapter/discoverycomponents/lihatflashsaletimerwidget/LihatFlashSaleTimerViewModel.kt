@@ -12,14 +12,14 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LihatFlashSaleTimerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel() {
+class LihatFlashSaleTimerViewModel(val application: Application, componentData: ComponentsItem) : DiscoveryBaseViewModel() {
 
     private val saleWidgetData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timeCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
 
     init {
-        saleWidgetData.value = components
+        saleWidgetData.value = componentData
     }
 
     fun getComponentData(): LiveData<ComponentsItem> = saleWidgetData
