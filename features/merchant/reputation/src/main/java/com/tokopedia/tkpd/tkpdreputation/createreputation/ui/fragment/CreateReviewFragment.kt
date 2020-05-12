@@ -11,6 +11,7 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
@@ -120,6 +122,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     private var productId: Int = 0
     private var currentBackground: Drawable? = null
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
+    private var productRevIncentiveOvo: ProductRevIncentiveOvo = ProductRevIncentiveOvo()
     private var shopId: String = ""
     private var orderId: String = ""
     private var utmSource: String = ""
@@ -189,6 +192,13 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                 }
             }
         })
+
+        createReviewViewModel.getIncentiveOvo.observe(this, Observer {
+            when (it) {
+                is CoroutineSuccess -> onSuccesGetIncentiveOvo(it.data)
+                is CoroutineFail -> onErrorGetIncentiveOvo(it.throwable)
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -197,6 +207,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         isLowDevice = DevicePerformanceInfo.isLow(context)
 
         getReviewData()
+        getIncentiveOvoData()
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
@@ -287,7 +298,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             submitReview()
         }
 
-        ovoPointsTicker.setHtmlDescription(getString(R.string.review_ovo_ticker_description))
+        ovoPointsTicker.setHtmlDescription("getString(R.string.review_ovo_ticker_description)")
     }
 
     override fun onDestroy() {
@@ -319,6 +330,10 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     private fun getReviewData() {
         showShimmering()
         createReviewViewModel.getProductReputation(productId, reviewId)
+    }
+
+    private fun getIncentiveOvoData() {
+        createReviewViewModel.getProductIncentiveOvo()
     }
 
     private fun submitReview() {
@@ -358,6 +373,14 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             shopId = shopData.shopID.toString()
             orderId = orderID
             txt_create.text = productData.productName
+        }
+    }
+
+    private fun onSuccesGetIncentiveOvo(data: ProductRevIncentiveOvo) {
+        productRevIncentiveOvo = data
+        with(data.productrevIncentiveOvo) {
+            Log.d("ovo","${this.subtitle}")
+            Log.d("ovo", "${this.ticker.subtitle}")
         }
     }
 
@@ -576,6 +599,15 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             }
         }
 
+    }
+
+    private fun onErrorGetIncentiveOvo(throwable: Throwable) {
+        if (throwable is MessageErrorException) {
+            activity?.let {
+                Toast.makeText(it, "tidak dapat incentive ovo", Toast.LENGTH_LONG).show()
+                finishIfRoot()
+            }
+        }
     }
 
     private fun finishIfRoot(success: Boolean = false) {
