@@ -8,8 +8,8 @@ import com.tokopedia.notifcenter.GlobalNavConstant.*
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
-import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
-import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.BuyerNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.SellerNotificationViewBean
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
 
 class NotificationTransactionAdapter(
@@ -19,14 +19,14 @@ class NotificationTransactionAdapter(
     fun updateValue(notificationData: NotificationsModel) {
         data.forEach {
             when (it) {
-                is PurchaseNotificationViewBean -> {
+                is BuyerNotificationViewBean -> {
                     it.childs.forEach { child ->
                         if (it.id == PEMBELIAN) {
                             purchaseCounterBadge(notificationData, child)
                         }
                     }
                 }
-                is SaleNotificationViewBean -> {
+                is SellerNotificationViewBean -> {
                     it.childs.forEach { child ->
                         if (it.id == PENJUALAN) {
                             saleCounterBadge(notificationData, child)
