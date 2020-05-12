@@ -209,7 +209,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         return bottomSheet
     }
 
-    //todo Rahul NOT DONE
+    //todo Rahul (DONE)
     fun showNewLoggedIn(activityContext: Context,
                         couponUiType: TargetPromotionsCouponType,
                         popGratificationResponse: GetPopGratificationResponse,
