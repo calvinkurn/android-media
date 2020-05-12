@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -2045,8 +2046,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showSnackbarRetry(message: String) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, message) { dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false) }
-                .showRetrySnackbar()
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    activity?.getString(R.string.label_action_snackbar_retry) ?: "", View.OnClickListener {
+                dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
+            })
+        }
     }
 
     override fun renderErrorInitialGetCartListData(throwable: Throwable) {
@@ -2184,10 +2189,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             tmpMessage = CartApiInterceptor.CART_ERROR_GLOBAL
         }
 
-        if (view != null) {
-            NetworkErrorHelper.showRedCloseSnackbar(view, tmpMessage)
-        } else if (activity != null) {
-            Toast.makeText(activity, tmpMessage, Toast.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, tmpMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, activity?.getString(R.string.label_action_snackbar_close)
+                    ?: "", View.OnClickListener { })
         }
     }
 
@@ -2201,10 +2205,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun showToastMessageGreen(message: String) {
-        if (view != null) {
-            NetworkErrorHelper.showGreenCloseSnackbar(view, message)
-        } else if (activity != null) {
-            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
+                    ?: "", View.OnClickListener { })
         }
     }
 
@@ -2302,6 +2305,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler?.isRefreshing = true
             dPresenter.processInitialGetCartData(getCartId(), false, false)
+        } else if (resultCode == CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED) {
+            val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
+            showToastMessageRed(message ?: "")
         }
     }
 

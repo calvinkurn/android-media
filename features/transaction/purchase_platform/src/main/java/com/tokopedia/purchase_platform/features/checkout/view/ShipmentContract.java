@@ -64,7 +64,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void onCacheExpired();
+        void onCacheExpired(String message);
 
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isFromPdp);
 

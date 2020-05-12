@@ -66,9 +66,10 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
         }
 
         if (cartShipmentAddressFormData.isError()) {
-            view.showToastError(cartShipmentAddressFormData.getErrorMessage());
             if (cartShipmentAddressFormData.isOpenPrerequisiteSite()) {
-                view.onCacheExpired();
+                view.onCacheExpired(cartShipmentAddressFormData.getErrorMessage());
+            } else {
+                view.showToastError(cartShipmentAddressFormData.getErrorMessage());
             }
         } else {
             if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {

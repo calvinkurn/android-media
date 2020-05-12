@@ -641,10 +641,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
-            ToasterNormal.make(getView(), message, BaseToaster.LENGTH_SHORT)
-                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), view -> {
-
-                    }).show();
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
         }
     }
 
@@ -683,8 +680,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCacheExpired() {
-        if (getActivity() != null) {
+    public void onCacheExpired(String message) {
+        if (getActivity() != null && getView() != null) {
+            Intent intent = new Intent();
+            intent.putExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE, message);
+            getActivity().setResult(CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED, intent);
             getActivity().finish();
         }
     }
@@ -906,11 +906,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCheckoutCartError(String message) {
         if (message.contains("Pre Order") && message.contains("Corner"))
             mTrackerCorner.sendViewCornerPoError();
-        if (message.equalsIgnoreCase("")) {
-            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
-        } else {
-            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
-        }
+        showToastError(message);
     }
 
     @Override
@@ -1057,7 +1053,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderErrorCheckPromoShipmentData(String message) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        showToastError(message);
         shipmentAdapter.resetCourierPromoState();
     }
 
@@ -2927,10 +2923,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     /*
-    * This method is to solve expired dialog not shown up after time expired in background
-    * Little caveat: what if device's time is tempered and not synchronized with server?
-    * Later: consider serverTimeOffset, need more time
-    * */
+     * This method is to solve expired dialog not shown up after time expired in background
+     * Little caveat: what if device's time is tempered and not synchronized with server?
+     * Later: consider serverTimeOffset, need more time
+     * */
     private void checkCampaignTimer() {
         if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
