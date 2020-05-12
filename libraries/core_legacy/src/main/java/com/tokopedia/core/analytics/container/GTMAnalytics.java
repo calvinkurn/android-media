@@ -60,7 +60,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
-    private String mGclid = null;
+    private String mGclid = "";
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
@@ -1034,7 +1034,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                    if (mGclid != null) {
+                    if (!TextUtils.isEmpty(mGclid)) {
                         if (it.get("event") != null) {
                             String eventName = String.valueOf(it.get("event"));
                             addGclIdIfNeeded(eventName, it);
