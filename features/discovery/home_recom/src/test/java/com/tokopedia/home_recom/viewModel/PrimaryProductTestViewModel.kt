@@ -23,7 +23,6 @@ import io.mockk.every
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
-import org.powermock.core.classloader.annotations.PrepareForTest
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable

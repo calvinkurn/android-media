@@ -1,9 +1,7 @@
 package com.tokopedia.home_recom.viewModel
 
 import com.tokopedia.home_recom.util.createInstance
-import com.tokopedia.home_recom.util.createRecommendationPageViewModel
 import com.tokopedia.home_recom.util.createSimilarRecommendationViewModel
-import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
