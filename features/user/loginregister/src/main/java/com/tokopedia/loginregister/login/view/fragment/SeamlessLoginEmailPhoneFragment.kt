@@ -5,12 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
 
 /**
@@ -20,7 +22,11 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
 
 class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
 
+    private var isEnableSeamlessLogin = false
+
     companion object {
+        private const val REMOTE_CONFIG_SEAMLESS_LOGIN = "android_user_seamless_login"
+
         const val REQUEST_SEAMLESS_LOGIN = 122
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = SeamlessLoginEmailPhoneFragment()
@@ -29,17 +35,29 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
         }
     }
 
+    private fun checkRemoteConfig() {
+        context?.let {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+            isEnableSeamlessLogin = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SEAMLESS_LOGIN, false)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkRemoteConfig()
         isEnableSmartLock = false
         isAutoLogin = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(GlobalConfig.isSellerApp()) {
+        if(isEnableSeamlessLogin && GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
             startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
+        }else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+            activity?.finish()
         }
+
         super.onViewCreated(view, savedInstanceState)
         showFullProgressBar()
     }
