@@ -13,8 +13,4 @@
     <include layout="@layout/item_mvc_shimmer_voucher" />
 
     <include layout="@layout/item_mvc_shimmer_voucher" />
-
-    <include layout="@layout/item_mvc_shimmer_voucher" />
-
-    <include layout="@layout/item_mvc_shimmer_voucher" />
 </LinearLayout>
