@@ -21,9 +21,6 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
  */
 
 class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
-
-    private var isEnableSeamlessLogin = false
-
     companion object {
         private const val REMOTE_CONFIG_SEAMLESS_LOGIN = "android_user_seamless_login"
 
@@ -35,22 +32,22 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
         }
     }
 
-    private fun checkRemoteConfig() {
-        context?.let {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isEnableSeamlessLogin = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SEAMLESS_LOGIN, false)
+    private fun isEnableSeamlessLogin(): Boolean {
+        context?.run {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this)
+            return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SEAMLESS_LOGIN, false)
         }
+        return false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkRemoteConfig()
         isEnableSmartLock = false
         isAutoLogin = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(isEnableSeamlessLogin && GlobalConfig.isSellerApp()) {
+        if(isEnableSeamlessLogin() && GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
             startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
         }else {
