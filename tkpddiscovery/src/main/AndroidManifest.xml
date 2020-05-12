@@ -10,44 +10,6 @@
         android:largeHeap="true"
         android:supportsRtl="true">
         <activity
-            android:name=".find.view.activity.FindNavActivity"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_find"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_amp_find"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".hotlistRevamp.view.activity.HotlistNavActivity"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_hotlist_revamp"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".categoryrevamp.view.activity.CategoryNavActivity"
             android:label="Urutkan"
             android:screenOrientation="portrait"

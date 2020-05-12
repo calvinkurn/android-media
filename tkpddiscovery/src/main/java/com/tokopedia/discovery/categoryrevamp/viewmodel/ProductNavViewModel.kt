@@ -1,11 +1,15 @@
 package com.tokopedia.discovery.categoryrevamp.viewmodel
 
 import androidx.lifecycle.*
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.productModel.SearchProduct
-import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
+import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.common_category.model.productModel.ProductListResponse
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.SearchProduct
+import com.tokopedia.common_category.usecase.DynamicFilterUseCase
+import com.tokopedia.common_category.usecase.GetProductListUseCase
+import com.tokopedia.common_category.usecase.QuickFilterUseCase
+import com.tokopedia.common_category.usecase.SendTopAdsUseCase
+import com.tokopedia.common_category.model.bannedCategory.SubCategoryItem
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter

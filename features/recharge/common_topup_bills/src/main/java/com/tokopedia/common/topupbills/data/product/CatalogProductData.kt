@@ -10,19 +10,23 @@ open class CatalogProductData(
 
         @SerializedName("name")
         @Expose
-        val name: String = "",
+        var name: String = "",
         @SerializedName("text")
         @Expose
-        val text: String = "",
+        var text: String = "",
         @SerializedName("dataCollections")
         @Expose
         var dataCollections: List<DataCollection> = listOf()
 
 ) {
+        //data collection product
         class DataCollection(
                 @SerializedName("name")
                 @Expose
-                val name: String = "",
+                var name: String = "",
+                @SerializedName("value")
+                @Expose
+                var value: String = "",
                 @SerializedName("products")
                 @Expose
                 var products: List<CatalogProduct> = listOf()

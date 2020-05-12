@@ -277,6 +277,7 @@ open class WishlistViewModel @Inject constructor(
                 addToCartRequestParams.shopId = it.shop.id.toInt()
                 addToCartRequestParams.quantity = it.minimumOrder
                 addToCartRequestParams.notes = ""
+                addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
                 addToCartRequestParams.productName = it.name
                 addToCartRequestParams.category = it.categoryBreadcrumb
                 addToCartRequestParams.price = it.price

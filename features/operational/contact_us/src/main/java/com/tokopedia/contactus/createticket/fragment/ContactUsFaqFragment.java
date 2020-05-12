@@ -15,27 +15,24 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity.BackButtonListener;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
 
-import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 import static android.app.Activity.RESULT_OK;
-
-import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.applink.RouteManager;
+import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 
 /**
  * Created by nisie on 8/12/16.
@@ -303,8 +300,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                             .finish_contact_us));
                     getActivity().finish();
                     return true;
-                } else if (url.toString().contains(CHATBOT_SCHEME)
-                        && getActivity().getApplicationContext() instanceof ContactUsModuleRouter) {
+                } else if (url.toString().contains(CHATBOT_SCHEME)) {
                     String messageId = url.getLastPathSegment();
                     Intent chatBotIntent = RouteManager.getIntent(context, ApplinkConst.CHATBOT
                             .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));

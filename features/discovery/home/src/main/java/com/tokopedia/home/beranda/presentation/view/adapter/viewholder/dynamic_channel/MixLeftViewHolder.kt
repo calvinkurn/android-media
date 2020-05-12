@@ -79,7 +79,8 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
-
+        homeCategoryListener.trackingQueue?.putEETracking(
+                HomePageTrackingV2.MixLeft.getMixLeftProductView(channel) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
