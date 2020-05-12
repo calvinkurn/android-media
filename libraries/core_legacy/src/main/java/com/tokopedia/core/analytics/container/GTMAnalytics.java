@@ -55,6 +55,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_TYPE = "shopType";
     public static final String OPEN_SCREEN = "openScreen";
     public static final String CAMPAIGN_TRACK = "campaignTrack";
+    public static final String KEY_GCLID = "gclid";
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
@@ -1054,7 +1055,7 @@ public class GTMAnalytics extends ContextAnalytics {
             case VIEWPRODUCT:
             case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
             case TRANSACTION:
-                values.put("gclid", mGclid);
+                values.put(KEY_GCLID, mGclid);
         }
     }
 
