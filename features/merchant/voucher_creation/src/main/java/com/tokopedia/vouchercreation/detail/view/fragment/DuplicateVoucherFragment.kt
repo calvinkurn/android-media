@@ -9,7 +9,8 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
+import com.tokopedia.vouchercreation.voucherlist.model.remote.MerchantVoucherModel
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
 /**
@@ -28,7 +29,9 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
         private const val DATA_KEY_VOUCHER_PERIOD = "periodeVoucher"
     }
 
-    private val dummyVoucher = VoucherUiModel("Voucher Hura Test Doang", "Ini voucher dummy doang", true)
+    private val dummyVoucher = VoucherMapper().mapRemoteModelToUiModel(listOf(MerchantVoucherModel(
+            voucherName = "Voucher Hura Test Doang", discountAmtFormatted = "Cashback 10%"
+    ))).first()
 
     override fun getScreenName(): String = this::class.java.simpleName
 
