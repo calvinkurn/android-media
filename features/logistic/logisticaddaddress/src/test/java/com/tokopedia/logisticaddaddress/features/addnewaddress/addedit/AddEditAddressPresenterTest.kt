@@ -31,9 +31,9 @@ object AddEditAddressPresenterTest : Spek({
     val view: AddEditView = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
-    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any()) } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any()) } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any(), any()) } just Runs
 
     lateinit var presenter: AddEditAddressPresenter
 
@@ -53,11 +53,11 @@ object AddEditAddressPresenterTest : Spek({
                 every { saveUseCase.execute(any(), "1") } returns Observable.just(successGql)
             }
             When("executed from positive form") {
-                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, isFullFlow = true, isLogisticLabel = true)
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any())
+                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any())
                 }
             }
             Then("view show success") {
@@ -74,11 +74,11 @@ object AddEditAddressPresenterTest : Spek({
                 every { saveUseCase.execute(any(), any()) } returns Observable.just(notSuccessResponse)
             }
             When("executed from negative form ") {
-                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
+                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE, isFullFlow = true, isLogisticLabel = true)
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any())
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any())
                 }
             }
             Then("view show success") {
@@ -94,7 +94,7 @@ object AddEditAddressPresenterTest : Spek({
                 every { saveUseCase.execute(any(), any()) } returns Observable.error(exception)
             }
             When("executed") {
-                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, isFullFlow = true, isLogisticLabel = true)
             }
             Then("view shows error") {
                 verify {
