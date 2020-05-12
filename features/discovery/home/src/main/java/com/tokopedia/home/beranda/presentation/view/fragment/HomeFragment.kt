@@ -113,6 +113,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -291,10 +292,6 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
-        if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-            getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-        }
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
@@ -698,7 +695,6 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter?.submitList(data);
                 adapter?.notifyDataSetChanged();
@@ -1057,16 +1053,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setOnRecyclerViewLayoutReady(isCache: Boolean) {
         isOnRecylerViewLayoutAdded = true
-        homeRecyclerView.viewTreeObserver?.let {
-            it.addOnGlobalLayoutListener { object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-
-                    homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
-
-                    homePerformanceMonitoringListener = null;
-                    it.removeOnGlobalLayoutListener(this);
-                }
-            }}
+        homeRecyclerView.addOneTimeGlobalLayoutListener {
+            homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
+            homePerformanceMonitoringListener = null;
         }
     }
 
@@ -1813,8 +1802,8 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
-        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface != null) {
-           pageLoadTimeCallback =  homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface
+        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
+           pageLoadTimeCallback =  homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
         }
         return pageLoadTimeCallback
     }
