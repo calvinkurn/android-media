@@ -77,6 +77,4 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
     abstract fun isUploading(): Boolean
 
     abstract fun clearText()
-
-    abstract fun getStickerGroupList(chatRoom: ChatroomViewModel)
 }

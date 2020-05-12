@@ -155,5 +155,7 @@ interface TopChatContract {
         fun updateMinReplyTime(chatRoom: ChatroomViewModel)
 
         fun getOrderProgress(messageId: String)
+
+        fun getStickerGroupList(chatRoom: ChatroomViewModel)
     }
 }
