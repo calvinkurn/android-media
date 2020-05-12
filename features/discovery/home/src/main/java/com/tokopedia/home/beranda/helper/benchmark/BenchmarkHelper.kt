@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.helper
+package com.tokopedia.home.beranda.helper.benchmark
 
 import android.os.Build
 import android.os.Trace

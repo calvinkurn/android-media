@@ -80,10 +80,11 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home.beranda.helper.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -338,7 +339,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        BenchmarkHelper.beginSystraceSection("inflate.HomeFragment")
+        BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(

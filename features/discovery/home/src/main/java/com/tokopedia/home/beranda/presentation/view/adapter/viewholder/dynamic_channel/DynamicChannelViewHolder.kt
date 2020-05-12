@@ -23,7 +23,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.home.beranda.helper.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_DYNAMIC_CHANNEL
 
 abstract class DynamicChannelViewHolder(itemView: View,
                                         private val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
@@ -75,7 +76,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
     }
 
     override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
-        BenchmarkHelper.beginSystraceSection("onBind.dynamicChannel_"+element.channel?.layout)
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
         super.bind(element, payloads)
         try {
             val channel = element.channel
@@ -96,7 +97,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
     }
 
     override fun bind(element: DynamicChannelDataModel) {
-        BenchmarkHelper.beginSystraceSection("onBind.dynamicChannel_"+element.channel?.layout)
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
         try {
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name

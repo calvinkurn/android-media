@@ -11,7 +11,8 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home.beranda.helper.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BANNER_VIEWHOLDER
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
@@ -31,7 +32,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val adapter = HomeBannerAdapter(listOf(), this)
 
     override fun bind(element: HomepageBannerDataModel) {
-        BenchmarkHelper.beginSystraceSection("onBind.BannerViewHolder")
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BANNER_VIEWHOLDER)
         try {
             slidesList = element.slides
             slidesList?.let {
@@ -46,7 +47,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     override fun bind(element: HomepageBannerDataModel, payloads: MutableList<Any>) {
-        BenchmarkHelper.beginSystraceSection("onBind.BannerViewHolder")
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BANNER_VIEWHOLDER)
         try {
             slidesList = element.slides
             this.isCache = element.isCache
