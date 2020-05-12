@@ -153,7 +153,7 @@ object SellerReviewProductDetailMapper {
     private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()
         val updatedData = updateNewDataWithOldData(data,oldData)
-        val maxData = data.topics.take(4)
+        val maxData = updatedData.take(6)
         maxData.map {
             val sortFilter = SortFilterItem(
                     title = it.first.formatted,

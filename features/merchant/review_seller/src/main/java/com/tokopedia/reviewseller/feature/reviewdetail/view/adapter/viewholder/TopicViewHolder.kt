@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.toggle
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter.Companion.PAYLOAD_TOPIC_FILTER_REVIEW_COUNT
@@ -26,24 +25,16 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     private val sortFilterTopics: SortFilter = view.findViewById(R.id.topicSortFilterTopic)
     private val resultFeedbackLabel: Typography = view.findViewById(R.id.resultFeedbackLabel)
 
-    private var countSortFilter = 0
-
     override fun bind(element: TopicUiModel) {
-
-        countSortFilter = element.sortFilterItemList.count {
-            it.isSelected
-        }
-        sortFilterTopics.show()
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
+            indicatorCounter = 0
             addItem(dataItemSortFilter(element.sortFilterItemList))
-            indicatorCounter = countSortFilter
             parentListener = {
                 fragmentListener.onParentTopicFilterClicked()
             }
         }
         setReviewCount(element.countFeedback.orZero())
-
     }
 
     override fun bind(element: TopicUiModel?, payloads: MutableList<Any>) {
