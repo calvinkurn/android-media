@@ -29,14 +29,13 @@ class VoucherViewHolder(
 
     override fun bind(element: VoucherUiModel) {
         with(itemView) {
-            imgVoucherType.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
-            tvVoucherName.text = element.name
+            tvMvcVoucherName.text = element.name
 
             val description = "${element.typeFormatted} ${element.discountAmtFormatted}"
-            tvVoucherDescription.text = description
+            tvMvcVoucherDescription.text = description
 
             val usedVoucher = "<b>${element.bookedQuota}</b>/${element.quota}"
-            tvVoucherUsed.text = usedVoucher.parseAsHtml()
+            tvMvcVoucherUsed.text = usedVoucher.parseAsHtml()
 
             setImageVoucher(element.isPublic, element.type)
             setVoucherStatus(element)
@@ -44,7 +43,7 @@ class VoucherViewHolder(
             setupVoucherCtaButton(element)
             setVoucherDate(element)
 
-            btnMore.setOnClickListener {
+            btnMvcMore.setOnClickListener {
                 listener.onMoreMenuClickListener(element)
             }
             setOnClickListener {
@@ -62,6 +61,10 @@ class VoucherViewHolder(
             val finishTime = DateTimeUtils.reformatDateTime(element.finishTime, oldFormat, newFormat)
             itemView.tvMvcVoucherDuration.text = String.format("%s - %s", startTime, finishTime)
         } else {
+            /**
+             * this is not fix, need to confirm which date(create/update/start/finish)
+             * must be shown for voucher type deleted, ended, progress and stopped
+             * */
             val createdTime = DateTimeUtils.reformatDateTime(element.createdTime, oldFormat, newFormat)
             itemView.tvMvcVoucherDuration.text = createdTime
         }
@@ -106,7 +109,11 @@ class VoucherViewHolder(
 
     private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
         try {
-            with(itemView.imgVoucherType) {
+            with(itemView.imgMvcVoucherType) {
+                /**
+                 * this logic not fix, need to confirm to Product/UI.
+                 * Coz voucher have 3 types but only two examples provided on Figma
+                 * */
                 val drawableRes = when {
                     isPublic && (voucherType == VoucherTypeConst.CASHBACK) -> R.drawable.ic_mvc_cashback_publik
                     !isPublic && (voucherType == VoucherTypeConst.CASHBACK) -> R.drawable.ic_mvc_cashback_khusus
@@ -124,7 +131,7 @@ class VoucherViewHolder(
     private fun showPromoCode(@VoucherStatusConst voucherStatus: Int, isPublicVoucher: Boolean, voucherCode: String) {
         with(itemView) {
             val isVisible = voucherStatus == VoucherStatusConst.ONGOING && !isPublicVoucher
-            viewVoucherCode.isVisible = isVisible
+            viewMvcVoucherCodeBg.isVisible = isVisible
             tvLblCode.isVisible = isVisible
             tvVoucherCode.isVisible = isVisible
             tvVoucherCode.text = String.format(" %s", voucherCode)
@@ -154,9 +161,9 @@ class VoucherViewHolder(
                 }
             }
 
-            tvVoucherStatus.text = statusStr
-            tvVoucherStatus.setTextColor(context.getResColor(colorRes))
-            viewVoucherStatus.background = context.getResDrawable(statusIndicatorBg)
+            tvMvcVoucherStatus.text = statusStr
+            tvMvcVoucherStatus.setTextColor(context.getResColor(colorRes))
+            viewMvcVoucherStatus.background = context.getResDrawable(statusIndicatorBg)
         }
     }
 
