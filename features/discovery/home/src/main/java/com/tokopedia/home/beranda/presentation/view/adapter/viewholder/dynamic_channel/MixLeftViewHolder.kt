@@ -79,11 +79,14 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
+        //because we have empty value at beginning of list, we need to reduce pos by 1
+        val itemPos = position - 1
         homeCategoryListener.trackingQueue?.putEETracking(
-                HomePageTrackingV2.MixLeft.getMixLeftProductView(channel, channel.grids[position-1], position) as HashMap<String, Any>)
+                HomePageTrackingV2.MixLeft.getMixLeftProductView(channel, channel.grids[itemPos], itemPos) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
+        //because we have empty value at beginning of list, we need to reduce pos by 1
         RouteManager.route(itemView.context, applink)
         HomePageTrackingV2.MixLeft.sendMixLeftProductClick(channel, grid, position - 1)
     }
