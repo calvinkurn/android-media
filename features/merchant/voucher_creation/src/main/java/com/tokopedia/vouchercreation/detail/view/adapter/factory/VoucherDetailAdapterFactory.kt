@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.detail.view.adapter.factory
 
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.detail.model.*
 
 /**
@@ -29,4 +30,6 @@ interface VoucherDetailAdapterFactory {
     fun type(model: VoucherTickerUiModel): Int
 
     fun type(model: WarningPeriodUiModel): Int
+
+    fun type(model: PostVoucherUiModel): Int
 }

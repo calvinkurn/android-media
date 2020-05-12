@@ -25,6 +25,7 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
+import com.tokopedia.vouchercreation.create.view.fragment.step.ReviewVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
@@ -57,7 +58,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, viewModel::setVoucherPreviewBitmap))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getVoucherPreviewBitmap))
-            put(VoucherCreationStepInfo.STEP_FOUR, MerchantVoucherTargetFragment.createInstance(::onNextStep))
+            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance())
         }
     }
 

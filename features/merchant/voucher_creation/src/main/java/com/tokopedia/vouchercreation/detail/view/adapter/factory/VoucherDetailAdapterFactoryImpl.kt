@@ -4,6 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
+import com.tokopedia.vouchercreation.create.view.viewholder.voucherimage.PostVoucherViewHolder
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.viewholder.*
@@ -38,6 +40,8 @@ class VoucherDetailAdapterFactoryImpl(
 
     override fun type(model: WarningPeriodUiModel): Int = WarningPeriodViewHolder.RES_LAYOUT
 
+    override fun type(model: PostVoucherUiModel): Int = PostVoucherViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent) {
@@ -69,6 +73,7 @@ class VoucherDetailAdapterFactoryImpl(
             WarningPeriodViewHolder.RES_LAYOUT -> WarningPeriodViewHolder(parent) {
                 voucherDetailListener.onInfoContainerCtaClick(it)
             }
+            PostVoucherViewHolder.RES_LAYOUT -> PostVoucherViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
