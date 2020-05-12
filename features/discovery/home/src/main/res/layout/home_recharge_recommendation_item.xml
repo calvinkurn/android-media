@@ -67,8 +67,8 @@
 
             <ImageView
                 android:id="@+id/ic_recharge_recommendation_product"
-                android:layout_width="@dimen/home_recharge_recommendation_product_icon_card_size"
-                android:layout_height="@dimen/home_recharge_recommendation_product_icon_card_size"
+                android:layout_width="@dimen/layout_lvl7"
+                android:layout_height="@dimen/layout_lvl7"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 android:background="@drawable/ic_squircle"
                 android:padding="@dimen/home_recharge_recommendation_product_icon_card_padding"
