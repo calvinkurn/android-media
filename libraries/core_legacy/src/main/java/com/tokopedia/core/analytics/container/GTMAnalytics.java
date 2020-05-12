@@ -827,7 +827,6 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private static Map<String, Object> bundleToMap(Bundle extras) {
         Map<String, Object> map = new HashMap<>();
-
         Set<String> ks = extras.keySet();
         for (String key : ks) {
             Object object = extras.get(key);
@@ -1034,9 +1033,9 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                    if (it.get("event") != null) {
-                        String eventName = String.valueOf(it.get("event"));
-                        if ( mGclid != null) {
+                    if (mGclid != null) {
+                        if (it.get("event") != null) {
+                            String eventName = String.valueOf(it.get("event"));
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
@@ -1047,6 +1046,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void addGclIdIfNeeded(String eventName, Map<String, Object> values){
+        if(null == eventName) return;
         switch (eventName.toLowerCase()) {
             case FirebaseAnalytics.Event.ADD_TO_CART:
             case ADDTOCART:
