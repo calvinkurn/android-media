@@ -8,7 +8,7 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
 
 class InstantTaskExecutorRuleSpek(root: Root) {
     init {
-        root.beforeGroup {
+        root.beforeEachTest {
             ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
                 override fun executeOnDiskIO(runnable: Runnable) {
                     runnable.run()
@@ -24,7 +24,7 @@ class InstantTaskExecutorRuleSpek(root: Root) {
             })
         }
 
-        root.afterGroup {
+        root.afterEachTest {
             ArchTaskExecutor.getInstance().setDelegate(null)
         }
     }

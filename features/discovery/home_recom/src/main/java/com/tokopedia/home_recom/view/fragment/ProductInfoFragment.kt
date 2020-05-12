@@ -496,7 +496,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         updateWishlist(false)
         sendIntentResusltWishlistChange(productId ?: "", false)
-
     }
 
     /**

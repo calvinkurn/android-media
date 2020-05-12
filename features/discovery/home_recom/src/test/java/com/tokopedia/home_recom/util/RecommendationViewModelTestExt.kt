@@ -6,7 +6,9 @@ import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
+import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -34,6 +36,7 @@ fun TestBody.createRecommendationPageViewModel(): RecommendationPageViewModel {
             userSessionInterface = userSessionInterface
     )
 }
+
 @ExperimentalCoroutinesApi
 fun TestBody.createPrimaryProductViewModel(): PrimaryProductViewModel {
     val addToCartUseCase by memoized<AddToCartUseCase>()
@@ -53,8 +56,27 @@ fun TestBody.createPrimaryProductViewModel(): PrimaryProductViewModel {
     )
 }
 
+fun TestBody.createSimilarRecommendationViewModel(): SimilarProductRecommendationViewModel{
+    val getSingleRecommendationUseCase by memoized<GetSingleRecommendationUseCase>()
+    val addWishListUseCase by memoized<AddWishListUseCase>()
+    val removeWishListUseCase by memoized<RemoveWishListUseCase>()
+    val topAdsWishlishedUseCase by memoized<TopAdsWishlishedUseCase>()
+    val userSessionInterface by memoized<UserSessionInterface>()
+    val dispatcherProvider by memoized<RecommendationDispatcher>()
+
+    return SimilarProductRecommendationViewModel(
+            addWishListUseCase = addWishListUseCase,
+            dispatcher = dispatcherProvider,
+            removeWishListUseCase = removeWishListUseCase,
+            singleRecommendationUseCase = getSingleRecommendationUseCase,
+            topAdsWishlishedUseCase = topAdsWishlishedUseCase,
+            userSessionInterface = userSessionInterface
+    )
+}
+
 fun FeatureBody.createInstance() {
     val getRecommendationUseCase by memoized<GetRecommendationUseCase> { mockk(relaxed = true) }
+    val getSingleRecommendationUseCase by memoized<GetSingleRecommendationUseCase> { mockk(relaxed = true) }
     val addToCartOccUseCase by memoized<AddToCartOccUseCase> { mockk(relaxed = true) }
     val addWishListUseCase by memoized<AddWishListUseCase> { mockk(relaxed = true) }
     val removeWishListUseCase by memoized<RemoveWishListUseCase> { mockk(relaxed = true) }

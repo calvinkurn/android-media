@@ -22,9 +22,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.runner.RunWith
 import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -33,7 +31,6 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Lukas on 2019-07-08
  */
-@RunWith(PowerMockRunner::class)
 @PrepareForTest(PrimaryProductViewModel::class)
 @ExperimentalCoroutinesApi
 class PrimaryProductTestViewModel : Spek({
@@ -297,7 +294,7 @@ class PrimaryProductTestViewModel : Spek({
         }
     }
 
-    Feature("Test is loggin"){
+    Feature("Test is login"){
         lateinit var viewModel: PrimaryProductViewModel
         createInstance()
         val userSessionInterface by memoized<UserSessionInterface>()

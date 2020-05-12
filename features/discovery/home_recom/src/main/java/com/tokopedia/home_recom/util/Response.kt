@@ -26,4 +26,9 @@ data class Response<out T>(val status: Status, val data: T?, val message: String
             return Response(Status.LOAD_MORE, data, null)
         }
     }
+    fun isSuccess() = this.status == Status.SUCCESS
+    fun isLoading() = this.status == Status.LOADING
+    fun isError() = this.status == Status.ERROR
+    fun isEmpty() = this.status == Status.EMPTY
+    fun isLoadMore() = this.status == Status.LOAD_MORE
 }
