@@ -191,18 +191,20 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun showSellerMigrationTicker() {
-        somListSellerMigrationTicker.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
-            setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(charSequence: CharSequence) {
-                    openSellerMigrationBottomSheet()
-                }
-                override fun onDismiss() {
-                    // No Op
-                }
-            })
-            show()
+        if(isSellerMigrationEnabled(context)) {
+            somListSellerMigrationTicker.apply {
+                tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
+                setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(charSequence: CharSequence) {
+                        openSellerMigrationBottomSheet()
+                    }
+                    override fun onDismiss() {
+                        // No Op
+                    }
+                })
+                show()
+            }
         }
     }
 
@@ -461,7 +463,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         } else {
             ticker_info?.visibility = View.GONE
-            if(isSellerMigrationEnabled(context)) showSellerMigrationTicker()
+            showSellerMigrationTicker()
         }
     }
 

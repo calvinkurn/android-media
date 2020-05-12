@@ -6,5 +6,9 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 
 
 fun isSellerMigrationEnabled(context: Context?): Boolean {
-    return FirebaseRemoteConfigImpl(context).getBoolean(SellerMigrationConstants.APP_ENABLE_SELLER_MIGRATION, true)
+    return if (context == null) {
+        false
+    } else {
+        FirebaseRemoteConfigImpl(context).getBoolean(SellerMigrationConstants.APP_ENABLE_SELLER_MIGRATION, true)
+    }
 }

@@ -173,7 +173,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         swipe_refresh_layout.setOnRefreshListener {
             refreshData()
         }
-        if(isSellerMigrationEnabled(context)) initSellerMigrationTicker()
+        initSellerMigrationTicker()
         initTicker()
         initShopInfoComponent()
         initSummaryComponent()
@@ -234,18 +234,20 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     private fun initSellerMigrationTicker() {
-        topAdsSellerMigrationTicker.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_title)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_description))
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    showSellerMigrationBottomSheet()
-                }
-                override fun onDismiss() {
-                    // No op
-                }
-            })
-            show()
+        if(isSellerMigrationEnabled(context)) {
+            topAdsSellerMigrationTicker.apply {
+                tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_title)
+                setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_description))
+                setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        showSellerMigrationBottomSheet()
+                    }
+                    override fun onDismiss() {
+                        // No op
+                    }
+                })
+                show()
+            }
         }
     }
 

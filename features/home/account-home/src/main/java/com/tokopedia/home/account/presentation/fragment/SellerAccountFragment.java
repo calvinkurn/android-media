@@ -109,11 +109,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
-        if(isSellerMigrationEnabled(this.getContext())) {
-            setupSellerMigrationTicker();
-        } else {
-            migrationTicker.setVisibility(View.GONE);
-        }
+        setupSellerMigrationTicker();
         swipeRefreshLayout.setOnRefreshListener(() -> {
             isLoaded = false;
             getData();
@@ -273,19 +269,23 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void setupSellerMigrationTicker() {
-        migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title));
-        migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
-        migrationTicker.setDescriptionClickEvent(new TickerCallback() {
-            @Override
-            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                openSellerMigrationBottomSheet();
-            }
+        if(isSellerMigrationEnabled(this.getContext())) {
+            migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title));
+            migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
+            migrationTicker.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    openSellerMigrationBottomSheet();
+                }
 
-            @Override
-            public void onDismiss() {
+                @Override
+                public void onDismiss() {
 
-            }
-        });
+                }
+            });
+        } else {
+            migrationTicker.setVisibility(View.GONE);
+        }
     }
 
     private void openSellerMigrationBottomSheet() {
