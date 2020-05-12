@@ -165,13 +165,10 @@ data class DataItem(
         val id: String? = "",
 
         @SerializedName("shop_id")
-        val shopId: String? = ""
-        val videoId: String? = "",
+        val shopId: String? = "",
 
         @SerializedName("basecode")
         val basecode: String? = "",
-        @SerializedName("catalog_type")
-        val catalogType: Int? = 0,
         @SerializedName("coupon_code")
         val couponCode: String? = "",
         @SerializedName("cta")
@@ -181,7 +178,7 @@ data class DataItem(
         @SerializedName("disabled_err_msg")
         val disabledErrMsg: String? = "",
         @SerializedName("id")
-        val id: Int? = 0,
+        val claimCouponid: String? = "",
         @SerializedName("image_url")
         val imageUrl: String? = "",
         @SerializedName("is_disabled")
@@ -192,20 +189,12 @@ data class DataItem(
         val minUsage: String? = "",
         @SerializedName("min_usage_label")
         val minUsageLabel: String? = "",
-        @SerializedName("promo_id")
-        val promoId: Int? = 0,
-        @SerializedName("quota")
-        val quota: Int? = 0,
         @SerializedName("slug")
         val slug: String? = "",
         @SerializedName("subtitle")
         val subtitle: String? = "",
         @SerializedName("thumbnail_url")
         val thumbnailUrl: String? = "",
-        @SerializedName("thumbnail_url_mobile")
-        val thumbnailUrlMobile: String? = "",
-        @SerializedName("title")
-        val title: String? = "",
         @SerializedName("upper_text_desc")
         val upperTextDesc: List<String?>? = null
 

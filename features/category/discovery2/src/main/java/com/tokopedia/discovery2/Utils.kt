@@ -1,12 +1,10 @@
-package com.tokopedia.discovery2.utils
+package com.tokopedia.discovery2
 
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
-import android.view.View
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.discovery2.data.DataItem
+import android.provider.MediaStore
 
 
 class Utils {
@@ -17,11 +15,25 @@ class Utils {
         const val DEFAULT_BANNER_WIDTH = 800
         const val DEFAULT_BANNER_HEIGHT = 150
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
+        const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
             val uri = Uri.parse(url)
             return uri?.getQueryParameter(dimension)?.toInt()
+        }
+
+        fun shareData(context: Context?, shareTxt: String?, productUri: String?, image: Bitmap?) {
+            val share = Intent(Intent.ACTION_SEND)
+            share.type = "image/*"
+            if (image != null) {
+                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val path: String = MediaStore.Images.Media.insertImage(context?.contentResolver, image, "Image Description", null)
+                val uri = Uri.parse(path)
+                share.putExtra(Intent.EXTRA_STREAM, uri)
+            }
+            share.putExtra(Intent.EXTRA_TEXT, shareTxt+ "\n"+ productUri)
+            context?.startActivity(Intent.createChooser(share, shareTxt))
         }
     }
 }

@@ -35,12 +35,8 @@
         android:clipChildren="true"
         android:clipToPadding="true"
         android:layout_marginTop="@dimen/dp_8"
-        app:blurRadius="@dimen/dp_8"
         app:cornerRadius="@dimen/dp_8"
-        app:shadowBottomOffset="-2dp"
-        app:shadowEndOffset="0dp"
-        app:shadowStartOffset="0dp"
-        app:shadowTopOffset="0dp">
+        >
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/appCompatImageView"

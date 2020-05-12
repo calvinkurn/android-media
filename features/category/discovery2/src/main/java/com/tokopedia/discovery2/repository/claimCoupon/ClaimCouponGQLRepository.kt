@@ -1,8 +1,8 @@
 package com.tokopedia.discovery2.repository.claimCoupon
 
+import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.claimcoupon.RedeemCouponResponse
-import com.tokopedia.tradein_common.repository.BaseRepository
 import javax.inject.Inject
 
 

@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.basemvvm)
+    implementation project(rootProject.ext.features.promotionsTarget)
     implementation project(rootProject.ext.libraries.youtubeutil)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

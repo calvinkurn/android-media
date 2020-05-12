@@ -14,12 +14,7 @@
         android:layout_height="100dp"
         android:background="#fff"
         android:padding="10dp"
-        app:blurRadius="8dp"
         app:cornerRadius="8dp"
-        app:shadowBottomOffset="-2dp"
-        app:shadowEndOffset="0dp"
-        app:shadowStartOffset="0dp"
-        app:shadowTopOffset="0dp"
         tools:background="@color/colorAccent">
 
         <com.tokopedia.discovery2.view.RoundImageView

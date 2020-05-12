@@ -105,7 +105,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
     private fun getQueryMap(): Map<String, Any> {
-        val map = mapOf("catalogId" to (components.data?.get(0)?.id ?: 0),
+        val map = mapOf("catalogId" to (components.data?.get(0)?.claimCouponid ?: 0),
                 "isGift" to 0,
                 "giftUserId" to 0,
                 "giftEmail" to "",
