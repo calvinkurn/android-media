@@ -23,10 +23,6 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
-import com.tokopedia.thankyou_native.presentation.helper.OriginCheckStatusButton
-import com.tokopedia.thankyou_native.presentation.helper.OriginOnBackPress
-import com.tokopedia.thankyou_native.presentation.helper.OriginTimerFinished
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
@@ -47,8 +43,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     var paymentType: PaymentType? = null
-
-    private var dialogOrigin: DialogOrigin? = null
 
     private lateinit var thanksPageData: ThanksPageData
 
@@ -178,7 +172,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
-            dialogOrigin = OriginCheckStatusButton
             checkPaymentStatus()
         }
         btnShopAgain.setOnClickListener { gotoHomePage() }
@@ -237,7 +230,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     override fun onTimerFinished() {
-        dialogOrigin = OriginTimerFinished
         checkPaymentStatus()
     }
 
@@ -275,7 +267,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     internal fun onBackPressed(): Boolean {
         if (!isPaymentTimerExpired()) {
-            dialogOrigin = OriginOnBackPress
             checkPaymentStatus()
             return true
         }

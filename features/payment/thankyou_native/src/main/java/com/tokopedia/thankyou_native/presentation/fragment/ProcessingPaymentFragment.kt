@@ -17,9 +17,6 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.PaymentType
 import com.tokopedia.thankyou_native.helper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
-import com.tokopedia.thankyou_native.presentation.helper.OriginCheckStatusButton
-import com.tokopedia.thankyou_native.presentation.helper.OriginOnBackPress
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.usecase.coroutines.Fail
@@ -41,7 +38,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     var paymentType: PaymentType? = null
 
-    private var dialogOrigin: DialogOrigin? = null
+   // private var dialogOrigin: DialogOrigin? = null
 
     private lateinit var thanksPageData: ThanksPageData
 
@@ -121,7 +118,6 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
-            dialogOrigin = OriginCheckStatusButton
             checkPaymentStatus()
         }
         btnShopAgain.setOnClickListener {
@@ -154,7 +150,6 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     }
 
     internal fun onBackPressed(): Boolean {
-        dialogOrigin = OriginOnBackPress
         checkPaymentStatus()
         return true
     }

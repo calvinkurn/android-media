@@ -23,7 +23,7 @@ class DetailInvoiceViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
             mutableInvoiceVisitables.value = data
         }) {
-
+            it.printStackTrace()
         }
     }
 }

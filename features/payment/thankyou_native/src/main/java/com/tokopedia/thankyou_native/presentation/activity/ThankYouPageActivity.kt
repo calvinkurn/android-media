@@ -156,7 +156,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     companion object {
 
-        const val SCREEN_NAME = "thank-you-page"
+        const val SCREEN_NAME = "Finish Transaction"
 
         const val ARG_PAYMENT_ID = "payment_id"
         const val ARG_MERCHANT = "merchant"

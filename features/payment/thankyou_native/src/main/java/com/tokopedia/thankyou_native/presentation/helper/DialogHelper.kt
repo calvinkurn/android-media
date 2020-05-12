@@ -6,11 +6,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.helper.*
 
-sealed class DialogOrigin
-object OriginTimerFinished : DialogOrigin()
-object OriginCheckStatusButton : DialogOrigin()
-object OriginOnBackPress : DialogOrigin()
-
 class DialogHelper(val context: Context, val listener: OnDialogRedirectListener) {
 
     private var dialogUnify: DialogUnify? = null

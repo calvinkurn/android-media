@@ -17,8 +17,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
     private fun createInvoiceSummary(thanksPageData: ThanksPageData) {
 
-        var totalPrice: Float = 0F
-        var totalItemCount: Int = 0
+        var totalPrice = 0F
+        var totalItemCount = 0
 
         var totalProductProtectionStr: String? = null
         var totalDiscountStr: String? = null
@@ -145,7 +145,6 @@ object PromoDataKey {
 }
 
 object PaymentItemKey {
-    const val MACRO_INSURANCE = "macroinsurance"
     const val PROTECTION_PLAN = "purchase_plan_protection"
     const val E_GOLD = "egold"
     const val DONATION = "donation"
