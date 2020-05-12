@@ -7,6 +7,7 @@
     <color name="mvc_text_color_green">#03AC0E</color>
     <color name="mvc_text_color_grey">#5231353B</color>
     <color name="mvc_text_color_light_grey">#AD31353B</color>
+    <color name="mvc_text_color_red">#EF144A</color>
     <color name="mvc_bg_color_grey">#F8FAFC</color>
     <color name="mvc_color_grey">#E5E7E9</color>
     <color name="mvc_dot_color_grey">#6C727C</color>

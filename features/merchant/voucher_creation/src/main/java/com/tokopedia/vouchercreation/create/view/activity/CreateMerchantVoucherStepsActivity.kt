@@ -2,11 +2,14 @@ package com.tokopedia.vouchercreation.create.view.activity
 
 import android.animation.ObjectAnimator
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,14 +19,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
-import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
-import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
-import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
+import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
-import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import javax.inject.Inject
 
@@ -50,10 +53,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private val fragmentStepsHashMap by lazy {
-        LinkedHashMap<VoucherCreationStepInfo, BaseCreateMerchantVoucherFragment<*,*>>().apply {
+        LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
-            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep))
-            put(VoucherCreationStepInfo.STEP_THREE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
+            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, viewModel::setVoucherPreviewBitmap))
+            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getVoucherPreviewBitmap))
             put(VoucherCreationStepInfo.STEP_FOUR, MerchantVoucherTargetFragment.createInstance(::onNextStep))
         }
     }
@@ -88,6 +91,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private var currentProgress = 0
 
+    private var voucherBitmap: Bitmap? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_merchant_voucher_steps)
@@ -112,6 +117,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun setupView() {
+        window.decorView.setBackgroundColor(Color.WHITE)
         setupStatusBar()
         setupToolbar()
         setupViewPager()
@@ -120,7 +126,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(this, R.color.white))
+                setStatusBarColor(ContextCompat.getColor(this, R.color.transparent))
             } catch (ex: Resources.NotFoundException) {
                 ex.printStackTrace()
             }
@@ -129,16 +135,16 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun setupToolbar() {
         createMerchantVoucherHeader?.run {
+            setBackgroundColor(Color.TRANSPARENT)
             try {
                 addRightIcon(R.drawable.ic_tips).setOnClickListener {
-                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment.javaClass.name)
+                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment::javaClass.name)
                 }
             } catch (ex: Resources.NotFoundException) {
                 ex.printStackTrace()
             }
             setNavigationOnClickListener(onNavigationClickListener)
         }
-
     }
 
     private fun setupViewPager() {
@@ -157,6 +163,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                 changeStepsInformation(this)
                 createMerchantVoucherViewPager?.currentItem = stepPosition
             }
+        })
+        viewModel.voucherPreviewBitmapLiveData.observe(this, Observer { bitmap ->
+            voucherBitmap = bitmap
         })
     }
 
@@ -182,5 +191,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun onNextStep() {
         viewModel.setNextStep()
     }
+
+    private fun getVoucherPreviewBitmap(): Bitmap? = voucherBitmap
 
 }

@@ -7,12 +7,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.adapter.vouchertype.PromotionTypeAdapter
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.FreeDeliveryVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 import kotlinx.android.synthetic.main.mvc_type_budget_promotion_widget.view.*
 
 class PromotionTypeInputViewHolder(itemView: View,
-                                   private val fragment: Fragment) : AbstractViewHolder<PromotionTypeInputUiModel>(itemView) {
+                                   private val fragment: Fragment,
+                                   private val onNextStep: () -> Unit,
+                                   private val onShouldChangeBannerValue: (VoucherImageType) -> Unit)
+    : AbstractViewHolder<PromotionTypeInputUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,10 +27,18 @@ class PromotionTypeInputViewHolder(itemView: View,
         private const val CASHBACK_TYPE_FRAGMENT_KEY = 1
     }
 
+    private val freeDeliveryVoucherCreateFragment by lazy {
+        FreeDeliveryVoucherCreateFragment.createInstance(onNextStep, onShouldChangeBannerValue, itemView.context)
+    }
+
+    private val cashbackVoucherCreateFragment by lazy {
+        CashbackVoucherCreateFragment.createInstance(onNextStep, onShouldChangeBannerValue, itemView.context)
+    }
+
     private val promotionTypeFragmentHashMap by lazy {
         LinkedHashMap<Int, BaseListFragment<*,*>>().apply {
-            put(FREE_DELIVERY_TYPE_FRAGMENT_KEY, FreeDeliveryVoucherCreateFragment.createInstance())
-            put(CASHBACK_TYPE_FRAGMENT_KEY, FreeDeliveryVoucherCreateFragment.createInstance())
+            put(FREE_DELIVERY_TYPE_FRAGMENT_KEY, freeDeliveryVoucherCreateFragment)
+            put(CASHBACK_TYPE_FRAGMENT_KEY, cashbackVoucherCreateFragment)
         }
     }
 
@@ -38,6 +51,7 @@ class PromotionTypeInputViewHolder(itemView: View,
     override fun bind(element: PromotionTypeInputUiModel?) {
         itemView.run {
             typeBudgetPromotionViewPager?.let { viewPager ->
+                viewPager.isUserInputEnabled = false
                 viewPager.adapter = promotionTypeAdapter
                 typeBudgetPromotionContentSwitcher?.setOnCheckedChangeListener { _, isChecked ->
                     viewPager.currentItem = if (isChecked) {

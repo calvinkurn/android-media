@@ -24,7 +24,7 @@ object PromoCreationStaticData {
                             "tokopedia://webview?url=https://m.tokopedia.com/broadcast-chat/create"
                     ),
                     PromoCreationUiModel(
-                            R.drawable.ic_broadcast_chat,
+                            R.drawable.ic_voucher_toko,
                             "Voucher Toko",
                             "Gunakan voucher toko yang sesuai target pembeli tokomu",
                             "",

@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
+import android.graphics.Bitmap
 import androidx.annotation.IntRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,6 +18,10 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     private val mStepPositionLiveData = MutableLiveData<Int>()
     val stepPositionLiveData : LiveData<Int>
         get() = mStepPositionLiveData
+
+    private val mVoucherPreviewBitmapLiveData = MutableLiveData<Bitmap>()
+    val voucherPreviewBitmapLiveData : LiveData<Bitmap>
+        get() = mVoucherPreviewBitmapLiveData
 
     fun setStepPosition(@IntRange(from = 0) stepPosition: Int) {
         val max = maxPosition
@@ -52,6 +57,10 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
 
     fun setMaxPosition(@IntRange(from = 0) max: Int) {
         maxPosition = max
+    }
+
+    fun setVoucherPreviewBitmap(bitmap: Bitmap) {
+        mVoucherPreviewBitmapLiveData.value = bitmap
     }
 
 }
