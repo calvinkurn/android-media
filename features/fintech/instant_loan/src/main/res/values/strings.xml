@@ -66,6 +66,8 @@
     <string name="il_dana_instant_interest_rate">Rp105,600 - Rp280,140</string>
     <string name="il_loan_category_label" >Pilih Kategori</string>
     <string name="il_title_sort_but">Urutkan</string>
+    <string name="il_filter">Urutkan</string>
+    <string name="il_title_close">Tutup</string>
 
 
 </resources>

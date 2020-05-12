@@ -1,6 +1,6 @@
 package com.tokopedia.play.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -13,18 +13,15 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-05.
  */
-class PostLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<Boolean>() {
+class PostLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository) : UseCase<Boolean>() {
 
     var params = HashMap<String, Any>()
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(query, LikeContent.Response::class.java, params)
-        gqlUseCase.clearRequest()
-        gqlUseCase.addRequest(gqlRequest)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
+        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
-        val gqlResponse = gqlUseCase.executeOnBackground()
         val response = gqlResponse.getData<LikeContent.Response>(LikeContent.Response::class.java)
         if (response.doLikeKolPost.error.isEmpty())  {
             response.doLikeKolPost.data?.let {

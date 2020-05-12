@@ -3,11 +3,12 @@
     package="com.tokopedia.df.user.liveness">
 
     <dist:module
-        dist:onDemand="true"
         dist:title="@string/title_liveness_detection">
+        <dist:delivery>
+            <dist:on-demand/>
+        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 
     <application android:hasCode="false" />
 </manifest>
-

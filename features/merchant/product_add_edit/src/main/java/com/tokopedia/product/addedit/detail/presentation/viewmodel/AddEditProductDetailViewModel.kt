@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
@@ -26,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 import javax.inject.Inject
 
 class AddEditProductDetailViewModel @Inject constructor(
@@ -168,7 +170,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductPriceInputError.value = true
             return
         }
-        val productPrice = productPriceInput.toBigInteger()
+        val productPrice: BigInteger = productPriceInput.toBigIntegerOrNull().orZero()
         if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
             val errorMessage = provider.getMinLimitProductPriceErrorMessage()
             errorMessage?.let { productPriceMessage = it }
@@ -183,17 +185,17 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSaleQuantityInput.isEmpty()) {
             provider.getEmptyWholeSaleQuantityErrorMessage()?.let { return it }
         }
-        val wholeSaleQuantity = wholeSaleQuantityInput.toBigInteger()
+        val wholeSaleQuantity = wholeSaleQuantityInput.toBigIntegerOrNull().orZero()
         if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
         }
         if (minOrderInput.isNotBlank()) {
-            if (wholeSaleQuantity < minOrderInput.toBigInteger()) {
+            if (wholeSaleQuantity < minOrderInput.toBigIntegerOrNull().orZero()) {
                 provider.getMinLimitWholeSaleQuantityErrorMessage()?.let { return it }
             }
         }
         if (previousInput.isNotBlank()) {
-            val previousQuantity = previousInput.toBigInteger()
+            val previousQuantity = previousInput.toBigIntegerOrNull().orZero()
             if (previousQuantity >= wholeSaleQuantity) {
                 provider.getPrevInputWholeSaleQuantityErrorMessage()?.let { return it }
             }
@@ -205,18 +207,18 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSalePriceInput.isEmpty()) {
             provider.getEmptyWholeSalePriceErrorMessage()?.let { return it }
         }
-        val wholeSalePrice = wholeSalePriceInput.toBigInteger()
+        val wholeSalePrice = wholeSalePriceInput.toBigIntegerOrNull().orZero()
         if (wholeSalePrice == 0.toBigInteger()) {
             provider.getZeroWholeSalePriceErrorMessage()?.let { return it }
         }
         if (productPriceInput.isNotBlank()) {
-            val productPrice = productPriceInput.toBigInteger()
+            val productPrice = productPriceInput.toBigIntegerOrNull().orZero()
             if (wholeSalePrice >= productPrice) {
                 provider.getWholeSalePriceTooExpensiveErrorMessage()?.let { return it }
             }
         }
         if (previousInput.isNotBlank()) {
-            val previousPrice = previousInput.toBigInteger()
+            val previousPrice = previousInput.toBigIntegerOrNull().orZero()
             if (previousPrice <= wholeSalePrice) {
                 provider.getPrevInputWholeSalePriceErrorMessage()?.let { return it }
             }
@@ -232,7 +234,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductStockInputError.value = true
             return
         }
-        val productStock = productStockInput.toBigInteger()
+        val productStock = productStockInput.toBigIntegerOrNull().orZero()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
@@ -256,7 +258,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsOrderQuantityInputError.value = true
             return
         }
-        val productMinOrder = minOrderQuantityInput.toBigInteger()
+        val productMinOrder = minOrderQuantityInput.toBigIntegerOrNull().orZero()
         if (productMinOrder < MIN_MIN_ORDER_QUANTITY.toBigInteger()) {
             val errorMessage = provider.getEmptyOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
@@ -264,7 +266,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             return
         }
         if (!hasVariants && productStockInput.isNotEmpty()) {
-            val productStock = productStockInput.toBigInteger()
+            val productStock = productStockInput.toBigIntegerOrNull().orZero()
             if (productMinOrder > productStock) {
                 val errorMessage = provider.getMinOrderExceedStockErrorMessage()
                 errorMessage?.let { orderQuantityMessage = it }
@@ -283,7 +285,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsPreOrderDurationInputError.value = true
             return
         }
-        val preOrderDuration = preOrderDurationInput.toBigInteger()
+        val preOrderDuration = preOrderDurationInput.toBigIntegerOrNull().orZero()
         if (preOrderDuration < MIN_PREORDER_DURATION.toBigInteger()) {
             val errorMessage = provider.getMinLimitPreorderDurationErrorMessage()
             errorMessage?.let { preOrderDurationMessage = it }
@@ -306,16 +308,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         preOrderDurationMessage = ""
         mIsPreOrderDurationInputError.value = false
-    }
-
-    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
-        wholesaleList.forEach { wholesaleInputModel ->
-            // recalculate wholesale min order because of > symbol
-            val oldValue = wholesaleInputModel.quantity.toBigInteger()
-            val newValue = oldValue - 1.toBigInteger()
-            wholesaleInputModel.quantity = newValue.toString()
-        }
-        return wholesaleList
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {

@@ -1,15 +1,18 @@
 package com.tokopedia.product.manage.feature.list.view.mapper
 
+import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
+import com.tokopedia.product.manage.feature.filter.data.model.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
+import com.tokopedia.usecase.coroutines.Result
 
 object ProductMapper {
 
@@ -43,10 +46,9 @@ object ProductMapper {
         }
     }
 
-    fun mapToFilterTabResult(response: ProductListMetaResponse, filterCount: Int): GetFilterTabResult {
+    fun LiveData<Result<GetFilterTabResult>>?.mapToFilterTabResult(filterTabs: List<Tab>): GetFilterTabResult {
         var totalProductCount = 0
-        val filterTabs = response.productListMetaWrapper.productListMetaData.tabs
-        val productFilters = mutableListOf<FilterTabViewModel>(MoreFilter(filterCount))
+        val productFilters = mutableListOf<FilterTabViewModel>()
 
         val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
         val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }
@@ -74,6 +76,10 @@ object ProductMapper {
             totalProductCount += violationFilterCount
         }
 
-        return GetFilterTabResult(productFilters, totalProductCount)
+        return if(this?.value == null) {
+            ShowFilterTab(productFilters, totalProductCount)
+        } else {
+            UpdateFilterTab(productFilters, totalProductCount)
+        }
     }
 }

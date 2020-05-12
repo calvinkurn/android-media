@@ -15,7 +15,7 @@ class ShipmentFormRequest(private val deviceId: String) {
         }
 
     class BundleBuilder {
-        private lateinit var deviceId: String
+        private var deviceId: String = ""
 
         // Add this data for trade in feature
         fun deviceId(deviceId: String): BundleBuilder {

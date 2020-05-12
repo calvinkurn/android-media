@@ -1,0 +1,9 @@
+{
+      goalKYCRequest {
+          kyc_request_id
+          errors {
+              title
+              message
+          }
+      }
+  }

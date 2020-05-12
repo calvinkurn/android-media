@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
@@ -16,31 +15,14 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 android {
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
     testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
         }
-    }
-
-    defaultConfig {
-        multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.search.application.SearchInstrumentationTestRunner"
     }
 }
 
@@ -67,9 +49,11 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.seamlesslogin)
+    implementation project(rootProject.ext.libraries.iris)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -110,26 +94,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation "org.json:json:20140107"
-    implementation project(rootProject.ext.libraries.iris)
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.json
 }
 
 project.ext {
     artifactId = 'search'
     groupId = 'com.tokopedia.discovery'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="search-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'

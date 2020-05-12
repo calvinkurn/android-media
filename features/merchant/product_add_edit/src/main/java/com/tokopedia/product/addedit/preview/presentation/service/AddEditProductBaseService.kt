@@ -181,7 +181,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     private fun sendSuccessBroadcast() {
-        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS)
+        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
         val bundle = Bundle()
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
         result.putExtras(bundle)

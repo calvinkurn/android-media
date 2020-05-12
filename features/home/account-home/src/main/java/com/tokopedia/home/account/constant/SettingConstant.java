@@ -19,6 +19,7 @@ public class SettingConstant {
     public static final int SETTING_ACCOUNT_SAMPAI_ID = 15;
     public static final int SETTING_TEMPLATE_ID = 16;
     public static final int SETTING_PIN = 17;
+    public static final int SETTING_OCC_PREFERENCE_ID = 18;
     public static final int SETTING_SHOP_INFO_ID = 21;
     public static final int SETTING_SHOP_ETALASE_ID = 22;
     public static final int SETTING_SHOP_PRODUCT_ID = 23;
@@ -36,6 +37,7 @@ public class SettingConstant {
     public static final int SETTING_APP_ADVANCED_SETTING = 11;
     public static final int SETTING_APP_ADVANCED_CLEAR_CACHE = 1;
     public static final int SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2;
+    public static final int SETTING_ABOUT_US = 36;
 
 
     public static class Url {
@@ -44,6 +46,7 @@ public class SettingConstant {
         public static final String PATH_PRIVACY_POLICY = "privacy.pl?isBack=true";
         public static final String PATH_CHECKOUT_TEMPLATE = "user/settings/template-pembelian";
         public static final String BASE_WEBVIEW_APPLINK = "tokopedia://webview?url=";
+        public static final String PATH_ABOUT_US = "about";
     }
 
     public static class PeopleUrl{

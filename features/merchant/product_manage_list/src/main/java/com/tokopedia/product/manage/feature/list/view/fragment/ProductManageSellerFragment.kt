@@ -15,11 +15,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
-import com.tokopedia.product.manage.oldlist.constant.DRAFT_PRODUCT
-import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
-import com.tokopedia.product.manage.oldlist.view.listener.ProductDraftListCountView
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
+import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
+import com.tokopedia.product.manage.feature.list.view.listener.ProductDraftListCountView
+import com.tokopedia.product.manage.feature.list.view.presenter.ProductDraftListCountPresenter
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_product_manage_seller.*
@@ -127,7 +127,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     private fun registerDraftReceiver() {
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED || intent.action == TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS) {
+                if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED || intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT) {
                     productDraftListCountPresenter.getAllDraftCount()
                 }
             }
@@ -136,7 +136,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         activity?.let {
             val intentFilters = IntentFilter().apply {
                 addAction(UploadProductService.ACTION_DRAFT_CHANGED)
-                addAction(TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS)
+                addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
             }
             it.registerReceiver(draftBroadCastReceiver, intentFilters)
         }

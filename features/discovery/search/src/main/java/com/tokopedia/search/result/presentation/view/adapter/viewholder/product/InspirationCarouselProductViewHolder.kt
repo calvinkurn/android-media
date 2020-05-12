@@ -21,7 +21,9 @@ class InspirationCarouselProductViewHolder(
     internal fun bind(item: InspirationCarouselViewModel.Option) {
         bindOptionTitle(item.title)
         bindOnClickListener(item)
-        val productOption = item.product[0]
+
+        val productOption = item.product.getOrNull(0) ?: return
+
         bindProductImage(productOption.imgUrl)
         bindProductName(productOption.name)
         bindProductPrice(productOption.priceStr)

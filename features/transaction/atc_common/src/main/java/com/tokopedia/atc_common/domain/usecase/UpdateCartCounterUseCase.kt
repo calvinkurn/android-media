@@ -7,6 +7,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -27,6 +29,8 @@ class UpdateCartCounterUseCase @Inject constructor(
             val updateCartCounterResponse = it.getData<UpdateCartCounterGqlResponse>(UpdateCartCounterGqlResponse::class.java)
             updateCartCounterResponse.updateCartCounter.count
         }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
 }

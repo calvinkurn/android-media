@@ -29,9 +29,11 @@ dependencies {
     implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.travelPassenger)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
+    implementation project(rootProject.ext.libraries.playCore)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.dialog
@@ -43,7 +45,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
@@ -61,9 +65,10 @@ dependencies {
 project.ext {
     artifactId = 'umrah'
     groupId = 'com.tokopedia.salam'
-    versionName = "1.0.0"
-    artifactName = "salam_umrah-release"
+    versionName = "0.0.2"
+    artifactName = "umrah-release"
 }
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

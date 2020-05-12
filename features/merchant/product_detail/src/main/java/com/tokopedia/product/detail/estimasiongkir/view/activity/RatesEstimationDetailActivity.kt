@@ -19,10 +19,12 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
         val weight = intent.getFloatExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
         val weightUnit = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT)
         val isFreeOngkir = intent.getBooleanExtra(RatesEstimationConstant.PARAM_ISFREEONGKIR, false)
+        val shopId = intent.getStringExtra(RatesEstimationConstant.PARAM_SHOP_ID)
+        val productId = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_ID)
         return RatesEstimationDetailFragment.createInstance(shopDomain, weight, weightUnit,
                 if (intent.hasExtra(RatesEstimationConstant.PARAM_ORIGIN))
                     intent.getStringExtra(RatesEstimationConstant.PARAM_ORIGIN)
-                else null, isFreeOngkir
+                else null, isFreeOngkir, shopId, productId
         )
     }
 
@@ -35,13 +37,18 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
     companion object {
 
         @JvmStatic
-        fun createIntent(context: Context, shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String?, isFreeOngkir: Boolean): Intent {
+        fun createIntent(context: Context, shopDomain: String, productWeight: Float,
+                         productWeightUnit: String, origin: String?, isFreeOngkir: Boolean,
+                         shopId: String, productId: String
+        ): Intent {
             return Intent(context, RatesEstimationDetailActivity::class.java)
                     .putExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                     .putExtra(RatesEstimationConstant.PARAM_ORIGIN, origin)
                     .putExtra(RatesEstimationConstant.PARAM_ISFREEONGKIR, isFreeOngkir)
+                    .putExtra(RatesEstimationConstant.PARAM_SHOP_ID, shopId)
+                    .putExtra(RatesEstimationConstant.PARAM_PRODUCT_ID, productId)
         }
     }
 }

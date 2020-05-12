@@ -2,14 +2,15 @@
 /features/content/affiliate_common/     				@tokopedia/minion-dave
 /features/content/createpost/           				@tokopedia/minion-dave
 /features/content/explore/              				@tokopedia/minion-dave
-/features/content/feed/                 				@tokopedia/minion-dave
+/features/content/feed/                 				@tokopedia/minion-darth
 /features/content/interest_pick/        				@tokopedia/minion-dave
 /features/content/kol/                  				@tokopedia/minion-dave
 /features/content/kol_common/           				@tokopedia/minion-dave
 /features/content/profile/              				@tokopedia/minion-dave
-/features/content/feed_component/       				@tokopedia/minion-dave
+/features/content/feed_component/       				@tokopedia/minion-darth
+/features/category/       				                @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
-/features/discovery/topadssdk/                      	@tokopedia/minion-dave
+/features/discovery/topadssdk/                      	@tokopedia/android-gatekeeper-analytic
 /features/discovery/home/                           	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
 /features/discovery/home_wishlist/                     	@tokopedia/minion-dave
@@ -21,7 +22,7 @@
 /features/discovery/image_search/                   	@tokopedia/minion-dave
 /features/discovery/similarsearch/                  	@tokopedia/minion-dave
 /features/discovery/autocomplete/                   	@tokopedia/minion-dave
-/features/digital/digital_browse/                   	@tokopedia/minion-dave
+/features/digital/digital_browse/                   	@tokopedia/minion-darth
 /features/discovery/global_nav_widget/              	@tokopedia/minion-dave
 /features/discovery/global_nav_widget_samples/      	@tokopedia/minion-dave
 /features/home/navigation/                          	@tokopedia/minion-dave
@@ -44,8 +45,6 @@
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/flashsale_management/               @tokopedia/minion-stuart
 /features/discovery/flashsale_management_common/        @tokopedia/minion-stuart
-
-/features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
 
 /features/merchant/atc_variant/                         @tokopedia/minion-stuart
 /features/merchant/brandlist/                           @tokopedia/minion-stuart
@@ -71,6 +70,7 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_showcase/                       @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
+/features/merchant/youtube_common/                      @tokopedia/minion-stuart
 
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
 /features/top_ads/top_ads_management/                   @tokopedia/minion-skywalker
@@ -81,6 +81,7 @@
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
 
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /features/merchant/seller_home/                         @tokopedia/minion-stuart
 /features/merchant/seller_onboarding/                   @tokopedia/minion-stuart
@@ -104,6 +105,7 @@
 /features/recharge/common_topup_bills                   @tokopedia/minion-mark
 /features/recharge/digital_homepage                     @tokopedia/minion-mark
 /features/recharge/digitalproduct                       @tokopedia/minion-mark
+/features/recharge/recharge_credit_card                  @tokopedia/minion-mark
 
 /features/entertainment/event                 			@tokopedia/minion-mark
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
@@ -118,6 +120,7 @@
 
 /features/salam/umrah                                   @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
+/features/recharge/recharge_slice                       @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -168,10 +171,10 @@
 /features/user/stickylogin/                             @tokopedia/minion-kevin
 /features/user/campaign_shake_landing/                  @tokopedia/minion-kevin
 /features/home/account-home/                        	@tokopedia/minion-kevin
+/features/user/loginfingerprint/                        @tokopedia/minion-kevin
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
-/features/fintech/wallet                				@tokopedia/minion-solo
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
 /features/fintech/ovo_pay_with_qr       				@tokopedia/minion-solo
@@ -182,7 +185,7 @@
 /features/promo/gamification            				@tokopedia/minion-solo
 /features/payment/withdraw/             				@tokopedia/minion-solo
 /features/kyc                           				@tokopedia/minion-yoda
-/features/promo/merchant_voucher                        @tokopedia/minion-solo
+/features/promo/merchant_voucher                        @tokopedia/minion-stuart
 /features/promo/promo_gamification_common               @tokopedia/minion-solo
 /features/promo/loyalty                                 @tokopedia/minion-solo
 /features/promo/loyalty_common                          @tokopedia/minion-solo
@@ -194,6 +197,8 @@
 /features/im/common_promo                               @tokopedia/minion-yoda
 /features/ovop2p                                        @tokopedia/minion-yoda
 /features/payment/common_payment                        @tokopedia/minion-yoda
+/features/digital/instant_debit_bca                     @tokopedia/minion-yoda
+/features/fintech/wallet                				@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
@@ -208,22 +213,25 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
+/libraries/circular_view_pager/				    		@tokopedia/core-team
 /libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team
-/libraries/core_legacy/									@nathaniel09
+/libraries/core_legacy/									@tokopedia/android-gatekeeper-analytic
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
+/libraries/device_info/                                 @tokopedia/core-team
 /libraries/dynamic_features/							@tokopedia/core-team
+/libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
 /libraries/graph_view/									@tokopedia/core-team
 /libraries/image_picker/								@tokopedia/core-team
 /libraries/image_preview/								@tokopedia/core-team
 /libraries/imageuploader/								@tokopedia/core-team
 /libraries/inappupdate/									@tokopedia/core-team
-/libraries/iris/										@tokopedia/core-team
+/libraries/iris/										@tokopedia/android-gatekeeper-analytic
 /libraries/kotlin_extensions/							@tokopedia/core-team
 /libraries/linker/										@tokopedia/core-team
 /libraries/locationmanager/								@tokopedia/core-team
@@ -237,11 +245,12 @@
 /libraries/remote_config/								@tokopedia/core-team
 /libraries/remoteresourcerequest/						@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
-/libraries/track/										@nathaniel09
-/libraries/tracking_optimizer/							@nathaniel09
+/libraries/track/										@tokopedia/android-gatekeeper-analytic
+/libraries/tracking_optimizer/							@tokopedia/android-gatekeeper-analytic
 /libraries/translator/									@tokopedia/core-team
 /libraries/travel_calendar/								@tokopedia/core-team
 /libraries/twitter_share/								@tokopedia/core-team
+/libraries/utils                                        @tokopedia/core-team
 /libraries/video_recorder/								@tokopedia/core-team
 /libraries/videoplayer/									@tokopedia/core-team
 /libraries/videouploader/								@tokopedia/core-team
@@ -250,6 +259,7 @@
 /libraries/williamchart/								@tokopedia/core-team
 /libraries/youtubeutil/									@tokopedia/core-team
 /libraries/imagepreviewslider                           @tokopedia/core-team
+/libraries/blockcanary                                  @tokopedia/core-team
 /libraries/annotation_proc_central                      @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
@@ -260,10 +270,17 @@
 /tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
-/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89
-/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89
-/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
+/tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code
+/tkpdcore/                                          	@tokopedia/android-gatekeeper-legacy-code
+/tkpdabstraction/                                   	@tokopedia/android-gatekeeper-legacy-code
 
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/minion-stuart
 /testapp/                                               @tokopedia/core-team
+
+
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerMainApplication.java                      @tokopedia/android-gatekeeper-load-time
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerRouterApplication.java                    @tokopedia/android-gatekeeper-load-time
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerSplashScreen.java                         @tokopedia/android-gatekeeper-load-time
+/tkpdcore/src/main/java/com/tokopedia/core/SplashScreen.java                                    @tokopedia/android-gatekeeper-load-time
+/tkpdcore/src/main/java/com/tokopedia/core/app/MainApplication.java                             @tokopedia/android-gatekeeper-load-time

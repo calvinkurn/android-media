@@ -70,7 +70,7 @@ public class InboxGtmTracker {
                 );
     }
 
-    public void eventClickRecommendationWishlist(Context context, RecommendationItem recommendationItem, boolean isAdd){
+    public void eventClickRecommendationWishlist(Context context, boolean isAdd){
         ContextAnalytics tracker = getTracker(context);
         if(tracker != null) {
             Map<String, Object> map =
