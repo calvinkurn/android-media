@@ -1,7 +1,6 @@
-package com.tokopedia.notifications.database.convertors
+package com.tokopedia.notifications.data.converters
 
 import androidx.room.TypeConverter
-import com.tokopedia.notifications.model.NotificationStatus
 import org.json.JSONException
 import org.json.JSONObject
 

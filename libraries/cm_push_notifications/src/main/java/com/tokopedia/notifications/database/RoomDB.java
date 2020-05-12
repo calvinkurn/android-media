@@ -10,13 +10,13 @@ import androidx.room.migration.Migration;
 
 import android.content.Context;
 
-import com.tokopedia.notifications.database.convertors.CarouselConverter;
-import com.tokopedia.notifications.database.convertors.GridConverter;
-import com.tokopedia.notifications.database.convertors.JsonObjectConverter;
-import com.tokopedia.notifications.database.convertors.NotificationModeConverter;
-import com.tokopedia.notifications.database.convertors.NotificationStatusConverter;
-import com.tokopedia.notifications.database.convertors.ProductInfoConverter;
-import com.tokopedia.notifications.database.convertors.PushActionButtonConverter;
+import com.tokopedia.notifications.data.converters.CarouselConverter;
+import com.tokopedia.notifications.data.converters.GridConverter;
+import com.tokopedia.notifications.data.converters.JsonObjectConverter;
+import com.tokopedia.notifications.data.converters.NotificationModeConverter;
+import com.tokopedia.notifications.data.converters.NotificationStatusConverter;
+import com.tokopedia.notifications.data.converters.ProductInfoConverter;
+import com.tokopedia.notifications.data.converters.PushActionButtonConverter;
 import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;

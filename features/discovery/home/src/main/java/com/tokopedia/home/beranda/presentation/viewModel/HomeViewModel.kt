@@ -40,6 +40,8 @@ import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
+import kotlinx.coroutines.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -60,7 +62,7 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeViewModel @Inject constructor(
-        private val homeUseCase: HomeUseCase,
+        private val homeUseCase: Lazy<HomeUseCase>,
         private val userSession: UserSessionInterface,
         private val closeChannelUseCase: CloseChannelUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
@@ -76,7 +78,7 @@ open class HomeViewModel @Inject constructor(
         private val getRecommendationTabUseCase: GetRecommendationTabUseCase,
         private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
-        private val sendGeolocationInfoUseCase: SendGeolocationInfoUseCase,
+        private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val stickyLoginUseCase: StickyLoginUseCase,
         private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
@@ -100,7 +102,7 @@ open class HomeViewModel @Inject constructor(
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.getHomeData().flowOn(homeDispatcher.io())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.io())
 
 // ============================================================================================
 // ================================ Live data UI Controller ===================================
@@ -211,7 +213,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun sendGeolocationData() {
-        sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
+        sendGeolocationInfoUseCase.get().createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -660,7 +662,7 @@ open class HomeViewModel @Inject constructor(
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            homeUseCase.updateHomeData().collect {
+            homeUseCase.get().updateHomeData().collect {
                 _updateNetworkLiveData.postValue(it)
             }
         }) {
