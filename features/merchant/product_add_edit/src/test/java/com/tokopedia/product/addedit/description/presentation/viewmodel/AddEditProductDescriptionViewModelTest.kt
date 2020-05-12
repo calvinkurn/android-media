@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.description.presentation.viewmodel
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
@@ -12,6 +13,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
@@ -19,6 +21,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,6 +40,9 @@ class AddEditProductDescriptionViewModelTest {
 
     @RelaxedMockK
     lateinit var videoUri: Uri
+
+    @RelaxedMockK
+    lateinit var videoYoutubeObserver: Observer<in Pair<Int, Result<YoutubeVideoDetailModel>>>
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -75,7 +81,12 @@ class AddEditProductDescriptionViewModelTest {
             videoUri.getQueryParameter(AddEditProductDescriptionViewModel.KEY_YOUTUBE_VIDEO_ID)
         } returns videoId
 
-        viewModel.videoYoutube.observeForever {}
+        viewModel.videoYoutube.observeForever(videoYoutubeObserver)
+    }
+
+    @After
+    fun cleanup() {
+        viewModel.videoYoutube.removeObserver(videoYoutubeObserver)
     }
 
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
