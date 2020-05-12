@@ -1452,7 +1452,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP2General(it: ProductInfoP2General) {
         viewModel.installmentData = it.productFinancingCalculationData
-        if (it.latestTalk.id.isEmpty()) {
+        if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
             dynamicAdapter.removeDiscussionSection(pdpHashMapUtil?.productDiscussionMap)
         }
 
