@@ -97,7 +97,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
-    private var alreadySentScreen = false
 
     private var hasLoadCardData = false
     private var hasLoadLineGraphData = false
