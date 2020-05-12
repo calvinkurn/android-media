@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list
+package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers

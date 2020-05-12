@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list
+package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.network.exception.MessageErrorException
