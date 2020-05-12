@@ -151,6 +151,14 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     val videoPlayer: SimpleExoPlayer
         get() = playerModel.player
 
+    val currentUri: Uri?
+        get() {
+            return when (val currentState = currentPrepareState) {
+                is PlayVideoPrepareState.Unprepared -> currentState.previousUri
+                is PlayVideoPrepareState.Prepared -> currentState.uri
+            }
+        }
+
     //region public method
     fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
         if (uri.toString().isEmpty()) {
@@ -159,10 +167,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
 
         val prepareState = currentPrepareState
-        val currentUri: Uri? = when (prepareState) {
-            is PlayVideoPrepareState.Unprepared -> prepareState.previousUri
-            is PlayVideoPrepareState.Prepared -> prepareState.uri
-        }
         if (currentUri == null) playerModel = initVideoPlayer(playerModel, bufferControl)
         if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
             val lastPosition = if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
@@ -170,7 +174,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             playVideoWithUri(uri, autoPlay, lastPosition, resetState)
             currentPrepareState = PlayVideoPrepareState.Prepared(uri, if (prepareState is PlayVideoPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
         }
-        if (!videoPlayer.isPlaying) resumeCurrentVideo()
+        if (!videoPlayer.isPlaying && autoPlay) resumeCurrentVideo()
     }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?, resetState: Boolean = true) {
@@ -194,10 +198,10 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         videoPlayer.playWhenReady = false
     }
 
-    fun resumeOrPlayPreviousVideo() {
+    fun resumeOrPlayPreviousVideo(autoPlay: Boolean) {
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Unprepared && prepareState.previousUri != null) {
-            safePlayVideoWithUri(prepareState.previousUri)
+            safePlayVideoWithUri(prepareState.previousUri, autoPlay)
         }
     }
 
