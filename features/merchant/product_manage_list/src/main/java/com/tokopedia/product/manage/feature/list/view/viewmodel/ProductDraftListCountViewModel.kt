@@ -1,7 +1,9 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
 import com.tokopedia.product.manage.feature.list.domain.ClearAllDraftProductUseCase
 import com.tokopedia.product.manage.feature.list.domain.FetchAllDraftProductCountUseCase
@@ -10,15 +12,16 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import rx.Subscriber
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductDraftListCountViewModel @Inject constructor(
     private val fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
     private val getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
     private val clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
-    private val updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase
-): ViewModel() {
+    private val updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase,
+    private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     val getAllDraftCountResult
         get() = _getAllDraftCountResult
@@ -26,35 +29,35 @@ class ProductDraftListCountViewModel @Inject constructor(
     private val _getAllDraftCountResult = MutableLiveData<Result<Long>>()
 
     fun getAllDraftCount() {
-        getAllProductsCountDraftUseCase.execute(getSubscriber())
+        launchCatchError(block = {
+            val draftCount = withContext(dispatchers.io) {
+                getAllProductsCountDraftUseCase.getData(RequestParams.EMPTY)
+            }
+            _getAllDraftCountResult.value = Success(draftCount)
+        }) {
+            _getAllDraftCountResult.value = Fail(it)
+        }
     }
 
     fun fetchAllDraftCountWithUpdateUploading() {
-        val params = UpdateUploadingDraftProductUseCase.createRequestParamsUpdateAll(false)
-        updateUploadingDraftProductUseCase.execute(params, getUploadingSubscriber())
+        launchCatchError(block = {
+            withContext(dispatchers.io) {
+                val params = UpdateUploadingDraftProductUseCase.createRequestParamsUpdateAll(false)
+                updateUploadingDraftProductUseCase.getData(params)
+            }
+            getAllDraftCount()
+        }) {
+            getAllDraftCount()
+        }
     }
 
     fun clearAllDraft() {
-        clearAllDraftProductUseCase.execute(RequestParams.EMPTY, object : Subscriber<Boolean>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {}
-
-            override fun onNext(aBoolean: Boolean) {}
-        })
-    }
-
-    private fun getSubscriber(): Subscriber<Long> {
-        return object : Subscriber<Long>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {
-                _getAllDraftCountResult.value = Fail(e)
+        launchCatchError(block = {
+            withContext(dispatchers.io) {
+                clearAllDraftProductUseCase.getData(RequestParams.EMPTY)
             }
-
-            override fun onNext(rowCount: Long) {
-                _getAllDraftCountResult.value = Success(rowCount)
-            }
+        }) {
+            // do nothing
         }
     }
 
@@ -62,19 +65,5 @@ class ProductDraftListCountViewModel @Inject constructor(
         fetchAllDraftProductCountUseCase.unsubscribe()
         clearAllDraftProductUseCase.unsubscribe()
         updateUploadingDraftProductUseCase.unsubscribe()
-    }
-
-    private fun getUploadingSubscriber(): Subscriber<Boolean> {
-        return object : Subscriber<Boolean>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {
-                getAllDraftCount()
-            }
-
-            override fun onNext(aBoolean: Boolean) {
-                getAllDraftCount()
-            }
-        }
     }
 }
