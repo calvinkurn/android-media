@@ -76,6 +76,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -129,6 +130,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var onLoadMore = false
     private var isFilterButtonAnimating = false
     private var _animator: Animator? = null
+    private var textChangedJob: Job? = null
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -612,9 +614,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            paramOrder.search = text
-            refreshHandler?.startRefresh()
+        textChangedJob?.cancel()
+        textChangedJob = GlobalScope.launch(Dispatchers.Main) {
+            delay(500L)
+            text?.let {
+                paramOrder.search = text
+                refreshHandler?.startRefresh()
+            }
         }
     }
 
