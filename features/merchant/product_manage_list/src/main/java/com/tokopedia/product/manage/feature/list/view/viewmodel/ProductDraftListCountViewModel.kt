@@ -6,7 +6,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
 import com.tokopedia.product.manage.feature.list.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.feature.list.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,7 +15,6 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductDraftListCountViewModel @Inject constructor(
-    private val fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
     private val getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
     private val clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
     private val updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase,
@@ -62,7 +60,7 @@ class ProductDraftListCountViewModel @Inject constructor(
     }
 
     fun detachView() {
-        fetchAllDraftProductCountUseCase.unsubscribe()
+        getAllProductsCountDraftUseCase.unsubscribe()
         clearAllDraftProductUseCase.unsubscribe()
         updateUploadingDraftProductUseCase.unsubscribe()
     }
