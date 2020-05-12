@@ -95,26 +95,11 @@ class PlayViewModelTest {
     }
 
     @Test
-    fun `test observe video play manager`() {
-        val mockExoPlayer: SimpleExoPlayer = mockk()
-        val mockObservableVideoPlayer = MutableLiveData<ExoPlayer>().apply {
-            value = mockExoPlayer
-        }
-
-        every { mockPlayVideoManager.getObservableVideoPlayer() } returns mockObservableVideoPlayer
-
-        Assertions
-                .assertThat(playViewModel.observableVOD.getOrAwaitValue())
-                .isEqualTo(mockExoPlayer)
-    }
-
-    @Test
     fun `test observe get channel info`() {
         val expectedModel = ChannelInfoUiModel(
                 id = mockChannel.channelId,
                 title = mockChannel.title,
                 description = mockChannel.description,
-                channelType = if (mockChannel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
                 moderatorName = mockChannel.moderatorName,
                 partnerId = mockChannel.partnerId,
                 partnerType = PartnerType.getTypeByValue(mockChannel.partnerType),
@@ -631,27 +616,6 @@ class PlayViewModelTest {
     }
     //endregion
 
-    //region screen orientation
-    @Test
-    fun `when screen orientation is not set, then orientation is unknown`() {
-        val expectedResult = ScreenOrientation.Unknown
-
-        Assertions
-                .assertThat(playViewModel.screenOrientation)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when screen orientation is set, then orientation should match the value set`() {
-        val orientation = ScreenOrientation.Landscape
-        playViewModel.setScreenOrientation(orientation)
-
-        Assertions
-                .assertThat(playViewModel.screenOrientation)
-                .isEqualTo(orientation)
-    }
-    //endregion
-
     //region state helper
     /**
      * Variable state helper
@@ -671,7 +635,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -687,7 +651,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -705,7 +669,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -719,7 +683,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -737,7 +701,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -755,7 +719,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -768,7 +732,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -777,7 +741,7 @@ class PlayViewModelTest {
         val expectedResult = PlayChannelType.Unknown
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -796,7 +760,7 @@ class PlayViewModelTest {
         val expectedResult = true
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -815,7 +779,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -826,7 +790,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -835,7 +799,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.getStateHelper(orientation).bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
     //endregion

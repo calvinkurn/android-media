@@ -96,6 +96,9 @@ class PlayBottomSheetViewModelTest {
                 product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
                 bottomInsetsType = BottomInsetsType.VariantSheet
         )
+        val expectedResult = PlayResult.Success(
+                Event(expectedModel)
+        )
 
         playBottomSheetViewModel.addToCart(
                 product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
@@ -103,9 +106,15 @@ class PlayBottomSheetViewModelTest {
                 type = BottomInsetsType.VariantSheet
         )
 
+        val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
+
         Assertions
-                .assertThat(playBottomSheetViewModel.observableAddToCart.getOrAwaitValue().peekContent())
-                .isEqualTo(expectedModel)
+                .assertThat(actualValue)
+                .isInstanceOf(PlayResult.Success::class.java)
+
+        Assertions
+                .assertThat((actualValue as PlayResult.Success).data)
+                .isEqualToComparingFieldByField(expectedResult.data)
     }
 
     @Test
@@ -120,6 +129,9 @@ class PlayBottomSheetViewModelTest {
                 errorMessage = "error message ",
                 cartId = ""
         )
+        val expectedResult = PlayResult.Success(
+                Event(expectedModel)
+        )
 
         playBottomSheetViewModel.addToCart(
                 product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
@@ -127,9 +139,15 @@ class PlayBottomSheetViewModelTest {
                 type = BottomInsetsType.VariantSheet
         )
 
+        val actualValue = playBottomSheetViewModel.observableAddToCart.getOrAwaitValue()
+
         Assertions
-                .assertThat(playBottomSheetViewModel.observableAddToCart.getOrAwaitValue().peekContent())
-                .isEqualTo(expectedModel)
+                .assertThat(actualValue)
+                .isInstanceOf(PlayResult.Success::class.java)
+
+        Assertions
+                .assertThat((actualValue as PlayResult.Success).data)
+                .isEqualToComparingFieldByField(expectedResult.data)
     }
 
     @Test

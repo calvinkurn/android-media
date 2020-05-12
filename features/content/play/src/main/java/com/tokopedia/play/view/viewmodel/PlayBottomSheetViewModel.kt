@@ -77,6 +77,8 @@ class PlayBottomSheetViewModel @Inject constructor(
 
     fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
         _observableAddToCart.value = PlayResult.Loading(showPlaceholder = false)
+
+        //TODO(If isSuccess = false, treat that as Failure instead of Success(isSuccess=true))
         scope.launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
                 postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(
