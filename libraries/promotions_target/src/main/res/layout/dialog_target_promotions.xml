@@ -51,11 +51,9 @@
         </ViewFlipper>
 
         <androidx.appcompat.widget.AppCompatImageView
-            app:srcCompat="@drawable/t_promo_non_login"
             android:id="@+id/imageViewRight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout_height="@dimen/dp_280"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"

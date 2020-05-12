@@ -103,7 +103,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var claimCouponApi: ClaimCouponApi
 
     private var data: GratificationDataContract? = null
-    var popGratificationActionButton: PopGratificationActionButton? = null
+    var popGratificationActionBtn: PopGratificationActionButton? = null
 
     private var originalBtnText: String? = null
     private var couponCodeAfterClaim: String? = null
@@ -212,44 +212,79 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     //todo Rahul NOT DONE
     fun showNewLoggedIn(activityContext: Context,
                         couponUiType: TargetPromotionsCouponType,
-                        data: GratificationDataContract,
+                        popGratificationResponse: GetPopGratificationResponse,
+                        claimPopGratificationResponse: ClaimPopGratificationResponse?,
                         couponDetailResponse: GetCouponDetailResponse,
-                        gratificationData: GratificationData,
-                        waitingForLogin: Boolean): Dialog? {
+                        gratificationData: GratificationData): Dialog? {
         isNewerVersion = true
 
         val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activityContext)
-        val view = LayoutInflater.from(activityContext).inflate(getLayout(TargetPromotionsCouponType.SINGLE_COUPON), null, false)
+        val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
         bottomSheetDialog = bottomSheet
 
-        if (waitingForLogin) {
-            //show login
-            initViews(view, activityContext, data, null, gratificationData)
-            setNonLoginUiData()
-            setNonLoggedInListeners()
+        initViews(view, activityContext, claimPopGratificationResponse, couponDetailResponse, gratificationData)
 
-            // make call to claim coupon
-            if (data is GetPopGratificationResponse) {
-                viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, data.popGratification?.popGratificationBenefits?.map { it -> it?.referenceID })
+        popGratificationResponse.popGratification?.popGratificationBenefits?.forEach { benefit ->
+            benefit?.referenceID?.let { rId ->
+                referenceIds.add(rId)
             }
-
         }
-        //show recyclerview coupons
+        if (claimPopGratificationResponse == null) {
+            showErrorUIForClaimGratificationLoggedIn()
+        } else {
+            setLoggedInUiForSuccessClaimGratificationNewVersion(claimPopGratificationResponse, couponDetailResponse)
+        }
 
-        //show title & text
-
-        // show buttons
-
-        //btn redirect is based on response from ClaimPopGratificationResponse
+        setListenersLoggedIn(activityContext as AppCompatActivity)
         return bottomSheet
+    }
+
+
+    private fun showErrorUIForClaimGratificationLoggedIn() {
+        retryCount += 1
+        val lessThanThreeTimes = retryCount < MAX_RETRY_COUNT
+        val context = tvTitleRight.context
+        tvTitleRight.text = context.getString(R.string.t_promo_disturbance_at_toko_house)
+        tvSubTitleRight.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
+
+        if (lessThanThreeTimes) {
+            originalBtnText = context.getString(R.string.t_promo_coba_lagi)
+        } else {
+            originalBtnText = context.getString(R.string.t_promo_ke_homepage)
+        }
+        btnAction.text = originalBtnText
+        imageViewRight.loadImageGlide(R.drawable.t_promo_server_error)
+    }
+
+
+    private fun setListenersLoggedIn(activity: AppCompatActivity) {
+
+        btnAction.setOnClickListener {
+            val btnActionText = btnAction.text.toString()
+
+            if (!skipBtnAction) {
+                val retryAvailable = retryCount < MAX_RETRY_COUNT
+                if (retryAvailable) {
+                    if (data == null) {
+                        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
+                    } else {
+                        performActionBasedOnClaim(popGratificationActionBtn)
+                    }
+
+                } else {
+                    dismissAfterRetryIsOver(activity, btnActionText)
+                }
+            }
+            skipBtnAction = true
+        }
     }
 
     fun show(activityContext: Context,
              couponUiType: TargetPromotionsCouponType,
              data: GratificationDataContract,
-             couponDetailResponse: GetCouponDetailResponse,
+             couponDetailResponse: GetCouponDetailResponse?,
              gratificationData: GratificationData,
              claimCouponApi: ClaimCouponApi,
              autoHitActionButton: Boolean): Dialog? {
@@ -320,7 +355,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         leftViewList.add(tvSubTitle)
         leftViewList.add(tvTitle)
 
-        initialAnimation()
+//        initialAnimation(isNewerVersion)
 
         recyclerView.layoutManager = LinearLayoutManager(activityContext, LinearLayoutManager.HORIZONTAL, false)
 
@@ -341,7 +376,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    private fun initialAnimation() {
+    private fun initialAnimation(isNewerVersion:Boolean) {
         if (isNewerVersion) {
             leftViewList.forEach {
                 it.translationX = screenWidth
@@ -455,7 +490,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         tvSubTitle.text = data.popGratificationClaim?.text
         originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
         btnAction.text = originalBtnText
-        popGratificationActionButton = data.popGratificationClaim?.popGratificationActionButton
+        popGratificationActionBtn = data.popGratificationClaim?.popGratificationActionButton
         this.data = data
 
         //load data in rv
@@ -480,6 +515,39 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         performAnimationClaimUiVersionNew()
 
+    }
+
+    //todo Rahul
+    private fun setLoggedInUiForSuccessClaimGratificationNewVersion(data: ClaimPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse? = null) {
+
+        initialAnimation(false)
+
+        tvTitle.text = data.popGratificationClaim?.title
+        tvSubTitle.text = data.popGratificationClaim?.text
+        originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
+        btnAction.text = originalBtnText
+        popGratificationActionBtn = data.popGratificationClaim?.popGratificationActionButton
+        this.data = data
+
+        //load data in rv
+        // check for error as well
+
+        //todo check 1
+        val couponDetailList = ArrayList<GetCouponDetail>()
+        couponDetailResponse?.couponList?.let {
+            couponDetailList.addAll(it)
+            couponListAdapter = CouponListAdapter(couponDetailList)
+            recyclerView.adapter = couponListAdapter
+            recyclerView.addItemDecoration(CouponItemDecoration())
+            viewFlipper.displayedChild = CONTAINER_COUPON
+        }
+
+        //todo check 2
+        if (couponDetailList.isEmpty()) {
+            imageView.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
+                expandBottomSheet()
+            }
+        }
     }
 
     //todo Rahul (NOW - coupod detail is empty because benefits are empty in claim response)
@@ -529,17 +597,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                                         (data as GetPopGratificationResponse).popGratification?.popGratificationBenefits?.map { benefit -> benefit?.referenceID })
                             } else {
                                 //coupon is claimed
-                                if (popGratificationActionButton != null) {
-                                    if (!popGratificationActionButton?.type.isNullOrEmpty() && popGratificationActionButton?.type == DISMISS) {
-                                        bottomSheetDialog.dismiss()
-                                    } else if (!popGratificationActionButton?.appLink.isNullOrEmpty()) {
-                                        RouteManager.route(btnAction.context, popGratificationActionButton?.appLink)
-                                    } else {
-                                        bottomSheetDialog.dismiss()
-                                    }
-                                } else {
-                                    bottomSheetDialog.dismiss()
-                                }
+                                performActionBasedOnClaim(popGratificationActionBtn)
                             }
                         } else {
                             routeToLogin(activity)
@@ -551,16 +609,17 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 skipBtnAction = true
             }
 
-            //todo Rahul - set error ui
+            //todo Rahul - set error ui (DONE)
             viewModel.claimApiLiveData.observe(activity, Observer {
                 when (it.status) {
                     LiveDataResult.STATUS.SUCCESS -> {
                         toggleProgressBar(false)
                         toggleBtnText(true)
-                        it.data?.let { claim ->
-                            setUiForSuccessClaimGratificationNewVersion(claim.first, claim.second)
+                        if (it.data != null && it.data.first.popGratificationClaim?.resultStatus?.code == "200") {
+                            setUiForSuccessClaimGratificationNewVersion(it.data.first, it.data.second)
+                        } else {
+                            showErrorUIForClaimGratification()
                         }
-
                     }
                     LiveDataResult.STATUS.ERROR -> {
                         toggleProgressBar(false)
@@ -574,6 +633,20 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     }
                 }
             })
+        }
+    }
+
+    fun performActionBasedOnClaim(popGratificationActionButton: PopGratificationActionButton?) {
+        if (popGratificationActionButton != null) {
+            if (!popGratificationActionButton.type.isNullOrEmpty() && popGratificationActionButton.type == DISMISS) {
+                bottomSheetDialog.dismiss()
+            } else if (!popGratificationActionButton.appLink.isNullOrEmpty()) {
+                RouteManager.route(btnAction.context, popGratificationActionButton.appLink)
+            } else {
+                bottomSheetDialog.dismiss()
+            }
+        } else {
+            bottomSheetDialog.dismiss()
         }
     }
 

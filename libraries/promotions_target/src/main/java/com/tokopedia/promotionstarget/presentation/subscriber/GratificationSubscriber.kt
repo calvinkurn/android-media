@@ -199,7 +199,8 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     val childJob = launch {
                         val response = presenter.getGratificationAndShowDialog(gratificationData)
                         val canShowDialog = response.popGratification?.isShow
-                        val isAutoClaim = response.popGratification?.isAutoClaim
+                        var isAutoClaim = response.popGratification?.isAutoClaim
+                        isAutoClaim = true
 
                         if (canShowDialog != null && canShowDialog) {
                             if (isAutoClaim != null && isAutoClaim) {
@@ -209,10 +210,11 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                 if (presenter.userSession.isLoggedIn) {
                                     val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
                                     val claimPopGratificationResponse = presenter.claimGratification(claimPayload)
-                                    val couponDetail = presenter.composeApi(claimPopGratificationResponse.popGratificationClaim?.popGratificationBenefits)
+                                    val popBenefits = response.popGratification?.popGratificationBenefits
+                                    val couponDetail = presenter.composeApi(popBenefits)
                                     withContext(Dispatchers.Main) {
                                         if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
-                                            showNewLoggedIn(weakActivity, claimPopGratificationResponse, couponDetail, gratificationData, intent)
+                                            showNewLoggedIn(weakActivity,response, claimPopGratificationResponse, couponDetail, gratificationData)
                                         }
                                     }
                                 } else {
@@ -238,28 +240,25 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     }
 
     private fun showNewLoggedIn(weakActivity: WeakReference<Activity>,
-                                claimPopGratificationResponse: ClaimPopGratificationResponse,
+                                popGratificationResponse: GetPopGratificationResponse,
+                                claimPopGratificationResponse: ClaimPopGratificationResponse?,
                                 couponDetailResponse: GetCouponDetailResponse,
-                                gratificationData: GratificationData,
-                                intent: Intent) {
+                                gratificationData: GratificationData) {
 
         val targetPromotionsDialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
-            val waitingForLogin = intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
 
             val activity = weakActivity.get()!!
             val dialog = targetPromotionsDialog.showNewLoggedIn(activity,
-                    TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON,
+                    TargetPromotionsDialog.TargetPromotionsCouponType.MULTIPLE_COUPON,
+                    popGratificationResponse,
                     claimPopGratificationResponse,
                     couponDetailResponse,
-                    gratificationData,
-                    waitingForLogin
-            )
+                    gratificationData)
             if (dialog != null) {
                 mapOfDialogs[activity] = Pair(targetPromotionsDialog, dialog)
             }
         }
-
     }
 
     private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, gratificationData: GratificationData) {
@@ -286,7 +285,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     private fun showOld(weakActivity: WeakReference<Activity>,
                         data: GetPopGratificationResponse,
-                        couponDetailResponse: GetCouponDetailResponse,
+                        couponDetailResponse: GetCouponDetailResponse?,
                         gratificationData: GratificationData,
                         intent: Intent) {
         val dialog = TargetPromotionsDialog(this)

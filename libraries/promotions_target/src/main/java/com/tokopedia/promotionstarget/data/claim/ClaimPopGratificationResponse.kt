@@ -33,9 +33,6 @@ data class PopGratificationClaim(
         @SerializedName("popGratificationActionButton")
         val popGratificationActionButton: PopGratificationActionButton? = null,
 
-        @SerializedName("popGratificationBenefits")
-        val popGratificationBenefits: List<PopGratificationBenefitsItem?>? = null,
-
         @SerializedName("imageUrl")
         val imageUrl: String? = null,
 
