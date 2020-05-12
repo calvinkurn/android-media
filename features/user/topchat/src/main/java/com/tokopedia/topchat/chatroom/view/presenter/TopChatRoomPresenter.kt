@@ -42,6 +42,7 @@ import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -90,7 +91,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
-        private var uploadImageUseCase: TopchatUploadImageUseCase
+        private var uploadImageUseCase: TopchatUploadImageUseCase,
+        private var orderProgressUseCase: OrderProgressUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
@@ -704,4 +706,18 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun clearText() { }
+
+    override fun getOrderProgress(messageId: String) {
+        orderProgressUseCase.getOrderProgress(
+                messageId,
+                ::onSuccessGetOrderProgress,
+                ::onErrorGetOrderProgress
+        )
+    }
+
+    private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
+        view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
+    }
+
+    private fun onErrorGetOrderProgress(throwable: Throwable) { }
 }

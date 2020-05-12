@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -28,6 +30,11 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet
 import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet.OnSaveFilterCallback
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
@@ -40,7 +47,7 @@ import com.tokopedia.tokopoints.view.util.*
 import java.util.*
 import javax.inject.Inject
 
-class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View, View.OnClickListener, OnSaveFilterCallback {
+class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View, View.OnClickListener, OnSaveFilterCallback, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerSortType: ViewPager? = null
     private var mTabSortType: TabLayout? = null
@@ -51,14 +58,15 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mTvFlashTimerLabel: TextView? = null
     private var mProgressFlash: ProgressBar? = null
     private var mContainerFlashTimer: ConstraintLayout? = null
+
     /*This section is exclusively for handling flash-sale timer*/
     var mFlashTimer: CountDownTimer? = null
     private var mAppBarHeader: AppBarLayout? = null
 
     @Inject
-    lateinit var  factory: ViewModelFactory
+    lateinit var factory: ViewModelFactory
 
-    private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java)}
+    private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java) }
 
     private var bottomViewMembership: LinearLayout? = null
     private var mContainerPointDetail: ConstraintLayout? = null
@@ -67,9 +75,12 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var filtersBottomSheet: FiltersBottomSheet? = null
     private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
-
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onErrorFilter(errorMessage: String, hasInternet: Boolean) {
         mContainerMain!!.displayedChild = CONTAINER_ERROR
@@ -113,6 +124,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         mProgressFlash = view.findViewById(R.id.progress_timer)
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container)
         serverErrorView = view.findViewById(R.id.server_error_view)
+
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         initListener()
         requestHomePageData()
         initObserver()
@@ -126,7 +140,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private fun addPointObserver() = mViewModel.pointLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is ErrorMessage -> onErrorPoint(it.data)
                 is Success -> onSuccessPoints(it.data.points.rewardStr,
                         it.data.points.reward,
@@ -136,19 +150,25 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
     })
 
-    private fun addFlterObserver()  = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addFlterObserver() = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Loading -> showLoader()
                 is ErrorMessage -> onErrorFilter(it.data, NetworkDetector.isConnectedToInternet(context))
-                is Success -> onSuccessFilter(it.data)
+                is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
+                    onSuccessFilter(it.data)
+                    stopRenderPerformanceMonitoring()
+                    stopPerformanceMonitoring()
+                }
             }
         }
     })
 
     private fun addBannerOberser() = mViewModel.bannerLiveDate.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Success -> onSuccessBanners(it.data.banners)
                 is ErrorMessage -> onErrorBanners(it.data)
             }
@@ -175,8 +195,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun refreshTab() {
         val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
         if (fragment != null && fragment.isAdded) {
-                fragment.viewModel.pointRange = mViewModel.pointRangeId
-                fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
+            fragment.viewModel.pointRange = mViewModel.pointRangeId
+            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
         }
     }
 
@@ -191,7 +211,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             return
         }
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
-        pager.adapter = CatalogBannerPagerAdapter(context, banners,this)
+        pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
         val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator)
         pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
@@ -257,10 +277,10 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                     val fragment = mViewPagerAdapter!!.getRegisteredFragment(position) as CatalogListItemFragment?
                     if (fragment != null
                             && fragment.isAdded) {
-                            mViewModel.currentCategoryId = filters.categories[0].id
-                            mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
-                            fragment.viewModel.pointRange = mViewModel.pointRangeId
-                            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
+                        mViewModel.currentCategoryId = filters.categories[0].id
+                        mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
+                        fragment.viewModel.pointRange = mViewModel.pointRangeId
+                        fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
                     }
                     if (filters.categories[0].subCategory[position].timeRemainingSeconds > 0) {
                         startFlashTimer(filters.categories[0].subCategory[position])
@@ -495,5 +515,46 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                CATALOGLIST_TOKOPOINT_PLT_PREPARE_METRICS,
+                CATALOGLIST_TOKOPOINT_PLT_NETWORK_METRICS,
+                CATALOGLIST_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATALOGLIST_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

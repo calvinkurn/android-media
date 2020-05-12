@@ -88,6 +88,7 @@ public interface ApplinkConst {
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
+    String ORDER_HISTORY = "tokopedia://product-order-history";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
@@ -436,6 +437,10 @@ public interface ApplinkConst {
         String PARAM_VOUCHER_PREVIEW = "voucher_preview";
     }
 
+    interface OrderHistory {
+        String PARAM_SHOP_ID = "shop_id";
+    }
+
     interface Play {
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";
@@ -462,6 +467,7 @@ public interface ApplinkConst {
         String ORDER_DETAIL = "tokopedia://digital/order/{order_id}";
         String ORDER_OMS_DETAIL = "tokopedia://order/{order_id}";
         String ORDER_MARKETPLACE_DETAIL = "tokopedia://marketplace/order/{order_id}";
+        String ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE = "tokopedia://marketplace/order?payment_id={payment_id}&cart_string={cart_string}";
         String ORDER_OMS_DETAIL_UPSTREAM = "tokopedia://order/{order_id}?upstream={upstream}";
 
         String EXTRA_SHOP_ID = "shop_id";
