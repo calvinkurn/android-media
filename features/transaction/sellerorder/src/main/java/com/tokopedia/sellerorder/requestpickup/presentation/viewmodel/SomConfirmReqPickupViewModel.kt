@@ -49,41 +49,4 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: SomDispatcher
             _processReqPickupResult.postValue(somProcessReqPickupUseCase.execute(reqPickupQuery, processReqPickupParam))
         }
     }
-
-    fun loadConfirmRequestPickupOld(detailQuery: String, reqPickupParam: SomConfirmReqPickupParam) {
-        // launch { getRequestPickupData(detailQuery, reqPickupParam) }
-    }
-
-    fun processRequestPickupOld(reqPickupQuery: String, processReqPickupParam: SomProcessReqPickupParam) {
-        // launch { doRequestPickup(reqPickupQuery, processReqPickupParam) }
-    }
-
-    /*suspend fun getRequestPickupData(rawQuery: String, reqPickupParam: SomConfirmReqPickupParam) {
-        val reqPickupParamInput = mapOf(SomConsts.PARAM_INPUT to reqPickupParam)
-        launchCatchError(block = {
-            val reqPickupData = withContext(Dispatchers.IO) {
-                val reqPickupRequest = GraphqlRequest(rawQuery, SomConfirmReqPickup.Data::class.java, reqPickupParamInput as Map<String, Any>?)
-                graphqlRepository.getReseponse(listOf(reqPickupRequest))
-                        .getSuccessData<SomConfirmReqPickup.Data>()
-            }
-            _confirmReqPickupResult.postValue(Success(reqPickupData))
-        }, onError = {
-            _confirmReqPickupResult.postValue(Fail(it))
-        })
-    }*/
-
-    /*suspend fun doRequestPickup(reqPickupQuery: String, processReqPickupParam: SomProcessReqPickupParam) {
-        val reqPickupParamInput = mapOf(SomConsts.PARAM_INPUT to processReqPickupParam)
-
-        launchCatchError(block = {
-            val processReqPickupData = withContext(Dispatchers.IO) {
-                val reqPickupRequest = GraphqlRequest(reqPickupQuery, SomProcessReqPickup.Data::class.java, reqPickupParamInput as Map<String, Any>?)
-                graphqlRepository.getReseponse(listOf(reqPickupRequest))
-                        .getSuccessData<SomProcessReqPickup.Data>()
-            }
-            _processReqPickupResult.postValue(Success(processReqPickupData))
-        }, onError = {
-            _processReqPickupResult.postValue(Fail(it))
-        })
-    }*/
 }
