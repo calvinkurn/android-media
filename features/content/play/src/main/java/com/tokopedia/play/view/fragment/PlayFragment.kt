@@ -161,6 +161,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setOrientation()
         startPageMonitoring()
         starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
@@ -179,7 +180,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setOrientation()
         initView(view)
         setupView(view)
         setupScreen(view)
@@ -199,6 +199,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun onResume() {
         super.onResume()
+        orientationManager.enable()
         stopPrepareMonitoring()
         startNetworkMonitoring()
         playViewModel.getChannelInfo(channelId)
@@ -212,6 +213,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     override fun onPause() {
         unregisterKeyboardListener(requireView())
         super.onPause()
+        if (::orientationManager.isInitialized) orientationManager.disable()
 
         bufferTrackingModel = bufferTrackingModel.copy(
                 isBuffering = false,
@@ -223,7 +225,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     override fun onDestroyView() {
         destroyInsets(requireView())
         super.onDestroyView()
-        if (::orientationManager.isInitialized) orientationManager.disable()
         if (::layoutManager.isInitialized) layoutManager.onDestroy()
         job.cancelChildren()
     }
@@ -466,7 +467,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private fun setOrientation() {
         orientationManager = PlaySensorOrientationManager(requireContext(), this)
-        orientationManager.enable()
     }
 
     private fun initView(view: View) {
