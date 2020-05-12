@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.loginButton)
 //        goTo()
 
+        goTo()
         // simplify login process without error handling/verify number/etc
         loginButton.setOnClickListener {
             val userName = editTextUser.text.toString().trim()
