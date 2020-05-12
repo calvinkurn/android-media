@@ -30,11 +30,10 @@ object DynamicProductDetailMapper {
                     ))
                 }
                 ProductDetailConstant.DISCUSSION -> {
-                    if(component.componentName ==  ProductDetailConstant.DISCUSSION_FAQ) {
-                        listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
-                    } else {
-                        listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
-                    }
+                    listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.DISCUSSION_FAQ -> {
+                    listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_INFO -> {
                     listOfComponent.add(ProductInfoDataModel(mapToProductInfoContent(component.componentData), type = component.type, name = component.componentName))
