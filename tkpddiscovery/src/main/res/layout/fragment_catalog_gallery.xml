@@ -29,7 +29,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <com.tkpd.library.ui.widget.TouchViewPager
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_intermediary"
         android:layout_width="0dp"
         android:layout_height="0dp"

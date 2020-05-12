@@ -232,15 +232,6 @@ public class ShopClosedReasonFragment extends Fragment implements SellingView {
     }
 
     @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-    }
-
-    @Override
     public void setData(int type, Bundle data) {
         switch (type) {
             case SellingService.REJECT_ORDER_CLOSE_SHOP:

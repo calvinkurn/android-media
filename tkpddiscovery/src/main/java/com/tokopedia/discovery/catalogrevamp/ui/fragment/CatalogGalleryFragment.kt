@@ -6,7 +6,7 @@ import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.library.ui.view.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.adapter.CatalogGalleyRecyclerViewAdapter
 import com.tokopedia.discovery.catalogrevamp.adapter.CatalogImageAdapter

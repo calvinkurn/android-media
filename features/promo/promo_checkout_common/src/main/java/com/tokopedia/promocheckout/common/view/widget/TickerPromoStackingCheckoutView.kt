@@ -11,8 +11,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
 
 

@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseSolutionListener;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
