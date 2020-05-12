@@ -41,6 +41,8 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.chips
+    implementation rootProject.ext.unifyDependencies.global_error
+
 }
 
 project.ext {
