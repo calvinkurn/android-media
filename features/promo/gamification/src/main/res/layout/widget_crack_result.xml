@@ -37,7 +37,7 @@
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_1"
                 android:layout_gravity="bottom|center"
-                android:src="@drawable/bg_light_reward"
+                android:src="@drawable/gami_bg_light_reward"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -47,7 +47,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_gravity="bottom|center"
                 android:visibility="gone"
-                tools:src="@drawable/ic_empty_egg"
+                tools:src="@drawable/gami_ic_empty_egg"
                 tools:visibility="visible" />
 
         </FrameLayout>

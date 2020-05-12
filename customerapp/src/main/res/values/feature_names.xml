@@ -255,4 +255,12 @@
     <!--Play-->
     <string name="title_play_df">Play</string>
 
+    <!--Logistic-->
+    <string name="label_tracking_activity">Lacak</string>
+    <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
+    <string name="title_confirm_shipment_logistic_module">Konfirmasi Pengiriman</string>
+
+    <!--Promo-->
+    <string name="title_gamification_df">Gamification</string>
+
 </resources>
