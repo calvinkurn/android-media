@@ -161,10 +161,7 @@ class AutoAdsWidgetView : CardView {
         statusAdsContainer.setOnClickListener(null)
         startAdsBtn.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
-                val intent = Intent(context, DailyBudgetActivity::class.java)
-                intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
-                intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
-                context.startActivity(intent)
+                RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
             } else {
                 openAutoAdsRouteActivityLink()
             }

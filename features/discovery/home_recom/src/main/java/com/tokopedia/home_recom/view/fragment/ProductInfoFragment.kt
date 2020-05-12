@@ -377,6 +377,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         addToCartRequestParams.shopId = productDetailData.shop.id
         addToCartRequestParams.quantity = productDetailData.minOrder
         addToCartRequestParams.notes = ""
+        addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_DISCOVERY
         addToCartRequestParams.productName = productDetailData.name
         addToCartRequestParams.category = productDetailData.categoryBreadcrumbs
         addToCartRequestParams.price = productDetailData.price

@@ -19,15 +19,22 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.R
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.util.*
 
-class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
+class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mEditEmail: TextInputEditText? = null
     private var mEditNotes: TextInputEditText? = null
@@ -37,8 +44,10 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     var tokoPointComponent: TokopointBundleComponent? = null
 
     lateinit var mViewModel: SendGiftViewModel
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme)
     }
@@ -71,6 +80,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         mEditNotes?.addTextChangedListener(this)
         mBtnSendGift?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
         mBtnSendNow?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         addObserver()
     }
 
@@ -79,9 +90,9 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         addPreValidationObserver()
     }
 
-    private fun addPreValidationObserver() = mViewModel.prevalidateLiveData.observe(this , Observer {
+    private fun addPreValidationObserver() = mViewModel.prevalidateLiveData.observe(this, Observer {
         it?.let {
-            when(it) {
+            when (it) {
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
@@ -90,8 +101,12 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
                     }
                 }
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     hideLoading()
                     openPreConfirmationWindow()
+                    stopRenderPerformanceMonitoring()
+                    stopPerformanceMonitoring()
                 }
             }
         }
@@ -99,25 +114,27 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
 
     private fun addSendGiftObserver() = mViewModel.sendGiftLiveData.observe(this, Observer {
         it?.let {
-            when(it) {
+            when (it) {
                 is Loading -> showLoadingSendNow()
                 is Success -> {
                     hideLoadingSendNow()
                     val title = if (it.data.title is Int) getString(it.data.title) else it.data.title.toString()
                     val message = if (it.data.messsage is Int) getString(it.data.messsage) else it.data.messsage.toString()
-                    showPopup(title,message,it.data.success)
+                    showPopup(title, message, it.data.success)
                 }
-                is ErrorMessage -> hideLoadingSendNow()
+                is ErrorMessage -> {
+                    hideLoadingSendNow()
+                }
             }
         }
     })
-
 
     override fun onClick(view: View) {
         if (view.id == com.tokopedia.tokopoints.R.id.button_send) {
             if (arguments == null || activity == null) {
                 return
             }
+
             KeyboardHandler.hideSoftKeyboard(activity)
             mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mEditEmail!!.text.toString())
         } else if (view.id == com.tokopedia.tokopoints.R.id.button_send_now) {
@@ -278,5 +295,46 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                SENDGIFT_TOKOPOINT_PLT_PREPARE_METRICS,
+                SENDGIFT_TOKOPOINT_PLT_NETWORK_METRICS,
+                SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(SENDGIFT_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

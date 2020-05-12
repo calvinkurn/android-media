@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +12,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -22,7 +23,6 @@ import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
-import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
@@ -38,8 +38,8 @@ import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationMPPojo.RecommendationResponse;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -82,6 +82,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String DEVICE_ID = "device_id";
     private static final String CATEGORY_IDS = "category_ids";
     private static final String MP_CATEGORY_IDS = "mp_category_ids";
+    private static final String PAYMENT_ID = "paymentId";
+    private static final String CART_STRING = "cartString";
     private static final int DEFAULT_DEVICE_ID = 5;
 
     GraphqlUseCase orderDetailsUseCase;
@@ -113,7 +115,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream) {
+    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -124,11 +126,22 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            variables.put("orderCategory", orderCategory);
-            variables.put(ORDER_ID, orderId);
-            graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+            if (orderId != null && !orderId.isEmpty()) {
+                variables.put("orderCategory", orderCategory);
+                variables.put(ORDER_ID, orderId);
+                graphqlRequest = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+
+            } else {
+                variables.put("orderCategory", orderCategory);
+                variables.put(PAYMENT_ID, paymentId);
+                variables.put(CART_STRING, cartString);
+                graphqlRequest = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
+            }
+
         } else {
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
@@ -622,7 +635,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().askPermission();
         } else {
             if (getView() != null && getView().getAppContext() != null && getView().getAppContext().getApplicationContext() != null && getView().getActivity() != null) {
-                ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getActivity(), uri);
+                RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         }
     }

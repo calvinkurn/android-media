@@ -47,10 +47,15 @@ class AutoAdsQueryModule(val context: Context) {
     fun queryPostAutoAds(@ActivityContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_post_autoads)
 
-
+    @AutoAdsScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION)
+    fun queryPotentialReach(@ActivityContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_potential_reach_estimation)
+  
     @Provides
     @ActivityContext
     fun providesContext() = context
-
 
 }

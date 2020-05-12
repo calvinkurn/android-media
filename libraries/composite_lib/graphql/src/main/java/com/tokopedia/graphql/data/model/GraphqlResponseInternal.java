@@ -8,11 +8,12 @@ import java.util.ArrayList;
  * Only for internal purposes of this library in order to rewrite the original response
  */
 final public class GraphqlResponseInternal {
-    private JsonArray originalResponse;
+    private JsonArray originalResponse ;
     // isCached = true only if all of the gql is retrived from database.
     // If there is a response coming from network, isCached should be false.
     private boolean isCached;
     private ArrayList<Integer> indexOfEmptyCached;
+    private String mBeCache;
 
     public GraphqlResponseInternal(JsonArray originalResponse, boolean isCached) {
         this.originalResponse = originalResponse;
@@ -22,6 +23,11 @@ final public class GraphqlResponseInternal {
     public GraphqlResponseInternal(JsonArray originalResponse, ArrayList<Integer> indexOfEmptyCached) {
         this(originalResponse, indexOfEmptyCached == null || indexOfEmptyCached.size() == 0);
         this.indexOfEmptyCached = indexOfEmptyCached;
+    }
+
+    public GraphqlResponseInternal(JsonArray originalResponse, boolean isCached, String beCache) {
+        this(originalResponse, isCached);
+        this.mBeCache = beCache;
     }
 
     public ArrayList<Integer> getIndexOfEmptyCached() {
@@ -36,11 +42,25 @@ final public class GraphqlResponseInternal {
         return isCached;
     }
 
+    public void setCached(boolean isCached) {
+        this.isCached = isCached;
+    }
+
+    public String getBeCache() {
+        return this.mBeCache;
+    }
+
+    public void setBeCache(String mBeCache) {
+        this.mBeCache = mBeCache;
+    }
+
     @Override
     public String toString() {
         return "GraphqlResponseInternal{" +
                 "originalResponse=" + originalResponse +
                 ", isCached=" + isCached +
+                ", indexOfEmptyCached=" + indexOfEmptyCached +
+                ", mBeCache='" + mBeCache + '\'' +
                 '}';
     }
 }
