@@ -4,16 +4,17 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful_question_and_answer.view.*
 
 class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(question: Question, dynamicProductDetailListener: DynamicProductDetailListener) {
+    fun bind(question: Question, dynamicProductDetailListener: DynamicProductDetailListener, type: String, name: String, adapterPosition: Int, itemCount: Int) {
         with(question) {
             showQuestion(content)
-            setChevronClickListener(dynamicProductDetailListener, questionID)
+            setChevronClickListener(dynamicProductDetailListener, questionID, type, name, adapterPosition, itemCount)
             if(totalAnswer == 0) {
                 showNoAnswer()
                 return
@@ -27,9 +28,9 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         itemView.productDetailDiscussionQuestion.text = question
     }
 
-    private fun setChevronClickListener(dynamicProductDetailListener: DynamicProductDetailListener, questionId: String) {
+    private fun setChevronClickListener(dynamicProductDetailListener: DynamicProductDetailListener, questionId: String, type: String, name: String, adapterPosition: Int, itemCount: Int) {
         itemView.productDetailDiscussionQuestionChevron.setOnClickListener {
-            dynamicProductDetailListener.goToTalkReply(questionId)
+            dynamicProductDetailListener.goToTalkReply(questionId, ComponentTrackDataModel(type, name, adapterPosition), itemCount.toString())
         }
     }
 

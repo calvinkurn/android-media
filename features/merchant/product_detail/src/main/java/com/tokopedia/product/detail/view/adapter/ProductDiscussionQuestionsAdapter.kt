@@ -10,8 +10,11 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 
 class ProductDiscussionQuestionsAdapter(
-        private var questions: List<Question> = listOf(),
-        private var dynamicProductDetailListener: DynamicProductDetailListener
+        private val questions: List<Question>,
+        private val dynamicProductDetailListener: DynamicProductDetailListener,
+        private val type: String,
+        private val name: String,
+        private val adapterPositon: Int
 ): RecyclerView.Adapter<ProductDiscussionQuestionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductDiscussionQuestionViewHolder {
@@ -25,6 +28,6 @@ class ProductDiscussionQuestionsAdapter(
     }
 
     override fun onBindViewHolder(holder: ProductDiscussionQuestionViewHolder, position: Int) {
-        holder.bind(questions[position], dynamicProductDetailListener)
+        holder.bind(questions[position], dynamicProductDetailListener, type, name, adapterPositon, itemCount)
     }
 }

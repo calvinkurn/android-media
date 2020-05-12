@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_si
 class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
+        const val SINGLE_QUESTION_TRACKING = "1"
         private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_product_detail_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
@@ -43,7 +44,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideTitle()
                 }
                 (totalQuestion < 1 && element.questions?.isEmpty() == true) -> {
-                    showEmptyState()
+                    showEmptyState(type, name)
                     hideSingleQuestionLayout()
                     hideLocalLoad()
                     hideShimmer()
@@ -60,7 +61,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                 }
                 else -> {
                     showTitle(totalQuestion, type, name)
-                    showMultipleQuestions(questions)
+                    showMultipleQuestions(questions, type, name)
                     hideSingleQuestionLayout()
                     hideEmptyState()
                     hideShimmer()
@@ -70,11 +71,11 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showEmptyState() {
+    private fun showEmptyState(type: String, name: String) {
         itemView.productDiscussionMostHelpfulEmptyLayout.apply {
             show()
             productDetailDiscussionEmptyButton.setOnClickListener {
-                listener.onDiscussionSendQuestionClicked()
+                listener.onDiscussionSendQuestionClicked(ComponentTrackDataModel(type, name, adapterPosition + 1))
             }
             productDetailDiscussionEmptyImage.loadImage(EMPTY_TALK_IMAGE_URL)
         }
@@ -87,7 +88,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                 with(questionData) {
                     productDetailDiscussionSingleQuestion.text = question.content
                     productDetailDiscussionSingleQuestionChevron.setOnClickListener {
-                        listener.goToTalkReply(questionID)
+                        listener.goToTalkReply(questionID, ComponentTrackDataModel(type, name, adapterPosition + 1), SINGLE_QUESTION_TRACKING)
                     }
                     if(totalAnswer == 0) {
                         showNoAnswersText()
@@ -97,7 +98,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     showDisplayName(answer.userName, answer.userId)
                     showSellerLabelWithCondition(answer.isSeller)
                     showDate(answer.createTimeFormatted)
-                    showAnswer(answer.content, questionID)
+                    showAnswer(answer.content, questionID, type, name)
                     showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
                     showNumberOfOtherAnswersWithCondition(totalAnswer, type, name)
                 }
@@ -105,9 +106,9 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showMultipleQuestions(questions: List<Question>?) {
+    private fun showMultipleQuestions(questions: List<Question>?, type: String, name: String) {
         questions?.let {
-            val questionsAdapter = ProductDiscussionQuestionsAdapter(it, listener)
+            val questionsAdapter = ProductDiscussionQuestionsAdapter(it, listener, type, name, adapterPosition + 1)
             itemView.productDiscussionMostHelpfulQuestions.apply {
                 adapter = questionsAdapter
                 show()
@@ -150,12 +151,12 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showAnswer(answer: String, questionId: String) {
+    private fun showAnswer(answer: String, questionId: String, type: String, name: String) {
         if(answer.isNotEmpty()) {
             itemView.productDetailDiscussionSingleQuestionMessage.apply {
                 text = answer
                 setOnClickListener {
-                    listener.goToTalkReply(questionId)
+                    listener.goToTalkReply(questionId, ComponentTrackDataModel(type, name, adapterPosition + 1), SINGLE_QUESTION_TRACKING)
                 }
                 show()
             }

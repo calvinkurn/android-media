@@ -719,7 +719,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                             ProductTrackingConstant.Category.PDP,
                             ProductTrackingConstant.Action.CLICK_DISCUSSION_SEE_ALL,
-                            ProductTrackingConstant.Label.EMPTY_LABEL),
+                            ProductTrackingConstant.Label.DISCUSSION_DETAIL),
                     userId
             )
 

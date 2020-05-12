@@ -23,7 +23,7 @@ object ProductTrackingConstant {
         const val KEY_ECOMMERCE = "ecommerce"
         const val KEY_PRODUCT_PROMO = "promoClick"
         const val KEY_PROMOTIONS = "promotions"
-        const val KEY_USER_ID = "user_id"
+        const val KEY_USER_ID = "userId"
         const val KEY_DETAIl = "detail"
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
