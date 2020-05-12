@@ -2,7 +2,6 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
   thanksPageData(paymentID: $paymentID, merchant: $merchant){
     current_site
     business_unit
-    bebas_ongkir_dimension
     merchant_code
     profile_code
     payment_id
@@ -67,6 +66,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
             category
             variant
             thumbnail_product
+            bebas_ongkir_dimension
         }
         shipping_amount
         shipping_amount_str
@@ -103,6 +103,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     event_label
     currency_code
     whitelisted_rba
+    push_gtm
   }
 }
 

@@ -65,9 +65,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             supportFragmentManager.beginTransaction()
                     .replace(parentViewResourceID, fragment, tagFragment)
                     .commit()
-        } ?: kotlin.run {
-            finish()
-        }
+        } ?: run { gotoHomePage() }
     }
 
     override fun onInvalidThankYouPage() {
@@ -98,13 +96,16 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 InstantPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             is WaitingPaymentPage -> {
-                val paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
-                return if (paymentType == CashOnDelivery) {
-                    updateHeaderTitle(CashOnDeliveryFragment.SCREEN_NAME)
-                    CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData)
-                } else {
-                    updateHeaderTitle(DeferredPaymentFragment.SCREEN_NAME)
-                    DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                return when(PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)){
+                    is PaymentWaitingCOD ->{
+                        updateHeaderTitle(CashOnDeliveryFragment.SCREEN_NAME)
+                        CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData)
+                    }
+                    is PaymentWaiting ->{
+                        updateHeaderTitle(DeferredPaymentFragment.SCREEN_NAME)
+                        DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                    }
+                    else-> null
                 }
             }
             else -> null

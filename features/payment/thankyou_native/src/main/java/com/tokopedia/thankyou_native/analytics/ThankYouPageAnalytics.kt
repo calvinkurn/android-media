@@ -40,7 +40,7 @@ class ThankYouPageAnalytics {
         return mutableMapOf(
                 ParentTrackingKey.KEY_EVENT to thanksPageData.event,
                 ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
-                ParentTrackingKey.KEY_EVENT_ACTION to shopOrder.storeType,
+                ParentTrackingKey.KEY_EVENT_ACTION to thanksPageData.eventAction,
                 ParentTrackingKey.KEY_EVENT_LABEL to thanksPageData.eventLabel,
                 ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
                 ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
@@ -82,7 +82,7 @@ class ThankYouPageAnalytics {
             productNodeMap[ProductNodeTrackingKey.KEY_CATEGORY] = item.category
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
             productNodeMap[ProductNodeTrackingKey.KEY_QUANTITY] = item.quantity
-            productNodeMap[ProductNodeTrackingKey.KEY_DIMENSION83] = thanksPageData.bebasOngkirDimension
+            productNodeMap[ProductNodeTrackingKey.KEY_DIMENSION83] = item.bebasOngkirDimension
             productNodeList.add(productNodeMap)
         }
         return productNodeList

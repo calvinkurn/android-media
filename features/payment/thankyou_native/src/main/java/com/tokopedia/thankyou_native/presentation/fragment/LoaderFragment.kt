@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
@@ -24,6 +25,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -98,20 +100,34 @@ class LoaderFragment : BaseDaggerFragment() {
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
         loading_layout.gone()
-        globalError.visible()
-        return if (throwable is UnknownHostException) {
-            globalError.setType(GlobalError.NO_CONNECTION)
-            globalError.errorAction.visible()
-            globalError.errorAction.setOnClickListener {
-                loadThankPageData()
+        when (throwable) {
+            is MessageErrorException -> {
+                if (throwable.message?.startsWith("rpc error:") == true) {
+                    callback?.onInvalidThankYouPage()
+                } else {
+                    showServerError()
+                }
             }
-        } else {
-            globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.errorAction.gone()
+            is UnknownHostException -> showNoConnectionError()
+            is SocketTimeoutException -> showNoConnectionError()
+            else -> showServerError()
         }
-
     }
 
+    private fun showNoConnectionError() {
+        globalError.visible()
+        globalError.setType(GlobalError.NO_CONNECTION)
+        globalError.errorAction.visible()
+        globalError.errorAction.setOnClickListener {
+            loadThankPageData()
+        }
+    }
+
+    private fun showServerError() {
+        globalError.visible()
+        globalError.setType(GlobalError.SERVER_ERROR)
+        globalError.errorAction.gone()
+    }
 
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
         loading_layout.gone()
@@ -124,8 +140,12 @@ class LoaderFragment : BaseDaggerFragment() {
         }
     }
 
+    /**
+     *ThanksPageData.pushGtm is used to prevent duplicate firing of event...
+     * */
     private fun sendThankYouPageAnalytics(thanksPageData: ThanksPageData) {
-        thankYouPageAnalytics.sendThankYouPageData(thanksPageData)
+        if (thanksPageData.pushGtm)
+            thankYouPageAnalytics.sendThankYouPageData(thanksPageData)
     }
 
     companion object {

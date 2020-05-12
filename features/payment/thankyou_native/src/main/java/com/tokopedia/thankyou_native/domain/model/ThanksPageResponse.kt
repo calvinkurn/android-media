@@ -53,16 +53,16 @@ data class ThanksPageData(
         val currentSite: String,
         @SerializedName("business_unit")
         val businessUnit: String,
-        @SerializedName("bebas_ongkir_dimension")
-        val bebasOngkirDimension: String,
         @SerializedName("event")
         val event: String,
         @SerializedName("event_category")
         val eventCategory: String,
         @SerializedName("event_action")
-        val eventAction: String?,
+        val eventAction: String,
         @SerializedName("event_label")
-        val eventLabel: String
+        val eventLabel: String,
+        @SerializedName("push_gtm")
+        val pushGtm: Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -90,7 +90,7 @@ data class ThanksPageData(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readString() ?: "")
+            parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(paymentID)
@@ -114,11 +114,11 @@ data class ThanksPageData(
         parcel.writeString(orderAmountStr)
         parcel.writeString(currentSite)
         parcel.writeString(businessUnit)
-        parcel.writeString(bebasOngkirDimension)
         parcel.writeString(event)
         parcel.writeString(eventCategory)
         parcel.writeString(eventAction)
         parcel.writeString(eventLabel)
+        parcel.writeByte(if (pushGtm) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -393,7 +393,9 @@ data class PurchaseItem(
         @SerializedName("thumbnail_product")
         val thumbnailProduct: String,
         @SerializedName("product_plan_protection")
-        val productPlanProtection: Double
+        val productPlanProtection: Double,
+        @SerializedName("bebas_ongkir_dimension")
+        val bebasOngkirDimension: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -410,7 +412,8 @@ data class PurchaseItem(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readDouble())
+            parcel.readDouble(),
+            parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
@@ -428,6 +431,7 @@ data class PurchaseItem(
         parcel.writeString(variant)
         parcel.writeString(thumbnailProduct)
         parcel.writeDouble(productPlanProtection)
+        parcel.writeString(bebasOngkirDimension)
     }
 
     override fun describeContents(): Int {
