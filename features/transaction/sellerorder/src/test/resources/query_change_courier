@@ -1,5 +1,0 @@
-mutation {
-  mpLogisticChangeCourier(input: {order_id: "435431059", shipping_ref:"hdlsdfjsdfh", agency_id:1, sp_id:1}) {
-    message
-  }
-}
