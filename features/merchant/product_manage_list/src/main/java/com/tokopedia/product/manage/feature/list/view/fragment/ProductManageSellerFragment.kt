@@ -13,20 +13,22 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
-import com.tokopedia.product.manage.feature.list.view.listener.ProductDraftListCountView
-import com.tokopedia.product.manage.feature.list.view.presenter.ProductDraftListCountPresenter
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_manage_seller.*
 import java.util.*
 import javax.inject.Inject
 
-class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCountView {
+class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
         private const val FILTER_OPTIONS = "filter_options"
@@ -44,9 +46,9 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     private lateinit var draftBroadCastReceiver: BroadcastReceiver
 
     @Inject
-    lateinit var productDraftListCountPresenter: ProductDraftListCountPresenter
+    lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
 
-    override fun onDraftCountLoaded(rowCount: Long) {
+    private fun onDraftCountLoaded(rowCount: Long) {
         if (rowCount == 0L) {
             tvDraftProduct.visibility = View.GONE
         } else {
@@ -67,9 +69,9 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         return view?.findViewById(R.id.swipe_refresh_layout)
     }
 
-    override fun onDraftCountLoadError() {
+    private fun onDraftCountLoadError() {
         // delete all draft when error loading draft
-        productDraftListCountPresenter.clearAllDraft()
+        productDraftListCountViewModel.clearAllDraft()
         tvDraftProduct.visibility = View.GONE
     }
 
@@ -78,6 +80,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
         getDefaultFilterOptionsFromArguments()
+        observeGetAllDraftCount()
     }
 
     private fun getDefaultFilterOptionsFromArguments() {
@@ -89,21 +92,20 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     override fun initInjector() {
         ProductManageListInstance.getComponent((requireActivity().application))
                 .inject(this)
-        productDraftListCountPresenter.attachView(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        productDraftListCountPresenter.detachView()
+        productDraftListCountViewModel.detachView()
     }
 
     override fun onResume() {
         super.onResume()
         registerDraftReceiver()
         if (isMyServiceRunning(UploadProductService::class.java)) {
-            productDraftListCountPresenter.getAllDraftCount()
+            productDraftListCountViewModel.getAllDraftCount()
         } else {
-            productDraftListCountPresenter.fetchAllDraftCountWithUpdateUploading()
+            productDraftListCountViewModel.fetchAllDraftCountWithUpdateUploading()
         }
     }
 
@@ -128,7 +130,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED || intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT) {
-                    productDraftListCountPresenter.getAllDraftCount()
+                    productDraftListCountViewModel.getAllDraftCount()
                 }
             }
         }
@@ -154,6 +156,15 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun callInitialLoadAutomatically() = false
+
+    private fun observeGetAllDraftCount() {
+        observe(productDraftListCountViewModel.getAllDraftCountResult) {
+            when(it) {
+                is Success -> onDraftCountLoaded(it.data)
+                is Fail -> onDraftCountLoadError()
+            }
+        }
+    }
 
     private fun checkLogin() {
         if (!userSession.isLoggedIn) {
