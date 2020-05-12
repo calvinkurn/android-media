@@ -111,6 +111,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         recyclerView.setAdapter(adapter);
         if(isSellerMigrationEnabled(this.getContext())) {
             setupSellerMigrationTicker();
+        } else {
+            migrationTicker.setVisibility(View.GONE);
         }
         swipeRefreshLayout.setOnRefreshListener(() -> {
             isLoaded = false;

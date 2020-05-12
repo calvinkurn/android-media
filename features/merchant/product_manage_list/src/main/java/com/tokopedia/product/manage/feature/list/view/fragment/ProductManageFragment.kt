@@ -398,6 +398,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     }
                 })
             }
+        } else {
+            productManageSellerMigrationTicker.hide()
         }
     }
 
