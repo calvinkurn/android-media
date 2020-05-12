@@ -47,6 +47,7 @@ class EditQuotaBottomSheet(
             description = "Dipotong dari transaksi selesai"
             nominal = "Rp3.290.000"
         }
+        edtMvcQuota.requestFocus()
 
         setAction(context.getString(R.string.mvc_retry)) {
 

@@ -147,6 +147,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun loadData(page: Int) {
+        view?.run {
+            searchBarMvc.isVisible = false
+            headerChipMvc.isVisible = false
+        }
         renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         mViewModel.getVoucherList()
     }
@@ -182,6 +186,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun onShareClickListener(voucher: VoucherUiModel) {
         showShareBottomSheet(voucher)
+    }
+
+    override fun onEditQuotaClickListener(voucher: VoucherUiModel) {
+        showEditQuotaBottomSheet(voucher)
     }
 
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
@@ -269,9 +277,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         headerChipMvc.init {
             setOnChipListener(it)
         }
-
-        searchBarMvc.isVisible = !isActiveVoucher
-        headerChipMvc.isVisible = !isActiveVoucher
     }
 
     private fun setupRecyclerViewVoucherList() {
@@ -382,6 +387,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (vouchers.isEmpty()) {
             renderList(listOf(EmptyStateUiModel(isActiveVoucher)))
         } else {
+            view?.run {
+                searchBarMvc.isVisible = !isActiveVoucher
+                headerChipMvc.isVisible = !isActiveVoucher
+            }
             renderList(vouchers)
         }
     }
