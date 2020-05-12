@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.confirmshipping
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
@@ -49,10 +48,7 @@ class SomConfirmShippingViewModelTest {
         somConfirmShippingViewModel = SomConfirmShippingViewModel(dispatcher,
                 somGetConfirmShippingResultUseCase, somGetCourierListUseCase, somChangeCourierUseCase)
 
-        val msg1 = "msg1"
-        val msg2 = "msg2"
-        val msg3 = "msg3"
-        listMsg = listOf(msg1, msg2, msg3)
+        listMsg = listOf("Ok1", "Ok2", "Ok3")
 
         val courier1 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 123)
         val courier2 = SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment(shipmentId = 456)

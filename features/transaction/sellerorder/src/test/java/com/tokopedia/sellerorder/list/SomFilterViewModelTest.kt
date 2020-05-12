@@ -4,12 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.list.data.model.*
 import com.tokopedia.sellerorder.list.domain.filter.SomGetAllFilterUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetFilterListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetOrderStatusListUseCase
-import com.tokopedia.sellerorder.list.domain.list.SomGetTickerListUseCase
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomFilterViewModel
-import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -20,7 +15,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers.any
 
 /**
  * Created by fwidjaja on 2020-05-12.
