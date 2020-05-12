@@ -1,6 +1,5 @@
 package com.tokopedia.core.database.model;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -14,12 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 import org.parceler.Parcels;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * @since 27/11/2015
@@ -108,17 +101,6 @@ public class PagingHandler implements PaginHandlerRotation {
 			dest.writeString(uriPrevious);
 			dest.writeString(uriCurrent);
 		}
-	}
-
-    public static boolean CheckHasNext(PagingHandlerModel pagingHandlerModel) {
-        return CheckHasNext(pagingHandlerModel.uriNext);
-    }
-
-	public static boolean CheckHasNext(String uriNext){
-		if(uriNext!=null&&!uriNext.equals("0")&& !uriNext.equals("")){
-			return true;
-		}
-		return false;
 	}
 
     @Deprecated
@@ -245,9 +227,5 @@ public class PagingHandler implements PaginHandlerRotation {
 		PagingHandlerModel p = Parcels.unwrap(retrieved.getParcelable(PAGING_ACE));
 		setPagingHandlerModel(p);
 		return retrieved.getInt(PAGING_INDEX, defaultPagingIndex);
-	}
-
-	public int getNextPage() {
-		return Integer.parseInt(Uri.parse(pagingHandlerModel.getUriNext()).getQueryParameter("page"));
 	}
 }

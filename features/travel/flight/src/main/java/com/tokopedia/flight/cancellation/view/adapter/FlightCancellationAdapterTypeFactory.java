@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 
 /**
  * @author by furqan on 21/03/18.
@@ -21,7 +21,7 @@ public class FlightCancellationAdapterTypeFactory extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(FlightCancellationViewModel viewModel) {
+    public int type(FlightCancellationModel viewModel) {
         return FlightCancellationViewHolder.LAYOUT;
     }
 
