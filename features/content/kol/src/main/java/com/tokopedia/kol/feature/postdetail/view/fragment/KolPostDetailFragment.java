@@ -1052,4 +1052,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 );
     }
 
+    @Override
+    public void userImagePostImpression(int positionInFeed, int contentPosition) {
+
+    }
 }

@@ -15,11 +15,17 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerDeeplinkRequest;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
 import com.tokopedia.linker.requests.LinkerShareRequest;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -72,6 +78,7 @@ public class BranchWrapper implements WrapperInterface {
                                                if (error == null) {
                                                    String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
                                                    String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
+
                                                    if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")&&
                                                            !TextUtils.isEmpty(deeplink)) {
                                                        deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
@@ -80,6 +87,8 @@ public class BranchWrapper implements WrapperInterface {
                                                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
                                                                LinkerUtils.createDeeplinkData(deeplink, promoCode));
                                                    }
+
+                                                   checkAndSendUtmParams(context,referringParams);
                                                } else {
                                                    if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                                                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -349,5 +358,36 @@ public class BranchWrapper implements WrapperInterface {
     public static Boolean isAppShowReferralButtonActivated(Context context) {
         return ((LinkerRouter)context.getApplicationContext()).
                 getBooleanRemoteConfig(LinkerConstants.APP_SHOW_REFERRAL_BUTTON, false);
+    }
+
+
+    private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
+        String utmSource;
+        String utmCampaign;
+        String utmMedium;
+        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
+        if(!TextUtils.isEmpty(utmSource)){
+            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
+        }else{
+            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
+            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
+        }
+        sendCampaignTOGTM(context,utmSource,utmCampaign,utmMedium);
+    }
+
+
+    private void sendCampaignTOGTM(Context context, String utmSource,String utmCampaign,String utmMedium){
+        if(context==null) return;
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT) &&
+                !(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
+            Map<String, Object> param = new HashMap<>();
+            param.put(LinkerConstants.UTM_SOURCE, utmSource);
+            param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
+            param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
+            TrackApp.getInstance().getGTM().sendCampaign(param);
+        }
     }
 }

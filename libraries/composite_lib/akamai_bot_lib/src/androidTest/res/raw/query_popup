@@ -1,0 +1,11 @@
+query ValidatePopUpWithdrawal($bankID : String!, $language:String){
+    ValidatePopUpWithdrawal(bankID: $bankID, language:$language){
+        status
+        message
+        data{
+        title
+        note
+        needShow
+        }
+    }
+}

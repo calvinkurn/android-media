@@ -1,0 +1,58 @@
+query notifcenter_productStock($notif_id: String!) {
+    notifcenter_productStock(notif_id: $notif_id) {
+        list {
+            notif_id
+            template_key
+            title
+            short_description
+            short_description_html
+            show_bottomsheet
+            type_bottomsheet
+            product_data {
+                stock
+                type_button
+                is_show
+                product_id
+                name
+                url
+                image_url
+                price
+                price_fmt
+                currency
+                price_idr
+                is_buyable
+                is_topads
+                is_wishlist
+                rating
+                count_review
+                labels {
+                    title
+                    color
+                }
+                campaign {
+                    active
+                    original_price
+                    original_price_fmt
+                    discount_percentage
+                    discount_price
+                    discount_price_fmt
+                }
+                variant {
+                    value
+                    identifier
+                    hex
+                }
+                shop {
+                    id
+                    name
+                    location
+                    free_shipping_icon
+                    badges {
+                        title
+                        image_url
+                    }
+                }
+            }
+        }
+    }
+}

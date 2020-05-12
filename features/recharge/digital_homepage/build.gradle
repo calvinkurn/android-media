@@ -25,8 +25,9 @@ dependencies {
 
     implementation project(rootProject.ext.features.commonDigital)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -45,14 +46,17 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
     artifactId = 'homepage'
     groupId = 'com.tokopedia.digital'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="digital_homepage-release"
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'

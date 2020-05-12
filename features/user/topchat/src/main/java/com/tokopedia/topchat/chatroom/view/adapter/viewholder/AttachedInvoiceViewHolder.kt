@@ -18,7 +18,6 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
     : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
 
     private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
-    private val chatBubble: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
     private val thumbnail: ImageView? = itemView.findViewById(R.id.iv_thumbnail)
     private val status: Label? = itemView.findViewById(R.id.tv_status)
     private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
@@ -39,10 +38,6 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
 
     override fun alwaysShowTime(): Boolean {
         return true
-    }
-
-    override fun getDateId(): Int {
-        return R.id.tvDate
     }
 
     private fun alignLayout(viewModel: AttachInvoiceSentViewModel) {

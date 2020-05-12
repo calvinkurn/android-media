@@ -26,6 +26,9 @@ object ProductDetailConstant {
     const val PARAM_PRODUCT_ETALASE_ID = "product_etalase_id"
     const val PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name"
 
+    const val PARAM_OPTION = "option"
+    const val PARAM_INCLUDE_CAMPAIGN = "includeCampaign"
+
     const val VALUE_NEW_ETALASE = "new"
 
     //waarehouse product
@@ -52,6 +55,16 @@ object ProductDetailConstant {
     const val KEY_PRODUCT_ID = "productIDs"
     const val KEY_XSOURCE = "xSource"
     const val KEY_PAGE_NUMBER = "pageNumber"
+    const val KEY_PREORDER = "preorder"
+    const val KEY_LEASING = "leasing"
+    const val KEY_NORMAL_BUTTON = "normal"
+    const val KEY_OCS_BUTTON = "ocs"
+    const val KEY_OCC_BUTTON = "occ"
+    const val KEY_OVO_DEALS = "ovo_deals"
+    const val KEY_CHAT = "chat"
+    const val KEY_BYME = "byme"
+    const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
 
@@ -63,11 +76,13 @@ object ProductDetailConstant {
 
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_COD = 2
-    const val PAYLOAD_TRADEIN = 3
-    const val PAYLOAD_CONFIGURATION_CHANGED = 4
+    const val PAYLOAD_P3 = 2
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
+    const val PAYLOAD_VARIANT_SELECTED = 5
+    const val PAYLOAD_FULLFILLMENT = 192
+    const val PAYLOAD_VARIANT_COMPONENT = 1
+    const val PAYLOAD_NOTIFY_ME = 1
 
     //Request Code
     const val REQUEST_CODE_TALK_PRODUCT = 1
@@ -97,9 +112,13 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
-    const val SEPARATOR = "separator"
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
+    const val NOTIFY_ME = "teaser"
+    const val UPCOMING_DEALS = "upcoming_deals"
+    const val VARIANT_OPTIONS = "variant_options"
+    const val VARIANT = "variant"
+    const val SOCIAL_PROOF_PV = "social_proof_pv"
     const val PDP_1 = "pdp_1"
     const val PDP_2 = "pdp_2"
     const val PDP_3 = "pdp_3"
@@ -141,4 +160,23 @@ object ProductDetailConstant {
     const val SAVED_QUANTITY = "saved_quantity"
     const val SAVED_VARIANT = "saved_variant"
 
+    //Button Action
+    const val BUY_BUTTON = 1
+    const val ATC_BUTTON = 2
+    const val OCS_BUTTON = 3
+    const val OCC_BUTTON = 4
+    const val LEASING_BUTTON = 5
+    const val TRADEIN_BUTTON = 6
+    const val TRADEIN_AFTER_DIAGNOSE = 7
+
+    const val REQUEST_CODE_LOGIN_THEN_ATC = 562
+    const val REQUEST_CODE_LOGIN_THEN_BUY = 563
+    const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
+    const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 569
+
+    const val REQUEST_CODE_CHECKOUT = 12382
+
+    //OVO
+    const val OVO_INACTIVE_STATUS = 1;
+    const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 }

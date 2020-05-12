@@ -93,11 +93,9 @@ public class CMInApp {
     public boolean isShown = false;
     @ColumnInfo(name = "last_shown")
     public long lastShownTime;
-/*
 
-    @Ignore
-    public View cmInAppView;
-*/
+    @ColumnInfo(name = "is_test")
+    private boolean isTest;
 
 
 
@@ -248,5 +246,13 @@ public class CMInApp {
 
     public void setLastShownTime(long lastShownTime) {
         this.lastShownTime = lastShownTime;
+    }
+
+    public boolean isTest() {
+        return isTest;
+    }
+
+    public void setTest(boolean test) {
+        isTest = test;
     }
 }

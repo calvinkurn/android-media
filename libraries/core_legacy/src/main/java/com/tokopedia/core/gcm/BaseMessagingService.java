@@ -60,13 +60,17 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
         if (Hansel.isPushFromHansel(data) && !GlobalConfig.isSellerApp()) {
             Hansel.handlePushPayload(this, data);
+            Timber.w("P1#MESSAGING_SERVICE#HanselPush;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
         }else if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
             appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
+            Timber.w("P1#MESSAGING_SERVICE#MoengageNotification;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
         }else if (appNotificationReceiver.isFromCMNotificationPlatform(remoteMessage.getData())) {
             appNotificationReceiver.onCampaignManagementNotificationReceived(remoteMessage);
+            Timber.w("P1#MESSAGING_SERVICE#CampaignManagementNotification;from='%s';data='%s'", remoteMessage.getFrom(), data.toString());
         } else {
             AnalyticsLog.logNotification(mContext, sessionHandler, remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
             appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
+            logTokopediaNotification(remoteMessage);
         }
         logOnMessageReceived(remoteMessage);
 
@@ -121,6 +125,14 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         Intent intent = new Intent(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA);
         if (localBroadcastManager != null)
             localBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void logTokopediaNotification(RemoteMessage remoteMessage) {
+        // Remove sensitive summary content for logging
+        Bundle bundleTemp = convertMap(remoteMessage);
+        bundleTemp.remove("summary");
+        bundleTemp.remove("desc");
+        Timber.w("P1#MESSAGING_SERVICE#TokopediaNotification;from='%s';data='%s'", remoteMessage.getFrom(), bundleTemp.toString());
     }
 
     public static IAppNotificationReceiver createInstance(Context context) {

@@ -11,10 +11,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchergame.common.util.VoucherGameDispatchersProvider
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,8 +23,8 @@ import javax.inject.Inject
  */
 class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCase: VoucherGameListUseCase,
                                                    private val graphqlRepository: GraphqlRepository,
-                                                   dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                                   private val dispatcher: VoucherGameDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
     val voucherGameList = MutableLiveData<Result<VoucherGameListData>>()
     val voucherGameMenuDetail = MutableLiveData<Result<TopupBillsMenuDetail>>()
@@ -38,7 +37,7 @@ class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCas
 
     fun getVoucherGameMenuDetail(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogMenuDetailData>()

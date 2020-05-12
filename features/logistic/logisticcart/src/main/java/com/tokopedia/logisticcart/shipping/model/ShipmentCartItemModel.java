@@ -92,6 +92,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     private boolean isLeasingProduct;
     private int bookingFee;
+    private List<String> listPromoCodes;
 
     private boolean isDropshipperDisable;
     private boolean isOrderPrioritasDisable;
@@ -156,6 +157,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isLeasingProduct = in.readByte() != 0;
         bookingFee = in.readInt();
         hasSetDropOffLocation = in.readByte() != 0;
+        listPromoCodes = in.createStringArrayList();
     }
 
     @Override
@@ -214,6 +216,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
         dest.writeInt(bookingFee);
         dest.writeByte((byte) (hasSetDropOffLocation ? 1 : 0));
+        dest.writeStringList(listPromoCodes);
     }
 
     @Override
@@ -285,6 +288,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
         newShipmentCartItemModel.setIsLeasingProduct(shipmentCartItemModel.getIsLeasingProduct());
+        newShipmentCartItemModel.setListPromoCodes(shipmentCartItemModel.getListPromoCodes());
         return newShipmentCartItemModel;
     }
 
@@ -716,6 +720,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setHasSetDropOffLocation(boolean hasSetDropOffLocation) {
         this.hasSetDropOffLocation = hasSetDropOffLocation;
+    }
+
+    public List<String> getListPromoCodes() {
+        return listPromoCodes;
+    }
+
+    public void setListPromoCodes(List<String> listPromoCodes) {
+        this.listPromoCodes = listPromoCodes;
     }
 
     @Override

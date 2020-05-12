@@ -56,7 +56,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    app:srcCompat="@drawable/ic_tagihan" />
+                    app:srcCompat="@drawable/digital_common_ic_tagihan" />
 
             </LinearLayout>
 

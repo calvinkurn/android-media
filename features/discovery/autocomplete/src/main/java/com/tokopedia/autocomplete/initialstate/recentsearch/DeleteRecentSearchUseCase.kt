@@ -3,24 +3,16 @@ package com.tokopedia.autocomplete.initialstate.recentsearch
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.autocomplete.initialstate.InitialStateRepository
-import com.tokopedia.autocomplete.initialstate.InitialStateUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import retrofit2.Response
 
 class DeleteRecentSearchUseCase(
-        private val initialStateRepository: InitialStateRepository,
-        private val initialStateUseCase: InitialStateUseCase
-) : UseCase<Response<Void>>() {
+        private val initialStateRepository: InitialStateRepository
+) : UseCase<Boolean>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<Response<Void>> {
+    override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
         return initialStateRepository.deleteRecentSearch(requestParams.parameters)
-    }
-
-    override fun unsubscribe() {
-        super.unsubscribe()
-        initialStateUseCase.unsubscribe()
     }
 
     companion object {

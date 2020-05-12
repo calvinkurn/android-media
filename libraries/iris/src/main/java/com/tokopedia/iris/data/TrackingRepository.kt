@@ -51,7 +51,6 @@ class TrackingRepository(
             try {
                 val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
                 trackingDao.insert(tracking)
-                logIrisStoreAnalytics(eventName, eventCategory, eventAction)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
                 val dbCount = trackingDao.getCount()
@@ -73,21 +72,6 @@ class TrackingRepository(
                 Timber.e("P1#IRIS#saveEvent %s", e.toString())
             }
         }
-
-    private fun logIrisStoreAnalytics(eventName: String?, eventCategory: String?, eventAction: String?) {
-        try {
-            if ("clickTopNav" == eventName &&
-                eventCategory?.startsWith("top nav") == true &&
-                "click search box" == eventAction) {
-                Timber.w("P1#IRIS_COLLECT#IRISSTORE_CLICKSEARCHBOX")
-            } else if ("clickPDP" == eventName && "product detail page" == eventCategory &&
-                "click - tambah ke keranjang" == eventAction) {
-                Timber.w("P1#IRIS_COLLECT#IRISSTORE_PDP_ATC")
-            }
-        } catch (e: Exception) {
-            Timber.e("P1#IRIS#logIrisAnalyticsStore %s", e.toString())
-        }
-    }
 
     private fun getFromOldest(maxRow: Int): List<Tracking> {
         return try {

@@ -263,7 +263,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         getDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                Timber.d("enter onCompleted");
+                if(isDealsLoaded){
+                    getView().renderCarousels(getCarouselOrTop(categoryItems, CAROUSEL));
+                }
             }
 
             @Override
@@ -312,7 +314,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 isDealsLoaded = true;
                 getView().hideProgressBar();
                 getView().renderTopDeals(getCarouselOrTop(categoryItems, TOP));
-                getView().renderCarousels(getCarouselOrTop(categoryItems, CAROUSEL));
 
                 getView().renderCategoryList(getCategories(dealsResponse.getCategoryItems()), categoriesModels);
                 getView().renderCuratedDealsList(getCuratedDeals(dealsResponse.getCategoryItems(), TOP));
@@ -557,11 +558,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         if (subscription != null) {
             subscription.unsubscribe();
         }
-    }
-
-    public void sendEventEcommerce(ProductItem item, int position, String creative, String event, String action, String name) {
-        dealsAnalytics.sendPromoClickEvent(item, position, creative, event
-                , action, name);
     }
 
     public void sendEventView(String action, String label) {

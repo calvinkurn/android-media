@@ -359,6 +359,7 @@ class ShopOpenRevampQuisionerFragment :
                 if (isNeedLocation) {
                     activity?.finish()
                 } else {
+                    hideLoader()
                     showExitOrPickLocationDialog()
                 }
             }

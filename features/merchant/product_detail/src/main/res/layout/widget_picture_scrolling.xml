@@ -5,19 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.design.component.ticker.TouchViewPager
-        android:id="@id/view_pager"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pdp_view_pager"
         app:default_measure="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
-    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/indicator_picture"
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/pdp_page_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:fillColor="@color/tkpd_main_green"
-        app:pageColor="@color/white"
+        android:gravity="center"
         android:padding="@dimen/dp_5"
         android:layout_marginBottom="@dimen/dp_5"/>
 

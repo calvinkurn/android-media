@@ -17,6 +17,7 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder;
@@ -125,6 +126,15 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     @Override
+    public void onBindViewHolder(@NotNull AbstractViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(list.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
+    }
+
+    @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
     }
@@ -158,14 +168,13 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
                 ProductItemViewModel model = ((ProductItemViewModel) list.get(i));
                 if (productId.equals(model.getProductID())) {
                     model.setWishlisted(isWishlisted);
-                    notifyItemChanged(i);
+                    notifyItemChanged(i, "wishlist");
                 }
             } else if(list.get(i) instanceof RecommendationItemViewModel){
                 RecommendationItemViewModel model = (RecommendationItemViewModel) list.get(i);
                 if(productId.equals(String.valueOf(model.getRecommendationItem().getProductId()))){
                     model.getRecommendationItem().setWishlist(isWishlisted);
-                    notifyItemChanged(i);
-                    break;
+                    notifyItemChanged(i, "wishlist");
                 }
             }
         }
@@ -268,6 +277,16 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
             }
 
             i++;
+        }
+    }
+
+    public void refreshQuickFilter() {
+        for(int i = 0; i < list.size(); i++) {
+            Visitable visitable = list.get(i);
+
+            if (visitable instanceof QuickFilterViewModel) {
+                notifyItemChanged(i);
+            }
         }
     }
 
