@@ -114,7 +114,7 @@ class HomePlayWidgetHelper(
     override fun playerPause() {
         masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
-        playManager.stopPlayer()
+        playManager.stop()
     }
 
     override fun playerPlayWithDelay() {
@@ -210,7 +210,7 @@ class HomePlayWidgetHelper(
     }
 
     private fun stopVideoPlayer() {
-        playManager.stopPlayer()
+        playManager.stop()
     }
 
 }
