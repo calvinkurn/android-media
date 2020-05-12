@@ -312,7 +312,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         brand = Value.NONE_OTHER,
                         category = Value.NONE_OTHER,
                         variant = Value.NONE_OTHER,
-                        productPosition = (position + 1).toString(),
+                        productPosition = (position).toString(),
                         channelId = channel.id,
                         isFreeOngkir = grid.freeOngkir.isActive,
                         persoType = channel.persoType,
