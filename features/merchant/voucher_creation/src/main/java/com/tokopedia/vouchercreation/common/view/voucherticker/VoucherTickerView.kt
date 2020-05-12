@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.vouchercreation.R
 import kotlinx.android.synthetic.main.view_mvc_voucher_ticker.view.*
 
@@ -37,7 +37,7 @@ class VoucherTickerView(context: Context, attrs: AttributeSet?) : ConstraintLayo
         }
 
     fun setOnTooltipClick(callback: () -> Unit) {
-        imgInfo.isVisible = true
+        imgInfo.visible()
         imgInfo.setOnClickListener {
             callback()
         }
