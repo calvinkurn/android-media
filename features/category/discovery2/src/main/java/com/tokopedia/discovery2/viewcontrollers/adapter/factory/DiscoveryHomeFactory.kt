@@ -99,9 +99,9 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.LihatFlashSaleTimer, ::LihatFlashSaleTimerViewHolder, ::LihatFlashSaleTimerViewModel)
         }
 
-        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {
+        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder: KFunction<E>, componentViewModel: KFunction<T>) {
             componentIdMap[component.componentName] = component.ordinal
-            componentMapper[component.ordinal] = ComponentHelpersHolder(viewModel, componentViewModel)
+            componentMapper[component.ordinal] = ComponentHelpersHolder(componentViewHolder, componentViewModel)
         }
 
         fun getComponentId(viewType: String?): Int? {
