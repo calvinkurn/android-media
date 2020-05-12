@@ -3,9 +3,9 @@ package com.tokopedia.topchat.chatroom.view.customview
 import android.os.Parcelable
 import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 interface TopChatViewState : BaseChatViewState {
@@ -17,7 +17,7 @@ interface TopChatViewState : BaseChatViewState {
     fun getLastItem(): Parcelable?
 
     fun onCheckChatBlocked(opponentRole: String,
-                           opponentName : String,
+                           opponentName: String,
                            blockedStatus: BlockedStatus,
                            onUnblockChatClicked: () -> Unit)
 
@@ -30,5 +30,7 @@ interface TopChatViewState : BaseChatViewState {
     fun onStickerOpened()
 
     fun onStickerClosed()
+
+    fun updateStickerGroup(stickers: List<StickerGroup>, isExpired: Boolean)
 
 }

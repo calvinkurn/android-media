@@ -42,6 +42,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -91,7 +92,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
         private var uploadImageUseCase: TopchatUploadImageUseCase,
-        private var orderProgressUseCase: OrderProgressUseCase
+        private var orderProgressUseCase: OrderProgressUseCase,
+        private val groupStickerUseCase: ChatListGroupStickerUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
@@ -552,14 +554,21 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun initInvoicePreview(savedInstanceState: Bundle?) {
         val id = view?.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState) ?: ""
-        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState) ?: ""
-        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState) ?: ""
+        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
+                ?: ""
+        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
+                ?: ""
         val date = view?.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState) ?: ""
-        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState) ?: ""
-        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState) ?: ""
-        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState) ?: ""
-        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState) ?: ""
-        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState) ?: ""
+        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
+                ?: ""
+        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
+                ?: ""
+        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
+                ?: ""
+        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
+                ?: ""
+        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+                ?: ""
 
         val invoiceViewModel = InvoicePreviewUiModel(
                 id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
@@ -701,7 +710,7 @@ class TopChatRoomPresenter @Inject constructor(
         paramBeforeReplyTime = chatRoom.minReplyTime
     }
 
-    override fun clearText() { }
+    override fun clearText() {}
 
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
@@ -711,9 +720,28 @@ class TopChatRoomPresenter @Inject constructor(
         )
     }
 
+    override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
+        groupStickerUseCase.getStickerGroup(
+                chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
+                ::onErrorGetStickerGroup
+        )
+    }
+
+    private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {
+        view?.updateStickerGroup(response.chatListGroupSticker.list)
+    }
+
+    private fun onSuccessGetStickerGroup(response: ChatListGroupStickerResponse, isExpired: Boolean) {
+        view?.updateStickerGroup(response.chatListGroupSticker.list, isExpired)
+    }
+
+    private fun onErrorGetStickerGroup(throwable: Throwable) {
+
+    }
+
     private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
-    private fun onErrorGetOrderProgress(throwable: Throwable) { }
+    private fun onErrorGetOrderProgress(throwable: Throwable) {}
 }

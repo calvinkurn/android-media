@@ -25,6 +25,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
@@ -147,6 +148,10 @@ class TopChatViewStateImpl(
         chatStickerMenuButton?.setOnClickListener {
             chatMenu?.toggleStickerMenu()
         }
+    }
+
+    override fun updateStickerGroup(stickers: List<StickerGroup>, isExpired: Boolean) {
+        chatMenu?.updateStickerGroup(stickers, isExpired)
     }
 
     override fun onKeyboardOpened() {

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.annotation.StringRes
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.crashlytics.android.Crashlytics
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
@@ -61,6 +62,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -273,6 +275,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(getUserSession().shopId == shopId.toString())
         loadChatRoomSettings(chatRoom)
+        presenter.getStickerGroupList(chatRoom)
 
         fpm.stopTrace()
     }
@@ -477,6 +480,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun renderOrderProgress(chatOrder: ChatOrderProgress) {
         orderProgress?.render(this, chatOrder)
+    }
+
+    override fun updateStickerGroup(stickers: List<StickerGroup>, isExpired: Boolean) {
+        getViewState().updateStickerGroup(stickers, isExpired)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -1077,5 +1084,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onStickerClosed() {
         getViewState().onStickerClosed()
+    }
+
+    override fun getFragmentActivity(): FragmentActivity? {
+        return activity
     }
 }

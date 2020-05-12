@@ -6,16 +6,24 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
+import com.tokopedia.topchat.chatroom.view.adapter.StickerFragmentStateAdapter
 
 class ChatMenuStickerView : LinearLayout {
 
     var listener: StickerMenuListener? = null
 
+    private var stickerViewPager: ViewPager2? = null
+    private var stickerViewPagerAdapter: StickerFragmentStateAdapter? = null
+
     interface StickerMenuListener {
         fun onStickerOpened()
         fun onStickerClosed()
+        fun getFragmentActivity(): FragmentActivity?
     }
 
     constructor(context: Context?) : super(context)
@@ -26,6 +34,28 @@ class ChatMenuStickerView : LinearLayout {
 
     init {
         initViewLayout()
+        initViewBind()
+    }
+
+    private fun initViewLayout() {
+        View.inflate(context, LAYOUT, this)
+    }
+
+    private fun initViewBind() {
+        stickerViewPager = findViewById(R.id.vp_sticker_menu)
+    }
+
+    fun updateStickers(stickers: List<StickerGroup>, isExpired: Boolean) {
+        initStickerViewPager()
+        stickerViewPagerAdapter?.updateStickers(stickers, isExpired)
+    }
+
+    private fun initStickerViewPager() {
+        if (stickerViewPagerAdapter != null) return
+        listener?.getFragmentActivity()?.let {
+            stickerViewPagerAdapter = StickerFragmentStateAdapter(it)
+            stickerViewPager?.adapter = stickerViewPagerAdapter
+        }
     }
 
     override fun setVisibility(visibility: Int) {
@@ -35,10 +65,6 @@ class ChatMenuStickerView : LinearLayout {
         } else {
             listener?.onStickerClosed()
         }
-    }
-
-    private fun initViewLayout() {
-        View.inflate(context, LAYOUT, this)
     }
 
     companion object {
