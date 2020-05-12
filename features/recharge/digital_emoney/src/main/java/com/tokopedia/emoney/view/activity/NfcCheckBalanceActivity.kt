@@ -38,6 +38,14 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (fragment != null) {
+            (fragment as NfcCheckBalanceFragment).sendTrackingCloseButton()
+        }
+        super.onBackPressed()
+
+    }
+
     override fun getCloseButton(): Int {
         return com.tokopedia.resources.common.R.drawable.ic_system_close_default
     }

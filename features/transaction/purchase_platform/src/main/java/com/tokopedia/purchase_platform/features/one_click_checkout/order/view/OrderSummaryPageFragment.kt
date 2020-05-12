@@ -187,7 +187,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromPayment(resultCode: Int, data: Intent?) {
         if (activity != null) {
-            if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
+            val lastOrderTotal = viewModel.orderTotal.value
+            if (lastOrderTotal != null && !lastOrderTotal.isButtonChoosePayment) {
+                activity?.finish()
+            } else if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
                 activity?.finish()
             }
         }
@@ -234,8 +237,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             } else if (it is OccState.Success) {
                 swipeRefreshLayout?.isRefreshing = false
+                globalError?.gone()
                 mainContent?.visible()
                 view?.let { _ ->
+                    if (!orderProductCard.isProductInitialized()) {
+                        orderProductCard.setProduct(viewModel.orderProduct)
+                        orderProductCard.setShop(viewModel.orderShop)
+                        orderProductCard.initView()
+                        showMessage(it.data.preference)
+                        if (it.data.preference.profileId > 0 &&
+                                it.data.preference.address.addressId > 0 &&
+                                it.data.preference.shipment.serviceId > 0 &&
+                                it.data.preference.payment.gatewayCode.isNotEmpty()) {
+                            showPreferenceCard()
+                            orderPreferenceCard.setPreference(it.data)
+                        } else {
+                            showEmptyPreferenceCard()
+                        }
+                    }
                     if (it.data.preference.address.addressId > 0) {
                         orderPreferenceCard.setPreference(it.data)
                     }

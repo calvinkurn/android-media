@@ -957,7 +957,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 e.printStackTrace();
                 String errorMessage = e.getMessage();
                 if (!(e instanceof CartResponseErrorException)) {
-                    errorMessage = ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
+                    errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
                 }
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(errorMessage);
                 getView().showToastError(errorMessage);

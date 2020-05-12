@@ -15,12 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.discovery.R
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
+import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics
-import com.tokopedia.common_category.constants.CategoryNavConstants
-import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
@@ -33,7 +34,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
-import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
 private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
@@ -181,10 +181,12 @@ class CatalogNavFragment : BaseBannedProductFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.show()
+            layout_no_data.run {
+                show()
+                setHeaderText(R.string.category_nav_catalog_no_data_title)
+                setDescriptionText(R.string.category_nav_catalog_no_data_description)
+            }
             txt_catalog_count.hide()
-            txt_no_data_header.text = resources.getText(R.string.category_nav_catalog_no_data_title)
-            txt_no_data_description.text = resources.getText(R.string.category_nav_catalog_no_data_description)
         } else {
             layout_no_data.hide()
             txt_catalog_count.show()
@@ -339,5 +341,10 @@ class CatalogNavFragment : BaseBannedProductFragment(),
 
     override fun getSortRequestCode(): Int {
         return REQUEST_ACTIVITY_SORT_PRODUCT
+    }
+
+    override fun addBannedProductScreen() {
+        super.addBannedProductScreen()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.show()
     }
 }

@@ -4,9 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -14,6 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -29,19 +30,18 @@ import com.tokopedia.broadcast.message.view.activity.BroadcastMessagePreviewActi
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageProductItemAdapter
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageCreateView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageCreatePresenter
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_broadcast_message_create.*
 import javax.inject.Inject
 
-class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCreateView {
+class BroadcastMessageCreateFragment : BaseDaggerFragment(), BroadcastMessageCreateView {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 0x01
@@ -56,7 +56,8 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         private const val PARAM_PRODUCT_THUMBNAIL = "thumbnail"
     }
 
-    @Inject lateinit var presenter: BroadcastMessageCreatePresenter
+    @Inject
+    lateinit var presenter: BroadcastMessageCreatePresenter
     private val router: BroadcastMessageRouter? by lazy {
         activity?.application as? BroadcastMessageRouter
     }
@@ -68,16 +69,17 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     private val selectedProducts = mutableListOf<MyProduct>()
     private val productIds = mutableListOf<Int>()
     private val hashProducList = ArrayList<HashMap<String, String>>()
-    private val productAdapter = BroadcastMessageProductItemAdapter({gotoAddProduct()}){
-            productId, position -> productIds.remove(productId); selectedProducts.removeAt(position)
-                                    hashProducList.removeAt(position)}
+    private val productAdapter = BroadcastMessageProductItemAdapter({ gotoAddProduct() }) { productId, position ->
+        productIds.remove(productId); selectedProducts.removeAt(position)
+        hashProducList.removeAt(position)
+    }
     var isShowDialogWhenBack: Boolean = false
 
     private fun gotoAddProduct() {
         val app = activity?.application
         if (app == null) return
 
-        if (app is BroadcastMessageRouter && context != null){
+        if (app is BroadcastMessageRouter && context != null) {
             startActivityForResult(app.getBroadcastMessageAttachProductIntent(context!!, userSession.shopId, shopName,
                     !userSession.shopId.isNullOrEmpty(), productIds, hashProducList), REQUEST_CODE_PRODUCT)
         }
@@ -101,15 +103,17 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         total_follower.requestFocus()
         bg_image.setOnClickListener { openImagePicker() }
         val itemDecoration = DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL)
-        val dividerDrawable = context?.let {  ContextCompat.getDrawable(it, R.drawable.product_attach_divider) }
-        dividerDrawable?.let { itemDecoration.setDrawable(it)
-                            list_product_upload.addItemDecoration(itemDecoration)}
+        val dividerDrawable = context?.let { ContextCompat.getDrawable(it, R.drawable.product_attach_divider) }
+        dividerDrawable?.let {
+            itemDecoration.setDrawable(it)
+            list_product_upload.addItemDecoration(itemDecoration)
+        }
         list_product_upload.adapter = productAdapter
         list_product_upload.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         switch_upload_product.setOnCheckedChangeListener { _, isChecked ->
             TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_TOGGLE_ATTACH_PRODUCT, "")
+                    BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
+                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_TOGGLE_ATTACH_PRODUCT, "")
             isShowDialogWhenBack = true
             list_product_upload.visibility = if (isChecked) View.VISIBLE else View.GONE
             needEnabledSubmitButton()
@@ -126,14 +130,16 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         })
 
         button_save.setOnClickListener {
-            if (switch_upload_product.isChecked && productIds.isEmpty()){
-                ToasterError.make(view, getString(R.string.empty_attached_product),
-                        BaseToaster.LENGTH_INDEFINITE).setAction(R.string.OK){
-                    TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
+            if (switch_upload_product.isChecked && productIds.isEmpty()) {
+                view?.let {
+                    Toaster.make(it, getString(R.string.empty_attached_product), Snackbar.LENGTH_INDEFINITE,
+                            Toaster.TYPE_ERROR, getString(R.string.OK), View.OnClickListener {
+                        TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_ERROR_ATTACH_PRODUCT,
                                 BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_ERROR_OK)
-                }.show()
+                    })
+                }
             } else {
                 moveToPreview()
             }
@@ -154,7 +160,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
 
     private fun moveToPreview() {
         var productsPayload = listOf<ProductPayloadMutation>()
-        if (switch_upload_product.isChecked){
+        if (switch_upload_product.isChecked) {
             productsPayload = selectedProducts.map {
                 val profile = ProductPayloadMutation.ProductProfileMutation(it.productName, it.productPrice, it.productThumbnail, it.productUrl)
                 ProductPayloadMutation(it.productId, profile)
@@ -167,8 +173,8 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
 
     private fun openImagePicker() {
         TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD, "")
+                BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
+                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD, "")
         context?.let {
             val builder = ImagePickerBuilder(getString(R.string.bm_choose_picture),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_INSTAGRAM),
@@ -185,11 +191,11 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null){
+        if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == REQUEST_CODE_IMAGE) {
                 TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                            BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                            BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_PICK_IMG, "")
+                        BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
+                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_PICK_IMG, "")
 
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
@@ -197,7 +203,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                     updateBackgroundImage()
                     isShowDialogWhenBack = true
                 }
-            } else if (requestCode == REQUEST_CODE_PRODUCT){
+            } else if (requestCode == REQUEST_CODE_PRODUCT) {
                 val productList = data.getSerializableExtra(PARAM_PRODUCT_RESULT) as List<HashMap<String, String>>
                 selectedProducts.clear()
                 productIds.clear()
@@ -206,7 +212,8 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 hashProducList.addAll(productList)
                 productList.forEach {
                     productIds.add(it.get("id")?.toInt() ?: -1)
-                    selectedProducts.add(MyProduct(productId = it.get(PARAM_PRODUCT_ID)?.toInt() ?: -1,
+                    selectedProducts.add(MyProduct(productId = it.get(PARAM_PRODUCT_ID)?.toInt()
+                            ?: -1,
                             productName = it.get(PARAM_PRODUCT_NAME) ?: "",
                             productPrice = it.get(PARAM_PRODUCT_PRICE) ?: "Rp0",
                             productThumbnail = it.get(PARAM_PRODUCT_THUMBNAIL) ?: "",
@@ -217,7 +224,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 productAdapter.addProducts(selectedProducts)
                 needEnabledSubmitButton()
                 isShowDialogWhenBack = true
-            } else if (requestCode == REQUEST_MOVE_PREVIEW){
+            } else if (requestCode == REQUEST_MOVE_PREVIEW) {
                 val needRefresh = data.getBooleanExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, false)
                 val isNeedRefresh = Intent().putExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, needRefresh)
                 activity?.run {
@@ -229,8 +236,8 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     }
 
     private fun updateBackgroundImage() {
-        if (savedLocalImageUrl == null){
-            bg_image.setImageDrawable(MethodChecker.getDrawable(activity,R.drawable.ic_upload_image))
+        if (savedLocalImageUrl == null) {
+            bg_image.setImageDrawable(MethodChecker.getDrawable(activity, R.drawable.ic_upload_image))
             bg_image.scaleType = ImageView.ScaleType.CENTER
         } else {
             ImageHandler.LoadImage(bg_image, savedLocalImageUrl)
@@ -241,7 +248,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         needEnabledSubmitButton()
     }
 
-    private fun needEnabledSubmitButton(){
+    private fun needEnabledSubmitButton() {
         var valid = true
         valid = valid && !savedLocalImageUrl.isNullOrEmpty()
         valid = valid && !edit_text_message.text.toString().isEmpty()

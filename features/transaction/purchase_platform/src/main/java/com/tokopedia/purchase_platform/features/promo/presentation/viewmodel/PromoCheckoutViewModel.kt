@@ -216,18 +216,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     initPromoList(response)
                     sendAnalyticsPromoPageLoaded()
 
-                    val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
-                    if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
-                        promoInputUiModel.value?.let {
-                            it.uiData.exception = PromoErrorException(attemptedPromoCodeError.message)
-                            it.uiData.promoCode = attemptedPromoCodeError.code
-                            it.uiState.isError = true
-                            it.uiState.isButtonSelectEnabled = true
-                            it.uiState.isLoading = false
-
-                            _promoInputUiModel.value = it
-                        }
-                    }
+                    setPromoInputErrorIfAny(response)
 
                     var tmpHasPreSelectedPromo = false
                     promoListUiModel.value?.forEach {
@@ -324,6 +313,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             _promoEmptyStateUiModel.value = emptyState
                         }
                     }
+                    setPromoInputErrorIfAny(response)
                 }
             } else {
                 throw PromoErrorException()
@@ -335,6 +325,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 it.uiState.hasFailedToLoad = true
                 it.uiData.exception = throwable
                 _fragmentUiModel.value = it
+            }
+        }
+    }
+
+    private fun setPromoInputErrorIfAny(response: CouponListRecommendationResponse) {
+        val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
+        if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
+            promoInputUiModel.value?.let {
+                it.uiData.exception = PromoErrorException(attemptedPromoCodeError.message)
+                it.uiData.promoCode = attemptedPromoCodeError.code
+                it.uiState.isError = true
+                it.uiState.isButtonSelectEnabled = true
+                it.uiState.isLoading = false
+
+                _promoInputUiModel.value = it
             }
         }
     }

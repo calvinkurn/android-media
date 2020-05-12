@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.analyti
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderShop
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
@@ -26,8 +27,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
     private val ivProductImage by lazy { view.findViewById<RoundedCornerImageView>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
-    private val etNote by lazy { view.findViewById<EditText>(R.id.et_note) }
-    private val tvNoteCharCounter by lazy { view.findViewById<Typography>(R.id.tv_note_char_counter) }
+    private val tfNote by lazy { view.findViewById<TextFieldUnify>(R.id.tf_note) }
     private val btnQtyPlus by lazy { view.findViewById<ImageView>(R.id.btn_qty_plus) }
     private val btnQtyMin by lazy { view.findViewById<ImageView>(R.id.btn_qty_min) }
     private val tvQuantityStockAvailable by lazy { view.findViewById<Typography>(R.id.tv_quantity_stock_available) }
@@ -45,6 +45,10 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         this.product = product
     }
 
+    fun isProductInitialized(): Boolean {
+        return ::product.isInitialized
+    }
+
     fun initView() {
         if (::product.isInitialized) {
             ivProductImage?.let {
@@ -60,22 +64,22 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 lblCashback?.gone()
             }
 
-            etNote?.filters = arrayOf(InputFilter.LengthFilter(MAX_NOTES_LENGTH))
-            etNote?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            tfNote?.textFieldInput?.textSize = 16f
+            tfNote?.textFieldInput?.setSingleLine(false)
+            tfNote?.setCounter(MAX_NOTES_LENGTH)
+            tfNote?.textFieldInput?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                 }
             }
             if (noteTextWatcher != null) {
-                etNote?.removeTextChangedListener(noteTextWatcher)
+                tfNote?.textFieldInput?.removeTextChangedListener(noteTextWatcher)
             }
-            etNote?.setText(product.notes)
-            tvNoteCharCounter?.text = view.context.getString(R.string.note_counter_format, product.notes.length, 144)
+            tfNote?.textFieldInput?.setText(product.notes)
             noteTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     product.notes = s?.toString() ?: ""
                     listener.onProductChange(product, false)
-                    tvNoteCharCounter?.text = view.context.getString(R.string.note_counter_format, product.notes.length, 144)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -86,7 +90,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
                 }
             }
-            etNote?.addTextChangedListener(noteTextWatcher)
+            tfNote?.textFieldInput?.addTextChangedListener(noteTextWatcher)
 
             if (quantityTextWatcher != null) {
                 etQty?.removeTextChangedListener(quantityTextWatcher)

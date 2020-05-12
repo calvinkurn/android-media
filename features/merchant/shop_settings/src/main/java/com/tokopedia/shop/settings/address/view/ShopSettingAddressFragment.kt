@@ -4,18 +4,16 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
@@ -24,6 +22,7 @@ import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
 import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
 import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolder
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopLocationTypeFactory>(),
@@ -97,15 +96,17 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     }
 
     override fun onSuccessDeleteAddress(string: String?) {
-        ToasterNormal.make(view, getString(R.string.success_delete_shop_address), BaseToaster.LENGTH_SHORT)
-                .setAction(com.tokopedia.abstraction.R.string.close) {}.show()
+        view?.let {
+            Toaster.make(it, getString(R.string.success_delete_shop_address), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener {  })
+        }
         loadInitialData()
     }
 
     override fun onErrorDeleteAddress(throwable: Throwable?) {
         throwable?.let {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(activity, it), BaseToaster.LENGTH_SHORT)
-                    .setAction(com.tokopedia.abstraction.R.string.close) {}.show()
+            Toaster.make(view!!, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener {  })
         }
     }
 
@@ -194,8 +195,9 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
             val isNew = data.getBooleanExtra(PARAM_EXTRA_IS_ADD_NEW, false)
             if (isSuccess) {
                 loadInitialData()
-                ToasterNormal.showClose(activity!!,
-                        getString(if (isNew) R.string.success_add_address else R.string.success_edit_address))
+                view?.let {
+                    Toaster.make(it, getString(if (isNew) R.string.success_add_address else R.string.success_edit_address), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                }
             }
         }
     }

@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity"
+            android:name="com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity"
             android:label="@string/title_activity_manage_product"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

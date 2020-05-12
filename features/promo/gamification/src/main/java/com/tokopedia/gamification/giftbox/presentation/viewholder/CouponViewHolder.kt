@@ -7,7 +7,7 @@ import com.tokopedia.gamification.R
 
 class CouponViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
     companion object{
-         val LAYOUT = R.layout.list_item_reward_coupon
+         val LAYOUT = com.tokopedia.gamification.R.layout.list_item_reward_coupon
     }
 
     fun bind(){}

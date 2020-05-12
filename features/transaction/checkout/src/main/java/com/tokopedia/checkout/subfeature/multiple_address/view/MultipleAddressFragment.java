@@ -3,14 +3,16 @@ package com.tokopedia.checkout.subfeature.multiple_address.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -309,14 +311,8 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
             if (multipleAddressAdapter == null || multipleAddressAdapter.getItemCount() == 0) {
                 showErrorLayout(message);
             } else {
-                ToasterError.make(getView(), message, BaseToaster.LENGTH_SHORT)
-                        .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // Do Nothing, was added just to dismiss toaster
-                            }
-                        })
-                        .show();
+                Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                        getString(R.string.label_action_snackbar_close), v->{});
             }
         }
     }

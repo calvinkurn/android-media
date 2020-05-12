@@ -131,6 +131,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.time.TimeHelper;
 
@@ -619,10 +620,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
-            ToasterNormal.make(getView(), message, BaseToaster.LENGTH_SHORT)
-                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), view -> {
-
-                    }).show();
+            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL, getString(R.string.label_action_snackbar_close), v->{});
         }
     }
 
@@ -1211,7 +1210,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void updatePromoTrackingData(List<TrackingDetailsItem> trackingDetailsItems) {
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
+        List<ShipmentCartItemModel> dataList = shipmentAdapter.getShipmentCartItemModelList();
+        if (dataList == null) return;
+        for (ShipmentCartItemModel shipmentCartItemModel : dataList) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 if (trackingDetailsItems.size() > 0) {
                     for (TrackingDetailsItem trackingDetailsItem : trackingDetailsItems) {
