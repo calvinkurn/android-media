@@ -123,13 +123,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
 
-        FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -138,13 +136,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallPreSeq();
         super.onCreate();
 
-        initGqlNWClient();
+//        initGqlNWClient();//already called in super
         createAndCallPostSeq();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
 
-        initBlockCanary();
     }
 
     private void registerActivityLifecycleCallbacks() {
@@ -210,6 +207,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         PersistentCacheManager.init(ConsumerMainApplication.this);
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
+        FpmLogger.init(ConsumerMainApplication.this);
         return true;
     }
 
@@ -264,6 +263,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
+        initBlockCanary();
         return true;
     }
 
