@@ -40,6 +40,9 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
                            setVoucherBitmap: (Bitmap) -> Unit) = PromotionBudgetAndTypeFragment(onNext, setVoucherBitmap)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
+        private const val FREE_DELIVERY = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
+        private const val CASHBACK = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
+        private const val CASHBACK_UNTIL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
 
     }
 
@@ -66,16 +69,19 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         }
     }
 
-    private val bannerVoucherUiModel: BannerVoucherUiModel<PromotionTypeBudgetTypeFactory> =
+    private val bannerVoucherUiModel: BannerVoucherUiModel =
             // todo: change dummy
             BannerVoucherUiModel(
                     VoucherImageType.FreeDelivery(0),
                     "harusnyadaristep1",
                     "Ini Harusnya dari Backend",
-                    "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg"
+                    "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
+                    BANNER_BASE_URL
             )
 
     private var painter: VoucherPreviewPainter? = null
+
+    private var voucherPreviewBitmap: Bitmap? = null
 
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
             listOf(promotionTypeInputWidget)
@@ -112,12 +118,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         super.setupView()
         setupBottomSheet()
         observeLiveData()
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModelStore.clear()
+        drawInitialVoucherPreview()
     }
 
     private fun setupBottomSheet() {
@@ -133,10 +134,8 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         }
     }
 
-    private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
-        var canSetBitmap = true
+    private fun drawInitialVoucherPreview() {
         bannerImage?.run {
-            bannerVoucherUiModel.imageType = voucherImageType
             Glide.with(context)
                     .asDrawable()
                     .load(BANNER_BASE_URL)
@@ -147,15 +146,11 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
 
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             val bitmap = resource.toBitmap()
+                            voucherPreviewBitmap = bitmap
                             if (painter == null) {
                                 painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner)
                             }
-                            if (canSetBitmap) {
-                                canSetBitmap = false
-                                painter?.let {
-                                    viewModel.drawBanner(it, bannerVoucherUiModel, resource.toBitmap())
-                                }
-                            }
+                            painter?.drawInitial(bannerVoucherUiModel)
                             return false
                         }
                     })
@@ -163,8 +158,19 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         }
     }
 
+    private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
+        val labelUrl = when(voucherImageType) {
+            is VoucherImageType.FreeDelivery -> FREE_DELIVERY
+            else -> CASHBACK
+        }
+        if (voucherImageType is VoucherImageType.Percentage) {
+            bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, CASHBACK_UNTIL)
+        } else {
+            bannerInfo?.setPreviewInfo(voucherImageType, labelUrl)
+        }
+    }
+
     private fun onSuccessGetBanner(bitmap: Bitmap) {
         bannerImage?.setImageBitmap(bitmap)
-        setVoucherBitmap(bitmap)
     }
 }

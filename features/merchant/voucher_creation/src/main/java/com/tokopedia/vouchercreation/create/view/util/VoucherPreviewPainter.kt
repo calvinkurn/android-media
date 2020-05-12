@@ -14,10 +14,10 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.vouchercreation.create.view.enums.CurrencyScale
 import com.tokopedia.vouchercreation.create.view.enums.ValueScaleType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
-import com.tokopedia.vouchercreation.create.view.typefactory.voucherimage.VoucherImageTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 
 class VoucherPreviewPainter(private val context: Context,
@@ -28,10 +28,6 @@ class VoucherPreviewPainter(private val context: Context,
         private const val FREE_DELIVERY = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
         private const val CASHBACK = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
         private const val CASHBACK_UNTIL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
-
-        private const val THOUSAND = 1000
-        private const val MILLION = 1000000
-        private const val BILLION = 1000000000
 
         private const val ASTERISK = "*"
         private const val PERCENT = "%"
@@ -119,7 +115,35 @@ class VoucherPreviewPainter(private val context: Context,
     private val bottomValueY = (bitmapHeight * 0.58f)
     private val valueMarginTop = (bitmapHeight * 0.05).toInt()
 
-    fun<T : VoucherImageTypeFactory> drawInitial(uiModel: BannerVoucherUiModel<T>, newBitmap: Bitmap? = null) {
+    fun drawInitial(uiModel: BannerVoucherUiModel) {
+        uiModel.run {
+            val bannerRect = Rect().apply {
+                set(0, 0, bitmapWidth, bitmapHeight)
+            }
+            canvas.drawText(shopName, shopNameX, shopNameY, shopNamePaint)
+            canvas.drawText(promoName, promoNameX, promoNameY, promoNamePaint)
+            Glide.with(context)
+                    .asBitmap()
+                    .load(shopAvatar)
+                    .listener(object : RequestListener<Bitmap> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            val bitmapRect = Rect().apply {
+                                set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
+                            }
+                            canvas.drawBitmap(resource, null, bitmapRect, shopAvatarPaint)
+                            onSuccessGetBitmap(bitmap)
+                            return false
+                        }
+                    })
+                    .submit()
+        }
+    }
+
+    fun drawFull(uiModel: BannerVoucherUiModel, newBitmap: Bitmap? = null) {
         uiModel.run {
             val bannerRect = Rect().apply {
                 set(0, 0, bitmapWidth, bitmapHeight)
@@ -150,11 +174,7 @@ class VoucherPreviewPainter(private val context: Context,
         }
     }
 
-    fun clearValue() {
-        canvas.drawColor(0, PorterDuff.Mode.CLEAR)
-    }
-
-    private fun<T : VoucherImageTypeFactory> drawVoucherValue(uiModel: BannerVoucherUiModel<T>) {
+    private fun drawVoucherValue(uiModel: BannerVoucherUiModel) {
         uiModel.run {
             when(imageType) {
                 is VoucherImageType.FreeDelivery -> {
@@ -285,16 +305,16 @@ class VoucherPreviewPainter(private val context: Context,
     }
 
     private fun getScaledValuePair(value: Int): Pair<String, String> {
-        if (value >= THOUSAND) {
-            return if (value >= MILLION) {
-                if (value >= BILLION) {
+        if (value >= CurrencyScale.THOUSAND) {
+            return if (value >= CurrencyScale.MILLION) {
+                if (value >= CurrencyScale.BILLION) {
                     Pair("", "")
                 } else {
-                    Pair((value/MILLION).toString(), context.getString(ValueScaleType.MILLION.stringRes).toBlankOrString())
+                    Pair((value/CurrencyScale.MILLION).toString(), context.getString(ValueScaleType.MILLION.stringRes).toBlankOrString())
                 }
             } else {
                 val scaleText = context.getString(ValueScaleType.THOUSAND.stringRes).toBlankOrString()
-                Pair((value/THOUSAND).toString(), scaleText)
+                Pair((value/CurrencyScale.THOUSAND).toString(), scaleText)
             }
         } else {
             return if (value > 0) {

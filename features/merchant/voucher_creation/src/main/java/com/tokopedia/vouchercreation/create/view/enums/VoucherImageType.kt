@@ -20,3 +20,9 @@ enum class ValueScaleType(@StringRes val stringRes: Int) {
     THOUSAND(R.string.mvc_rb),
     MILLION(R.string.mvc_jt)
 }
+
+object CurrencyScale {
+    internal const val THOUSAND = 1000
+    internal const val MILLION = 1000000
+    internal const val BILLION = 1000000000
+}

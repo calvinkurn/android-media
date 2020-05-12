@@ -190,5 +190,6 @@
     <string name="mvc_not_started_yet">Belum Dimulai</string>
     <string name="mvc_ended">Sudah Berakhir</string>
     <string name="mvc_lbl_promo_code">Kode Promo:</string>
+    <string name="mvc_asterisk">&#x2a;</string>
 
 </resources>

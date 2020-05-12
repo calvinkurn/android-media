@@ -15,7 +15,9 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
 
     private var maxPosition: Int? = null
 
-    private val mStepPositionLiveData = MutableLiveData<Int>()
+    private val mStepPositionLiveData = MutableLiveData<Int>().apply {
+        value = 0
+    }
     val stepPositionLiveData : LiveData<Int>
         get() = mStepPositionLiveData
 

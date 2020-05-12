@@ -4,19 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/bannerImage"
+    <FrameLayout
+        android:id="@+id/bannerFrame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:adjustViewBounds="true"/>
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bannerImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"/>
+
+        <com.tokopedia.vouchercreation.create.view.customview.BannerVoucherPreviewInfo
+            android:id="@+id/bannerInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bannerImage"
-        android:paddingBottom="?attr/actionBarSize"
+        android:layout_below="@id/bannerFrame"
         android:clipToPadding="false"/>
 
 </RelativeLayout>
