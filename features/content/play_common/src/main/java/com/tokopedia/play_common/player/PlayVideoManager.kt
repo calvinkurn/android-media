@@ -93,10 +93,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         override fun onPlayerError(error: ExoPlaybackException) {
             val parsedException = exoPlaybackExceptionParser.parse(error)
-//            if (parsedException.isBlackListedException) {
-//                stopPlayer()
-//                return
-//            }
 
             if (
                     parsedException.isBehindLiveWindowException ||
@@ -105,8 +101,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
-                    stopPlayer()
-                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
+                    stop()
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             } else if (
                     parsedException.isUnknownHostException ||
@@ -114,16 +110,16 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             ) {
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
-                    stopPlayer(resetState = false)
-                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
+                    stop(resetState = false)
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
             else {
                 //For now it's the same as the defined exception above
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
-                    stopPlayer()
-                    safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
+                    stop()
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
             _observablePlayVideoState.value = PlayVideoState.Error(PlayVideoErrorException(error.cause))
@@ -160,9 +156,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
 
     //region public method
-    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
+    fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
         if (uri.toString().isEmpty()) {
-            releasePlayer()
+            release()
             return
         }
 
@@ -174,7 +170,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             playVideoWithUri(uri, autoPlay, lastPosition, resetState)
             currentPrepareState = PlayVideoPrepareState.Prepared(uri, if (prepareState is PlayVideoPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
         }
-        if (!videoPlayer.isPlaying && autoPlay) resumeCurrentVideo()
+        if (!videoPlayer.isPlaying && autoPlay) resume()
     }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?, resetState: Boolean = true) {
@@ -187,13 +183,13 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     //endregion
 
     //region player control
-    fun resumeCurrentVideo() {
+    fun resume() {
         playerModel.loadControl.setPreventLoading(false)
-        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) resetCurrentVideo()
+        if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) reset()
         videoPlayer.playWhenReady = true
     }
 
-    fun pauseCurrentVideo(preventLoadingBuffer: Boolean) {
+    fun pause(preventLoadingBuffer: Boolean) {
         playerModel.loadControl.setPreventLoading(preventLoadingBuffer)
         videoPlayer.playWhenReady = false
     }
@@ -201,21 +197,21 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun resumeOrPlayPreviousVideo(autoPlay: Boolean) {
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Unprepared && prepareState.previousUri != null) {
-            safePlayVideoWithUri(prepareState.previousUri, autoPlay)
+            playUri(prepareState.previousUri, autoPlay)
         }
     }
 
-    fun resetCurrentVideo() {
+    fun reset() {
         videoPlayer.seekTo(0)
     }
 
-    fun releasePlayer() {
+    fun release() {
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
         releaseCache()
     }
 
-    fun stopPlayer(resetState: Boolean = true) {
+    fun stop(resetState: Boolean = true) {
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Prepared)
             currentPrepareState = PlayVideoPrepareState.Unprepared(
@@ -243,7 +239,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun getObservablePlayVideoState(): LiveData<PlayVideoState> = _observablePlayVideoState
     fun getObservableVideoPlayer(): LiveData<out ExoPlayer> = _observableVideoPlayer
 
-    fun isVideoPlaying(): Boolean = videoPlayer.isPlaying
+    fun isPlaying(): Boolean = videoPlayer.isPlaying
 
     fun getDurationVideo(): Long {
         return videoPlayer.duration
@@ -255,7 +251,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         return videoPlayer.volume == VIDEO_MIN_SOUND
     }
 
-    fun muteVideo(shouldMute: Boolean) {
+    fun mute(shouldMute: Boolean) {
         videoPlayer.volume = if (shouldMute) VIDEO_MIN_SOUND else VIDEO_MAX_SOUND
     }
 

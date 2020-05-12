@@ -23,8 +23,8 @@ class PlayProcessLifecycleObserver(private val context: Context) : LifecycleObse
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        isPreviouslyPlaying = playVideoManager.isVideoPlaying()
-        playVideoManager.stopPlayer(false)
+        isPreviouslyPlaying = playVideoManager.isPlaying()
+        playVideoManager.stop(false)
     }
 
     /**

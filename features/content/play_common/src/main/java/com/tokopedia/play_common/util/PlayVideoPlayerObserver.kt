@@ -16,7 +16,7 @@ class PlayVideoPlayerObserver(private val context: Context) : LifecycleObserver 
         get() = PlayVideoManager.getInstance(context.applicationContext)
 
     @Volatile
-    private var isVideoPlaying = playVideoManager.isVideoPlaying()
+    private var isVideoPlaying = playVideoManager.isPlaying()
 
     private val isChangingConfig: Boolean
         get() {
@@ -32,10 +32,10 @@ class PlayVideoPlayerObserver(private val context: Context) : LifecycleObserver 
     fun onPause() {
         synchronized(this) {
             if (!isChangingConfig) {
-                isVideoPlaying = playVideoManager.isVideoPlaying()
+                isVideoPlaying = playVideoManager.isPlaying()
 
-                playVideoManager.pauseCurrentVideo(true)
-                playVideoManager.muteVideo(true)
+                playVideoManager.pause(true)
+                playVideoManager.mute(true)
             }
         }
     }
@@ -44,8 +44,8 @@ class PlayVideoPlayerObserver(private val context: Context) : LifecycleObserver 
     fun onResume() {
         synchronized(this) {
             if (!isChangingConfig) {
-                if (isVideoPlaying) playVideoManager.resumeCurrentVideo()
-                playVideoManager.muteVideo(false)
+                if (isVideoPlaying) playVideoManager.resume()
+                playVideoManager.mute(false)
             }
         }
     }
@@ -54,7 +54,7 @@ class PlayVideoPlayerObserver(private val context: Context) : LifecycleObserver 
     fun onDestroy() {
         synchronized(this) {
             if (!isChangingConfig) {
-                playVideoManager.stopPlayer()
+                playVideoManager.stop()
             }
         }
     }

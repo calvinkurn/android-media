@@ -108,7 +108,7 @@ class HomePlayWidgetHelper(
     }
 
     override fun releasePlayer() {
-        playManager.releasePlayer()
+        playManager.release()
     }
 
     override fun playerPause() {
@@ -121,7 +121,7 @@ class HomePlayWidgetHelper(
         masterJob.cancelChildren()
         launch(coroutineContext){
             delay(DELAY_PLAYING)
-            playManager.resumeCurrentVideo()
+            playManager.resume()
         }
     }
 
@@ -144,14 +144,14 @@ class HomePlayWidgetHelper(
         if(videoUri != null && !videoUri?.toString().isNullOrEmpty()
                 && isDeviceHasRequirementAutoPlay()
                 && isAutoPlay) {
-            playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
+            playManager.playUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)
             playerPlayWithDelay()
         }
     }
 
-    override fun isPlayerPlaying() = PlayVideoManager.getInstance(context).isVideoPlaying()
+    override fun isPlayerPlaying() = PlayVideoManager.getInstance(context).isPlaying()
 
     override fun onViewAttach() {
         preparePlayer()
@@ -205,7 +205,7 @@ class HomePlayWidgetHelper(
     }
 
     private fun muteVideoPlayer() {
-        playManager.muteVideo(true)
+        playManager.mute(true)
         playManager.setRepeatMode(true)
     }
 

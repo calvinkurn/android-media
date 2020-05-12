@@ -336,7 +336,7 @@ class PlayViewModel @Inject constructor(
 
     //region video player
     fun startCurrentVideo() {
-        if (!videoPlayer.isYouTube) playVideoManager.resumeCurrentVideo()
+        if (!videoPlayer.isYouTube) playVideoManager.resume()
     }
 
     fun getDurationCurrentVideo(): Long {
@@ -360,7 +360,7 @@ class PlayViewModel @Inject constructor(
 
     private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl) {
         try {
-            playVideoManager.safePlayVideoWithUri(uri = Uri.parse(urlString), bufferControl = bufferControl)
+            playVideoManager.playUri(uri = Uri.parse(urlString), bufferControl = bufferControl)
         } catch (e: Exception) {}
     }
 
@@ -369,7 +369,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun stopPlayer() {
-        playVideoManager.stopPlayer()
+        playVideoManager.stop()
     }
     //endregion
 

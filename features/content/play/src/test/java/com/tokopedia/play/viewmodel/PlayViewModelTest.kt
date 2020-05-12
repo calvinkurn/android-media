@@ -988,7 +988,7 @@ class PlayViewModelTest {
         playViewModel.startCurrentVideo()
 
         verify(exactly = 1) {
-            mockPlayVideoManager.resumeCurrentVideo()
+            mockPlayVideoManager.resume()
         }
     }
 
