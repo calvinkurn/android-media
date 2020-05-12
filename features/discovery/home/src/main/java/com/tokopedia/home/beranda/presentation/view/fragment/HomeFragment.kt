@@ -1788,7 +1788,7 @@ class HomeFragment : BaseDaggerFragment(),
                 )
             }
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel, true) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
