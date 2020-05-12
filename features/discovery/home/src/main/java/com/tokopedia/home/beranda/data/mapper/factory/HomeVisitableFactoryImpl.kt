@@ -27,7 +27,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
-class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
+class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) : HomeVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
     private var homeData: HomeData? = null
@@ -116,7 +116,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         if (needToShowUserWallet) {
             val headerViewModel = HeaderDataModel()
             headerViewModel.isPendingTokocashChecked = false
-            headerViewModel.isUserLogin = userSessionInterface.isLoggedIn
+            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
 
             visitableList.add(headerViewModel)
         }
@@ -216,7 +216,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
                     createDynamicChannel(
                             channel = channel,
-                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface.userId ?: "")
+                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
