@@ -26,7 +26,7 @@ class ThankYouPageAnalytics {
         synchronized(lock) {
             this.thanksPageData = thanksPageData
             thanksPageData.shopOrder.forEach { shopOrder ->
-                val data = getParentTrackingNode(thanksPageData)
+                val data = getParentTrackingNode(thanksPageData, shopOrder)
                 data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
                 data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
                 data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
@@ -36,11 +36,11 @@ class ThankYouPageAnalytics {
         }
     }
 
-    private fun getParentTrackingNode(thanksPageData: ThanksPageData): MutableMap<String, Any> {
+    private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
         return mutableMapOf(
                 ParentTrackingKey.KEY_EVENT to thanksPageData.event,
                 ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
-                ParentTrackingKey.KEY_EVENT_ACTION to thanksPageData.eventAction,
+                ParentTrackingKey.KEY_EVENT_ACTION to shopOrder.storeType,
                 ParentTrackingKey.KEY_EVENT_LABEL to thanksPageData.eventLabel,
                 ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
                 ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
@@ -66,7 +66,7 @@ class ThankYouPageAnalytics {
                 ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
                 ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue.toString(),
                 ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
-                ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmountStr,
+                ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount.toString(),
                 ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon
         )
     }

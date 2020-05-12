@@ -60,7 +60,7 @@ data class ThanksPageData(
         @SerializedName("event_category")
         val eventCategory: String,
         @SerializedName("event_action")
-        val eventAction: String,
+        val eventAction: String?,
         @SerializedName("event_label")
         val eventLabel: String
 ) : Parcelable {
