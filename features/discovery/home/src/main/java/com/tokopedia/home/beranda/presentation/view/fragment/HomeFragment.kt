@@ -63,6 +63,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpre
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression
+import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
@@ -1787,7 +1788,7 @@ class HomeFragment : BaseDaggerFragment(),
                 )
             }
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftProductView(channel, true) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel, true) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
