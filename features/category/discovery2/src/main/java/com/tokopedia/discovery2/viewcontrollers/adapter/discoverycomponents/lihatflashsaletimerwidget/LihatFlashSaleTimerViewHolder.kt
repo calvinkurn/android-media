@@ -5,20 +5,19 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.BannerTimerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), View.OnClickListener {
 
     private lateinit var lihatFlashSaleTimerViewModel: LihatFlashSaleTimerViewModel
-    private var linearLayout: LinearLayout
+    private var constraintLayout: ConstraintLayout
     private var context: Context
     private lateinit var hoursTextView: TextView
     private lateinit var minutesTextView: TextView
@@ -34,9 +33,9 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
     }
 
     init {
-        linearLayout = itemView.findViewById(R.id.parent_layout)
+        constraintLayout = itemView.findViewById(R.id.parent_layout)
         lihatSemuaTextView = itemView.findViewById(R.id.lihat_semua_tv)
-        context = linearLayout.context
+        context = constraintLayout.context
     }
 
 
@@ -47,10 +46,9 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
         // Observe Model Data
         lihatFlashSaleTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
             if (!componentItem.data.isNullOrEmpty()) {
-                setTimerUI(componentItem, BannerTimerViewHolder.DAYS)
-                setTimerUI(componentItem, BannerTimerViewHolder.HOURS)
-                setTimerUI(componentItem, BannerTimerViewHolder.MINUTES)
-                setTimerUI(componentItem, BannerTimerViewHolder.SECONDS)
+                setTimerUI(componentItem, HOURS)
+                setTimerUI(componentItem, MINUTES)
+                setTimerUI(componentItem, SECONDS)
 
                 lihatFlashSaleTimerViewModel.startTimer()
             }
@@ -70,20 +68,17 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
 
         when (timeType) {
             HOURS -> {
-                val hoursViewLayout: View = itemView.findViewById(R.id.hours_layout)
-                hoursTextView = hoursViewLayout.findViewById(R.id.time_text_view)
+                hoursTextView = itemView.findViewById(R.id.hours_layout)
                 hoursTextView.setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
                 hoursTextView.background.setColorFilter(Color.parseColor(getTimerBoxColour(componentItem)), PorterDuff.Mode.SRC_ATOP)
             }
             MINUTES -> {
-                val minutesViewLayout: View = itemView.findViewById(R.id.minutes_layout)
-                minutesTextView = minutesViewLayout.findViewById(R.id.time_text_view)
+                minutesTextView = itemView.findViewById(R.id.minutes_layout)
                 minutesTextView.setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
                 minutesTextView.background.setColorFilter(Color.parseColor(getTimerBoxColour(componentItem)), PorterDuff.Mode.SRC_ATOP)
             }
             SECONDS -> {
-                val secondsViewLayout: View = itemView.findViewById(R.id.seconds_layout)
-                secondsTextView = secondsViewLayout.findViewById(R.id.time_text_view)
+                secondsTextView = itemView.findViewById(R.id.seconds_layout)
                 secondsTextView.setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
                 secondsTextView.background.setColorFilter(Color.parseColor(getTimerBoxColour(componentItem)), PorterDuff.Mode.SRC_ATOP)
             }
@@ -92,8 +87,8 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
     }
 
     private fun setSeparatorUI(componentItem: ComponentsItem?) {
-        itemView.findViewById<TextView>(R.id.hours_separator_text_view).setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
-        itemView.findViewById<TextView>(R.id.minutes_separator_text_view).setTextColor(Color.parseColor(getTimerFontColour(componentItem)))
+        itemView.findViewById<TextView>(R.id.hours_separator_text_view).setTextColor(Color.parseColor(getTimerBoxColour(componentItem)))
+        itemView.findViewById<TextView>(R.id.minutes_separator_text_view).setTextColor(Color.parseColor(getTimerBoxColour(componentItem)))
     }
 
 
@@ -119,7 +114,7 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
         return if (componentItem?.data?.get(0)?.timerBoxColor != null && componentItem.data?.get(0)?.timerBoxColor!!.isNotEmpty()) {
             componentItem.data?.get(0)?.timerBoxColor
         } else {
-            context.resources.getString(R.color.white)
+            context.resources.getString(R.color.clr_fd412b)
         }
     }
 }

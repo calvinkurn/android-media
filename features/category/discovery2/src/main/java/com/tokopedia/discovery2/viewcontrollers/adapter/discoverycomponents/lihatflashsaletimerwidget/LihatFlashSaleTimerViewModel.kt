@@ -52,9 +52,7 @@ class LihatFlashSaleTimerViewModel(val application: Application, components: Com
 
     // TODO Cancel countdown timer on viewHolder destroy
     fun stopTimer() {
-        if (timeCounter != null) {
-            timeCounter!!.cancel()
-        }
+            timeCounter?.cancel()
     }
 
     fun getTimerData(): LiveData<TimerDataModel> {
