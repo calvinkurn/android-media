@@ -206,6 +206,25 @@ class ShopShowcaseTracking (context: Context?) {
         )
     }
 
+    fun addShowcaseIsCreatedSuccessfully(shopId: String, shopType: String, isSuccess: Boolean = false) {
+        if(isSuccess) {
+            eventAction = "click finish success"
+        } else {
+            eventAction = "click finish error"
+        }
+        tracker.sendEnhanceEcommerceEvent(
+                getDataLayer(
+                        CLICK_ETALASE,
+                        ADD_SHOWCASE_PAGE,
+                        eventAction,
+                        "",
+                        shopId,
+                        shopType,
+                        PAGE_TYPE_VALUE
+                )
+        )
+    }
+
     fun addShowcaseClickChooseProductText(shopId: String, shopType: String, isActionEdit: Boolean) {
         page = if(isActionEdit) {
             EDIT_SHOWCASE_PAGE
