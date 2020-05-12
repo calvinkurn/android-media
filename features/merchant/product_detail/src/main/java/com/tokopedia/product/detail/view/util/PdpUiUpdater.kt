@@ -22,7 +22,11 @@ import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.collections.ArrayList
 import kotlin.math.roundToLong
 
-class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPdpDataModel>) {
+/**
+ * This class hold all of the ViewHolder data. They have same instance.
+ * If you changes one of this variable , data inside ViewHolder also updated (don't forget to notify)
+ */
+class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
