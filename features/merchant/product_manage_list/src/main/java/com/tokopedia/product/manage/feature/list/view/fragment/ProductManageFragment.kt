@@ -176,7 +176,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupBottomSheet()
         setupMultiSelect()
         setupSelectAll()
-        setupTicker()
         renderCheckedView()
 
         observeShopInfo()
@@ -381,32 +380,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 onClickProductCheckBox(isChecked, index)
             }
             productManageListAdapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun setupTicker() {
-        if(isSellerMigrationEnabled(context)) {
-            productManageSellerMigrationTicker.apply {
-                tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_title)
-                setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_content))
-                setDescriptionClickEvent(object: TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        openSellerMigrationBottomSheet()
-                    }
-                    override fun onDismiss() {
-                        // No Op
-                    }
-                })
-            }
-        } else {
-            productManageSellerMigrationTicker.hide()
-        }
-    }
-
-    private fun openSellerMigrationBottomSheet() {
-        context?.let {
-            val sellerMigrationBottomSheet = SellerMigrationProductBottomSheet.createNewInstance(it)
-            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
         }
     }
 
