@@ -214,7 +214,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                         couponUiType: TargetPromotionsCouponType,
                         popGratificationResponse: GetPopGratificationResponse,
                         claimPopGratificationResponse: ClaimPopGratificationResponse?,
-                        couponDetailResponse: GetCouponDetailResponse,
+                        couponDetailResponse: GetCouponDetailResponse?,
                         gratificationData: GratificationData): Dialog? {
         isNewerVersion = true
 
@@ -232,12 +232,19 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             }
         }
         if (claimPopGratificationResponse == null) {
+
+            rightViewList.forEach {
+                it.translationX = 0f
+                it.alpha = 1f
+            }
+
             showErrorUIForClaimGratificationLoggedIn()
         } else {
             setLoggedInUiForSuccessClaimGratificationNewVersion(claimPopGratificationResponse, couponDetailResponse)
         }
-
+        observeLiveData(activityContext as AppCompatActivity, errorUi = {showErrorUIForClaimGratificationLoggedIn()})
         setListenersLoggedIn(activityContext as AppCompatActivity)
+
         return bottomSheet
     }
 
@@ -245,7 +252,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private fun showErrorUIForClaimGratificationLoggedIn() {
         retryCount += 1
         val lessThanThreeTimes = retryCount < MAX_RETRY_COUNT
-        val context = tvTitleRight.context
+        val context = tvTitle.context
         tvTitleRight.text = context.getString(R.string.t_promo_disturbance_at_toko_house)
         tvSubTitleRight.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
 
@@ -355,7 +362,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         leftViewList.add(tvSubTitle)
         leftViewList.add(tvTitle)
 
-//        initialAnimation(isNewerVersion)
+        initialAnimation(isNewerVersion)
 
         recyclerView.layoutManager = LinearLayoutManager(activityContext, LinearLayoutManager.HORIZONTAL, false)
 
@@ -376,7 +383,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    private fun initialAnimation(isNewerVersion:Boolean) {
+    private fun initialAnimation(isNewerVersion: Boolean) {
         if (isNewerVersion) {
             leftViewList.forEach {
                 it.translationX = screenWidth
@@ -510,6 +517,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         if (couponDetailList.isEmpty()) {
             imageView.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
+                viewFlipper.displayedChild = CONTAINER_IMAGE
             }
         }
 
@@ -519,8 +527,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     //todo Rahul
     private fun setLoggedInUiForSuccessClaimGratificationNewVersion(data: ClaimPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse? = null) {
-
-        initialAnimation(false)
 
         tvTitle.text = data.popGratificationClaim?.title
         tvSubTitle.text = data.popGratificationClaim?.text
@@ -610,30 +616,34 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             }
 
             //todo Rahul - set error ui (DONE)
-            viewModel.claimApiLiveData.observe(activity, Observer {
-                when (it.status) {
-                    LiveDataResult.STATUS.SUCCESS -> {
-                        toggleProgressBar(false)
-                        toggleBtnText(true)
-                        if (it.data != null && it.data.first.popGratificationClaim?.resultStatus?.code == "200") {
-                            setUiForSuccessClaimGratificationNewVersion(it.data.first, it.data.second)
-                        } else {
-                            showErrorUIForClaimGratification()
-                        }
-                    }
-                    LiveDataResult.STATUS.ERROR -> {
-                        toggleProgressBar(false)
-                        toggleBtnText(true)
-                        showErrorUIForClaimGratification()
-                    }
+            observeLiveData(activity, errorUi = { showErrorUIForClaimGratification() })
+        }
+    }
 
-                    LiveDataResult.STATUS.LOADING -> {
-                        toggleProgressBar(true)
-                        toggleBtnText(false)
+    fun observeLiveData(activity: AppCompatActivity, errorUi: (() -> Unit)? = null) {
+        viewModel.claimApiLiveData.observe(activity, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    toggleProgressBar(false)
+                    toggleBtnText(true)
+                    if (it.data != null && it.data.first.popGratificationClaim?.resultStatus?.code == "200") {
+                        setUiForSuccessClaimGratificationNewVersion(it.data.first, it.data.second)
+                    } else {
+                        errorUi?.invoke()
                     }
                 }
-            })
-        }
+                LiveDataResult.STATUS.ERROR -> {
+                    toggleProgressBar(false)
+                    toggleBtnText(true)
+                    errorUi?.invoke()
+                }
+
+                LiveDataResult.STATUS.LOADING -> {
+                    toggleProgressBar(true)
+                    toggleBtnText(false)
+                }
+            }
+        })
     }
 
     fun performActionBasedOnClaim(popGratificationActionButton: PopGratificationActionButton?) {

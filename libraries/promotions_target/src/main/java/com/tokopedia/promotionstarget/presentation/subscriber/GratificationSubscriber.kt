@@ -208,15 +208,25 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                 //NEW FLOW
 
                                 if (presenter.userSession.isLoggedIn) {
-                                    val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
-                                    val claimPopGratificationResponse = presenter.claimGratification(claimPayload)
-                                    val popBenefits = response.popGratification?.popGratificationBenefits
-                                    val couponDetail = presenter.composeApi(popBenefits)
+                                    var claimPopGratificationResponse: ClaimPopGratificationResponse? = null
+                                    var couponDetail: GetCouponDetailResponse? = null
+                                    try {
+                                        val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
+                                        claimPopGratificationResponse = presenter.claimGratification(claimPayload)
+                                        val popBenefits = response.popGratification?.popGratificationBenefits
+                                        couponDetail = presenter.composeApi(popBenefits)
+
+                                    } catch (ex: Exception) {
+                                        //todo Rahul - remove this
+                                        ex.printStackTrace()
+                                    }
+
                                     withContext(Dispatchers.Main) {
                                         if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
-                                            showNewLoggedIn(weakActivity,response, claimPopGratificationResponse, couponDetail, gratificationData)
+                                            showNewLoggedIn(weakActivity, response, claimPopGratificationResponse, couponDetail, gratificationData)
                                         }
                                     }
+
                                 } else {
                                     withContext(Dispatchers.Main) {
                                         showNonLoggedIn(weakActivity, response, gratificationData)
@@ -242,7 +252,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private fun showNewLoggedIn(weakActivity: WeakReference<Activity>,
                                 popGratificationResponse: GetPopGratificationResponse,
                                 claimPopGratificationResponse: ClaimPopGratificationResponse?,
-                                couponDetailResponse: GetCouponDetailResponse,
+                                couponDetailResponse: GetCouponDetailResponse?,
                                 gratificationData: GratificationData) {
 
         val targetPromotionsDialog = TargetPromotionsDialog(this)

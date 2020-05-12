@@ -27,6 +27,8 @@ class DialogManagerPresenter @Inject constructor(
     }
 
     suspend fun claimGratification(claimPayload: ClaimPayload): ClaimPopGratificationResponse {
+        if(true)
+            throw Exception("Custom")
         return claimPopGratificationUseCase.getResponse(claimPopGratificationUseCase.getQueryParams(claimPayload))
     }
 
