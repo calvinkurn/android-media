@@ -198,6 +198,10 @@ class SmartBillsFragment : BaseDaggerFragment(),
                     }
                 })
 
+                // Setup toggle all items listener
+                cb_smart_bills_select_all.setOnClickListener {
+                    toggleAllItems(cb_smart_bills_select_all.isChecked)
+                }
                 view_smart_bills_select_all_checkbox_container.setOnClickListener {
                     cb_smart_bills_select_all.toggle()
                     toggleAllItems(cb_smart_bills_select_all.isChecked)
