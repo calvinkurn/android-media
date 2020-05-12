@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.SortUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.SortUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.SortAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_sort.view.*
 

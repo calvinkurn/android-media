@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/mvc_dimen_12dp">
 
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/shimmerMvc0"
             android:layout_width="@dimen/mvc_dimen_100dp"
             android:layout_height="@dimen/layout_lvl1"

@@ -1,12 +1,12 @@
-package com.tokopedia.vouchercreation.voucherlist.model
+package com.tokopedia.vouchercreation.voucherlist.model.ui
 
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactory
 
 /**
- * Created By @ilhamsuaib on 24/04/20
+ * Created By @ilhamsuaib on 27/04/20
  */
 
-data class EmptyStateUiModel(
+data class LoadingStateUiModel(
         val isActiveVoucher: Boolean
 ) : BaseVoucherListUiModel {
 

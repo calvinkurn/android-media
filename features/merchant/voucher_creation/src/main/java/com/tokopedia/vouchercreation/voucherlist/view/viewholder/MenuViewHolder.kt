@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel
 import kotlinx.android.synthetic.main.item_mvc_bottomsheet_menu.view.*
 
 /**

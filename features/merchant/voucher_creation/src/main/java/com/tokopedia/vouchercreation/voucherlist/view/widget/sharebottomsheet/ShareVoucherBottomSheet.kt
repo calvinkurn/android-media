@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.ShareVoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.ShareVoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.ShareVoucherAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_share_voucher.view.*
 

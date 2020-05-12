@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.model
+package com.tokopedia.vouchercreation.voucherlist.model.ui
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.HeaderChipFactory

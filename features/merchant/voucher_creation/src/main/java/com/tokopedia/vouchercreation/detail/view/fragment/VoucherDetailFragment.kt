@@ -8,7 +8,9 @@ import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.detail.model.*
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
+import com.tokopedia.vouchercreation.voucherlist.model.remote.MerchantVoucherModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 
 /**
@@ -20,6 +22,10 @@ class VoucherDetailFragment : BaseDetailFragment() {
     companion object {
         fun newInstance(): VoucherDetailFragment = VoucherDetailFragment()
     }
+
+    private val dummyVoucher = VoucherMapper().mapRemoteModelToUiModel(listOf(MerchantVoucherModel(
+            voucherName = "Voucher Hura Test Doang", discountAmtFormatted = "Cashback 10%"
+    ))).first()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,7 +61,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 .setOnPrimaryClickListener {
 
                 }
-                .show(VoucherUiModel("Voucher Hura Test Doang", "", true))
+                .show(dummyVoucher)
     }
 
     override fun showTipsAndTrickBottomSheet() {

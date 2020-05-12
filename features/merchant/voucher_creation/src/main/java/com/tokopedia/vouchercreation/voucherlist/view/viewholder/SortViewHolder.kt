@@ -3,7 +3,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.SortUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.SortUiModel
 import kotlinx.android.synthetic.main.item_mvc_sort.view.*
 
 /**

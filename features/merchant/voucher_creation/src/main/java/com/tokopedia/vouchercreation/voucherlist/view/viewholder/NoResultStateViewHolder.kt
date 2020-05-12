@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.NoResultStateUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.NoResultStateUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list_no_result_state.view.*
 import timber.log.Timber
 

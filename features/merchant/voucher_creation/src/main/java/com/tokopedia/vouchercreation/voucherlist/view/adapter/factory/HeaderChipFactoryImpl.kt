@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.HeaderChipResetViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.HeaderChipViewHolder
 

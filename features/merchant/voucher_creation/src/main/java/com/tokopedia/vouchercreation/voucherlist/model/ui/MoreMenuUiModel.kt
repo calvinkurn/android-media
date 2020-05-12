@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.model
+package com.tokopedia.vouchercreation.voucherlist.model.ui
 
 import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.EmptyStateUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.EmptyStateUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list_empty_state.view.*
 import timber.log.Timber
 

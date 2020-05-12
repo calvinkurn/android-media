@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.LoadingStateUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.LoadingStateUiModel
 import kotlinx.android.synthetic.main.item_mvc_shimmer_searchbar.view.*
 
 /**

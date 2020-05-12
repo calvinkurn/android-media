@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.BaseFilterUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.BaseFilterUiModel.*
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.FilterAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_filter.view.*
 

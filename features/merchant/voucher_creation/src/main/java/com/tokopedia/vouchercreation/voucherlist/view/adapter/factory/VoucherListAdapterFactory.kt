@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.view.adapter.factory
 
-import com.tokopedia.vouchercreation.voucherlist.model.*
+import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 
 /**
  * Created By @ilhamsuaib on 17/04/20
