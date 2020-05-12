@@ -105,7 +105,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val tvTitleTokocash = itemView.findViewById<TextView>(R.id.tv_title_tokocash)
         val tvBalanceTokocash = itemView.findViewById<TextView>(R.id.tv_balance_tokocash)
         val ivLogoTokocash = itemView.findViewById<ImageView>(R.id.iv_logo_tokocash)
-        val tokocashProgressBar = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokocash)
+        val tokocashProgressBar = itemView.findViewById<View>(R.id.progress_bar_tokocash)
         scanHolder.setOnClickListener { goToScanner() }
 
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
@@ -209,7 +209,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val tvBalanceTokoPoint = itemView.findViewById<TextView>(R.id.tv_balance_tokopoint)
         val tvActionTokopoint = itemView.findViewById<TextView>(R.id.tv_btn_action_tokopoint)
         val ivLogoTokoPoint = itemView.findViewById<ImageView>(R.id.iv_logo_tokopoint)
-        val tokopointProgressBarLayout = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokopoint_layout)
+        val tokopointProgressBarLayout = itemView.findViewById<View>(R.id.progress_bar_tokopoint_layout)
         val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
         val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
         ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)

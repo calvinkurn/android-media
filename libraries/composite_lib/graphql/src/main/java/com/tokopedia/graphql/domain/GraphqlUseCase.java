@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -34,6 +35,10 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     private GraphqlCacheManager mCacheManager;
     private FingerprintManager mFingerprintManager;
     private Subscription cacheSubscription;
+
+    //Usecase and subcriber for refresh the network calls
+    private GraphqlUseCase mRefreshUseCase;
+    private Subscriber<GraphqlResponse> mRefreshSubscription;
 
     @Inject
     public GraphqlUseCase() {
@@ -123,7 +128,18 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         if (mRequests == null || mRequests.isEmpty()) {
             throw new RuntimeException("Please set valid request parameter before executing the use-case");
         }
-        return graphqlRepository.getResponse(mRequests, mCacheStrategy);
+
+        return graphqlRepository.getResponse(mRequests, mCacheStrategy).doOnNext(new Action1<GraphqlResponse>() {
+
+            /**
+             * Invoking refresh
+             * @param graphqlResponse
+             */
+            @Override
+            public void call(GraphqlResponse graphqlResponse) {
+                doRefresh(graphqlResponse);
+            }
+        });
     }
 
     @Override
@@ -132,5 +148,38 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         if(cacheSubscription != null && !cacheSubscription.isUnsubscribed()) {
             cacheSubscription.unsubscribe();
         }
+    }
+
+    /**
+     * Attaching refresh usecase
+     * @param graphqlResponse
+     */
+    private void doRefresh(GraphqlResponse graphqlResponse) {
+        if (graphqlResponse == null
+                || graphqlResponse.getRefreshRequests() == null
+                || graphqlResponse.getRefreshRequests().isEmpty()
+                || mRefreshSubscription == null) {
+            return;
+        }
+
+        for (GraphqlRequest request : graphqlResponse.getRefreshRequests()) {
+            if (request == null) {
+                continue;
+            }
+
+            request.setNoCache(true);
+        }
+
+        mRefreshUseCase.addRequests(graphqlResponse.getRefreshRequests());
+        mRefreshUseCase.execute(mRefreshSubscription);
+    }
+
+    /**
+     * To set refresh subscription e.g. pull to refresh or reresh button
+     * @param refreshSubscription
+     */
+    public void setOnRefreshSubscription(Subscriber<GraphqlResponse> refreshSubscription) {
+        this.mRefreshUseCase = new GraphqlUseCase();
+        this.mRefreshSubscription = refreshSubscription;
     }
 }
