@@ -29,6 +29,11 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
+    fun getHeader(): HeaderUnify = thank_header
+
+    override fun getScreenName(): String {
+        return SCREEN_NAME
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +49,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        intent.data?.getQueryParameter("payment_id")?.let {
-            intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter("merchant"))
+        intent.data?.getQueryParameter(ARG_PAYMENT_ID)?.let {
+            intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter(ARG_MERCHANT))
             intent.putExtra(ARG_PAYMENT_ID, it.toLong())
             if (intent.extras != null) {
                 bundle.putAll(intent.extras)
@@ -69,8 +74,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         gotoHomePage()
         finish()
     }
-
-    fun getHeader(): HeaderUnify = thank_header
 
     override fun getComponent(): ThankYouPageComponent {
         if (!::thankYouPageComponent.isInitialized)
@@ -146,7 +149,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         return false
     }
 
-
     private fun gotoHomePage() {
         RouteManager.route(this, ApplinkConst.HOME, "")
         finish()
@@ -154,7 +156,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     companion object {
 
-        const val ARG_PAYMENT_ID = "paymentID"
+        const val SCREEN_NAME = "thank-you-page"
+
+        const val ARG_PAYMENT_ID = "payment_id"
         const val ARG_MERCHANT = "merchant"
 
         fun createIntent(context: Context, paymentID: String, merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {

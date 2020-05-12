@@ -62,7 +62,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
-        getThankPageAnalytics().sendLihatDetailClickEvent(PaymentPageMapper.getPaymentPageType(thanksPageData.pageType))
+        getThankPageAnalytics().sendLihatDetailClickEvent(PaymentPageMapper
+                .getPaymentPageType(thanksPageData.pageType))
         if (!::invoiceBottomSheets.isInitialized)
             invoiceBottomSheets = CloseableBottomSheetFragment
                     .newInstance(InvoiceFragment.getInvoiceFragment(thanksPageData),
@@ -118,7 +119,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         when (requestCode) {
             WishList.REQUEST_FROM_PDP -> {
                 if (data != null) {
-                    val wishListStatusFromPdp = data.getBooleanExtra(WishList.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
+                    val wishListStatusFromPdp = data
+                            .getBooleanExtra(WishList.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
                     val position = data.getIntExtra(WishList.PDP_EXTRA_UPDATED_POSITION, -1)
                     getRecommendationView()?.onActivityResult(position, wishListStatusFromPdp)
                 }

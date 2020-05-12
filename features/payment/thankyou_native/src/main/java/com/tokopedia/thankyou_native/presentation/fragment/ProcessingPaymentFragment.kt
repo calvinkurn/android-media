@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.design.image.ImageLoader
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
@@ -46,7 +45,6 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var thanksPageData: ThanksPageData
 
-    private var dialog: DialogUnify? = null
 
     override fun getScreenName(): String = SCREEN_NAME
 

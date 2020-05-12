@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.thankyou_native.R
@@ -39,8 +38,8 @@ class InvoiceFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            if (it.containsKey(InvoiceFragment.ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(InvoiceFragment.ARG_THANK_PAGE_DATA)
+            if (it.containsKey(ARG_THANK_PAGE_DATA)) {
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
             }
         }
         initViewModels()

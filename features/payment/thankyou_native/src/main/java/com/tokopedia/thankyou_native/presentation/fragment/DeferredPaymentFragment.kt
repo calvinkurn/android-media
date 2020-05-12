@@ -132,8 +132,8 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun highlightLastThreeDigits(amountStr: String) {
         tvTotalAmount.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_796))
         val spannable = SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
-        if (amountStr.length > 3) {
-            val startIndex = spannable.length - 3
+        if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
+            val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
             spannable.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.orange_500)),
                     startIndex, spannable.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -146,7 +146,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
         numberTypeTitle?.let {
             tvAccountNumberTypeTag.text = numberTypeTitle
-            tvAccountNumber.text = thanksPageData.additionalInfo?.accountDest ?: ""
+            tvAccountNumber.text = thanksPageData.additionalInfo.accountDest
         } ?: run {
             tvAccountNumberTypeTag.gone()
             tvAccountNumber.gone()
@@ -206,12 +206,14 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     private fun copyAccountNumberToClipboard(accountNumberStr: String?) {
+        val extraSpaceRegexStr = "\\s+".toRegex()
         thankYouPageAnalytics.sendSalinButtonClickEvent(thanksPageData.gatewayName)
         accountNumberStr?.let { str ->
             context?.let { context ->
                 val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
                         as ClipboardManager
-                val clip = ClipData.newPlainText(COPY_BOARD_LABEL, str.replace("\\s+".toRegex(), ""))
+                val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
+                        str.replace(extraSpaceRegexStr, ""))
                 clipboard.primaryClip = clip
                 showToastCopySuccessFully(context)
             }
@@ -266,7 +268,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     private fun isPaymentTimerExpired(): Boolean {
-        if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / 1000L)
+        if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / ONE_SECOND_TO_MILLIS)
             return true
         return false
     }
@@ -281,6 +283,8 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     companion object {
+        const val HIGHLIGHT_DIGIT_COUNT = 3
+        const val ONE_SECOND_TO_MILLIS = 1000L
         private val COPY_BOARD_LABEL = "Tokopedia"
         const val SCREEN_NAME = "Selesaikan Pembayaran"
 
