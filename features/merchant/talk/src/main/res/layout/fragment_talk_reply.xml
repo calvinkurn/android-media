@@ -14,54 +14,45 @@
         app:layout_constraintBottom_toTopOf="@id/replyAttachedProductContainer"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toTopOf="@id/replyAttachedProductContainer">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyProductHeader
+                    android:id="@+id/talkReplyProductHeader"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyProductHeader
-                        android:id="@+id/talkReplyProductHeader"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        app:layout_constraintTop_toTopOf="parent" />
+                <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyHeader
+                    android:id="@+id/talkReplyHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/talkReplyProductHeader"/>
 
-                    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyHeader
-                        android:id="@+id/talkReplyHeader"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/talkReplyProductHeader"/>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/talkReplyTotalAnswers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/layout_lvl2"
+                    android:paddingBottom="@dimen/layout_lvl2"
+                    android:paddingStart="@dimen/layout_lvl2"
+                    android:paddingEnd="@dimen/layout_lvl2"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold"
+                    app:layout_constraintTop_toBottomOf="@id/talkReplyHeader" />
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/talkReplyTotalAnswers"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/layout_lvl2"
-                        android:paddingBottom="@dimen/layout_lvl2"
-                        android:paddingStart="@dimen/layout_lvl2"
-                        android:paddingEnd="@dimen/layout_lvl2"
-                        app:typographyType="heading_4"
-                        app:typographyWeight="bold"
-                        app:layout_constraintTop_toBottomOf="@id/talkReplyHeader" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/talkReplyRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_lvl0"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/talkReplyTotalAnswers"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/talkReplyRecyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/layout_lvl0"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@id/talkReplyTotalAnswers"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.core.widget.NestedScrollView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

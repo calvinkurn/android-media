@@ -566,7 +566,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onAnswersEmpty(userId: Int) {
         talkReplyTotalAnswers.visibility = View.GONE
-        talkReplyRecyclerView.visibility = View.GONE
         showEmpty(userId)
     }
 
