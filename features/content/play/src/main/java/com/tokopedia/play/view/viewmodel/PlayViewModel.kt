@@ -217,8 +217,6 @@ class PlayViewModel @Inject constructor(
         }
 
         _observableChatList.value = mutableListOf()
-
-        _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
     }
 
     //region lifecycle
@@ -560,8 +558,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun setNewChat(chat: PlayChatUiModel) {
-        val currentChatList = _observableChatList.value
-        currentChatList?.add(chat)
+        val currentChatList = _observableChatList.value ?: mutableListOf()
+        currentChatList.add(chat)
         _observableChatList.value = currentChatList
     }
 
@@ -630,7 +628,7 @@ class PlayViewModel @Inject constructor(
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()
             }
-            val partnerId = partnerId?:0L
+            val partnerId = partnerId ?: 0L
             _observableProductSheetContent.value = PlayResult.Success(
                     PlayUiMapper.mapProductSheet(
                             channel.pinnedProduct.titleBottomSheet,

@@ -296,7 +296,7 @@ class PlayViewModelTest {
     //endregion
 
     @Test
-    fun `test observe product tagging`() {
+    fun `given product tag item use case is success, when get product tag item, then product sheet content should have correct value`() {
         val expectedModel = modelBuilder.buildProductTagging()
         val expectedResult = PlayResult.Success(
                 PlayUiMapper.mapProductSheet(
@@ -313,7 +313,32 @@ class PlayViewModelTest {
     }
 
     @Test
-    fun `test send chat through socket`() {
+    fun `given product tag item use case is error, when get product tag item, then product sheet content should be failure`() {
+        val error = Exception("Error Get Product tag")
+
+        coEvery { mockGetProductTagItemsUseCase.executeOnBackground() } throws error
+
+        val expectedResult = PlayResult.Failure<ProductSheetUiModel>(
+                error = error,
+                onRetry = {}
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        val actual = playViewModel.observableProductSheetContent.getOrAwaitValue()
+
+        Assertions
+                .assertThat(actual)
+                .isInstanceOf(PlayResult.Failure::class.java)
+
+        Assertions
+                .assertThat((actual as PlayResult.Failure).error)
+                .isEqualTo(expectedResult.error)
+    }
+
+    //region send chat
+    @Test
+    fun `given user is logged in, when send chat, then there will be new chat that matches the chat sent`() {
 
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -332,10 +357,38 @@ class PlayViewModelTest {
 
         playViewModel.sendChat(messages)
 
+        verifySequence { mockPlaySocket.send(messages) }
+
         Assertions
                 .assertThat(playViewModel.observableNewChat.getOrAwaitValue().peekContent())
                 .isEqualTo(expectedModel)
     }
+
+    @Test(expected = TimeoutException::class)
+    fun `given user is not logged in, when send chat, then no new chat is sent`() {
+
+        coEvery { userSession.isLoggedIn } returns false
+        coEvery { userSession.userId } returns "123"
+        coEvery { userSession.name } returns "name"
+        coEvery { userSession.profilePicture } returns "picture"
+
+        val messages = "mock chat"
+        val expectedModel = PlayUiMapper.mapPlayChat(userSession.userId,
+                PlayChat(
+                        message = messages,
+                        user = PlayChat.UserData(
+                                id = userSession.userId,
+                                name = userSession.name,
+                                image = userSession.profilePicture)
+                ))
+
+        playViewModel.sendChat(messages)
+
+        verify(exactly = 0) { mockPlaySocket.send(messages) }
+
+        playViewModel.observableNewChat.getOrAwaitValue()
+    }
+    //endregion
 
     //region like count
     @Test
