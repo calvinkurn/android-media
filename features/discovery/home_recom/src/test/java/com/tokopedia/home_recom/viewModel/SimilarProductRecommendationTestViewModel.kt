@@ -18,6 +18,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
@@ -54,7 +55,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data not null"){
-                assert(viewModel.getRecommendationItem().value != null && viewModel.getRecommendationItem().value!!.isSuccess())
+                Assert.assertTrue(viewModel.recommendationItem.value != null && viewModel.recommendationItem.value!!.isSuccess())
             }
         }
 
@@ -76,13 +77,13 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data not null"){
-                assert(viewModel.getRecommendationItem().value != null && viewModel.getRecommendationItem().value!!.isError())
+                Assert.assertTrue(viewModel.recommendationItem.value != null && viewModel.recommendationItem.value!!.isError())
             }
         }
     }
 
     Feature("Wishlist"){
-        lateinit var viewModel: RecommendationPageViewModel
+        lateinit var viewModel: SimilarProductRecommendationViewModel
 
         createInstance()
 
@@ -95,7 +96,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             val slot = slot<WishListActionListener>()
             var status: Boolean? = null
             Given("recommendation view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             Given("set return data success"){
@@ -111,7 +112,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data is success"){
-                assert(status == true)
+                Assert.assertTrue(status == true)
             }
         }
 
@@ -119,7 +120,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             val slot = slot<WishListActionListener>()
             var status: Boolean? = null
             Given("recommendation view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             Given("set return data success"){
@@ -135,7 +136,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data is success"){
-                assert(status == false)
+                Assert.assertTrue(status == false)
             }
         }
 
@@ -143,7 +144,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             val slot = slot<Subscriber<WishlistModel>>()
             var status: Boolean? = null
             Given("recommendation view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             Given("set return data success"){
@@ -159,7 +160,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data is success"){
-                assert(status == true)
+                Assert.assertTrue(status == true)
             }
         }
 
@@ -167,7 +168,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             val slot = slot<Subscriber<WishlistModel>>()
             var status: Boolean? = null
             Given("recommendation view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             Given("set return data success"){
@@ -183,7 +184,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data is success"){
-                assert(status == false)
+                Assert.assertTrue(status == false)
             }
         }
 
@@ -191,7 +192,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             val slot = slot<WishListActionListener>()
             var status: Boolean? = null
             Given("recommendation view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             Given("set return data success"){
@@ -207,7 +208,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data is success"){
-                assert(status == true)
+                Assert.assertTrue(status == true)
             }
         }
 
@@ -215,7 +216,7 @@ class SimilarProductRecommendationTestViewModel: Spek({
             val slot = slot<WishListActionListener>()
             var status: Boolean? = null
             Given("recommendation view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             Given("set return data success"){
@@ -231,13 +232,13 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Then("Check data is success"){
-                assert(status == false)
+                Assert.assertTrue(status == false)
             }
         }
     }
 
     Feature("Test is login"){
-        lateinit var viewModel: RecommendationPageViewModel
+        lateinit var viewModel: SimilarProductRecommendationViewModel
         createInstance()
         val userSessionInterface by memoized<UserSessionInterface>()
         Scenario("Is login true"){
@@ -246,11 +247,11 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Given("view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             When("Check true"){
-                assert(viewModel.isLoggedIn())
+                Assert.assertTrue(viewModel.isLoggedIn())
             }
         }
 
@@ -260,11 +261,11 @@ class SimilarProductRecommendationTestViewModel: Spek({
             }
 
             Given("view model"){
-                viewModel = createRecommendationPageViewModel()
+                viewModel = createSimilarRecommendationViewModel()
             }
 
             When("Check true"){
-                assert(!viewModel.isLoggedIn())
+                Assert.assertTrue(!viewModel.isLoggedIn())
             }
         }
     }

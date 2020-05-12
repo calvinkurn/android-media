@@ -22,6 +22,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -31,7 +32,6 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Lukas on 2019-07-08
  */
-@PrepareForTest(PrimaryProductViewModel::class)
 @ExperimentalCoroutinesApi
 class PrimaryProductTestViewModel : Spek({
 
@@ -66,8 +66,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.productInfoDataModel.value?.status == Status.SUCCESS)
-                assert(viewModel.productInfoDataModel.value?.data != null)
+                Assert.assertTrue(viewModel.productInfoDataModel.value?.status == Status.SUCCESS)
             }
         }
 
@@ -93,7 +92,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.productInfoDataModel.value?.status == Status.EMPTY)
+                Assert.assertTrue(viewModel.productInfoDataModel.value?.status == Status.EMPTY)
             }
         }
 
@@ -114,7 +113,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.productInfoDataModel.value?.status == Status.ERROR)
+                Assert.assertTrue(viewModel.productInfoDataModel.value?.status == Status.ERROR)
             }
         }
     }
@@ -146,8 +145,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.addToCartLiveData.value?.status == Status.SUCCESS)
-                assert(viewModel.productInfoDataModel.value?.data != null)
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.SUCCESS)
             }
         }
 
@@ -171,8 +169,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.addToCartLiveData.value?.status == Status.ERROR)
-                assert(viewModel.productInfoDataModel.value?.data == null)
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.ERROR)
             }
         }
 
@@ -191,8 +188,56 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.addToCartLiveData.value?.status == Status.ERROR)
-                assert(viewModel.productInfoDataModel.value?.data == null)
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.ERROR)
+            }
+        }
+
+        Scenario("Success buy now"){
+            Given("atc"){
+                every {
+                    addToCartUseCase.createObservable(any())
+                } returns Observable.just(AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_OK,
+                        data = DataModel(
+                                success = 1
+                        )
+                ))
+            }
+
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.buyNow(AddToCartRequestParams())
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.SUCCESS)
+            }
+        }
+
+        Scenario("Error Buy now"){
+            Given("atc"){
+                every {
+                    addToCartUseCase.createObservable(any())
+                } returns Observable.just(AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_ERROR,
+                        data = DataModel(
+                                success = 0
+                        )
+                ))
+            }
+            Given("view model"){
+                viewModel = createPrimaryProductViewModel()
+            }
+
+            When("Get data primary"){
+                viewModel.addToCart(AddToCartRequestParams())
+            }
+
+            Then("Check result must be have data"){
+                Assert.assertTrue(viewModel.addToCartLiveData.value?.status == Status.ERROR)
             }
         }
     }
@@ -222,8 +267,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.addWishlistLiveData.value?.status == Status.SUCCESS)
-                assert(viewModel.addWishlistLiveData.value?.data != null)
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.SUCCESS)
             }
         }
 
@@ -244,8 +288,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.addWishlistLiveData.value?.status == Status.ERROR)
-                assert(viewModel.addWishlistLiveData.value?.data == null)
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.ERROR)
             }
         }
 
@@ -266,8 +309,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.addWishlistLiveData.value?.status == Status.SUCCESS)
-                assert(viewModel.addWishlistLiveData.value?.data != null)
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.SUCCESS)
             }
         }
 
@@ -288,8 +330,8 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             Then("Check result must be have data"){
-                assert(viewModel.addWishlistLiveData.value?.status == Status.ERROR)
-                assert(viewModel.addWishlistLiveData.value?.data == null)
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.status == Status.ERROR)
+                Assert.assertTrue(viewModel.addWishlistLiveData.value?.data == null)
             }
         }
     }
@@ -308,7 +350,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             When("Check true"){
-                assert(viewModel.isLoggedIn())
+                Assert.assertTrue(viewModel.isLoggedIn())
             }
         }
 
@@ -322,7 +364,7 @@ class PrimaryProductTestViewModel : Spek({
             }
 
             When("Check true"){
-                assert(!viewModel.isLoggedIn())
+                Assert.assertTrue(!viewModel.isLoggedIn())
             }
         }
     }

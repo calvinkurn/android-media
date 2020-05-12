@@ -116,7 +116,6 @@ class PrimaryProductViewModel @Inject constructor(
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<AddToCartDataModel>() {
                     override fun onCompleted() {
@@ -147,7 +146,6 @@ class PrimaryProductViewModel @Inject constructor(
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<AddToCartDataModel>() {
                     override fun onCompleted() {}
