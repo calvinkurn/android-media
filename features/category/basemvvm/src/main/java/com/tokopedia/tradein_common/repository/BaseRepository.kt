@@ -1,5 +1,6 @@
 package com.tokopedia.tradein_common.repository
 
+import android.util.Log
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
@@ -50,6 +51,7 @@ open class BaseRepository : CoroutineScope {
                     .build()
             return restRepository.getResponse(restRequest)
         } catch (t: Throwable) {
+            Log.d("exception", t.message)
             throw t
         }
     }

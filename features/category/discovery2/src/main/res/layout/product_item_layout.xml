@@ -7,7 +7,7 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/dp_200"
     android:layout_height="wrap_content"
     tools:layout_height="wrap_content">
 
@@ -171,18 +171,18 @@
             tools:text="Rp 9999999999999999999999999999999999999999"
             tools:visibility="visible" />
 
-        <LinearLayout
-            android:id="@+id/linearLayoutShopBadges"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewShopBadge"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:visibility="gone"
+            android:visibility="visible"
             android:paddingTop="@dimen/dp_1"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            android:orientation="horizontal"
+            tools:src="@drawable/discovery_gold_merchant_icon"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -200,7 +200,7 @@
             android:gravity="center_vertical"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
-            app:layout_constraintStart_toEndOf="@id/linearLayoutShopBadges"
+            app:layout_constraintStart_toEndOf="@id/imageViewShopBadge"
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:typographyType="body_3"
             tools:visibility="visible"
@@ -216,7 +216,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopBadge"
             tools:visibility="visible">
 
             <ImageView
@@ -226,7 +226,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/product_card_ic_rating_active" />
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
 
             <ImageView
                 android:id="@+id/imageViewRating2"
@@ -235,7 +235,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/product_card_ic_rating_active" />
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
 
             <ImageView
                 android:id="@+id/imageViewRating3"
@@ -244,7 +244,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/product_card_ic_rating_active" />
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
 
             <ImageView
                 android:id="@+id/imageViewRating4"
@@ -253,7 +253,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/product_card_ic_rating_active" />
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
 
             <ImageView
                 android:id="@+id/imageViewRating5"
@@ -262,7 +262,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/product_card_ic_rating_active" />
+                app:srcCompat="@drawable/product_card_ic_rating_default" />
 
         </LinearLayout>
 
@@ -276,10 +276,21 @@
             android:gravity="center_vertical"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/linearLayoutImageRating"
-            app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+            app:layout_constraintTop_toBottomOf="@id/imageViewShopBadge"
             app:typographyType="body_3"
             tools:visibility="visible"
             tools:text="(3000)" />
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/stockPercentageProgress"
+            android:layout_width="100dp"
+            android:layout_height="@dimen/dp_20"
+            android:visibility="gone"
+            app:fromColor="#fa591d"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutImageRating"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:toColor="#d6001c"
+             />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelCredibility"
@@ -294,7 +305,7 @@
             tools:visibility="gone"
             tools:text="Credibility Label" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageFreeOngkirPromo"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"

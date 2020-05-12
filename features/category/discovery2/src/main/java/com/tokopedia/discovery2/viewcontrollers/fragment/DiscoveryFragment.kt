@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -21,6 +23,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mPageComponentRecyclerView: RecyclerView
     var pageEndPoint = ""
+    var last = false
 
 
     companion object {
@@ -61,12 +64,25 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         super.onViewCreated(view, savedInstanceState)
         mDiscoveryViewModel.getDiscoveryData()
         setUpObserver()
+        mPageComponentRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    Toast.makeText(context, "Last", Toast.LENGTH_LONG).show()
+                    last = true
+
+                }
+            }
+        })
     }
 
     private fun setUpObserver() {
         mDiscoveryViewModel.getDiscoveryResponseList().observe(this, Observer {
             when (it) {
                 is Success -> {
+                    val list = arrayListOf<ComponentsItem>()
+                    list.add(it.data[2])
                     mDiscoveryRecycleAdapter.setDataList(it.data)
                 }
             }

@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ProdcuctCardSprintSaleCarousel.ProductCardSaleSprintCarouselViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ProdcuctCardSprintSaleCarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.MultiBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewHolder
@@ -37,6 +39,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
 import kotlin.reflect.KFunction
@@ -76,7 +80,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.Margin, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.CustomTopChat, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.Tabs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
-            initializeComponent(ComponentsList.ProductCardRevamp, ::ComingSoonViewHolder, ::ComingSoonViewModel)
+            initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
             initializeComponent(ComponentsList.BreadCrumbs, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.Default, ::ComingSoonViewHolder, ::ComingSoonViewModel)
             initializeComponent(ComponentsList.Tokopoints, ::TokopointsViewHolder, ::TokopointsViewModel)
@@ -85,6 +89,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.Spacing, ::SpacingViewHolder, ::SpacingViewModel)
             initializeComponent(ComponentsList.ProductCardCarousel, ::ProductCardCarouselViewHolder, ::ProductCardCarouselViewModel)
             initializeComponent(ComponentsList.ProductCardItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.PrductCardSprintSaleCarousel, ::ProductCardSaleSprintCarouselViewHolder, ::ProductCardSprintSaleCarouselViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {

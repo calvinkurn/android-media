@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.tokopointsUseCase.TokopointsListDataUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,7 +46,7 @@ class TokopointsViewModel(val application: Application, components: ComponentsIt
 
     fun fetchTokopointsListData(pageEndPoint: String) {
         launchCatchError(block = {
-            tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParameterMap(), pageEndPoint)
+            tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id.toIntOrZero()!!, getQueryParameterMap(), pageEndPoint)
         }, onError = {
             it.printStackTrace()
         })

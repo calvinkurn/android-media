@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.data
 
 import android.media.Rating
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
 
 
 data class DataItem(
@@ -103,7 +104,7 @@ data class DataItem(
         val discountPercentageStr: String? = "",
 
         @SerializedName("points_slash")
-        val pointsSlash: Int? = 0,
+        val pointsSlash: String? = "",
 
         @SerializedName("slug")
         val slug: String? = "",
@@ -148,13 +149,13 @@ data class DataItem(
         val shopLocation: String? = "",
 
         @SerializedName("discount_percentage")
-        val discountPercentage: Int? = 0,
+        val discountPercentage: String? = "",
 
         @SerializedName("shop_applink")
         val shopApplink: String? = "",
 
         @SerializedName("count_review")
-        val countReview: Int? = 0,
+        val countReview: String? = "",
 
         @SerializedName("preorder")
         val preorder: String? = "",
@@ -163,10 +164,10 @@ data class DataItem(
         val topadsViewUrl: String? = "",
 
         @SerializedName("product_id")
-        val productId: Long? = 1L,
+        val productId: String? = "",
 
         @SerializedName("rating")
-        val rating: Int? = 0,
+        val rating: String? = "",
 
         @SerializedName("shop_logo")
         val shopLogo: String? = "",
@@ -177,8 +178,16 @@ data class DataItem(
         @SerializedName("stock")
         val stock: String? = "",
 
+        @SerializedName("stock_sold_percentage")
+        val stockSoldPercentage: String? = "",
+
         @SerializedName("topads_click_url")
-        val topadsClickUrl: String? = ""
+        val topadsClickUrl: String? = "",
+
+        @SerializedName("free_ongkir")
+        val freeOngkir: Any? = ""
+
+
 
 
         ) {

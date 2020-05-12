@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -18,5 +19,14 @@
         android:id="@+id/tokopoints_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/discovery_progress_bar"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"/>
+
 
 </LinearLayout>

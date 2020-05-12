@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
 
         val editTextUser = findViewById<EditText>(R.id.editTextUser)
         val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
-        editTextUser.setText("fauzanofami.luthfi+01@tokopedia.com")
-        editTextPassword.setText("toped12345")
+        editTextUser.setText("elly.susilowati+089@tokopedia.com")
+        editTextPassword.setText("tokopedia2015")
         val loginButton = findViewById<Button>(R.id.loginButton)
 
         // simplify login process without error handling/verify number/etc

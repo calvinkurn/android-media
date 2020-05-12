@@ -36,9 +36,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Margin(R.layout.coming_soon_view, ComponentNames.Margin.componentName),
     CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     Tabs(R.layout.coming_soon_view, ComponentNames.Tabs.componentName),
-    ProductCardRevamp(R.layout.coming_soon_view, ComponentNames.PrductCardRevamp.componentName),
+    ProductCardRevamp(R.layout.tokopoints_layout, ComponentNames.PrductCardRevamp.componentName),
     BreadCrumbs(R.layout.coming_soon_view, ComponentNames.Breadcrumbs.componentName),
     Spacing(R.layout.spacing_layout, "margin"),
     ProductCardCarousel(R.layout.tokopoints_layout, ComponentNames.ProductCardCarousel.componentName),
     ProductCardItem(R.layout.product_item_layout, ComponentNames.ProductCardItem.componentName),
+    PrductCardSprintSaleCarousel(R.layout.tokopoints_layout, ComponentNames.PrductCardSprintSaleCarousel.componentName),
 }

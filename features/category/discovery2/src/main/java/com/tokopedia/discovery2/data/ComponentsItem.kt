@@ -20,7 +20,7 @@ data class ComponentsItem (
         val abDefault: Boolean = false,
 
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("is_ab")
         val isAb: Boolean = false,
