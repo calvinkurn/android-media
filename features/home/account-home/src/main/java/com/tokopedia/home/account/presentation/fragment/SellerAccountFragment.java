@@ -47,6 +47,8 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
+import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.isSellerMigrationEnabled;
+
 /**
  * @author okasurya on 7/16/18.
  */
@@ -107,19 +109,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         adapter = new SellerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
-        migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title));
-        migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
-        migrationTicker.setDescriptionClickEvent(new TickerCallback() {
-            @Override
-            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                openSellerMigrationBottomSheet();
-            }
-
-            @Override
-            public void onDismiss() {
-
-            }
-        });
+        if(isSellerMigrationEnabled(this.getContext())) {
+            setupSellerMigrationTicker();
+        }
         swipeRefreshLayout.setOnRefreshListener(() -> {
             isLoaded = false;
             getData();
@@ -276,6 +268,22 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onProductRecommendationThreeDotsClicked(@NotNull RecommendationItem product, int adapterPosition) {
 
+    }
+
+    private void setupSellerMigrationTicker() {
+        migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title));
+        migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
+        migrationTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                openSellerMigrationBottomSheet();
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        });
     }
 
     private void openSellerMigrationBottomSheet() {

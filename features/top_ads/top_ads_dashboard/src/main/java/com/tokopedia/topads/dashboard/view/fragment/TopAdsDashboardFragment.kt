@@ -31,7 +31,9 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationPromoBottomSheet
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.auto.view.activity.EmptyProductActivity
@@ -171,7 +173,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         swipe_refresh_layout.setOnRefreshListener {
             refreshData()
         }
-        initSellerMigrationTicker()
+        if(isSellerMigrationEnabled(context)) initSellerMigrationTicker()
         initTicker()
         initShopInfoComponent()
         initSummaryComponent()
@@ -243,6 +245,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     // No op
                 }
             })
+            show()
         }
     }
 

@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
@@ -460,7 +461,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         } else {
             ticker_info?.visibility = View.GONE
-            showSellerMigrationTicker()
+            if(isSellerMigrationEnabled(context)) showSellerMigrationTicker()
         }
     }
 
