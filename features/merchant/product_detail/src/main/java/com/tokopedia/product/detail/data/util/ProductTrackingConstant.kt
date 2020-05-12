@@ -83,12 +83,14 @@ object ProductTrackingConstant {
     }
     object Action {
         const val CLICK = "click"
+        const val ADD = "add"
         const val IMPRESSION = "impression"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
         const val PRODUCT_VIEW = "productView"
         const val RECOMMENDATION_CLICK = "clickRecommendation"
         const val TOPADS_CLICK = "click - product recommendation"
+        const val TOPADS_ATC_CLICK = "click add to cart on product card after atc"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
         const val CLICK_VARIANT = "click - variant"

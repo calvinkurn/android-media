@@ -18,6 +18,8 @@ import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation_common.model.VccUserStatus;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +50,13 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu";
     private Context context;
     private RemoteConfig remoteConfig;
+    private UserSession userSession;
 
     @Inject
-    BuyerAccountMapper(@ApplicationContext Context context, RemoteConfig remoteConfig) {
+    BuyerAccountMapper(@ApplicationContext Context context, RemoteConfig remoteConfig, UserSession userSession) {
         this.context = context;
         this.remoteConfig = remoteConfig;
+        this.userSession = userSession;
     }
 
     @Override
@@ -218,6 +222,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         }
         buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 
+        userSession.setHasPassword(accountModel.getUserProfileCompletion().isCreatedPassword());
         return buyerCardViewModel;
     }
 }

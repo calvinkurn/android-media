@@ -4,35 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_4">
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hotel_order_detail_transaction_date"
-        app:fontSize="micro"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:textSize="@dimen/sp_12" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_96"
         android:gravity="end"
-        app:fontSize="micro"
-        app:textViewTheme="lightPrimary"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/title"
         app:layout_constraintTop_toTopOf="@+id/title"
-        app:weight="medium"
         tools:text="1 Sep 2017, 05:00 WIB"
         tools:textSize="@dimen/sp_12"
         tools:textStyle="bold"
-        tools:textColor="@color/light_primary"/>
+        tools:textColor="@color/Neutral_N700_96"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

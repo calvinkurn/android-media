@@ -37,10 +37,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
@@ -60,12 +57,14 @@ import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -84,7 +83,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -94,7 +92,7 @@ import javax.inject.Inject
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener {
+        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener, TransactionOrderProgressLayout.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -126,9 +124,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
     private var composeArea: EditText? = null
+    private var orderProgress: TransactionOrderProgressLayout? = null
 
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getAnalytic(): TopChatAnalytics = analytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
@@ -138,6 +138,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun bindView(view: View?) {
         composeArea = view?.findViewById(R.id.new_comment)
+        orderProgress = view?.findViewById(R.id.ll_transaction_progress)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -188,6 +189,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     ::onSuccessGetExistingChatFirstTime
             )
             presenter.connectWebSocket(messageId)
+            presenter.getOrderProgress(messageId)
         } else {
             presenter.getMessageId(
                     toUserId,
@@ -235,8 +237,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
         return {
-            ToasterNormal.make(view, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
-                    opponentName), ToasterNormal.LENGTH_SHORT).show()
+            view?.let {
+                Toaster.make(it, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
+                        opponentName), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            }
             getViewState().removeChatBlocked(it)
         }
     }
@@ -257,6 +261,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 onSuccessGetShopFollowingStatus())
         adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(getUserSession().shopId == shopId.toString())
@@ -463,6 +468,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return remoteConfig?.getBoolean(RemoteConfigKey.CHAT_PRODUCT_CAROUSEL, true)
     }
 
+    override fun renderOrderProgress(chatOrder: ChatOrderProgress) {
+        orderProgress?.render(this, chatOrder)
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         if (adapterTypeFactory !is TopChatTypeFactoryImpl) {
             throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
@@ -521,8 +530,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun showSnackbarError(stringResource: String) {
-        if (view != null) {
-            ToasterError.make(view, stringResource, BaseToaster.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, stringResource, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
@@ -626,6 +635,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
         return View.OnClickListener {
             analytics.eventClickSeeButtonOnAtcSuccessToaster()
+            RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
         }
     }
 
@@ -975,6 +985,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 success()
                 showSuccessToastWishListCta(R.string.title_topchat_success_atw)
             }
+
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 if (errorMessage == null) return
                 view?.let {

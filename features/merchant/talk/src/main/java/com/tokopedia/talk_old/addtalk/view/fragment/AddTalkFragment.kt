@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.di.DaggerAddTalkComponent
@@ -24,6 +23,7 @@ import com.tokopedia.talk_old.addtalk.view.adapter.QuickReplyTypeFactoryImpl
 import com.tokopedia.talk_old.addtalk.view.listener.AddTalkContract
 import com.tokopedia.talk_old.common.analytics.TalkAnalytics
 import com.tokopedia.talk_old.common.di.TalkComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.layout_talk_add.*
 import javax.inject.Inject
 
@@ -122,10 +122,9 @@ class AddTalkFragment : BaseDaggerFragment(),
         send_progress.visibility = View.GONE
 
         if (throwable is MessageErrorException) {
-            ToasterError.make(view, throwable.message, Snackbar.LENGTH_LONG).show()
+            view?.let { throwable.message?.let { message -> Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) } }
         } else {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable)
-                    ?: "", Snackbar.LENGTH_LONG).show()
+            view?.let { ErrorHandler.getErrorMessage(context, throwable)?.let { message -> Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) } }
         }
 
     }
