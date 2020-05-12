@@ -289,6 +289,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         setHasOptionsMenu(true)
     }
 

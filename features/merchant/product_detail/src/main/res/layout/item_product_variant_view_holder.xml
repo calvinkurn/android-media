@@ -5,7 +5,6 @@
     android:id="@+id/containerProductVariant"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_16">
 

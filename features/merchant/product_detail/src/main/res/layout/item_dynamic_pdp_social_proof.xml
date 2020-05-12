@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/dp_16"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <include layout="@layout/partial_product_rating_talk_courier"/>

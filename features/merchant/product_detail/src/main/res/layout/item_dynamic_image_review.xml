@@ -5,7 +5,6 @@
     android:id="@+id/container_image_review"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"

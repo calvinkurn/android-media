@@ -1,20 +1,14 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 
 /**

@@ -17,7 +17,6 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
-import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
