@@ -88,6 +88,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var chatTabListContract: ChatListContract.TabFragment? = null
     private var mUserSeen = false
     private var mViewCreated = false
+
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
@@ -293,7 +294,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 if (this is ItemChatListPojo) {
                     if (
                             attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                            readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
                     ) {
                         increaseNotificationCounter()
                     }

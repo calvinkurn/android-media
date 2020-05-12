@@ -1,16 +1,70 @@
 package com.tokopedia.topchat.chatroom.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
+import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import kotlinx.android.synthetic.main.fragment_sticker.view.*
+import com.tokopedia.topchat.chatroom.view.custom.StickerRecyclerView
+import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
+import javax.inject.Inject
 
 class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var stickerList: StickerRecyclerView? = null
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(StickerViewModel::class.java) }
+
+    private var stickerGroupUID = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initArguments()
+        initDagger()
+        initObserver()
+    }
+
+    private fun initObserver() {
+        viewModel.stickers.observe(this, Observer {
+            it?.let {
+                stickerList?.updateSticker(it)
+            }
+        })
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.tp_sticker_uid?.text = arguments?.getString(keyStickerGroupUID)
+        initViewBind(view)
+        viewModel.loadStickers(stickerGroupUID)
+    }
+
+    private fun initViewBind(view: View) {
+        stickerList = view.findViewById(R.id.rv_sticker)
+    }
+
+    private fun initArguments() {
+        stickerGroupUID = arguments?.getString(keyStickerGroupUID) ?: ""
+    }
+
+    private fun initDagger() {
+        if (activity != null && (activity as Activity).application != null) {
+            context?.let {
+                val chatComponent = DaggerChatComponent.builder()
+                        .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                        .chatRoomContextModule(ChatRoomContextModule(it))
+                        .build()
+                chatComponent.inject(this)
+            }
+        }
     }
 
     companion object {

@@ -20,7 +20,7 @@
         android:paddingBottom="@dimen/spacing_lvl5"
         android:visibility="gone"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:spanCount="2"
+        tools:spanCount="4"
         tools:visibility="visible" />
 
     <com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
