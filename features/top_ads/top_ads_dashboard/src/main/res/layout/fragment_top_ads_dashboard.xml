@@ -23,6 +23,13 @@
                 android:background="@color/white"
                 android:orientation="vertical">
 
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/topAdsSellerMigrationTicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tickerType="announcement"/>
+
                 <include layout="@layout/partial_top_ads_shop_info" />
 
                 <com.tokopedia.design.component.ticker.TickerView

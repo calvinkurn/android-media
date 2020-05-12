@@ -153,7 +153,6 @@ object HomeRecommendationTracking : BaseTracking(){
     private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationDataModel) = Promotion(
             id = bannerRecommendationDataModel.id.toString(),
             name = CustomAction.BANNER_FIELD.format(bannerRecommendationDataModel.tabName),
-            creativeUrl = bannerRecommendationDataModel.imageUrl,
             position = bannerRecommendationDataModel.position.toString(),
             promoIds = Label.NONE,
             promoCodes = Label.NONE,

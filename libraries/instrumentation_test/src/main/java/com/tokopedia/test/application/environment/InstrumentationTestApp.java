@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -101,13 +102,14 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         }
     }
 
-    @Override
-    public Class<?> getDeeplinkClass() {
-        return null;
-    }
+public void sendAnalyticsAnomalyResponse(String title,
+
+                                      String accessToken, String refreshToken,
+
+                                      String response, String request){}
 
     @Override
-    public Intent getSellerHomeActivityReal(Context context) {
+    public Class<?> getDeeplinkClass() {
         return null;
     }
 
@@ -152,7 +154,7 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+    public Class<?> getHomeClass() {
         return null;
     }
 
@@ -169,18 +171,9 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
     @Override
     public SessionHandler legacySessionHandler() {
         return new SessionHandler(this) {
-            @Override
-            public String getLoginName() {
-                return "null";
-            }
 
             @Override
             public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getShopID() {
                 return "null";
             }
 
@@ -190,62 +183,12 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
             }
 
             @Override
-            public boolean isUserHasShop() {
-                return false;
-            }
-
-            @Override
-            public boolean isV4Login() {
-                return false;
-            }
-
-            @Override
-            public String getPhoneNumber() {
-                return "null";
-            }
-
-            @Override
-            public String getEmail() {
-                return "null";
-            }
-
-            @Override
             public String getRefreshToken() {
                 return "null";
             }
 
             @Override
-            public String getAccessToken() {
-                return "null";
-            }
-
-            @Override
-            public String getFreshToken() {
-                return null;
-            }
-
-            @Override
-            public String getUserId() {
-                return "null";
-            }
-
-            @Override
-            public String getDeviceId() {
-                return "null";
-            }
-
-            @Override
-            public String getProfilePicture() {
-                return "null";
-            }
-
-            @Override
             public boolean isMsisdnVerified() {
-                return false;
-            }
-
-            @Override
-            public boolean isHasPassword() {
                 return false;
             }
         };
@@ -396,8 +339,4 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     }
 
-    @Override
-    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
-
-    }
 }
