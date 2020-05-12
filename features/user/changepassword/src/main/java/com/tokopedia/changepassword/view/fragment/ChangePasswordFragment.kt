@@ -56,6 +56,13 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         super.onViewCreated(view, savedInstanceState)
 
         userSession = UserSession(context)
+        if (!userSession.isLoggedIn) {
+            var intent: Intent
+            activity?.let {
+                intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                startActivityForResult(intent, REQUEST_LOGIN)
+            }
+        }
 
         oldPasswordTextField = view.findViewById(R.id.wrapper_old)
         newPasswordTextField = view.findViewById(R.id.wrapper_new)
@@ -76,9 +83,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
-                REQUEST_LOGOUT -> {
+        when(requestCode) {
+            REQUEST_LOGOUT -> {
+                if (resultCode == Activity.RESULT_OK) {
                     context?.let {
                         DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                             setTitle(getString(R.string.password))
@@ -88,6 +95,14 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                                 RouteManager.route(context, ApplinkConst.HOME)
                             }
                         }.show()
+                    }
+                }
+            }
+            REQUEST_LOGIN -> {
+                if (!userSession.isLoggedIn) {
+                    activity?.apply {
+                        setResult(Activity.RESULT_CANCELED)
+                        finish()
                     }
                 }
             }
@@ -186,7 +201,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     override fun onErrorChangePassword(errorMessage: String) {
         hideLoading()
         if (TextUtils.isEmpty(errorMessage)) {
-            NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.default_request_error_unknown))
+            NetworkErrorHelper.showRedSnackbar(activity, getString(com.tokopedia.abstraction.R.string.default_request_error_unknown))
         } else {
             NetworkErrorHelper.showRedSnackbar(activity, errorMessage)
         }
@@ -218,6 +233,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     companion object {
-        private const val REQUEST_LOGOUT = 1000;
+        private const val REQUEST_LOGOUT = 1000
+        private const val REQUEST_LOGIN = 2000
     }
 }

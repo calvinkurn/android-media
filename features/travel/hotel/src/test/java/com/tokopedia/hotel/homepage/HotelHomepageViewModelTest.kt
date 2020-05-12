@@ -23,6 +23,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 2020-01-09
@@ -162,8 +163,8 @@ class HotelHomepageViewModelTest {
     fun deleteRecentSearch_shouldReturnSuccess() {
         //given
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns
-                GraphqlResponse(mapOf(HotelDeleteRecentSearchEntity.Response::class.java to HotelDeleteRecentSearchEntity.Response(HotelDeleteRecentSearchEntity(true))),
-                        mapOf(), false)
+                GraphqlResponse(mapOf<Type, Any>(HotelDeleteRecentSearchEntity.Response::class.java to HotelDeleteRecentSearchEntity.Response(HotelDeleteRecentSearchEntity(true))),
+                        mapOf<Type, List<GraphqlError>>(), false)
 
         //when
         hotelHomepageViewModel.deleteRecentSearch("")
@@ -178,8 +179,8 @@ class HotelHomepageViewModelTest {
     fun deleteRecentSearch_shouldReturnFail() {
         //given
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns
-                GraphqlResponse(mapOf(),
-                        mapOf(GraphqlError::class.java to listOf(GraphqlError())), false)
+                GraphqlResponse(mapOf<Type, Any>(),
+                        mapOf<Type, List<GraphqlError>>(GraphqlError::class.java to listOf(GraphqlError())), false)
 
         //when
         hotelHomepageViewModel.deleteRecentSearch("")

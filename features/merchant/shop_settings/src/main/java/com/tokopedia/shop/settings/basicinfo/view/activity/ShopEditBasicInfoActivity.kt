@@ -8,16 +8,16 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.view.View
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -34,10 +34,10 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.activity_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import javax.inject.Inject
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPresenter.View {
 
@@ -64,6 +64,8 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
                 .inject(this)
         updateShopSettingsInfoPresenter.attachView(this)
 
+        supportActionBar?.title = getString(R.string.shop_settings_information_edit)
+
         parentTvBrowseFile.setBackground(MethodChecker
                 .getDrawable(parentTvBrowseFile.getContext(), com.tokopedia.design.R.drawable.ic_balloon_gray))
 
@@ -87,6 +89,10 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         vgRoot.requestFocus()
 
         onSuccessGetShopBasicData(shopBasicDataModel)
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     private fun onSaveButtonClicked() {
@@ -194,7 +200,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
             val logoUrl = shopBasicDataModel.logo
             if (TextUtils.isEmpty(logoUrl)) {
                 ivLogo.setImageDrawable(
-                        MethodChecker.getDrawable(ivLogo.getContext(),com.tokopedia.design.R.drawable.ic_camera_add))
+                        MethodChecker.getDrawable(ivLogo.getContext(), com.tokopedia.design.R.drawable.ic_camera_add))
             } else {
                 ImageHandler.LoadImage(ivLogo, logoUrl)
             }
@@ -210,9 +216,10 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
 
     private fun showSnackbarErrorShopInfo(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(this, throwable)
-        ToasterError.make(findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { loadShopBasicData() }.show()
+        Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            loadShopBasicData()
+        })
     }
 
     override fun onErrorUploadShopImage(throwable: Throwable) {
@@ -221,9 +228,10 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
 
     private fun showSnackbarErrorSubmitEdit(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(this, throwable)
-        ToasterError.make(findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { onSaveButtonClicked() }.show()
+        Toaster.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
+            onSaveButtonClicked()
+        })
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

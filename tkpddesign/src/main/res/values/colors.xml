@@ -113,6 +113,7 @@
     <color name="label_user">#5eba46</color>
 
     <color name="tkpd_light_green">#008000</color>
+    <color name="tkpd_dark_green">#5eba46</color>
     <color name="tkpd_prod_price">#B44141</color>
 
     <color name="yellow_1">#ffb03b</color>

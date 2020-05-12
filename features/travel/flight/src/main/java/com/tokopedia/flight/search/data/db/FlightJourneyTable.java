@@ -5,7 +5,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class FlightJourneyTable {
     private String arrivalAirportName;
     private String arrivalAirportCity;
     @Ignore
-    private List<FlightAirlineViewModel> flightAirlineDBS;
+    private List<FlightAirlineModel> flightAirlineDBS;
     private String departureTime;
     private int departureTimeInt;
     private String arrivalTime;
@@ -68,7 +68,7 @@ public class FlightJourneyTable {
     public FlightJourneyTable(@NonNull String id, String term, String departureAirport,
                               String departureAirportName, String departureAirportCity,
                               String arrivalAirport, String arrivalAirportName, String arrivalAirportCity,
-                              List<FlightAirlineViewModel> flightAirlineDBS, String departureTime, int departureTimeInt,
+                              List<FlightAirlineModel> flightAirlineDBS, String departureTime, int departureTimeInt,
                               String arrivalTime, int arrivalTimeInt, int totalTransit, int totalStop,
                               int addDayArrival, String duration, int durationMinute, String adult,
                               String adultCombo, int adultNumeric, int adultNumericCombo, String child,
@@ -188,11 +188,11 @@ public class FlightJourneyTable {
         this.arrivalAirportCity = arrivalAirportCity;
     }
 
-    public List<FlightAirlineViewModel> getFlightAirlineDBS() {
+    public List<FlightAirlineModel> getFlightAirlineDBS() {
         return flightAirlineDBS;
     }
 
-    public void setFlightAirlineDBS(List<FlightAirlineViewModel> flightAirlineDBS) {
+    public void setFlightAirlineDBS(List<FlightAirlineModel> flightAirlineDBS) {
         this.flightAirlineDBS = flightAirlineDBS;
     }
 

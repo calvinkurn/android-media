@@ -27,20 +27,23 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
 
 
     companion object {
-        val LOGIN_REQUEST = 514
-        val VERIFICATION_REQUEST = 515
-        val RESULT_IS_ADULT = 980
-        val RESULT_IS_NOT_ADULT = 180
-        val PARAM_EXTRA_DOB = "VERIFY DOB"
-        private val CATEGORYPAGE = "category page"
-        private val PDP = "product detail page"
-        private val SEARCHPAGE = "search result page"
-        private val CLICKCATEGORY = "clickCategory"
-        private val CLICKPDP = "clickPDP"
-        private val CLICKSEARCH = "clickSearchResult"
-        private val VIEWPDP = "viewPDP"
-        private val VIEWCATEGORY = "viewCategory"
-        private val VIEWSEARCH = "viewSearchResult"
+        const val LOGIN_REQUEST = 514
+        const val VERIFICATION_REQUEST = 515
+        const val RESULT_IS_ADULT = 980
+        const val RESULT_IS_NOT_ADULT = 180
+        const val PARAM_EXTRA_DOB = "VERIFY DOB"
+        private const val CATEGORYPAGE = "category page"
+        private const val PDP = "product detail page"
+        private const val SEARCHPAGE = "search result page"
+        private const val FIND_PAGE = "find page"
+        private const val CLICKCATEGORY = "clickCategory"
+        private const val CLICKPDP = "clickPDP"
+        private const val CLICKSEARCH = "clickSearchResult"
+        private const val CLICK_FIND = "clickFindResult"
+        private const val VIEWPDP = "viewPDP"
+        private const val VIEWCATEGORY = "viewCategory"
+        private const val VIEWSEARCH = "viewSearchResult"
+        private const val VIEW_FIND = "viewFindResult"
         var event = CATEGORYPAGE
         var eventView = VIEWPDP
         var eventClick = CLICKPDP
@@ -81,13 +84,18 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
                 eventView = VIEWSEARCH
                 eventClick = CLICKSEARCH
             }
+            4 -> {
+                event = FIND_PAGE
+                eventView = VIEW_FIND
+                eventClick = CLICK_FIND
+            }
         }
 
 
 
 
         supportActionBar?.setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black)
-        arVM.getProgBarVisibility().observe(this, Observer<Boolean> { visibility ->
+        arVM.getProgBarVisibility().observe(this, Observer { visibility ->
             if (visibility != null) {
                 if (visibility)
                     showProgressBar()
@@ -96,26 +104,26 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
             }
         })
 
-        arVM.getWarningMessage().observe(this,Observer<String> { message ->
+        arVM.getWarningMessage().observe(this,Observer { message ->
             hideProgressBar()
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.showError(this.findViewById(android.R.id.content),
+                    Toaster.make(this.findViewById(android.R.id.content),
                             message,
-                            Snackbar.LENGTH_LONG)
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
 
             }
         })
-        arVM.getErrorMessage().observe(this, Observer<String> { message ->
+        arVM.getErrorMessage().observe(this, Observer { message ->
             hideProgressBar()
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
+                    Toaster.make(this.findViewById(android.R.id.content),
                             message,
-                            Snackbar.LENGTH_LONG, getButtonStringOnError(), View.OnClickListener { })
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getButtonStringOnError(), View.OnClickListener { })
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -159,9 +167,9 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
     }
 
     protected fun showMessage(message: String) {
-        Toaster.showError(this.findViewById(android.R.id.content),
+        Toaster.make(this.findViewById(android.R.id.content),
                 message,
-                Snackbar.LENGTH_LONG)
+                Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
     }
 
     protected fun navigateToActivityRequest(intent: Intent, requestCode: Int) {
