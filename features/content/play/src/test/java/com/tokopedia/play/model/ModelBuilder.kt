@@ -1461,8 +1461,9 @@ class ModelBuilder {
 
     fun buildBottomInsetsState(
             isShown: Boolean = false,
-            isPreviousSameState: Boolean = false
-    ) = if (isShown) BottomInsetsState.Shown(250, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
+            isPreviousSameState: Boolean = false,
+            estimatedInsetsHeight: Int = 250
+    ) = if (isShown) BottomInsetsState.Shown(estimatedInsetsHeight, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
 
     fun <T>buildPlayResultLoading(
             showPlaceholder: Boolean = true

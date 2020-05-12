@@ -1,9 +1,6 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
@@ -627,6 +624,35 @@ class PlayViewModelTest {
     }
     //endregion
 
+    //region bottom insets
+    /**
+     * Variable bottom insets
+     */
+    @Test
+    fun `when no changes in insets before, bottom insets should be default`() {
+        val expectedResult = modelBuilder.buildBottomInsetsMap()
+
+        Assertions
+                .assertThat(playViewModel.bottomInsets)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when there are changes in insets before, bottom insets should match the current state`() {
+        val height = 250
+
+        val expectedResult = modelBuilder.buildBottomInsetsMap(
+                productSheetState = modelBuilder.buildBottomInsetsState(isShown = true, estimatedInsetsHeight = height)
+        )
+
+        playViewModel.onShowProductSheet(height)
+
+        Assertions
+                .assertThat(playViewModel.bottomInsets)
+                .isEqualTo(expectedResult)
+    }
+    //endregion
+
     //region channel type
     /**
      * Variable channel type
@@ -955,6 +981,27 @@ class PlayViewModelTest {
         verify(exactly = 0) {
             mockPlayVideoManager.setRepeatMode(false)
         }
+    }
+
+    @Test
+    fun `when should start video, play video manager should be called`() {
+        playViewModel.startCurrentVideo()
+
+        verify(exactly = 1) {
+            mockPlayVideoManager.resumeCurrentVideo()
+        }
+    }
+
+    @Test
+    fun `when get video duration, it should return correct duration`() {
+        val duration = 2141241L
+        every { mockPlayVideoManager.getDurationVideo() } returns duration
+
+        val actualDuration = playViewModel.getDurationCurrentVideo()
+
+        Assertions
+                .assertThat(actualDuration)
+                .isEqualTo(duration)
     }
     //endregion
 

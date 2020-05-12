@@ -336,7 +336,7 @@ class PlayViewModel @Inject constructor(
 
     //region video player
     fun startCurrentVideo() {
-        playVideoManager.resumeCurrentVideo()
+        if (!videoPlayer.isYouTube) playVideoManager.resumeCurrentVideo()
     }
 
     fun getDurationCurrentVideo(): Long {
