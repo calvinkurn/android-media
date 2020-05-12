@@ -17,6 +17,7 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.ViewFlipper
+import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -56,6 +57,8 @@ import com.tokopedia.promotionstarget.presentation.loadImageGlide
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
+import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.DEFAULT
+import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.DISMISS
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogVM
 import com.tokopedia.unifyprinciples.Typography
@@ -72,7 +75,7 @@ import javax.inject.Inject
  * */
 
 //todo Rahul List
-// ALREADY LOGGED IN FLOW
+// ALREADY LOGGED IN FLOW (DONE)
 // RETRY FLOW
 // ALL ERROR STATES FOR BOTH UI
 class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
@@ -122,6 +125,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private var screenWidth = 0f
     private var IS_DISMISSED = false
     private var isNewerVersion = false
+    private val referenceIds = arrayListOf<Int>()
 
     companion object {
         const val PARAM_WAITING_FOR_LOGIN = "PARAM_WAITING_FOR_LOGIN"
@@ -198,14 +202,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         setNonLoginUiData()
         setNonLoggedInListeners()
 
-        val ids = arrayListOf<Int>()
         referenceId.forEach {
-            ids.add(it)
+            referenceIds.add(it)
         }
-        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, ids)
+        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
         return bottomSheet
     }
 
+    //todo Rahul NOT DONE
     fun showNewLoggedIn(activityContext: Context,
                         couponUiType: TargetPromotionsCouponType,
                         data: GratificationDataContract,
@@ -452,7 +456,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
         btnAction.text = originalBtnText
         popGratificationActionButton = data.popGratificationClaim?.popGratificationActionButton
-
+        this.data = data
 
         //load data in rv
         // check for error as well
@@ -507,21 +511,41 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             val activity = btnAction.context as AppCompatActivity
 
             btnAction.setOnClickListener {
-                shouldCallAutoApply = false
-                if (!skipBtnAction) {
-                    if (UserSession(activity).isLoggedIn) {
+                val btnActionText = btnAction.text.toString()
 
-                        popGratificationActionButton?.let { btn ->
-                            if (!btn.type.isNullOrEmpty() && btn.type == "dismiss") {
-                                bottomSheetDialog.dismiss()
-                            } else if (!btn.appLink.isNullOrEmpty()) {
-                                RouteManager.route(btnAction.context, btn.appLink)
+                if (!skipBtnAction) {
+                    val retryAvailable = retryCount < MAX_RETRY_COUNT
+                    if (retryAvailable) {
+
+                        if (UserSession(activity).isLoggedIn) {
+
+                            //coupon is yet to be claimed
+                            if (data == null && referenceIds.isNotEmpty()) {
+                                //activity was destroyed - case
+                                viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
+                            } else if (data is GetPopGratificationResponse) {
+                                viewModel.claimGratification(gratificationData.popSlug,
+                                        gratificationData.page,
+                                        (data as GetPopGratificationResponse).popGratification?.popGratificationBenefits?.map { benefit -> benefit?.referenceID })
                             } else {
-                                bottomSheetDialog.dismiss()
+                                //coupon is claimed
+                                if (popGratificationActionButton != null) {
+                                    if (!popGratificationActionButton?.type.isNullOrEmpty() && popGratificationActionButton?.type == DISMISS) {
+                                        bottomSheetDialog.dismiss()
+                                    } else if (!popGratificationActionButton?.appLink.isNullOrEmpty()) {
+                                        RouteManager.route(btnAction.context, popGratificationActionButton?.appLink)
+                                    } else {
+                                        bottomSheetDialog.dismiss()
+                                    }
+                                } else {
+                                    bottomSheetDialog.dismiss()
+                                }
                             }
+                        } else {
+                            routeToLogin(activity)
                         }
                     } else {
-                        routeToLogin(activity)
+                        dismissAfterRetryIsOver(activity, btnActionText)
                     }
                 }
                 skipBtnAction = true
@@ -541,15 +565,40 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     LiveDataResult.STATUS.ERROR -> {
                         toggleProgressBar(false)
                         toggleBtnText(true)
+                        showErrorUIForClaimGratification()
                     }
 
-                    LiveDataResult.STATUS.LOADING->{
+                    LiveDataResult.STATUS.LOADING -> {
                         toggleProgressBar(true)
                         toggleBtnText(false)
                     }
                 }
             })
         }
+    }
+
+    fun dismissAfterRetryIsOver(activityContext: AppCompatActivity, btnActionText: String) {
+        dropKeysFromBundle(ApplinkConst.HOME, activityContext.intent)
+        RouteManager.route(btnAction.context, ApplinkConst.HOME)
+        bottomSheetDialog.dismiss()
+
+        TargetedPromotionAnalytics.performButtonAction(btnActionText)
+    }
+
+    private fun showErrorUIForClaimGratification() {
+        retryCount += 1
+        val lessThanThreeTimes = retryCount < MAX_RETRY_COUNT
+        val context = tvTitleRight.context
+        tvTitleRight.text = context.getString(R.string.t_promo_disturbance_at_toko_house)
+        tvSubTitleRight.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
+
+        if (lessThanThreeTimes) {
+            originalBtnText = context.getString(R.string.t_promo_coba_lagi)
+        } else {
+            originalBtnText = context.getString(R.string.t_promo_ke_homepage)
+        }
+        btnAction.text = originalBtnText
+        imageViewRight.loadImageGlide(R.drawable.t_promo_server_error)
     }
 
     private fun setListeners(activityContext: Context) {
@@ -580,11 +629,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                         bottomSheetDialog.dismiss()
                     }
                 } else {
-                    dropKeysFromBundle(ApplinkConst.HOME, activityContext.intent)
-                    RouteManager.route(btnAction.context, ApplinkConst.HOME)
-                    bottomSheetDialog.dismiss()
-
-                    TargetedPromotionAnalytics.performButtonAction(btnActionText)
+                    dismissAfterRetryIsOver(activityContext, btnActionText)
                 }
                 skipBtnAction = true
             }
@@ -829,5 +874,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         if (autoApplyObserver != null) {
             viewModel.autoApplyLiveData.removeObserver((autoApplyObserver!!))
         }
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(DISMISS, DEFAULT)
+annotation class BtnType {
+    companion object {
+        const val DISMISS = "dismiss"
+        const val DEFAULT = "default"
     }
 }

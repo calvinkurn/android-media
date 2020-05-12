@@ -15,7 +15,9 @@ import com.tokopedia.promotionstarget.presentation.TargetedPromotionAnalytics
 import com.tokopedia.promotionstarget.presentation.launchCatchError
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -32,9 +34,16 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
     val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
     val claimApiLiveData = MutableLiveData<LiveDataResult<Pair<ClaimPopGratificationResponse, GetCouponDetailResponse>>>()
 
+    //todo Rahul remove this
+    var a = false
     fun claimGratification(campaignSlug: String, page: String, benefitIds: List<Int?>?) {
         claimApiLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
+            delay(3000L)
+            if(!a) {
+                a = true
+                throw Exception("Unknown")
+            }
             val response = withContext(workerDispatcher) {
                 val claimResponse = claimPopGratificationUseCase.getResponse(claimPopGratificationUseCase.getQueryParams(ClaimPayload(campaignSlug, page)))
                 val couponDetail = composeApi(benefitIds)
