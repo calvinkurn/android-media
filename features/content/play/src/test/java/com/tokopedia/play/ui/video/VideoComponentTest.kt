@@ -55,11 +55,11 @@ class VideoComponentTest {
 
     @Test
     fun `when new video is set, then video should update video`() = runBlockingTest(testDispatcher) {
-        val mockExoPlayer = mockk<ExoPlayer>()
+        val mockGeneralVideoPlayer = modelBuilder.buildGeneralVideoUiModel()
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockExoPlayer))
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockGeneralVideoPlayer))
 
-        verify { component.uiView.setPlayer(mockExoPlayer) }
+        verify { component.uiView.setPlayer(mockGeneralVideoPlayer.exoPlayer) }
         confirmVerified(component.uiView)
     }
 

@@ -3,11 +3,9 @@ package com.tokopedia.play.view.layout.parent
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
+import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
@@ -24,14 +22,8 @@ import com.tokopedia.unifycomponents.dpToPx
  * Created by jegul on 17/04/20
  */
 class PlayParentLayoutManagerImpl(
-        context: Context,
-        private val screenOrientation: ScreenOrientation,
-        private val ivClose: ImageView,
-        private val flVideo: FrameLayout,
-        private val flInteraction: FrameLayout,
-        private val flBottomSheet: FrameLayout,
-        private val flYouTube: FrameLayout,
-        private val flGlobalError: FrameLayout
+        container: ViewGroup,
+        viewInitializer: PlayParentViewInitializer
 ) : PlayParentLayoutManager {
 
     companion object {
@@ -41,8 +33,21 @@ class PlayParentLayoutManagerImpl(
         private const val NO_TRANSLATION = 0f
     }
 
-    private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
-    private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    @IdRes private val buttonCloseId = viewInitializer.onInitCloseButton(container)
+    @IdRes private val videoFragmentId = viewInitializer.onInitVideoFragment(container)
+    @IdRes private val miniInteractionFragmentId = viewInitializer.onInitMiniInteractionFragment(container)
+    @IdRes private val userInteractionFragmentId = viewInitializer.onInitUserInteractionFragment(container)
+    @IdRes private val bottomSheetFragmentId = viewInitializer.onInitBottomSheetFragment(container)
+    @IdRes private val youTubeFragmentId = viewInitializer.onInitYouTubeFragment(container)
+    @IdRes private val errorFragmentId = viewInitializer.onInitErrorFragment(container)
+
+    private val flVideo = container.findViewById<View>(videoFragmentId)
+    private val flYouTube = container.findViewById<View>(youTubeFragmentId)
+    private val flUserInteraction = container.findViewById<View>(userInteractionFragmentId)
+    private val ivClose = container.findViewById<View>(buttonCloseId)
+
+    private val offset12 = container.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
+    private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private var topBounds = 0
 
@@ -56,6 +61,7 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = true
+            flYouTube.isClickable = true
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -63,6 +69,7 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
+            flYouTube.isClickable = false
         }
     }
     private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
@@ -71,6 +78,7 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = false
+            flYouTube.isClickable = true
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -78,16 +86,14 @@ class PlayParentLayoutManagerImpl(
 
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
+            flYouTube.isClickable = false
         }
-    }
-
-    override fun onVideoStreamChanged(view: View) {
     }
 
     override fun onVideoStateChanged(view: View, videoState: PlayVideoState, videoOrientation: VideoOrientation) {
     }
 
-    override fun onVideoTopBoundsChanged(view: View, videoPlayer: VideoPlayerUiModel, videoOrientation: VideoOrientation, topBounds: Int) {
+    override fun onVideoTopBoundsChanged(view: View, videoPlayer: VideoPlayerUiModel, screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation, topBounds: Int) {
         val topBoundsWithOffset = topBounds + offset16
         val shouldConfigureMargin = topBoundsWithOffset != this.topBounds
 
@@ -97,16 +103,28 @@ class PlayParentLayoutManagerImpl(
 
         if (shouldConfigureMargin) {
             if (videoPlayer.isYouTube) changeVideoMargin(flYouTube, this.topBounds)
-            else reconfigureLayout(view, videoOrientation)
+            else reconfigureLayout(view, videoOrientation, this.topBounds)
         }
     }
 
     override fun layoutView(view: View) {
+        layoutCloseButton(container = view, id = buttonCloseId)
+        layoutVideoFragment(container = view, id = videoFragmentId)
+        layoutInteractionFragment(container = view, id = userInteractionFragmentId)
+        layoutInteractionFragment(container = view, id = miniInteractionFragmentId)
+        layoutBottomSheetFragment(container = view, id = bottomSheetFragmentId)
+        layoutErrorFragment(container = view, id = errorFragmentId)
+    }
+
+    override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
+        val topBounds = if (orientation.isLandscape) 0 else this.topBounds
+        if (videoPlayer.isYouTube) changeVideoMargin(flYouTube, topBounds)
+        else reconfigureLayout(view, videoOrientation, topBounds)
     }
 
     //TODO("Figure out a better way")
     override fun onBottomInsetsShown(view: View, bottomMostBounds: Int, videoPlayer: VideoPlayerUiModel, videoOrientation: VideoOrientation) {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+        flUserInteraction.layoutParams = flUserInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
 
@@ -123,7 +141,7 @@ class PlayParentLayoutManagerImpl(
 
     //TODO("Figure out a better way")
     override fun onBottomInsetsHidden(view: View, videoPlayer: VideoPlayerUiModel) {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+        flUserInteraction.layoutParams = flUserInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.MATCH_PARENT
         }
 
@@ -143,7 +161,7 @@ class PlayParentLayoutManagerImpl(
         videoScaleAnimator.cancel()
     }
 
-    private fun reconfigureLayout(view: View, videoOrientation: VideoOrientation) {
+    private fun reconfigureLayout(view: View, videoOrientation: VideoOrientation, topBounds: Int) {
         val paramsHeight = flVideo.layoutParams.height
         val paramsWidth = flVideo.layoutParams.width
 
@@ -262,5 +280,49 @@ class PlayParentLayoutManagerImpl(
         }
 
         return animator
+    }
+
+    /**
+     * Layout
+     */
+    private fun layoutCloseButton(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, offset12)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, offset12)
+        }
+    }
+
+    private fun layoutVideoFragment(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutInteractionFragment(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutBottomSheetFragment(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutErrorFragment(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
     }
 }

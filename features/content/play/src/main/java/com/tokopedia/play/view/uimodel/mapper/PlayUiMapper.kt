@@ -97,6 +97,7 @@ object PlayUiMapper {
 
     private fun mapVideoPlayer(videoStream: VideoStream, exoPlayer: ExoPlayer) = when (videoStream.type) {
         "live", "vod" -> General(exoPlayer)
+//        "live", "vod" -> YouTube("HrjRj4uQQ1o")
         "youtube" -> YouTube(videoStream.config.youtubeId)
         else -> Unknown
     }

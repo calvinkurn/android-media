@@ -1,5 +1,6 @@
 package com.tokopedia.play.model
 
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -16,6 +17,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
+import io.mockk.mockk
 
 
 /**
@@ -1190,6 +1192,7 @@ class ModelBuilder {
     fun buildStateHelperUiModel(
         shouldShowPinned: Boolean = true,
         channelType: PlayChannelType = PlayChannelType.Live,
+        videoPlayer: VideoPlayerUiModel = YouTube("absbrb"),
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap(),
         screenOrientation: ScreenOrientation = ScreenOrientation.Portrait,
         videoOrientation: VideoOrientation = VideoOrientation.Vertical,
@@ -1197,6 +1200,7 @@ class ModelBuilder {
     ) = StateHelperUiModel(
             shouldShowPinned = shouldShowPinned,
             channelType = channelType,
+            videoPlayer = videoPlayer,
             bottomInsets = bottomInsets,
             screenOrientation = screenOrientation,
             videoOrientation = videoOrientation,
@@ -1207,7 +1211,6 @@ class ModelBuilder {
             id: String = "1230",
             title: String = "Channel live",
             description: String = "Ini Channel live",
-            channelType: PlayChannelType = PlayChannelType.Live,
             partnerId: Long = 123151,
             partnerType: PartnerType = PartnerType.Admin,
             moderatorName: String = "Lisa",
@@ -1215,7 +1218,7 @@ class ModelBuilder {
             contentType: Int = 2,
             likeType: Int = 1,
             isShowCart: Boolean = true
-    ) = ChannelInfoUiModel(id, title, description, channelType, partnerId, partnerType,
+    ) = ChannelInfoUiModel(id, title, description, partnerId, partnerType,
             moderatorName, contentId, contentType, likeType, isShowCart)
 
     fun buildVideoPropertyUiModel(
@@ -1325,6 +1328,10 @@ class ModelBuilder {
             bufferForPlaybackMs = bufferForPlaybackMs,
             bufferForPlaybackAfterRebufferMs = bufferForPlaybackAfterRebufferMs
     )
+
+    fun buildGeneralVideoUiModel(exoPlayer: ExoPlayer = mockk()) = General(exoPlayer)
+
+    fun buildYouTubeVideoUiModel(videoId: String = "abacac") = YouTube(videoId)
 
     fun buildCartUiModel(
             isShow: Boolean = true,
@@ -1454,8 +1461,9 @@ class ModelBuilder {
 
     fun buildBottomInsetsState(
             isShown: Boolean = false,
-            isPreviousSameState: Boolean = false
-    ) = if (isShown) BottomInsetsState.Shown(250, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
+            isPreviousSameState: Boolean = false,
+            estimatedInsetsHeight: Int = 250
+    ) = if (isShown) BottomInsetsState.Shown(estimatedInsetsHeight, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
 
     fun <T>buildPlayResultLoading(
             showPlaceholder: Boolean = true

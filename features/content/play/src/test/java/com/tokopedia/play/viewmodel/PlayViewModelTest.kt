@@ -1,9 +1,6 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
@@ -95,26 +92,11 @@ class PlayViewModelTest {
     }
 
     @Test
-    fun `test observe video play manager`() {
-        val mockExoPlayer: SimpleExoPlayer = mockk()
-        val mockObservableVideoPlayer = MutableLiveData<ExoPlayer>().apply {
-            value = mockExoPlayer
-        }
-
-        every { mockPlayVideoManager.getObservableVideoPlayer() } returns mockObservableVideoPlayer
-
-        Assertions
-                .assertThat(playViewModel.observableVOD.getOrAwaitValue())
-                .isEqualTo(mockExoPlayer)
-    }
-
-    @Test
     fun `test observe get channel info`() {
         val expectedModel = ChannelInfoUiModel(
                 id = mockChannel.channelId,
                 title = mockChannel.title,
                 description = mockChannel.description,
-                channelType = if (mockChannel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
                 moderatorName = mockChannel.moderatorName,
                 partnerId = mockChannel.partnerId,
                 partnerType = PartnerType.getTypeByValue(mockChannel.partnerType),
@@ -311,7 +293,7 @@ class PlayViewModelTest {
     //endregion
 
     @Test
-    fun `test observe product tagging`() {
+    fun `given product tag item use case is success, when get product tag item, then product sheet content should have correct value`() {
         val expectedModel = modelBuilder.buildProductTagging()
         val expectedResult = PlayResult.Success(
                 PlayUiMapper.mapProductSheet(
@@ -328,7 +310,32 @@ class PlayViewModelTest {
     }
 
     @Test
-    fun `test send chat through socket`() {
+    fun `given product tag item use case is error, when get product tag item, then product sheet content should be failure`() {
+        val error = Exception("Error Get Product tag")
+
+        coEvery { mockGetProductTagItemsUseCase.executeOnBackground() } throws error
+
+        val expectedResult = PlayResult.Failure<ProductSheetUiModel>(
+                error = error,
+                onRetry = {}
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        val actual = playViewModel.observableProductSheetContent.getOrAwaitValue()
+
+        Assertions
+                .assertThat(actual)
+                .isInstanceOf(PlayResult.Failure::class.java)
+
+        Assertions
+                .assertThat((actual as PlayResult.Failure).error)
+                .isEqualTo(expectedResult.error)
+    }
+
+    //region send chat
+    @Test
+    fun `given user is logged in, when send chat, then there will be new chat that matches the chat sent`() {
 
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -347,10 +354,38 @@ class PlayViewModelTest {
 
         playViewModel.sendChat(messages)
 
+        verifySequence { mockPlaySocket.send(messages) }
+
         Assertions
                 .assertThat(playViewModel.observableNewChat.getOrAwaitValue().peekContent())
                 .isEqualTo(expectedModel)
     }
+
+    @Test(expected = TimeoutException::class)
+    fun `given user is not logged in, when send chat, then no new chat is sent`() {
+
+        coEvery { userSession.isLoggedIn } returns false
+        coEvery { userSession.userId } returns "123"
+        coEvery { userSession.name } returns "name"
+        coEvery { userSession.profilePicture } returns "picture"
+
+        val messages = "mock chat"
+        val expectedModel = PlayUiMapper.mapPlayChat(userSession.userId,
+                PlayChat(
+                        message = messages,
+                        user = PlayChat.UserData(
+                                id = userSession.userId,
+                                name = userSession.name,
+                                image = userSession.profilePicture)
+                ))
+
+        playViewModel.sendChat(messages)
+
+        verify(exactly = 0) { mockPlaySocket.send(messages) }
+
+        playViewModel.observableNewChat.getOrAwaitValue()
+    }
+    //endregion
 
     //region like count
     @Test
@@ -589,6 +624,35 @@ class PlayViewModelTest {
     }
     //endregion
 
+    //region bottom insets
+    /**
+     * Variable bottom insets
+     */
+    @Test
+    fun `when no changes in insets before, bottom insets should be default`() {
+        val expectedResult = modelBuilder.buildBottomInsetsMap()
+
+        Assertions
+                .assertThat(playViewModel.bottomInsets)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when there are changes in insets before, bottom insets should match the current state`() {
+        val height = 250
+
+        val expectedResult = modelBuilder.buildBottomInsetsMap(
+                productSheetState = modelBuilder.buildBottomInsetsState(isShown = true, estimatedInsetsHeight = height)
+        )
+
+        playViewModel.onShowProductSheet(height)
+
+        Assertions
+                .assertThat(playViewModel.bottomInsets)
+                .isEqualTo(expectedResult)
+    }
+    //endregion
+
     //region channel type
     /**
      * Variable channel type
@@ -631,27 +695,6 @@ class PlayViewModelTest {
     }
     //endregion
 
-    //region screen orientation
-    @Test
-    fun `when screen orientation is not set, then orientation is unknown`() {
-        val expectedResult = ScreenOrientation.Unknown
-
-        Assertions
-                .assertThat(playViewModel.screenOrientation)
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `when screen orientation is set, then orientation should match the value set`() {
-        val orientation = ScreenOrientation.Landscape
-        playViewModel.setScreenOrientation(orientation)
-
-        Assertions
-                .assertThat(playViewModel.screenOrientation)
-                .isEqualTo(orientation)
-    }
-    //endregion
-
     //region state helper
     /**
      * Variable state helper
@@ -671,7 +714,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -687,7 +730,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -705,7 +748,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -719,7 +762,7 @@ class PlayViewModelTest {
         playViewModel.observablePinned.getOrAwaitValue()
 
         Assertions
-                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).shouldShowPinned)
                 .isEqualTo(expectedResult)
     }
 
@@ -737,7 +780,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -755,7 +798,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -768,7 +811,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -777,7 +820,7 @@ class PlayViewModelTest {
         val expectedResult = PlayChannelType.Unknown
 
         Assertions
-                .assertThat(playViewModel.stateHelper.channelType)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).channelType)
                 .isEqualTo(expectedResult)
     }
 
@@ -796,7 +839,7 @@ class PlayViewModelTest {
         val expectedResult = true
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -815,7 +858,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -826,7 +869,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
 
@@ -835,7 +878,7 @@ class PlayViewModelTest {
         val expectedResult = false
 
         Assertions
-                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .assertThat(playViewModel.getStateHelper(ScreenOrientation.Portrait).bottomInsets.isKeyboardShown)
                 .isEqualTo(expectedResult)
     }
     //endregion
@@ -938,6 +981,27 @@ class PlayViewModelTest {
         verify(exactly = 0) {
             mockPlayVideoManager.setRepeatMode(false)
         }
+    }
+
+    @Test
+    fun `when should start video, play video manager should be called`() {
+        playViewModel.startCurrentVideo()
+
+        verify(exactly = 1) {
+            mockPlayVideoManager.resume()
+        }
+    }
+
+    @Test
+    fun `when get video duration, it should return correct duration`() {
+        val duration = 2141241L
+        every { mockPlayVideoManager.getDurationVideo() } returns duration
+
+        val actualDuration = playViewModel.getDurationCurrentVideo()
+
+        Assertions
+                .assertThat(actualDuration)
+                .isEqualTo(duration)
     }
     //endregion
 

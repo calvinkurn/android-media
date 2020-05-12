@@ -32,7 +32,7 @@ open class VideoSettingsComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> {
-                                uiView.setFullscreen(it.screenOrientation.isLandscape)
+                                uiView.setFullscreen(false)
                                 if (!it.stateHelper.videoOrientation.isHorizontal) uiView.hide()
                                 else if (it.stateHelper.videoPlayer.isGeneral) uiView.show()
                             }

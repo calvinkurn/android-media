@@ -1,20 +1,22 @@
-package com.tokopedia.play.view.layout.interaction
+package com.tokopedia.play.view.layout.interaction.miniinteraction
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
-import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
+import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
- * Created by jegul on 13/04/20
+ * Created by jegul on 08/05/20
  */
-class PlayInteractionLandscapeManager(
+class PlayMiniInteractionLayoutManager(
         container: ViewGroup,
         viewInitializer: PlayInteractionViewInitializer
 ) : PlayInteractionLayoutManager {
@@ -31,14 +33,36 @@ class PlayInteractionLandscapeManager(
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
     private val offset8 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
+    override fun onEnterImmersive(): Int {
+        return 0
+    }
+
+    override fun onExitImmersive(): Int {
+        return 0
+    }
+
+    override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
+    }
+
+    override fun onVideoPlayerChanged(container: View, videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
+    }
+
+    override fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int {
+        return 0
+    }
+
+    override fun getVideoBottomBoundsOnKeyboardShown(container: View, estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+        return 0
+    }
+
     override fun layoutView(view: View) {
         layoutSizeContainer(container = view, id = sizeContainerComponentId)
-        layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
-        layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutImmersiveBox(container = view, id = immersiveBoxComponentId, likeComponentId = likeComponentId, videoControlComponentId = videoControlComponentId)
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
+        layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutImmersiveBox(container = view, id = immersiveBoxComponentId, likeComponentId = likeComponentId, videoControlComponentId = videoControlComponentId)
+        layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
@@ -52,30 +76,12 @@ class PlayInteractionLandscapeManager(
     override fun onDestroy() {
     }
 
-    override fun onEnterImmersive(): Int {
-        return PlayFullScreenHelper.getHideSystemUiVisibility()
+    override fun onOrientationChanged(view: View, orientation: ScreenOrientation, videoOrientation: VideoOrientation, videoPlayer: VideoPlayerUiModel) {
     }
 
-    override fun onExitImmersive(): Int {
-        return PlayFullScreenHelper.getHideSystemUiVisibility()
-    }
-
-    override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
-
-    }
-
-    override fun onVideoPlayerChanged(container: View, videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
-
-    }
-
-    override fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int {
-        return 0
-    }
-
-    override fun getVideoBottomBoundsOnKeyboardShown(container: View, estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
-        return 0
-    }
-
+    /**
+     * Layout
+     */
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
@@ -85,12 +91,10 @@ class PlayInteractionLandscapeManager(
         }
     }
 
-    private fun layoutPlayButton(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
+    private fun layoutLike(container: View, @IdRes id: Int, @IdRes videoControlComponentId: Int, @IdRes sizeContainerComponentId: Int) {
         container.changeConstraint {
-            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START)
-            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
+            connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.BOTTOM)
         }
     }
 
@@ -102,10 +106,21 @@ class PlayInteractionLandscapeManager(
         }
     }
 
-    private fun layoutLike(container: View, @IdRes id: Int, @IdRes videoControlComponentId: Int, @IdRes sizeContainerComponentId: Int) {
+    private fun layoutGradientBackground(container: View, @IdRes id: Int) {
         container.changeConstraint {
-            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
-            connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.BOTTOM)
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutPlayButton(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START)
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
         }
     }
 
@@ -122,15 +137,6 @@ class PlayInteractionLandscapeManager(
         container.changeConstraint {
             connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
             connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
-        }
-    }
-
-    private fun layoutGradientBackground(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
         }
     }
 }

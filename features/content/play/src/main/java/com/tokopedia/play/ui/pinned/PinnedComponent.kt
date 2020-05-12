@@ -38,9 +38,9 @@ open class PinnedComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.SetPinned -> setPinned(it.pinned, it.stateHelper.bottomInsets.isAnyShown, it.stateHelper.screenOrientation.isLandscape)
+                            is ScreenStateEvent.SetPinned -> setPinned(it.pinned, it.stateHelper.bottomInsets.isAnyShown)
                             is ScreenStateEvent.BottomInsetsChanged -> {
-                                if (!it.isAnyShown && it.stateHelper.shouldShowPinned && !it.stateHelper.screenOrientation.isLandscape) uiView.show() else uiView.hide()
+                                if (!it.isAnyShown && it.stateHelper.shouldShowPinned) uiView.show() else uiView.hide()
                             }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                         }
@@ -73,18 +73,18 @@ open class PinnedComponent(
         uiView.onDestroy()
     }
 
-    private fun setPinned(pinnedUiModel: PinnedUiModel, isBottomInsetsShown: Boolean, isLandscape: Boolean) {
+    private fun setPinned(pinnedUiModel: PinnedUiModel, isBottomInsetsShown: Boolean) {
         when (pinnedUiModel) {
             is PinnedMessageUiModel -> {
                 uiView.setPinnedMessage(pinnedUiModel)
 
-                if (!isBottomInsetsShown && !isLandscape) uiView.show()
+                if (!isBottomInsetsShown) uiView.show()
                 else uiView.hide()
             }
             is PinnedProductUiModel -> {
                 uiView.setPinnedProduct(pinnedUiModel)
 
-                if (!isBottomInsetsShown && !isLandscape) uiView.show()
+                if (!isBottomInsetsShown) uiView.show()
                 else uiView.hide()
             }
             is PinnedRemoveUiModel -> {

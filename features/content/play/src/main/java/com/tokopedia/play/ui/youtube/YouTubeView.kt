@@ -34,6 +34,7 @@ class YouTubeView(
             }
 
     private var youTubePlayer: YouTubePlayer? = null
+    private var videoId: String? = null
 
     private val playerStateChangedListener = object : YouTubePlayer.PlayerStateChangeListener {
         override fun onAdStarted() {
@@ -46,7 +47,6 @@ class YouTubeView(
         }
 
         override fun onLoaded(videoId: String?) {
-            youTubePlayer?.play()
         }
 
         override fun onVideoEnded() {
@@ -89,7 +89,10 @@ class YouTubeView(
     init {
         youtubeFragment.initialize(object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
-                player?.let { youTubePlayer = initYouTubePlayer(it) }
+                player?.let {
+                    youTubePlayer = initYouTubePlayer(it)
+                    videoId?.let { videoId -> playYouTubeFromId(videoId) }
+                }
             }
 
             override fun onInitializationFailure(provider: YouTubePlayer.Provider?, error: YouTubeInitializationResult?) {
@@ -109,12 +112,28 @@ class YouTubeView(
     }
 
     internal fun setYouTubeId(youtubeId: String) {
-        youTubePlayer?.cueVideo(youtubeId)
-        youTubePlayer?.play()
+        videoId = youtubeId
+        playYouTubeFromId(youtubeId)
     }
 
     internal fun release() {
         youTubePlayer?.release()
+    }
+
+    internal fun setFullScreenButton(isFullscreen: Boolean) {
+        youTubePlayer?.setFullscreen(isFullscreen)
+    }
+
+    internal fun isPlaying(): Boolean {
+        return youTubePlayer?.isPlaying ?: false
+    }
+
+    internal fun play() {
+        youTubePlayer?.play()
+    }
+
+    private fun playYouTubeFromId(youtubeId: String) {
+        youTubePlayer?.loadVideo(youtubeId)
     }
 
     private fun initYouTubePlayer(player: YouTubePlayer) : YouTubePlayer {

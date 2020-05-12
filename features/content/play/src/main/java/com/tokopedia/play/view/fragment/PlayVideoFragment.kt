@@ -1,10 +1,10 @@
 package com.tokopedia.play.view.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,9 +19,9 @@ import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
-import com.tokopedia.play.ui.youtube.YouTubeComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.event.DistinctEventObserver
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
@@ -37,10 +37,7 @@ import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.dpToPx
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -84,6 +81,9 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
     override fun getScreenName(): String = "Play Video"
 
     override fun initInjector() {
@@ -126,16 +126,25 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     override fun onDestroyView() {
         super.onDestroyView()
         layoutManager.onDestroy()
-        job.cancel()
+        job.cancelChildren()
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         return false
     }
 
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return false
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        sendOrientationChangedEvent(ScreenOrientation.getByInt(newConfig.orientation))
+    }
+
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -147,15 +156,15 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer(::delegateVideoProperty))
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver(::delegateVideoProperty))
     }
 
     private fun observeOneTapOnboarding() {
-        viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
+        viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, DistinctEventObserver { showOneTapOnboarding() })
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             if (::containerVideo.isInitialized) {
                 if (it.isAnyShown) containerVideo.setCornerRadius(cornerRadius)
                 else containerVideo.setCornerRadius(0f)
@@ -165,14 +174,14 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.getStateHelper(orientation))
                         )
             }
         })
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 if (it.isBanned) sendEventBanned(it)
                 else if(it.isFreeze) sendEventFreeze(it)
@@ -181,7 +190,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     }
 
     private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver(::setVideoStream))
     }
     //endregion
 
@@ -189,7 +198,6 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     private fun initComponents(container: ViewGroup) {
         layoutManager = PlayVideoLayoutManagerImpl(
                 container = container,
-                orientation = playViewModel.screenOrientation,
                 videoOrientation = playViewModel.videoOrientation,
                 viewInitializer = this
         )
@@ -225,7 +233,16 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
         scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
+            )
+        }
+    }
+
+    private fun sendOrientationChangedEvent(orientation: ScreenOrientation) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner).emit(
+                    ScreenStateEvent::class.java,
+                    ScreenStateEvent.OrientationChanged(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }
@@ -235,7 +252,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.stateHelper)
+                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.getStateHelper(orientation))
                     )
         }
     }
@@ -288,7 +305,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.stateHelper)
+                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.getStateHelper(orientation))
                     )
         }
     }

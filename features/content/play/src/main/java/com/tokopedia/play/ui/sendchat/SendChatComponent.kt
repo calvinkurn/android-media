@@ -33,7 +33,7 @@ open class SendChatComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive && !it.stateHelper.screenOrientation.isLandscape) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ComposeChat -> uiView.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
                             is ScreenStateEvent.BottomInsetsChanged -> {
                                 /**
@@ -41,7 +41,6 @@ open class SendChatComponent(
                                  * else -> hide()
                                  */
                                 if (it.stateHelper.channelType.isLive &&
-                                        !it.stateHelper.screenOrientation.isLandscape &&
                                         it.insetsViewMap[BottomInsetsType.ProductSheet]?.isShown == false &&
                                         it.insetsViewMap[BottomInsetsType.VariantSheet]?.isShown == false) {
                                     uiView.show()

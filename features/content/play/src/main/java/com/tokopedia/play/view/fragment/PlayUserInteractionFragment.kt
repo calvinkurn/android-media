@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,7 +29,6 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.*
-import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -59,14 +57,16 @@ import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.DistinctEventObserver
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
-import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
 import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
+import com.tokopedia.play.view.layout.interaction.userinteraction.PlayUserInteractionLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
@@ -94,7 +94,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayInteractionFragment :
+class PlayUserInteractionFragment :
         BaseDaggerFragment(),
         PlayInteractionViewInitializer,
         PlayMoreActionBottomSheet.Listener,
@@ -102,8 +102,6 @@ class PlayInteractionFragment :
 {
 
     companion object {
-        private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
-
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
@@ -113,8 +111,8 @@ class PlayInteractionFragment :
         private const val FADE_DURATION = 200L
         private const val FADE_TRANSITION_DELAY = 3000L
 
-        fun newInstance(channelId: String): PlayInteractionFragment {
-            return PlayInteractionFragment().apply {
+        fun newInstance(channelId: String): PlayUserInteractionFragment {
+            return PlayUserInteractionFragment().apply {
                 val bundle = Bundle()
                 bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
                 arguments = bundle
@@ -169,6 +167,9 @@ class PlayInteractionFragment :
             requireActivity().window.decorView.systemUiVisibility = value
         }
 
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
     /**
      * Animation
      */
@@ -178,7 +179,7 @@ class PlayInteractionFragment :
     private val delayFadeOutAnimation = PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
     private val fadeAnimationList = arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation)
 
-    override fun getScreenName(): String = "Play Interaction"
+    override fun getScreenName(): String = "Play User Interaction"
 
     override fun initInjector() {
         DaggerPlayComponent.builder()
@@ -237,16 +238,11 @@ class PlayInteractionFragment :
         trackingQueue.sendAll()
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupSystemUi()
-    }
-
     override fun onDestroyView() {
         destroyInsets(requireView())
         super.onDestroyView()
         layoutManager.onDestroy()
-        job.cancel()
+        job.cancelChildren()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
@@ -264,6 +260,17 @@ class PlayInteractionFragment :
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
         return false
+    }
+
+    override fun onInterceptSystemUiVisibilityChanged(): Boolean {
+        return if (!orientation.isLandscape) {
+            systemUiVisibility = if (!playViewModel.videoOrientation.isHorizontal && container.isFullAlpha)
+                PlayFullScreenHelper.getHideSystemUiVisibility()
+            else
+                PlayFullScreenHelper.getShowSystemUiVisibility()
+
+            true
+        } else false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -286,20 +293,9 @@ class PlayInteractionFragment :
         ViewCompat.setOnApplyWindowInsetsListener(view, null)
     }
 
-    private fun setupSystemUi() {
-        val screenOrientation = playViewModel.screenOrientation
-        systemUiVisibility =
-                if (screenOrientation.isLandscape) PlayFullScreenHelper.getHideSystemUiVisibility()
-                else {
-                    val videoOrientation = playViewModel.screenOrientation
-                    if (!videoOrientation.isLandscape && container.isFullAlpha) PlayFullScreenHelper.getHideSystemUiVisibility()
-                    else PlayFullScreenHelper.getShowSystemUiVisibility()
-                }
-    }
-
     //region observe
     private fun observeVideoPlayer() {
-        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, DistinctObserver {
             layoutManager.onVideoPlayerChanged(container, it, playViewModel.channelType)
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -312,7 +308,7 @@ class PlayInteractionFragment :
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
             if (it.state == PlayVideoState.Playing) {
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
             }
@@ -321,25 +317,25 @@ class PlayInteractionFragment :
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.VideoPropertyChanged(it, playViewModel.stateHelper)
+                                ScreenStateEvent.VideoPropertyChanged(it, playViewModel.getStateHelper(orientation))
                         )
             }
         })
     }
 
     private fun observeTitleChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it is Success) setChannelTitle(it.data.title)
             triggerStartMonitoring()
         })
     }
 
     private fun observeQuickReply() {
-        playViewModel.observableQuickReply.observe(viewLifecycleOwner, Observer(::setQuickReply))
+        playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver(::setQuickReply))
     }
 
     private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, DistinctObserver {
             layoutManager.onVideoOrientationChanged(container, it.orientation)
             triggerImmersive(false)
             playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, layoutManager.getVideoTopBounds(container, it.orientation))
@@ -349,19 +345,19 @@ class PlayInteractionFragment :
     }
 
     private fun observeToolbarInfo() {
-        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer(::setPartnerInfo))
+        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver(::setPartnerInfo))
     }
 
     private fun observeTotalLikes() {
-        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, Observer(::setTotalLikes))
+        playViewModel.observableTotalLikes.observe(viewLifecycleOwner, DistinctObserver(::setTotalLikes))
     }
 
     private fun observeTotalViews() {
-        playViewModel.observableTotalViews.observe(viewLifecycleOwner, Observer(::setTotalView))
+        playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver(::setTotalView))
     }
 
     private fun observeNewChat() {
-        playViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver {
+        playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -388,7 +384,7 @@ class PlayInteractionFragment :
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer(::setPinned))
+        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver(::setPinned))
     }
 
     private fun observeLoggedInInteractionEvent() {
@@ -396,7 +392,7 @@ class PlayInteractionFragment :
     }
 
     private fun observeFollowShop() {
-        viewModel.observableFollowPartner.observe(viewLifecycleOwner, Observer {
+        viewModel.observableFollowPartner.observe(viewLifecycleOwner, DistinctObserver {
             if (it is Fail) {
                 showToast(it.throwable.message.orEmpty())
             }
@@ -420,42 +416,37 @@ class PlayInteractionFragment :
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, object : Observer<Map<BottomInsetsType, BottomInsetsState>> {
-            private var isFirstTime = true
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
+            requireView().hide()
 
-            override fun onChanged(map: Map<BottomInsetsType, BottomInsetsState>) {
-                if (!isFirstTime) requireView().hide()
-
-                scope.launch {
-                    val keyboardState = map[BottomInsetsType.Keyboard]
-                    if (keyboardState != null && !keyboardState.isPreviousStateSame) {
-                        when (keyboardState) {
-                            is BottomInsetsState.Hidden -> if (!map.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                            is BottomInsetsState.Shown -> {
-                                pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
-                            }
+            scope.launch {
+                val keyboardState = map[BottomInsetsType.Keyboard]
+                if (keyboardState != null && !keyboardState.isPreviousStateSame) {
+                    when (keyboardState) {
+                        is BottomInsetsState.Hidden -> if (!map.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> {
+                            pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                         }
                     }
+                }
 
-                    if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
-                    EventBusFactory.get(viewLifecycleOwner)
-                            .emit(
-                                    ScreenStateEvent::class.java,
-                                    ScreenStateEvent.BottomInsetsChanged(map, map.isAnyShown, map.isAnyHidden, playViewModel.stateHelper)
-                            )
+                if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.BottomInsetsChanged(map, map.isAnyShown, map.isAnyHidden, playViewModel.getStateHelper(orientation))
+                        )
 
-                }.apply {
-                    invokeOnCompletion {
-                        view?.show()
-                        isFirstTime = false
-                    }
+            }.apply {
+                invokeOnCompletion {
+                    view?.show()
                 }
             }
         })
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
             scope.launch {
                 getBottomSheetInstance().setState(it.isFreeze)
 
@@ -469,17 +460,13 @@ class PlayInteractionFragment :
     }
 
     private fun observeCartInfo() {
-        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, Observer(::setCartInfo))
+        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, DistinctObserver(::setCartInfo))
     }
     //endregion
 
     private fun setupView(view: View) {
-        container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
         container.setOnClickListener {
-            if (
-                    (playViewModel.screenOrientation.isLandscape && container.hasAlpha) ||
-                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isHorizontal && container.hasAlpha)
-            ) triggerImmersive(it.isFullSolid)
+            if (!playViewModel.videoOrientation.isHorizontal && container.hasAlpha) triggerImmersive(it.isFullSolid)
         }
     }
 
@@ -497,7 +484,7 @@ class PlayInteractionFragment :
         }
 
         when {
-            playViewModel.screenOrientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
+            orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> sendImmersiveEvent(shouldImmersive)
             else -> {
                 systemUiVisibility = if (shouldImmersive) layoutManager.onEnterImmersive() else layoutManager.onExitImmersive()
@@ -524,9 +511,8 @@ class PlayInteractionFragment :
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        layoutManager = PlayInteractionLayoutManagerImpl(
+        layoutManager = PlayUserInteractionLayoutManager(
                 container = container,
-                orientation = playViewModel.screenOrientation,
                 videoOrientation = playViewModel.videoOrientation,
                 viewInitializer = this
         )
@@ -668,10 +654,9 @@ class PlayInteractionFragment :
                                         channelId = channelId,
                                         userId = userSession.userId,
                                         channelType = playViewModel.channelType,
-                                        screenOrientation = playViewModel.screenOrientation
+                                        screenOrientation = orientation
                                 )
-                                if (playViewModel.screenOrientation.isLandscape && this@PlayInteractionFragment.container.hasAlpha) this@PlayInteractionFragment.container.performClick()
-                                else triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
+                                triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
                             }
                         }
                     }
@@ -756,7 +741,7 @@ class PlayInteractionFragment :
         scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
+                    ScreenStateEvent.Init(orientation, playViewModel.getStateHelper(orientation))
             )
         }
     }
@@ -831,7 +816,7 @@ class PlayInteractionFragment :
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.stateHelper)
+                            ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.getStateHelper(orientation))
                     )
         }
     }
@@ -841,21 +826,21 @@ class PlayInteractionFragment :
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.stateHelper)
+                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.getStateHelper(orientation))
                     )
         }
     }
     //endregion
 
     private fun onScrubStarted() {
-        if (!playViewModel.screenOrientation.isLandscape) return
+        if (!orientation.isLandscape) return
 
         cancelAllAnimations()
         fadeInAnimation.start(container)
     }
 
     private fun onScrubEnded() {
-        if (!playViewModel.screenOrientation.isLandscape) return
+        if (!orientation.isLandscape) return
 
         cancelAllAnimations()
         delayFadeOutAnimation.start(container)
