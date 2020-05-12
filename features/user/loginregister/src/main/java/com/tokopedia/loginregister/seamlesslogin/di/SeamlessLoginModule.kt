@@ -18,6 +18,10 @@ import kotlinx.coroutines.Dispatchers
 class SeamlessLoginModule(val context: Context) {
 
     @Provides
+    @SeamlessLoginContext
+    fun provideContext(): Context = context
+
+    @Provides
     fun provideGraphQlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
