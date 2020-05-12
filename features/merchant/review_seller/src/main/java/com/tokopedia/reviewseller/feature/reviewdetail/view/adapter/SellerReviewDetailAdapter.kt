@@ -51,8 +51,10 @@ class SellerReviewDetailAdapter(
         val topicFirstIndex = visitables.indexOfFirst { it is TopicUiModel }
         val feedbackFirstIndex = visitables.count { it is FeedbackUiModel }
 
+        val topicArrayList = ArrayList<SortFilterItemWrapper>(topic)
+
         val topicUiModelData = visitables.find { it is TopicUiModel }
-        (topicUiModelData as TopicUiModel).sortFilterItemList = topic as ArrayList<SortFilterItemWrapper>
+        (topicUiModelData as TopicUiModel).sortFilterItemList = topicArrayList
 
         notifyItemChanged(topicFirstIndex)
         visitables.removeAll { it is FeedbackUiModel }

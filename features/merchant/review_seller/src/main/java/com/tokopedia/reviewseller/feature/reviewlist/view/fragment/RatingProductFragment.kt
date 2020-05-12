@@ -204,7 +204,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun loadInitialData() {
-        reviewSellerAdapter.clearAllElements()
+        clearAllData()
         rvRatingProduct?.visible()
         filter_and_sort_layout?.hide()
         search_bar_layout?.hide()

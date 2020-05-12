@@ -3,6 +3,7 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.reviewseller.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SortListAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicListAdapter
@@ -44,6 +45,9 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
         sortAdapter?.setSortFilter(sortTopicData)
         rvSortFilter?.adapter = sortAdapter
 
+        if(filterTopicData.isEmpty()) {
+            tvTopicTitle?.hide()
+        }
         topicAdapter?.setTopicFilter(filterTopicData)
         rvTopicFilter?.adapter = topicAdapter
     }
