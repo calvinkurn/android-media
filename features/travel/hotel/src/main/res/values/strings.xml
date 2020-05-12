@@ -239,4 +239,9 @@
     <string name="hotel_max_date_label">Check-out</string>
     <string name="hotel_global_search_check_availability">Cek Ketersediaan</string>
     <string name="hotel_detail_room_full_desc">Coba ubah tanggal atau jumlah kamar, yuk!</string>
+
+    <string name="hotel_cancellation_page_title">Batalkan Pesanan</string>
+    <string name="hotel_cancellation_button_next">Lanjutkan</string>
+    <string name="hotel_cancellation_button_submit">Batalkan Pesanan</string>
+    <string name="hotel_cancellation_reason_page_title">Kenapa kamu ingin batalkan pesanan?</string>
 </resources>

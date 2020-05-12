@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/layout_lvl2"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_property_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_4"
+        android:textColor="@color/Neutral_N700_96"
+        tools:text="Avissa Suites" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_room_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        tools:text="Kamar Deluxe Double"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hotel_cancellation_room_guest_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="2 Kamar . 2 Tamu"
+        app:typographyType="body_3"
+        android:textColor="@color/Neutral_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        />
+
+</LinearLayout>
