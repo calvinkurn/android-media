@@ -10,13 +10,19 @@ import com.google.gson.annotations.SerializedName
 data class GetMerchantVoucherListResponse(
         @Expose
         @SerializedName("MerchantPromotionGetMVList")
-        val result: MerchantVoucherListDataModel = MerchantVoucherListDataModel()
+        val result: MerchantVoucherDataModel = MerchantVoucherDataModel()
+)
+
+data class MerchantVoucherDataModel(
+        @Expose
+        @SerializedName("data")
+        val data: MerchantVoucherListDataModel = MerchantVoucherListDataModel()
 )
 
 data class MerchantVoucherListDataModel(
         @Expose
-        @SerializedName("data")
-        val data: List<MerchantVoucherModel> = emptyList(),
+        @SerializedName("vouchers")
+        val vouchers: List<MerchantVoucherModel> = emptyList(),
         @Expose
         @SerializedName("paging")
         val paging: PagingModel = PagingModel()
@@ -38,8 +44,8 @@ data class MerchantVoucherModel(
         @Expose
         @SerializedName("galadriel_voucher_id")
         val galadrielVoucherId: Int = 0,
-        @SerializedName("is_public")
         @Expose
+        @SerializedName("is_public")
         val isPublic: Int = 0,
         @Expose
         @SerializedName("is_quota_avaiable")

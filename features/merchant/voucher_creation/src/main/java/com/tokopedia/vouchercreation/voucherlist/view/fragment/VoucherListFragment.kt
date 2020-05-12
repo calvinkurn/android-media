@@ -378,23 +378,25 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun setOnSuccessGetVoucherList(vouchers: List<VoucherUiModel>) {
+        clearAllData()
         if (vouchers.isEmpty()) {
-            clearAllData()
             renderList(listOf(EmptyStateUiModel(isActiveVoucher)))
         } else {
             renderList(vouchers)
         }
     }
 
-    private fun setOnErrorGetVoucherList() {
-
+    private fun setOnErrorGetVoucherList(throwable: Throwable) {
+        throwable.printStackTrace()
+        clearAllData()
+        renderList(listOf(ErrorStateUiModel))
     }
 
     private fun observeVoucherList() {
         observe(mViewModel.voucherList) {
             when (it) {
                 is Success -> setOnSuccessGetVoucherList(it.data)
-                is Fail -> setOnErrorGetVoucherList()
+                is Fail -> setOnErrorGetVoucherList(it.throwable)
             }
         }
     }
