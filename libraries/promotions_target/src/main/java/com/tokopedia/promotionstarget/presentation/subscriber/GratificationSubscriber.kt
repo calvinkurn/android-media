@@ -200,7 +200,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                         val response = presenter.getGratificationAndShowDialog(gratificationData)
                         val canShowDialog = response.popGratification?.isShow
                         var isAutoClaim = response.popGratification?.isAutoClaim
-                        isAutoClaim = true
 
                         if (canShowDialog != null && canShowDialog) {
                             if (isAutoClaim != null && isAutoClaim) {
