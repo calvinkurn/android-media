@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,6 +18,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     }
 
     override fun bind(element: TalkReadingUiModel) {
+        itemView.talkReadingContainer.setBackgroundColor(Color.WHITE)
         element.question.apply {
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
             if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {

@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -26,6 +27,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     override fun bind(element: TalkReplyUiModel) {
+        itemView.talkReplyContainer.setBackgroundColor(Color.WHITE)
         element.answer.apply {
             showProfilePicture(userThumbnail, userId)
             showDisplayName(userName, userId)

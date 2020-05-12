@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
+import android.graphics.Color
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -15,20 +16,21 @@ class TalkReplyEmptyViewHolder(view: View) : AbstractViewHolder<TalkReplyEmptyMo
         const val TALK_REPLY_EMPTY_IMAGE_DEFAULT_URL = "https://ecs7.tokopedia.net/android/others/talk_reply_empty_state.png"
     }
 
-    private fun showOwnQuestionEmptyState() {
-        with(itemView) {
-            talkReplyEmptyImage.loadImage(TALK_REPLY_EMPTY_IMAGE_OWN_QUESTION_URL)
-            talkReplyEmptyTitle.text = getString(R.string.reply_empty_title_own_question)
-            talkReplyEmptySubtitle.text = getString(R.string.reply_empty_subtitle_own_question)
-        }
-    }
-
     override fun bind(element: TalkReplyEmptyModel) {
         if(element.isMyQuestion) {
             showOwnQuestionEmptyState()
             return
         }
         itemView.talkReplyEmptyImage.loadImage(TALK_REPLY_EMPTY_IMAGE_DEFAULT_URL)
+    }
+
+    private fun showOwnQuestionEmptyState() {
+        with(itemView) {
+            talkReplyEmptyContainer.setBackgroundColor(Color.WHITE)
+            talkReplyEmptyImage.loadImage(TALK_REPLY_EMPTY_IMAGE_OWN_QUESTION_URL)
+            talkReplyEmptyTitle.text = getString(R.string.reply_empty_title_own_question)
+            talkReplyEmptySubtitle.text = getString(R.string.reply_empty_subtitle_own_question)
+        }
     }
 
 
