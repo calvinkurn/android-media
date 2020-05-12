@@ -242,11 +242,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
-        initCMPushNotification();
-        initIris();
-        initTetraDebugger();
+        performLibraryInitialisation();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
         initResourceDownloadManager();
+    }
+
+    private void performLibraryInitialisation(){
+        WeaveInterface initWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                initCMPushNotification();
+                initIris();
+                initTetraDebugger();
+                return null;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(initWeave);
     }
 
     private void initResourceDownloadManager() {
@@ -972,8 +984,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMPushNotification() {
-        CMPushNotificationManager.getInstance().init(this);
-        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+        CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
     }
 
     @Override

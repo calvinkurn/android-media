@@ -99,8 +99,12 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.utils.uri.DeeplinkUtils;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -238,10 +242,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     }
 
     public static void createApplinkDelegateInBackground(){
-        Observable.fromCallable(() -> {
-            getApplinkDelegateInstance();
-            return true;
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+        WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                getApplinkDelegateInstance();
+                return null;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(appLinkDelegateWeave);
     }
 
     @Override

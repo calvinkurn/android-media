@@ -16,6 +16,8 @@ import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.weaver.WeaveInterface
+import com.tokopedia.weaver.Weaver
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,10 +61,19 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     override fun initialize() {
+        val remoteConfigInitVweave : WeaveInterface = object : WeaveInterface{
+            override fun execute(): Any {
+                return initRemoteConfig()
+            }
+        }
+        Weaver.executeWeaveCoRoutineNow(remoteConfigInitVweave)
+        isAlarmOn = false
+    }
+
+    private fun initRemoteConfig() : Boolean{
         remoteConfig = FirebaseRemoteConfigImpl(context)
         remoteConfig.fetch(remoteConfigListener)
-
-        isAlarmOn = false
+        return true
     }
 
     override fun setService(config: String, isEnabled: Boolean) {

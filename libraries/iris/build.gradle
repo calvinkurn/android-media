@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.irisSession)
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation project(rootProject.ext.libraries.weaver)
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
