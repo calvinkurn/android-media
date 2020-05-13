@@ -145,6 +145,7 @@ class InboxDetailAdapter(private val mContext: Context,
                 if (searchMode) {
                     tvComment?.text = utils.getHighlightText(searchText ?: "",
                             item.messagePlaintext ?: "")
+                    tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 } else {
                     tvComment?.text = MethodChecker.fromHtml(item.message)
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
@@ -170,7 +171,7 @@ class InboxDetailAdapter(private val mContext: Context,
                 tvComment?.hide()
                 rvAttachedImage?.hide()
             }
-            ratingThumbsUp.setOnClickListener { 
+            ratingThumbsUp.setOnClickListener {
                 if (item.rating != null && !(item.rating == KEY_LIKED || item.rating == KEY_DIS_LIKED)) {
                     ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500))
                     ratingThumbsDown.hide()
@@ -178,7 +179,7 @@ class InboxDetailAdapter(private val mContext: Context,
                     sendGTMEvent(InboxTicketTracking.Label.EventHelpful)
                 }
             }
-            ratingThumbsDown.setOnClickListener { 
+            ratingThumbsDown.setOnClickListener {
                 if (item.rating != null && !(item.rating == KEY_LIKED || item.rating == KEY_DIS_LIKED)) {
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600))
                     ratingThumbsUp.hide()
