@@ -19,15 +19,23 @@ import kotlinx.android.synthetic.main.activity_hotel_cancellation.*
  */
 
 class HotelCancellationActivity : HotelBaseActivity(), HasComponent<HotelCancellationComponent> {
+    private var invoiceId: String = ""
+
     override fun shouldShowOptionMenu(): Boolean = false
 
-    override fun getNewFragment(): Fragment = HotelCancellationFragment()
+    override fun getNewFragment(): Fragment = HotelCancellationFragment.getInstance(invoiceId)
 
     override fun getComponent(): HotelCancellationComponent = DaggerHotelCancellationComponent.builder()
             .hotelComponent(HotelComponentInstance.getHotelComponent(application))
             .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val uri = intent.data
+        if (uri != null) {
+            invoiceId = uri.lastPathSegment ?: ""
+        }
+
         super.onCreate(savedInstanceState)
         hotel_cancellation_header.title = getString(R.string.hotel_cancellation_page_title)
     }
@@ -38,7 +46,7 @@ class HotelCancellationActivity : HotelBaseActivity(), HasComponent<HotelCancell
 
     fun showCancellationReasonFragment() {
         supportFragmentManager.beginTransaction().replace(R.id.hotel_cancellation_parent_view,
-                HotelCancellationReasonFragment(), CANCELLATION_REASON_FRAGMENT_TAG).addToBackStack(null).commit()
+                HotelCancellationReasonFragment.getInstance(invoiceId), CANCELLATION_REASON_FRAGMENT_TAG).addToBackStack(null).commit()
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_hotel_cancellation

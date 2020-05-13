@@ -1,5 +1,7 @@
 package com.tokopedia.hotel.cancellation.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -24,7 +26,35 @@ data class HotelCancellationSubmitModel(
         @Expose
         val actionButton: List<ActionButton> = listOf()
 
-) {
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.createTypedArrayList(ActionButton)) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeByte(if (success) 1 else 0)
+        parcel.writeString(title)
+        parcel.writeString(desc)
+        parcel.writeTypedList(actionButton)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<HotelCancellationSubmitModel> {
+        override fun createFromParcel(parcel: Parcel): HotelCancellationSubmitModel {
+            return HotelCancellationSubmitModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<HotelCancellationSubmitModel?> {
+            return arrayOfNulls(size)
+        }
+    }
+
     data class ActionButton(
             @SerializedName("label")
             @Expose
@@ -41,39 +71,32 @@ data class HotelCancellationSubmitModel(
             @SerializedName("URIWeb")
             @Expose
             val uriWeb: String = ""
-    )
+    ): Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString())
 
-    data class Response(
-            @SerializedName("data")
-            @Expose
-            val data: HotelCancellationSubmitModel = HotelCancellationSubmitModel(),
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(label)
+            parcel.writeString(buttonType)
+            parcel.writeString(uri)
+            parcel.writeString(uriWeb)
+        }
 
-            @SerializedName("meta")
-            @Expose
-            val meta: HotelCancellationMeta
-    )
+        override fun describeContents(): Int {
+            return 0
+        }
 
-    data class HotelCancellationMeta(
-            @SerializedName("cancelCartID")
-            @Expose
-            val cancelCartId: String = "",
+        companion object CREATOR : Parcelable.Creator<ActionButton> {
+            override fun createFromParcel(parcel: Parcel): ActionButton {
+                return ActionButton(parcel)
+            }
 
-            @SerializedName("selectedReason")
-            @Expose
-            val selectedReason: SelectedReason = SelectedReason()
-    )
-
-    data class SelectedReason(
-            @SerializedName("id")
-            @Expose
-            val id: String = "",
-
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-
-            @SerializedName("freeText")
-            @Expose
-            val freeText: Boolean = false
-    )
+            override fun newArray(size: Int): Array<ActionButton?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
 }

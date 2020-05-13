@@ -248,4 +248,6 @@
     <string name="hotel_cancellation_page_2_subtitle">2 dari 2 Langkah</string>
     <string name="hotel_cancellation_reason_submit">Ya, Batalkan</string>
     <string name="hotel_cancellation_reason_dismiss">Kembali</string>
+    <string name="hotel_cancellation_success">Pembatalan Berhasil</string>
+    <string name="hotel_cancellation_failed">Pembatalan Gagal</string>
 </resources>

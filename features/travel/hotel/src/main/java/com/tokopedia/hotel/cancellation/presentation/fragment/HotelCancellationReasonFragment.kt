@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,11 +42,17 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
 
     lateinit var reasonAdapter: HotelCancellationReasonAdapter
 
+    private var invoiceId: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        arguments?.let {
+            invoiceId = it.getString(EXTRA_INVOICE_ID) ?: ""
+        }
+
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProviders.of(activity as HotelCancellationActivity, viewModelFactory)
             cancellationViewModel = viewModelProvider.get(HotelCancellationViewModel::class.java)
         }
     }
@@ -58,10 +65,7 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*
-         Data is still dummy data
-         */
-        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.dummycancellation))
+        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId,false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -74,6 +78,14 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                 }
+            }
+        })
+
+        cancellationViewModel.cancellationSubmitData.observe(this, Observer {
+            when (it) {
+                is Success ->
+                    startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), it.data))
+                is Fail -> {}
             }
         })
     }
@@ -119,9 +131,11 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
         dialog.setPrimaryCTAClickListener { dialog.dismiss() }
         dialog.setSecondaryCTAClickListener {
             Toast.makeText(requireContext(), "${reasonAdapter.selectedId} ${reasonAdapter.freeText}", Toast.LENGTH_SHORT).show()
-            cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.dummycancellationsubmit),
-                    cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
-            startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext()))
+//            cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_submit_hotel_cancellation),
+//                    cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
+
+            cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_submit_hotel_cancellation),
+                    "123r5gkjwechfmr1cy2", reasonAdapter.selectedId, reasonAdapter.freeText)
         }
         dialog.show()
     }
@@ -134,4 +148,14 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_cancellation_reason, container, false)
+
+    companion object {
+        private const val EXTRA_INVOICE_ID = "extra_invoice_id"
+        fun getInstance(invoiceId: String): HotelCancellationReasonFragment =
+                HotelCancellationReasonFragment().also {
+                    it.arguments = Bundle().apply {
+                        putString(EXTRA_INVOICE_ID, invoiceId)
+                    }
+                }
+    }
 }

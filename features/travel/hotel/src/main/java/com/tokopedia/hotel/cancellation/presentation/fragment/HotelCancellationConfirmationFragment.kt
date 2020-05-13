@@ -14,6 +14,8 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.UnifyButton
@@ -32,8 +34,14 @@ class HotelCancellationConfirmationFragment: BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var cancellationViewModel: HotelCancellationViewModel
 
+    lateinit var cancellationSubmitModel: HotelCancellationSubmitModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            cancellationSubmitModel = it.getParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA) ?: HotelCancellationSubmitModel()
+        }
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -47,21 +55,9 @@ class HotelCancellationConfirmationFragment: BaseDaggerFragment() {
         getComponent(HotelCancellationComponent::class.java).inject(this)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        cancellationViewModel.cancellationSubmitData.observe(this, androidx.lifecycle.Observer {
-            when(it) {
-                is Success -> initView(it.data)
-                is Fail -> { }
-            }
-        })
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.dummycancellationsubmit),
-                "", "", "")
+        initView(cancellationSubmitModel)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -96,5 +92,14 @@ class HotelCancellationConfirmationFragment: BaseDaggerFragment() {
             }
         }
         return button
+    }
+
+    companion object {
+        fun getInstance(cancellationSubmitModel: HotelCancellationSubmitModel): HotelCancellationConfirmationFragment =
+                HotelCancellationConfirmationFragment().also {
+                    it.arguments = Bundle().apply {
+                        putParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA, cancellationSubmitModel)
+                    }
+                }
     }
 }

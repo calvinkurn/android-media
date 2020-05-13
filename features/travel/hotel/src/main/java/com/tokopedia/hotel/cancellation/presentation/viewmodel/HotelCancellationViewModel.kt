@@ -6,12 +6,21 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
-import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
+import com.tokopedia.hotel.cancellation.data.*
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -19,6 +28,7 @@ import javax.inject.Inject
  */
 
 class HotelCancellationViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                     private val graphqlUseCase: MultiRequestGraphqlUseCase,
                                                      val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
 
     private val mutableCancellationData = MutableLiveData<Result<HotelCancellationModel>>()
@@ -29,21 +39,39 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
     val cancellationSubmitData: LiveData<Result<HotelCancellationSubmitModel>>
         get() = mutableCancellationSubmitData
 
-    fun getCancellationData(query: String) {
-        /*
-         Data is still dummy data
-         */
-        val gson = Gson()
-        var dummyData = gson.fromJson(query, HotelCancellationModel.Response::class.java)
-        mutableCancellationData.postValue(Success(dummyData.data))
+    fun getCancellationData(query: String, invoiceId: String, fromCloud: Boolean = true) {
+        val params = mapOf(GET_CANCELLATION_DATA_PARAM to HotelCancellationParam(invoiceId))
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (fromCloud)CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
+        graphqlUseCase.clearRequest()
+
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(query, HotelCancellationModel.Response::class.java, params)
+            graphqlUseCase.addRequest(graphqlRequest)
+
+            val data = graphqlUseCase.executeOnBackground().getSuccessData<HotelCancellationModel.Response>().response.data
+            mutableCancellationData.postValue(Success(data))
+        }) {
+            mutableCancellationData.postValue(Fail(it))
+        }
     }
 
     fun submitCancellationData(query: String, cancelCartId: String, selectedId: String, freeText: String) {
-        /*
-         Data is still dummy data
-         */
-        val gson = Gson()
-        var dummyData = gson.fromJson(query, HotelCancellationSubmitModel.Response::class.java)
-        mutableCancellationSubmitData.postValue(Success(dummyData.data))
+        val params = mapOf(GET_CANCELLATION_SUBMIT_DATA_PARAM to
+                HotelCancellationSubmitParam(cancelCartId, HotelCancellationSubmitParam.SelectedReason(selectedId, freeText)))
+
+        launchCatchError(block = {
+            val data = withContext(dispatcher.ui()) {
+                val graphqlRequest = GraphqlRequest(query, HotelCancellationSubmitResponse::class.java, params)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<HotelCancellationSubmitResponse>()
+            mutableCancellationSubmitData.postValue(Success(data.response.data))
+        }) {
+            mutableCancellationSubmitData.postValue(Fail(it))
+        }
+    }
+
+    companion object {
+        const val GET_CANCELLATION_DATA_PARAM = "data"
+        const val GET_CANCELLATION_SUBMIT_DATA_PARAM = "data"
     }
 }

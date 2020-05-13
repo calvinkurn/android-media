@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -43,11 +44,17 @@ class HotelCancellationFragment : BaseDaggerFragment() {
 
     private val cancelInfoBottomSheet = BottomSheetUnify()
 
+    private var invoiceId: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        arguments?.let {
+            invoiceId = it.getString(EXTRA_INVOICE_ID) ?: ""
+        }
+
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProviders.of(activity as HotelCancellationActivity, viewModelFactory)
             cancellationViewModel = viewModelProvider.get(HotelCancellationViewModel::class.java)
         }
     }
@@ -58,10 +65,7 @@ class HotelCancellationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*
-         Data is still dummy data
-         */
-        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.dummycancellation))
+        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId)
     }
 
     override fun onResume() {
@@ -167,5 +171,15 @@ class HotelCancellationFragment : BaseDaggerFragment() {
         hotel_cancellation_button_next.setOnClickListener {
             (activity as HotelCancellationActivity).showCancellationReasonFragment()
         }
+    }
+
+    companion object {
+        private const val EXTRA_INVOICE_ID = "extra_invoice_id"
+        fun getInstance(invoiceId: String): HotelCancellationFragment =
+                HotelCancellationFragment().also {
+                    it.arguments = Bundle().apply {
+                        putString(EXTRA_INVOICE_ID, invoiceId)
+                    }
+                }
     }
 }
