@@ -250,4 +250,5 @@
     <string name="hotel_cancellation_reason_dismiss">Kembali</string>
     <string name="hotel_cancellation_success">Pembatalan Berhasil</string>
     <string name="hotel_cancellation_failed">Pembatalan Gagal</string>
+    <string name="hotel_cancellation_reason_free_text_placeholder">Tulis alasan kamu di sini</string>
 </resources>

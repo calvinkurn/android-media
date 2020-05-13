@@ -25,7 +25,7 @@ class HotelCancellationConfirmationActivity: HotelBaseActivity(), HasComponent<H
 
     override fun onCreate(savedInstanceState: Bundle?) {
         with(intent) {
-            cancellationSubmitModel = getParcelableExtra(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA)
+            cancellationSubmitModel = getParcelableExtra(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA) ?: HotelCancellationSubmitModel()
         }
         super.onCreate(savedInstanceState)
 

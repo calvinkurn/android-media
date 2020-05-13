@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName
 data class HotelCancellationSubmitResponse(
         @SerializedName("hotelSubmitCancelRequest")
         @Expose
-        val response: MetaAndData = MetaAndData())
+        val response: CancellationSubmitMetaAndData = CancellationSubmitMetaAndData())
 {
-    data class MetaAndData(
+    data class CancellationSubmitMetaAndData(
             @SerializedName("data")
             @Expose
             val data: HotelCancellationSubmitModel = HotelCancellationSubmitModel(),

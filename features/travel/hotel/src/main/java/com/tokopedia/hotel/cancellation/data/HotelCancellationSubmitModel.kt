@@ -4,11 +4,13 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by jessica on 08/05/20
  */
 
+@Parcelize
 data class HotelCancellationSubmitModel(
         @SerializedName("success")
         @Expose
@@ -27,34 +29,8 @@ data class HotelCancellationSubmitModel(
         val actionButton: List<ActionButton> = listOf()
 
 ): Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readByte() != 0.toByte(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createTypedArrayList(ActionButton)) {
-    }
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeByte(if (success) 1 else 0)
-        parcel.writeString(title)
-        parcel.writeString(desc)
-        parcel.writeTypedList(actionButton)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<HotelCancellationSubmitModel> {
-        override fun createFromParcel(parcel: Parcel): HotelCancellationSubmitModel {
-            return HotelCancellationSubmitModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<HotelCancellationSubmitModel?> {
-            return arrayOfNulls(size)
-        }
-    }
-
+    @Parcelize
     data class ActionButton(
             @SerializedName("label")
             @Expose
@@ -71,32 +47,5 @@ data class HotelCancellationSubmitModel(
             @SerializedName("URIWeb")
             @Expose
             val uriWeb: String = ""
-    ): Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString())
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(label)
-            parcel.writeString(buttonType)
-            parcel.writeString(uri)
-            parcel.writeString(uriWeb)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<ActionButton> {
-            override fun createFromParcel(parcel: Parcel): ActionButton {
-                return ActionButton(parcel)
-            }
-
-            override fun newArray(size: Int): Array<ActionButton?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
+    ): Parcelable
 }

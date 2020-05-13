@@ -44,7 +44,7 @@
         app:text_field_input_type="text"
         app:text_field_label="Alasan Lain"
         app:text_field_label_static="true"
-        app:text_field_placeholder="Tulis alasan kamu di sini"
+        app:text_field_placeholder="@string/hotel_cancellation_reason_free_text_placeholder"
         tools:layout_height="@dimen/layout_lvl2"
         tools:visibility="visible"
         app:text_field_counter="500"
