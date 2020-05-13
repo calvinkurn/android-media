@@ -78,24 +78,10 @@ class BrandlistPageFragment :
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//                if (swipeRefreshLayout?.isRefreshing == false) {
-//                    viewModel.loadMoreAllBrands(category)
-//                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandViewModel) {
-//                        adapter?.showLoading()
-//                    }
-//                }
-
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else ""
                     viewModel.loadMoreAllBrands(category, brandFirstLetter)
                     isLoadMore = true
-//                    if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
-//                        viewModel.loadMoreAllBrands(category)
-//                    } else if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) {
-//                        viewModel.loadMoreAllBrands(category)
-//                    } else if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
-//
-//                    }
 
                     if (adapter?.getVisitables()?.lastOrNull() is AllBrandViewModel) {
                         adapter?.showLoading()
