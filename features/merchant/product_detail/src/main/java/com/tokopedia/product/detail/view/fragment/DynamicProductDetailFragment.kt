@@ -450,9 +450,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
                 shouldRenderSticky = true
                 updateStickyContent()
-                when(viewModel.lastAction) {
-                    is DynamicProductDetailGoToWriteDiscussion -> goToWriteActivity()
-                    is DynamicProductDetailGoToReplyDiscussion -> goToReplyActivity((viewModel.lastAction as DynamicProductDetailGoToReplyDiscussion).questionId)
+                if(resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
+                    when(viewModel.lastAction) {
+                        is DynamicProductDetailGoToWriteDiscussion -> goToWriteActivity()
+                        is DynamicProductDetailGoToReplyDiscussion -> goToReplyActivity((viewModel.lastAction as DynamicProductDetailGoToReplyDiscussion).questionId)
+                    }
                 }
             }
             ProductDetailConstant.REQUEST_CODE_REPORT -> {
