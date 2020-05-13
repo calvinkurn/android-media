@@ -66,6 +66,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
@@ -947,9 +948,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void onTickerClicked(String queryParams, int typeId) {
-        SearchTracking.trackEventClickTicker(getQueryKey(), typeId);
-        applyParamsFromTicker(UrlParamUtils.getParamMap(queryParams));
+    public void onTickerClicked(TickerViewModel tickerViewModel) {
+        SearchTracking.trackEventClickTicker(getQueryKey(), tickerViewModel.getTypeId());
+        applyParamsFromTicker(UrlParamUtils.getParamMap(tickerViewModel.getQuery()));
     }
 
     private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
