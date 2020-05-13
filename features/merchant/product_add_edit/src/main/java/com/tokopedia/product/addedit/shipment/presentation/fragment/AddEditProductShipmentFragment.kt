@@ -58,6 +58,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
     }
 
+    private var mainLayout: ConstraintLayout? = null
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
     private var switchInsurance: SwitchUnify? = null
