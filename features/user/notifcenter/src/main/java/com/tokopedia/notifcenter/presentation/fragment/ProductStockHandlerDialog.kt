@@ -195,13 +195,13 @@ class ProductStockHandlerDialog(
     private fun onSuccessListener(title: String, actionText: String, onClick: () -> Unit = {}) {
         dialogWindow()?.let {
             val onActionClick = View.OnClickListener { onClick() }
-            Toaster.make(it, title, toasterLength, TYPE_NORMAL, actionText, onActionClick)
+            Toaster.make(it, title, Toaster.LENGTH_LONG, TYPE_NORMAL, actionText, onActionClick)
         }
     }
 
     private fun showToastErrorMessage(message: String) {
         dialogWindow()?.let {
-            Toaster.make(it, message, toasterLength, TYPE_ERROR)
+            Toaster.make(it, message, Toaster.LENGTH_LONG, TYPE_ERROR)
         }
     }
 
