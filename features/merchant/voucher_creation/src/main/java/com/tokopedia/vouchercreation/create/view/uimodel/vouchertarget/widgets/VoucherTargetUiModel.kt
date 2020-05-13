@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.Vouch
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
 
 class VoucherTargetUiModel(val onShouldShowBottomSheet: (CreateVoucherBottomSheetType, VoucherTargetCardType?) -> Unit = { _,_ ->},
+                           val onSetActiveVoucherTargetType: (Int) -> Unit,
                            val voucherTargetList: List<VoucherTargetItemUiModel> = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList())
     : Visitable<VoucherTargetTypeFactory> {
 

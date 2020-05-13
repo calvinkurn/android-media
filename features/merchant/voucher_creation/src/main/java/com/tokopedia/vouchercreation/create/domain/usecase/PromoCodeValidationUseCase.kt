@@ -24,7 +24,7 @@ class PromoCodeValidationUseCase (gqlRepository: GraphqlRepository) : BaseValida
         private const val CODE = "code"
 
         @JvmStatic
-        fun getRequestParams(promoCode: String) =
+        fun createRequestParam(promoCode: String) =
                 VoucherSource.getVoucherRequestParams().apply {
                     putString(CODE, promoCode)
                 }

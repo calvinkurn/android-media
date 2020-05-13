@@ -10,8 +10,9 @@ import kotlinx.android.synthetic.main.mvc_promo_code_info.view.*
 import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 
 class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<VoucherTargetItemUiModel>,
-                                   private val onRequestNotifyLambda: () -> Unit = {},
-                                   private val onShouldOpenBottomSheet: (CreateVoucherBottomSheetType, VoucherTargetCardType?) -> Unit = { _,_ -> }) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
+                                   private val onRequestNotifyLambda: () -> Unit,
+                                   private val onShouldOpenBottomSheet: (CreateVoucherBottomSheetType, VoucherTargetCardType?) -> Unit,
+                                   private val onSetVoucherTargetType: (Int) -> Unit) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
 
     class MerchantVoucherTargetViewHolder(itemView: VoucherTargetCardItemView) : RecyclerView.ViewHolder(itemView)
 
@@ -53,7 +54,13 @@ class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<V
 
     private fun onItemEnabled(position: Int) {
         merchantVoucherTargetList.forEachIndexed { index, voucherTargetItemUiModel ->
-            voucherTargetItemUiModel.isEnabled = index == position
+            if (index == position) {
+                onSetVoucherTargetType(voucherTargetItemUiModel.voucherTargetType.targetType)
+                voucherTargetItemUiModel.isEnabled = true
+            } else {
+                voucherTargetItemUiModel.isEnabled = false
+
+            }
         }
         onRequestNotifyLambda()
     }

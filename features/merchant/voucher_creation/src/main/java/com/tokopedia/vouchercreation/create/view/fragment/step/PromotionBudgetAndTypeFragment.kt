@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
                                      private val setVoucherBitmap: (Bitmap) -> Unit)
-    : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>(onNextStep, false) {
+    : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic

@@ -28,7 +28,7 @@ class CreatePromoCodeViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
-                        promoCodeValidationUseCase.params = PromoCodeValidationUseCase.getRequestParams(promoCode)
+                        promoCodeValidationUseCase.params = PromoCodeValidationUseCase.createRequestParam(promoCode)
                         mPromoCodeValidationLiveData.value = Success(promoCodeValidationUseCase.executeOnBackground())
                     }
                 },

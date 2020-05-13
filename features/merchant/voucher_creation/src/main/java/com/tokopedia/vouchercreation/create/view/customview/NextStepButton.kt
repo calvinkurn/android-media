@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import androidx.annotation.LayoutRes
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.view.VoucherCustomView
+import kotlinx.android.synthetic.main.mvc_next_step_button.view.*
 
 class NextStepButton @JvmOverloads constructor(
         context: Context,
@@ -17,5 +18,11 @@ class NextStepButton @JvmOverloads constructor(
     override fun setupAttributes() {}
 
     override fun setupView() {}
+
+    var isLoading = nextButton?.isLoading ?: false
+        set(value) {
+            field = value
+            nextButton?.isLoading = value
+        }
 
 }

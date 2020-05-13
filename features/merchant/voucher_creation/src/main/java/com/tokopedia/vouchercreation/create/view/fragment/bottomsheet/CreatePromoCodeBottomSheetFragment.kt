@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.observe
@@ -17,6 +20,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreatePromoCodeViewModel
 import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
 import javax.inject.Inject
@@ -62,6 +66,11 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     private var alertMinimumMessage = bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
     private var easyRememberMessage = bottomSheetContext?.resources?.getString(TEXTFIELD_MESSAGE_EASY_REMEMBER).toBlankOrString()
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initInjector()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,6 +86,13 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
             setText(getPromoCode())
             selectAll()
         }
+    }
+
+    private fun initInjector() {
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun observeLiveData() {

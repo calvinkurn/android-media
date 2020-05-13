@@ -1,13 +1,19 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
@@ -16,15 +22,19 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDis
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetTypeFactory
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.FillVoucherNameUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.VoucherTargetUiModel
+import com.tokopedia.vouchercreation.create.view.viewholder.vouchertarget.widgets.FillVoucherNameViewHolder
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
+import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import javax.inject.Inject
 
-class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
-    : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>(onNextInvoker) {
+class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {})
+    : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>() {
 
     companion object {
+
+        private const val MIN_TEXTFIELD_LENGTH = 5
+
         @JvmStatic
         fun createInstance(onNext: () -> Unit) = MerchantVoucherTargetFragment(onNext)
     }
@@ -48,11 +58,9 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
         VoucherDisplayBottomSheetFragment.createInstance(context, ::getClickedVoucherDisplayType)
     }
 
-    private val fillVoucherWidget by lazy {
-        FillVoucherNameUiModel()
-    }
+    private var alertMinimumMessage = ""
 
-    private var voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet)
+    private var voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType)
 
     private var shouldReturnToInitialValue = true
 
@@ -78,11 +86,13 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     override fun loadData(page: Int) {}
 
     override var extraWidget: List<Visitable<VoucherTargetTypeFactory>> =
-            listOf(voucherTargetWidget, fillVoucherWidget)
+            listOf(voucherTargetWidget)
 
     override fun setupView() {
         super.setupView()
         observeLiveData()
+        setupTextFieldWidget()
+        setupNextButton()
         setupBottomSheet()
     }
 
@@ -123,8 +133,8 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
         viewModel.run {
             voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
                 dismissBottomSheet()
-                voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, voucherTargetList)
-                extraWidget = listOf(voucherTargetWidget, fillVoucherWidget)
+                voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType, voucherTargetList)
+                extraWidget = listOf(voucherTargetWidget)
                 super.setupView()
             })
             privateVoucherPromoCode.observe(viewLifecycleOwner, Observer { promoCode ->
@@ -133,7 +143,70 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
             shouldReturnToInitialValue.observe(viewLifecycleOwner, Observer { shouldReturn ->
                 this@MerchantVoucherTargetFragment.shouldReturnToInitialValue = shouldReturn
             })
+            voucherTargetValidationLiveData.observe(viewLifecycleOwner, Observer { result ->
+                voucherTargetNextButton?.isLoading = false
+                when(result) {
+                    is Success -> {
+                        val validation = result.data
+                        if (!validation.checkHasError) {
+                            onNext()
+                        } else {
+                            validation.couponNameError.run {
+                                if (isNotBlank()) {
+                                    fillVoucherNameTextfield?.setError(true)
+                                    fillVoucherNameTextfield?.setMessage(this)
+                                }
+                            }
 
+                        }
+                    }
+                    is Fail -> {
+
+                    }
+                }
+            })
+
+        }
+    }
+
+    private fun setupTextFieldWidget() {
+        alertMinimumMessage = context?.getString(FillVoucherNameViewHolder.TEXFIELD_ALERT_MINIMUM).toBlankOrString()
+        fillVoucherNameTextfield?.run {
+            textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    //No op
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    //No op
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    when {
+                        s.length < MIN_TEXTFIELD_LENGTH -> {
+                            setError(true)
+                            setMessage(alertMinimumMessage)
+                        }
+                        else -> {
+                            setError(false)
+                            setMessage("")
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    private fun setupNextButton() {
+        voucherTargetNextButton?.run {
+            setOnClickListener {
+                if (!isLoading) {
+                    isLoading = true
+                    val couponName = fillVoucherNameTextfield?.textFieldInput?.text?.toString().toBlankOrString()
+                    viewModel.validateVoucherTarget(promoCodeText, couponName)
+                }
+            }
         }
     }
 
@@ -148,6 +221,10 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
                                 voucherTargetCardType: VoucherTargetCardType? = null) {
         lastClickedVoucherDisplayType = voucherTargetCardType ?: lastClickedVoucherDisplayType
         showBottomSheet(bottomSheetType)
+    }
+
+    private fun onSetActiveVoucherTargetType(@VoucherTargetType targetType: Int) {
+        viewModel.setActiveVoucherTargetType(targetType)
     }
 
     private fun onNextCreatePromoCode(promoCode: String) {

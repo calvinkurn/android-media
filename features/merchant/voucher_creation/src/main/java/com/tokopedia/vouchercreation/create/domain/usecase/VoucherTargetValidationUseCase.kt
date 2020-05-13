@@ -40,9 +40,9 @@ class VoucherTargetValidationUseCase @Inject constructor(
         private const val COUPON_NAME = "coupon_name"
 
         @JvmStatic
-        fun getRequestParams(@VoucherTargetType targetType: Int,
-                             promoCode: String,
-                             couponName: String) =
+        fun createRequestParam(@VoucherTargetType targetType: Int,
+                               promoCode: String,
+                               couponName: String) =
                 VoucherSource.getVoucherRequestParams().apply {
                     putInt(IS_PUBLIC, targetType)
                     putString(CODE, promoCode)

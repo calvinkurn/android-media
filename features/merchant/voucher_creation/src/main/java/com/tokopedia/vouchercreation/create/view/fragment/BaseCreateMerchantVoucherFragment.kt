@@ -15,16 +15,10 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherBottomView
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
-import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 
-abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, WTF : BaseAdapterTypeFactory>(private val onNext: () -> Unit,
-                                                                                                             private val isHaveNextButton: Boolean = true) : BaseListFragment<Visitable<CreateVoucherTypeFactory>, WTF>() {
+abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, WTF : BaseAdapterTypeFactory> : BaseListFragment<Visitable<CreateVoucherTypeFactory>, WTF>() {
 
     private var activeBottomSheetType: CreateVoucherBottomSheetType = CreateVoucherBottomSheetType.CREATE_PROMO_CODE
-
-    protected val nextButtonWidget by lazy {
-        NextButtonUiModel(onNext)
-    }
 
     private val widgetList : MutableList<Visitable<CreateVoucherTypeFactory>> = mutableListOf()
 
@@ -56,9 +50,6 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
                 clear()
                 extraWidget.asListOfType<Visitable<CreateVoucherTypeFactory>>()?.let {
                     addAll(it)
-                }
-                if (isHaveNextButton) {
-                    add(nextButtonWidget)
                 }
                 adapter?.data?.clear()
                 renderList(this)
