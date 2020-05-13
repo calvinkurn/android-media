@@ -262,5 +262,6 @@
 
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
+    <string name="title_tokopoints_df">Tokopoints</string>
 
 </resources>

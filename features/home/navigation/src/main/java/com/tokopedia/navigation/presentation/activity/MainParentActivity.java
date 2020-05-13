@@ -289,6 +289,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void installDFonBackground() {
         List<String> moduleNameList = new ArrayList<>();
+        moduleNameList.add(DeeplinkDFMapper.DF_PROMO_TOKOPOINTS);
         if (userSession.isLoggedIn()) {
             moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);

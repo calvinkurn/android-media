@@ -16,9 +16,12 @@ object DFWebviewFallbackUrl {
     const val OPERATIONAL_CONTACT_US = "https://www.tokopedia.com/help"
     const val OPERATIONAL_CHAT_BOT = "https://www.tokopedia.com/help"
 
+    // Promo
+    const val PROMO_TOKOPOINTS = "https://m.tokopedia.com/tokopoints"
+
     // Salam Umrah
     const val SALAM_UMRAH = "https://m.tokopedia.com/s/umroh"
 
-    //
+    // User Profile
     const val USER_PROFILE_SETTINGS = "https://m.tokopedia.com/user/profile/edit"
 }
