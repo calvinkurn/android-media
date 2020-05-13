@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -27,11 +28,12 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.di.component.DaggerReviewSellerComponent
+import com.tokopedia.reviewseller.common.di.module.ReviewSellerModule
 import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.reviewseller.feature.reviewlist.analytics.ProductReviewTracking
-import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
@@ -42,7 +44,6 @@ import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.SellerRevie
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -65,6 +66,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
+
+        fun createInstance(): RatingProductFragment {
+            return RatingProductFragment()
+        }
     }
 
     @Inject
@@ -116,11 +121,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private val coachMarkTabRatingProduct: CoachMarkItem by lazy {
-
-        tabReview = (view?.rootView?.findViewById<TabsUnify>(R.id.tab_review)?.getUnifyTabLayout()
-                ?.getChildAt(0) as ViewGroup).getChildAt(0)
-
-        CoachMarkItem(tabReview,
+        CoachMarkItem(rootRatingProduct,
                 getString(R.string.full_summary_of_product_ratings),
                 getString(R.string.desc_full_summary_of_product_ratings))
     }
@@ -150,6 +151,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
         initSearchBar()
@@ -200,7 +202,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun initInjector() {
-        getComponent(ReviewProductListComponent::class.java).inject(this)
+        inject()
     }
 
     override fun loadInitialData() {
@@ -220,6 +222,17 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 reviewSellerAdapter.showLoading()
                 loadNextPage(page)
             }
+        }
+    }
+
+    private fun inject() {
+        if (activity != null) {
+            val appComponent = (activity?.application as? BaseMainApplication)?.baseAppComponent
+            DaggerReviewSellerComponent.builder()
+                    .reviewSellerModule(ReviewSellerModule())
+                    .baseAppComponent(appComponent)
+                    .build()
+                    .inject(this)
         }
     }
 
@@ -253,18 +266,15 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         searchBarRatingProduct?.apply {
             isClearable = true
             iconListener = {
-                loadInitialData()
+                if (searchBarPlaceholder.isNotEmpty()) {
+                    onSearchKeywordEmpty()
+                }
             }
             searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) tracking.eventClickSearchBar(userSession.shopId.orEmpty())
             }
             searchBarTextField.afterTextChanged {
                 if(it.isEmpty()) {
-                    onSearchKeywordEmpty()
-                }
-            }
-            searchBarIcon.setOnClickListener {
-                if (searchBarPlaceholder.isNotEmpty()) {
                     onSearchKeywordEmpty()
                 }
             }
@@ -432,9 +442,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
 
     override fun onAddedCoachMarkOverallRating(view: View) {
-        coachMarkTabRatingProduct()
+//        coachMarkTabRatingProduct()
         coachMarkFilterAndSort()
-
         val coachMarkSummary: CoachMarkItem by lazy {
             CoachMarkItem(view.findViewById(R.id.cardSummary),
                     getString(R.string.average_rating_title),

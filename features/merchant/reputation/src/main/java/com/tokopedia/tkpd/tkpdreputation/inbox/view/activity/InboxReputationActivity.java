@@ -39,7 +39,7 @@ import java.util.List;
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends BaseTabActivity implements HasComponent {
+public class  InboxReputationActivity extends BaseTabActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
 
@@ -49,6 +49,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     private Fragment sellerReputationFragment;
+    private Fragment reviewSellerFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
@@ -87,12 +88,13 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
     }
 
     private void initView() {
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+        viewPager = findViewById(R.id.pager);
+        indicator = findViewById(R.id.indicator);
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
+            reviewSellerFragment = applicationContext.getReviewSellerFragment();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
         }
         viewPager.setOffscreenPageLimit(getPageLimit());
@@ -110,6 +112,12 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
                     .title_tab_waiting_review)));
             indicator.addTab(indicator.newTab().setText(getString(R.string
                     .title_tab_my_review)));
+        }
+
+        if(GlobalConfig.isSellerApp()) {
+            if(reviewSellerFragment != null) {
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_rating_product)));
+            }
         }
 
         if (userSession.hasShop()) {
@@ -182,6 +190,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
+            fragmentList.add(reviewSellerFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {

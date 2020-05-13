@@ -608,7 +608,6 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
-
     if (enableHermes) {
         debugImplementation 'com.facebook.hermes:hermes-debug:0.1.2@aar'
         releaseImplementation 'com.facebook.hermes:hermes-release:0.1.2@aar'

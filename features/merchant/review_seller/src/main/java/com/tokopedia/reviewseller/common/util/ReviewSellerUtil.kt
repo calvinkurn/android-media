@@ -9,10 +9,9 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.round
 
 object ReviewSellerUtil {
 
@@ -110,9 +109,8 @@ fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int)
 }
 
 fun Float?.roundDecimal(): String {
-    val df = DecimalFormat("#.#")
-    df.roundingMode = RoundingMode.CEILING
-    return df.format(this).isDecimalLengthOne()
+    val rounded = this?.times(10)?.let { round(it) }?.div(10).toString()
+    return rounded.isDecimalLengthOne()
 }
 
 fun String?.isDecimalLengthOne(): String {

@@ -50,7 +50,7 @@ abstract class BaseTopicsBottomSheet(private val mActivity: FragmentActivity?,
         super.onCreate(savedInstanceState)
     }
 
-    protected fun initLayoutManager() {
+    private fun initLayoutManager() {
         val layoutManagerTopic = ChipsLayoutManager.newBuilder(mActivity)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)

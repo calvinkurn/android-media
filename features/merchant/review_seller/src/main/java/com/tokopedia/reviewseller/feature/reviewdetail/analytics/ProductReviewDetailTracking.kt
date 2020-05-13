@@ -221,7 +221,19 @@ class ProductReviewDetailTracking {
         ))
     }
 
-    //attachmentId = imagaUrl
+    fun eventSwipeBottomSheetSortFilterTopics(shopId: String, productId: String, state: String) {
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_REVIEW,
+                EVENT_CATEGORY, FIELD_PRODUCT_DETAIL,
+                EVENT_ACTION, "$CLICK - drag $state bottomsheet",
+                EVENT_LABEL, "",
+                FIELD_SHOP_ID, shopId,
+                FIELD_PRODUCT_ID, productId,
+                FIELD_SCREEN_NAME, FIELD_PRODUCT_DETAIL
+        ))
+    }
+
+    //attachmentId = imageUrl
     fun eventClickImagePreviewSlider(feedbackId: String, attachmentId: String, position: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, EVENT_CLICK_REVIEW,
