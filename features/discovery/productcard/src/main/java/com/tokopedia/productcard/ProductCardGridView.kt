@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
@@ -33,6 +34,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
+
+        renderOutOfStockView(productCardModel)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
@@ -83,5 +86,17 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun recycle() {
         imageProduct?.glideClear(context)
         imageFreeOngkirPromo?.glideClear(context)
+    }
+
+    private fun renderOutOfStockView(productCardModel: ProductCardModel) {
+        if (productCardModel.isOutOfStock) {
+            labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+            tvLabel.visibility = View.GONE
+            progressBar.visibility = View.GONE
+            outOfStockOverlay.visibility = View.VISIBLE
+        } else {
+            outOfStockOverlay.visibility = View.GONE
+            labelProductStatus?.hide()
+        }
     }
 }

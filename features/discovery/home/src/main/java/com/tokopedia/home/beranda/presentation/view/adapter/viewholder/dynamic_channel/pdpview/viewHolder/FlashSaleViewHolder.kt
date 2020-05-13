@@ -6,7 +6,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.productcard.ProductCardFlashSaleView
+import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class FlashSaleViewHolder (view: View,
@@ -17,7 +17,7 @@ class FlashSaleViewHolder (view: View,
         val LAYOUT = R.layout.home_banner_item_flashsale_carousel
     }
 
-    private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
+    private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
     override fun bind(element: FlashSaleDataModel) {
         setLayout(element)
     }

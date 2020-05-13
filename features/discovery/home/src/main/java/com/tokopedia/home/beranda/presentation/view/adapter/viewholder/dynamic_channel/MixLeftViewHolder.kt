@@ -24,7 +24,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import kotlinx.coroutines.CoroutineScope
@@ -162,7 +162,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         val list :MutableList<FlashSaleDataModel> = mutableListOf()
         for (element in channel.grids) {
             list.add(FlashSaleDataModel(
-                    ProductCardFlashSaleModel(
+                    ProductCardModel(
                             slashedPrice = element.slashedPrice,
                             productName = element.name,
                             formattedPrice = element.price,
@@ -173,7 +173,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
                             labelGroupList = element.labelGroup.map {
-                                ProductCardFlashSaleModel.LabelGroup(
+                                ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
                                         type = it.type
@@ -197,7 +197,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardFlashSaleModel>) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -205,7 +205,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }

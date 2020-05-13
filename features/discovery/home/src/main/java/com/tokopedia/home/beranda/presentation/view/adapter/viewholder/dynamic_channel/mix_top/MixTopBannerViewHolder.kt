@@ -18,7 +18,6 @@ import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
@@ -26,7 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.home.util.setGradientBackground
-import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -215,7 +214,7 @@ class MixTopBannerViewHolder(
         val list :MutableList<Visitable<*>> = mutableListOf()
         for (element in channel.grids) {
             list.add(FlashSaleDataModel(
-                    ProductCardFlashSaleModel(
+                    ProductCardModel(
                             slashedPrice = element.slashedPrice,
                             productName = element.name,
                             formattedPrice = element.price,
@@ -226,7 +225,7 @@ class MixTopBannerViewHolder(
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
                             labelGroupList = element.labelGroup.map {
-                                ProductCardFlashSaleModel.LabelGroup(
+                                ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
                                         type = it.type
