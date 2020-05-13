@@ -265,7 +265,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
             }
 
         }
-        return title
+        return MethodChecker.fromHtml(title)
     }
 
     private fun addSellerTabFragment() {
