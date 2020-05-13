@@ -152,7 +152,6 @@ class OfficialHomeFragment :
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
-        setPerformanceListenerForRecyclerView()
         return view
     }
 
@@ -212,6 +211,10 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
+            if (getOfficialStorePageLoadTimeCallback() != null) {
+                getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+                getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+            }
             when (it) {
                 is Success -> {
                     removeLoading()
@@ -225,6 +228,7 @@ class OfficialHomeFragment :
                 }
             }
             bannerPerformanceMonitoring.stopTrace()
+            setPerformanceListenerForRecyclerView()
         })
     }
 
@@ -757,10 +761,6 @@ class OfficialHomeFragment :
     }
 
     private fun removeLoading() {
-        if (getOfficialStorePageLoadTimeCallback() != null) {
-            getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
-            getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-        }
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel
