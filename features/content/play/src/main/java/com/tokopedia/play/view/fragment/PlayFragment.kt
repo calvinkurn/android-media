@@ -72,6 +72,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 
 /**
  * Created by jegul on 29/11/19
@@ -732,7 +733,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun handleDurationAnalytics(state: PlayVideoState) {
-        if (state is PlayVideoState.Playing && watchStartTime == null) {
+        if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && watchStartTime == null) {
             watchStartTime = System.currentTimeMillis()
         }
     }
