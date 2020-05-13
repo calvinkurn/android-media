@@ -20,8 +20,8 @@ data class ChatListGroupStickerResponse(
         return 0
     }
 
-    fun isExpired(result: ChatListGroupStickerResponse): Boolean {
-        return compareTo(result) > 0
+    fun hasExpiredCache(cache: ChatListGroupStickerResponse?): Boolean {
+        return cache != null && compareTo(cache) > 0
     }
 
 }

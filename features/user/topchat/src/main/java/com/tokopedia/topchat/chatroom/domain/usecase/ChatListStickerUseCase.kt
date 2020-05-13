@@ -18,11 +18,12 @@ class ChatListStickerUseCase @Inject constructor(
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
     private val cacheKey = ChatListStickerUseCase::class.java.simpleName
     private val paramGroupUID = "groupUUID"
     private val paramLimit = "limit"
     private val defaultParamLimit = 16
+
+    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
     fun loadSticker(
             stickerUID: String,
@@ -30,8 +31,7 @@ class ChatListStickerUseCase @Inject constructor(
             onSuccess: (List<Sticker>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(
-                dispatchers.IO,
+        launchCatchError(dispatchers.IO,
                 {
                     val params = generateParams(stickerUID)
                     getCacheStickerGroup(stickerUID)?.also {

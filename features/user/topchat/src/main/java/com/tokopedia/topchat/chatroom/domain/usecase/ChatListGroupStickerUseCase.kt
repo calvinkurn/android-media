@@ -1,19 +1,28 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class ChatListGroupStickerUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatListGroupStickerResponse>,
-        private val cacheManager: TopchatCacheManager
-) {
+        private val cacheManager: TopchatCacheManager,
+        private var dispatchers: TopchatCoroutineContextProvider
+) : CoroutineScope {
 
     private val cacheKey = ChatListGroupStickerUseCase::class.java.simpleName
     private val paramStickerType = "stickerType"
     private val stickerTypeBuyer = 0
     private val stickerTypeSeller = 1
+
+    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
     fun getStickerGroup(
             isSeller: Boolean,
@@ -21,28 +30,37 @@ class ChatListGroupStickerUseCase @Inject constructor(
             onSuccess: (ChatListGroupStickerResponse, isExpired: Boolean) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        val params = generateParams(isSeller)
-        val cache = getCacheStickerGroup()?.also {
-            onLoading(it)
-        }
-        gqlUseCase.apply {
-            setTypeClass(ChatListGroupStickerResponse::class.java)
-            setRequestParams(params)
-            setGraphqlQuery(query)
-            execute({ result ->
-                val isExpired = cache?.isExpired(result) ?: true
-                saveToCache(result, isExpired)
-                onSuccess(result, isExpired)
-            }, { error ->
-                onError(error)
-            })
-        }
+        launchCatchError(dispatchers.IO,
+                {
+                    val params = generateParams(isSeller)
+                    val cache = getCacheStickerGroup()?.also {
+                        withContext(dispatchers.Main) {
+                            onLoading(it)
+                        }
+                    }
+                    val response = gqlUseCase.apply {
+                        setTypeClass(ChatListGroupStickerResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    val isExpired = response.hasExpiredCache(cache)
+                    if (isExpired) {
+                        saveToCache(response)
+                    }
+                    withContext(dispatchers.Main) {
+                        onSuccess(response, isExpired)
+                    }
+                },
+                { exception ->
+                    withContext(dispatchers.Main) {
+                        onError(exception)
+                    }
+                }
+        )
     }
 
-    private fun saveToCache(result: ChatListGroupStickerResponse, isExpired: Boolean) {
-        if (isExpired) {
-            cacheManager.saveCache(cacheKey, result)
-        }
+    private fun saveToCache(result: ChatListGroupStickerResponse) {
+        cacheManager.saveCache(cacheKey, result)
     }
 
     private fun getCacheStickerGroup(): ChatListGroupStickerResponse? {
