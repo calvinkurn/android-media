@@ -787,8 +787,8 @@ public class GTMAnalytics extends ContextAnalytics {
                 (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)){
             connectionTypeString = DeviceConnectionInfo.getConnectionType(context);
             lastGetConnectionTimeStamp = System.currentTimeMillis();
-            bundle.putString("networkSpeed", connectionTypeString);
         }
+        bundle.putString("networkSpeed", connectionTypeString);
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
