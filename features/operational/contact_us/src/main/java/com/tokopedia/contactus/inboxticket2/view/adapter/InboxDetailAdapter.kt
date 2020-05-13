@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.view.adapter
 import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -146,6 +147,7 @@ class InboxDetailAdapter(private val mContext: Context,
                             item.messagePlaintext ?: "")
                 } else {
                     tvComment?.text = MethodChecker.fromHtml(item.message)
+                    tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 }
                 tvComment?.show()
                 if (position == commentList.size - 1 && needAttachment) {
@@ -216,7 +218,9 @@ class InboxDetailAdapter(private val mContext: Context,
         }
 
         override fun onClick(view: View) {
-            toggleCollapse()
+            if (view.id != R.id.tv_comment) {
+                toggleCollapse()
+            }
         }
 
         init {
