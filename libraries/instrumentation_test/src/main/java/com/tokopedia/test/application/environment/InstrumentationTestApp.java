@@ -18,6 +18,7 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.deprecated.SessionHandler;
@@ -53,6 +54,7 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
         GlobalConfig.DEBUG = true;

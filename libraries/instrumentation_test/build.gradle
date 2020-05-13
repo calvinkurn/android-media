@@ -111,6 +111,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+
+    implementation project(rootProject.ext.libraries.linker)
 }
 
 project.ext {

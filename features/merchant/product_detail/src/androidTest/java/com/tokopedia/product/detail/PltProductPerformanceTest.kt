@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail
 
-import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -42,7 +41,7 @@ class PltProductPerformanceTest {
     private fun writePLTPerformanceFile(testCaseName: String,
                                         pltPerformanceData: PltPerformanceData) {
         val path = activityRule.activity.getExternalFilesDir(null)
-        val perfDataDir = File(path, "perf_data")
+        val perfDataDir = File(path, "PerformanceDataFileUtils")
         if (!perfDataDir.exists()) {
             makeInitialPerfDir(perfDataDir)
         }
@@ -58,8 +57,6 @@ class PltProductPerformanceTest {
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
                         "$datasource\n")
-        Log.e("datanya", "datanya" + pltPerformanceData.startPageDuration.toString() + pltPerformanceData.networkRequestDuration.toString())
-
         val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText(
                 "$testCaseName," +

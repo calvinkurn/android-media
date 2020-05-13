@@ -243,8 +243,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
                 ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
                 ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
-                ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS,
-                0, 0, 0, 0, null)
+                ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS)
         pageLoadTimePerformanceMonitoring?.startMonitoring(ProductDetailConstant.PDP_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
