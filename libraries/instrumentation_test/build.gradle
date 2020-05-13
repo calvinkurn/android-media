@@ -108,6 +108,8 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+
+    implementation rootProject.ext.testDependencies.benchmark
 }
 
 project.ext {
