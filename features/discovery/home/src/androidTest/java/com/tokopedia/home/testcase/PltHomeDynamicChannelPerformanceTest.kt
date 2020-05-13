@@ -23,6 +23,7 @@ class PltHomeDynamicChannelPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
+
     @Before
     fun deleteDatabase() {
         activityRule. activity.deleteDatabase("HomeCache.db")
@@ -36,6 +37,7 @@ class PltHomeDynamicChannelPerformanceTest {
         activityRule.activity.finishAndRemoveTask()
         Thread.sleep(1000)
     }
+
 
     private fun waitForData() {
         Thread.sleep(10000)
