@@ -90,7 +90,7 @@ class MixTopBannerViewHolder(
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
         val grid = MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)
-        homeCategoryListener.trackingQueue?.putEETracking(
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
                         listOf(grid),
                         channel.header.name,

@@ -221,7 +221,7 @@ open class HomeFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override var trackingQueue: TrackingQueue? = null
+    protected var trackingQueue: TrackingQueue? = null
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
@@ -282,19 +282,57 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.let {
-            userSession = UserSession(it)
-            irisAnalytics = getInstance(it)
-            irisSession = IrisSession(it)
-            remoteConfig = FirebaseRemoteConfigImpl(it)
-            trackingQueue = TrackingQueue(it)
-        }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
         stickyContent
+    }
+
+    private fun getUserSession() : UserSessionInterface{
+        if(!::userSession.isInitialized){
+            activity?.let {
+                userSession = UserSession(it)
+            }
+        }
+        return userSession
+    }
+
+    private fun getIrisAnalytics() : Iris{
+        if(!::irisAnalytics.isInitialized){
+            activity?.let {
+                irisAnalytics = getInstance(it)
+            }
+        }
+        return irisAnalytics
+    }
+
+    private fun getIrisSession() : IrisSession{
+        if(!::irisSession.isInitialized){
+            activity?.let {
+                irisSession = IrisSession(it)
+            }
+        }
+        return irisSession
+    }
+
+    private fun getRemoteConfig() : RemoteConfig{
+        if(!::remoteConfig.isInitialized){
+            activity?.let {
+                remoteConfig = FirebaseRemoteConfigImpl(it)
+            }
+        }
+        return remoteConfig
+    }
+
+    override fun getTrackingQueueObj() : TrackingQueue?{
+        if(trackingQueue == null){
+            activity?.let {
+                trackingQueue = TrackingQueue(it)
+            }
+        }
+        return trackingQueue
     }
 
     @VisibleForTesting
@@ -509,13 +547,13 @@ open class HomeFragment : BaseDaggerFragment(),
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutine(sendScrWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig))
+        executeWeaveCoRoutine(sendScrWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, getRemoteConfig()))
     }
 
     override fun onPause() {
         super.onPause()
         adapter?.onPause()
-        trackingQueue?.sendAll()
+        getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
@@ -1047,8 +1085,8 @@ open class HomeFragment : BaseDaggerFragment(),
         }
 
     private fun executeGetStickyContent():Boolean{
-        val isShowSticky = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
-        if (isShowSticky && !userSession?.isLoggedIn) viewModel.getStickyContent()
+        val isShowSticky = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+        if (isShowSticky && !getUserSession().isLoggedIn) viewModel.getStickyContent()
         return true
     }
 
@@ -1066,7 +1104,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun needToShowGeolocationComponent() {
-        val firebaseShowGeolocationComponent = remoteConfig?.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
+        val firebaseShowGeolocationComponent = getRemoteConfig().getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
         if (!firebaseShowGeolocationComponent) {
             viewModel.setNeedToShowGeolocationComponent(false)
             return
@@ -1169,7 +1207,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun isFirstInstall(): Boolean {
         context?.let {
-            if (!userSession?.isLoggedIn &&
+            if (!getUserSession().isLoggedIn &&
                     isShowFirstInstallSearch) {
                 sharedPrefs = it.getSharedPreferences(
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
@@ -1215,14 +1253,14 @@ open class HomeFragment : BaseDaggerFragment(),
                 if (visitable is HomeVisitable) {
                     val homeVisitable = visitable
                     if (homeVisitable.isTrackingCombined && homeVisitable.trackingDataForCombination != null) {
-                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, homeVisitable.getTrackingDataForCombination());
+                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), homeVisitable.getTrackingDataForCombination());
                     } else if (!homeVisitable.isTrackingCombined && homeVisitable.trackingData != null) {
-                        HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.trackingData)
+                        HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), homeVisitable.trackingData)
                     }
                 }
             }
             if (!combinedTracking.isEmpty()) {
-                HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking)
+                HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), combinedTracking)
             }
         }
     }
@@ -1350,7 +1388,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 viewModel.sendTopAds(bannerSlidesModel.topadsViewUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
-            dataLayer[KEY_SESSION_IRIS] = irisSession?.getSessionId()
+            dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
             putEEToTrackingQueue(dataLayer)
         }
     }
@@ -1376,7 +1414,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun sendScreen(): Boolean {
         if (activity != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
             lastSendScreenTimeMillis = System.currentTimeMillis()
-            HomePageTracking.sendScreen(activity, screenName, userSession?.isLoggedIn)
+            HomePageTracking.sendScreen(activity, screenName, getUserSession().isLoggedIn)
         }
         return true
     }
@@ -1420,7 +1458,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
-        trackingQueue?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
+        getTrackingQueueObj()?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
     }
 
     override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
@@ -1461,10 +1499,10 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private val isUserLoggedIn: Boolean
-        private get() = userSession!!.isLoggedIn
+        private get() = getUserSession().isLoggedIn
 
     private val userShopId: String
-        private get() = userSession!!.shopId
+        private get() = getUserSession().shopId
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -1596,8 +1634,8 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onPromoDragStart() {}
     override fun onPromoDragEnd() {}
     override fun putEEToTrackingQueue(data: HashMap<String, Any>) {
-        if (trackingQueue != null) {
-            trackingQueue?.putEETracking(data)
+        if (getTrackingQueueObj() != null) {
+            getTrackingQueueObj()?.putEETracking(data)
         }
     }
 
@@ -1606,9 +1644,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun putEEToIris(data: HashMap<String, Any>) {
-        if (irisAnalytics != null) {
-            irisAnalytics?.saveEvent(data)
-        }
+        getIrisAnalytics().saveEvent(data)
     }
 
     private fun setStickyContent(tickerDetail: TickerDetail) {
@@ -1625,7 +1661,7 @@ open class HomeFragment : BaseDaggerFragment(),
             hideStickyLogin()
             return
         }
-        val isCanShowing = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+        val isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
         if (!isCanShowing) {
             hideStickyLogin()
             return
