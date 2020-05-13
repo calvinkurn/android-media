@@ -10,7 +10,6 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -306,7 +305,10 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
                 true
             }
-            else -> false
+            else -> {
+                sendLeaveRoomAnalytics()
+                false
+            }
         }
     }
 
@@ -376,7 +378,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     override fun onInitYouTubeFragment(container: ViewGroup): Int {
-        val fragmentYouTubeComponent = FragmentYouTubeComponent(container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+        val fragmentYouTubeComponent = FragmentYouTubeComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
         scope.launch {
             fragmentYouTubeComponent.getUserInteractionEvents()
@@ -714,5 +716,26 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 view?.background = resource
             }
         })
+    }
+
+    private fun sendLeaveRoomAnalytics() {
+
+        fun sendAnalytic(duration: Long) {
+            PlayAnalytics.clickLeaveRoom(channelId, duration, playViewModel.channelType)
+        }
+
+        if (!playViewModel.videoPlayer.isYouTube) {
+            sendAnalytic(duration = playViewModel.getVideoDuration())
+        } else {
+            scope.launch(dispatchers.immediate) {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.YouTubeAnalyticsRequired {
+                                    sendAnalytic(it.currentTimeMillis.toLong())
+                                }
+                        )
+            }
+        }
     }
 }

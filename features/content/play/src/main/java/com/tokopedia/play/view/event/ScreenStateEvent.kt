@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.event
 
 import android.view.View
+import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.play.component.ComponentEvent
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
@@ -73,6 +74,10 @@ sealed class ScreenStateEvent : ComponentEvent {
      */
     data class OrientationChanged(val orientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
 
+    /**
+     * Analytics
+     */
+    data class YouTubeAnalyticsRequired(val analyticsBlock: (YouTubePlayer) -> Unit) : ScreenStateEvent()
 
     object OnNoMoreAction : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()

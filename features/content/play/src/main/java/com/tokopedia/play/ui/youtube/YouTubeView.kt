@@ -132,6 +132,8 @@ class YouTubeView(
         youTubePlayer?.play()
     }
 
+    internal fun getPlayer(): YouTubePlayer? = youTubePlayer
+
     private fun playYouTubeFromId(youtubeId: String) {
         youTubePlayer?.loadVideo(youtubeId)
     }

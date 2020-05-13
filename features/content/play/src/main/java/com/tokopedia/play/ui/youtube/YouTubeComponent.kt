@@ -52,6 +52,10 @@ open class YouTubeComponent(
                                 uiView.show()
                             }
                             is ScreenStateEvent.OrientationChanged -> uiView.setFullScreenButton(it.orientation.isLandscape)
+                            is ScreenStateEvent.YouTubeAnalyticsRequired -> {
+                                val youTubePlayer = uiView.getPlayer()
+                                youTubePlayer?.let { player -> it.analyticsBlock(player) }
+                            }
                         }
                     }
         }

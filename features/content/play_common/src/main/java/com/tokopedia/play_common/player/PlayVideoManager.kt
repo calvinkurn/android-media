@@ -241,7 +241,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     fun isPlaying(): Boolean = videoPlayer.isPlaying
 
-    fun getDurationVideo(): Long {
+    fun getVideoDuration(): Long {
         return videoPlayer.duration
     }
 

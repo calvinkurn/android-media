@@ -995,9 +995,9 @@ class PlayViewModelTest {
     @Test
     fun `when get video duration, it should return correct duration`() {
         val duration = 2141241L
-        every { mockPlayVideoManager.getDurationVideo() } returns duration
+        every { mockPlayVideoManager.getVideoDuration() } returns duration
 
-        val actualDuration = playViewModel.getDurationCurrentVideo()
+        val actualDuration = playViewModel.getVideoDuration()
 
         Assertions
                 .assertThat(actualDuration)
