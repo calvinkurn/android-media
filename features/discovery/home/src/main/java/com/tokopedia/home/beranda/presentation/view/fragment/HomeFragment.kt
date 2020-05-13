@@ -112,6 +112,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -151,7 +152,7 @@ import javax.inject.Inject
  * @author by errysuprayogi on 11/27/17.
  */
 @SuppressLint("SyntheticAccessor")
-class HomeFragment : BaseDaggerFragment(),
+open class HomeFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
         CountDownListener,
@@ -233,10 +234,10 @@ class HomeFragment : BaseDaggerFragment(),
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
-    private lateinit var homeMainToolbar: HomeMainToolbar
     private lateinit var statusBarBackground: View
     private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
+    private var homeMainToolbar: HomeMainToolbar? = null
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
@@ -290,10 +291,6 @@ class HomeFragment : BaseDaggerFragment(),
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
-        if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-            getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-        }
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
@@ -348,7 +345,7 @@ class HomeFragment : BaseDaggerFragment(),
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         homeMainToolbar = view.findViewById(R.id.toolbar)
-        homeMainToolbar.setAfterInflationCallable(afterInflationCallable)
+        homeMainToolbar?.setAfterInflationCallable(afterInflationCallable)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView.setHasFixedSize(true)
@@ -423,14 +420,14 @@ class HomeFragment : BaseDaggerFragment(),
             refreshLayout.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(1)) {
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-                homeMainToolbar.showShadow()
+            if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+                homeMainToolbar?.showShadow()
             }
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-                homeMainToolbar.hideShadow()
+            if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+                homeMainToolbar?.hideShadow()
             }
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView.setNestedCanScroll(true)
@@ -495,6 +492,15 @@ class HomeFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
+        adjustStatusBarColor()
+    }
+
+    private fun adjustStatusBarColor() {
+        if (::homeRecyclerView.isInitialized) {
+            calculateSearchbarView(homeRecyclerView.computeVerticalScrollOffset())
+        } else {
+            calculateSearchbarView(0)
+        }
     }
 
     private fun createAndCallSendScreen() {
@@ -531,8 +537,8 @@ class HomeFragment : BaseDaggerFragment(),
             viewModel.refreshHomeData()
             /*
              * set notification gimmick
-             */if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-            homeMainToolbar.setNotificationNumber(0)
+             */if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+            homeMainToolbar?.setNotificationNumber(0)
         }
         }
         refreshLayout.setOnRefreshListener(this)
@@ -616,7 +622,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchHint() {
-        if (view != null && !viewModel.searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (view != null && !viewModel.searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             viewModel.searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
         }
     }
@@ -695,7 +701,6 @@ class HomeFragment : BaseDaggerFragment(),
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter?.submitList(data);
                 adapter?.notifyDataSetChanged();
@@ -737,21 +742,21 @@ class HomeFragment : BaseDaggerFragment(),
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 150) {
-                homeMainToolbar.switchToDarkToolbar()
+                homeMainToolbar?.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
             } else {
-                homeMainToolbar.switchToLightToolbar()
+                homeMainToolbar?.switchToLightToolbar()
                 if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-                homeMainToolbar.setBackgroundAlpha(offsetAlpha)
+                homeMainToolbar?.setBackgroundAlpha(offsetAlpha)
                 setStatusBarAlpha(offsetAlpha)
             }
         }
@@ -1054,16 +1059,9 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun setOnRecyclerViewLayoutReady(isCache: Boolean) {
         isOnRecylerViewLayoutAdded = true
-        homeRecyclerView.viewTreeObserver?.let {
-            it.addOnGlobalLayoutListener { object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-
-                    homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
-
-                    homePerformanceMonitoringListener = null;
-                    it.removeOnGlobalLayoutListener(this);
-                }
-            }}
+        homeRecyclerView.addOneTimeGlobalLayoutListener {
+            homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
+            homePerformanceMonitoringListener = null;
         }
     }
 
@@ -1203,7 +1201,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         if (searchPlaceholder.data != null && searchPlaceholder.data.placeholder != null && searchPlaceholder.data.keyword != null) {
-            homeMainToolbar.setHint(
+            homeMainToolbar?.setHint(
                     searchPlaceholder.data.placeholder,
                     searchPlaceholder.data.keyword,
                     isFirstInstall())
@@ -1503,9 +1501,9 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-            homeMainToolbar.setNotificationNumber(notificationCount)
-            homeMainToolbar.setInboxNumber(inboxCount)
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+            homeMainToolbar?.setNotificationNumber(notificationCount)
+            homeMainToolbar?.setInboxNumber(inboxCount)
         }
     }
     
@@ -1514,9 +1512,11 @@ class HomeFragment : BaseDaggerFragment(),
         get() {
             var height = 0
             if (homeMainToolbar != null) {
-                height = homeMainToolbar.height
-                if (!homeMainToolbar.isShadowApplied()) {
-                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                height = homeMainToolbar?.height?:0
+                homeMainToolbar?.let {
+                    if (!it.isShadowApplied()) {
+                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                    }
                 }
             }
             return height
@@ -1810,8 +1810,8 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
-        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface != null) {
-           pageLoadTimeCallback =  homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface
+        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
+           pageLoadTimeCallback =  homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
         }
         return pageLoadTimeCallback
     }
