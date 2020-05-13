@@ -51,8 +51,8 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
     var shopStatus = 0
     val SOURCE = "sellerapp_autoads_creation"
     private var MORE_INFO = " Info Selengkapnya"
-    private var lowImpression = 0.0
-    private var highImpression = 0.0
+    private var lowClickDivider = 1
+    private var topAdsDeposit:Int = 0
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,8 +70,8 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loading.visibility = View.VISIBLE
-
-        budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo, this::onErrorBudgetInfo)
+        budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
+        budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
         btn_submit.setOnClickListener {
             val budget = budgetEditText.textWithoutPrefix.replace(",", "").toInt()
             budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
@@ -81,14 +81,17 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
                     userSession.shopId.toInt(),
                     SOURCE
             )))
+
         }
+
+        budgetViewModel.topAdsDeposit.observe(this, Observer {
+            topAdsDeposit = it
+        })
         budgetViewModel.autoAdsData.observe(this, Observer {
-            when (it!!.adsInfo.reason) {
-                TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(it.adsInfo.message)
-                TopAdsReasonOption.ELIGIBLE -> eligible()
-                TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
-                else -> activity!!.finish()
-            }
+            if (topAdsDeposit < 0) {
+                insufficientCredit()
+            } else
+                eligible()
         })
 
         tip_btn.setOnClickListener {
@@ -112,13 +115,9 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
     }
 
     fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
-        lowImpression = data.lowImpMultiplier
-        highImpression = data.highImpMultiplier
+        lowClickDivider = data.lowClickDivider
         price_range.text = getPotentialReach()
         loading.visibility = View.GONE
-    }
-
-    private fun notEligible() {
     }
 
     private fun eligible() {
@@ -127,7 +126,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    private fun insufficientCredit(message: String) {
+    private fun insufficientCredit() {
 
         val intent = Intent(context, NoCreditActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -180,11 +179,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
 
     private fun getPotentialReach(): CharSequence? {
         return budgetViewModel.getPotentialImpressionGQL(budgetEditText.textWithoutPrefix.replace(",", "").toDouble()
-                , highImpression)
-    }
-
-    fun onErrorBudgetInfo() {
-
+                , lowClickDivider.toDouble())
     }
 
     private fun estimateImpression(progress: Int) {

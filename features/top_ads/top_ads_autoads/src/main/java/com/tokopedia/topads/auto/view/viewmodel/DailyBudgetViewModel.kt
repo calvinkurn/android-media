@@ -13,19 +13,17 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.entity.BidInfoData
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
-import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
-import com.tokopedia.topads.auto.data.network.response.EstimationResponse
-import com.tokopedia.topads.auto.data.network.response.TopAdsAutoAds
-import com.tokopedia.topads.auto.data.network.response.TopAdsShopInfo
-import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
+import com.tokopedia.topads.auto.data.network.response.*
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
+import com.tokopedia.topads.auto.internal.RawQueryKeyObject.QUERY_TOPADS_DEPOSIT
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONException
+import java.util.function.DoubleBinaryOperator
 import javax.inject.Inject
 
 /**
@@ -40,7 +38,7 @@ class DailyBudgetViewModel @Inject constructor(
 
     val budgetInfoData = MutableLiveData<List<BidInfoData>>()
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
-    val shopInfoData = MutableLiveData<TopAdsShopInfoData>()
+    val topAdsDeposit = MutableLiveData<Int>()
 
     fun getBudgetInfo(shopId: Int, requestType: String, source: String) {
         launchCatchError(block = {
@@ -65,7 +63,7 @@ class DailyBudgetViewModel @Inject constructor(
         }
     }
 
-    fun getBudgetInfo(shopId: Int, requestType: String, source: String, onSuccess: (TopadsBidInfo.Response) -> Unit, onError: () -> Unit) {
+    fun getBudgetInfo(shopId: Int, requestType: String, source: String, onSuccess: (TopadsBidInfo.Response) -> Unit) {
         launchCatchError(block = {
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             val data = withContext(Dispatchers.IO) {
@@ -74,11 +72,6 @@ class DailyBudgetViewModel @Inject constructor(
                         mapOf(SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
-            val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
-                    TopAdsShopInfo.Response::class.java, mapOf(SHOP_ID to shopId))
-            val shopInfo = repository.getReseponse(listOf(request), cacheStrategy)
-                    .getSuccessData<TopAdsShopInfo.Response>().shopInfo
-
             data.getSuccessData<TopadsBidInfo.Response>().let {
                 onSuccess(it)
             }
@@ -86,7 +79,6 @@ class DailyBudgetViewModel @Inject constructor(
             it.printStackTrace()
         }
     }
-
 
     fun postAutoAds(param: AutoAdsParam) {
         launchCatchError(block = {
@@ -104,6 +96,28 @@ class DailyBudgetViewModel @Inject constructor(
             it.printStackTrace()
         }
     }
+
+    fun getTopAdsDeposit(shopId: Int) {
+        launchCatchError(
+                block = {
+                    val param = mapOf(SHOP_ID to shopId,
+                            CREDIT_DATA to "unclaimed", SHOP_DATA to "0")
+                    val data = withContext(Dispatchers.IO) {
+                        val request = GraphqlRequest(rawQueries[QUERY_TOPADS_DEPOSIT],
+                                TopAdsDepositResponse.Data::class.java,
+                                param)
+                        val cacheStrategy = GraphqlCacheStrategy
+                                .Builder(CacheType.ALWAYS_CLOUD).build()
+                        repository.getReseponse(listOf(request), cacheStrategy)
+                    }
+                    data.getSuccessData<TopAdsDepositResponse.Data>().let {
+                        topAdsDeposit.postValue(it.topadsDashboardDeposits.data.amount)
+                    }
+                }) {
+            it.printStackTrace()
+        }
+    }
+
     fun topadsStatisticsEstimationPotentialReach(onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit, shopId: String, source: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
@@ -114,7 +128,6 @@ class DailyBudgetViewModel @Inject constructor(
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
             data.getSuccessData<EstimationResponse>().topadsStatisticsEstimationAttribute.data[0].let {
-                // autoAdsData.postValue(it)
                 onSuccess(it)
             }
         }) {
@@ -143,8 +156,8 @@ class DailyBudgetViewModel @Inject constructor(
         return 100 / 2.5 * (`val` / bid)
     }
 
-    fun getPotentialImpressionGQL(budget: Double, high: Double): String {
-        return String.format("%,.0f", budget * high)
+    fun getPotentialImpressionGQL(budget: Double, lowClickDivider: Double): String {
+        return String.format("%,.0f", budget / lowClickDivider)
     }
 
     fun checkBudget(number: Double, minDailyBudget: Double, maxDailyBudget: Double): String? {
@@ -167,5 +180,7 @@ class DailyBudgetViewModel @Inject constructor(
         val REQUEST_TYPE = "requestType"
         val SOURCE = "source"
         val TYPE = "type"
+        const val CREDIT_DATA = "creditData"
+        const val SHOP_DATA = "shopData"
     }
 }
