@@ -39,6 +39,8 @@ ext {
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalEmoney                   : ":features:recharge:digital_emoney",
+            digitalBrizzi                   : ":features:recharge:digital_brizzi",
+            commonElectronicMoney           : ":features:recharge:common_electronic_money",
             digitalHomepage                 : ":features:recharge:digital_homepage",
             digitalproduct                  : ":features:recharge:digitalproduct",
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
