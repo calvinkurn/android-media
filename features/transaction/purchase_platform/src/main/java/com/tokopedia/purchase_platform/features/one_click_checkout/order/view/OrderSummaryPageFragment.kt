@@ -15,6 +15,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -28,6 +29,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.Tooltip
@@ -99,6 +103,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout) }
     private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
     private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+    private val onboardingCard by lazy { view?.findViewById<View>(R.id.layout_occ_onboarding) }
+    private val btnOnboardingAction by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_action) }
+    private val lblOnboardingMessage by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_message) }
+    private val lblOnboardingHeader by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_header) }
+    private val ivOnboarding by lazy { view?.findViewById<ImageView>(R.id.iv_occ_onboarding) }
     private val tvHeader2 by lazy { view?.findViewById<Typography>(R.id.tv_header_2) }
     private val tvHeader3 by lazy { view?.findViewById<Typography>(R.id.tv_header_3) }
     private val tvSubheader by lazy { view?.findViewById<Typography>(R.id.tv_subheader) }
@@ -141,8 +150,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CREATE_PREFERENCE || requestCode == REQUEST_EDIT_PREFERENCE) {
-            viewModel.clearBboIfExist()
-            refresh()
+            onResultFromPreference(resultCode, data)
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data)
         } else if (requestCode == REQUEST_CODE_PROMO) {
@@ -195,6 +203,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 activity?.finish()
             }
         }
+    }
+
+    private fun onResultFromPreference(resultCode: Int, data: Intent?) {
+        val message = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE)
+        if (message != null && message.isNotBlank()) {
+            view?.let {
+                Toaster.make(it, message)
+            }
+        }
+        viewModel.clearBboIfExist()
+        refresh()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -412,28 +431,28 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showMessage(preference: ProfileResponse) {
-        if (preference.hasPreference && preference.profileId > 0) {
+        if (preference.profileId > 0) {
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
             tvHeader2?.visible()
             tvHeader3?.gone()
             tvSubheader?.gone()
             tvSubheaderAction?.gone()
             ivSubheader?.gone()
-        } else if (preference.profileId > 0) {
-            tvHeader2?.gone()
-            tvHeader3?.gone()
-            ivSubheader?.let {
-                ImageHandler.LoadImage(it, BELI_LANGSUNG_CART_IMAGE)
-                it.visible()
-            }
-            tvSubheader?.text = preference.onboardingHeaderMessage
-            tvSubheaderAction?.setOnClickListener {
-                orderSummaryAnalytics.eventClickInfoOnOSPNewOcc()
-                OccInfoBottomSheet().show(this, preference.onboardingComponent)
-                orderSummaryAnalytics.eventViewOnboardingInfo()
-            }
-            tvSubheaderAction?.visible()
-            tvSubheader?.visible()
+//        } else if (preference.profileId > 0) {
+//            tvHeader2?.gone()
+//            tvHeader3?.gone()
+//            ivSubheader?.let {
+//                ImageHandler.LoadImage(it, BELI_LANGSUNG_CART_IMAGE)
+//                it.visible()
+//            }
+//            tvSubheader?.text = preference.onboardingHeaderMessage
+//            tvSubheaderAction?.setOnClickListener {
+//                orderSummaryAnalytics.eventClickInfoOnOSPNewOcc()
+//                OccInfoBottomSheet().show(this, preference.onboardingComponent)
+//                orderSummaryAnalytics.eventViewOnboardingInfo()
+//            }
+//            tvSubheaderAction?.visible()
+//            tvSubheader?.visible()
         } else {
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header_intro)
             val spannableString = SpannableString("${preference.onboardingHeaderMessage} Info")
@@ -451,6 +470,40 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             ivSubheader?.gone()
         }
         tickerPreferenceInfo?.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
+
+        ivOnboarding?.let {
+            ImageHandler.LoadImage(it, BELI_LANGSUNG_CART_IMAGE)
+        }
+        btnOnboardingAction?.setOnClickListener {
+            showOnboarding()
+        }
+    }
+
+    private fun showOnboarding() {
+        view?.let {
+            val scrollview = it.findViewById<NestedScrollView>(R.id.nested_scroll_view)
+            val layoutpayment = it.findViewById<View>(R.id.layout_payment)
+            val coachMarkItems = ArrayList<CoachMarkItem>().apply {
+                add(CoachMarkItem(it.findViewById(R.id.preference_card), "test1", "desc11"))
+                add(CoachMarkItem(it.findViewById(R.id.iv_edit_preference), "test2", "desc22"))
+                add(CoachMarkItem(it.findViewById(R.id.layout_order_preference_shipping), "test3", "desc33"))
+                add(CoachMarkItem(layoutpayment, "test4", "desc44"))
+            }
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.enableSkip = true
+            coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
+                override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+                    if (nextStep == 0) {
+                        scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
+                    }
+                    if (nextStep == 3) {
+                        scrollview.scrollTo(0, layoutpayment.bottom)
+                    }
+                    return false
+                }
+            })
+            coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
+        }
     }
 
     private fun showPreferenceCard() {
@@ -911,5 +964,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         private const val BELI_LANGSUNG_CART_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png"
 
         private const val COLOR_INFO = "#03AC0E"
+
+        private const val COACH_MARK_TAG = "osp_coach_mark"
     }
 }
