@@ -99,7 +99,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         if (channel.banner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.addOnImpressionListener(channel){
-                HomePageTrackingV2.MixLeft.getMixLeftBannerView(channel, adapterPosition)
+                homeCategoryListener.sendEETracking(HomePageTrackingV2.MixLeft.getMixLeftBannerView(channel, adapterPosition) as java.util.HashMap<String, Any>)
             }
             image.loadImage(channel.banner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
