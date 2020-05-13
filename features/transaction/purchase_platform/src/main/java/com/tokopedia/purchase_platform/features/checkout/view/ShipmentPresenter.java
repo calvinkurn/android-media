@@ -1144,11 +1144,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         }));
     }
 
-    private void showErrorValidateUseIfAny(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+    private int getBBOCount(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+        int bboCount = 0;
         for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-            if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic") && voucherOrdersItemUiModel.getMessageUiModel().getState().equalsIgnoreCase("red")) {
-                getView().showToastError(voucherOrdersItemUiModel.getMessageUiModel().getText());
-                return;
+            if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic")) {
+                bboCount++;
+            }
+        }
+
+        return bboCount;
+    }
+
+    private void showErrorValidateUseIfAny(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+        int bboCount = getBBOCount(validateUsePromoRevampUiModel);
+        if (bboCount == 1) {
+            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+                if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic") && voucherOrdersItemUiModel.getMessageUiModel().getState().equalsIgnoreCase("red")) {
+                    getView().showToastError(voucherOrdersItemUiModel.getMessageUiModel().getText());
+                    return;
+                }
             }
         }
 
@@ -1159,13 +1173,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void validateBBO(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-        int bboCount = 0;
-        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-            if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic")) {
-                bboCount++;
-            }
-        }
-
+        int bboCount = getBBOCount(validateUsePromoRevampUiModel);
         if (bboCount > 1) {
             for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
                 if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic") && voucherOrdersItemUiModel.getMessageUiModel().getState().equalsIgnoreCase("red")) {
