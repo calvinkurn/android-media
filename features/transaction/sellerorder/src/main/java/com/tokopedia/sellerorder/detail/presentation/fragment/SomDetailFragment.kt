@@ -853,16 +853,21 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         somDetailViewModel.editRefNumResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    editAwbResponse = it.data
-                    if (editAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
-                        showCommonToaster(editAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                    successEditAwbResponse = it.data
+                    if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
+                        showCommonToaster(successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
                         loadDetail()
                     } else {
                         showToasterError(getString(R.string.global_error), view)
                     }
                 }
                 is Fail -> {
-                    showToasterError(getString(R.string.global_error), view)
+                    failEditAwbResponse.message = it.throwable.message.toString()
+                    if(failEditAwbResponse.message.isNotEmpty()) {
+                        showToasterError(failEditAwbResponse.message, view)
+                    } else {
+                        showToasterError(getString(R.string.global_error), view)
+                    }
                 }
             }
         })
