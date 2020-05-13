@@ -538,7 +538,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             } else {
                 UriUtil.buildUri(ApplinkConst.SHOP, shopId)
             })
-            intent.putExtra("isNeedToReloadData", true)
+            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
             it.context?.startActivity(intent)
         }
     }
