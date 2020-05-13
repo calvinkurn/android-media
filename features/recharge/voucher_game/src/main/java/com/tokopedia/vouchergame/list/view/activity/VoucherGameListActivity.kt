@@ -2,6 +2,7 @@ package com.tokopedia.vouchergame.list.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.vouchergame.R
@@ -10,6 +11,7 @@ import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.list.di.DaggerVoucherGameListComponent
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
 import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
+import timber.log.Timber
 
 /**
  * Created by resakemal on 12/08/19.
@@ -18,7 +20,7 @@ import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
  * tokopedia://digital/form?category_id=6&menu_id=4&template=voucher
  * or
  * @sample voucherGame = RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, "6", "4", "voucher")
-*/
+ */
 
 class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherGameListComponent> {
 
@@ -55,7 +57,15 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         return R.id.parent_view
     }
 
-    override fun shouldShowOptionMenu(): Boolean { return true }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        intent?.handleExtra()
+    }
+
+    override fun shouldShowOptionMenu(): Boolean {
+        return true
+    }
+
 
     companion object {
 
@@ -64,6 +74,9 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         const val PARAM_OPERATOR_ID = "operator_id"
         const val PARAM_PRODUCT_ID = "product_id"
         const val VOUCHER_GAME_SCREEN_NAME = "/digital/voucher game"
+
+        const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
+
 
         fun newInstance(context: Context, categoryId: String, menuId: String, operatorId: String = "", productId: String = ""): Intent {
             val intent = Intent(context, VoucherGameListActivity::class.java)
@@ -78,5 +91,17 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     override fun onBackPressed() {
         (fragment as VoucherGameListFragment).onBackPressed()
         super.onBackPressed()
+    }
+
+    /* This Method is use to tracking action click when user click product Voucher Game
+     */
+
+    private fun Intent.handleExtra() {
+        if (intent.data != null) {
+            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
+            if (trackingClick != null) {
+                Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
+            }
+        }
     }
 }

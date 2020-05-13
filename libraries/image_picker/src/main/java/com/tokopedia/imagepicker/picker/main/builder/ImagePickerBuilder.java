@@ -109,15 +109,24 @@ public class ImagePickerBuilder implements Parcelable {
     }
 
     public String getBelowMinResolutionErrorMessage() {
-        return imagePickerEditorBuilder.getBelowMinResolutionErrorMessage();
+        if (imagePickerEditorBuilder != null) {
+            return imagePickerEditorBuilder.getBelowMinResolutionErrorMessage();
+        }
+        return null;
     }
 
     public String getImageTooLargeErrorMessage() {
-        return imagePickerEditorBuilder.getImageTooLargeErrorMessage();
+        if (imagePickerEditorBuilder != null) {
+            return imagePickerEditorBuilder.getImageTooLargeErrorMessage();
+        }
+        return null;
     }
 
     public boolean isRecheckSizeAfterResize() {
-        return imagePickerEditorBuilder.isRecheckSizeAfterResize();
+        if (imagePickerEditorBuilder != null) {
+            return imagePickerEditorBuilder.isRecheckSizeAfterResize();
+        }
+        return false;
     }
 
     public int getRatioX() {

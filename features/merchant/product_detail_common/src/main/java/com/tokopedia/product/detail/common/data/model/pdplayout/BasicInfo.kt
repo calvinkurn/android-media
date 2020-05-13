@@ -58,7 +58,9 @@ data class BasicInfo(
         @SerializedName("stats")
         val stats: Stats = Stats(),
         @SerializedName("txStats")
-        val txStats: TxStatsDynamicPdp = TxStatsDynamicPdp()
+        val txStats: TxStatsDynamicPdp = TxStatsDynamicPdp(),
+        @SerializedName("defaultOngkirEstimation")
+        val defaultOngkirEstimation: String = "30000"
 ) {
 
     companion object {
@@ -69,6 +71,7 @@ data class BasicInfo(
         const val LABEL_GRAM = "gram"
     }
 
+    fun getDefaultOngkirInt(): Int = defaultOngkirEstimation.toIntOrNull() ?: 30000
     fun getWeightUnit(): Float = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat() / KILO
     fun getProductId(): Int = productID.toIntOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0

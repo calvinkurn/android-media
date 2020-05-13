@@ -10,5 +10,8 @@ sealed class PlayRoomEvent {
 
     val isFreeze
         get() = this is Freeze
+
+    val isBanned
+        get() = this is Banned
 }
 

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
@@ -71,8 +72,7 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     }
 
     fun setProductPrice(productPriceInput: String) {
-        if (productPriceInput.isBlank()) this.productPrice = 0.toBigInteger()
-        else this.productPrice = productPriceInput.toBigInteger()
+        this.productPrice = productPriceInput.toBigIntegerOrNull().orZero()
     }
 
     fun updateWholeSaleQuantityInputModel(position: Int, newQuantity: String) {
