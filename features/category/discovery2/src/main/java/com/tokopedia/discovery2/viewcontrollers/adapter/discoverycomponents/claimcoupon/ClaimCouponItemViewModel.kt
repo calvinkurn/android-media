@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ClaimCouponConstant
+import com.tokopedia.discovery2.ClaimCouponConstant.Companion.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -40,6 +41,10 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     fun getComponentData(): LiveData<DataItem> {
         componentData.value = components.data?.get(0)
         return componentData
+    }
+
+    fun getIsDouble(): Boolean {
+        return components.properties?.columns?.equals(DOUBLE_COLUMNS) ?: false
     }
 
     fun getClaimStatus(): LiveData<String> {
@@ -105,12 +110,15 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
     private fun getQueryMap(): Map<String, Any> {
-        val map = mapOf("catalogId" to (components.data?.get(0)?.claimCouponid ?: 0),
+        return mapOf("catalogId" to (try {
+            components.data?.get(0)?.claimCouponid?.toInt() ?: 0
+        } catch (e: NumberFormatException) {
+            0
+        }),
                 "isGift" to 0,
                 "giftUserId" to 0,
                 "giftEmail" to "",
                 "notes" to "")
-        return map
     }
 
 }

@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ClaimCouponViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class ClaimCouponViewModel(val application: Application, val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
 
@@ -45,13 +45,8 @@ class ClaimCouponViewModel(val application: Application, private val components:
 
     fun getClickCouponData(endPoint: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
                 val data = claimCouponUseCase.getClickCouponData(GenerateUrl.getClaimCouponUrl(endPoint, components.id.toString()))
                 componentList.postValue(data)
-
-            }
-
-
         }, onError = {
         })
     }

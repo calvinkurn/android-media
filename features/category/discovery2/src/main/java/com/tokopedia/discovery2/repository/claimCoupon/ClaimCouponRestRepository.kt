@@ -20,7 +20,7 @@ open class ClaimCouponRestRepository @Inject constructor() : BaseRepository(), I
                 RequestParams.EMPTY.parameters)
         val categoryNavigationResponse = response
         val discoveryDataMapper = DiscoveryDataMapper()
-        return discoveryDataMapper.mapListToComponentList(categoryNavigationResponse.data.component?.data, "claim_coupon_item")
+        return discoveryDataMapper.mapListToComponentList(categoryNavigationResponse.data.component?.data, "claim_coupon_item", categoryNavigationResponse.data.component?.properties)
     }
 
 }

@@ -1,114 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_5"
+    android:layout_margin="@dimen/dp_4"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/appCompatImageViewDouble"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="h,2:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="8"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/colorGray" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/appCompatImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintDimensionRatio="h,3.3:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="8"
+        tools:background="@color/colorGray" />
+
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/claim_coupon_title"
-        android:layout_width="match_parent"
+        android:id="@+id/claim_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/t_promo_grey96"
-        app:typographyType="heading_4"
-        tools:text ="Klaim kupon gratis tiap hari"/>
+        android:layout_margin="8dp"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
+        android:background="@drawable/discovery_bg_button_state"
+        android:gravity="center"
+        android:text="@string/klaim"
+        android:textColor="@drawable/discovery_text_button_state"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/claim_coupon_title_sub_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:typographyType="heading_6"
-        tools:text ="Buruan sebelum kehabisan!"/>
-
-    <com.tokopedia.promotionstarget.presentation.ui.views.CouponView
-        android:id="@+id/couponView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:clipChildren="true"
-        android:clipToPadding="true"
-        android:layout_marginTop="@dimen/dp_8"
-        app:cornerRadius="@dimen/dp_8"
-        >
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/appCompatImageView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintDimensionRatio="h,3.3:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:background="@color/colorGray"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:src="@drawable/transaction"
-            app:layout_constraintBottom_toBottomOf="@+id/min_use_label_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/min_use_label_layout" />
-
-        <LinearLayout
-            android:id="@+id/min_use_label_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/icon"
-            app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
-            android:orientation="vertical">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/claim_coupon_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:text="@string/t_promo_min_transaction"
-                android:textColor="@color/t_promo_grey96"
-                app:typographyType="small" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/claim_coupon_label_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:visibility="visible"
-                android:textColor="@color/t_promo_grey96"
-                android:textSize="@dimen/sp_14"
-                app:typographyType="heading_5"
-                tools:text="Rp100.000" />
-        </LinearLayout>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/claim_btn"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/discovery_bg_button_state"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/appCompatImageView"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/couponView"
-            android:text="Claim"
-            />
-
-    </com.tokopedia.promotionstarget.presentation.ui.views.CouponView>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

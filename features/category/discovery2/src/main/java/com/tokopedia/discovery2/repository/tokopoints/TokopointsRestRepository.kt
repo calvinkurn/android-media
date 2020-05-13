@@ -22,6 +22,6 @@ class TokopointsRestRepository @Inject constructor() : BaseRepository(), Tokopoi
 
         val discoveryDataMapper = DiscoveryDataMapper()
 
-        return discoveryDataMapper.mapListToComponentList(discoveryResponse.data.component?.data , "tokopoints_item")
+        return discoveryDataMapper.mapListToComponentList(discoveryResponse.data.component?.data , "tokopoints_item", null)
     }
 }

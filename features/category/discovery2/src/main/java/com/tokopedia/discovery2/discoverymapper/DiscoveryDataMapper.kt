@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.cpmtopads.BadgesItem
 import com.tokopedia.discovery2.data.cpmtopads.Headline
 import com.tokopedia.discovery2.data.cpmtopads.ImageProduct
@@ -67,11 +68,12 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = ""): ArrayList<ComponentsItem> {
+    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEach {
             val componentsItem = ComponentsItem()
             componentsItem.name = subComponentName
+            componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem
