@@ -36,6 +36,12 @@ class ShopProductEtalaseChipItemViewHolder(
         val selectedEtalaseId = shopProductEtalaseAdapter.selectedEtalaseId
         textViewEtalaseChip.text = (MethodChecker.fromHtml(element.etalaseName))
         textViewEtalaseChip.isSelected = selectedEtalaseId.equals(element.etalaseId, ignoreCase = true)
+        val textColor = if(textViewEtalaseChip.isSelected){
+            MethodChecker.getColor(itemView.context, R.color.color_chips_etalase_text_selected)
+        }else{
+            MethodChecker.getColor(itemView.context, R.color.color_chips_etalase_text_not_selected)
+        }
+        textViewEtalaseChip.setTextColor(textColor)
         textViewEtalaseChip.setOnClickListener {
             if(selectedEtalaseId != element.etalaseId)
             shopProductEtalaseListViewHolderListener?.onEtalaseChipClicked(element)

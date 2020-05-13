@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel;
 
 /**
  * Created by henrypriyono on 09/02/18.
@@ -16,7 +16,7 @@ public class DynamicLinkHelper {
         return getAvailableLink(item.getApplink(), item.getUrl());
     }
 
-    public static String getActionLink(SpotlightItemViewModel item) {
+    public static String getActionLink(SpotlightItemDataModel item) {
         return getAvailableLink(item.getApplink(), item.getUrl());
     }
 

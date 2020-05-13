@@ -196,7 +196,7 @@ public class OrderListActivity extends BaseSimpleActivity
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
-            presenter.getInitData();
+            getInitialData();
             presenter.getTickerInfo();
         }
 
@@ -239,7 +239,7 @@ public class OrderListActivity extends BaseSimpleActivity
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
         viewPager.setCurrentItem(position);
-        orderListAnalytics.sendPageClickEvent("order -list");
+        orderListAnalytics.sendPageClickEvent("order-list");
     }
 
 
@@ -321,7 +321,7 @@ public class OrderListActivity extends BaseSimpleActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                presenter.getInitData();
+                getInitialData();
             } else {
                 finish();
             }
@@ -333,5 +333,9 @@ public class OrderListActivity extends BaseSimpleActivity
     protected void onDestroy() {
         presenter.destroyView();
         super.onDestroy();
+    }
+
+    public void getInitialData() {
+        presenter.getInitData();
     }
 }

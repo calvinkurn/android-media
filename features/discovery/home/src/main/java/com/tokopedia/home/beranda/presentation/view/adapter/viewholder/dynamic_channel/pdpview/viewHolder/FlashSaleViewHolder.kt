@@ -30,7 +30,7 @@ class FlashSaleViewHolder (view: View,
                 if(element.grid.isTopads){
                     ImpresionTask().execute(element.grid.impression)
                 }
-                element.listener.onFlashSaleCardImpressed(adapterPosition, channels)
+                element.listener.onFlashSaleCardImpressed(adapterPosition, channels, element.grid)
             }
             setOnClickListener {
                 if(element.grid.isTopads){

@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import java.util.*
 
 /**
@@ -22,7 +22,7 @@ import java.util.*
  */
 
 class HomeRecommendationFeedViewHolder(itemView: View,
-                                       private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedViewModel>(itemView), HomeTabFeedListener {
+                                       private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
     private val homeFeedsViewPager: ViewPager = itemView.findViewById(R.id.view_pager_home_feeds)
     private val homeFeedsTabLayout: CollapsingTabLayout = itemView.findViewById(R.id.tab_layout_home_feeds)
     private val homeFeedsTabShadow: View = itemView.findViewById(R.id.view_feed_shadow)
@@ -31,7 +31,7 @@ class HomeRecommendationFeedViewHolder(itemView: View,
     private var homeFeedPagerAdapter: HomeFeedPagerAdapter? = null
     private var recommendationTabDataModelList: List<RecommendationTabDataModel>? = null
 
-    override fun bind(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel) {
+    override fun bind(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel) {
         val layoutParams = container.layoutParams
 
         //we must specify height for viewpager, so it can't scroll up anymore and create
@@ -40,13 +40,13 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         layoutParams.height = listener.windowHeight - listener.homeMainToolbarHeight + context.resources.getDimensionPixelSize(R.dimen.dp_8)
         container.layoutParams = layoutParams
 
-        recommendationTabDataModelList = homeRecommendationFeedViewModel.recommendationTabDataModel
+        recommendationTabDataModelList = homeRecommendationFeedDataModel.recommendationTabDataModel
 
         homeFeedsTabLayout.visibility = View.VISIBLE
         homeFeedsViewPager.visibility = View.VISIBLE
 
         initViewPagerAndTablayout()
-        homeRecommendationFeedViewModel.isNewData = false
+        homeRecommendationFeedDataModel.isNewData = false
     }
 
     private fun initViewPagerAndTablayout() {
@@ -54,7 +54,7 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 listener,
                 listener.eggListener,
                 this,
-                listener.childFragmentManager,
+                listener.childsFragmentManager,
                 recommendationTabDataModelList,
                 listener.parentPool)
 

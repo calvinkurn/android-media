@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
@@ -29,18 +30,16 @@ import com.tokopedia.home.test.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers.not
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class PlayBannerUITest {
+class PlayBannerUITest{
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -58,14 +57,18 @@ class PlayBannerUITest {
     private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase> (relaxed = true)
     private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase> (relaxed = true)
     private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase> (relaxed = true)
-    private val getHomeUseCase = mockk<HomeUseCase> (relaxed = true)
-    private val getSendGeolocationInfoUseCase = mockk<SendGeolocationInfoUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
+    private val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
     private val getStickyLoginUseCase = mockk<StickyLoginUseCase> (relaxed = true)
     private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab> (relaxed = true)
     private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
     private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
     private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
+    private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
+    private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
+    private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -78,17 +81,17 @@ class PlayBannerUITest {
         
     }
     
-    @Before
-    fun setup(){
-        every { userSessionInterface.isLoggedIn } returns false
-    }
+//    @Before
+//    fun setup(){
+//        every { userSessionInterface.isLoggedIn } returns false
+//    }
 
     @Test
     fun test_when_no_data_skeleton_from_home_api_and_expect_the_widget_not_show(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
@@ -121,8 +124,8 @@ class PlayBannerUITest {
                         )
                 )
         )
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         viewModel = reInitViewModel()
@@ -143,8 +146,8 @@ class PlayBannerUITest {
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_and_the_url_not_valid_the_widget_should_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
@@ -178,8 +181,8 @@ class PlayBannerUITest {
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_return_is_empty_and_expect_the_widget_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
@@ -198,8 +201,8 @@ class PlayBannerUITest {
     fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_api_throw_error_and_the_widget_should_not_visible(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } throws RuntimeException()
@@ -214,10 +217,10 @@ class PlayBannerUITest {
 
     @Test
     fun test_given_data_play_and_try_update_new_data_but_the_new_data_is_empty_and_expect_the_widget_will_removed(){
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {
             emit(Result.success(""))
         }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             var json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
             var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
@@ -260,10 +263,10 @@ class PlayBannerUITest {
 
     @Test
     fun test_given_data_play_and_try_update_into_new_data_expect_widget_show_the_new_data(){
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {
             emit(Result.success(""))
         }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             var json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
             var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
@@ -355,6 +358,10 @@ class PlayBannerUITest {
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
-            sendTopAdsUseCase = sendTopAdsUseCase
+            getAtcUseCase = getAtcUseCase,
+            sendTopAdsUseCase = sendTopAdsUseCase,
+            closeChannelUseCase = closeChannelUseCase,
+            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
     )
 }

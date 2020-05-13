@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -64,8 +64,6 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -344,7 +342,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onError(): (Throwable) -> Unit {
         return {
             if (view != null) {
-                ToasterError.make(view, ErrorHandler.getErrorMessage(view!!.context, it)).show()
+                Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, it), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             }
         }
     }
@@ -564,7 +562,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onSuccessSendReasonRating(): (String) -> Unit {
         return {
-            ToasterNormal.make(view, it, ToasterNormal.LENGTH_LONG).show()
+            Toaster.make(view!!, it, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 
@@ -604,16 +602,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onUploadUndersizedImage() {
-        ToasterError.make(view, getString(R.string.undersize_image)).show()
+        view?.let {
+            Toaster.make(it, getString(R.string.undersize_image), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun onUploadOversizedImage() {
-        ToasterError.make(view, getString(R.string.oversize_image)).show()
+        view?.let {
+            Toaster.make(it, getString(R.string.oversize_image), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun showSnackbarError(stringId: Int) {
-        if (view != null) {
-            ToasterError.make(view, getString(stringId), Snackbar.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, getString(stringId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
@@ -675,6 +677,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         if (activity is ChatbotActivity){
             (activity as ChatbotActivity).upadateToolbar(profileName,profileImage)
         }
+    }
+
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
+        getViewState().showErrorWebSocket(isWebSocketError)
     }
 
     override fun onBackPressed(): Boolean {

@@ -31,6 +31,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -39,37 +41,38 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
-import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
+import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
+import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-
+import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
+import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
+import kotlinx.android.synthetic.main.tp_layput_container_swipe.*
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-
 import javax.inject.Inject
-
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
-import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
-import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
-import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
-import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
-import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
-import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
-import kotlinx.android.synthetic.main.tp_layput_container_swipe.*
 
-
-class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener {
+class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mSubscriptionCouponTimer: Subscription? = null
     private var mRefreshRepeatCount = 0
     private var mCouponName: String? = null
@@ -77,6 +80,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     var phoneVerificationState: Boolean? = null
     var mCTA: String = ""
     var mCode: String = ""
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -85,6 +89,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private var mRealCode: String? = null
     private var mBottomSheetFragment: CloseableBottomSheetFragment? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
@@ -96,6 +105,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initListener()
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         mPresenter.isPhonerVerfied()
     }
 
@@ -162,12 +173,19 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         it?.let {
             when (it) {
                 is Loading -> showLoader()
-                is ErrorMessage -> showError(NetworkDetector.isConnectedToInternet(context))
-                is Success -> setCouponToUi(it.data)
+                is ErrorMessage -> {
+                    showError(NetworkDetector.isConnectedToInternet(context))
+                }
+                is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
+                    setCouponToUi(it.data)
+                    stopRenderPerformanceMonitoring()
+                    stopPerformanceMonitoring()
+                }
             }
         }
     })
-
 
     override fun onDestroy() {
         if (mTimer != null) {
@@ -673,11 +691,13 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo)
         bundle.putString(CommonConstant.EXTRA_COUPON_ID, code)
         val fragment = ValidateMerchantPinFragment.newInstance(bundle)
-        fragment.setmValidatePinCallBack { couponSwipeUpdate ->
-            mBottomSheetFragment?.dismiss()
-            card_swipe?.couponCode = couponSwipeUpdate.partnerCode
-            showBarCodeView(couponSwipeUpdate.note, "", "")
-        }
+        fragment.setmValidatePinCallBack(object : ValidateMerchantPinFragment.ValidatePinCallBack {
+            override fun onSuccess(couponSwipeUpdate: CouponSwipeUpdate?) {
+                card_swipe?.couponCode = couponSwipeUpdate?.partnerCode
+                showBarCodeView(couponSwipeUpdate?.note, "", "")
+                mBottomSheetFragment?.dismiss()
+            }
+        })
         mBottomSheetFragment = CloseableBottomSheetFragment.newInstance(fragment, true,
                 getString(R.string.tp_masukan_pin), CloseableBottomSheetFragment.STATE_FULL,
                 object : CloseableBottomSheetFragment.ClosableCallback {
@@ -699,7 +719,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             REQUEST_CODE_VERIFICATION_PHONE -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
-                        phoneVerificationState=true
+                        phoneVerificationState = true
                         mPresenter.redeemCoupon(mCode, mCTA)
                     }
                     Activity.RESULT_CANCELED -> {
@@ -710,22 +730,63 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-        companion object {
-            val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
-            val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
-            private val REQUEST_CODE_VERIFICATION_PHONE = 301
-            private val CONTAINER_LOADER = 0
-            private val CONTAINER_DATA = 1
-            private val CONTAINER_ERROR = 2
-            private val CONTAINER_SWIPE = 1
+    companion object {
+        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
+        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
+        private val REQUEST_CODE_VERIFICATION_PHONE = 301
+        private val CONTAINER_LOADER = 0
+        private val CONTAINER_DATA = 1
+        private val CONTAINER_ERROR = 2
+        private val CONTAINER_SWIPE = 1
 
 
-            fun newInstance(extras: Bundle): Fragment {
-                val fragment = CouponDetailFragment()
-                fragment.arguments = extras
-                return fragment
-            }
+        fun newInstance(extras: Bundle): Fragment {
+            val fragment = CouponDetailFragment()
+            fragment.arguments = extras
+            return fragment
         }
-
     }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                COUPONDETAIL_TOKOPOINT_PLT_PREPARE_METRICS,
+                COUPONDETAIL_TOKOPOINT_PLT_NETWORK_METRICS,
+                COUPONDETAIL_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(COUPONDETAIL_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+}
 

@@ -14,7 +14,7 @@ buildscript {
 project.ext {
     artifactId = 'akamai_bot_lib'
     groupId = 'com.tokopedia.akamai'
-    versionName = "1.0.18"
+    versionName = "1.0.21"
     artifactName = "akamai_bot_lib-debug"
 }
 
@@ -22,6 +22,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 }
 
 apply from: '../publish_local.gradle'

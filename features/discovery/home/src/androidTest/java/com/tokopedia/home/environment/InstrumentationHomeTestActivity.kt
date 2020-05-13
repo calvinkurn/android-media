@@ -7,26 +7,23 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
+import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMonitoring
 import com.tokopedia.analytics.performance.util.*
-import com.tokopedia.home.R
+import com.tokopedia.home.test.R
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 
 class InstrumentationHomeTestActivity : AppCompatActivity(),
         MainParentStatusBarListener,
-        JankyFrameMonitoringUtil.OnFrameListener,
-        JankyFramesMonitoringListener,
         EspressoPerformanceActivity,
         HomePerformanceMonitoringListener {
-    override fun getMainJankyFrameMonitoringUtil(): JankyFrameMonitoringUtil? {
-        return jankyFramePerformanceUtil
-    }
 
-    private var fpiPerformanceData: FpiPerformanceData? = null
-    private var jankyFramePerformanceUtil: JankyFrameMonitoringUtil? = null
     private var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
+    private var fragmentFramePerformanceIndexMonitoring: FragmentFramePerformanceIndexMonitoring? = null
     var isFromCache: Boolean = false
 
     override fun requestStatusBarDark() {
@@ -61,24 +58,26 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         startHomePerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_instrumentation_home_test)
-        jankyFramePerformanceUtil = TestJankyFrameMonitoringUtil()
-        jankyFramePerformanceUtil?.init(this, this)
+        setContentView(R.layout.activity_home_test)
 
+        val homeFragment: Fragment = HomeFragment()
+        initializeFragmentFramePerformanceIndex(homeFragment)
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()
         fragmentTransaction
-                .replace(R.id.container, HomeFragment())
+                .replace(R.id.container_home, homeFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
-    override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {
-        this.fpiPerformanceData = fpiPerformanceData
+    private fun initializeFragmentFramePerformanceIndex(homeFragment: Fragment) {
+        if (homeFragment is FramePerformanceIndexInterface) {
+            fragmentFramePerformanceIndexMonitoring = homeFragment.framePerformanceIndexData
+        }
     }
 
     override fun getFpiPerformanceResultData(): FpiPerformanceData? {
-        return fpiPerformanceData
+        return fragmentFramePerformanceIndexMonitoring?.mainPerformanceData
     }
 
     override fun getPltPerformanceResultData(): PltPerformanceData? {

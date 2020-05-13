@@ -3,14 +3,12 @@ package com.tokopedia.contactus.inboxticket2.view.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
@@ -31,8 +29,8 @@ import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.SubmitRatingUseCase;
-import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
@@ -46,8 +44,9 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -187,10 +186,11 @@ public class InboxDetailPresenterImpl
         } else if (item.getItemId() == android.R.id.home) {
             if (mView.isSearchMode()) {
                 mView.toggleSearch(View.GONE);
-                if (mTicketDetail.isShowRating()) {
+                if (mTicketDetail!= null && mTicketDetail.isShowRating()) {
                     mView.toggleTextToolbar(View.GONE);
-                } else if (mTicketDetail.getStatus().equalsIgnoreCase(getUtils().CLOSED)
-                        && !mTicketDetail.isShowRating()) {
+                } else if (mTicketDetail != null &&
+                        mTicketDetail.getStatus().equalsIgnoreCase(getUtils().CLOSED) &&
+                        !mTicketDetail.isShowRating()) {
                     mView.showIssueClosed();
                 } else {
                     mView.toggleTextToolbar(View.VISIBLE);
@@ -620,7 +620,8 @@ public class InboxDetailPresenterImpl
                             networkCalculator.getContent().get(PARAM_WEB_SERVICE));
 
                     Observable<ImageUploadResult> upload;
-                    if (SessionHandler.isV4Login(context)) {
+                    UserSessionInterface userSession = new UserSession(context);
+                    if (userSession.isLoggedIn()) {
                         upload = RetrofitUtils.createRetrofit(uploadUrl)
                                 .create(UploadImageContactUsParam.class)
                                 .uploadImage(

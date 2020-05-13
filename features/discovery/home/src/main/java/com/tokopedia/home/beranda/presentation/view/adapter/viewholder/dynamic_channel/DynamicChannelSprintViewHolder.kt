@@ -16,7 +16,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.show
@@ -75,7 +75,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
-                if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
+                if (payload == DynamicChannelDataModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
                     channel?.let {
                         backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
                     }

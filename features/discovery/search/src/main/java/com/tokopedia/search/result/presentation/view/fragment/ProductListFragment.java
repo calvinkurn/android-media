@@ -65,6 +65,7 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
@@ -82,6 +83,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
+import com.tokopedia.search.utils.SearchLogger;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
@@ -556,7 +558,9 @@ public class ProductListFragment
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
-        sendProductImpressionTrackingEvent(list);
+        if (!presenter.isTrackingViewPortEnabled()) {
+            sendProductImpressionTrackingEvent(list);
+        }
 
         adapter.appendItems(list);
     }
@@ -580,6 +584,7 @@ public class ProductListFragment
                     @Override
                     public void onGlobalLayout() {
                         if (searchPerformanceMonitoringListener != null) {
+                            searchPerformanceMonitoringListener.stopRenderPerformanceMonitoring();
                             searchPerformanceMonitoringListener.stopPerformanceMonitoring();
                         }
 
@@ -604,6 +609,26 @@ public class ProductListFragment
                 }
             }
         }
+        if(irisSession != null){
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+                    irisSession.getSessionId());
+        }else {
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+        }
+    }
+
+    @Override
+    public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
+        String userId = getUserId();
+        String searchRef = getSearchRef();
+        List<Object> dataLayerList = new ArrayList<>();
+        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
+
+        String filterSortParams
+                = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
+        productItemViewModels.add(item);
+
         if(irisSession != null){
             SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
                     irisSession.getSessionId());
@@ -982,8 +1007,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void onSuggestionClicked(String queryParams) {
-        performNewProductSearch(queryParams);
+    public void onSuggestionClicked(SuggestionViewModel suggestionViewModel) {
+        SearchTracking.eventClickSuggestedSearch(getQueryKey(), suggestionViewModel.getSuggestion());
+        performNewProductSearch(suggestionViewModel.getSuggestedQuery());
     }
 
     @Override
@@ -1154,13 +1180,26 @@ public class ProductListFragment
         if (filterController == null || searchParameter == null
                 || getFilters() == null || getSort() == null) return;
 
-        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
-        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+        initFilters();
         initSelectedSort();
+
+        refreshAdapterForQuickFilter();
 
         if (isListEmpty) {
             refreshAdapterForEmptySearch();
         }
+    }
+
+    private void initFilters() {
+        List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
+        filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+        quickFilterController.appendFilterList(searchParameter.getSearchParameterHashMap(), initializedFilterList);
+    }
+
+    private void refreshAdapterForQuickFilter() {
+        if (adapter == null) return;
+
+        adapter.refreshQuickFilter();
     }
 
     private void setFilterData(List<Filter> filters) {
@@ -1633,14 +1672,34 @@ public class ProductListFragment
 
     @Override
     public void logWarning(String message, @Nullable Throwable throwable) {
-        Timber.w("P2#DISCOVERY_SEARCH_ERROR#%s;error=%s", message, getStackTrace(throwable));
+        new SearchLogger().logWarning(message, throwable);
     }
 
-    private String getStackTrace(@Nullable Throwable throwable) {
-        if (throwable != null) {
-            return ExceptionUtils.getStackTrace(throwable);
+    @Override
+    public void stopPreparePagePerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.stopPreparePagePerformanceMonitoring();
         }
+    }
 
-        return "";
+    @Override
+    public void startNetworkRequestPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.startNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void stopNetworkRequestPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.stopNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void startRenderPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.startRenderPerformanceMonitoring();
+        }
     }
 }

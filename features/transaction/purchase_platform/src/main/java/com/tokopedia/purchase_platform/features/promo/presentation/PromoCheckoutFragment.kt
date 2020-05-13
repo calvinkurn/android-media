@@ -233,6 +233,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         if (adapter.data.isNotEmpty()) {
             var tmpLastHeaderUiModel = lastHeaderUiModel
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            if (topItemPosition == RecyclerView.NO_POSITION) return
             val lastData = adapter.data[topItemPosition]
 
             val isShow: Boolean
