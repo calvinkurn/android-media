@@ -102,6 +102,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
+            debuggable = isDebugable(project).toBoolean()
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
