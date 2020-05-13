@@ -1,5 +1,7 @@
 package com.tokopedia.thankyou_native.analytics
 
+import com.appsflyer.AFInAppEventParameterName
+import com.appsflyer.AFInAppEventType
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -148,6 +150,56 @@ class ThankYouPageAnalytics {
                 ))
     }
 
+    fun appsFlyerPurchaseEvent( thanksPageData: ThanksPageData, productType: String) {
+
+        val orderIds: MutableList<String> = java.util.ArrayList()
+
+        val afValue: MutableMap<String, Any> = java.util.HashMap()
+        var quantity = 0
+        val productList: MutableList<String> = java.util.ArrayList()
+        val productIds: MutableList<String> = java.util.ArrayList()
+        val productCategory: MutableList<String> = java.util.ArrayList()
+        val productArray: org.json.JSONArray = org.json.JSONArray()
+
+        var shipping = 0f
+
+        thanksPageData.shopOrder.forEach { shopOrder->
+            orderIds.add(shopOrder.orderId)
+            shipping += shopOrder.shippingAmount
+            shopOrder.purchaseItemList.forEach {productItem ->
+                val productObj: org.json.JSONObject = org.json.JSONObject()
+                productIds.add(productItem.productId)
+                productList.add(productItem.productName)
+                productCategory.add(productItem.category)
+                productObj.put(ParentTrackingKey.KEY_ID,productItem.productId)
+                productObj.put(ParentTrackingKey.KEY_QTY,productItem.quantity)
+                quantity+=productItem.quantity
+                productArray.put(productObj)
+            }
+        }
+
+        afValue[AFInAppEventParameterName.REVENUE] = thanksPageData.amount
+        afValue[AFInAppEventParameterName.CONTENT_ID] = productIds
+        afValue[AFInAppEventParameterName.QUANTITY] = quantity
+        afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
+        afValue[AFInAppEventType.ORDER_ID] = orderIds
+        afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
+        afValue[ParentTrackingKey.AF_PURCHASE_SITE] = productType
+        afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
+        afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
+        afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
+        afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCT_TYPE
+
+        val criteoAfValue: Map<String, Any> = java.util.HashMap(afValue)
+        if (productArray.length() > 0) {
+            val afContent: String = productArray.toString()
+            afValue[AFInAppEventParameterName.CONTENT] = afContent
+        }
+        TrackApp.getInstance().appsFlyer.sendTrackEvent(AFInAppEventType.PURCHASE, afValue)
+        TrackApp.getInstance().appsFlyer.sendTrackEvent(ParentTrackingKey.AF_KEY_CRITEO, criteoAfValue)
+    }
+
+
 
     companion object {
         const val EVENT_NAME_CLICK_ORDER = "clickOrder"
@@ -184,6 +236,18 @@ object ParentTrackingKey {
     val KEY_ECOMMERCE = "ecommerce"
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
+    const val KEY_ID = "id"
+    const val KEY_QTY = "quantity"
+    const val AF_SHIPPING_PRICE = "af_shipping_price"
+    const val AF_PURCHASE_SITE = "af_purchase_site"
+    const val AF_VALUE_PRODUCTTYPE = "product"
+    const val AF_VALUE_PRODUCT_TYPE = "productType"
+    const val AF_VALUE_PRODUCTGROUPTYPE = "product_group"
+    const val VALUE_IDR = "IDR"
+    const val AF_KEY_CATEGORY_NAME = "category"
+    const val AF_KEY_CRITEO = "criteo_track_transaction"
+
+
 }
 
 object ECommerceNodeTrackingKey {
