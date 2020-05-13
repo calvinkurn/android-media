@@ -81,7 +81,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
         val itemPos = position - 1
-        homeCategoryListener.trackingQueue?.putEETracking(
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 HomePageTrackingV2.MixLeft.getMixLeftProductView(channel, grid, itemPos) as HashMap<String, Any>)
     }
 

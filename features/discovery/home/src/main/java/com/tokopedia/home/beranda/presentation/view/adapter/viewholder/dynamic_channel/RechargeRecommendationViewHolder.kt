@@ -51,7 +51,7 @@ class RechargeRecommendationViewHolder(
                     btn_recharge_recommendation.text = recommendation.buttonText
                 }
                 btn_recharge_recommendation.setOnClickListener {
-                    categoryListener.trackingQueue?.let {
+                    categoryListener.getTrackingQueueObj()?.let {
                         RechargeRecommendationTracking.homeRechargeRecommendationOnClickTracker(
                                 it, recommendation
                         )
@@ -62,7 +62,7 @@ class RechargeRecommendationViewHolder(
 
                 addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
-                        categoryListener.trackingQueue?.let {
+                        categoryListener.getTrackingQueueObj()?.let {
                             RechargeRecommendationTracking.homeRechargeRecommendationImpressionTracker(
                                     it, recommendation
                             )
