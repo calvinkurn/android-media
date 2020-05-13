@@ -87,67 +87,9 @@ object EventCheckoutMapper {
                     totalTicketPrice = totalTicketPrice.toInt(),
                     totalTicketCount = totalTicketCount.toInt(),
                     verticalId = verticalId.toInt(),
-                    entityPassengers = mapEntityPassenger(entityPassengers),
-                    entityPackages = mapEntityPackage(entityPackages)
+                    entityPassengers = entityPassengers,
+                    entityPackages = entityPackages
             )
         }
-    }
-
-    fun mapEntityPassenger(list: List<EntityPassenger>): List<EntityPassenger> {
-        val list = list.map {
-            EntityPassenger(
-                    elementType = it.elementType,
-                    errorMessage = it.errorMessage,
-                    helpText = it.helpText,
-                    id = it.id.toInt(),
-                    name = it.name,
-                    productId = it.productId.toInt(),
-                    required = it.required,
-                    title = it.title,
-                    validatorRegex = it.validatorRegex,
-                    value = it.value
-                    )
-        }
-
-        return list
-    }
-
-    fun mapEntityPackage(list : List<EntityPackage>):List<EntityPackage>{
-        val list = list.map{
-            EntityPackage(
-                    address = it.address,
-                    basePrice = it.basePrice.toInt(),
-                    city = it.city,
-                    commision = it.commision.toInt(),
-                    commisionType = it.commisionType,
-                    currencyPrice = it.currencyPrice.toInt(),
-                    description = it.description,
-                    dimension = it.dimension,
-                    displayName = it.displayName,
-                    errorMessage = it.errorMessage,
-                    groupId = it.groupId.toInt(),
-                    groupName = it.groupName,
-                    invoiceStatus = it.invoiceStatus,
-                    packageId = it.packageId.toInt(),
-                    packagePrice = it.packagePrice.toInt(),
-                    paymentType = it.paymentType,
-                    pricePerSeat = it.pricePerSeat.toInt(),
-                    productId = it.productId.toInt(),
-                    providerInvoiceIndentifier = it.providerInvoiceIndentifier,
-                    providerScheduleId = it.providerScheduleId,
-                    providerTicketId = it.providerTicketId,
-                    quantity = it.quantity.toInt(),
-                    scheduleDate = it.scheduleDate.toInt(),
-                    scheduleId = it.scheduleId.toInt(),
-                    showDate = it.showDate,
-                    strSeatinfo = it.strSeatinfo,
-                    tkpInvoiceId = it.tkpInvoiceId,
-                    tkpInvoiceItemId = it.tkpInvoiceItemId,
-                    totalTicketCount = it.totalTicketCount.toInt(),
-                    validity = it.validity
-            )
-        }
-
-        return list
     }
 }
