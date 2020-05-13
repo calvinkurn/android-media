@@ -84,9 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
         app:layout_constraintTop_toBottomOf="@id/ivItemProduct"
-        app:layout_constraintLeft_toLeftOf="@id/ivItemProduct"/>
+        app:layout_constraintStart_toStartOf="@id/ivItemProduct"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
