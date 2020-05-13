@@ -38,7 +38,7 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
     override fun getItemCount(): Int = items.size + 1
 
     override fun getItemViewType(position: Int): Int {
-        return if(position == 0) TYPE_HEADER else items.size + 1
+        return if(position == 0) TYPE_HEADER else TYPE_ITEM
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -59,7 +59,7 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     override fun getItemId(position: Int): Long {
-        return if (position == 0) 999 else items[position].id.toLong()
+        return if (position == 0) TYPE_HEADER.toLong() else (position + 1).toLong()
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -113,5 +113,6 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
 
     companion object {
         const val TYPE_HEADER = 99990
+        const val TYPE_ITEM = 20
     }
 }

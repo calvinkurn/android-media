@@ -131,11 +131,8 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
         dialog.setPrimaryCTAClickListener { dialog.dismiss() }
         dialog.setSecondaryCTAClickListener {
             Toast.makeText(requireContext(), "${reasonAdapter.selectedId} ${reasonAdapter.freeText}", Toast.LENGTH_SHORT).show()
-//            cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_submit_hotel_cancellation),
-//                    cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
-
             cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_submit_hotel_cancellation),
-                    "123r5gkjwechfmr1cy2", reasonAdapter.selectedId, reasonAdapter.freeText)
+                    cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
         }
         dialog.show()
     }
