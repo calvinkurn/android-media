@@ -41,7 +41,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -745,6 +744,8 @@ open class HomeViewModel @Inject constructor(
 
     private fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
+        if(!isRechargeModelAvailable()) return
+
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.setParams()
             val data = getRechargeRecommendationUseCase.executeOnBackground()
@@ -752,6 +753,12 @@ open class HomeViewModel @Inject constructor(
         }) {
             removeRechargeRecommendation()
         }
+    }
+
+    private fun isRechargeModelAvailable(): Boolean {
+        return _homeLiveData.value?.list?.find {
+            visitable -> visitable is RechargeRecommendationViewModel
+        } != null
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
