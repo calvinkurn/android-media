@@ -59,8 +59,8 @@
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
     <string name="range_start">Rp%d</string>
     <string name="range_end">Rp%d</string>
-    <string name="potential_ads_reach">Iklan berpotensi menjangkau hingga</string>
-    <string name="price_range">orang per hari</string>
+    <string name="potential_ads_reach">Potensi maksimum klik harian hingga</string>
+    <string name="price_range">kali</string>
     <string name="iklankan">Iklankan</string>
     <string name="budget_range">Anggaran Harian</string>
     <string name="auto_ads_creation">Buat Iklan Otomatis</string>
