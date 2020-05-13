@@ -1,6 +1,0 @@
-query tokenEmoney($refresh: Boolean) {
-  status
-  rechargeEmoneyBRIToken(refresh: $refresh) {
-    token
-  }
-}
