@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
@@ -21,6 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * Created by fwidjaja on 2019-09-02.
@@ -57,9 +59,13 @@ class SomListUnitTest {
         val spy = spyk(viewModel)
         val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(filterSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
         val response = gson.fromJson(jsonResponse, SomListFilter::class.java)
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(SomListFilter::class.java to response),
-                mapOf(SomListFilter::class.java to listOf()), false)
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = SomListFilter::class.java
+        result[objectType] = response
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         //when
@@ -96,9 +102,13 @@ class SomListUnitTest {
         //given
         val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(filterSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
         val response = gson.fromJson(jsonResponse, SomListFilter::class.java)
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(SomListFilter::class.java to response),
-                mapOf(SomListFilter::class.java to listOf()), false)
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = SomListFilter::class.java
+        result[objectType] = response
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         //when

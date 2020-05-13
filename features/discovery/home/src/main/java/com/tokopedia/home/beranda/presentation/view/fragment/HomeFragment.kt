@@ -80,9 +80,11 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -111,6 +113,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -150,7 +153,7 @@ import javax.inject.Inject
  * @author by errysuprayogi on 11/27/17.
  */
 @SuppressLint("SyntheticAccessor")
-class HomeFragment : BaseDaggerFragment(),
+open class HomeFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
         CountDownListener,
@@ -219,7 +222,7 @@ class HomeFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override val trackingQueue: TrackingQueue? = null
+    override var trackingQueue: TrackingQueue? = null
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
@@ -285,13 +288,10 @@ class HomeFragment : BaseDaggerFragment(),
             irisAnalytics = getInstance(it)
             irisSession = IrisSession(it)
             remoteConfig = FirebaseRemoteConfigImpl(it)
+            trackingQueue = TrackingQueue(it)
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
-        if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-            getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-        }
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
@@ -336,7 +336,9 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
                 "home", this, object : OnFrameListener {
             override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
@@ -357,6 +359,7 @@ class HomeFragment : BaseDaggerFragment(),
         if (arguments != null) {
             scrollToRecommendList = arguments!!.getBoolean(SCROLL_RECOMMEND_LIST)
         }
+        homeSnackbar = Snackbar.make(root, "", Snackbar.LENGTH_SHORT)
         fetchRemoteConfig()
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
         setupStatusBar()
@@ -545,8 +548,8 @@ class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
-        observeHomeRequestNetwork();
         observeViewModelInitialized();
+        observeHomeRequestNetwork();
     }
 
     private fun observeHomeRequestNetwork() {
@@ -670,8 +673,8 @@ class HomeFragment : BaseDaggerFragment(),
 
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
-        viewModel.requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
-            context?.let {
+        context?.let {
+            viewModel.requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
                 Glide.with(it)
                         .asBitmap()
                         .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
@@ -685,15 +688,13 @@ class HomeFragment : BaseDaggerFragment(),
                                 viewModel.clearPlayBanner()
                             }
                         })
-            }
-
-        })
+            })
+        }
     }
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter?.submitList(data);
                 adapter?.notifyDataSetChanged();
@@ -1052,16 +1053,9 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun setOnRecyclerViewLayoutReady(isCache: Boolean) {
         isOnRecylerViewLayoutAdded = true
-        homeRecyclerView.viewTreeObserver?.let {
-            it.addOnGlobalLayoutListener { object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-
-                    homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
-
-                    homePerformanceMonitoringListener = null;
-                    it.removeOnGlobalLayoutListener(this);
-                }
-            }}
+        homeRecyclerView.addOneTimeGlobalLayoutListener {
+            homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
+            homePerformanceMonitoringListener = null;
         }
     }
 
@@ -1808,8 +1802,8 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
-        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface != null) {
-           pageLoadTimeCallback =  homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface
+        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
+           pageLoadTimeCallback =  homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
         }
         return pageLoadTimeCallback
     }
