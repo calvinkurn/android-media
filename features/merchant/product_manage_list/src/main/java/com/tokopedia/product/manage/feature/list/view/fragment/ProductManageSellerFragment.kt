@@ -48,19 +48,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
 
-    private fun onDraftCountLoaded(rowCount: Long) {
-        if (rowCount == 0L) {
-            tvDraftProduct.visibility = View.GONE
-        } else {
-            tvDraftProduct.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
-            tvDraftProduct.setOnClickListener {
-                ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
-                RouteManager.route(activity, ApplinkConst.PRODUCT_DRAFT)
-            }
-            tvDraftProduct.visibility = View.VISIBLE
-        }
-    }
-
     override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
@@ -69,24 +56,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
         return view?.findViewById(R.id.swipe_refresh_layout)
     }
 
-    private fun onDraftCountLoadError() {
-        // delete all draft when error loading draft
-        productDraftListCountViewModel.clearAllDraft()
-        tvDraftProduct.visibility = View.GONE
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
         getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()
-    }
-
-    private fun getDefaultFilterOptionsFromArguments() {
-        val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
-        val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
-        super.setDefaultFilterOptions(filterOptions)
     }
 
     override fun initInjector() {
@@ -107,6 +82,38 @@ class ProductManageSellerFragment : ProductManageFragment() {
         } else {
             productDraftListCountViewModel.fetchAllDraftCountWithUpdateUploading()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterDraftReceiver()
+    }
+
+    override fun callInitialLoadAutomatically() = false
+
+    private fun onDraftCountLoaded(rowCount: Long) {
+        if (rowCount == 0L) {
+            tvDraftProduct.visibility = View.GONE
+        } else {
+            tvDraftProduct.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProduct.setOnClickListener {
+                ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
+                RouteManager.route(activity, ApplinkConst.PRODUCT_DRAFT)
+            }
+            tvDraftProduct.visibility = View.VISIBLE
+        }
+    }
+
+    private fun onDraftCountLoadError() {
+        // delete all draft when error loading draft
+        productDraftListCountViewModel.clearAllDraft()
+        tvDraftProduct.visibility = View.GONE
+    }
+
+    private fun getDefaultFilterOptionsFromArguments() {
+        val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
+        val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
+        super.setDefaultFilterOptions(filterOptions)
     }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
@@ -149,13 +156,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
             LocalBroadcastManager.getInstance(it).unregisterReceiver(draftBroadCastReceiver)
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        unregisterDraftReceiver()
-    }
-
-    override fun callInitialLoadAutomatically() = false
 
     private fun observeGetAllDraftCount() {
         observe(productDraftListCountViewModel.getAllDraftCountResult) {
