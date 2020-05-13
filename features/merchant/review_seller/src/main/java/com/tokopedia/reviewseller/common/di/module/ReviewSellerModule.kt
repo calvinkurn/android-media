@@ -34,7 +34,7 @@ class ReviewSellerModule {
     @ReviewSellerScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
-    
+
     @ReviewSellerScope
     @Provides
     fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
