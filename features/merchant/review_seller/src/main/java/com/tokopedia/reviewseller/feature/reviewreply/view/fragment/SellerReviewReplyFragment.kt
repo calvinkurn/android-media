@@ -12,10 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.toRelativeDayAndWeek
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
@@ -206,7 +203,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
     private fun initData(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
-                shopId = getStringExtra(EXTRA_SHOP_ID).toInt()
+                shopId = getStringExtra(EXTRA_SHOP_ID).toIntOrZero()
                 isEmptyReply = getBooleanExtra(IS_EMPTY_REPLY_REVIEW, false)
                 val objectId = getStringExtra(CACHE_OBJECT_ID)
                 val manager = if(savedInstanceState == null) {
