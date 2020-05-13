@@ -193,6 +193,10 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                                 type = it.type
                         )
                     },
+                    freeOngkir = ProductCardModel.FreeOngkir(
+                            element.freeOngkir.isActive,
+                            element.freeOngkir.imageUrl
+                    ),
                     isOutOfStock = element.isOutOfStock
             )
         }

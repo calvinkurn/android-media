@@ -179,6 +179,10 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                                         type = it.type
                                 )
                             },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    element.freeOngkir.isActive,
+                                    element.freeOngkir.imageUrl
+                            ),
                             isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
