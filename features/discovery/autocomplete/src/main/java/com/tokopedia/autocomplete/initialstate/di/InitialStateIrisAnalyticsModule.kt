@@ -3,7 +3,6 @@ package com.tokopedia.autocomplete.initialstate.di
 import android.content.Context
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
-import com.tokopedia.iris.util.IrisSession
 import dagger.Module
 import dagger.Provides
 
