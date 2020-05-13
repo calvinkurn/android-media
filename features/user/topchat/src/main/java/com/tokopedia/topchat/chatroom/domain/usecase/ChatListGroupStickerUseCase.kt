@@ -22,6 +22,12 @@ class ChatListGroupStickerUseCase @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
 
+    fun safeCancel() {
+        if (coroutineContext.isActive) {
+            cancel()
+        }
+    }
+
     fun getStickerGroup(
             isSeller: Boolean,
             onLoading: (ChatListGroupStickerResponse) -> Unit,
@@ -31,7 +37,7 @@ class ChatListGroupStickerUseCase @Inject constructor(
         launchCatchError(dispatchers.IO,
                 {
                     val params = generateParams(isSeller)
-                    val cache = getCacheStickerGroup()?.also {
+                    val cache = getCacheStickerGroup(isSeller)?.also {
                         withContext(dispatchers.Main) {
                             onLoading(it)
                         }
@@ -43,7 +49,7 @@ class ChatListGroupStickerUseCase @Inject constructor(
                     }.executeOnBackground()
                     val isExpired = response.hasExpiredCache(cache)
                     if (isExpired) {
-                        saveToCache(response)
+                        saveToCache(response, isSeller)
                     }
                     withContext(dispatchers.Main) {
                         onSuccess(response, isExpired)
@@ -57,13 +63,19 @@ class ChatListGroupStickerUseCase @Inject constructor(
         )
     }
 
-    private fun saveToCache(result: ChatListGroupStickerResponse) {
-        cacheManager.saveCache(cacheKey, result)
+    private fun generateCacheKey(isSeller: Boolean): String {
+        return "$cacheKey - $isSeller"
     }
 
-    private fun getCacheStickerGroup(): ChatListGroupStickerResponse? {
+    private fun saveToCache(result: ChatListGroupStickerResponse, isSeller: Boolean) {
+        val key = generateCacheKey(isSeller)
+        cacheManager.saveCache(key, result)
+    }
+
+    private fun getCacheStickerGroup(isSeller: Boolean): ChatListGroupStickerResponse? {
         try {
-            return cacheManager.loadCache(cacheKey, ChatListGroupStickerResponse::class.java)
+            val key = generateCacheKey(isSeller)
+            return cacheManager.loadCache(key, ChatListGroupStickerResponse::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -75,12 +87,6 @@ class ChatListGroupStickerUseCase @Inject constructor(
         return mapOf(
                 paramStickerType to stickerType
         )
-    }
-
-    fun safeCancel() {
-        if (coroutineContext.isActive) {
-            cancel()
-        }
     }
 
     private val query = """
