@@ -369,7 +369,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessDeleteQuestion() {
         this.activity?.let {
-            it.setResult(Activity.RESULT_OK)
+            it.setResult(Activity.RESULT_OK, Intent().putExtra(QUESTION_ID, questionId))
             it.finish()
         }
     }

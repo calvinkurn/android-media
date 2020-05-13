@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.talk.feature.reading.data.model.ViewState
 import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
@@ -15,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -23,6 +25,10 @@ class TalkReadingViewModel @Inject constructor(
         private val getDiscussionDataUseCase: GetDiscussionDataUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
+
+    companion object {
+        private const val REQUEST_DELAY = 1000L
+    }
 
     private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregateResponse>>()
     val discussionAggregate: LiveData<Result<DiscussionAggregateResponse>>
@@ -40,9 +46,14 @@ class TalkReadingViewModel @Inject constructor(
     val filterCategories: LiveData<List<TalkReadingCategory>>
     get() = _filterCategories
 
+    private val _viewState = MutableLiveData<ViewState>()
+    val viewState: LiveData<ViewState>
+        get() = _viewState
+
     var talkLastAction: TalkLastAction? = null
 
     fun getDiscussionAggregate(productId: String, shopId: String) {
+        setLoading()
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 getDiscussionAggregateUseCase.setParams(productId, shopId)
@@ -51,18 +62,25 @@ class TalkReadingViewModel @Inject constructor(
             _discussionAggregate.postValue(Success(response))
         }) {
             _discussionAggregate.postValue(Fail(it))
+            setError(0)
         }
     }
 
-    fun getDiscussionData(productId: String, shopId: String, page: Int, limit: Int, sortBy: String, category: String) {
+    fun getDiscussionData(productId: String, shopId: String, page: Int, limit: Int, sortBy: String, category: String, withDelay: Boolean = false, isRefresh: Boolean = false) {
+        if(isRefresh) {
+            setLoading()
+        }
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
+                if(withDelay) { delay(REQUEST_DELAY) }
                 getDiscussionDataUseCase.setParams(productId, shopId, page, limit, sortBy, category)
                 getDiscussionDataUseCase.executeOnBackground()
             }
             _discussionData.postValue(Success(response))
+            setSuccess(response.discussionData.totalQuestion == 0)
         }) {
             _discussionData.postValue(Fail(it))
+            setError(page)
         }
     }
 
@@ -114,6 +132,18 @@ class TalkReadingViewModel @Inject constructor(
 
     fun updateLastAction(lastAction: TalkLastAction) {
         talkLastAction = lastAction
+    }
+
+    private fun setLoading() {
+        _viewState.value = ViewState.Loading
+    }
+
+    private fun setError(page: Int) {
+        _viewState.value = ViewState.Error(page)
+    }
+
+    private fun setSuccess(isEmpty: Boolean) {
+        _viewState.value = ViewState.Success(isEmpty)
     }
 
 }

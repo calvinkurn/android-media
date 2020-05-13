@@ -5,4 +5,15 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadi
 
 class TalkReadingAdapter(
         talkReadingAdapterTypeFactory: TalkReadingAdapterTypeFactory
-) : BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory>(talkReadingAdapterTypeFactory)
+) : BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory>(talkReadingAdapterTypeFactory) {
+
+    fun removeQuestion(questionId: String) {
+        visitables.forEachIndexed { index, visitable ->
+            if((visitable as TalkReadingUiModel).question.questionID == questionId) {
+                visitables.remove(visitable)
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+}

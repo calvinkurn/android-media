@@ -16,7 +16,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reading_empty_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reading_empty_title"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -25,6 +25,8 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reading_image_error"/>
 
     <com.tokopedia.unifyprinciples.Typography

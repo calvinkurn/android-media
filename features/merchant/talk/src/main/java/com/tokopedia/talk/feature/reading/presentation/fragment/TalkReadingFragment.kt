@@ -21,12 +21,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.*
@@ -39,14 +42,12 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadi
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
 import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModifiedListener
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
-import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
+import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
-import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
@@ -104,11 +105,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         getDataFromArguments()
+        observeViewState()
         observeProductHeader()
         observeSortOptions()
         observeDiscussionData()
         observeFilterCategories()
-        showPageLoading()
         getHeaderData()
         super.onViewCreated(view, savedInstanceState)
     }
@@ -151,7 +152,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
         clearAllData()
-        showPageLoading()
         loadInitialData()
     }
 
@@ -200,7 +200,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             TALK_REPLY_ACTIVITY_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
-                onSuccessDeleteQuestion()
+                data?.let {
+                    onSuccessDeleteQuestion(it.getStringExtra(QUESTION_ID) ?: "")
+                }
             }
             TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateQuestion()
@@ -254,19 +256,16 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         }
     }
 
-    private fun showPageLoading() {
-        pageLoading.visibility = View.VISIBLE
-        hidePageEmpty()
-    }
-
-    private fun hidePageLoading() {
-        pageLoading.visibility = View.GONE
+    override fun loadInitialData() {
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        getDiscussionData(isRefresh = true)
     }
 
     private fun showPageEmpty() {
         reading_image_error.loadImage(TALK_READING_EMPTY_IMAGE_URL)
         addFloatingActionButton.hide()
-        pageEmpty.visibility = View.VISIBLE
+        pageEmpty.show()
         readingEmptyAskButton.setOnClickListener {
             if(userSession.isLoggedIn) {
                 goToWriteActivity()
@@ -277,16 +276,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         }
     }
 
-    private fun hidePageEmpty() {
-        pageEmpty.visibility = View.GONE
-    }
-
     private fun showPageError() {
-        pageError.visibility = View.VISIBLE
+        addFloatingActionButton.hide()
+        pageError.show()
         pageError.readingConnectionErrorRetryButton.setOnClickListener {
             getHeaderData()
-            hidePageError()
-            showPageLoading()
         }
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
             RouteManager.route(context, GENERAL_SETTING)
@@ -294,8 +288,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun hidePageError() {
-        pageError.visibility = View.GONE
-        addFloatingActionButton.show()
+        pageError.hide()
     }
 
     private fun bindHeader(talkReadingHeaderModel: TalkReadingHeaderModel) {
@@ -316,10 +309,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     initSortOptions()
                     showContainer()
                 }
-                is Fail -> {
-                    showPageError()
-                    hidePageLoading()
-                }
             }
         })
     }
@@ -328,29 +317,15 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.discussionData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if(it.data.discussionData.question.isEmpty()) {
-                        showPageEmpty()
-                        isLoadingInitialData = false
-                    } else {
-                        hidePageEmpty()
-                        stopNetworkRequestPerformanceMonitoring()
-                        startRenderPerformanceMonitoring()
-                        renderDiscussionData(
-                                TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(it.data.discussionData),
-                                it.data.discussionData.hasNext)
-                    }
-
-                }
-                is Fail -> {
-                    hidePageLoading()
-                    if(currentPage > 0) {
-                        showErrorToaster()
-                    } else {
-                        showPageError()
+                    it.data.discussionData.let { data ->
+                        if (data.question.isNotEmpty()) {
+                            stopNetworkRequestPerformanceMonitoring()
+                            startRenderPerformanceMonitoring()
+                            renderDiscussionData(TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(data), data.hasNext)
+                        }
                     }
                 }
             }
-            hidePageLoading()
         })
     }
 
@@ -359,7 +334,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
                 loadInitialData()
-                showPageLoading()
             }
         })
     }
@@ -368,7 +342,41 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.filterCategories.observe(this, Observer {
             if(!isLoadingInitialData) {
                 loadInitialData()
-                showPageLoading()
+            }
+        })
+    }
+
+    private fun observeViewState() {
+        viewModel.viewState.observe(this, Observer {
+            when(it) {
+                is ViewState.Loading -> {
+                    clearAllData()
+                    pageLoading.show()
+                    pageEmpty.hide()
+                    hidePageError()
+                }
+                is ViewState.Error -> {
+                    if(it.page > 0) {
+                        showErrorToaster()
+                    } else {
+                        showPageError()
+                    }
+                    pageEmpty.hide()
+                    pageLoading.hide()
+                }
+                is ViewState.Success -> {
+                    if(it.isEmpty) {
+                        isLoadingInitialData = false
+                        showPageEmpty()
+                        pageLoading.hide()
+                        hidePageError()
+                    } else {
+                        pageEmpty.hide()
+                        pageLoading.hide()
+                        addFloatingActionButton.show()
+                        hidePageError()
+                    }
+                }
             }
         })
     }
@@ -391,18 +399,17 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun onSuccessCreateQuestion() {
         showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        if(!isLoadingInitialData) {
-            loadInitialData()
-            showPageLoading()
-        }
+        getDiscussionData(isRefresh = true, withDelay = true)
     }
 
-    private fun onSuccessDeleteQuestion() {
-        showSuccessToaster(getString(R.string.delete_question_toaster_success))
-        if(!isLoadingInitialData) {
-            loadInitialData()
-            showPageLoading()
+    private fun onSuccessDeleteQuestion(questionID: String) {
+        if(questionID.isNotEmpty()) {
+            (adapter as? TalkReadingAdapter)?.removeQuestion(questionID)
         }
+        showSuccessToaster(getString(R.string.delete_question_toaster_success))
+//        if(!isLoadingInitialData) {
+//            loadInitialData()
+//        }
     }
 
     private fun showSuccessToaster(message: String) {
@@ -421,7 +428,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showContainer() {
-        talkReadingContainer.visibility = View.VISIBLE
+        talkReadingContainer.show()
         initFab()
     }
 
@@ -458,10 +465,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         startActivityForResult(intent, LOGIN_ACTIVITY_REQUEST_CODE)
     }
 
-    private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE) {
+    private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE, withDelay: Boolean = false, isRefresh: Boolean = false) {
         val selectedSort = TalkReadingMapper.mapSelectedSortToString(viewModel.sortOptions.value?.first { it.isSelected })
         val selectedCategories = viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.categoryName } ?: ""
-        viewModel.getDiscussionData(productId, shopId, page, DEFAULT_DISCUSSION_DATA_LIMIT, selectedSort, selectedCategories)
+        viewModel.getDiscussionData(productId, shopId, page, DEFAULT_DISCUSSION_DATA_LIMIT, selectedSort, selectedCategories, withDelay, isRefresh)
     }
 
     private fun renderDiscussionData(discussionData: List<TalkReadingUiModel>, hasNextPage: Boolean) {
