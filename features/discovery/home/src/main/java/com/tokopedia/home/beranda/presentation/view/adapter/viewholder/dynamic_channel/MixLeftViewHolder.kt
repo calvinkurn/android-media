@@ -82,7 +82,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
         RouteManager.route(itemView.context, applink)
-        HomePageTrackingV2.MixLeft.getMixLeftClickLoadMoreCard(channel)
+        HomePageTrackingV2.MixLeft.sendMixLeftSeeAllCardClick(channel)
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
