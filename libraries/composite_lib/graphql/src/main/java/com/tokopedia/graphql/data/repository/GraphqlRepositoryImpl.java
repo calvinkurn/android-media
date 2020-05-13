@@ -1,8 +1,9 @@
 package com.tokopedia.graphql.data.repository;
 
+import android.text.TextUtils;
+
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.graphql.BuildConfig;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.GraphqlConstant;
 import com.tokopedia.graphql.data.model.CacheType;
@@ -18,16 +19,15 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.util.NullCheckerKt;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import kotlin.Unit;
 import rx.Observable;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * This class will responsible for data fetching either from cloud or cache based on provided GraphqlCacheStrategy
@@ -35,11 +35,19 @@ import timber.log.Timber;
 public class GraphqlRepositoryImpl implements GraphqlRepository {
     private GraphqlCloudDataStore mGraphqlCloudDataStore;
     private GraphqlCacheDataStore mGraphqlCache;
+    private Map<Type, Object> mResults;
+
+    private List<GraphqlRequest> mRefreshRequests;
+    private Map<Type, Boolean> mIsCachedData;
 
     @Inject
     public GraphqlRepositoryImpl() {
         this.mGraphqlCloudDataStore = new GraphqlCloudDataStore();
         this.mGraphqlCache = new GraphqlCacheDataStore();
+
+        mResults = new HashMap<>();
+        mIsCachedData = new HashMap<>();
+        mRefreshRequests = new ArrayList<>();
     }
 
     @Override
@@ -63,35 +71,74 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         .first(data -> data != null);
             }
         }).map(response -> {
-            Map<Type, Object> results = new HashMap<>();
             Map<Type, List<GraphqlError>> errors = new HashMap<>();
-            for (int i = 0; i < response.getOriginalResponse().size(); i++) {
-                try {
-                    JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                    if (data != null && !data.isJsonNull()) {
-                        Type type = requests.get(i).getTypeOfT();
-                        Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
-                        checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
-                        //Lookup for data
-                        results.put(type, object);
-                    }
 
-                    JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
-                    if (error != null && !error.isJsonNull()) {
-                        //Lookup for error
-                        errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
-                        }.getType()));
+            if (response.getOriginalResponse() != null) {
+                for (int i = 0; i < response.getOriginalResponse().size(); i++) {
+                    try {
+                        JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
+                        if (data != null && !data.isJsonNull()) {
+                            Type type = requests.get(i).getTypeOfT();
+                            Object object = CommonUtils.fromJson(data.toString(), requests.get(i).getTypeOfT());
+                            checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
+                            //Lookup for data
+                            mResults.put(type, object);
+                            mIsCachedData.put(type, false);
+                        }
+
+                        JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
+                        if (error != null && !error.isJsonNull()) {
+                            //Lookup for error
+                            errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
+                            }.getType()));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        //Just to avoid any accidental data loss
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    //Just to avoid any accidental data loss
                 }
             }
-            return new GraphqlResponse(results, errors, response.isCached());
+
+            GraphqlResponse graphqlResponse = new GraphqlResponse(mResults, errors, mIsCachedData);
+
+            if (mRefreshRequests.isEmpty()) {
+                return graphqlResponse;
+            }
+
+            //adding cached request.
+            graphqlResponse.setRefreshRequests(mRefreshRequests);
+
+            return graphqlResponse;
         });
     }
 
     private Observable<GraphqlResponseInternal> getCloudResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
+        try {
+            int counter = requests.size();
+            for (int i = 0; i < counter; i++) {
+                if (requests.get(i).isNoCache()) {
+                    continue;
+                }
+
+                String cachesResponse = mGraphqlCloudDataStore.getCacheManager()
+                        .get(requests.get(i).cacheKey());
+                if (TextUtils.isEmpty(cachesResponse)) {
+                    continue;
+                }
+
+                Object object = CommonUtils.fromJson(cachesResponse, requests.get(i).getTypeOfT());
+                checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
+                //Lookup for data
+                mResults.put(requests.get(i).getTypeOfT(), object);
+                mIsCachedData.put(requests.get(i).getTypeOfT(), true);
+                requests.get(i).setNoCache(true);
+                mRefreshRequests.add(requests.get(i));
+                requests.remove(requests.get(i));
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         return mGraphqlCloudDataStore.getResponse(requests, cacheStrategy);
     }
 

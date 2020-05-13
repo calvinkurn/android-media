@@ -38,11 +38,8 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
-//import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -58,12 +55,16 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTransaction;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
 import com.tokopedia.seller.selling.view.listener.SellingTransaction;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_CONFIRM_SHIPPING;
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_IN_SHIPPING;
+
+//import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 
 /**
  * @author okasurya on 8/1/18.
@@ -191,12 +192,13 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     }
 
     private void checkLogin() {
+        UserSessionInterface userSession = new UserSession(this);
         if (getApplication() instanceof TkpdCoreRouter) {
-            if (!SessionHandler.isV4Login(this)) {
-                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+            if (!userSession.isLoggedIn()) {
+                startActivity(RouteManager.getIntent(this, ApplinkConst.LOGIN));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
-            } else if (!SessionHandler.isUserHasShop(this)) {
+            } else if (!userSession.hasShop()) {
                 startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
@@ -512,7 +514,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
+            startActivity(((com.tokopedia.core.TkpdCoreRouter) getApplication()).getHomeIntent(this));
             finish();
         } else {
             super.onBackPressed();

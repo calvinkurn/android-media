@@ -23,7 +23,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.Config
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -47,7 +46,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreVie
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
@@ -94,35 +92,31 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun renderViewCpmShop(context: Context, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (activityIsFinishing(context))
             return
-
-        var defaultVariant = if (isLoggedIn()) VARIANT_NO_HEADLINE else VARIANT_A
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
-            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, defaultVariant)
-            if (variant.equals(VARIANT_B)) {
-                View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
-                BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
-                BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b
-                BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_more
-            } else if (variant.equals(VARIANT_A)){
-                View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
-                BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
-                BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
-                BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
-            } else {
-                return
-            }
-
+            View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
+            BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
+            BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
+            BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
             bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener))
-            var list = findViewById<RecyclerView>(R.id.list)
-            var container = findViewById<View>(R.id.container)
+            val list = findViewById<RecyclerView>(R.id.list)
+            val container = findViewById<View>(R.id.container)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
             list.addOnScrollListener(CustomScrollListner(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
-            var shop_image = findViewById<ImageView>(R.id.shop_image)
+            val shopdetail = findViewById<View>(R.id.shop_detail)
+
+            shopdetail.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
+                    ImpresionTask().execute(cpmData.adClickUrl)
+                }
+            }
+
+            val shop_image = findViewById<ImageView>(R.id.shop_image)
             shop_image?.let {
                 Glide.with(context).load(cpmData.cpm.cpmImage.fullEcs).into(shop_image)
                 shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
@@ -148,11 +142,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             template = SHOP_TEMPLATE
         }
         setHeadlineShopData(cpmData, appLink, adsClickUrl)
-    }
-
-    private fun isLoggedIn(): Boolean {
-        var userSession = UserSession(context)
-        return userSession.isLoggedIn
     }
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {

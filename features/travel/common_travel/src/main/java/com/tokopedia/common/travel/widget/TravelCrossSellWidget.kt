@@ -7,7 +7,7 @@ import android.view.View
 import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
-import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_travel_cross_selling.view.*
 
 /**

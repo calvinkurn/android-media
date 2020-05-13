@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationRefundDetailFragment;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 /**
@@ -25,10 +25,10 @@ public class FlightCancellationRefundDetailActivity extends BaseFlightActivity i
 
     private FlightCancellationComponent cancellationComponent;
 
-    private FlightCancellationWrapperViewModel wrapperViewModel;
+    private FlightCancellationWrapperModel wrapperViewModel;
     private int stepsNumber;
 
-    public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel wrapperViewModel,
+    public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperModel wrapperViewModel,
                                           int stepsNumber) {
         Intent intent = new Intent(activity, FlightCancellationRefundDetailActivity.class);
         intent.putExtra(FLIGHT_WRAPPER_EXTRA, wrapperViewModel);

@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner;
 
 import androidx.annotation.LayoutRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
     private ImageView bg;
     private ImageView shopImage;
     private ImageView shopBadge;
+    private ConstraintLayout cardView;
     private final TopAdsBannerClickListener topAdsBannerClickListener;
     private final TopAdsItemImpressionListener impressionListener;
 
@@ -39,6 +41,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         this.impressionListener = itemImpressionListener;
         descriptionTxt = (TextView) itemView.findViewById(R.id.description);
+        cardView = itemView.findViewById(R.id.cardView);
         ctaTxt = (TextView) itemView.findViewById(R.id.kunjungi_toko);
         bg = itemView.findViewById(R.id.bg);
         shopName = itemView.findViewById(R.id.shop_name);
@@ -52,9 +55,9 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         if(cpm!=null) {
             descriptionTxt.setText(TopAdsBannerView.Companion.escapeHTML(cpm.getCpmShop().getSlogan()));
             ctaTxt.setText(cpm.getCta());
-            ctaTxt.setOnClickListener(new View.OnClickListener() {
+            cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View v) {
                     if(topAdsBannerClickListener!=null) {
                         topAdsBannerClickListener.onBannerAdsClicked(getAdapterPosition(), element.getAppLink(), element.getCpmData());
                         new ImpresionTask(BannerShopViewHolder.class).execute(element.getAdsClickUrl());
