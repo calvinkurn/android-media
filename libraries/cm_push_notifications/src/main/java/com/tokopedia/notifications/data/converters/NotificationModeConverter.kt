@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.database.convertors
+package com.tokopedia.notifications.data.converters
 
 import androidx.room.TypeConverter
 import com.tokopedia.notifications.model.NotificationMode

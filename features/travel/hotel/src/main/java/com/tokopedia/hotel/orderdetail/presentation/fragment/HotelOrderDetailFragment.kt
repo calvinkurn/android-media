@@ -11,6 +11,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -30,8 +32,6 @@ import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
@@ -54,6 +54,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -289,8 +291,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             room_info.text = propertyDetail.room.first().content
 
             for (amenity in propertyDetail.room.first().amenities) {
-                val amenityTextView = TextViewCompat(context)
-                amenityTextView.setFontSize(TextViewCompat.FontSize.MICRO)
+                val amenityTextView = TextView(context)
+                amenityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
                 amenityTextView.text = amenity.content
                 room_amenities.addView(amenityTextView)
             }
@@ -381,9 +383,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         order_detail_footer_layout.removeAllViews()
         if (orderDetail.contactUs.helpText.isNotBlank()) {
-            val helpLabel = TextViewCompat(context)
-            helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
-            helpLabel.setTextColor(resources.getColor(com.tokopedia.design.R.color.light_primary))
+            val helpLabel = TextView(context)
+            helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
                     orderDetail.contactUs.helpUrl)
@@ -393,7 +395,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
             helpLabel.gravity = Gravity.CENTER
             val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            params.bottomMargin = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+            params.bottomMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             helpLabel.layoutParams = params
 
             order_detail_footer_layout.addView(helpLabel)
@@ -401,25 +403,24 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
 
         for (button in orderDetail.actionButtons) {
-            val buttonCompat = ButtonCompat(context)
-            buttonCompat.text = button.label
-            buttonCompat.isAllCaps = false
+            context?.let {
+                val buttonCompat = UnifyButton(it)
+                buttonCompat.text = button.label
+                buttonCompat.isAllCaps = false
+                buttonCompat.buttonSize = UnifyButton.Size.MEDIUM
 
-            val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            params.topMargin = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
-            buttonCompat.layoutParams = params
-
-            if (button.weight == 1) {
-                buttonCompat.background = resources.getDrawable(com.tokopedia.design.R.drawable.rect_white_rounded_stroke_gray)
-                buttonCompat.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_500))
-            } else if (button.weight == 2) {
-                buttonCompat.buttonCompatType = ButtonCompat.TRANSACTION
+                if (button.weight == 1) {
+                    buttonCompat.background = ContextCompat.getDrawable(it, R.drawable.bg_hotel_rect_rounded_stroke_gray)
+                    buttonCompat.setTextColor(ContextCompat.getColor(it, R.color.hotel_grey_500))
+                } else if (button.weight == 2) {
+                    buttonCompat.buttonType = UnifyButton.Type.TRANSACTION
+                }
+                buttonCompat.setOnClickListener {
+                    if (button.uri.isNotBlank()) RouteManager.route(context, button.uri)
+                    else if (button.uriWeb.isNotBlank()) RouteManager.route(context, button.uriWeb)
+                }
+                order_detail_footer_layout.addView(buttonCompat)
             }
-            buttonCompat.setOnClickListener {
-                if (button.uri.isNotBlank()) RouteManager.route(context, button.uri)
-                else if (button.uriWeb.isNotBlank()) RouteManager.route(context, button.uriWeb)
-            }
-            order_detail_footer_layout.addView(buttonCompat)
         }
     }
 
@@ -442,7 +443,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = resources.getColor(com.tokopedia.design.R.color.green_250) // specific color for this link
+                    context?.let {
+                        ds.color = ContextCompat.getColor(it, R.color.hotel_green_250) // specific color for this link
+                    }
                 }
             }, hyperlinkIndex, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         } else if (resId != 0) {
@@ -458,11 +461,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     private fun onImportantNotesClicked(notes: String) {
         val importantNotesBottomSheets = HotelBookingBottomSheets()
         activity?.let {
-            val textView = TextViewCompat(it)
-            textView.text = notes
-            importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
-            importantNotesBottomSheets.addContentView(textView)
-            importantNotesBottomSheets.show(it.supportFragmentManager, HotelBookingFragment.TAG_HOTEL_IMPORTANT_NOTES)
+            context?.let { ctx ->
+                val textView = Typography(ctx)
+                textView.text = notes
+                importantNotesBottomSheets.setTitle(getString(R.string.hotel_important_info_title))
+                importantNotesBottomSheets.addContentView(textView)
+                importantNotesBottomSheets.show(it.supportFragmentManager, HotelBookingFragment.TAG_HOTEL_IMPORTANT_NOTES)
+            }
         }
     }
 
