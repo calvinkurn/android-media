@@ -110,7 +110,7 @@ class StockHandlerAnalytics {
                 "dimension70", element.getAtcProduct()?.shop?.name?: "",
                 "category_id", "",
                 "dimension42", cartId,
-                "dimension39", "/notif"
+                "dimension39", "/notifcenter"
         )
 
         val dataTracker = layerMapOf(
