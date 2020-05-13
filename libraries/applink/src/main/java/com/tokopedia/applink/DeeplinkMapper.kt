@@ -13,12 +13,14 @@ import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigati
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationPlay
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
+import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductReview
@@ -26,6 +28,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
@@ -36,6 +39,7 @@ import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSa
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomCancelledAppLink
@@ -147,6 +151,8 @@ object DeeplinkMapper {
                     DeeplinkMapperMerchant.isShopPageNoteDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri)
                     DeeplinkMapperMerchant.isShopPageResultEtalaseDeepLink(uri) -> DeeplinkMapperMerchant.getShopPageResultEtalaseInternalAppLink(uri)
                     deeplink.startsWith(ApplinkConst.SELLER_INFO_DETAIL, true) -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri)
+                    deeplink.startsWithPattern(ApplinkConst.ORDER_TRACKING) -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink)
+                    deeplink.startsWith(ApplinkConst.ORDER_HISTORY, true) -> getRegisteredNavigationOrderHistory(uri)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -174,6 +180,13 @@ object DeeplinkMapper {
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    private fun getRegisteredNavigationOrderHistory(uri: Uri?): String {
+        val path = uri?.lastPathSegment ?: ""
+        return if (path.isNotEmpty()) {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, path)
+        } else { "" }
     }
 
     private fun isProductTalkDeeplink(deeplink: String): Boolean {
@@ -303,6 +316,7 @@ object DeeplinkMapper {
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
             ApplinkConst.BUYER_INFO -> ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
+            ApplinkConst.HAS_PASSWORD -> return ApplinkConstInternalGlobal.HAS_PASSWORD
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {

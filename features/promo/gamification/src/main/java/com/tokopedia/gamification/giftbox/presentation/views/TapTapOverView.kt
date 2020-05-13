@@ -34,7 +34,7 @@ class TapTapOverView : FrameLayout {
     }
 
     fun init(attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(R.layout.view_tap_tap_over, this, true)
+        LayoutInflater.from(context).inflate(com.tokopedia.gamification.R.layout.view_tap_tap_over, this, true)
         image = findViewById(R.id.image)
         tvTitle = findViewById(R.id.tvTitle)
         tvDescription = findViewById(R.id.tvDesc)

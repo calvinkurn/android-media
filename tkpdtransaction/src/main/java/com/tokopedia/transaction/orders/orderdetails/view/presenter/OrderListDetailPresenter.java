@@ -82,6 +82,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String DEVICE_ID = "device_id";
     private static final String CATEGORY_IDS = "category_ids";
     private static final String MP_CATEGORY_IDS = "mp_category_ids";
+    private static final String PAYMENT_ID = "paymentId";
+    private static final String CART_STRING = "cartString";
     private static final int DEFAULT_DEVICE_ID = 5;
 
     GraphqlUseCase orderDetailsUseCase;
@@ -113,7 +115,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream) {
+    public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -124,11 +126,22 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            variables.put("orderCategory", orderCategory);
-            variables.put(ORDER_ID, orderId);
-            graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+            if (orderId != null && !orderId.isEmpty()) {
+                variables.put("orderCategory", orderCategory);
+                variables.put(ORDER_ID, orderId);
+                graphqlRequest = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+
+            } else {
+                variables.put("orderCategory", orderCategory);
+                variables.put(PAYMENT_ID, paymentId);
+                variables.put(CART_STRING, cartString);
+                graphqlRequest = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
+            }
+
         } else {
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
