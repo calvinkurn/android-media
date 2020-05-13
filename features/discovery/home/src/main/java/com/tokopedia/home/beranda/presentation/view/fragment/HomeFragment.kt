@@ -233,10 +233,10 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
-    private lateinit var homeMainToolbar: HomeMainToolbar
     private lateinit var statusBarBackground: View
     private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
+    private var homeMainToolbar: HomeMainToolbar? = null
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
@@ -344,7 +344,7 @@ open class HomeFragment : BaseDaggerFragment(),
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         homeMainToolbar = view.findViewById(R.id.toolbar)
-        homeMainToolbar.setAfterInflationCallable(afterInflationCallable)
+        homeMainToolbar?.setAfterInflationCallable(afterInflationCallable)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView.setHasFixedSize(true)
@@ -419,14 +419,14 @@ open class HomeFragment : BaseDaggerFragment(),
             refreshLayout.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(1)) {
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-                homeMainToolbar.showShadow()
+            if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+                homeMainToolbar?.showShadow()
             }
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-                homeMainToolbar.hideShadow()
+            if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+                homeMainToolbar?.hideShadow()
             }
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView.setNestedCanScroll(true)
@@ -527,8 +527,8 @@ open class HomeFragment : BaseDaggerFragment(),
             viewModel.refreshHomeData()
             /*
              * set notification gimmick
-             */if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-            homeMainToolbar.setNotificationNumber(0)
+             */if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+            homeMainToolbar?.setNotificationNumber(0)
         }
         }
         refreshLayout.setOnRefreshListener(this)
@@ -612,7 +612,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchHint() {
-        if (view != null && !viewModel.searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (view != null && !viewModel.searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             viewModel.searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
         }
     }
@@ -732,21 +732,21 @@ open class HomeFragment : BaseDaggerFragment(),
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 150) {
-                homeMainToolbar.switchToDarkToolbar()
+                homeMainToolbar?.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
             } else {
-                homeMainToolbar.switchToLightToolbar()
+                homeMainToolbar?.switchToLightToolbar()
                 if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-                homeMainToolbar.setBackgroundAlpha(offsetAlpha)
+                homeMainToolbar?.setBackgroundAlpha(offsetAlpha)
                 setStatusBarAlpha(offsetAlpha)
             }
         }
@@ -1191,7 +1191,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         if (searchPlaceholder.data != null && searchPlaceholder.data.placeholder != null && searchPlaceholder.data.keyword != null) {
-            homeMainToolbar.setHint(
+            homeMainToolbar?.setHint(
                     searchPlaceholder.data.placeholder,
                     searchPlaceholder.data.keyword,
                     isFirstInstall())
@@ -1491,9 +1491,9 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-            homeMainToolbar.setNotificationNumber(notificationCount)
-            homeMainToolbar.setInboxNumber(inboxCount)
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+            homeMainToolbar?.setNotificationNumber(notificationCount)
+            homeMainToolbar?.setInboxNumber(inboxCount)
         }
     }
     
@@ -1502,9 +1502,11 @@ open class HomeFragment : BaseDaggerFragment(),
         get() {
             var height = 0
             if (homeMainToolbar != null) {
-                height = homeMainToolbar.height
-                if (!homeMainToolbar.isShadowApplied()) {
-                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                height = homeMainToolbar?.height?:0
+                homeMainToolbar?.let {
+                    if (!it.isShadowApplied()) {
+                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                    }
                 }
             }
             return height
