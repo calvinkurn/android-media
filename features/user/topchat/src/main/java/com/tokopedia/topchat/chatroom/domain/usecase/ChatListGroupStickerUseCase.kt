@@ -5,9 +5,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -77,6 +75,12 @@ class ChatListGroupStickerUseCase @Inject constructor(
         return mapOf(
                 paramStickerType to stickerType
         )
+    }
+
+    fun safeCancel() {
+        if (coroutineContext.isActive) {
+            cancel()
+        }
     }
 
     private val query = """

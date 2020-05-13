@@ -6,9 +6,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -55,6 +53,12 @@ class ChatListStickerUseCase @Inject constructor(
                     }
                 }
         )
+    }
+
+    fun safeCancel() {
+        if (coroutineContext.isActive) {
+            cancel()
+        }
     }
 
     private fun saveToCache(stickerUID: String, result: StickerResponse) {

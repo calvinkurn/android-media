@@ -60,6 +60,7 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.cancel
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import okio.ByteString
@@ -502,6 +503,7 @@ class TopChatRoomPresenter @Inject constructor(
             addToCardSubscriber.unsubscribe()
         }
         compressImageSubscription.unsubscribe()
+        groupStickerUseCase.safeCancel()
         super.detachView()
     }
 

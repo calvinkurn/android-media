@@ -67,6 +67,11 @@ class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.cancelAllJobs()
+    }
+
     companion object {
         private val LAYOUT = R.layout.fragment_sticker
 

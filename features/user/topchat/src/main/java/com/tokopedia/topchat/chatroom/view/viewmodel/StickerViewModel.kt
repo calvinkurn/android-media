@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCase
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 class StickerViewModel @Inject constructor(
@@ -19,6 +20,10 @@ class StickerViewModel @Inject constructor(
         chatListUseCase.loadSticker(
                 stickerGroupUID, ::onLoadSticker, ::onSuccessLoadSticker, ::onErrorLoadSticker
         )
+    }
+
+    fun cancelAllJobs() {
+        chatListUseCase.safeCancel()
     }
 
     private fun onLoadSticker(stickers: List<Sticker>) {
