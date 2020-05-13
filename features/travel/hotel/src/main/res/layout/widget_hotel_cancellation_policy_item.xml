@@ -61,7 +61,7 @@
             app:typographyType="heading_5"
             tools:text="Biaya pembatalan Rp400.000"
             android:lineSpacingExtra="@dimen/layout_lvl0"
-            android:layout_marginTop="@dimen/dp_minus2"/>
+            android:layout_marginTop="@dimen/hotel_minus2dp"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_cancellation_policy_item_desc"
