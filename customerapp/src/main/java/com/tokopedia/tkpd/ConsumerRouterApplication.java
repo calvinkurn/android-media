@@ -465,6 +465,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getReviewSellerFragment() {
+        return null;
+    }
+
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
+    @Override
+    public void actionApplink(Activity activity, String linkUrl) {
+        goToApplinkActivity(activity, linkUrl, new Bundle());
+    }
+
+    @Override
+    public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
+        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, mobileUrl);
+    }
+
+    @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return OrderHistoryActivity.createInstance(context, orderId, 1);
     }

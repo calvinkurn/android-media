@@ -3,6 +3,7 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.reviewseller.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SortListAdapter
@@ -31,6 +32,32 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
             tracking.eventClickCloseBottomSheetSortFilter(userSession.shopId.orEmpty(), productID.toString())
             dismiss()
         }
+
+        setShowListener {
+            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(view: View, slideOffset: Float) {
+                }
+
+                override fun onStateChanged(view: View, state: Int) {
+                    if (state == BottomSheetBehavior.STATE_COLLAPSED || state == BottomSheetBehavior.STATE_HIDDEN) {
+                        //down
+                        if (state == BottomSheetBehavior.STATE_HIDDEN) {
+                            tracking.eventSwipeBottomSheetSortFilterTopics(
+                                    userSession.shopId.orEmpty(),
+                                    productID.toString(), "down")
+                            dismiss()
+                        }
+                    } else if (state == BottomSheetBehavior.STATE_EXPANDED || state == BottomSheetBehavior.STATE_DRAGGING) {
+                        //up
+                        if(state == BottomSheetBehavior.STATE_EXPANDED) {
+                            tracking.eventSwipeBottomSheetSortFilterTopics(
+                                    userSession.shopId.orEmpty(),
+                                    productID.toString(), "up")
+                        }
+                    }
+                }
+            })
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,7 +72,7 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
         sortAdapter?.setSortFilter(sortTopicData)
         rvSortFilter?.adapter = sortAdapter
 
-        if(filterTopicData.isEmpty()) {
+        if (filterTopicData.isEmpty()) {
             tvTopicTitle?.hide()
         }
         topicAdapter?.setTopicFilter(filterTopicData)

@@ -5,7 +5,6 @@
     android:id="@+id/filter_and_sort_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:paddingTop="@dimen/spacing_lvl3"
     android:paddingBottom="@dimen/spacing_lvl3"
     android:paddingLeft="@dimen/spacing_lvl4"

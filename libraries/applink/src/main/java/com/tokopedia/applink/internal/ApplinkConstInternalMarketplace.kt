@@ -304,4 +304,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
 
+    @JvmField
+    val ARGS_SHOP_ID = "ARGS_SHOP_ID"
+
+    @JvmField
+    val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
+
 }

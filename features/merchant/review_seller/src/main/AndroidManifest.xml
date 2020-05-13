@@ -10,8 +10,7 @@
             android:name=".feature.reviewlist.view.activity.SellerReviewListActivity"
             android:label="@string/review_text"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

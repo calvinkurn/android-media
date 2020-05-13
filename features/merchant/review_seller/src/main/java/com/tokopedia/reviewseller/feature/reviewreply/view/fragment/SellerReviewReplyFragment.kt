@@ -265,7 +265,6 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
     }
 
 
-
     private fun initBottomSheetReplyReview() {
         val optionMenuReport = context?.let { SellerReviewReplyMapper.mapToItemUnifyMenuReport(it) }
         optionMenuReport?.let { optionMenuReplyReview?.setData(it) }
@@ -283,7 +282,10 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
                         0 -> {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSesion.shopId)
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID)
+                            startActivity(intent)
                         }
                     }
                 }

@@ -22,7 +22,7 @@ class FeedbackItemReply : BaseCustomView {
 
     companion object {
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        private const val isAutoReply = "false"
+        private const val isAutoReply = false
     }
 
     private val replyReviewFeedbackImageAdapter by lazy {

@@ -17,7 +17,7 @@ import dagger.Provides
 import javax.inject.Named
 
 @ReviewProductListScope
-@Module(includes = [ReviewProductListViewModelModule::class])
+@Module
 class ReviewProductListModule {
 
     @ReviewProductListScope

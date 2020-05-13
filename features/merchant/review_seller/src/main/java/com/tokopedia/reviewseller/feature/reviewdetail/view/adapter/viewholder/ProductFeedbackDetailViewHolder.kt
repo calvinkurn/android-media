@@ -31,7 +31,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         val LAYOUT = R.layout.item_product_feedback_detail
         const val REPLY_MAX_CHAR = 100
         const val FEEDBACK_MAX_CHAR = 150
-        private const val isAutoReply = "false"
+        private const val isAutoReply = false
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     }
 

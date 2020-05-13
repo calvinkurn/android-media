@@ -239,7 +239,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
             override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
                 coachMark.enableSkip = false
-
                 return false
             }
         })
@@ -517,7 +516,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                             tracking.eventClickReportOnBottomSheet(userSession.shopId.orEmpty(),
                                     productID.toString(),
                                     data.feedbackID.toString())
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSession.shopId)
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, data.feedbackID)
+                            startActivity(intent)
                         }
                     }
                 }
