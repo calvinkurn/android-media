@@ -243,8 +243,6 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setAllItemError(true);
         }
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
-        shipmentCartItemModel.setWarning(groupShop.isWarning());
-        shipmentCartItemModel.setWarningTitle(groupShop.getWarningMessage());
 
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());

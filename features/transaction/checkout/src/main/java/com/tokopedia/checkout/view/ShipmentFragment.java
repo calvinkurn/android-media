@@ -39,7 +39,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;

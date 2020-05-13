@@ -5,15 +5,6 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-
-import com.google.android.material.textfield.TextInputLayout;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -31,27 +22,34 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.utils.WeightFormatterUtil;
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
+import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.checkout.utils.WeightFormatterUtil;
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
-import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -99,7 +97,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout layoutError;
     private Ticker tickerError;
     private LinearLayout layoutWarning;
-    private Ticker tickerWarning;
     private Typography tvShopName;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
@@ -258,7 +255,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutError = itemView.findViewById(R.id.layout_error);
         tickerError = itemView.findViewById(R.id.ticker_error);
         layoutWarning = itemView.findViewById(R.id.layout_warning);
-        tickerWarning = itemView.findViewById(R.id.ticker_warning);
+        layoutWarning.setVisibility(View.GONE);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
@@ -455,13 +452,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderErrorAndWarning(ShipmentCartItemModel shipmentCartItemModel) {
-        if (shipmentCartItemModel.isWarning() || shipmentCartItemModel.isError()) {
+        if (shipmentCartItemModel.isError()) {
             layoutWarningAndError.setVisibility(View.VISIBLE);
         } else {
             layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
-        renderWarnings(shipmentCartItemModel);
     }
 
     private void renderShippingType(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, ArrayList<ShowCaseObject> showCaseObjectList) {
@@ -1553,26 +1549,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             etShipperPhone.setClickable(true);
             etShipperPhone.setFocusable(true);
             etShipperPhone.setFocusableInTouchMode(true);
-        }
-    }
-
-    private void renderWarnings(ShipmentCartItemModel shipmentCartItemModel) {
-        if (shipmentCartItemModel.isWarning()) {
-            String warningDescription = shipmentCartItemModel.getWarningDescription();
-            if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarning.setTickerTitle(shipmentCartItemModel.getWarningTitle());
-                tickerWarning.setTextDescription(warningDescription);
-            } else {
-                tickerWarning.setTextDescription(shipmentCartItemModel.getWarningTitle());
-            }
-            tickerWarning.setTickerType(Ticker.TYPE_WARNING);
-            tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerWarning.setCloseButtonVisibility(View.GONE);
-            tickerWarning.setVisibility(View.VISIBLE);
-            layoutWarning.setVisibility(View.VISIBLE);
-        } else {
-            layoutWarning.setVisibility(View.GONE);
-            tickerWarning.setVisibility(View.GONE);
         }
     }
 

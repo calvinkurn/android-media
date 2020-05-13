@@ -13,9 +13,6 @@ public class GroupAddress {
     @SerializedName("errors")
     @Expose
     private List<String> errors = new ArrayList<>();
-    @SerializedName("messages")
-    @Expose
-    private List<String> messages = new ArrayList<>();
     @SerializedName("user_address")
     @Expose
     private UserAddress userAddress;
@@ -35,7 +32,4 @@ public class GroupAddress {
         return groupShop;
     }
 
-    public List<String> getMessages() {
-        return messages;
-    }
 }

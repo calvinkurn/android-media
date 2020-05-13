@@ -18,7 +18,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       donation_checkbox_status
       group_address {
         errors
-        # messages
         user_address {
           address_id
           address_name
@@ -42,7 +41,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
         }
         group_shop {
           errors
-          # messages
           shipping_id
           sp_id
           is_insurance

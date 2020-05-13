@@ -12,27 +12,8 @@ import java.util.List;
 public class GroupAddress implements Parcelable {
     private boolean isError;
     private String errorMessage;
-    private boolean isWarning;
-    private String warningMessage;
-
     private UserAddress userAddress;
     private List<GroupShop> groupShop = new ArrayList<>();
-
-    public boolean isWarning() {
-        return isWarning;
-    }
-
-    public void setWarning(boolean warning) {
-        isWarning = warning;
-    }
-
-    public String getWarningMessage() {
-        return warningMessage;
-    }
-
-    public void setWarningMessage(String warningMessage) {
-        this.warningMessage = warningMessage;
-    }
 
     public boolean isError() {
         return isError;
@@ -80,8 +61,6 @@ public class GroupAddress implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
-        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
-        dest.writeString(this.warningMessage);
         dest.writeParcelable(this.userAddress, flags);
         dest.writeTypedList(this.groupShop);
     }
@@ -89,8 +68,6 @@ public class GroupAddress implements Parcelable {
     protected GroupAddress(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
-        this.isWarning = in.readByte() != 0;
-        this.warningMessage = in.readString();
         this.userAddress = in.readParcelable(UserAddress.class.getClassLoader());
         this.groupShop = in.createTypedArrayList(GroupShop.CREATOR);
     }

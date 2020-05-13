@@ -397,8 +397,6 @@ public class ShipmentMapper implements IShipmentMapper {
                     GroupAddress groupAddressResult = new GroupAddress();
                     groupAddressResult.setError(!UtilsKt.isNullOrEmpty(groupAddress.getErrors()));
                     groupAddressResult.setErrorMessage(UtilsKt.convertToString(groupAddress.getErrors()));
-                    groupAddressResult.setWarning(!UtilsKt.isNullOrEmpty(groupAddress.getMessages()));
-                    groupAddressResult.setWarningMessage(UtilsKt.convertToString(groupAddress.getMessages()));
 
                     if (groupAddress.getUserAddress() != null) {
                         com.tokopedia.checkout.domain.model.cartshipmentform.UserAddress userAddressResult =
@@ -435,8 +433,6 @@ public class ShipmentMapper implements IShipmentMapper {
 
                             groupShopResult.setError(!UtilsKt.isNullOrEmpty(groupShop.getErrors()));
                             groupShopResult.setErrorMessage(UtilsKt.convertToString(groupShop.getErrors()));
-                            groupShopResult.setWarning(!UtilsKt.isNullOrEmpty(groupShop.getMessages()));
-                            groupShopResult.setWarningMessage(UtilsKt.convertToString(groupShop.getMessages()));
 
                             groupShopResult.setShippingId(groupShop.getShippingId());
                             groupShopResult.setSpId(groupShop.getSpId());
@@ -763,12 +759,12 @@ public class ShipmentMapper implements IShipmentMapper {
     private boolean checkCartHasError(CartShipmentAddressFormData cartShipmentAddressFormData) {
         boolean hasError = false;
         for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
-            if (groupAddress.isError() || groupAddress.isWarning()) {
+            if (groupAddress.isError()) {
                 hasError = true;
                 break;
             }
             for (GroupShop groupShop : groupAddress.getGroupShop()) {
-                if (groupShop.isError() || groupShop.isWarning()) {
+                if (groupShop.isError()) {
                     hasError = true;
                     break;
                 }

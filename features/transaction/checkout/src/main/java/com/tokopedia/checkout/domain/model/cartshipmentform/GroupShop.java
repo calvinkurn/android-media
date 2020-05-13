@@ -14,8 +14,6 @@ import java.util.List;
 public class GroupShop implements Parcelable {
     private boolean isError;
     private String errorMessage;
-    private boolean isWarning;
-    private String warningMessage;
 
     private Shop shop;
     private List<ShopShipment> shopShipments = new ArrayList<>();
@@ -52,22 +50,6 @@ public class GroupShop implements Parcelable {
 
     public void setShopShipments(List<ShopShipment> shopShipments) {
         this.shopShipments = shopShipments;
-    }
-
-    public boolean isWarning() {
-        return isWarning;
-    }
-
-    public void setWarning(boolean warning) {
-        isWarning = warning;
-    }
-
-    public String getWarningMessage() {
-        return warningMessage;
-    }
-
-    public void setWarningMessage(String warningMessage) {
-        this.warningMessage = warningMessage;
     }
 
     public List<Product> getProducts() {
@@ -198,8 +180,6 @@ public class GroupShop implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
-        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
-        dest.writeString(this.warningMessage);
         dest.writeParcelable(this.shop, flags);
         dest.writeTypedList(this.shopShipments);
         dest.writeTypedList(this.products);
@@ -222,8 +202,6 @@ public class GroupShop implements Parcelable {
     protected GroupShop(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
-        this.isWarning = in.readByte() != 0;
-        this.warningMessage = in.readString();
         this.shop = in.readParcelable(Shop.class.getClassLoader());
         this.shopShipments = in.createTypedArrayList(ShopShipment.CREATOR);
         this.products = in.createTypedArrayList(Product.CREATOR);

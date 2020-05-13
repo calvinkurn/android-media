@@ -22,9 +22,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean isError;
     private String errorTitle;
     private String errorDescription;
-    private boolean isWarning;
-    private String warningTitle;
-    private String warningDescription;
 
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
@@ -106,9 +103,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isError = in.readByte() != 0;
         errorTitle = in.readString();
         errorDescription = in.readString();
-        isWarning = in.readByte() != 0;
-        warningTitle = in.readString();
-        warningDescription = in.readString();
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
@@ -164,9 +158,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorTitle);
         dest.writeString(errorDescription);
-        dest.writeByte((byte) (isWarning ? 1 : 0));
-        dest.writeString(warningTitle);
-        dest.writeString(warningDescription);
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
@@ -242,9 +233,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setErrorDescription(shipmentCartItemModel.getErrorDescription());
         newShipmentCartItemModel.setError(shipmentCartItemModel.isError());
         newShipmentCartItemModel.setWeightUnit(shipmentCartItemModel.getWeightUnit());
-        newShipmentCartItemModel.setWarningTitle(shipmentCartItemModel.getWarningTitle());
-        newShipmentCartItemModel.setWarningDescription(shipmentCartItemModel.getWarningDescription());
-        newShipmentCartItemModel.setWarning(shipmentCartItemModel.isWarning());
         newShipmentCartItemModel.setUnixTime(shipmentCartItemModel.getUnixTime());
         newShipmentCartItemModel.setTokenPickup(shipmentCartItemModel.getTokenPickup());
         newShipmentCartItemModel.setStateDetailSubtotalViewExpanded(shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
@@ -318,30 +306,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
-    }
-
-    public String getWarningDescription() {
-        return warningDescription;
-    }
-
-    public void setWarningDescription(String warningDescription) {
-        this.warningDescription = warningDescription;
-    }
-
-    public boolean isWarning() {
-        return isWarning;
-    }
-
-    public void setWarning(boolean warning) {
-        isWarning = warning;
-    }
-
-    public String getWarningTitle() {
-        return warningTitle;
-    }
-
-    public void setWarningTitle(String warningTitle) {
-        this.warningTitle = warningTitle;
     }
 
     public int getShopId() {
@@ -729,7 +693,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         return new EqualsBuilder()
                 .append(isAllItemError(), that.isAllItemError())
                 .append(isError(), that.isError())
-                .append(isWarning(), that.isWarning())
                 .append(getShopId(), that.getShopId())
                 .append(isGoldMerchant(), that.isGoldMerchant())
                 .append(isOfficialStore(), that.isOfficialStore())
@@ -739,8 +702,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isProductIsPreorder(), that.isProductIsPreorder())
                 .append(getErrorTitle(), that.getErrorTitle())
                 .append(getErrorDescription(), that.getErrorDescription())
-                .append(getWarningTitle(), that.getWarningTitle())
-                .append(getWarningDescription(), that.getWarningDescription())
                 .append(getShopName(), that.getShopName())
                 .append(getCartItemModels(), that.getCartItemModels())
                 .append(getDestinationDistrictId(), that.getDestinationDistrictId())
@@ -761,9 +722,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isError())
                 .append(getErrorTitle())
                 .append(getErrorDescription())
-                .append(isWarning())
-                .append(getWarningTitle())
-                .append(getWarningDescription())
                 .append(getShopId())
                 .append(getShopName())
                 .append(isGoldMerchant())
