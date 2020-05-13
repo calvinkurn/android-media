@@ -13,7 +13,7 @@ class StockHandlerAnalytics {
         val eventAction = "impression on restock handler product card"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val impressions = mapOf(
+        val impressions = hashMapOf(
                 "name" to element.getAtcProduct()?.name,
                 "id" to element.getAtcProduct()?.productId,
                 "price" to element.getAtcProduct()?.price,
@@ -24,7 +24,7 @@ class StockHandlerAnalytics {
                 "position" to "0",
                 "dimension79" to element.getAtcProduct()?.shop?.id
         )
-        val ecommerce = mapOf(
+        val ecommerce = hashMapOf(
                 KEY_CURRENCY_CODE to VALUE_CURRENCY_CODE,
                 KEY_IMPRESSIONS to listOf(impressions)
         )
@@ -45,16 +45,16 @@ class StockHandlerAnalytics {
         val eventAction = "click on restock product card"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val product = layerMapOf(
-                "name", element.getAtcProduct()?.name,
-                "id", element.getAtcProduct()?.productId,
-                "price", element.getAtcProduct()?.price,
-                "brand", "",
-                "category", "",
-                "variant", "",
-                "list", "/notifcenter",
-                "position", "0",
-                "dimension79", element.getAtcProduct()?.shop?.id?: ""
+        val product = hashMapOf(
+                "name" to element.getAtcProduct()?.name,
+                "id" to element.getAtcProduct()?.productId,
+                "price" to element.getAtcProduct()?.price,
+                "brand" to "",
+                "category" to "",
+                "variant" to "",
+                "list" to "/notifcenter",
+                "position" to "0",
+                "dimension79" to element.getAtcProduct()?.shop?.id
         )
         val click = mapOf(
                 KEY_ACTION_FIELD to mapOf(
@@ -96,21 +96,21 @@ class StockHandlerAnalytics {
         val eventAction = "click on restock product ATC"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val items = layerMapOf(
-                "item_name", element.getAtcProduct()?.name,
-                "item_id", element.getAtcProduct()?.productId,
-                "price", element.getAtcProduct()?.price,
-                "item_brand", "",
-                "item_category", "none / other",
-                "item_variant", element.getAtcProduct()?.variant,
-                "list", "/notifcenter",
-                "quantity", "1",
-                "dimension69", element.getAtcProduct()?.shop?.id?: "",
-                "dimension71", "",
-                "dimension70", element.getAtcProduct()?.shop?.name?: "",
-                "category_id", "",
-                "dimension42", cartId,
-                "dimension39", "/notifcenter"
+        val items = hashMapOf(
+                "item_name" to element.getAtcProduct()?.name,
+                "item_id" to element.getAtcProduct()?.productId,
+                "price" to element.getAtcProduct()?.price,
+                "item_brand" to "",
+                "item_category" to "none / other",
+                "item_variant" to element.getAtcProduct()?.variant,
+                "list" to "/notifcenter",
+                "quantity" to "1",
+                "dimension69" to element.getAtcProduct()?.shop?.id,
+                "dimension71" to "",
+                "dimension70" to element.getAtcProduct()?.shop?.name,
+                "category_id" to "",
+                "dimension42" to cartId,
+                "dimension39" to "/notifcenter"
         )
 
         val dataTracker = layerMapOf(
@@ -119,7 +119,7 @@ class StockHandlerAnalytics {
                 KEY_EVENT_ACTION, eventAction,
                 KEY_EVENT_LABEL, eventLabel,
                 KEY_USER_ID, userId,
-                KEY_EVENT_ITEMS, listOf(items)
+                KEY_EVENT_ITEMS, mutableListOf(items)
         )
         send(dataTracker)
     }
