@@ -75,6 +75,10 @@ ext {
     chuckerVersion = '3.0.1'
     sliceVersion = '1.0.0-alpha6'
 
+    benchmarkTestVersion = '1.0.0'
+    testCore = '1.2.0'
+    fragmentTest = "1.1.0"
+
     debugToolsEnabled = true
 
     debugToolsEnabled = true
@@ -289,7 +293,10 @@ ext {
             junitPlatformRunner   : "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting       : "androidx.arch.core:core-testing:$lifeCycleVersion",
             couroutinesTest       : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion",
-            json                  : "org.json:json:20140107"
+            json                  : "org.json:json:20140107",
+            benchmark             : "androidx.benchmark:benchmark-junit4:$benchmarkTestVersion",
+            testCore              : "androidx.test:core:$testCore",
+            fragmentTest          : "androidx.fragment:fragment-testing:$fragmentTest"
     ]
 
     debugToolsDependencies = [
