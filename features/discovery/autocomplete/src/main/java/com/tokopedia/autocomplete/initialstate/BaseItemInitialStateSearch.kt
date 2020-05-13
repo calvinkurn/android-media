@@ -23,7 +23,7 @@ data class BaseItemInitialStateSearch(
                 "price", "",
                 "brand", "none",
                 "category", "none / other",
-                "variant", "none / other",
+                "variant", "none",
                 "list", "/search - recentview - product",
                 "position", position
         )
