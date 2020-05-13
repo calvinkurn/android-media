@@ -115,6 +115,9 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
             shouldTrackNext = false
     )
 
+    @TrackingField
+    private var watchStartTime: Long? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -306,7 +309,11 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
                 true
             }
-            else -> false
+            else -> {
+                val duration = watchStartTime?.let { it - System.currentTimeMillis() } ?: 0L
+                PlayAnalytics.clickLeaveRoom(channelId, duration, playViewModel.channelType)
+                false
+            }
         }
     }
 
@@ -527,40 +534,9 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.state is PlayVideoState.Error) {
-                PlayAnalytics.errorState(channelId,
-                        "$ERR_STATE_VIDEO: ${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
-                        playViewModel.channelType)
-
-            } else if (it.state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
-                val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
-
-                bufferTrackingModel = BufferTrackingModel(
-                        isBuffering = true,
-                        bufferCount = nextBufferCount,
-                        lastBufferMs = System.currentTimeMillis(),
-                        shouldTrackNext = bufferTrackingModel.shouldTrackNext
-                )
-
-            } else if ((it.state is PlayVideoState.Playing || it.state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
-                if (bufferTrackingModel.shouldTrackNext) {
-                    PlayAnalytics.trackVideoBuffering(
-                            bufferCount = bufferTrackingModel.bufferCount,
-                            bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt(),
-                            userId = userSession.userId,
-                            channelId = channelId,
-                            channelType = playViewModel.channelType
-                    )
-                }
-
-                bufferTrackingModel = bufferTrackingModel.copy(
-                        isBuffering = false,
-                        shouldTrackNext = true
-                )
-            }
-
-            layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
+            handleBufferAnalytics(it.state)
+            handleDurationAnalytics(it.state)
         })
     }
 
@@ -714,5 +690,50 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 view?.background = resource
             }
         })
+    }
+
+    /**
+     * Analytic
+     */
+    private fun handleBufferAnalytics(state: PlayVideoState) {
+        if (state is PlayVideoState.Error) {
+            PlayAnalytics.errorState(channelId,
+                    "$ERR_STATE_VIDEO: ${state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
+                    playViewModel.channelType)
+
+        } else if (state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
+            val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
+
+            bufferTrackingModel = BufferTrackingModel(
+                    isBuffering = true,
+                    bufferCount = nextBufferCount,
+                    lastBufferMs = System.currentTimeMillis(),
+                    shouldTrackNext = bufferTrackingModel.shouldTrackNext
+            )
+
+        } else if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
+            if (bufferTrackingModel.shouldTrackNext) {
+                PlayAnalytics.trackVideoBuffering(
+                        bufferCount = bufferTrackingModel.bufferCount,
+                        bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt(),
+                        userId = userSession.userId,
+                        channelId = channelId,
+                        channelType = playViewModel.channelType
+                )
+            }
+
+            bufferTrackingModel = bufferTrackingModel.copy(
+                    isBuffering = false,
+                    shouldTrackNext = true
+            )
+        }
+
+        layoutManager.onVideoStateChanged(requireView(), state, playViewModel.videoOrientation)
+    }
+
+    private fun handleDurationAnalytics(state: PlayVideoState) {
+        if (state is PlayVideoState.Playing && watchStartTime == null) {
+            watchStartTime = System.currentTimeMillis()
+        }
     }
 }

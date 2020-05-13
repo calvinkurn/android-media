@@ -855,7 +855,6 @@ class PlayUserInteractionFragment :
     }
 
     private fun doLeaveRoom() {
-        PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.channelType)
         activity?.onBackPressed()
     }
 
