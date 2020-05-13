@@ -24,7 +24,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.home.util.setGradientBackground
-import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -273,7 +272,7 @@ class MixTopBannerViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardFlashSaleModel>) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -281,7 +280,7 @@ class MixTopBannerViewHolder(
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
