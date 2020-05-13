@@ -128,7 +128,7 @@ class TopChatViewStateImpl(
     }
 
     private fun setupChatStickerMenu() {
-        chatMenu?.setStickerListener(stickerMenuListener)
+        chatMenu?.setStickerMenuListener(stickerMenuListener)
         chatStickerMenuButton?.setOnClickListener {
             chatMenu?.toggleStickerMenu()
         }

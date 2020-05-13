@@ -12,11 +12,15 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.StickerRecyclerView
 import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
 import javax.inject.Inject
 
-class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
+class StickerFragment(
+        contentLayoutId: Int,
+        private val stickerListener: StickerViewHolder.Listener?
+) : Fragment(contentLayoutId) {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,7 +49,12 @@ class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewBind(view)
+        initStickerListener()
         viewModel.loadStickers(stickerGroupUID, stickerNeedUpdate)
+    }
+
+    private fun initStickerListener() {
+        stickerList?.stickerAdapter?.stickerListener = stickerListener
     }
 
     private fun initViewBind(view: View) {
@@ -84,12 +93,16 @@ class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         private const val keyStickerGroupUID = "stickerGroupUID"
         private const val keyStickerNeedUpdate = "stickerNeedUpdate"
 
-        fun create(stickerGroup: StickerGroup, needUpdate: Boolean): StickerFragment {
+        fun create(
+                stickerGroup: StickerGroup,
+                needUpdate: Boolean,
+                stickerListener: StickerViewHolder.Listener?
+        ): StickerFragment {
             val bundle = Bundle().apply {
                 putString(keyStickerGroupUID, stickerGroup.groupUUID)
                 putBoolean(keyStickerNeedUpdate, needUpdate)
             }
-            return StickerFragment(LAYOUT).apply {
+            return StickerFragment(LAYOUT, stickerListener).apply {
                 arguments = bundle
             }
         }

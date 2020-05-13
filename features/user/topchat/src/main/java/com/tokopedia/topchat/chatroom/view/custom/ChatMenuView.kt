@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 
 class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderListener {
 
@@ -129,8 +130,12 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
         attachmentMenu?.addVoucherAttachmentMenu()
     }
 
-    fun setStickerListener(stickerMenuListener: ChatMenuStickerView.StickerMenuListener?) {
-        stickerMenu?.listener = stickerMenuListener
+    fun setStickerMenuListener(stickerMenuListener: ChatMenuStickerView.StickerMenuListener?) {
+        stickerMenu?.menuListener = stickerMenuListener
+    }
+
+    fun setStickerListener(listener: StickerViewHolder.Listener) {
+        stickerMenu?.stickerListener = listener
     }
 
     companion object {

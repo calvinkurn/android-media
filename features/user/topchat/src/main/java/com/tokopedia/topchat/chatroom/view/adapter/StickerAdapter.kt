@@ -9,6 +9,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 
 class StickerAdapter : RecyclerView.Adapter<StickerViewHolder>() {
 
+    var stickerListener: StickerViewHolder.Listener? = null
     var stickers: List<Sticker> = emptyList()
         set(value) {
             val diffUtil = StickerDiffUtil(field, value)
@@ -20,7 +21,7 @@ class StickerAdapter : RecyclerView.Adapter<StickerViewHolder>() {
     override fun getItemCount(): Int = stickers.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StickerViewHolder {
-        return StickerViewHolder.create(parent)
+        return StickerViewHolder.create(parent, stickerListener)
     }
 
     override fun onBindViewHolder(holder: StickerViewHolder, position: Int) {

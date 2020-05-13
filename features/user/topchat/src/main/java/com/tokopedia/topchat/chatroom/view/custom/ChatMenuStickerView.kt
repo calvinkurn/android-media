@@ -12,10 +12,12 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.StickerFragmentStateAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 
 class ChatMenuStickerView : LinearLayout {
 
-    var listener: StickerMenuListener? = null
+    var menuListener: StickerMenuListener? = null
+    var stickerListener: StickerViewHolder.Listener? = null
 
     private var stickerViewPager: ViewPager2? = null
     private var stickerViewPagerAdapter: StickerFragmentStateAdapter? = null
@@ -52,8 +54,8 @@ class ChatMenuStickerView : LinearLayout {
 
     private fun initStickerViewPager() {
         if (stickerViewPagerAdapter != null) return
-        listener?.getFragmentActivity()?.let {
-            stickerViewPagerAdapter = StickerFragmentStateAdapter(it)
+        menuListener?.getFragmentActivity()?.let {
+            stickerViewPagerAdapter = StickerFragmentStateAdapter(it, stickerListener)
             stickerViewPager?.adapter = stickerViewPagerAdapter
         }
     }
@@ -61,9 +63,9 @@ class ChatMenuStickerView : LinearLayout {
     override fun setVisibility(visibility: Int) {
         super.setVisibility(visibility)
         if (isVisible) {
-            listener?.onStickerOpened()
+            menuListener?.onStickerOpened()
         } else {
-            listener?.onStickerClosed()
+            menuListener?.onStickerClosed()
         }
     }
 

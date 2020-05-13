@@ -10,7 +10,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.StickerAdapter
 class StickerRecyclerView : RecyclerView {
 
     private val manager = GridLayoutManager(context, 4)
-    private val adapter = StickerAdapter()
+    val stickerAdapter = StickerAdapter()
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -19,11 +19,11 @@ class StickerRecyclerView : RecyclerView {
     init {
         setHasFixedSize(true)
         layoutManager = manager
-        setAdapter(adapter)
+        adapter = stickerAdapter
     }
 
     fun updateSticker(sticker: List<Sticker>) {
-        adapter.stickers = sticker
+        stickerAdapter.stickers = sticker
     }
 
 }

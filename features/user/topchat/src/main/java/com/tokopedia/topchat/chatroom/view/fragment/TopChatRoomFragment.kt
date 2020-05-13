@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -62,12 +63,14 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
@@ -99,7 +102,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
-        TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener {
+        TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
+        StickerViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -141,6 +145,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initStickerView()
         }
     }
 
@@ -148,6 +153,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         composeArea = view?.findViewById(R.id.new_comment)
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
+    }
+
+    private fun initStickerView() {
+        chatMenu?.setStickerListener(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1087,5 +1096,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getFragmentActivity(): FragmentActivity? {
         return activity
+    }
+
+    override fun onClickSticker(sticker: Sticker) {
+        Toast.makeText(context, sticker.stickerUUID, Toast.LENGTH_SHORT).show()
     }
 }
