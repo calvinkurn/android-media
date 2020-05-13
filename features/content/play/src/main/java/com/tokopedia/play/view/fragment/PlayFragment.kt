@@ -21,12 +21,14 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.*
 import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.analytic.TrackingField
+import com.tokopedia.play.analytic.WatchDurationModel
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -84,7 +86,10 @@ class PlayFragment : BaseDaggerFragment() {
     )
     
     @TrackingField
-    private var watchStartTime: Long? = null
+    private var watchDurationModel = WatchDurationModel(
+            watchTime = null,
+            cumulationDuration = 0L
+    )
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -437,8 +442,9 @@ class PlayFragment : BaseDaggerFragment() {
     fun onBackPressed(): Boolean {
         val isHandled = playViewModel.onBackPressed()
         if (!isHandled) {
-            val duration = watchStartTime?.let { abs(System.currentTimeMillis() - it) } ?: 0L
-            PlayAnalytics.clickLeaveRoom(channelId, duration, playViewModel.channelType)
+            val currentWatchDuration = watchDurationModel.watchTime?.let { abs(System.currentTimeMillis() - it) }.orZero()
+            val totalDuration = watchDurationModel.cumulationDuration + currentWatchDuration
+            PlayAnalytics.clickLeaveRoom(channelId, totalDuration, playViewModel.channelType)
         }
         return isHandled
     }
@@ -516,8 +522,16 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun handleDurationAnalytics(state: PlayVideoState) {
-        if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && watchStartTime == null) {
-            watchStartTime = System.currentTimeMillis()
+        if (state is PlayVideoState.Playing) {
+            if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
+                    watchTime = System.currentTimeMillis()
+            )
+        } else {
+            val watchTime = watchDurationModel.watchTime
+            if (watchTime != null) watchDurationModel = watchDurationModel.copy(
+                    watchTime = null,
+                    cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
+            )
         }
     }
 }
