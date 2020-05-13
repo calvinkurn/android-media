@@ -9,6 +9,7 @@ ext {
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
 
+            catalog                         : ":features:category:catalog",
             commonTradein                   : ":features:category:common_tradein",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
