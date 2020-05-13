@@ -40,7 +40,7 @@ class ThankYouPageAnalytics {
         return mutableMapOf(
                 ParentTrackingKey.KEY_EVENT to thanksPageData.event,
                 ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
-                ParentTrackingKey.KEY_EVENT_ACTION to thanksPageData.eventAction,
+                ParentTrackingKey.KEY_EVENT_ACTION to shopOrder.storeType,
                 ParentTrackingKey.KEY_EVENT_LABEL to thanksPageData.eventLabel,
                 ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
                 ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
