@@ -1,16 +1,24 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class ChatListStickerUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<StickerResponse>,
-        private val cacheManager: TopchatCacheManager
-) {
+        private val cacheManager: TopchatCacheManager,
+        private var dispatchers: TopchatCoroutineContextProvider
+) : CoroutineScope {
 
+    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
     private val cacheKey = ChatListStickerUseCase::class.java.simpleName
     private val paramGroupUID = "groupUUID"
     private val paramLimit = "limit"
@@ -22,30 +30,42 @@ class ChatListStickerUseCase @Inject constructor(
             onSuccess: (List<Sticker>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        val params = generateParams(stickerUID)
-        getCacheStickerGroup()?.also {
-            onLoading(it.chatBundleSticker.list)
-        }
-        gqlUseCase.apply {
-            setTypeClass(StickerResponse::class.java)
-            setRequestParams(params)
-            setGraphqlQuery(query)
-            execute({ result ->
-                saveToCache(result)
-                onSuccess(result.chatBundleSticker.list)
-            }, { error ->
-                onError(error)
-            })
-        }
+        launchCatchError(
+                dispatchers.IO,
+                {
+                    val params = generateParams(stickerUID)
+                    getCacheStickerGroup(stickerUID)?.also {
+                        withContext(dispatchers.Main) {
+                            onLoading(it.chatBundleSticker.list)
+                        }
+                    }
+                    val response = gqlUseCase.apply {
+                        setTypeClass(StickerResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    saveToCache(stickerUID, response)
+                    withContext(dispatchers.Main) {
+                        onSuccess(response.chatBundleSticker.list)
+                    }
+                },
+                { exception ->
+                    withContext(dispatchers.Main) {
+                        onError(exception)
+                    }
+                }
+        )
     }
 
-    private fun saveToCache(result: StickerResponse) {
-        cacheManager.saveCache(cacheKey, result)
+    private fun saveToCache(stickerUID: String, result: StickerResponse) {
+        val key = generateCacheKey(stickerUID)
+        cacheManager.saveCache(key, result)
     }
 
-    private fun getCacheStickerGroup(): StickerResponse? {
+    private fun getCacheStickerGroup(stickerUID: String): StickerResponse? {
         try {
-            return cacheManager.loadCache(cacheKey, StickerResponse::class.java)
+            val key = generateCacheKey(stickerUID)
+            return cacheManager.loadCache(key, StickerResponse::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -57,6 +77,10 @@ class ChatListStickerUseCase @Inject constructor(
                 paramGroupUID to stickerUID,
                 paramLimit to defaultParamLimit
         )
+    }
+
+    private fun generateCacheKey(stickerUID: String): String {
+        return "$cacheKey - $stickerUID"
     }
 
     private val query = """

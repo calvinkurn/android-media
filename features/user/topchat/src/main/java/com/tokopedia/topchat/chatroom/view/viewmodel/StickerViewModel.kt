@@ -29,8 +29,6 @@ class StickerViewModel @Inject constructor(
         _stickers.value = stickers
     }
 
-    private fun onErrorLoadSticker(throwable: Throwable) {
-
-    }
+    private fun onErrorLoadSticker(throwable: Throwable) { }
 
 }
