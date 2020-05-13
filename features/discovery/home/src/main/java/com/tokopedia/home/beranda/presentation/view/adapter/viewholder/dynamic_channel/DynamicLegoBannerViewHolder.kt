@@ -44,11 +44,10 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         when(getLayoutType(channel)) {
             TYPE_SIX_GRID_LEGO -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
-                    context, applink, channel.id)
-            TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, channel.header.name, channel.id)
+                    channel.header.name, channel.id)
+            TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(channel.header.name, channel.id)
             TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channel))
-            else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
-                    context, applink, channel.id)
+            else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(channel.header.name, channel.id)
         }
     }
 

@@ -202,6 +202,8 @@ object ApplinkConstInternalMarketplace {
     //Report Product
     @JvmField
     val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
+    @JvmField
+    val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
     // ShopScoreDetailActivity
     @JvmField
@@ -234,9 +236,14 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val SHOP_PAGE_SETTING = "$INTERNAL_MARKETPLACE/shop-page-setting"
+
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
+
+    // OrderHistoryActivity
+    @JvmField
+    val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history/{shop_id}/"
 
     // DashboardActivity
     @JvmField

@@ -12,12 +12,12 @@ import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightSelectPassengerFragment;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 
 public class FlightSelectPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightDashboardComponent>, FlightSelectPassengerFragment.OnFragmentInteractionListener {
     public static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
-    public static Intent getCallingIntent(Context context, FlightPassengerViewModel viewModel) {
+    public static Intent getCallingIntent(Context context, FlightPassengerModel viewModel) {
         Intent intent = new Intent(context, FlightSelectPassengerActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, viewModel);
         return intent;
@@ -25,7 +25,7 @@ public class FlightSelectPassengerActivity extends BaseSimpleActivity implements
 
     @Override
     protected Fragment getNewFragment() {
-        FlightPassengerViewModel passengerPassData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+        FlightPassengerModel passengerPassData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
         return FlightSelectPassengerFragment.newInstance(passengerPassData);
     }
 
@@ -43,7 +43,7 @@ public class FlightSelectPassengerActivity extends BaseSimpleActivity implements
     }
 
     @Override
-    public void actionSavePassenger(FlightPassengerViewModel passData) {
+    public void actionSavePassenger(FlightPassengerModel passData) {
         setIntent(getIntent().putExtra(EXTRA_PASS_DATA, passData));
         setResult(RESULT_OK, getIntent());
         finish();

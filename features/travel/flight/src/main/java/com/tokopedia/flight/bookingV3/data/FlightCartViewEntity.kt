@@ -1,6 +1,6 @@
 package com.tokopedia.flight.bookingV3.data
 
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import java.util.*
 
 /**
@@ -10,8 +10,8 @@ import java.util.*
 data class FlightCartViewEntity(
         var journeySummaries: List<JourneySummary> = listOf(),
         var insurances: List<FlightCart.Insurance> = listOf(),
-        var luggageModels: ArrayList<FlightBookingAmenityMetaViewModel> = arrayListOf(),
-        var mealModels: ArrayList<FlightBookingAmenityMetaViewModel> = arrayListOf(),
+        var luggageModels: ArrayList<FlightBookingAmenityMetaModel> = arrayListOf(),
+        var mealModels: ArrayList<FlightBookingAmenityMetaModel> = arrayListOf(),
         var orderDueTimeStamp: Date = Date(),
         var isRefreshCart: Boolean = false
 ) {

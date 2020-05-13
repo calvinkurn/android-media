@@ -272,6 +272,16 @@ class ShopPageFragment :
                 }
             }
         })
+
+        shopViewModel.shopTickerData.observe(this, Observer { response ->
+            when(response){
+                is Success -> shopPageFragmentHeaderViewHolder.updateShopTicker(
+                        response.data.first,
+                        response.data.second,
+                        isMyShop
+                )
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -557,8 +567,6 @@ class ShopPageFragment :
                 }
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
-            shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
-
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
@@ -688,7 +696,7 @@ class ShopPageFragment :
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
-            errorButton.setOnClickListener { getShopInfo() }
+            errorButton.setOnClickListener { getShopInfo(true) }
             swipeToRefresh.isRefreshing = false
         }
     }

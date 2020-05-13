@@ -1,29 +1,30 @@
 package com.tokopedia.report.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.MerchantReportComponent
+import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_report.*
 import javax.inject.Inject
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.report.data.util.MerchantReportTracking
-import com.tokopedia.report.view.activity.ProductReportFormActivity
 
 
 class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReasonClick {
@@ -72,8 +73,9 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
             when(it){
                 is Success -> onSuccessGetReason(it.data)
                 is Fail -> activity?.run {
-                    ToasterError.showClose(this, ErrorHandler.getErrorMessage(this,
-                            it.throwable))
+                    Toaster.make(findViewById(android.R.id.content), ErrorHandler.getErrorMessage(this,
+                            it.throwable), Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                            getString(com.tokopedia.abstraction.R.string.close))
                 }
             }
         })
