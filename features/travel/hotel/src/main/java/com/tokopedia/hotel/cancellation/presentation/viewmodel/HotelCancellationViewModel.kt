@@ -41,10 +41,10 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
 
     fun getCancellationData(query: String, invoiceId: String, fromCloud: Boolean = true) {
         val params = mapOf(GET_CANCELLATION_DATA_PARAM to HotelCancellationParam(invoiceId))
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (fromCloud)CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
-        graphqlUseCase.clearRequest()
 
         launchCatchError(block = {
+            graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (fromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
+            graphqlUseCase.clearRequest()
             val graphqlRequest = GraphqlRequest(query, HotelCancellationModel.Response::class.java, params)
             graphqlUseCase.addRequest(graphqlRequest)
 
