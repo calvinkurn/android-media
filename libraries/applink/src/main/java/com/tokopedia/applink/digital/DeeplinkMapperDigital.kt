@@ -95,6 +95,6 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
 
-        return UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD, paramValue)
+        return UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, paramValue)
     }
 }

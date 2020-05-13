@@ -9,6 +9,7 @@ object ApplinkConsInternalDigital {
     const val HOME_RECHARGE = "home"
 
     const val PARAM_SMARTCARD = "calling_page_check_saldo"
+    const val COUNTER_SMARTCARD = "calling_page_check_saldo"
 
     const val INTERNAL_DIGITAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL"
     const val INTERNAL_RECHARGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RECHARGE"
@@ -20,7 +21,8 @@ object ApplinkConsInternalDigital {
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
 
-    const val INTERNAL_SMARTCARD = "$INTERNAL_DIGITAL/smartcard?$PARAM_SMARTCARD={type}"
+    const val INTERNAL_SMARTCARD_EMONEY = "$INTERNAL_DIGITAL/emoney?$PARAM_SMARTCARD={type}"
+    const val INTERNAL_SMARTCARD_BRIZZI = "$INTERNAL_DIGITAL/brizzi?$PARAM_SMARTCARD={type}"
 
     const val DIGITAL_PRODUCT_FORM = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form"
     const val DIGITAL_PRODUCT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form?category_id={category_id}&operator_id={operator_id}"
