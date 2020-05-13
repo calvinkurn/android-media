@@ -146,8 +146,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         registerActivityLifecycleCallbacks();
 
         initBlockCanary();
-
-        AmplificationDataSource.invoke(this);
     }
 
     private void registerActivityLifecycleCallbacks() {
@@ -186,6 +184,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         };
         Weaver.Companion.executeWeaveCoRoutine(postWeave, new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ2_ASYNC, remoteConfig));
+
+        /*
+        * Amplification of push notification.
+        * fetch all of cm_push_notification's
+        * push notification data that aren't rendered yet.
+        * then, put all of push_data into local storage.
+        * */
+        AmplificationDataSource.invoke(this);
     }
 
     private void createAndCallFontLoad(){
