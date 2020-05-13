@@ -18,7 +18,7 @@ data class BaseItemInitialStateSearch(
 ) {
     fun getObjectDataLayerForRecentView(position: Int): Any {
         return DataLayer.mapOf(
-                "name", title,
+                "name", getName(),
                 "id", productId,
                 "price", "",
                 "brand", "none",
@@ -36,5 +36,10 @@ data class BaseItemInitialStateSearch(
                 "creative", title,
                 "position", position
         )
+    }
+
+    private fun getName() : String {
+        return if (title.isEmpty()) "none / other"
+        else title
     }
 }
