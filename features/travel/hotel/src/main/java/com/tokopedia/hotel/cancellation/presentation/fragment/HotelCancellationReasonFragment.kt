@@ -16,14 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
+import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -34,7 +37,7 @@ import javax.inject.Inject
  * @author by jessica on 30/04/20
  */
 
-class HotelCancellationReasonFragment : BaseDaggerFragment() {
+class HotelCancellationReasonFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -52,7 +55,7 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
         }
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(activity as HotelCancellationActivity, viewModelFactory)
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             cancellationViewModel = viewModelProvider.get(HotelCancellationViewModel::class.java)
         }
     }
@@ -62,9 +65,16 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
         (activity as HotelCancellationActivity).updateSubtitle(getString(R.string.hotel_cancellation_page_2_subtitle))
     }
 
+    override fun onErrorRetryClicked() {
+        getCancellationData()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getCancellationData()
+    }
 
+    private fun getCancellationData() {
         cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId,false)
     }
 
@@ -76,16 +86,7 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
                 is Success -> {
                     initView(it.data)
                 }
-                is Fail -> {
-                }
-            }
-        })
-
-        cancellationViewModel.cancellationSubmitData.observe(this, Observer {
-            when (it) {
-                is Success ->
-                    startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), it.data))
-                is Fail -> {}
+                is Fail -> { }
             }
         })
     }
@@ -130,9 +131,9 @@ class HotelCancellationReasonFragment : BaseDaggerFragment() {
         dialog.setPrimaryCTAText(getString(R.string.hotel_cancellation_reason_dismiss))
         dialog.setPrimaryCTAClickListener { dialog.dismiss() }
         dialog.setSecondaryCTAClickListener {
-            Toast.makeText(requireContext(), "${reasonAdapter.selectedId} ${reasonAdapter.freeText}", Toast.LENGTH_SHORT).show()
-            cancellationViewModel.submitCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_submit_hotel_cancellation),
-                    cancelCartId, reasonAdapter.selectedId, reasonAdapter.freeText)
+            activity?.finish()
+            startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(),
+                    HotelCancellationSubmitParam(cancelCartId, HotelCancellationSubmitParam.SelectedReason(reasonAdapter.selectedId, reasonAdapter.freeText))))
         }
         dialog.show()
     }

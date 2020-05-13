@@ -3,15 +3,15 @@ package com.tokopedia.hotel.cancellation.presentation.fragment
 import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.hotel.R
@@ -20,7 +20,10 @@ import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationRefundDetailWidget
+import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -36,7 +39,7 @@ import javax.inject.Inject
  * @author by jessica on 30/04/20
  */
 
-class HotelCancellationFragment : BaseDaggerFragment() {
+class HotelCancellationFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,17 +57,28 @@ class HotelCancellationFragment : BaseDaggerFragment() {
         }
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(activity as HotelCancellationActivity, viewModelFactory)
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             cancellationViewModel = viewModelProvider.get(HotelCancellationViewModel::class.java)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_cancellation, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return inflater.inflate(R.layout.fragment_hotel_cancellation, container, false)
+    }
+
+
+    override fun onErrorRetryClicked() {
+        showLoadingState()
+        getCancellationData()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (cancellationViewModel.cancellationData.value == null) showLoadingState()
+        getCancellationData()
+    }
 
+    private fun getCancellationData() {
         cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId)
     }
 
@@ -83,11 +97,13 @@ class HotelCancellationFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         cancellationViewModel.cancellationData.observe(this, androidx.lifecycle.Observer {
+            hideLoadingState()
             when (it) {
                 is Success -> {
                     initView(it.data)
                 }
                 is Fail -> {
+                    showErrorState(it.throwable)
                 }
             }
         })
@@ -114,24 +130,28 @@ class HotelCancellationFragment : BaseDaggerFragment() {
         }
 
         hotelCancellationModel.cancelInfo.let {
-            hotel_cancellation_ticker_refund_info.setHtmlDescription(it.desc)
-            hotel_cancellation_ticker_refund_info.isClickable = it.isClickable
-            hotel_cancellation_ticker_refund_info.tickerShape = Ticker.SHAPE_LOOSE
-            hotel_cancellation_ticker_refund_info.tickerType = Ticker.TYPE_ANNOUNCEMENT
+            if (it.desc.isEmpty()) {
+                hotel_cancellation_ticker_refund_info.hide()
+            } else {
+                hotel_cancellation_ticker_refund_info.setHtmlDescription(it.desc)
+                hotel_cancellation_ticker_refund_info.isClickable = it.isClickable
+                hotel_cancellation_ticker_refund_info.tickerShape = Ticker.SHAPE_LOOSE
+                hotel_cancellation_ticker_refund_info.tickerType = Ticker.TYPE_ANNOUNCEMENT
 
-            if (it.isClickable) {
-                cancelInfoBottomSheet.setTitle(it.longDesc.title)
-                val typography = Typography(requireContext())
-                typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
-                typography.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT)
-                typography.setPadding(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
-                typography.fontType = Typography.BODY_3
-                typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
-                cancelInfoBottomSheet.setChild(typography)
+                if (it.isClickable) {
+                    cancelInfoBottomSheet.setTitle(it.longDesc.title)
+                    val typography = AppCompatTextView(requireContext())
+                    typography.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.body_3))
+                    typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
+                    typography.layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.MATCH_PARENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT)
+                    typography.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
+                    typography.setLineSpacing(6f, 1f)
+                    typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                    cancelInfoBottomSheet.setChild(typography)
 
-                hotel_cancellation_ticker_refund_info.setOnClickListener {
-                    fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
+                    hotel_cancellation_ticker_refund_info.setOnClickListener {
+                        fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
+                    }
                 }
             }
         }
@@ -156,17 +176,23 @@ class HotelCancellationFragment : BaseDaggerFragment() {
                     hotel_cancellation_total_price_refund.addView(widget)
                 }
             }
-            val spannable = HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
-                    it.footer.desc, it.footer.links)
-            hotel_cancellation_refund_additional_text.highlightColor = Color.TRANSPARENT
-            hotel_cancellation_refund_additional_text.movementMethod = LinkMovementMethod.getInstance()
-            hotel_cancellation_refund_additional_text.setText(spannable, TextView.BufferType.SPANNABLE)
+
+            if (it.footer.desc.isNotEmpty()) {
+                val spannable = HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
+                        it.footer.desc, it.footer.links)
+                hotel_cancellation_refund_additional_text.highlightColor = Color.TRANSPARENT
+                hotel_cancellation_refund_additional_text.movementMethod = LinkMovementMethod.getInstance()
+                hotel_cancellation_refund_additional_text.setText(spannable, TextView.BufferType.SPANNABLE)
+            }  else hotel_cancellation_refund_additional_text.hide()
+
         }
 
-        hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
-        hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
-        hotel_cancellation_page_footer.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
-                hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
+        if (hotelCancellationModel.footer.desc.isNotEmpty()) {
+            hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
+            hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
+            hotel_cancellation_page_footer.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
+                    hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
+        } else hotel_cancellation_page_footer.hide()
 
         hotel_cancellation_button_next.setOnClickListener {
             (activity as HotelCancellationActivity).showCancellationReasonFragment()

@@ -55,9 +55,8 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         }
     }
 
-    fun submitCancellationData(query: String, cancelCartId: String, selectedId: String, freeText: String) {
-        val params = mapOf(GET_CANCELLATION_SUBMIT_DATA_PARAM to
-                HotelCancellationSubmitParam(cancelCartId, HotelCancellationSubmitParam.SelectedReason(selectedId, freeText)))
+    fun submitCancellationData(query: String, cancellationSubmitParam: HotelCancellationSubmitParam) {
+        val params = mapOf(GET_CANCELLATION_SUBMIT_DATA_PARAM to cancellationSubmitParam)
 
         launchCatchError(block = {
             val data = withContext(dispatcher.ui()) {

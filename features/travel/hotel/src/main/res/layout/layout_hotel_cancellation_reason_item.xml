@@ -42,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@+id/hotel_cancellation_seperator"
         app:layout_constraintTop_toBottomOf="@+id/hotel_cancellation_reason_hotel_description"
         app:text_field_input_type="text"
-        app:text_field_label="Alasan Lain"
+        app:text_field_label="@string/hotel_cancellation_reason_free_text_label"
         app:text_field_label_static="true"
         app:text_field_placeholder="@string/hotel_cancellation_reason_free_text_placeholder"
         tools:layout_height="@dimen/layout_lvl2"
