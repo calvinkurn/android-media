@@ -69,12 +69,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
             }
         }
-
         fun getWeightTypeTitle(type: Int) =
                 when (type) {
                     UNIT_GRAM -> R.string.label_weight_gram
                     UNIT_KILOGRAM -> R.string.label_weight_kilogram
-                    else -> -1
+                    else -> R.string.label_weight_gram
                 }
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
