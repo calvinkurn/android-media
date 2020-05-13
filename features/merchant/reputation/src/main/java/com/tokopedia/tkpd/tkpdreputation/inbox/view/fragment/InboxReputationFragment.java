@@ -9,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilterActivity;
@@ -214,6 +216,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         ovoTicker.setHtmlDescription("getString(R.string.review_ovo_ticker_description)");
         KeyboardHandler.hideSoftKeyboard(getActivity());
+        presenter.getProductIncentiveOvo();
         if (savedInstanceState != null)
             presenter.getFilteredInboxReputation(
                     savedInstanceState.getString(ARGS_QUERY, ""),
@@ -254,6 +257,17 @@ public class InboxReputationFragment extends BaseDaggerFragment
         filterButton.setVisibility(View.VISIBLE);
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+    }
+
+    @Override
+    public void onErrorGetProductRevIncentiveOvo(Throwable throwable) {
+        Log.d("Error", "error");
+    }
+
+    @Override
+    public void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
+        Log.d("ovo domain", productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTitle());
+        Log.d("ovo domain", productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getSubtitle());
     }
 
     @Override
