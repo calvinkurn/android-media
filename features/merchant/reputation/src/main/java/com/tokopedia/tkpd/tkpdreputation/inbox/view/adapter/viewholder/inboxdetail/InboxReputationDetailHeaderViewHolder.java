@@ -106,7 +106,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                 goToInfoPage(element);
             }
         });
-        ovoTicker.setHtmlDescription(getString(R.string.review_ovo_ticker_description));
+        ovoTicker.setHtmlDescription("getString(R.string.review_ovo_ticker_description)");
 
         setReputation(element);
 

@@ -95,7 +95,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        app:titleText="@string/review_ovo_ticker_title"
+        app:titleText="haha"
         app:tickerType="announcement" />
 
     <View

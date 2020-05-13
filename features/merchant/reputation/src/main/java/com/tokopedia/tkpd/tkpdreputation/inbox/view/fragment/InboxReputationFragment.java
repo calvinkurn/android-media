@@ -212,7 +212,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ovoTicker.setHtmlDescription(getString(R.string.review_ovo_ticker_description));
+        ovoTicker.setHtmlDescription("getString(R.string.review_ovo_ticker_description)");
         KeyboardHandler.hideSoftKeyboard(getActivity());
         if (savedInstanceState != null)
             presenter.getFilteredInboxReputation(
