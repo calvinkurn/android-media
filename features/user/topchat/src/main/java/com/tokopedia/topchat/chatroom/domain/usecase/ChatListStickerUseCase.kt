@@ -25,6 +25,7 @@ class ChatListStickerUseCase @Inject constructor(
 
     fun loadSticker(
             stickerUID: String,
+            needUpdate: Boolean,
             onLoading: (List<Sticker>) -> Unit,
             onSuccess: (List<Sticker>) -> Unit,
             onError: (Throwable) -> Unit
@@ -32,11 +33,16 @@ class ChatListStickerUseCase @Inject constructor(
         launchCatchError(dispatchers.IO,
                 {
                     val params = generateParams(stickerUID)
-                    getCacheStickerGroup(stickerUID)?.also {
+                    val cache = getCacheStickerGroup(stickerUID)?.also {
                         withContext(dispatchers.Main) {
-                            onLoading(it.chatBundleSticker.list)
+                            if (needUpdate) {
+                                onLoading(it.chatBundleSticker.list)
+                            } else {
+                                onSuccess(it.chatBundleSticker.list)
+                            }
                         }
                     }
+                    if (cache != null && !needUpdate) return@launchCatchError
                     val response = gqlUseCase.apply {
                         setTypeClass(StickerResponse::class.java)
                         setRequestParams(params)

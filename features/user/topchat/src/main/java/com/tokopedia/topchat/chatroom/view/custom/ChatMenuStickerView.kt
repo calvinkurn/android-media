@@ -45,9 +45,9 @@ class ChatMenuStickerView : LinearLayout {
         stickerViewPager = findViewById(R.id.vp_sticker_menu)
     }
 
-    fun updateStickers(stickers: List<StickerGroup>, isExpired: Boolean) {
+    fun updateStickers(stickers: List<StickerGroup>, needToUpdate: List<StickerGroup> = emptyList()) {
         initStickerViewPager()
-        stickerViewPagerAdapter?.updateStickers(stickers, isExpired)
+        stickerViewPagerAdapter?.updateStickers(stickers, needToUpdate)
     }
 
     private fun initStickerViewPager() {

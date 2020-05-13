@@ -13,7 +13,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 
 class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderListener {
 
@@ -22,8 +21,8 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     var showDelayed = false
     var isKeyboardOpened = false
 
-    private var attachmentMenu: ChatMenuAttachmentView? = null
-    private var stickerMenu: ChatMenuStickerView? = null
+    var attachmentMenu: ChatMenuAttachmentView? = null
+    var stickerMenu: ChatMenuStickerView? = null
     private var previousSelectedMenu: ViewGroup? = null
     private var selectedMenu: ViewGroup? = null
 
@@ -132,10 +131,6 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
 
     fun setStickerListener(stickerMenuListener: ChatMenuStickerView.StickerMenuListener?) {
         stickerMenu?.listener = stickerMenuListener
-    }
-
-    fun updateStickerGroup(stickers: List<StickerGroup>, isExpired: Boolean) {
-        stickerMenu?.updateStickers(stickers, isExpired)
     }
 
     companion object {

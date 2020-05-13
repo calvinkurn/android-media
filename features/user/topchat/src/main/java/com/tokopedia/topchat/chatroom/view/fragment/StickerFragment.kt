@@ -26,6 +26,7 @@ class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
     private val viewModel by lazy { viewModelFragmentProvider.get(StickerViewModel::class.java) }
 
     private var stickerGroupUID = ""
+    private var stickerNeedUpdate = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,7 @@ class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewBind(view)
-        viewModel.loadStickers(stickerGroupUID)
+        viewModel.loadStickers(stickerGroupUID, stickerNeedUpdate)
     }
 
     private fun initViewBind(view: View) {
@@ -53,6 +54,7 @@ class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
 
     private fun initArguments() {
         stickerGroupUID = arguments?.getString(keyStickerGroupUID) ?: ""
+        stickerNeedUpdate = arguments?.getBoolean(keyStickerNeedUpdate) ?: false
     }
 
     private fun initDagger() {
@@ -72,14 +74,20 @@ class StickerFragment(contentLayoutId: Int) : Fragment(contentLayoutId) {
         viewModel.cancelAllJobs()
     }
 
+    fun requestNewStickerList() {
+        viewModel.loadStickers(stickerGroupUID, true)
+    }
+
     companion object {
         private val LAYOUT = R.layout.fragment_sticker
 
         private const val keyStickerGroupUID = "stickerGroupUID"
+        private const val keyStickerNeedUpdate = "stickerNeedUpdate"
 
-        fun create(stickerGroup: StickerGroup): StickerFragment {
+        fun create(stickerGroup: StickerGroup, needUpdate: Boolean): StickerFragment {
             val bundle = Bundle().apply {
                 putString(keyStickerGroupUID, stickerGroup.groupUUID)
+                putBoolean(keyStickerNeedUpdate, needUpdate)
             }
             return StickerFragment(LAYOUT).apply {
                 arguments = bundle

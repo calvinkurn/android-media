@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import androidx.collection.ArrayMap
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import kotlinx.coroutines.*
@@ -31,7 +33,7 @@ class ChatListGroupStickerUseCase @Inject constructor(
     fun getStickerGroup(
             isSeller: Boolean,
             onLoading: (ChatListGroupStickerResponse) -> Unit,
-            onSuccess: (ChatListGroupStickerResponse, isExpired: Boolean) -> Unit,
+            onSuccess: (ChatListGroupStickerResponse, List<StickerGroup>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         launchCatchError(dispatchers.IO,
@@ -47,12 +49,13 @@ class ChatListGroupStickerUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    val isExpired = response.hasExpiredCache(cache)
-                    if (isExpired) {
+                    val hasDifferentSize = response.hasDifferentGroupSize(cache)
+                    val needToUpdateCache = findNeedToUpdateCache(cache, response)
+                    if (hasDifferentSize || needToUpdateCache.isNotEmpty()) {
                         saveToCache(response, isSeller)
                     }
                     withContext(dispatchers.Main) {
-                        onSuccess(response, isExpired)
+                        onSuccess(response, needToUpdateCache)
                     }
                 },
                 { exception ->
@@ -61,6 +64,25 @@ class ChatListGroupStickerUseCase @Inject constructor(
                     }
                 }
         )
+    }
+
+    private fun findNeedToUpdateCache(
+            cache: ChatListGroupStickerResponse?,
+            response: ChatListGroupStickerResponse
+    ): List<StickerGroup> {
+        if (cache == null) return emptyList()
+        val cacheMap = ArrayMap<String, StickerGroup>()
+        val invalidCache = ArrayList<StickerGroup>()
+        for (stickerGroup in cache.stickerGroups) {
+            cacheMap[stickerGroup.groupUUID] = stickerGroup
+        }
+        for (stickerGroup in response.stickerGroups) {
+            val cached = cacheMap[stickerGroup.groupUUID] ?: continue
+            if (cached.lastUpdate != stickerGroup.lastUpdate) {
+                invalidCache.add(stickerGroup)
+            }
+        }
+        return invalidCache
     }
 
     private fun generateCacheKey(isSeller: Boolean): String {

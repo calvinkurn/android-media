@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCase
-import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 class StickerViewModel @Inject constructor(
@@ -16,9 +15,10 @@ class StickerViewModel @Inject constructor(
     val stickers: LiveData<List<Sticker>> get() = _stickers
 
 
-    fun loadStickers(stickerGroupUID: String) {
+    fun loadStickers(stickerGroupUID: String, needUpdate: Boolean) {
         chatListUseCase.loadSticker(
-                stickerGroupUID, ::onLoadSticker, ::onSuccessLoadSticker, ::onErrorLoadSticker
+                stickerGroupUID, needUpdate, ::onLoadSticker, ::onSuccessLoadSticker,
+                ::onErrorLoadSticker
         )
     }
 
@@ -34,6 +34,6 @@ class StickerViewModel @Inject constructor(
         _stickers.value = stickers
     }
 
-    private fun onErrorLoadSticker(throwable: Throwable) { }
+    private fun onErrorLoadSticker(throwable: Throwable) {}
 
 }

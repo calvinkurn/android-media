@@ -62,7 +62,6 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -482,8 +481,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         orderProgress?.render(this, chatOrder)
     }
 
-    override fun updateStickerGroup(stickers: List<StickerGroup>, isExpired: Boolean) {
-        getViewState().updateStickerGroup(stickers, isExpired)
+    override fun getChatMenuView(): ChatMenuView? {
+        return getViewState().chatMenu
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {

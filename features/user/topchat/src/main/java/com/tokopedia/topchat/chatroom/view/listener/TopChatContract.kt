@@ -11,8 +11,8 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 
@@ -62,7 +62,7 @@ interface TopChatContract {
 
         fun renderOrderProgress(chatOrder: ChatOrderProgress)
 
-        fun updateStickerGroup(list: List<StickerGroup>, isExpired: Boolean = false)
+        fun getChatMenuView(): ChatMenuView?
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

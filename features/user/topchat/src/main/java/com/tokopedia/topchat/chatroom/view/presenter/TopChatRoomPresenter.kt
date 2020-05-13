@@ -43,6 +43,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -60,7 +61,6 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.cancel
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import okio.ByteString
@@ -730,11 +730,16 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {
-        view?.updateStickerGroup(response.chatListGroupSticker.list)
+        view?.getChatMenuView()?.stickerMenu
+                ?.updateStickers(response.chatListGroupSticker.list)
     }
 
-    private fun onSuccessGetStickerGroup(response: ChatListGroupStickerResponse, isExpired: Boolean) {
-        view?.updateStickerGroup(response.chatListGroupSticker.list, isExpired)
+    private fun onSuccessGetStickerGroup(
+            response: ChatListGroupStickerResponse,
+            needToUpdate: List<StickerGroup>
+    ) {
+        view?.getChatMenuView()?.stickerMenu
+                ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
     }
 
     private fun onErrorGetStickerGroup(throwable: Throwable) {

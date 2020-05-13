@@ -25,7 +25,6 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
@@ -67,7 +66,7 @@ class TopChatViewStateImpl(
     private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
     private var chatStickerMenuButton: ImageView? = view.findViewById(R.id.iv_chat_sticker)
-    private var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
+    var chatMenu: ChatMenuView? = view.findViewById(R.id.fl_chat_menu)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -148,10 +147,6 @@ class TopChatViewStateImpl(
         chatStickerMenuButton?.setOnClickListener {
             chatMenu?.toggleStickerMenu()
         }
-    }
-
-    override fun updateStickerGroup(stickers: List<StickerGroup>, isExpired: Boolean) {
-        chatMenu?.updateStickerGroup(stickers, isExpired)
     }
 
     override fun onKeyboardOpened() {

@@ -5,7 +5,6 @@ import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 interface TopChatViewState : BaseChatViewState {
@@ -30,7 +29,5 @@ interface TopChatViewState : BaseChatViewState {
     fun onStickerOpened()
 
     fun onStickerClosed()
-
-    fun updateStickerGroup(stickers: List<StickerGroup>, isExpired: Boolean)
 
 }
