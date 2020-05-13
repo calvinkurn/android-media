@@ -41,6 +41,7 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created by jegul on 29/11/19
@@ -436,7 +437,7 @@ class PlayFragment : BaseDaggerFragment() {
     fun onBackPressed(): Boolean {
         val isHandled = playViewModel.onBackPressed()
         if (!isHandled) {
-            val duration = watchStartTime?.let { it - System.currentTimeMillis() } ?: 0L
+            val duration = watchStartTime?.let { abs(System.currentTimeMillis() - it) } ?: 0L
             PlayAnalytics.clickLeaveRoom(channelId, duration, playViewModel.channelType)
         }
         return isHandled
@@ -515,7 +516,7 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun handleDurationAnalytics(state: PlayVideoState) {
-        if (state is PlayVideoState.Playing && watchStartTime == null) {
+        if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && watchStartTime == null) {
             watchStartTime = System.currentTimeMillis()
         }
     }
