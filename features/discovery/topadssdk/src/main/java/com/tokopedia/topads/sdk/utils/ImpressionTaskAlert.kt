@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.home.alert
 
+import android.net.Uri
 import timber.log.Timber
 
 /**
@@ -7,34 +8,29 @@ import timber.log.Timber
  */
 class ImpressionTaskAlert(private val className: String) {
     private var lastImpression = 0L
-    private var lastClick = 0L
-    private val impressionTreshold = 500L
-    private val clickTreshold = 1000L
+    private val impressionTreshold = 1000L
 
-    private fun trackClick() {
-        val currentTime = System.currentTimeMillis()
-        val timeSpan = currentTime - lastClick
-        if (timeSpan < clickTreshold) {
-            Timber.w("P2#TOPADS_TRACKING#Alert click;class=$className;diff_time=" + timeSpan)
-        }
-        lastClick = currentTime
-    }
-
-    private fun trackImpression() {
+    private fun checkImpression(uri: Uri) {
         val currentTime = System.currentTimeMillis()
         val timeSpan = currentTime - lastImpression
-        if (timeSpan > impressionTreshold) {
-            Timber.w("P2#TOPADS_TRACKING#Alert impression;class=$className;diff_time=" + timeSpan)
+        if (timeSpan < impressionTreshold && !uri.toString().contains("views")) {
+            Timber.w("P2#TOPADS_TRACKING#Alert anomaly impression;class=$className;diff_time=" + timeSpan)
+        } else if (timeSpan < impressionTreshold && uri.toString().contains("clicks")) {
+            Timber.w("P2#TOPADS_TRACKING#Alert anomaly click;class=$className;diff_time=" + timeSpan)
         }
         lastImpression = currentTime
     }
 
-    fun track(url: String) {
-        if (url.contains("view")) {
-            trackImpression()
-        } else if (url.contains("click")) {
-            trackClick()
+    private fun checkParam(uri: Uri) {
+        if (uri.getQueryParameter("sid").isNullOrBlank()){
+            Timber.w("P2#TOPADS_TRACKING#Url is not contain sid;class=$className")
         }
+    }
+
+    fun track(url: String) {
+        var uri = Uri.parse(url)
+        checkImpression(uri)
+        checkParam(uri)
     }
 
     companion object {
