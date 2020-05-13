@@ -388,9 +388,6 @@ class BrandlistPageFragment :
     override fun onClickedChip(position: Int, chipName: String) {
         println("position: Int, chipName: String $position $chipName")
         selectedChip = position
-        val offset: Int = 0
-//        adapter?.selectedChipsId = position
-//        adapter?.notifyDataSetChanged()
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false
@@ -404,10 +401,6 @@ class BrandlistPageFragment :
             viewModel.resetAllBrandRequestParameter()
             viewModel.loadBrandsPerAlphabet(category, chipName)
         }
-
-//        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsNumber, selectedChip)
-//        adapter?.selectedPosition = position
-//        adapter?.notifyDataSetChanged()
     }
 
 }
