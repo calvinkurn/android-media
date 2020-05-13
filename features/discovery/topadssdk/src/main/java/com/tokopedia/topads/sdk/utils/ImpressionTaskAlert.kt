@@ -11,21 +11,22 @@ class ImpressionTaskAlert(private val className: String) {
     private val impressionTreshold = 1000L
     private val SID = "sid"
     private val VIEWS = "views"
+    private val TOPADS_TRACKING = "TOPADS_TRACKING"
 
     private fun checkImpression(uri: Uri) {
         val currentTime = System.currentTimeMillis()
         val timeSpan = currentTime - lastImpression
         if (timeSpan < impressionTreshold && !uri.toString().contains(VIEWS)) {
-            Timber.w("P2#TOPADS_TRACKING#Alert anomaly impression;class=$className;diff_time=" + timeSpan)
+            Timber.w("P2#$TOPADS_TRACKING#Alert anomaly impression;class=$className;diff_time=" + timeSpan)
         } else if (timeSpan < impressionTreshold && uri.toString().contains("clicks")) {
-            Timber.w("P2#TOPADS_TRACKING#Alert anomaly click;class=$className;diff_time=" + timeSpan)
+            Timber.w("P2#$TOPADS_TRACKING#Alert anomaly click;class=$className;diff_time=" + timeSpan)
         }
         lastImpression = currentTime
     }
 
     private fun checkParam(uri: Uri) {
         if (uri.getQueryParameter(SID).isNullOrBlank()){
-            Timber.w("P2#TOPADS_TRACKING#Url is not contain sid;class=$className")
+            Timber.w("P2#$TOPADS_TRACKING#Url is not contain sid;class=$className")
         }
     }
 
