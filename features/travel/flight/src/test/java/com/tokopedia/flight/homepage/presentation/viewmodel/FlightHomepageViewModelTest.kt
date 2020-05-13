@@ -469,6 +469,27 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
+    fun onDepartureAirportChanged_withNullDashboardData_shouldDoNothing() {
+        // given
+        val departureAirport = FlightAirportModel()
+        departureAirport.cityName = "Banda Aceh"
+        departureAirport.airportCode = "BTJ"
+        departureAirport.airportName = "Bandara International Sultan Iskandar Muda"
+        departureAirport.cityCode = ""
+        departureAirport.cityId = ""
+        departureAirport.cityAirports = arrayListOf()
+        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
+                testDispatcherProvider)
+
+        // when
+        newViewModel.onDepartureAirportChanged(departureAirport)
+
+        // then
+        newViewModel.dashboardData.value shouldBe null
+    }
+
+    @Test
     fun onDepartureAirportChanged_shouldSendAnalytics() {
         // given
         val departureAirport = FlightAirportModel()
@@ -509,6 +530,27 @@ class FlightHomepageViewModelTest {
         flightHomepageViewModel.dashboardData.value?.departureAirport?.cityCode shouldBe departureAirport.cityCode
         flightHomepageViewModel.dashboardData.value?.departureAirport?.cityId shouldBe departureAirport.cityId
         flightHomepageViewModel.dashboardData.value?.departureAirport?.cityAirports shouldBe departureAirport.cityAirports
+    }
+
+    @Test
+    fun onArrivalAirportChanged_withNullDashboardData_shouldDoNothing() {
+        // given
+        val arrivalAirport = FlightAirportModel()
+        arrivalAirport.cityName = "Banda Aceh"
+        arrivalAirport.airportCode = "BTJ"
+        arrivalAirport.airportName = "Bandara International Sultan Iskandar Muda"
+        arrivalAirport.cityCode = ""
+        arrivalAirport.cityId = ""
+        arrivalAirport.cityAirports = arrayListOf()
+        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
+                testDispatcherProvider)
+
+        // when
+        newViewModel.onArrivalAirportChanged(arrivalAirport)
+
+        // then
+        newViewModel.dashboardData.value shouldBe null
     }
 
     @Test
@@ -555,6 +597,23 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
+    fun onClassChanged_withNullDashboardData_shouldDoNothing() {
+        // given
+        val flightClassModel = FlightClassModel()
+        flightClassModel.id = 1
+        flightClassModel.title = "Ekonomi"
+        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
+                testDispatcherProvider)
+
+        // when
+        newViewModel.onClassChanged(flightClassModel)
+
+        // then
+        newViewModel.dashboardData.value shouldBe null
+    }
+
+    @Test
     fun onClassChanged_shouldSendAnalytics() {
         // given
         val flightClassModel = FlightClassModel()
@@ -583,6 +642,24 @@ class FlightHomepageViewModelTest {
         // then
         flightHomepageViewModel.dashboardData.value?.flightClass?.id shouldBe flightClassModel.id
         flightHomepageViewModel.dashboardData.value?.flightClass?.title shouldBe flightClassModel.title
+    }
+
+    @Test
+    fun onPassengerChanged_withNullDashboardData_shouldDoNothing() {
+        // given
+        val passengerModel = FlightPassengerModel()
+        passengerModel.adult = 3
+        passengerModel.children = 2
+        passengerModel.infant = 1
+        val newViewModel = FlightHomepageViewModel(flightAnalytics, travelTickerUseCase, travelCollectiveBannerUseCase,
+                dashboardCache, deleteAllFlightSearch, passengerValidator, userSessionInterface,
+                testDispatcherProvider)
+
+        // when
+        newViewModel.onPassengerChanged(passengerModel)
+
+        // then
+        newViewModel.dashboardData.value shouldBe null
     }
 
     @Test
