@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistAlphabetHeaderAdapter
@@ -16,53 +17,67 @@ import java.util.*
 
 class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBrandGroupHeaderViewModel>(itemView) {
 
+    private lateinit var recyclerViewBrandHeader: RecyclerView
     private var tvTotalBrand: AppCompatTextView? = null
-    private var recyclerViewBrandHeader: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: BrandlistAlphabetHeaderAdapter? = null
-    private val context: Context
+    private lateinit var allBrandGroupHeaderViewModel: AllBrandGroupHeaderViewModel
 
     init {
-        context = itemView.context
+        initLayout(itemView)
+    }
+
+    private fun initLayout(view: View) {
         tvTotalBrand = itemView.findViewById(R.id.tv_total_brand)
         recyclerViewBrandHeader = itemView.findViewById(R.id.rv_groups_chip)
+
+        layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewBrandHeader.layoutManager = layoutManager
+        val animator = recyclerViewBrandHeader.itemAnimator
+        if (animator is SimpleItemAnimator) {
+            animator.supportsChangeAnimations = false
+        }
+
+        recyclerViewBrandHeader.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                allBrandGroupHeaderViewModel.recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
+            }
+        })
     }
 
     override fun bind(element: AllBrandGroupHeaderViewModel) {
         val totalBrand: Int = element.totalBrands
         val headerList: MutableList<String> = getAlphabeticalShopFilter(totalBrand)
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
-        recyclerViewBrandHeader?.layoutManager = layoutManager
+
+        this.allBrandGroupHeaderViewModel = element
+        element.recyclerViewState?.let {
+            recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
+        }
+
         adapter = BrandlistAlphabetHeaderAdapter(element.listener)
         adapter?.updateDataHeaderList(headerList)
-        recyclerViewBrandHeader?.adapter = adapter
-
-//        tvTotalBrand?.text = element.groupHeaderText
-//        element.totalBrands.let {
-//            val totalBrandContent: String = NumberFormat.getNumberInstance(Locale.US)
-//                    .format(it).toString().replace(",", ".") + " " +
-//                    getString(R.string.brandlist_brand_label)
-//            tvTotalBrand?.text = totalBrandContent
-//        }
+        adapter?.selectedPosition = element.selectedChip
+        recyclerViewBrandHeader.adapter = adapter
     }
 
     private fun getAlphabeticalShopFilter(totalBrand: Int): MutableList<String> {
-        var c: Char
-        c = 'A'
+        var char: Char = 'A'
         var tempHeaderList = mutableListOf<String>()
         val totalBrandContent: String = NumberFormat.getNumberInstance(Locale.US)
-                .format(totalBrand).toString().replace(",", ".") + " " +
-                getString(R.string.brandlist_brand_label)
-
+                .format(totalBrand).toString().replace(",", ".") + " " + getString(R.string.brandlist_brand_label)
         tempHeaderList.add(totalBrandContent)
         tempHeaderList.add("Semua Brand")
-        while (c <= 'Z') {
-            println("getAlphabeticalShopFilter: $c")
-            tempHeaderList.add(c.toString())
-            ++c
+        while (char <= 'Z') {
+            tempHeaderList.add(char.toString())
+            ++char
         }
         return tempHeaderList
     }
+
+//    interface ShopProductEtalaseChipListViewHolderListener {
+//        fun onEtalaseChipClicked(shopProductEtalaseChipItemViewModel: ShopProductEtalaseChipItemViewModel)
+//    }
 
     companion object {
         @LayoutRes

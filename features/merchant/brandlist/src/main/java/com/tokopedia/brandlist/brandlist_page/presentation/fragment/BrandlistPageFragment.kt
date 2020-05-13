@@ -27,9 +27,9 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPage
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderItemDecoration
 import com.tokopedia.brandlist.brandlist_page.presentation.viewmodel.BrandlistPageViewModel
+import com.tokopedia.brandlist.common.Constant.DEFAULT_SELECTED_CHIPS
+import com.tokopedia.brandlist.common.LoadAllBrandState
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -70,6 +70,8 @@ class BrandlistPageFragment :
     private var isScrolling: Boolean = false
     private var categoryName = ""
     private var totalBrandsNumber: Int = 0
+    private var selectedChip: Int = DEFAULT_SELECTED_CHIPS
+    private var stateLoadBrands: String = LoadAllBrandState.LOAD_ALL_BRAND
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -98,11 +100,8 @@ class BrandlistPageFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         val rootView = inflater.inflate(R.layout.fragment_brandlist_page, container, false)
-
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout)
-
         recyclerView = rootView.findViewById(R.id.recycler_view)
         layoutManager = GridLayoutManager(context, BRANDLIST_GRID_SPAN_COUNT)
         recyclerView?.layoutManager = layoutManager
@@ -111,7 +110,7 @@ class BrandlistPageFragment :
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
-        recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapter as StickyHeaderInterface))
+        // recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapter as StickyHeaderInterface))
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 
         recyclerView?.addOnScrollListener(endlessScrollListener)
@@ -121,7 +120,6 @@ class BrandlistPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         adapter?.initAdapter()
 
         observeFeaturedBrands()
@@ -130,33 +128,8 @@ class BrandlistPageFragment :
         observeAllBrandHeader()
         observeAllBrands()
 
-        swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
-
-//        recyclerView?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-//            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-//
-//            }
-//
-//            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-//                when (e.action) {
-//                    MotionEvent.ACTION_DOWN -> {
-//                        recyclerView?.parent?.requestDisallowInterceptTouchEvent(true)
-//                    }
-//                    MotionEvent.ACTION_SCROLL -> {
-//                        println("Test ACTION_SCROLL")
-//                    }
-//                    MotionEvent.ACTION_MOVE -> {
-//                        println("Test ACTION_MOVE")
-//                    }
-//                }
-//                return false
-//            }
-//
-//            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-//
-//            }
-//
-//        })
+//        swipeRefreshLayout?.visibility = View.GONE
+//        swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
 
         if (parentFragment is RecyclerViewScrollListener) {
             val scrollListener = parentFragment as RecyclerViewScrollListener
@@ -207,7 +180,6 @@ class BrandlistPageFragment :
 
     private fun createOnRefreshListener(): SwipeRefreshLayout.OnRefreshListener {
         return SwipeRefreshLayout.OnRefreshListener {
-
             adapter?.getVisitables()?.removeAll {
                 it is FeaturedBrandViewModel
                         || it is PopularBrandViewModel
@@ -218,11 +190,8 @@ class BrandlistPageFragment :
             }
 
             viewModel.resetAllBrandRequestParameter()
-
             adapter?.notifyDataSetChanged()
-
             adapter?.initAdapter()
-
             category?.let { loadData(it, userSession.userId, true) }
         }
     }
@@ -285,9 +254,9 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    val title = getString(R.string.brandlist_all_brand)
+                    // val title = getString(R.string.brandlist_all_brand)
                     totalBrandsNumber = it.data.totalBrands
-                    BrandlistPageMapper.mappingAllBrandHeader(title, it.data.totalBrands, adapter, this)
+                    // BrandlistPageMapper.mappingAllBrandHeader(title, it.data.totalBrands, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -301,20 +270,20 @@ class BrandlistPageFragment :
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val totalBrandsPerAlphabet = it.data.totalBrands
+                    val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
                     adapter?.hideLoading()
                     swipeRefreshLayout?.isRefreshing = false
-
                     endlessScrollListener.updateStateAfterGetData()
-
                     val currentOffset = viewModel.getCurrentOffset()
                     val groupHeader = viewModel.getCurrentLetter().toUpperCase()
 
-                    if (currentOffset == 0 && groupHeader == "A") {
-                        BrandlistPageMapper.mappingAllBrandGroupHeader(groupHeader, adapter, this, totalBrandsPerAlphabet, totalBrandsNumber)
+//                    if (currentOffset == 0 && groupHeader == "A") {
+                    if (currentOffset == 0) {
+                        // Show header for sticky only once
+                        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip)
                     }
 
-                    BrandlistPageMapper.mappingAllBrand(it.data, adapter, this)
+                    BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands)
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
@@ -402,8 +371,24 @@ class BrandlistPageFragment :
                 imgUrl, false, "")
     }
 
-    override fun onClickedChip() {
+    override fun onClickedChip(position: Int, chipName: String) {
+        println("position: Int, chipName: String $position $chipName")
+        selectedChip = position
 
+        if (position > 0 && position < 2) {     // Load Semua Brand
+            stateLoadBrands = LoadAllBrandState.LOAD_ALL_BRAND
+            viewModel.loadAllBrands(category)
+        } else if (position >= 2) {     // Load per alphabet
+            stateLoadBrands = LoadAllBrandState.LOAD_BRAND_PER_ALPHABET
+            viewModel.loadBrandsPerAlphabet(category, chipName)
+        }
+
+
+
+
+//        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsNumber, selectedChip)
+//        adapter?.selectedPosition = position
+//        adapter?.notifyDataSetChanged()
     }
 
 }

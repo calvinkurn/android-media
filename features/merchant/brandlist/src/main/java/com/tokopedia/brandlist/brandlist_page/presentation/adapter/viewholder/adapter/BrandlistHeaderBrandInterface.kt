@@ -2,6 +2,6 @@ package com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.a
 
 interface BrandlistHeaderBrandInterface {
 
-    fun onClickedChip()
+    fun onClickedChip(position: Int, chipName: String)
 
 }

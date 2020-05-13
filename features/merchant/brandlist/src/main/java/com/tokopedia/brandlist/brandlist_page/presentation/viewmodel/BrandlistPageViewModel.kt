@@ -124,10 +124,40 @@ class BrandlistPageViewModel @Inject constructor(
         }, onError = {})
     }
 
+    fun loadBrandsPerAlphabet(category: Category?, brandFirstLetter: String) {
+        launchCatchError(block = {
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    brandFirstLetter).await()))
+        }, onError = {})
+    }
+
+    fun loadAllBrands(category: Category?) {
+        launchCatchError(block = {
+            _getAllBrandHeaderResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_HEADER_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    "").await()))
+
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    INITIAL_LETTER.toString()).await()))
+        }, onError = {})
+    }
+
     fun loadMoreAllBrands(category: Category?) {
-
         val requestSize = geRequestSize(totalBrandSize, currentOffset)
-
         launchCatchError(block = {
             _getAllBrandResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,

@@ -3,11 +3,14 @@ package com.tokopedia.brandlist.common.widget
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlin.math.roundToInt
 
 
 /**
@@ -20,8 +23,8 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var mRecyclerView: RecyclerView? = null
     private var mHeaderHeight = -1
     private var adapter: OnStickySingleHeaderAdapter? = null
-    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
-    private var stickyPosition = 0
+    private var gridLayoutManager: GridLayoutManager? = null
+    private var stickyPosition = 4
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
@@ -62,20 +65,21 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mHeaderContainer!!.clipToPadding = false
         mHeaderContainer!!.clipChildren = false
         mHeaderContainer!!.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mHeaderContainer!!.setPadding(mRecyclerView!!.paddingLeft, 0, mRecyclerView!!.paddingRight, 0)
+//        mHeaderContainer!!.setPadding(mRecyclerView!!.paddingLeft, 0, mRecyclerView!!.paddingRight, 0)
+        mHeaderContainer!!.setPadding(convertPixelsToDp(16, context), 0, mRecyclerView!!.paddingRight, 0)
         mHeaderContainer!!.visibility = View.GONE
         addView(mHeaderContainer)
         val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (mHeaderHeight == -1 || adapter == null || staggeredGridLayoutManager == null) {
+                if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) {
                     mHeaderHeight = mHeaderContainer!!.height
                     val adapter = mRecyclerView!!.adapter
                     if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
                     this@StickySingleHeaderView.adapter = adapter
                     this@StickySingleHeaderView.adapter!!.setListener(this@StickySingleHeaderView)
                     stickyPosition = this@StickySingleHeaderView.adapter!!.stickyHeaderPosition
-                    staggeredGridLayoutManager = mRecyclerView!!.layoutManager as StaggeredGridLayoutManager?
+                    gridLayoutManager = mRecyclerView!!.layoutManager as GridLayoutManager?
                 }
             }
 
@@ -88,12 +92,19 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView!!.addOnScrollListener(onScrollListener)
     }
 
+    private fun convertPixelsToDp(px: Int, context: Context) : Int {
+        val result = px.toFloat() / (context.getResources().getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat())
+        return result.roundToInt()
+    }
+
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-        if (mHeaderHeight == -1 || adapter == null || staggeredGridLayoutManager == null) return
-        val firstCompletelyVisiblePosition = staggeredGridLayoutManager!!.findFirstCompletelyVisibleItemPositions(null)[0]
-        val firstVisiblePosition = staggeredGridLayoutManager!!.findFirstVisibleItemPositions(null)[0]
+        if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
+        val firstCompletelyVisiblePosition = gridLayoutManager!!.findFirstCompletelyVisibleItemPosition() //findFirstCompletelyVisibleItemPositions (null)[0]
+        val firstVisiblePosition = gridLayoutManager!!.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
         if (firstCompletelyVisiblePosition > -1) {
-            if (firstCompletelyVisiblePosition >= stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
+//            if (firstCompletelyVisiblePosition >= stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
+            val _stickyPosition = 4
+            if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
                 if (!isStickyShowed || refreshSticky) {
                     showSticky()
                     mHeaderContainer!!.visibility = View.VISIBLE

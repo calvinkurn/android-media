@@ -7,6 +7,7 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreFeaturedSh
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
+import com.tokopedia.brandlist.common.LoadAllBrandState
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 
 class BrandlistPageMapper {
@@ -16,7 +17,9 @@ class BrandlistPageMapper {
         const val FEATURED_BRAND_POSITION = 0
         const val POPULAR_BRAND_POSITION = 1
         const val NEW_BRAND_POSITION = 2
-        const val ALL_BRAND_HEADER_POSITION = 3
+//        const val ALL_BRAND_HEADER_POSITION = 3
+        const val ALL_BRAND_GROUP_HEADER_POSITION = 3
+        const val ALL_BRAND_POSITION = 4
 
         fun mappingFeaturedBrand(featuredBrand: OfficialStoreFeaturedShop, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
             notifyElement(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(featuredBrand.shops, featuredBrand.header, listener), adapter)
@@ -30,21 +33,41 @@ class BrandlistPageMapper {
             notifyElement(NEW_BRAND_POSITION, NewBrandViewModel(newBrand.shops, newBrand.header, listener), adapter)
         }
 
-        fun mappingAllBrandHeader(title: String, totalBrands: Int, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
-            notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands, listener), adapter)
+//        fun mappingAllBrandHeader(title: String, totalBrands: Int, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
+//            notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands, listener), adapter)
+//        }
+
+        fun mappingAllBrandGroupHeader(adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int) {
+            adapter?.getVisitables()?.set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip))
+            adapter?.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
+            // adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText, listener, totalBrands, totalBrandsPerAlphabet))
+            // adapter?.notifyItemRangeInserted(adapter.lastIndex, 1)
         }
 
-        fun mappingAllBrandGroupHeader(groupHeaderText: String, adapter: BrandlistPageAdapter?,
-                                       listener: BrandlistHeaderBrandInterface, totalBrandsPerAlphabet: Int, totalBrands: Int) {
-            adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText, listener, totalBrands, totalBrandsPerAlphabet))
-            adapter?.notifyItemRangeInserted(adapter.lastIndex, 1)
-        }
+        fun mappingAllBrand(
+                allBrand: OfficialStoreAllBrands,
+                adapter: BrandlistPageAdapter?,
+                listener: BrandlistPageTrackingListener,
+                stateLoadBrands: String
+        ) {
+//            allBrand.brands.forEachIndexed { index, brand ->
+//                adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
+//            }
 
-        fun mappingAllBrand(allBrand: OfficialStoreAllBrands, adapter: BrandlistPageAdapter?, listener: BrandlistPageTrackingListener) {
-            allBrand.brands.forEachIndexed { index, brand ->
-                adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
+            if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
+                val totalData: Int = adapter?.getVisitables()?.size ?: 0
+                adapter?.getVisitables()?.subList(ALL_BRAND_POSITION, totalData)?.clear()
+                allBrand.brands.forEachIndexed { index, brand ->
+                    adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
+                }
+                adapter?.notifyItemRangeRemoved(ALL_BRAND_POSITION, totalData)
+                adapter?.notifyItemChanged(ALL_BRAND_POSITION)
+            } else if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) {
+                allBrand.brands.forEachIndexed { index, brand ->
+                    adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
+                }
+                adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
             }
-            adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
         }
 
         private fun notifyElement(position: Int, element: Visitable<*>, adapter: BrandlistPageAdapter?) {
