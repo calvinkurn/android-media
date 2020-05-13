@@ -300,7 +300,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -320,7 +320,11 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
     implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.analytics

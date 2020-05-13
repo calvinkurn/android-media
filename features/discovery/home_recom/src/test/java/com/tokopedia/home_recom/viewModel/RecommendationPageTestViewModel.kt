@@ -173,6 +173,7 @@ class RecommendationPageTestViewModel : Spek({
             val slot = slot<Subscriber<WishlistModel>>()
             Given("recommendation view model"){
                 viewModel = createRecommendationPageViewModel()
+
             }
 
             Given("set return data success"){

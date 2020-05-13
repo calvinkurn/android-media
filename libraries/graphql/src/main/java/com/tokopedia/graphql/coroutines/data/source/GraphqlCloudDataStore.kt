@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.source
 
+import android.util.Log
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -15,13 +16,13 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import kotlinx.coroutines.*
+import okhttp3.internal.http2.ConnectionShutdownException
+import retrofit2.Response
 import timber.log.Timber
 import java.io.InterruptedIOException
 import java.net.SocketException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import okhttp3.internal.http2.ConnectionShutdownException
-import retrofit2.Response
 
 class GraphqlCloudDataStore @Inject constructor(
         private val api: GraphqlApiSuspend,
@@ -52,11 +53,9 @@ class GraphqlCloudDataStore @Inject constructor(
         return withContext(Dispatchers.Default) {
             var result: Response<JsonArray>? = null
             try {
-
                 if (requests == null || requests.isEmpty()) {
                     return@withContext GraphqlResponseInternal(null, false)
                 }
-
                 result = getResponse(requests.toMutableList())
             } catch (e: Throwable) {
                 if (e !is UnknownHostException &&
@@ -64,7 +63,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         e !is InterruptedIOException &&
                         e !is ConnectionShutdownException &&
                         e !is CancellationException) {
-                    Timber.e(e, "P1#REQUEST_ERROR_GQL#$requests")
+                    Timber.w("P1#GQL_ERROR#kt;err='${Log.getStackTraceString(e).trim()}';req='${requests}'")
                 }
                 if (e !is CancellationException) {
                     throw e
@@ -123,7 +122,7 @@ class GraphqlCloudDataStore @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
+            logGqlSize(requests.toString(), gResponse.toString())
             gResponse
         }
     }
@@ -138,5 +137,10 @@ class GraphqlCloudDataStore @Inject constructor(
             e.printStackTrace()
         }
         return false
+    }
+
+    private fun logGqlSize(requests: String, response: String) {
+        val sampleRequest = requests.substringAfter("[GraphqlRequest{query='").take(100).trim()
+        Timber.w("P1#GQL_SIZE#kt;req_size=${requests.length};resp_size=${response.length};req='$sampleRequest'")
     }
 }

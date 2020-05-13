@@ -1,6 +1,7 @@
 package com.tokopedia.graphql.data.source.cloud;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.akamai.botman.CYFMonitor;
@@ -78,13 +79,15 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             !(throwable instanceof SocketException) &&
                             !(throwable instanceof InterruptedIOException) &&
                             !(throwable instanceof ConnectionShutdownException)) {
-                        Timber.e(throwable, "P1#REQUEST_ERROR_GQL#%s", requests.toString());
+                        Timber.w("P1#GQL_ERROR#java;err='%s';req='%s'", Log.getStackTraceString(throwable), requests);
                     }
                 }).map(httpResponse -> {
                     if (httpResponse == null || httpResponse.code() != 200) {
                         return null;
                     }
-
+                    if (httpResponse.body() != null) {
+                        logGqlSize(requests.toString(), httpResponse.body().toString());
+                    }
                     return new GraphqlResponseInternal(httpResponse.body(), false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
@@ -141,5 +144,29 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
     public GraphqlCacheManager getCacheManager() {
         return mCacheManager;
+    }
+
+    private void logGqlSize(String request, String response) {
+        if (response == null) {
+            return;
+        }
+        try {
+            String startSampleText = "[GraphqlRequest{query='";
+            int sampleResponseLength = 100;
+            int startSampleLength = startSampleText.length();
+            int startIndex = request.indexOf(startSampleText);
+            if (startIndex < 0) {
+                startIndex = 0;
+            } else {
+                startIndex += startIndex + startSampleLength;
+            }
+            String sampleResponse = request.substring(startIndex);
+            if (sampleResponse.length() > sampleResponseLength) {
+                sampleResponse = sampleResponse.substring(0, sampleResponseLength);
+            }
+            Timber.w("P1#GQL_SIZE#java;req_size=%s;resp_size=%s;req='%s'", request.length(), response.length(), sampleResponse);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 }
