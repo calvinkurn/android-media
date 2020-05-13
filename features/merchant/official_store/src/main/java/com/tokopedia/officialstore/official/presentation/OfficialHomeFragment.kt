@@ -168,11 +168,11 @@ class OfficialHomeFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         if (getOfficialStorePageLoadTimeCallback() != null) {
             getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
             getOfficialStorePageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
         }
+        super.onViewCreated(view, savedInstanceState)
         observeBannerData()
         observeBenefit()
         observeFeaturedShop()
@@ -215,6 +215,7 @@ class OfficialHomeFragment :
                 getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
                 getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
             }
+            setPerformanceListenerForRecyclerView()
             when (it) {
                 is Success -> {
                     removeLoading()
@@ -228,7 +229,6 @@ class OfficialHomeFragment :
                 }
             }
             bannerPerformanceMonitoring.stopTrace()
-            setPerformanceListenerForRecyclerView()
         })
     }
 
