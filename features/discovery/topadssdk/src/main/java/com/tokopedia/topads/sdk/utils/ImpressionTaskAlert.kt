@@ -11,6 +11,7 @@ class ImpressionTaskAlert(private val className: String) {
     private val impressionTreshold = 1000L
     private val SID = "sid"
     private val VIEWS = "views"
+    private val CLICKS = "clicks"
     private val TOPADS_TRACKING = "TOPADS_TRACKING"
 
     private fun checkImpression(uri: Uri) {
@@ -18,7 +19,7 @@ class ImpressionTaskAlert(private val className: String) {
         val timeSpan = currentTime - lastImpression
         if (timeSpan < impressionTreshold && !uri.toString().contains(VIEWS)) {
             Timber.w("P2#$TOPADS_TRACKING#Alert anomaly impression;class=$className;diff_time=" + timeSpan)
-        } else if (timeSpan < impressionTreshold && uri.toString().contains("clicks")) {
+        } else if (timeSpan < impressionTreshold && uri.toString().contains(CLICKS)) {
             Timber.w("P2#$TOPADS_TRACKING#Alert anomaly click;class=$className;diff_time=" + timeSpan)
         }
         lastImpression = currentTime
