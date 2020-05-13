@@ -825,6 +825,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             btn_cancel_order_canceled?.setOnClickListener { bottomSheetUbahResi.dismiss() }
             btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
             btn_cancel_order_confirmed?.setOnClickListener {
+                secondaryBottomSheet?.dismiss()
                 bottomSheetUbahResi.dismiss()
                 doEditAwb(tf_cancel_notes?.textFieldInput?.text.toString())
             }
@@ -855,6 +856,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     editAwbResponse = it.data
                     if (editAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
                         showCommonToaster(editAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                        loadDetail()
                     } else {
                         showToasterError(getString(R.string.global_error), view)
                     }
