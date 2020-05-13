@@ -96,7 +96,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
@@ -109,7 +108,6 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
-import timber.log.Timber;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -949,8 +947,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void onTickerClicked(String queryParams) {
-        SearchTracking.trackEventClickSortPriceMinTicker(getQueryKey());
+    public void onTickerClicked(String queryParams, int typeId) {
+        SearchTracking.trackEventClickTicker(getQueryKey(), typeId);
         applyParamsFromTicker(UrlParamUtils.getParamMap(queryParams));
     }
 
@@ -1267,8 +1265,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackEventImpressionSortPriceMinTicker() {
-        SearchTracking.trackEventImpressionSortPriceMinTicker(getQueryKey());
+    public void trackEventImpressionTicker(int typeId) {
+        SearchTracking.trackEventImpressionTicker(getQueryKey(), typeId);
     }
 
     @Override

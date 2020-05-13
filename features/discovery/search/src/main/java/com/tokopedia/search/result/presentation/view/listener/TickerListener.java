@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.view.listener;
 
 public interface TickerListener {
 
-    void onTickerClicked(String queryParams);
+    void onTickerClicked(String queryParams, int typeId);
 
     void onTickerDismissed();
 
