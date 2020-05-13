@@ -265,30 +265,28 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
-        fetchAmplificationData();
+        getAmplificationPushData();
         return true;
     }
 
-    private void fetchAmplificationData() {
+    private void getAmplificationPushData() {
         /*
          * Amplification of push notification.
          * fetch all of cm_push_notification's
          * push notification data that aren't rendered yet.
          * then, put all of push_data into local storage.
          * */
-
-        WeaveInterface postWeave = new WeaveInterface() {
-            @NotNull @Override public Boolean execute() {
+        if (getAmplificationRemoteConfig()) {
+            try {
                 AmplificationDataSource.invoke(ConsumerMainApplication.this);
-                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        };
+        }
+    }
 
-        Weaver.Companion.executeWeaveCoRoutine(postWeave,
-                new WeaverFirebaseConditionCheck(
-                        RemoteConfigKey.ENABLE_AMPLIFICATION,
-                        remoteConfig
-                ));
+    private Boolean getAmplificationRemoteConfig() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {
