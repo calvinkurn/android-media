@@ -14,7 +14,7 @@ class IssueRegistry : IssueRegistry() {
         )
 
     override val minApi: Int
-        get() = super.minApi
+        get() = 1
 
     override val api: Int = CURRENT_API
 
