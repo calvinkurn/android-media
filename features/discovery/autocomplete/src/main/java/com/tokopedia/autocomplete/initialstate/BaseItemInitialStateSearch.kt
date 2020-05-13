@@ -1,6 +1,8 @@
 package com.tokopedia.autocomplete.initialstate
 
-class BaseItemInitialStateSearch(
+import com.tokopedia.analyticconstant.DataLayer
+
+data class BaseItemInitialStateSearch(
         val template: String = "",
         val imageUrl: String = "",
         val applink: String = "",
@@ -13,4 +15,26 @@ class BaseItemInitialStateSearch(
         val labelType: String = "",
         val shortcutImage: String = "",
         val productId: String = ""
-)
+) {
+    fun getObjectDataLayerForRecentView(position: Int): Any {
+        return DataLayer.mapOf(
+                "name", title,
+                "id", productId,
+                "price", "",
+                "brand", "none",
+                "category", "none / other",
+                "variant", "none / other",
+                "list", "/search - recentview - product",
+                "position", position
+        )
+    }
+
+    fun getObjectDataLayerForPromo(position: Int): Any {
+        return DataLayer.mapOf(
+                "id", productId,
+                "name", "/search - initial state",
+                "creative", title,
+                "position", position
+        )
+    }
+}

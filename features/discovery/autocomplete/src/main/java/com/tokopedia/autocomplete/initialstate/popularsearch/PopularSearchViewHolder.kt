@@ -12,13 +12,15 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.adapter.decorater.SpacingItemDecoration
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.InitialStateImpressionListener
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import kotlinx.android.synthetic.main.layout_popular_item_autocomplete.view.*
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class PopularSearchViewHolder(
         itemView: View,
-        listener: InitialStateItemClickListener
+        listener: InitialStateItemClickListener,
+        private val impressionListener: InitialStateImpressionListener
 ) : AbstractViewHolder<PopularSearchViewModel>(itemView) {
 
     companion object {
@@ -43,6 +45,7 @@ class PopularSearchViewHolder(
 
     override fun bind(element: PopularSearchViewModel) {
         adapter.setData(element.list)
+        if (element.list.isNotEmpty()) impressionListener.onPopularSearchImpressed(element.list)
     }
 
     private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {

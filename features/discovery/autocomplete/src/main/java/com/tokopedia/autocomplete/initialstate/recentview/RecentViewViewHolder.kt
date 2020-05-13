@@ -17,13 +17,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
+import com.tokopedia.autocomplete.initialstate.InitialStateImpressionListener
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import kotlinx.android.synthetic.main.layout_recent_view_item_autocomplete.view.*
 import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class RecentViewViewHolder(
         itemView: View,
-        listener: InitialStateItemClickListener
+        listener: InitialStateItemClickListener,
+        private val impressionListener: InitialStateImpressionListener
 ) : AbstractViewHolder<RecentViewViewModel>(itemView) {
 
     companion object {
@@ -44,6 +46,7 @@ class RecentViewViewHolder(
 
     override fun bind(element: RecentViewViewModel) {
         adapter.setData(element.list)
+        if (element.list.isNotEmpty()) impressionListener.onRecentViewImpressed(element.list)
     }
 
     private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {

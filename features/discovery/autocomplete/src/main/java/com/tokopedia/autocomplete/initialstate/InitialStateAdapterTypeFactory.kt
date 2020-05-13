@@ -16,7 +16,10 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewHol
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewHolder
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 
-class InitialStateAdapterTypeFactory(private val clickListener: InitialStateItemClickListener) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
+class InitialStateAdapterTypeFactory(
+        private val clickListener: InitialStateItemClickListener,
+        private val impressionListener: InitialStateImpressionListener
+) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(viewModel: PopularSearchTitleViewModel): Int {
         return PopularSearchTitleViewHolder.LAYOUT
     }
@@ -43,9 +46,9 @@ class InitialStateAdapterTypeFactory(private val clickListener: InitialStateItem
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            PopularSearchViewHolder.LAYOUT -> PopularSearchViewHolder(parent, clickListener)
-            RecentSearchViewHolder.LAYOUT -> RecentSearchViewHolder(parent, clickListener)
-            RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(parent, clickListener)
+            PopularSearchViewHolder.LAYOUT -> PopularSearchViewHolder(parent, clickListener, impressionListener)
+            RecentSearchViewHolder.LAYOUT -> RecentSearchViewHolder(parent, clickListener, impressionListener)
+            RecentViewViewHolder.LAYOUT -> RecentViewViewHolder(parent, clickListener, impressionListener)
             PopularSearchTitleViewHolder.LAYOUT -> PopularSearchTitleViewHolder(parent, clickListener)
             RecentSearchTitleViewHolder.LAYOUT -> RecentSearchTitleViewHolder(parent, clickListener)
             RecentViewTitleViewHolder.LAYOUT -> RecentViewTitleViewHolder(parent)

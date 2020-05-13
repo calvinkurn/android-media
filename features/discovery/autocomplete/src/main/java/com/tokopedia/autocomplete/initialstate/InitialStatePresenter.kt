@@ -12,6 +12,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -33,6 +34,14 @@ class InitialStatePresenter @Inject constructor(
     private var querySearch = ""
     private var listVistable = mutableListOf<Visitable<*>>()
     private var searchParameter = HashMap<String, String>()
+
+    override fun getQueryKey(): String {
+        return when {
+            searchParameter.contains(SearchApiConst.Q) -> searchParameter[SearchApiConst.Q] ?: ""
+            searchParameter.contains(SearchApiConst.KEYWORD) -> searchParameter[SearchApiConst.KEYWORD] ?: ""
+            else -> ""
+        }
+    }
 
     fun setSearchParameter(searchParameter: HashMap<String, String>) {
         this.searchParameter = searchParameter

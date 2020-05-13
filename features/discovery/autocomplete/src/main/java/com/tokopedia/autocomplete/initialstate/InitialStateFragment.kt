@@ -20,11 +20,12 @@ import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateContextModule
 import com.tokopedia.autocomplete.util.getModifiedApplink
-import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.iris.Iris
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
 
-class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, InitialStateItemClickListener {
+class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View,
+        InitialStateItemClickListener, InitialStateImpressionListener {
 
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
@@ -40,6 +41,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
 
+    @Inject
+    lateinit var iris: Iris
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +80,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     private fun prepareView(view: View) {
-        val typeFactory = InitialStateAdapterTypeFactory(this)
+        val typeFactory = InitialStateAdapterTypeFactory(this, this)
         val layoutManager = LinearLayoutManager(view.context,
                 LinearLayoutManager.VERTICAL, false)
         adapter = InitialStateAdapter(typeFactory)
@@ -191,5 +194,39 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
+    }
+
+    override fun onRecentViewImpressed(list: List<BaseItemInitialStateSearch>) {
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForRecentView(position))
+        }
+
+        AutocompleteTracking.impressedRecentView(iris, dataLayerList)
+    }
+
+    override fun onRecentSearchImpressed(list: List<BaseItemInitialStateSearch>) {
+        val keyword = presenter.getQueryKey()
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForPromo(position))
+        }
+
+        AutocompleteTracking.impressedRecentSearch(iris, dataLayerList, keyword)
+    }
+
+    override fun onPopularSearchImpressed(list: List<BaseItemInitialStateSearch>) {
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForPromo(position))
+        }
+
+        AutocompleteTracking.impressedPopularSearch(iris, dataLayerList)
     }
 }
