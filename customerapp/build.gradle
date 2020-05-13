@@ -170,6 +170,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
+            debuggable = isDebugable(project).toBoolean()
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
             if (isFirebasePerformanceLogEnabled().toBoolean()) {
