@@ -14,6 +14,10 @@ class ForgotPasswordAnalytics {
 
     }
 
+    fun onSuccessReset() {
+
+    }
+
     fun onError(message: String) {
 
     }

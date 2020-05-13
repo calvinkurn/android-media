@@ -101,6 +101,8 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tracker.onViewForgotPassword();
+
         if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
             onSuccessResetPassword();
         }
@@ -253,6 +255,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     @Override
     public void onErrorResetPassword(String errorMessage) {
         finishLoadingProgress();
+        tracker.onError(errorMessage);
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
         else
@@ -262,6 +265,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     @Override
     public void onSuccessResetPassword() {
         finishLoadingProgress();
+        tracker.onSuccessReset();
         frontView.setVisibility(View.GONE);
         successView.setVisibility(View.VISIBLE);
         String myData = getString(R.string.title_reset_success_hint_1) + "\n"
