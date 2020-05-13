@@ -11,7 +11,7 @@ import com.tokopedia.digital_brizzi.fragment.BrizziCheckBalanceFragment
  * applink
  * tokopedia-android-internal://digital/smartcard/emoneybrizzi
  * or
- * RouteManager.route(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD)
+ * RouteManager.route(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI)
  */
 
 class BrizziCheckBalanceActivity : NfcCheckBalanceActivity() {

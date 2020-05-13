@@ -9,9 +9,9 @@ import com.tokopedia.emoney.view.fragment.EmoneyCheckBalanceFragment
 
 /**
  * applink
- * tokopedia-android-internal://digital/smartcard/emoneybrizzi
+ * tokopedia-android-internal://digital/smartcard/emoney
  * or
- * RouteManager.route(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD)
+ * RouteManager.route(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY)
  */
 
 class EmoneyCheckBalanceActivity : NfcCheckBalanceActivity() {

@@ -148,11 +148,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     protected open fun processBrizzi(intent: Intent) {
         activity?.let { context ->
-            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI,
-                    context.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD))
-            intent.putExtras(context.intent.extras)
-            intent.action = context.intent.action
-            startActivity(intent)
+            val intentBrizzi = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMARTCARD,
+                    intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD), "true")
+            intentBrizzi.putExtras(intent.extras)
+            intentBrizzi.action = intent.action
+            startActivity(intentBrizzi)
             context.finish()
         }
     }
