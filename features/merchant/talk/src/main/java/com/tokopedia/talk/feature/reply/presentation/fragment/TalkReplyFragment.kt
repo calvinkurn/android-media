@@ -296,6 +296,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         pageError.visibility = View.VISIBLE
         pageError.readingConnectionErrorRetryButton.setOnClickListener {
             showPageLoading()
+            hidePageError()
             getDiscussionData()
         }
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {

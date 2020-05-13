@@ -4,9 +4,9 @@
     <!-- ACTIVITY TITLE -->
     <string name="title_product_discussion">Diskusi Produk</string>
     <string name="title_report_talk">Laporkan</string>
-    <string name="title_reading_page">Tanya-Jawab</string>
+    <string name="title_reading_page">Q&amp;A</string>
     <string name="title_talk_discuss">Diskusi</string>
-    <string name="title_reply_page">Balas Tanya-Jawab</string>
+    <string name="title_reply_page">Balas Pertanyaan</string>
     <string name="title_write_page">Kirim Pertanyaan</string>
 
     <!-- INBOX TALK -->

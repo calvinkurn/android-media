@@ -31,9 +31,17 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     }
 
+    private var productId = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        getDataFromAppLink()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
+            bundle.putString(EXTRA_PRODUCT_ID, productId)
             bundle.putAll(intent.extras)
         }
 
@@ -42,6 +50,14 @@ class AddTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     override fun isShowCloseButton(): Boolean {
         return true
+    }
+
+    private fun getDataFromAppLink() {
+        val uri = intent.data ?: return
+        val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
+        if (productIdString.isNotEmpty()) {
+            this.productId = productIdString
+        }
     }
 
 }
