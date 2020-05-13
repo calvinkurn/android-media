@@ -59,6 +59,6 @@ class AutoAdsQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_TOPADS_DEPOSIT)
     fun queryTopAdsDeposit(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_topads_deposit)
+            GraphqlHelper.loadRawString(context.resources, R.raw.auto_ads_query_topads_deposit)
 
 }

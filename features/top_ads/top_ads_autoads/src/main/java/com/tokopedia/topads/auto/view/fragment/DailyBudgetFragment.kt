@@ -26,12 +26,12 @@ import com.tokopedia.topads.auto.data.entity.BidInfoData
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
+import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.activity.NoCreditActivity
-import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -197,9 +197,9 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     }
 
     fun eligible() {
-        val intent = Intent(context, SuccessActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        activity!!.finish()
+        startActivity(Intent(activity, AutoAdsActivatedActivity::class.java))
+
     }
 
     fun insufficientCredit() {
