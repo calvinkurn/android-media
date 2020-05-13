@@ -21,11 +21,13 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.ReviewVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import javax.inject.Inject
@@ -35,6 +37,9 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
     companion object {
         private const val PROGRESS_ATTR_TAG = "progress"
         private const val PROGRESS_DURATION = 200L
+
+        private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
+
     }
 
     @Inject
@@ -56,7 +61,7 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, viewModel::setVoucherPreviewBitmap))
-            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getVoucherPreviewBitmap))
+            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel))
             put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance())
         }
     }
@@ -183,6 +188,12 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
         viewModel.setNextStep()
     }
 
-    private fun getVoucherPreviewBitmap(): Bitmap? = voucherBitmap
+    private fun getBannerVoucherUiModel(): BannerVoucherUiModel? = BannerVoucherUiModel(
+            VoucherImageType.FreeDelivery(10000),
+            "harusnyadaristep1",
+            "Ini Harusnya dari Backend",
+            "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
+            BANNER_BASE_URL
+    )
 
 }

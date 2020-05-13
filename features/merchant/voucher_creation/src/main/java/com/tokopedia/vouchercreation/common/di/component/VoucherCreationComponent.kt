@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.common.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationModule
+import com.tokopedia.vouchercreation.common.di.module.VoucherCreationUseCaseModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
@@ -16,7 +17,8 @@ import dagger.Component
 @Component(
         modules = [
             VoucherCreationModule::class,
-            VoucherCreationViewModelModule::class
+            VoucherCreationViewModelModule::class,
+            VoucherCreationUseCaseModule::class
         ], dependencies = [BaseAppComponent::class]
 )
 interface VoucherCreationComponent {

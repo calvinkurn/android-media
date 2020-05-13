@@ -1,9 +1,13 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
+import com.tokopedia.vouchercreation.create.domain.usecase.PromoCodeValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -11,7 +15,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class MerchantVoucherTargetViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher
+        @Named("Main") dispatcher: CoroutineDispatcher,
+        private val promoCodeValidationUseCase: PromoCodeValidationUseCase
 ) : BaseViewModel(dispatcher) {
 
     companion object {
@@ -40,6 +45,14 @@ class MerchantVoucherTargetViewModel @Inject constructor(
     }
 
     private fun getPromoCodeValidation(promoCode: String) {
+        launchCatchError(block = {
+            promoCodeValidationUseCase.params = PromoCodeValidationUseCase.getRequestParams(VoucherTargetType.PUBLIC, "AIASD", "ASDAS")
+            val voucher = promoCodeValidationUseCase.executeOnBackground()
+            Log.d("voucher", voucher.toString())
+        }, onError = {
+
+        })
+
         if (promoCode.length in PROMO_CODE_MIN_LENGTH..PROMO_CODE_MAX_LENGTH) {
             mShouldReturnToInitialValue.value = false
             mVoucherTargetListData.value = listOf(

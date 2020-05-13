@@ -1,0 +1,54 @@
+package com.tokopedia.vouchercreation.create.domain.usecase
+
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.vouchercreation.create.domain.model.VoucherSource
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
+import com.tokopedia.vouchercreation.create.view.uimodel.validation.VoucherTargetValidation
+
+class PromoCodeValidationUseCase (gqlRepository: GraphqlRepository) : BaseValidationUseCase<VoucherTargetValidation>(gqlRepository) {
+
+    companion object {
+        const val QUERY = "query validateVoucherTarget(\$is_public: Int!, \$code: String!, \$coupon_name: String!, \$source: String!) {\n" +
+                "  VoucherValidationPartial(VoucherValidationPartialInput: \n" +
+                "    {\n" +
+                "      is_public: \$is_public,\n" +
+                "      code: \$code,\n" +
+                "      coupon_name: \$coupon_name,\n" +
+                "      source : \$source,\n" +
+                "    }) {\n" +
+                "    data{\n" +
+                "      validation_error{\n" +
+                "        is_public\n" +
+                "        code\n" +
+                "        coupon_name\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
+
+        const val TEST = "query GetShopStatusType {\n" +
+                "  balance {\n" +
+                "    seller_usable_fmt\n" +
+                "    seller_all_fmt\n" +
+                "  }\n" +
+                "}"
+
+        private const val IS_PUBLIC = "is_public"
+        private const val CODE = "code"
+        private const val COUPON_NAME = "coupon_name"
+
+        @JvmStatic
+        fun getRequestParams(@VoucherTargetType targetType: Int,
+                             promoCode: String,
+                             couponName: String) =
+                VoucherSource.getVoucherRequestParams().apply {
+                    putInt(IS_PUBLIC, targetType)
+                    putString(CODE, promoCode)
+                    putString(COUPON_NAME, couponName)
+                }
+    }
+
+    override val queryString: String = QUERY
+
+    override val validationClassType: Class<out VoucherTargetValidation> = VoucherTargetValidation::class.java
+}

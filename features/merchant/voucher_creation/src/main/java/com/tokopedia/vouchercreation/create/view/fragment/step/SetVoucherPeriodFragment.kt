@@ -20,12 +20,12 @@ import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 
 class SetVoucherPeriodFragment(private val onNext: () -> Unit,
-                               private val getVoucherBitmap: () -> Bitmap?) : Fragment() {
+                               private val getVoucherBanner: () -> BannerVoucherUiModel?) : Fragment() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit,
-                           getVoucherBitmap: () -> Bitmap?) = SetVoucherPeriodFragment(onNext, getVoucherBitmap)
+                           getVoucherBanner: () -> BannerVoucherUiModel?) = SetVoucherPeriodFragment(onNext, getVoucherBanner)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
     }
@@ -66,20 +66,17 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
                             }
 
                             override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                val bitmap = resource.toBitmap()
-                                val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetBitmap)
-                                painter.drawFull(bannerVoucherUiModel, bitmap)
+                                activity?.runOnUiThread {
+                                    val bitmap = resource.toBitmap()
+                                    val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetBitmap)
+                                    painter.drawFull(bannerVoucherUiModel, bitmap)
+                                }
                                 return false
                             }
                         })
                         .submit()
             }
-        } else {
-            bannerBitmap?.run {
-                onSuccessGetBitmap(this)
-            }
         }
-
     }
 
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
