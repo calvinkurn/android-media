@@ -491,6 +491,15 @@ open class HomeFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
+        adjustStatusBarColor()
+    }
+
+    private fun adjustStatusBarColor() {
+        if (::homeRecyclerView.isInitialized) {
+            calculateSearchbarView(homeRecyclerView.computeVerticalScrollOffset())
+        } else {
+            calculateSearchbarView(0)
+        }
     }
 
     private fun createAndCallSendScreen() {
