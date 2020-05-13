@@ -9,6 +9,10 @@ class ChangePasswordAnalytics{
 
     private val tracker = TrackApp.getInstance().gtm
 
+    fun onViewChangePassword() {
+
+    }
+
     fun onClickSubmit() {
 
     }
