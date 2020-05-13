@@ -1,0 +1,24 @@
+mutation hotelSubmitCancelRequest ($data: cancelRequestArgs!) {
+    hotelSubmitCancelRequest(input: $data){
+        data {
+            success
+            title
+            desc
+            actionButton {
+                label
+                buttonType
+                URI
+                URIWeb
+
+            }
+        }
+        meta {
+            cancelCartID
+            selectedReason {
+                id
+                title
+                freeText
+            }
+        }
+    }
+}

@@ -35,18 +35,20 @@
         android:id="@+id/hotel_cancellation_reason_free_text_tf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/hotel_cancellation_seperator"
         app:layout_constraintTop_toBottomOf="@+id/hotel_cancellation_reason_hotel_description"
-        app:text_field_label="Alasan Lain"
-        tools:layout_height="@dimen/layout_lvl2"
-        app:text_field_label_static="true"
         app:text_field_input_type="text"
+        app:text_field_label="Alasan Lain"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="@string/hotel_cancellation_reason_free_text_placeholder"
+        tools:layout_height="@dimen/layout_lvl2"
         tools:visibility="visible"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
-        app:text_field_placeholder="Tulis alasan kamu di sini"/>
+        app:text_field_counter="500"
+        />
 
     <View
         android:id="@+id/hotel_cancellation_seperator"

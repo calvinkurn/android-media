@@ -258,6 +258,12 @@ data class HotelCancellationModel(
     }
 
     data class Response(
+            @SerializedName("propertyGetCancellation")
+            @Expose
+            val response: CancellationDataAndMeta = CancellationDataAndMeta()
+    )
+
+    data class CancellationDataAndMeta(
             @SerializedName("data")
             @Expose
             val data: HotelCancellationModel = HotelCancellationModel(),
