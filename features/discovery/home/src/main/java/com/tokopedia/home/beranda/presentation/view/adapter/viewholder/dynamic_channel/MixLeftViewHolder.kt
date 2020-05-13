@@ -112,7 +112,9 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                     loadingBackground.hide()
                 }
             })
-            bannerClick(channel)
+            image.setOnClickListener {
+                bannerClick(channel)
+            }
         } else {
             loadingBackground.hide()
         }
