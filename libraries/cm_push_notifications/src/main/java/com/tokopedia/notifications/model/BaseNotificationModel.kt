@@ -6,8 +6,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.tokopedia.notifications.database.convertors.NotificationModeConverter
-import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
+import com.tokopedia.notifications.data.converters.NotificationModeConverter
+import com.tokopedia.notifications.data.converters.NotificationStatusConverter
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import org.json.JSONObject
 

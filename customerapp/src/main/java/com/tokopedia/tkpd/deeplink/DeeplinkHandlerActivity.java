@@ -66,8 +66,6 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
@@ -134,7 +132,6 @@ import timber.log.Timber;
         KolApplinkModule.class,
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
-        TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
@@ -176,7 +173,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
-                    new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),

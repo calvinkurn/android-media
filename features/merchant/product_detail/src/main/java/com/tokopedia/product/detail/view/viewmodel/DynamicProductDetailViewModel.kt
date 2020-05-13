@@ -339,7 +339,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 }
             }
         }) {
-            _addToCartLiveData.value = it.asFail()
+            _addToCartLiveData.value = it.cause?.asFail() ?: it.asFail()
         }
     }
 
