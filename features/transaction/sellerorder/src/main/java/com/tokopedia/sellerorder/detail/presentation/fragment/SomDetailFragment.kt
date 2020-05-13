@@ -161,7 +161,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
     private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
-    private var editAwbResponse = SomEditAwbResponse.Data()
+    private var successEditAwbResponse = SomEditAwbResponse.Data()
+    private var failEditAwbResponse = SomEditAwbResponse.Error()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
@@ -853,16 +854,21 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         somDetailViewModel.editRefNumResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    editAwbResponse = it.data
-                    if (editAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
-                        showCommonToaster(editAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                    successEditAwbResponse = it.data
+                    if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
+                        showCommonToaster(successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
                         loadDetail()
                     } else {
                         showToasterError(getString(R.string.global_error), view)
                     }
                 }
                 is Fail -> {
-                    showToasterError(getString(R.string.global_error), view)
+                    failEditAwbResponse.message = it.throwable.message.toString()
+                    if(failEditAwbResponse.message.isNotEmpty()) {
+                        showToasterError(failEditAwbResponse.message, view)
+                    } else {
+                        showToasterError(getString(R.string.global_error), view)
+                    }
                 }
             }
         })
