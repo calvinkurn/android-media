@@ -16,35 +16,31 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
-import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
 import com.tokopedia.digital_brizzi.R
 import com.tokopedia.digital_brizzi.di.DaggerDigitalBrizziComponent
 import com.tokopedia.digital_brizzi.viewmodel.BrizziBalanceViewModel
+import com.tokopedia.emoney.view.fragment.EmoneyCheckBalanceFragment
+import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
 
-class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
+class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var brizziBalanceViewModel: BrizziBalanceViewModel
 
-    var brizziInstance: Brizzi = Brizzi.getInstance()
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-//    @Inject
-//    lateinit var brizziInstance: Brizzi
+    lateinit var viewModelFactories: ViewModelProvider.Factory
+    @Inject
+    lateinit var brizziInstance: Brizzi
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initiateViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactories)
             brizziBalanceViewModel = viewModelProvider.get(BrizziBalanceViewModel::class.java)
+            emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
         }
-    }
-
-    fun setOnNewIntent(intent: Intent) {
-        processTagIntent(intent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,17 +74,6 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
-    private fun processTagIntent(intent: Intent) {
-        if (isTagNfcValid(intent)) {
-            if (!isDigitalSmartcardEnabled()) {
-                onNavigateToHome()
-            } else {
-                showLoading()
-                executeBrizzi(false, intent)
-            }
-        }
-    }
-
     private fun isSupportBrizzi(): Boolean {
         var abiName = ""
         val abis = mutableListOf<String>()
@@ -99,6 +84,10 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
         return abiName == ARCHITECTURE_ARM64 || abiName == ARCHITECTURE_ARM32 ||
                 abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)
+    }
+
+    override fun processBrizzi(intent: Intent) {
+        executeBrizzi(false, intent)
     }
 
     private fun executeBrizzi(needRefreshToken: Boolean, intent: Intent) {

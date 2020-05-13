@@ -28,10 +28,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import javax.inject.Inject
 
-class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
+open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-    private lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
+    protected lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
     private lateinit var nfcAdapter: NfcAdapter
 
     @Inject
@@ -39,6 +39,10 @@ class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initiateViewModel()
+    }
+
+    protected open fun initiateViewModel() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
@@ -80,7 +84,7 @@ class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
-    private fun processTagIntent(intent: Intent) {
+    protected fun processTagIntent(intent: Intent) {
         if (isTagNfcValid(intent)) {
             if (!isDigitalSmartcardEnabled()) {
                 onNavigateToHome()
@@ -138,15 +142,19 @@ class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         emoneyBalanceViewModel.cardIsNotEmoney.observe(this, Observer {
-            activity?.let { context ->
-                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI,
-                        context.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD))
-                intent.putExtras(context.intent.extras)
-                intent.action = context.intent.action
-                startActivity(intent)
-                context.finish()
-            }
+            processBrizzi(intent)
         })
+    }
+
+    protected open fun processBrizzi(intent: Intent) {
+        activity?.let { context ->
+            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI,
+                    context.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD))
+            intent.putExtras(context.intent.extras)
+            intent.action = context.intent.action
+            startActivity(intent)
+            context.finish()
+        }
     }
 
     override fun onPause() {

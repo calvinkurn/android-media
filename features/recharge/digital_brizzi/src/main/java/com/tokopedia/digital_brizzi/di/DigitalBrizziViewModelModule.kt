@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.digital_brizzi.viewmodel.BrizziBalanceViewModel
+import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,4 +23,8 @@ abstract class DigitalBrizziViewModelModule {
     @ViewModelKey(BrizziBalanceViewModel::class)
     internal abstract fun brizziBalanceViewModel(customBalanceViewModel: BrizziBalanceViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(EmoneyBalanceViewModel::class)
+    internal abstract fun emoneyBalanceViewModel(customViewModel: EmoneyBalanceViewModel): ViewModel
 }
