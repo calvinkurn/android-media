@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TalkReplyViewModel @Inject constructor(
@@ -25,12 +26,18 @@ class TalkReplyViewModel @Inject constructor(
         private val talkDeleteTalkUseCase: TalkDeleteTalkUseCase,
         private val talkDeleteCommentUseCase: TalkDeleteCommentUseCase,
         private val talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
     companion object {
         const val MUTATION_SUCCESS = 1
     }
+
+    val userId: String = userSession.userId
+    val shopAvatar: String = userSession.shopAvatar
+    val profilePicture: String = userSession.profilePicture
+    var isMyShop: Boolean = false
 
     private val _followUnfollowResult = MutableLiveData<Result<TalkFollowUnfollowTalkResponseWrapper>>()
     val followUnfollowResult: LiveData<Result<TalkFollowUnfollowTalkResponseWrapper>>
@@ -154,5 +161,9 @@ class TalkReplyViewModel @Inject constructor(
 
     fun getIsFollowing(): Boolean {
         return isFollowing
+    }
+
+    fun setIsMyShop(shopId: String) {
+        isMyShop = shopId == userSession.shopId
     }
 }

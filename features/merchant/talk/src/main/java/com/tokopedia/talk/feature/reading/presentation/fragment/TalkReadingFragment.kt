@@ -49,7 +49,6 @@ import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
@@ -82,8 +81,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private var productId: String = ""
     private var shopId: String = ""
@@ -140,7 +137,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onFinishChooseSort(sortOption: SortOption) {
-        TalkReadingTracking.eventClickSort(sortOption.id.name.toLowerCase(), userSession.userId, productId)
+        TalkReadingTracking.eventClickSort(sortOption.id.name.toLowerCase(), viewModel.userId, productId)
         viewModel.updateSelectedSort(sortOption)
     }
 
@@ -158,7 +155,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onCategorySelected(categoryName: String, chipType: String) {
         val isSelected = chipType == ChipsUnify.TYPE_SELECTED
         if(isSelected) {
-            TalkReadingTracking.eventClickFilter(categoryName, userSession.userId, productId)
+            TalkReadingTracking.eventClickFilter(categoryName, viewModel.userId, productId)
         }
         selectUnselectCategory(categoryName, isSelected)
     }
@@ -177,7 +174,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onThreadClicked(questionID: String) {
-        if(userSession.isLoggedIn) {
+        if(viewModel.isUserLoggedIn) {
             goToReplyActivity(questionID)
             return
         }
@@ -207,7 +204,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateQuestion()
             }
-            LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && userSession.isLoggedIn) {
+            LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && viewModel.isUserLoggedIn) {
                 when (viewModel.talkLastAction) {
                     is TalkGoToReply -> {
                         goToReplyActivity((viewModel.talkLastAction as TalkGoToReply).questionId)
@@ -267,7 +264,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         addFloatingActionButton.hide()
         pageEmpty.show()
         readingEmptyAskButton.setOnClickListener {
-            if(userSession.isLoggedIn) {
+            if(viewModel.isUserLoggedIn) {
                 goToWriteActivity()
             } else {
                 updateLastAction(TalkGoToWrite)
@@ -486,7 +483,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun initFab() {
         addFloatingActionButton.setOnClickListener {
-            if(userSession.isLoggedIn) {
+            if(viewModel.isUserLoggedIn) {
                 goToWriteActivity()
             } else {
                 updateLastAction(TalkGoToWrite)

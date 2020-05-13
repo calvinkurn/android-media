@@ -16,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,12 +24,16 @@ import javax.inject.Inject
 class TalkReadingViewModel @Inject constructor(
         private val getDiscussionAggregateUseCase: GetDiscussionAggregateUseCase,
         private val getDiscussionDataUseCase: GetDiscussionDataUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val REQUEST_DELAY = 1000L
     }
+
+    val isUserLoggedIn: Boolean = userSession.isLoggedIn
+    val userId: String = userSession.userId
 
     private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregateResponse>>()
     val discussionAggregate: LiveData<Result<DiscussionAggregateResponse>>

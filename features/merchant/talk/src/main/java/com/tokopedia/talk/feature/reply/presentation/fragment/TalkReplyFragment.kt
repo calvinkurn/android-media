@@ -19,7 +19,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -51,12 +50,10 @@ import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
-import kotlinx.android.synthetic.main.item_talk_reply_empty_state.*
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
@@ -88,8 +85,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     @Inject
     lateinit var viewModel: TalkReplyViewModel
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private var questionId = ""
     private var shopId = ""
@@ -98,7 +93,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
-    private var isMyShop = false
 
     override fun getScreenName(): String {
         return ""
@@ -204,7 +198,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onSendButtonClicked(text: String) {
-        TalkReplyTracking.eventSendAnswer(userSession.userId, productId, questionId)
+        TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId)
         sendComment(text)
     }
 
@@ -259,7 +253,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun goToAttachProductActivity() {
-        val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", userSession.shopId == shopId, AttachProductActivity.SOURCE_TALK) }
+        val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", viewModel.isMyShop, AttachProductActivity.SOURCE_TALK) }
         startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
     }
 
@@ -426,10 +420,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             when(it) {
                 is Success -> {
                     with(it.data) {
-                        if(isFromInbox && isMyShop) {
+                        if(isFromInbox && viewModel.isMyShop) {
                             initProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
-                        bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, isMyShop))
+                        bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
                             stopNetworkRequestPerformanceMonitoring()
                             startRenderPerformanceMonitoring()
@@ -506,10 +500,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initTextBox(textLimit: Int) {
-        val profilePicture = if(userSession.shopId == shopId) {
-            userSession.shopAvatar
+        val profilePicture = if(viewModel.isMyShop) {
+            viewModel.shopAvatar
         } else {
-            userSession.profilePicture
+            viewModel.profilePicture
         }
         replyTextBox.bind(profilePicture, this, textLimit)
     }
@@ -630,7 +624,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             productId = it.getString(PRODUCT_ID, "")
             isFromInbox = it.getBoolean(IS_FROM_INBOX)
         }
-        isMyShop = isMyShop()
+        viewModel.setIsMyShop(shopId)
     }
 
     private fun resetTextBox() {
@@ -642,12 +636,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.setAttachedProducts(mutableListOf())
     }
 
-    private fun isMyShop() : Boolean {
-        return userSession.shopId == shopId
-    }
-
     private fun showEmpty(userId: Int) {
-        adapter?.showEmpty(TalkReplyEmptyModel(userSession.userId == userId.toString()))
+        adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
     }
 
 
