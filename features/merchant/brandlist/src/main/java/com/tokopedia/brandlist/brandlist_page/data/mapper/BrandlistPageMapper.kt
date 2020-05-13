@@ -48,26 +48,52 @@ class BrandlistPageMapper {
                 allBrand: OfficialStoreAllBrands,
                 adapter: BrandlistPageAdapter?,
                 listener: BrandlistPageTrackingListener,
-                stateLoadBrands: String
+                stateLoadBrands: String,
+                isLoadMore: Boolean
         ) {
-//            allBrand.brands.forEachIndexed { index, brand ->
-//                adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
-//            }
 
+            val totalData: Int = adapter?.getVisitables()?.size ?: 0
             if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
-                val totalData: Int = adapter?.getVisitables()?.size ?: 0
-                adapter?.getVisitables()?.subList(ALL_BRAND_POSITION, totalData)?.clear()
-                allBrand.brands.forEachIndexed { index, brand ->
-                    adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
+                if (!isLoadMore) {
+                    adapter?.getVisitables()?.subList(ALL_BRAND_POSITION, totalData)?.clear()
+                    allBrand.brands.forEachIndexed { index, brand ->
+                        adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
+                    }
+                    adapter?.notifyItemRangeRemoved(ALL_BRAND_POSITION, totalData)
+                    adapter?.notifyItemChanged(ALL_BRAND_POSITION)
+                } else  {
+                    allBrand.brands.forEachIndexed { index, brand ->
+                        adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
+                    }
+                    adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
                 }
-                adapter?.notifyItemRangeRemoved(ALL_BRAND_POSITION, totalData)
-                adapter?.notifyItemChanged(ALL_BRAND_POSITION)
+
             } else if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) {
-                allBrand.brands.forEachIndexed { index, brand ->
-                    adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
+                if (!isLoadMore) {
+                    adapter?.getVisitables()?.subList(ALL_BRAND_POSITION, totalData)?.clear()
+                    allBrand.brands.forEachIndexed { index, brand ->
+                        adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllBrandViewModel(index, brand, listener))
+                    }
+                    adapter?.notifyItemRangeRemoved(ALL_BRAND_POSITION, totalData)
+                    adapter?.notifyItemRangeInserted(ALL_BRAND_POSITION, allBrand.brands.size)
+                } else  {
+                    allBrand.brands.forEachIndexed { index, brand ->
+                        adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
+                    }
+                    adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
                 }
-                adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
+
+            } else if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
+                getLoadMoreData(allBrand, listener, adapter)
             }
+        }
+
+        private fun getLoadMoreData(allBrand: OfficialStoreAllBrands,
+                listener: BrandlistPageTrackingListener, adapter: BrandlistPageAdapter?) {
+            allBrand.brands.forEachIndexed { index, brand ->
+                adapter?.getVisitables()?.add(AllBrandViewModel(index, brand, listener))
+            }
+            adapter?.notifyItemRangeInserted(adapter.lastIndex, allBrand.brands.size)
         }
 
         private fun notifyElement(position: Int, element: Visitable<*>, adapter: BrandlistPageAdapter?) {

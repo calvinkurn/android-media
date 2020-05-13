@@ -16,6 +16,7 @@ object Constant {
 }
 
 object LoadAllBrandState {
+    const val LOAD_INITIAL_ALL_BRAND = "LOAD_INITIAL_ALL_BRAND"
     const val LOAD_ALL_BRAND = "LOAD_ALL_BRAND"
     const val LOAD_BRAND_PER_ALPHABET = "LOAD_BRAND_PER_ALPHABET"
 }

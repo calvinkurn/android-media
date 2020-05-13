@@ -71,13 +71,32 @@ class BrandlistPageFragment :
     private var categoryName = ""
     private var totalBrandsNumber: Int = 0
     private var selectedChip: Int = DEFAULT_SELECTED_CHIPS
-    private var stateLoadBrands: String = LoadAllBrandState.LOAD_ALL_BRAND
+    private var stateLoadBrands: String = LoadAllBrandState.LOAD_INITIAL_ALL_BRAND
+    private var isLoadMore: Boolean = false
+    private var selectedBrandLetter: String = "A"
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+//                if (swipeRefreshLayout?.isRefreshing == false) {
+//                    viewModel.loadMoreAllBrands(category)
+//                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandViewModel) {
+//                        adapter?.showLoading()
+//                    }
+//                }
+
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    viewModel.loadMoreAllBrands(category)
+                    val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else ""
+                    viewModel.loadMoreAllBrands(category, brandFirstLetter)
+                    isLoadMore = true
+//                    if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
+//                        viewModel.loadMoreAllBrands(category)
+//                    } else if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) {
+//                        viewModel.loadMoreAllBrands(category)
+//                    } else if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
+//
+//                    }
+
                     if (adapter?.getVisitables()?.lastOrNull() is AllBrandViewModel) {
                         adapter?.showLoading()
                     }
@@ -270,25 +289,28 @@ class BrandlistPageFragment :
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
+                    val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
+                            stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
                     adapter?.hideLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     endlessScrollListener.updateStateAfterGetData()
-                    val currentOffset = viewModel.getCurrentOffset()
-                    val groupHeader = viewModel.getCurrentLetter().toUpperCase()
+
+//                    val currentOffset = viewModel.getCurrentOffset()
+//                    val groupHeader = viewModel.getCurrentLetter().toUpperCase()
 
 //                    if (currentOffset == 0 && groupHeader == "A") {
-                    if (currentOffset == 0) {
-                        // Show header for sticky only once
-                        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip)
-                    }
+//                    if (currentOffset == 0) {
+//                        // Show header for sticky only once
+//                        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip)
+//                    }
 
-                    BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands)
+                    BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip)
+                    BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
-                    viewModel.updateCurrentLetter()
-                    viewModel.updateAllBrandRequestParameter()
+//                    viewModel.updateCurrentLetter()
+//                    viewModel.updateAllBrandRequestParameter()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -301,6 +323,8 @@ class BrandlistPageFragment :
     private fun loadData(category: Category, userId: String, isRefresh: Boolean = false) {
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
+                isLoadMore = false
+                setStateLoadBrands(LoadAllBrandState.LOAD_INITIAL_ALL_BRAND)
                 viewModel.loadInitialData(category, userId)
                 isLoadedOnce = true
 
@@ -309,6 +333,10 @@ class BrandlistPageFragment :
                 }
             }
         }
+    }
+
+    private fun setStateLoadBrands(stateLoadData: String) {
+        stateLoadBrands = stateLoadData
     }
 
 
@@ -374,17 +402,22 @@ class BrandlistPageFragment :
     override fun onClickedChip(position: Int, chipName: String) {
         println("position: Int, chipName: String $position $chipName")
         selectedChip = position
+        val offset: Int = 0
+//        adapter?.selectedChipsId = position
+//        adapter?.notifyDataSetChanged()
 
         if (position > 0 && position < 2) {     // Load Semua Brand
-            stateLoadBrands = LoadAllBrandState.LOAD_ALL_BRAND
+            isLoadMore = false
+            setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
+            viewModel.resetAllBrandRequestParameter()
             viewModel.loadAllBrands(category)
         } else if (position >= 2) {     // Load per alphabet
-            stateLoadBrands = LoadAllBrandState.LOAD_BRAND_PER_ALPHABET
+            isLoadMore = false
+            selectedBrandLetter = chipName
+            setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
+            viewModel.resetAllBrandRequestParameter()
             viewModel.loadBrandsPerAlphabet(category, chipName)
         }
-
-
-
 
 //        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsNumber, selectedChip)
 //        adapter?.selectedPosition = position

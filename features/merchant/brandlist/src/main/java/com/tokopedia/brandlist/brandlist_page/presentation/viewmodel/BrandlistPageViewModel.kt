@@ -50,15 +50,15 @@ class BrandlistPageViewModel @Inject constructor(
     private var firstLetterChanged = false
     private var totalBrandSize = 0
     private var currentOffset = INITIAL_OFFSET
-    private var currentLetter = INITIAL_LETTER
+//    private var currentLetter = INITIAL_LETTER
 
-    fun getCurrentOffset(): Int {
-        return currentOffset
-    }
+//    fun getCurrentOffset(): Int {
+//        return currentOffset
+//    }
 
-    fun getCurrentLetter(): String {
-        return currentLetter.toString()
-    }
+//    fun getCurrentLetter(): String {
+//        return currentLetter.toString()
+//    }
 
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
@@ -68,35 +68,35 @@ class BrandlistPageViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
-    fun updateCurrentLetter() {
-        val firstLetter = getTheFirstLetter(totalBrandSize, currentOffset)
-        if (firstLetter != currentLetter) {
-            currentLetter = firstLetter
-            firstLetterChanged = true
-        }
-    }
+//    fun updateCurrentLetter() {
+//        val firstLetter = getTheFirstLetter(totalBrandSize, currentOffset)
+//        if (firstLetter != currentLetter) {
+//            currentLetter = firstLetter
+//            firstLetterChanged = true
+//        }
+//    }
 
-    fun updateAllBrandRequestParameter() {
-        if (firstLetterChanged) {
-            totalBrandSize = 0
-            currentOffset = 0
-            firstLetterChanged = false
-        }
-    }
+//    fun updateAllBrandRequestParameter() {
+//        if (firstLetterChanged) {
+//            totalBrandSize = 0
+//            currentOffset = 0
+//            firstLetterChanged = false
+//        }
+//    }
 
     fun resetAllBrandRequestParameter() {
         firstLetterChanged = false
         totalBrandSize = 0
         currentOffset = INITIAL_OFFSET
-        currentLetter = INITIAL_LETTER
+//        currentLetter = INITIAL_LETTER
     }
 
-    private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-        return if (totalBrandSize == currentOffset) {
-            val newLetter = currentLetter + 1
-            newLetter
-        } else currentLetter
-    }
+//    private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
+//        return if (totalBrandSize == currentOffset) {
+//            val newLetter = currentLetter + 1
+//            newLetter
+//        } else currentLetter
+//    }
 
     fun loadInitialData(category: Category?, userId: String?) {
         launchCatchError(block = {
@@ -156,7 +156,7 @@ class BrandlistPageViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun loadMoreAllBrands(category: Category?) {
+    fun loadMoreAllBrands(category: Category?, brandFirstLetter: String) {
         val requestSize = geRequestSize(totalBrandSize, currentOffset)
         launchCatchError(block = {
             _getAllBrandResult.postValue(Success(getAllBrandAsync(
@@ -165,7 +165,7 @@ class BrandlistPageViewModel @Inject constructor(
                     ALL_BRANDS_QUERY,
                     requestSize,
                     ALPHABETIC_ASC_SORT,
-                    currentLetter.toString()).await()))
+                    brandFirstLetter).await()))
         }, onError = {})
     }
 

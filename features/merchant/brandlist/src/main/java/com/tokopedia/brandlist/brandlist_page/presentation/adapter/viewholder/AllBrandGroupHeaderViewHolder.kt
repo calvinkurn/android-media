@@ -75,10 +75,6 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
         return tempHeaderList
     }
 
-//    interface ShopProductEtalaseChipListViewHolderListener {
-//        fun onEtalaseChipClicked(shopProductEtalaseChipItemViewModel: ShopProductEtalaseChipItemViewModel)
-//    }
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.brandlist_all_brand_group_header

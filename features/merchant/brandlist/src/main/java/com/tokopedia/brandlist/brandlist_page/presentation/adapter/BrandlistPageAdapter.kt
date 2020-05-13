@@ -26,6 +26,8 @@ class BrandlistPageAdapter(
 
     private var recyclerView: RecyclerView? = null
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
+//    var selectedChipsId: Int = 1
+//    var selectedEtalaseId: String = ""
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
