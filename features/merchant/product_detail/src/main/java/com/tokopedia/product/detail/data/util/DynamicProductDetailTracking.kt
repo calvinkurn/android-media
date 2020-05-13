@@ -969,7 +969,8 @@ object DynamicProductDetailTracking {
         val generateProduct = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
                                 shopInfo: ShopInfo?, trackerAttribution: String?,
                                 isTradeIn: Boolean, isDiagnosed: Boolean,
-                                multiOrigin: Boolean, deeplinkUrl: String ->
+                                multiOrigin: Boolean, deeplinkUrl: String,
+                                isStockAvailable: String ->
 
             val dimension55 = if (isTradeIn && isDiagnosed)
                 "true diagnostic"
@@ -998,6 +999,7 @@ object DynamicProductDetailTracking {
                     TrackingUtil.getMultiOriginAttribution(multiOrigin),
                     dimension83 ?: "",
                     shopInfo?.goldOS?.shopTypeString ?: "",
+                    if (isStockAvailable == "0") "not available" else "available",
                     1
             ))
         }
@@ -1011,13 +1013,12 @@ object DynamicProductDetailTracking {
                     )
         }
 
-        //TODO milhamj
-//        ProductTrackingConstant.Tracking.KEY_DIMENSION_98, if (isStockAvailable == "0") "not available" else "available"
 
         val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
                                           shopInfo: ShopInfo?, trackerAttribution: String?,
                                           isTradeIn: Boolean, isDiagnosed: Boolean,
-                                          multiOrigin: Boolean, deeplinkUrl: String ->
+                                          multiOrigin: Boolean, deeplinkUrl: String
+                                          ,isStockAvailable: String ->
 
             val subCategoryId = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val subCategoryName = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1027,7 +1028,7 @@ object DynamicProductDetailTracking {
             }?.firstOrNull()?.uRLOriginal ?: ""
 
             val products = generateProduct(irisSessionId, trackerListName, productInfo, shopInfo,
-                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl)
+                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable)
 
             ProductDetailViewsBundler
                     .getBundle(
@@ -1074,11 +1075,13 @@ object DynamicProductDetailTracking {
                                                isTradeIn: Boolean,
                                                isDiagnosed: Boolean,
                                                multiOrigin: Boolean,
-                                               deeplinkUrl: String): Bundle {
+                                               deeplinkUrl: String,
+                                               isStockAvailable: String): Bundle {
 
             val sentBundle = generateProductViewBundle(
                     irisSessionId, trackerListName, productInfo, shopInfo,
                     trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl
+                    ,isStockAvailable
             )
             sendTrackingBundle(
                             ProductDetailViewsBundler.KEY,

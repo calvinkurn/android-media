@@ -1934,15 +1934,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
-                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
+
+                val sentBundle = DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(
+                        irisSessionId,
+                        trackerListNamePdp,
+                        productInfo,
+                        shopInfo,
+                        trackerAttributionPdp,
+                        isElligible,
+                        viewModel.tradeInParams.usedPrice > 0,
+                        viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment,
+                        deeplinkUrl,
+                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString()) ?: "0"
+                )
                 context?.let {
                     getInstance(it).saveEvent(sentBundle)
                 }
-//                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListNamePdp, productInfo, shopInfo, trackerAttributionPdp,
-//                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment, deeplinkUrl,
-//                        viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString())
-//                        ?: "0")
                 return
             }
         }
