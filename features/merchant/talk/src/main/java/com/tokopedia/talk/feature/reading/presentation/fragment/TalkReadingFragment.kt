@@ -407,9 +407,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             (adapter as? TalkReadingAdapter)?.removeQuestion(questionID)
         }
         showSuccessToaster(getString(R.string.delete_question_toaster_success))
-//        if(!isLoadingInitialData) {
-//            loadInitialData()
-//        }
     }
 
     private fun showSuccessToaster(message: String) {
