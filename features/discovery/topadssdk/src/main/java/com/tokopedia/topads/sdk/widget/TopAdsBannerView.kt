@@ -66,10 +66,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val NO_TEMPLATE = 0
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
-    private final val VARIANT_A = "Headline A"
-    private final val VARIANT_NO_HEADLINE = "No Headline"
-    private final val VARIANT_B = "Headline B"
-    private final val AB_TEST_KEY = "Headline Ads New Design 2"
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
 
     @Inject
@@ -112,7 +108,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shopdetail.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
-                    ImpresionTask().execute(cpmData.adClickUrl)
+                    ImpresionTask(className).execute(cpmData.adClickUrl)
                 }
             }
 
@@ -124,12 +120,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         it.onImpressionHeadlineAdsItem(0, cpmData)
                         ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
                     }
-                }
-            }
-            shop_image?.setOnClickListener {
-                if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(className).execute(cpmData?.adClickUrl)
                 }
             }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
@@ -157,24 +147,6 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             }
             shop_name?.text = cpmData?.cpm?.cpmShop?.name
             description?.text = cpmData?.cpm?.cpmShop?.slogan
-            shop_badge?.setOnClickListener {
-                if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(className).execute(cpmData?.adClickUrl)
-                }
-            }
-            shop_name?.setOnClickListener {
-                if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(className).execute(cpmData?.adClickUrl)
-                }
-            }
-            kunjungi_toko?.setOnClickListener {
-                if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(className).execute(cpmData?.adClickUrl)
-                }
-            }
             val items = ArrayList<Item<*>>()
             items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
             for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
