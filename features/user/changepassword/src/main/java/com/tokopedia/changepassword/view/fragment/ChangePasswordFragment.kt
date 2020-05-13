@@ -55,6 +55,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tracker.onViewChangePassword()
 
         userSession = UserSession(context)
         if (!userSession.isLoggedIn) {
