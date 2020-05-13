@@ -1,13 +1,11 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
-import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.domain.usecase.PromoCodeValidationUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.VoucherTargetValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,13 +14,8 @@ import javax.inject.Named
 
 class MerchantVoucherTargetViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher,
-        private val promoCodeValidationUseCase: PromoCodeValidationUseCase
+        private val voucherTargetValidationUseCase: VoucherTargetValidationUseCase
 ) : BaseViewModel(dispatcher) {
-
-    companion object {
-        private const val PROMO_CODE_MIN_LENGTH = 5
-        private const val PROMO_CODE_MAX_LENGTH = 10
-    }
 
     private val mVoucherTargetListData = MutableLiveData<List<VoucherTargetItemUiModel>>()
     val voucherTargetListData : LiveData<List<VoucherTargetItemUiModel>>
@@ -40,34 +33,20 @@ class MerchantVoucherTargetViewModel @Inject constructor(
         mVoucherTargetListData.value = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList()
     }
 
-    fun validatePromoCode(promoCode: String) {
-        getPromoCodeValidation(promoCode)
-    }
-
-    private fun getPromoCodeValidation(promoCode: String) {
-        launchCatchError(block = {
-            promoCodeValidationUseCase.params = PromoCodeValidationUseCase.getRequestParams(VoucherTargetType.PUBLIC, "AIASD", "ASDAS")
-            val voucher = promoCodeValidationUseCase.executeOnBackground()
-            Log.d("voucher", voucher.toString())
-        }, onError = {
-
-        })
-
-        if (promoCode.length in PROMO_CODE_MIN_LENGTH..PROMO_CODE_MAX_LENGTH) {
-            mShouldReturnToInitialValue.value = false
-            mVoucherTargetListData.value = listOf(
-                    VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardType.PUBLIC,
-                            isEnabled = false,
-                            isHavePromoCard = false),
-                    VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardType.PRIVATE,
-                            isEnabled = true,
-                            isHavePromoCard = true,
-                            promoCode = promoCode)
-            )
-            mPrivateVoucherPromoCode.value = promoCode
-        }
+    fun setPromoCode(promoCode: String) {
+        mShouldReturnToInitialValue.value = false
+        mVoucherTargetListData.value = listOf(
+                VoucherTargetItemUiModel(
+                        voucherTargetType = VoucherTargetCardType.PUBLIC,
+                        isEnabled = false,
+                        isHavePromoCard = false),
+                VoucherTargetItemUiModel(
+                        voucherTargetType = VoucherTargetCardType.PRIVATE,
+                        isEnabled = true,
+                        isHavePromoCard = true,
+                        promoCode = promoCode)
+        )
+        mPrivateVoucherPromoCode.value = promoCode
     }
 
 }

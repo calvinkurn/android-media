@@ -7,11 +7,19 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.viewmodel.CreatePromoCodeViewModel
 import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
+import javax.inject.Inject
 
 
 class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
@@ -40,13 +48,26 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
 
     override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+
+    private val viewModel by lazy {
+        viewModelProvider.get(CreatePromoCodeViewModel::class.java)
+    }
+
     private var alertMinimumMessage = bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
     private var easyRememberMessage = bottomSheetContext?.resources?.getString(TEXTFIELD_MESSAGE_EASY_REMEMBER).toBlankOrString()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
-            initView()
+            observeLiveData()
+            setupView()
         }
     }
 
@@ -58,7 +79,28 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
         }
     }
 
-    private fun initView() {
+    private fun observeLiveData() {
+        viewLifecycleOwner.observe(viewModel.promoCodeValidationLiveData) { result ->
+            createPromoCodeSaveButton?.isLoading = false
+            when(result) {
+                is Success -> {
+                    val errorMessage = result.data.promoCodeError
+                    errorMessage.run {
+                        if (isBlank()) {
+                            onNextClick(this)
+                        } else {
+                            createPromoCodeTextField?.setTextFieldError(this)
+                        }
+                    }
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+    private fun setupView() {
         createPromoCodeTextField?.run {
             textFieldInput.run {
                 filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
@@ -87,8 +129,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                                 setMessage(easyRememberMessage)
                             }
                             s.length < MIN_TEXTFIELD_LENGTH -> {
-                                setError(true)
-                                setMessage(alertMinimumMessage)
+                                setTextFieldError(alertMinimumMessage)
                             }
                             else -> {
                                 setError(false)
@@ -100,10 +141,22 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                 requestFocus()
             }
 
-            createPromoCodeSaveButton?.setOnClickListener {
-                onNextClick(createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
+            createPromoCodeSaveButton?.run {
+                setOnClickListener {
+                    val promoCode = createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString()
+                    val canValidateCode = promoCode.length in MIN_TEXTFIELD_LENGTH..MAX_TEXTFIELD_LENGTH && !isLoading
+                    if (canValidateCode) {
+                        isLoading = true
+                        viewModel.validatePromoCode(promoCode)
+                    }
+                }
             }
         }
+    }
+
+    private fun TextFieldUnify.setTextFieldError(errorMessage: String) {
+        setError(true)
+        setMessage(errorMessage)
     }
 
 }

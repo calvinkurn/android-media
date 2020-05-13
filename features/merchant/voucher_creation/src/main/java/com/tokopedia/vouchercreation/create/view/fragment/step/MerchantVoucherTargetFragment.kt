@@ -151,7 +151,7 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     }
 
     private fun onNextCreatePromoCode(promoCode: String) {
-        viewModel.validatePromoCode(promoCode)
+        viewModel.setPromoCode(promoCode)
     }
 
     private fun getPromoCodeString() : String = promoCodeText
