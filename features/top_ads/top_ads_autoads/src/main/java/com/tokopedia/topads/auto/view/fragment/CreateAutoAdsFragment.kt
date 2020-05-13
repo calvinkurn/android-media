@@ -86,9 +86,10 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
 
         budgetViewModel.topAdsDeposit.observe(this, Observer {
             topAdsDeposit = it
+            btn_submit.isEnabled = true
         })
         budgetViewModel.autoAdsData.observe(this, Observer {
-            if (topAdsDeposit < 0) {
+            if (topAdsDeposit <= 0) {
                 insufficientCredit()
             } else
                 eligible()

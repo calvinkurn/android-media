@@ -33,7 +33,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         setHasOptionsMenu(true)
         adsConfirmationSheet = ManualAdsConfirmationSheet.newInstance(activity!!)
         budgetViewModel.autoAdsData.observe(this, Observer {
-            if (topAdsDeposit < 0) {
+            if (topAdsDeposit <= 0) {
                 insufficientCredit()
             } else
                 eligible()

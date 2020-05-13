@@ -209,7 +209,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     }
 
     fun inProgressActive() {
-            if (topAdsDeposit < 0) {
+            if (topAdsDeposit <= 0) {
                 insufficientCredit()
             } else
                 eligible()
