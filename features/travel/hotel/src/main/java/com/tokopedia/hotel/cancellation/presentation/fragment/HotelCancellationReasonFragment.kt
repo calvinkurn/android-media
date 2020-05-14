@@ -7,16 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
@@ -26,6 +22,7 @@ import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationA
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
 import com.tokopedia.hotel.cancellation.presentation.adapter.HotelCancellationReasonAdapter
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,6 +43,9 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     lateinit var reasonAdapter: HotelCancellationReasonAdapter
 
     private var invoiceId: String = ""
+
+    @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,13 +69,8 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
         getCancellationData()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        getCancellationData()
-    }
-
     private fun getCancellationData() {
-        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId,false)
+        cancellationViewModel.getCancellationData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_hotel_cancellation_data), invoiceId, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -86,7 +81,8 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
                 is Success -> {
                     initView(it.data)
                 }
-                is Fail -> { }
+                is Fail -> {
+                }
             }
         })
     }
@@ -119,11 +115,15 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
         hotel_cancellation_reason_rv.adapter = reasonAdapter
 
         hotel_cancellation_button_next.setOnClickListener {
-            showConfirmationDialog(hotelCancellationModel.cancelCartId, hotelCancellationModel.confirmationButton)
+            showConfirmationDialog(hotelCancellationModel.cancelCartId, hotelCancellationModel.confirmationButton, hotelCancellationModel)
         }
     }
 
-    private fun showConfirmationDialog(cancelCartId: String, confirmationButton: HotelCancellationModel.ConfirmationButton) {
+    private fun showConfirmationDialog(cancelCartId: String, confirmationButton: HotelCancellationModel.ConfirmationButton,
+                                       hotelCancellationModel: HotelCancellationModel) {
+        val orderAmount = hotelCancellationModel.payment.detail.firstOrNull()?.amount ?: "0"
+        val cancellationFee = hotelCancellationModel.payment.detail.getOrNull(1)?.amount ?: "0"
+        val refundAmount = hotelCancellationModel.payment.summary.firstOrNull()?.amount ?: "0"
         val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(confirmationButton.title)
         dialog.setDescription(confirmationButton.desc)
@@ -131,9 +131,10 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
         dialog.setPrimaryCTAText(getString(R.string.hotel_cancellation_reason_dismiss))
         dialog.setPrimaryCTAClickListener { dialog.dismiss() }
         dialog.setSecondaryCTAClickListener {
-            activity?.finish()
-            startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(),
+            trackingHotelUtil.clickSubmitCancellation(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_REASON_SCREEN_NAME)
+            startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), invoiceId, orderAmount, cancellationFee, refundAmount,
                     HotelCancellationSubmitParam(cancelCartId, HotelCancellationSubmitParam.SelectedReason(reasonAdapter.selectedId, reasonAdapter.freeText))))
+            activity?.finish()
         }
         dialog.show()
     }
@@ -148,6 +149,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
             inflater.inflate(R.layout.fragment_hotel_cancellation_reason, container, false)
 
     companion object {
+        const val HOTEL_CANCELLATION_REASON_SCREEN_NAME = "/hotel/ordercancelreason"
         private const val EXTRA_INVOICE_ID = "extra_invoice_id"
         fun getInstance(invoiceId: String): HotelCancellationReasonFragment =
                 HotelCancellationReasonFragment().also {

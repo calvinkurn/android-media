@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
 import com.tokopedia.hotel.cancellation.di.DaggerHotelCancellationComponent
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
@@ -21,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_hotel_cancellation_confirmation.*
 
 class HotelCancellationConfirmationActivity: HotelBaseActivity(), HasComponent<HotelCancellationComponent> {
 
-    lateinit var cancellationSubmitParam: HotelCancellationSubmitParam
+    private lateinit var cancellationSubmitParam: HotelCancellationSubmitParam
 
     override fun onCreate(savedInstanceState: Bundle?) {
         with(intent) {
@@ -38,7 +37,12 @@ class HotelCancellationConfirmationActivity: HotelBaseActivity(), HasComponent<H
 
     override fun shouldShowOptionMenu(): Boolean = false
 
-    override fun getNewFragment(): Fragment = HotelCancellationConfirmationFragment.getInstance(cancellationSubmitParam)
+    override fun getNewFragment(): Fragment = HotelCancellationConfirmationFragment.getInstance(
+            intent.getStringExtra(EXTRA_HOTEL_CANCELLATION_INVOICE_ID) ?: "",
+            intent.getStringExtra(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT) ?: "",
+            intent.getStringExtra(EXTRA_HOTEL_CANCELLATION_FEE) ?: "",
+            intent.getStringExtra(EXTRA_HOTEL_REFUND_AMOUNT) ?: "",
+            cancellationSubmitParam)
 
     override fun getComponent(): HotelCancellationComponent = DaggerHotelCancellationComponent.builder()
             .hotelComponent(HotelComponentInstance.getHotelComponent(application))
@@ -49,9 +53,19 @@ class HotelCancellationConfirmationActivity: HotelBaseActivity(), HasComponent<H
     override fun getParentViewResourceID(): Int = R.id.hotel_cancellation_confirmation_parent_view
 
     companion object {
-        fun getCallingIntent(context: Context, hotelCancellationSubmitParam: HotelCancellationSubmitParam): Intent =
+        fun getCallingIntent(context: Context, invoiceId: String, orderAmount: String, cancellationFee: String, refundAmount: String,
+                             hotelCancellationSubmitParam: HotelCancellationSubmitParam): Intent =
                 Intent(context, HotelCancellationConfirmationActivity::class.java)
                         .putExtra(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA, hotelCancellationSubmitParam)
+                        .putExtra(EXTRA_HOTEL_CANCELLATION_INVOICE_ID, invoiceId)
+                        .putExtra(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT, orderAmount)
+                        .putExtra(EXTRA_HOTEL_CANCELLATION_FEE, cancellationFee)
+                        .putExtra(EXTRA_HOTEL_REFUND_AMOUNT, refundAmount)
         const val EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA = "extra_cancellation_submit_data"
+        const val EXTRA_HOTEL_CANCELLATION_INVOICE_ID =  "cancellation_invoice_id"
+        const val EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT = "cancellation_order_amount"
+        const val EXTRA_HOTEL_CANCELLATION_FEE =  "cancellation_fee"
+        const val EXTRA_HOTEL_REFUND_AMOUNT = "cancellation_refund_amount"
+
     }
 }

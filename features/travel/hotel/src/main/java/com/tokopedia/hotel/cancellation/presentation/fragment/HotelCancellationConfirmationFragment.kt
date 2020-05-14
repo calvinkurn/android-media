@@ -16,8 +16,13 @@ import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_FEE
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_INVOICE_ID
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_REFUND_AMOUNT
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.UnifyButton
@@ -36,13 +41,24 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var cancellationViewModel: HotelCancellationViewModel
 
+    @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
+
     private lateinit var cancellationSubmitParam: HotelCancellationSubmitParam
+    private var invoiceId = ""
+    private var orderAmount = ""
+    private var cancellationFee = ""
+    private var refundAmount = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
             cancellationSubmitParam = it.getParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA) ?: HotelCancellationSubmitParam()
+            invoiceId = it.getString(EXTRA_HOTEL_CANCELLATION_INVOICE_ID) ?: "0"
+            orderAmount = it.getString(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT) ?: "0"
+            cancellationFee = it.getString(EXTRA_HOTEL_CANCELLATION_FEE) ?: "0"
+            refundAmount = it.getString(EXTRA_HOTEL_REFUND_AMOUNT) ?: "0"
         }
 
         activity?.run {
@@ -108,6 +124,10 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_hotel_cancellation_error)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_failed))
         }
+
+        val status = if (cancellationSubmitModel.success) getString(R.string.hotel_cancellation_success_status) else
+            getString(R.string.hotel_cancellation_fail_status)
+        trackingHotelUtil.viewCancellationStatus(requireContext(), invoiceId, orderAmount, cancellationFee, refundAmount, status, HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME)
     }
 
     private fun getButtonFromType(actionButton: HotelCancellationSubmitModel.ActionButton): UnifyButton {
@@ -120,6 +140,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT)
         button.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1))
         button.setOnClickListener {
+            trackingHotelUtil.clickOnCancellationStatusActionButton(requireContext(), actionButton.label, HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME)
             if (actionButton.uri == RETRY_SUBMISSION) {
                 submitCancellation()
             } else RouteManager.route(requireContext(), actionButton.uri)
@@ -128,11 +149,17 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     }
 
     companion object {
+        const val HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME = "/hotel/ordercancelresult"
         const val RETRY_SUBMISSION = "RETRYSUBMISSION"
-        fun getInstance(cancellationSubmitParam: HotelCancellationSubmitParam): HotelCancellationConfirmationFragment =
+        fun getInstance(invoiceId: String, orderAmount: String, cancellationFee: String, refundAmount: String,
+                        cancellationSubmitParam: HotelCancellationSubmitParam): HotelCancellationConfirmationFragment =
                 HotelCancellationConfirmationFragment().also {
                     it.arguments = Bundle().apply {
                         putParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA, cancellationSubmitParam)
+                        putString(EXTRA_HOTEL_CANCELLATION_INVOICE_ID, invoiceId)
+                        putString(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT, orderAmount)
+                        putString(EXTRA_HOTEL_CANCELLATION_FEE, cancellationFee)
+                        putString(EXTRA_HOTEL_REFUND_AMOUNT, refundAmount)
                     }
                 }
     }

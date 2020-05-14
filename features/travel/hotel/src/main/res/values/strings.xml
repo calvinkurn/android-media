@@ -252,4 +252,6 @@
     <string name="hotel_cancellation_failed">Pembatalan Gagal</string>
     <string name="hotel_cancellation_reason_free_text_placeholder">Tulis alasan kamu di sini</string>
     <string name="hotel_cancellation_reason_free_text_label">Alasan Lain</string>
+    <string name="hotel_cancellation_success_status">success</string>
+    <string name="hotel_cancellation_fail_status">fail</string>
 </resources>
