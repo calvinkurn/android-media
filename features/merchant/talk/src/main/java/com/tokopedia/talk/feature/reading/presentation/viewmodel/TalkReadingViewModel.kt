@@ -80,7 +80,7 @@ class TalkReadingViewModel @Inject constructor(
                 getDiscussionDataUseCase.executeOnBackground()
             }
             _discussionData.postValue(Success(response))
-            setSuccess(response.discussionData.totalQuestion == 0)
+            setSuccess(response.discussionData.totalQuestion == 0, page)
         }) {
             _discussionData.postValue(Fail(it))
             setError(page)
@@ -145,8 +145,8 @@ class TalkReadingViewModel @Inject constructor(
         _viewState.value = ViewState.Error(page)
     }
 
-    private fun setSuccess(isEmpty: Boolean) {
-        _viewState.value = ViewState.Success(isEmpty)
+    private fun setSuccess(isEmpty: Boolean, page: Int) {
+        _viewState.value = ViewState.Success(isEmpty, page)
     }
 
 }

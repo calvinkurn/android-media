@@ -304,6 +304,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     initSortOptions()
                     showContainer()
+                    if(!isLoadingInitialData) {
+                        loadInitialData()
+                    }
                 }
             }
         })
@@ -329,7 +332,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.sortOptions.observe(this, Observer { sortOptions ->
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
-                getDiscussionData(isRefresh = false)
+                isLoadingInitialData = true
+                adapter.clearAllElements()
+                getDiscussionData()
             }
         })
     }
@@ -337,7 +342,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun observeFilterCategories() {
         viewModel.filterCategories.observe(this, Observer {
             if(!isLoadingInitialData) {
-                getDiscussionData(isRefresh = false)
+                isLoadingInitialData = true
+                adapter.clearAllElements()
+                getDiscussionData()
             }
         })
     }
@@ -346,8 +353,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.viewState.observe(this, Observer {
             when(it) {
                 is ViewState.Loading -> {
-                    clearAllData()
                     if(it.isRefreshing) {
+                        clearAllData()
                         pageLoading.show()
                     } else {
                         showLoading()
@@ -356,6 +363,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     hidePageError()
                 }
                 is ViewState.Error -> {
+                    isLoadingInitialData = false
                     if(it.page > DEFAULT_INITIAL_PAGE) {
                         showErrorToaster()
                     } else {
@@ -365,7 +373,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     pageLoading.hide()
                 }
                 is ViewState.Success -> {
-                    if(it.isEmpty) {
+                    if(it.isEmpty && it.page == DEFAULT_INITIAL_PAGE) {
                         isLoadingInitialData = false
                         showPageEmpty()
                         pageLoading.hide()
@@ -399,7 +407,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun onSuccessCreateQuestion() {
         showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        getDiscussionData(isRefresh = true, withDelay = true)
+        clearAllData()
+        getDiscussionData(withDelay = true)
     }
 
     private fun onSuccessDeleteQuestion(questionID: String) {
