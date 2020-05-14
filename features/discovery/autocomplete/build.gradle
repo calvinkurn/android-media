@@ -52,7 +52,7 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
