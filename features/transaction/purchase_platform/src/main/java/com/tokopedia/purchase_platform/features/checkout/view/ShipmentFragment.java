@@ -1890,10 +1890,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
-            showToastError(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
+            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
             onDataDisableToCheckout(null);
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
-            shipmentAdapter.notifyItemChanged(errorPosition);
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(errorPosition);
+            if (shipmentCartItemModel != null) {
+                shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
+                shipmentCartItemModel.setShippingBorderRed(true);
+                shipmentCartItemModel.setStateAllItemViewExpanded(false);
+            }
+            onNeedUpdateViewItem(errorPosition);
         } else if (shipmentData == null) {
             if (isTradeIn()) {
                 checkoutAnalyticsCourierSelection.eventClickBayarCourierNotComplete();
@@ -1905,7 +1911,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
-            showToastError(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
+            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(errorPosition);
+            if (shipmentCartItemModel != null) {
+                shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
+                shipmentCartItemModel.setShippingBorderRed(true);
+                shipmentCartItemModel.setStateAllItemViewExpanded(false);
+            }
+            onNeedUpdateViewItem(errorPosition);
         }
     }
 
@@ -3097,7 +3110,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
                         rvShipment.smoothScrollToPosition(i);
-                        // Todo : trigger shake shake
+                        shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
+                        shipmentCartItemModel.setStateAllItemViewExpanded(false);
+                        onNeedUpdateViewItem(i);
                         break;
                     }
                 }

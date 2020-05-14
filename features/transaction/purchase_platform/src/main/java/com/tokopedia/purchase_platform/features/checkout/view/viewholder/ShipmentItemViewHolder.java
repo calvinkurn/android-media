@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.view.viewholder;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -14,6 +15,7 @@ import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.CycleInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -53,7 +55,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentIn
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
@@ -95,6 +96,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private static final int SHIPPING_SAVE_STATE_TYPE_ROBINHOOD = 0;
     private static final int SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF = 1;
     private static final int SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE = 2;
+
+    private static final int VIBRATION_ANIMATION_DURATION = 1250;
+    private static final int VIBRATION_ANIMATION_TRANSLATION_X = -10;
+    private static final float VIBRATION_ANIMATION_CYCLE = 4f;
 
     private ShipmentAdapterActionListener mActionListener;
     private Context context;
@@ -234,7 +239,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     // Shipping Experience
     private LinearLayout llShippingExperienceContainer;
     private LinearLayout llShippingExperienceStateLoading;
-    private CardUnify cardShippingExperience;
+    private FrameLayout containerShippingExperience;
     private ConstraintLayout layoutStateNoSelectedShipping;
     private ConstraintLayout layoutStateHasSelectedNormalShipping;
     private Typography labelSelectedShippingDuration;
@@ -395,7 +400,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         // Shipping Experience
         llShippingExperienceContainer = itemView.findViewById(R.id.ll_shipping_experience_container);
         llShippingExperienceStateLoading = itemView.findViewById(R.id.ll_shipping_experience_state_loading);
-        cardShippingExperience = itemView.findViewById(R.id.card_shipping_experience);
+        containerShippingExperience = itemView.findViewById(R.id.container_shipping_experience);
         layoutStateNoSelectedShipping = itemView.findViewById(R.id.layout_state_no_selected_shipping);
         layoutStateHasSelectedNormalShipping = itemView.findViewById(R.id.layout_state_has_selected_normal_shipping);
         labelSelectedShippingDuration = itemView.findViewById(R.id.label_selected_shipping_duration);
@@ -457,10 +462,46 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
         renderErrorAndWarning(shipmentCartItemModel);
+        renderShippingVibrationAnimation(shipmentCartItemModel);
     }
 
     public void unsubscribeDebouncer() {
         compositeSubscription.unsubscribe();
+    }
+
+    private void renderShippingVibrationAnimation(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isTriggerShippingVibrationAnimation()) {
+            if (shipmentCartItemModel.isShippingBorderRed()) {
+                containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_red);
+            }
+            containerShippingExperience.animate()
+                    .translationX(VIBRATION_ANIMATION_TRANSLATION_X)
+                    .setDuration(VIBRATION_ANIMATION_DURATION)
+                    .setInterpolator(new CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            shipmentCartItemModel.setShippingBorderRed(false);
+                            shipmentCartItemModel.setTriggerShippingVibrationAnimation(false);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    })
+                    .start();
+        }
     }
 
     private void renderFulfillment(ShipmentCartItemModel model) {
@@ -699,7 +740,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShipmentBlackboxContainer.setVisibility(View.GONE);
         llShipmentRecommendationContainer.setVisibility(View.GONE);
         llShippingExperienceContainer.setVisibility(View.VISIBLE);
-        cardShippingExperience.setCardType(CardUnify.Companion.getTYPE_BORDER());
 
         boolean isCourierSelected = shipmentCartItemModel.getSelectedShipmentDetailData() != null
                 && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null;
@@ -710,8 +750,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutStateNoSelectedShipping.setVisibility(View.GONE);
 
             llShippingExperienceStateLoading.setVisibility(View.GONE);
-            cardShippingExperience.setVisibility(View.VISIBLE);
-
+            containerShippingExperience.setVisibility(View.VISIBLE);
+            containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_grey);
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                 // Is free ongkir shipping
                 layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
@@ -1056,7 +1096,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     break;
                 case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                     llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
-                    cardShippingExperience.setVisibility(View.GONE);
+                    containerShippingExperience.setVisibility(View.GONE);
                     break;
             }
         } else {
@@ -1118,7 +1158,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                 case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                                     shipmentCartItemModel.setStateHasLoadCourierState(true);
                                     llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
-                                    cardShippingExperience.setVisibility(View.GONE);
+                                    containerShippingExperience.setVisibility(View.GONE);
                                     break;
                             }
                         }
@@ -1137,7 +1177,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                 break;
                             case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                                 llShippingExperienceStateLoading.setVisibility(View.GONE);
-                                cardShippingExperience.setVisibility(View.VISIBLE);
+                                containerShippingExperience.setVisibility(View.VISIBLE);
                                 break;
                         }
                     }
@@ -1157,7 +1197,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         break;
                     case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                         llShippingExperienceStateLoading.setVisibility(View.GONE);
-                        cardShippingExperience.setVisibility(View.VISIBLE);
+                        containerShippingExperience.setVisibility(View.VISIBLE);
                         break;
                 }
             }

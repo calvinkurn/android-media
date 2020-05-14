@@ -96,7 +96,7 @@
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
-    <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
+    <string name="message_error_courier_not_selected_or_dropshipper_empty">Pilih pengiriman dulu yuk sebelum lanjut bayar.</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
     <string name="cart">Keranjang</string>
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>

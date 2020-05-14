@@ -99,6 +99,10 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     private boolean hasSetDropOffLocation;
 
+    // Shipping experiance
+    private boolean isTriggerShippingVibrationAnimation;
+    private boolean isShippingBorderRed;
+
     public ShipmentCartItemModel() {
     }
 
@@ -728,6 +732,22 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setListPromoCodes(List<String> listPromoCodes) {
         this.listPromoCodes = listPromoCodes;
+    }
+
+    public boolean isTriggerShippingVibrationAnimation() {
+        return isTriggerShippingVibrationAnimation;
+    }
+
+    public void setTriggerShippingVibrationAnimation(boolean triggerShippingVibrationAnimation) {
+        isTriggerShippingVibrationAnimation = triggerShippingVibrationAnimation;
+    }
+
+    public boolean isShippingBorderRed() {
+        return isShippingBorderRed;
+    }
+
+    public void setShippingBorderRed(boolean shippingBorderRed) {
+        isShippingBorderRed = shippingBorderRed;
     }
 
     @Override
