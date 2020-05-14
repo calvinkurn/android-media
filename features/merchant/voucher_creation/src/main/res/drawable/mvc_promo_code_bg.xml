@@ -3,5 +3,5 @@
     <solid
         android:color="@color/mvc_bg_color_grey"/>
     <corners
-        android:radius="@dimen/mvc_create_target_card_border_radius"/>
+        android:radius="@dimen/layout_lvl1"/>
 </shape>

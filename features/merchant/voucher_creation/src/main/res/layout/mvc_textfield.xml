@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/mvc_textfield_margin_vertical"
-    android:layout_marginLeft="@dimen/mvc_create_margin_padding"
-    android:layout_marginStart="@dimen/mvc_create_margin_padding"
-    android:layout_marginRight="@dimen/mvc_create_margin_padding"
-    android:layout_marginEnd="@dimen/mvc_create_margin_padding"
+    android:layout_marginLeft="@dimen/layout_lvl2"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginRight="@dimen/layout_lvl2"
+    android:layout_marginEnd="@dimen/layout_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.TextFieldUnify

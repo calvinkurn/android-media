@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
-    android:layout_margin="@dimen/mvc_create_margin_padding"
+    android:layout_margin="@dimen/layout_lvl2"
     android:paddingStart="@dimen/mvc_dimen_12dp"
     android:paddingLeft="@dimen/mvc_dimen_12dp"
     android:paddingTop="@dimen/mvc_dimen_10dp"

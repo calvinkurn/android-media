@@ -15,7 +15,7 @@
         android:id="@+id/voucherTargetWidgetRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/mvc_create_target_margin_bottom"
+        android:layout_marginBottom="@dimen/layout_lvl1"
         app:layout_constraintTop_toBottomOf="@id/voucherTargetWidgetTitle"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

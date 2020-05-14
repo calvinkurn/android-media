@@ -77,26 +77,26 @@ class DownloadVoucherBottomSheet(
                         ratioStr = parent.context.getString(R.string.mvc_ratio_1_1),
                         description = parent.context.getString(R.string.mvc_for_instagram_facebook_post),
                         downloadVoucherType = DownloadVoucherType.Square("https://ecs7.tokopedia.net/img/attachment/2020/4/8/8967394/8967394_227e871b-f414-4d7d-b1be-2db25d516f19"),
-                        onImageOpened = ::onImageOpened
+                        onImageOpened = ::onImageExpanded
                 ),
                 DownloadVoucherUiModel(
                         isSelected = true,
                         ratioStr = parent.context.getString(R.string.mvc_ratio_16_9),
                         description = parent.context.getString(R.string.mvc_for_post_instagram_story),
                         downloadVoucherType = DownloadVoucherType.InstaStory("https://ecs7.tokopedia.net/img/attachment/2020/4/8/8967394/8967394_227e871b-f414-4d7d-b1be-2db25d516f19"),
-                        onImageOpened = ::onImageOpened
+                        onImageOpened = ::onImageExpanded
                 ),
                 DownloadVoucherUiModel(
                         isSelected = true,
                         ratioStr = parent.context.getString(R.string.mvc_shop_cover),
                         description = parent.context.getString(R.string.mvc_for_cover_of_your_shop),
                         downloadVoucherType = DownloadVoucherType.Banner("https://ecs7.tokopedia.net/img/attachment/2020/4/8/8967394/8967394_4bbe15b6-1e27-4903-8b3d-f633397f9e33"),
-                        onImageOpened = ::onImageOpened
+                        onImageOpened = ::onImageExpanded
                 )
         )
     }
 
-    private fun onImageOpened(openedIndex: Int) {
+    private fun onImageExpanded(openedIndex: Int) {
         var notifiedIndex = -1
         mAdapter.items.forEachIndexed { index, downloadVoucherUiModel ->
             if (openedIndex != index && downloadVoucherUiModel.isExpanded) {

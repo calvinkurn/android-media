@@ -201,11 +201,12 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {})
     private fun setupNextButton() {
         voucherTargetNextButton?.run {
             setOnClickListener {
-                if (!isLoading) {
-                    isLoading = true
-                    val couponName = fillVoucherNameTextfield?.textFieldInput?.text?.toString().toBlankOrString()
-                    viewModel.validateVoucherTarget(promoCodeText, couponName)
-                }
+                onNext()
+//                if (!isLoading) {
+//                    isLoading = true
+//                    val couponName = fillVoucherNameTextfield?.textFieldInput?.text?.toString().toBlankOrString()
+//                    viewModel.validateVoucherTarget(promoCodeText, couponName)
+//                }
             }
         }
     }

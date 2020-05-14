@@ -14,11 +14,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/typeBudgetTipsIcon"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:tint="@color/Yellow_Y300"
-        app:srcCompat="@drawable/ic_tips"
-        app:layout_constraintWidth_percent="@integer/mvc_create_voucher_type_budget_ticker_icon_width_percent"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        app:srcCompat="@drawable/ic_mvc_tips_yellow"
         app:layout_constraintVertical_bias="@integer/mvc_create_voucher_type_budget_ticker_tips_vertical_bias"
         app:layout_constraintHorizontal_bias="@integer/mvc_create_voucher_type_budget_ticker_tips_horizontal_bias"
         app:layout_constraintTop_toBottomOf="@id/typeBudgetTickerDividerTop"

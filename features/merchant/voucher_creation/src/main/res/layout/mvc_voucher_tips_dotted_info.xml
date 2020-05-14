@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/mvc_create_voucher_tips_dot_margin_left"
     android:layout_marginLeft="@dimen/mvc_create_voucher_tips_dot_margin_left"
-    android:layout_marginEnd="@dimen/mvc_create_margin_padding"
-    android:layout_marginRight="@dimen/mvc_create_margin_padding"
+    android:layout_marginEnd="@dimen/layout_lvl2"
+    android:layout_marginRight="@dimen/layout_lvl2"
     android:layout_marginBottom="@dimen/mvc_create_voucher_tips_dot_margin_bottom"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 

@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/mvc_create_voucher_type_budget_promotion_widget_margin_top"
+    android:layout_marginTop="@dimen/layout_lvl1"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <com.tokopedia.unifycomponents.ContentSwitcherUnify
         android:id="@+id/typeBudgetPromotionContentSwitcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/mvc_create_margin_padding"
+        android:layout_margin="@dimen/layout_lvl2"
         android:textOff="@string/mvc_create_promo_type_free_deliv_tab"
         android:textOn="@string/mvc_create_promo_type_cashback_tab"
         app:layout_constraintTop_toTopOf="parent"

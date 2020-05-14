@@ -7,14 +7,14 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/mvc_create_divider_thick_height"
+        android:layout_height="@dimen/layout_lvl1"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/nextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/mvc_create_next_button_margin"
+        android:layout_margin="@dimen/layout_lvl2"
         android:text="@string/mvc_create_step_next"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="large"
