@@ -62,12 +62,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     companion object {
         const val TOASTER_CTA_WIDTH = 300
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
-        const val DEFAULT_INITIAL_PAGE = 1
+        const val DEFAULT_INITIAL_PAGE = 0
         const val DONT_LOAD_INITAL_DATA = false
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
-        const val TALK_READING_SOURCE = "reading"
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
@@ -353,7 +352,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     hidePageError()
                 }
                 is ViewState.Error -> {
-                    if(it.page > 0) {
+                    if(it.page > DEFAULT_INITIAL_PAGE) {
                         showErrorToaster()
                     } else {
                         showPageError()
