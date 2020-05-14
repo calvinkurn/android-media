@@ -63,6 +63,7 @@ import java.util.List;
 
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_CONFIRM_SHIPPING;
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_IN_SHIPPING;
+import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_NEW_ORDER;
 
 //import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 
@@ -113,12 +114,20 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
                 .putExtras(extras);
     }
 
+    @DeepLink(ApplinkConst.SELLER_NEW_ORDER)
     public static Intent getIntentNewOrder(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, CustomerAppSellerTransactionActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
-                .putExtras(extras);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        boolean enable = remoteConfig.getBoolean(RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+        if (enable) {
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_NEW_ORDER);
+        } else {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, CustomerAppSellerTransactionActivity.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
+                    .putExtras(extras);
+        }
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)

@@ -1,5 +1,6 @@
 package com.tokopedia.applink.sellerhome
 
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
@@ -16,7 +17,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER
         } else {
-            ApplinkConstInternalOrder.NEW_ORDER
+            ApplinkConst.SELLER_NEW_ORDER
         }
     }
 
