@@ -2,6 +2,10 @@ package com.tokopedia.thankyou_native.analytics
 
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerCommerceData
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -12,6 +16,7 @@ import com.tokopedia.thankyou_native.helper.WaitingPaymentPage
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
+import com.tokopedia.user.session.UserSession
 
 class ThankYouPageAnalytics {
 
@@ -150,7 +155,7 @@ class ThankYouPageAnalytics {
                 ))
     }
 
-    fun appsFlyerPurchaseEvent( thanksPageData: ThanksPageData, productType: String) {
+    fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData, productType: String) {
 
         val orderIds: MutableList<String> = java.util.ArrayList()
 
@@ -199,6 +204,49 @@ class ThankYouPageAnalytics {
         TrackApp.getInstance().appsFlyer.sendTrackEvent(ParentTrackingKey.AF_KEY_CRITEO, criteoAfValue)
     }
 
+
+    fun sendBranchIOEvent(thanksPageData: ThanksPageData) {
+        thanksPageData.shopOrder.forEach { shopOrder ->
+
+            val linkerCommerceData = LinkerCommerceData()
+            val userSession = UserSession(LinkerManager.getInstance().context)
+            val userData: com.tokopedia.linker.model.UserData = com.tokopedia.linker.model.UserData()
+            userData.userId = userSession.userId
+            userData.phoneNumber = userSession.phoneNumber
+            userData.name = userSession.name
+            userData.email = userSession.email
+            linkerCommerceData.userData = userData
+            val branchIOPayment: com.tokopedia.linker.model.PaymentData = com.tokopedia.linker.model.PaymentData()
+            branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
+            branchIOPayment.setOrderId(shopOrder.orderId)
+            branchIOPayment.setShipping(shopOrder.shippingAmountStr)
+            branchIOPayment.setRevenue(thanksPageData.amountStr)
+            branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE)
+
+            //  branchIOPayment.setNewBuyer(orderData.isNewBuyer())
+            // branchIOPayment.setMonthlyNewBuyer(monthlyNewBuyerFlag)
+            var price = 0F
+            shopOrder.purchaseItemList.forEach { productItem ->
+                val product = java.util.HashMap<String, String>()
+                product[LinkerConstants.ID] = productItem.productId
+                product[LinkerConstants.NAME] = productItem.productName
+                price += productItem.price
+                product.put(LinkerConstants.PRICE, productItem.priceStr)
+                product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE, productItem.priceStr)
+                product.put(LinkerConstants.QTY, productItem.quantity.toString())
+                if (productItem.category != null) {
+                    product[LinkerConstants.CATEGORY] = productItem.category
+                } else {
+                    product[LinkerConstants.CATEGORY] = ""
+                }
+                branchIOPayment.setProduct(product)
+            }
+            branchIOPayment.setItemPrice(price.toString())
+            linkerCommerceData.setPaymentData(branchIOPayment)
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
+                    linkerCommerceData))
+        }
+    }
 
 
     companion object {
