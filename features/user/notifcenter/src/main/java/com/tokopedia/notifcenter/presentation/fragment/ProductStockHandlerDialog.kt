@@ -108,12 +108,16 @@ class ProductStockHandlerDialog(
         })
 
         viewModel.addToCart.observe(viewLifecycleOwner, Observer {
-            analytics.addToCardClicked(element, userSession.userId, it.data.cartId)
-
             val actionText = getString(R.string.notifcenter_title_view)
             onSuccessListener(it.data.message.first(), actionText) {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
             }
+
+            analytics.addToCardClicked(
+                    element,
+                    userSession.userId,
+                    it.data.cartId
+            )
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
