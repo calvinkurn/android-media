@@ -63,11 +63,15 @@ class ProductCheckoutViewHolder(
         if (element.products.size > SINGLE_PRODUCT) {
             cardContainer.hide()
             lstProduct.show()
-            listener.getAnalytic().trackMultiProductListImpression(
-                    userId = element.userInfo.userId,
-                    productNumber = element.indexId,
-                    notification = element
-            )
+            element.products.forEach {
+                listener.getAnalytic().trackMultiProductListBottomSheetImpression(
+                        userId = element.userInfo.userId,
+                        shopId = element.userInfo.shopId,
+                        productNumber = element.indexId,
+                        notificationId = element.notificationId,
+                        product = it
+                )
+            }
             val factory = MultipleProductCardFactoryImpl(
                     sourceView = SourceMultipleProductView.NotificationCenter,
                     listener = listener

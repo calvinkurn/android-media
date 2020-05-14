@@ -63,11 +63,12 @@ class MultipleProductCardViewHolder(
                 )
             }
             is SourceMultipleProductView.BottomSheetDetail -> {
-                listener.getAnalytic().trackMultiProductListImpression(
+                listener.getAnalytic().trackMultiProductListBottomSheetImpression(
                         userId = element.userInfo.userId,
-                        location = LABEL_BOTTOM_SHEET_LOCATION,
+                        shopId = element.userInfo.shopId,
                         productNumber = element.indexId,
-                        notification = element
+                        notificationId = element.notificationId,
+                        product = element.product
                 )
             }
         }

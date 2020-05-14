@@ -87,6 +87,27 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         )
     }
 
+    fun trackMultiProductListBottomSheetImpression(
+            userId: String,
+            shopId: String,
+            productNumber: Int = 0,
+            notificationId: String,
+            product: ProductData
+    ) {
+        val eventLabel = getImpressionTrackLabel(
+                notificationId = notificationId,
+                productNumber = productNumber,
+                location = LABEL_BOTTOM_SHEET_LOCATION
+        )
+        trackProductListBottomSheetImpression(
+                userId = userId,
+                eventLabel = eventLabel,
+                shopId = shopId,
+                index = productNumber.toString(),
+                product = product
+        )
+    }
+
     //single product
     fun trackProductListImpression(
             userId: String,
@@ -141,18 +162,42 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                         )
                 )
         )
-        Log.d("TRACKER_NC#1", notification.toString())
-        Log.d("TRACKER_NC#2", Gson().toJson(DataLayer.mapOf(
-                EVENT_NAME, NAME_EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
-                EVENT_ACTION, eventAction,
-                EVENT_LABEL, eventLabel,
-                EVENT_USER_ID, userId,
-                ECOMMERCE, DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "impressions", impressions
+    }
+
+    private fun trackProductListBottomSheetImpression(
+            userId: String,
+            eventLabel: String,
+            index: String,
+            shopId: String,
+            product: ProductData
+    ) {
+        val impressions = arrayListOf<Map<String, Any>>()
+        impressions.add(
+                mutableMapOf(
+                        "name" to product.name,
+                        "id" to product.productId,
+                        "price" to product.price,
+                        "brand" to "",
+                        "category" to "",
+                        "variant" to "",
+                        "list" to "/notifcenter",
+                        "position" to index,
+                        "dimension79" to shopId
+                )
         )
-        )))
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, NAME_EVENT_PRODUCT_VIEW,
+                        EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                        EVENT_ACTION, ACTION_VIEW_PRODUCT_THUMBNAIL,
+                        EVENT_LABEL, eventLabel,
+                        EVENT_USER_ID, userId,
+                        ECOMMERCE, DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", impressions
+                )
+                )
+        )
     }
 
     // #11C
