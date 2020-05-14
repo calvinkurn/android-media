@@ -1181,7 +1181,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         when {
             topAds -> {
-                ImpresionTask(className).execute(clickUrl)
+                activity?.let { ImpresionTask(it::class.qualifiedName).execute(clickUrl) }
             }
         }
         onProductClicked(productId)
@@ -1190,7 +1190,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String) {
         when {
             topAds -> {
-                ImpresionTask(className).execute(trackingImageUrl)
+                activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
             }
         }
     }

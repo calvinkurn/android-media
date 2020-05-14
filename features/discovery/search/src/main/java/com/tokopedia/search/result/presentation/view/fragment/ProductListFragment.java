@@ -141,7 +141,6 @@ public class ProductListFragment
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final String SHOP = "shop";
     private static final int DEFAULT_SPAN_COUNT = 2;
-    private static final String className = "com.tokopedia.search.result.presentation.view.fragment.ProductListFragment";
 
     @Inject
     ProductListSectionContract.Presenter presenter;
@@ -767,7 +766,7 @@ public class ProductListFragment
 
     @Override
     public void sendTopAdsTrackingUrl(String topAdsTrackingUrl) {
-        new ImpresionTask(className).execute(topAdsTrackingUrl);
+        new ImpresionTask(getActivity().getClass().getName()).execute(topAdsTrackingUrl);
     }
 
     @Override
