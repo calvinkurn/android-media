@@ -43,7 +43,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
-class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
+class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     override fun getScreenName(): String = "chat-tab-list"
 

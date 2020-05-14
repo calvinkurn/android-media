@@ -77,7 +77,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         ChatListItemListener, LifecycleOwner {
 
     @Inject
@@ -181,11 +181,11 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun setupTicker() {
-        if(!isTabSeller() || !isSellerMigrationEnabled(context)) return
+        if (!isTabSeller() || !isSellerMigrationEnabled(context)) return
         topChatSellerMigrationTicker?.apply {
             tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
             setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
-            setDescriptionClickEvent(object: TickerCallback {
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDismiss() {}
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openSellerMigrationBottomSheet()
@@ -326,7 +326,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 if (this is ItemChatListPojo) {
                     if (
                             attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                            readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
                     ) {
                         increaseNotificationCounter()
                     }
