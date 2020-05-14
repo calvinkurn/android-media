@@ -91,10 +91,4 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
     androidTestImplementation 'org.mockito:mockito-android:2.6.3'
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    //lintChecks project(rootProject.ext.libraries.lint)
 }
-/*android {
-    lintOptions {
-        abortOnError false
-    }
-}*/
