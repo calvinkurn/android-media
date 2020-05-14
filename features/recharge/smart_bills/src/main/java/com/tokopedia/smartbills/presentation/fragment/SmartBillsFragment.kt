@@ -1,6 +1,5 @@
 package com.tokopedia.smartbills.presentation.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -13,9 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -30,6 +30,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
@@ -45,9 +46,8 @@ import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
 
-class SmartBillsFragment : BaseDaggerFragment(),
+class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFactory>(),
         BaseCheckableViewHolder.CheckableInteractionListener,
-        SmartBillsAdapter.LoaderListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
         TopupBillsCheckoutWidget.ActionListener {
 
@@ -81,8 +81,6 @@ class SmartBillsFragment : BaseDaggerFragment(),
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             viewModel = viewModelProvider.get(SmartBillsViewModel::class.java)
             sharedPrefs = it.getSharedPreferences(SMART_BILLS_PREF, Context.MODE_PRIVATE)
-
-            adapter = SmartBillsAdapter(it, SmartBillsAdapterFactory(this), this, this)
         }
     }
 
@@ -96,7 +94,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     view_smart_bills_shimmering.hide()
-                    adapter.showGetListError(it.throwable)
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -109,7 +107,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 is Success -> {
                     if (it.data.bills.isNotEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
-                        adapter.renderList(it.data.bills)
+                        renderList(it.data.bills)
 
                         // Save maximum price
                         maximumPrice = 0
@@ -123,7 +121,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    adapter.showGetListError(it.throwable)
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -165,7 +163,10 @@ class SmartBillsFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
 
+    private fun initView() {
         // If user is not logged in, redirect to login page
         if (!userSession.isLoggedIn) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -220,7 +221,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
                 setTotalPrice()
 
-                loadData()
+                loadInitialData()
             }
         }
     }
@@ -238,21 +239,14 @@ class SmartBillsFragment : BaseDaggerFragment(),
         getComponent(SmartBillsComponent::class.java).inject(this)
     }
 
-    override fun isChecked(position: Int): Boolean {
-        return adapter.isChecked(position)
-    }
-
-    override fun updateListByCheck(isChecked: Boolean, position: Int) {
-        adapter.updateListByCheck(isChecked, position)
-    }
-
-    override fun loadData() {
+    override fun loadData(page: Int) {
         view_smart_bills_select_all_checkbox_container.hide()
         view_smart_bills_shimmering.show()
 
         viewModel.getStatementMonths(
                 GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_months),
-                viewModel.createStatementMonthsParams(1)
+                viewModel.createStatementMonthsParams(1),
+                swipeToRefresh?.isRefreshing ?: false
         )
         val calendarInstance = Calendar.getInstance()
         viewModel.getStatementBills(
@@ -261,8 +255,46 @@ class SmartBillsFragment : BaseDaggerFragment(),
                         calendarInstance.get(Calendar.MONTH),
                         calendarInstance.get(Calendar.YEAR)
                 ),
-                true
+                swipeToRefresh?.isRefreshing ?: false
         )
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.rv_smart_bills_items
+    }
+
+    override fun hasInitialSwipeRefresh(): Boolean { return true }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.smart_bills_swipe_refresh_layout
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<RechargeBills, SmartBillsAdapterFactory> {
+        adapter = SmartBillsAdapter(SmartBillsAdapterFactory(this), this)
+        return adapter
+    }
+
+    override fun getAdapterTypeFactory(): SmartBillsAdapterFactory {
+        return SmartBillsAdapterFactory(this)
+    }
+
+    override fun showGetListError(throwable: Throwable?) {
+        adapter.showErrorNetwork(ErrorHandler.getErrorMessage(context, throwable)) {
+            showLoading()
+            loadInitialData()
+        }
+    }
+
+    override fun onItemClicked(t: RechargeBills?) {
+
+    }
+
+    override fun isChecked(position: Int): Boolean {
+        return adapter.isChecked(position)
+    }
+
+    override fun updateListByCheck(isChecked: Boolean, position: Int) {
+        adapter.updateListByCheck(isChecked, position)
     }
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {

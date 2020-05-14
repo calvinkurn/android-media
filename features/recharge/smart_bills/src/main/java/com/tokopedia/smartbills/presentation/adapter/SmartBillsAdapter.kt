@@ -1,21 +1,12 @@
 package com.tokopedia.smartbills.presentation.adapter
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.data.RechargeBills
 
-class SmartBillsAdapter(private val context: Context,
-                        adapterFactory: SmartBillsAdapterFactory,
-                        private val loaderListener: LoaderListener,
-                        private val checkableListener: OnCheckableAdapterListener<RechargeBills>):
+class SmartBillsAdapter(adapterFactory: SmartBillsAdapterFactory,
+                        checkableListener: OnCheckableAdapterListener<RechargeBills>):
         BaseListCheckableAdapter<RechargeBills, SmartBillsAdapterFactory>(adapterFactory, checkableListener) {
-
-    fun renderList(data: List<RechargeBills>) {
-        clearAllElements()
-        addElement(data)
-    }
 
     fun renderEmptyState(title: String, description: String) {
         clearAllElements()
@@ -23,18 +14,6 @@ class SmartBillsAdapter(private val context: Context,
         emptyModel.title = title
         emptyModel.description = description
         addElement(emptyModel)
-    }
-
-    override fun showLoading() {
-        clearAllElements()
-        super.showLoading()
-    }
-
-    fun showGetListError(e: Throwable) {
-        showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
-            showLoading()
-            loaderListener.loadData()
-        }
     }
 
     fun toggleAllItems(value: Boolean) {
@@ -49,10 +28,6 @@ class SmartBillsAdapter(private val context: Context,
         } else {
             resetCheckedItemSet()
         }
-    }
-
-    interface LoaderListener {
-        fun loadData()
     }
 
 }

@@ -43,6 +43,20 @@ class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListene
             setOnClickListener {
                 toggle()
             }
+            cb_smart_bills_item.isEnabled = !element.disabled
+
+            ticker_smart_bills_item_error.show()
+            if (element.disabled) {
+                smart_bills_item_disabled_overlay.show()
+                ticker_smart_bills_item_error.setTextDescription(element.disabledText)
+            } else {
+                smart_bills_item_disabled_overlay.hide()
+                if (element.errorMessage.isNotEmpty()) {
+                    ticker_smart_bills_item_error.setTextDescription(element.errorMessage)
+                } else {
+                    ticker_smart_bills_item_error.hide()
+                }
+            }
         }
     }
 
