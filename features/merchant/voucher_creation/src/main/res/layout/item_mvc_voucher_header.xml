@@ -44,6 +44,7 @@
         android:layout_marginStart="@dimen/mvc_dimen_20dp"
         android:layout_marginLeft="@dimen/mvc_dimen_20dp"
         android:maxLines="1"
+        android:textColor="@color/Green_G500"
         android:text="Sedang Berlangsung"
         app:layout_constraintBottom_toTopOf="@+id/startEndVoucher"
         app:layout_constraintEnd_toEndOf="parent"

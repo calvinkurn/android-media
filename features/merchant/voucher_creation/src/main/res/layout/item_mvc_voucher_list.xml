@@ -71,17 +71,18 @@
             app:layout_constraintTop_toBottomOf="@+id/tvMvcVoucherStatus"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/tvMvcVoucherName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/mvc_dimen_12dp"
             android:layout_marginLeft="@dimen/mvc_dimen_12dp"
             android:textColor="@color/Neutral_N700_96"
+            android:textStyle="bold"
+            android:textSize="@dimen/mvc_list_item_name_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgMvcVoucherType"
             app:layout_constraintTop_toTopOf="@+id/imgMvcVoucherType"
-            app:typographyType="heading_5"
             tools:text="Hura Hura Hujan Rejeki" />
 
         <com.tokopedia.unifyprinciples.Typography
