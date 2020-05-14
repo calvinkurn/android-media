@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.categoryLevels.domain.usecase.SubCategoryV3UseCase
 import com.tokopedia.common_category.usecase.*
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -110,8 +111,8 @@ class CategoryNavUseCaseModule {
     @Provides
     fun getSubCategoryV3UseCase(context: Context, @Named("subCategoryV3GqlUseCaseObject") graphqlUseCase
     : GraphqlUseCase)
-            : com.tokopedia.categoryLevels.domain.usecase.SubCategoryV3UseCase {
-        return com.tokopedia.categoryLevels.domain.usecase.SubCategoryV3UseCase(context, graphqlUseCase)
+            : SubCategoryV3UseCase {
+        return SubCategoryV3UseCase(context, graphqlUseCase)
     }
 
     @CategoryNavScope

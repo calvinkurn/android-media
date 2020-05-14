@@ -13,28 +13,28 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-@com.tokopedia.categoryLevels.di.CategoryNavScope
+@CategoryNavScope
 abstract class CategoryViewModelModule {
 
     @Binds
-    @com.tokopedia.categoryLevels.di.CategoryNavScope
+    @CategoryNavScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @com.tokopedia.categoryLevels.di.CategoryNavScope
+    @CategoryNavScope
     @ViewModelKey(ProductNavViewModel::class)
     internal abstract fun productNavViewModel(viewModel: ProductNavViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @com.tokopedia.categoryLevels.di.CategoryNavScope
+    @CategoryNavScope
     @ViewModelKey(CatalogNavViewModel::class)
     internal abstract fun catalogNavViewModel(viewModel: CatalogNavViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @com.tokopedia.categoryLevels.di.CategoryNavScope
+    @CategoryNavScope
     @ViewModelKey(CategoryNavViewModel::class)
     internal abstract fun categoryNavViewModel(viewModel: CategoryNavViewModel): ViewModel
 }
