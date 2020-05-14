@@ -159,7 +159,7 @@ class CatalogNavFragment : BaseBannedProductFragment(),
         catalogNavViewModel.mCatalogCount.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.toInt() > 0) {
-                    txt_catalog_count.text = activity?.getString(R.string.category_nav_catalog_count, it)
+                    txt_catalog_count.text = activity?.getString(R.string.categoryLevel_nav_catalog_count, it)
                 } else {
                     txt_catalog_count.text = ""
                 }
@@ -183,8 +183,8 @@ class CatalogNavFragment : BaseBannedProductFragment(),
         if (toShow) {
             layout_no_data.run {
                 show()
-                setHeaderText(R.string.category_nav_catalog_no_data_title)
-                setDescriptionText(R.string.category_nav_catalog_no_data_description)
+                setHeaderText(R.string.categoryLevel_nav_catalog_no_data_title)
+                setDescriptionText(R.string.categoryLevel_nav_catalog_no_data_description)
             }
             txt_catalog_count.hide()
         } else {

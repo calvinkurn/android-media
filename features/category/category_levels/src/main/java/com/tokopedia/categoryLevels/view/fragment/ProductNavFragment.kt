@@ -346,7 +346,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                     setTotalSearchResultCount(it.countText.toString())
                 setTotalSearchResultCountInteger(it.totalData)
                 if (!TextUtils.isEmpty(it.countText)) {
-                    setQuickFilterAdapter(getString(R.string.category_result_count_template_text, it.countText))
+                    setQuickFilterAdapter(getString(R.string.categoryLevel_result_count_template_text, it.countText))
                 } else {
                     setQuickFilterAdapter("")
                 }
@@ -710,7 +710,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     private fun getOptionListFromFilterController(): List<Option> {
         return if (filterController == null) java.util.ArrayList() else OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
-                resources.getString(R.string.category_empty_state_selected_filter_price_name))
+                resources.getString(R.string.categoryLevel_empty_state_selected_filter_price_name))
     }
 
     override fun getDepartMentId(): String {
