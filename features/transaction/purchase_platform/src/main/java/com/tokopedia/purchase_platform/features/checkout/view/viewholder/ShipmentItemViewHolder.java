@@ -941,7 +941,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(tvTickerInfo.getText().toString());
                     spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     tvTickerInfo.setText(spannableStringBuilder);
-                    tvTickerInfo.setVisibility(View.VISIBLE);
+                    if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
+                        tvTickerInfo.setVisibility(View.GONE);
+                    } else {
+                        tvTickerInfo.setVisibility(View.VISIBLE);
+                    }
                     llShipmentInfoTicker.setVisibility(View.VISIBLE);
                 } else {
                     tvTickerInfo.setVisibility(View.GONE);
