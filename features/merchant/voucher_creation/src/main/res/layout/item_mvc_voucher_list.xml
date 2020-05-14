@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/tvMvcVoucherStatus"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,24 +39,26 @@
             android:layout_marginEnd="@dimen/layout_lvl1"
             android:layout_marginRight="@dimen/layout_lvl0"
             android:textColor="@color/light_G500"
+            android:textStyle="bold"
+            android:textSize="@dimen/mvc_voucher_item_header_text_size"
             app:layout_constraintBottom_toBottomOf="@+id/viewMvcVoucherStatus"
             app:layout_constraintEnd_toStartOf="@+id/tvMvcVoucherDuration"
             app:layout_constraintStart_toEndOf="@+id/viewMvcVoucherStatus"
             app:layout_constraintTop_toTopOf="@+id/viewMvcVoucherStatus"
-            app:typographyType="heading_6"
             tools:text="Sedang Berlangsung" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/tvMvcVoucherDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginRight="@dimen/spacing_lvl2"
             android:textColor="@color/Neutral_N700_68"
+            android:textStyle="bold"
+            android:textSize="@dimen/mvc_voucher_item_header_text_size"
             app:layout_constraintBottom_toBottomOf="@+id/tvMvcVoucherStatus"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvMvcVoucherStatus"
-            app:typographyType="heading_6"
             tools:text="17 Jan 2020 - 16 Feb 2020" />
 
         <ImageView
