@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
@@ -40,6 +41,14 @@ class EditQuotaBottomSheet(
         imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
         KeyboardHandler.showSoftKeyboard(activity)
 
+        editMvcQuota?.textFieldInput?.run {
+            val dummyVoucherQuota = 100
+            addTextChangedListener(object : NumberTextWatcher(this@run){})
+            setText(dummyVoucherQuota)
+            selectAll()
+            requestFocus()
+        }
+
         tvMvcVoucherName.text = voucher.name
         tvMvcVoucherDescription.text = voucher.discountAmtFormatted
         mvcTicker.run {
@@ -47,7 +56,6 @@ class EditQuotaBottomSheet(
             description = "Dipotong dari transaksi selesai"
             nominal = "Rp3.290.000"
         }
-        edtMvcQuota.requestFocus()
 
         setAction(context.getString(R.string.mvc_retry)) {
 

@@ -90,7 +90,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvMvcTips" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/edtMvcQuota"
+        android:id="@+id/editMvcQuota"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_dimen_20dp"
@@ -109,7 +109,7 @@
         android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtMvcQuota"/>
+        app:layout_constraintTop_toBottomOf="@+id/editMvcQuota"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnMvcSaveQuota"
