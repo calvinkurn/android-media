@@ -480,7 +480,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         StringBuilder cartIdsStringBuilder = new StringBuilder();
+        boolean isEligibleNewShippingExperience = false;
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
+            if (!isEligibleNewShippingExperience) {
+                isEligibleNewShippingExperience = shipmentCartItemModelList.get(i).isEligibleNewShippingExperience();
+            }
             if (shipmentCartItemModelList.get(i).getCartItemModels() != null &&
                     shipmentCartItemModelList.get(i).getCartItemModels().size() > 0) {
                 for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
@@ -532,7 +536,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.addShipmentButtonPaymentModel(shipmentButtonPaymentModel);
-        shipmentAdapter.updateShippingCompletionTickerVisibility();
+        if (isEligibleNewShippingExperience) {
+            shipmentAdapter.updateShippingCompletionTickerVisibility();
+        }
 
         if (isInitialRender) {
             sendEEStep2();

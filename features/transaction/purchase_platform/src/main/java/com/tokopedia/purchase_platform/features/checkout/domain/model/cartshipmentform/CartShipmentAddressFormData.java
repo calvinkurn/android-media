@@ -49,6 +49,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private LastApplyUiModel lastApplyData;
     private PotentialGainedPointsData potentialGainedPointsData;
     private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
+    private boolean isEligibleNewShippingExperience;
 
     public boolean isHasError() {
         return hasError;
@@ -276,6 +277,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.promoCheckoutErrorDefault = promoCheckoutErrorDefault;
     }
 
+    public boolean isEligibleNewShippingExperience() {
+        return isEligibleNewShippingExperience;
+    }
+
+    public void setEligibleNewShippingExperience(boolean eligibleNewShippingExperience) {
+        isEligibleNewShippingExperience = eligibleNewShippingExperience;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -306,6 +315,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         lastApplyData = in.readParcelable(LastApplyUiModel.class.getClassLoader());
         potentialGainedPointsData = in.readParcelable(PotentialGainedPointsData.class.getClassLoader());
         promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
+        isEligibleNewShippingExperience = in.readByte() != 0;
     }
 
     @Override
@@ -336,6 +346,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(lastApplyData, flags);
         dest.writeParcelable(potentialGainedPointsData, flags);
         dest.writeParcelable(promoCheckoutErrorDefault, flags);
+        dest.writeByte((byte) (isEligibleNewShippingExperience ? 1 : 0));
     }
 
     @Override

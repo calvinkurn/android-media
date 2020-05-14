@@ -525,8 +525,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, ArrayList<ShowCaseObject> showCaseObjectList) {
         boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
-        // Todo : set flag source
-        boolean isShippingExperience = true;
+        boolean isShippingExperience = shipmentCartItemModel.isEligibleNewShippingExperience();
 
         RecipientAddressModel currentAddress;
         if (recipientAddressModel == null) {
@@ -1583,7 +1582,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     } else {
                         llPrioritas.setVisibility(View.GONE);
                         llPrioritasTicker.setVisibility(View.GONE);
-                        llShipmentInfoTicker.setVisibility(View.VISIBLE);
+                        if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
+                            llShipmentInfoTicker.setVisibility(View.GONE);
+                        } else {
+                            llShipmentInfoTicker.setVisibility(View.VISIBLE);
+                        }
                     }
                 } else {
                     hideAllTicker();

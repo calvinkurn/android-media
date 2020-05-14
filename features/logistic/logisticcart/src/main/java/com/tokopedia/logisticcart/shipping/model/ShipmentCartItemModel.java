@@ -100,6 +100,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean hasSetDropOffLocation;
 
     // Shipping experiance
+    private boolean isEligibleNewShippingExperience;
     private boolean isTriggerShippingVibrationAnimation;
     private boolean isShippingBorderRed;
 
@@ -748,6 +749,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setShippingBorderRed(boolean shippingBorderRed) {
         isShippingBorderRed = shippingBorderRed;
+    }
+
+    public boolean isEligibleNewShippingExperience() {
+        return isEligibleNewShippingExperience;
+    }
+
+    public void setEligibleNewShippingExperience(boolean eligibleNewShippingExperience) {
+        isEligibleNewShippingExperience = eligibleNewShippingExperience;
     }
 
     @Override

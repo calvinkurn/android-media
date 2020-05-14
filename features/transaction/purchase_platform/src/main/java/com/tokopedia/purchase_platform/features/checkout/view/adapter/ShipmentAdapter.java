@@ -776,7 +776,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
         checkHasSelectAllCourier(false);
-        updateShippingCompletionTickerVisibility();
+        if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience()) {
+            updateShippingCompletionTickerVisibility();
+        }
 
         return shipmentCartItemModel;
     }
