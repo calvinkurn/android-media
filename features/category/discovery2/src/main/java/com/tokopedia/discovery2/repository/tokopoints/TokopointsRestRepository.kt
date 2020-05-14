@@ -20,7 +20,8 @@ class TokopointsRestRepository @Inject constructor() : BaseRepository(), Tokopoi
                 queryParamterMap)
         val discoveryResponse = response
 
+        val discoveryDataMapper = DiscoveryDataMapper()
 
-        return DiscoveryDataMapper.mapListToComponentList(discoveryResponse.data?.component?.data!! , "tokopoints_item")
+        return discoveryDataMapper.mapListToComponentList(discoveryResponse.data.component?.data , "tokopoints_item", null)
     }
 }
