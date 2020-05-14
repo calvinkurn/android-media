@@ -41,7 +41,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_shipment, container, false)
+        return inflater.inflate(R.layout.fragment_add_edit_product_variant, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

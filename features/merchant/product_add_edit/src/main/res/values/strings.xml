@@ -205,4 +205,11 @@
     <!-- image picker -->
     <string name="error_image_under_x_resolution">Minimum file foto harus %1$dx%2$d piksel</string>
     <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
+
+    <!-- Variant -->
+    <string name="label_variant_type">Tipe Varian</string>
+    <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
+    <string name="label_variant_photo">Foto Varian</string>
+    <string name="label_variant_sizechart">Paduan Ukuran</string>
+    <string name="label_variant_sizechart_description">Panduan bisa berupa tabel ukuran atau dimensi dari varian produkmu.</string>
 </resources>
