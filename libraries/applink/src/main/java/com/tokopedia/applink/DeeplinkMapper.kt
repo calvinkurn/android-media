@@ -159,7 +159,7 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(deeplink)
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink()
-            // deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
+            deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> AppLinkMapperSellerHome.getSomShippedAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.FINISHED) -> AppLinkMapperSellerHome.getSomDoneAppLink()
