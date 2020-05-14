@@ -1890,16 +1890,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
-            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
             onDataDisableToCheckout(null);
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(errorPosition);
-            if (shipmentCartItemModel != null) {
-                shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
-                shipmentCartItemModel.setShippingBorderRed(true);
-                shipmentCartItemModel.setStateAllItemViewExpanded(false);
-            }
-            onNeedUpdateViewItem(errorPosition);
+            checkShippingCompletion(true);
         } else if (shipmentData == null) {
             if (isTradeIn()) {
                 checkoutAnalyticsCourierSelection.eventClickBayarCourierNotComplete();
@@ -1908,17 +1901,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (requestCode == REQUEST_CODE_COD) {
                 mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
             }
-            if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
-                rvShipment.smoothScrollToPosition(errorPosition);
-            }
-            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(errorPosition);
-            if (shipmentCartItemModel != null) {
-                shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
-                shipmentCartItemModel.setShippingBorderRed(true);
-                shipmentCartItemModel.setStateAllItemViewExpanded(false);
-            }
-            onNeedUpdateViewItem(errorPosition);
+            checkShippingCompletion(true);
         }
     }
 
@@ -3103,15 +3086,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCheckShippingCompletionClicked() {
+        checkShippingCompletion(false);
+    }
+
+    private void checkShippingCompletion(boolean isBorderRed) {
         if (!isTradeInByDropOff()) {
             List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                     ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
+                        if (isBorderRed) {
+                            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
+                        }
                         rvShipment.smoothScrollToPosition(i);
                         shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
                         shipmentCartItemModel.setStateAllItemViewExpanded(false);
+                        shipmentCartItemModel.setShippingBorderRed(isBorderRed);
                         onNeedUpdateViewItem(i);
                         break;
                     }
