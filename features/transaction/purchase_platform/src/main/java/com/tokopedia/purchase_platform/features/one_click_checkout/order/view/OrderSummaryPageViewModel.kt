@@ -105,9 +105,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             kero = orderData.cart.kero
             val preference = orderData.preference
             _orderPreference = if (isFullRefresh || _orderPreference == null) {
-                OrderPreference(orderData.profileIndex, preference)
+                OrderPreference(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             } else {
-                _orderPreference?.copy(profileIndex = orderData.profileIndex, preference = preference)
+                _orderPreference?.copy(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             }
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             validateUsePromoRevampUiModel = null

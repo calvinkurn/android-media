@@ -59,7 +59,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.OccMainOnboarding
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.Data
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
@@ -244,7 +244,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     orderProductCard.setProduct(viewModel.orderProduct)
                     orderProductCard.setShop(viewModel.orderShop)
                     orderProductCard.initView()
-                    showMessage(it.data.preference)
+                    showMessage(it.data)
                     if (it.data.preference.profileId > 0 &&
                             it.data.preference.address.addressId > 0 &&
                             it.data.preference.shipment.serviceId > 0 &&
@@ -264,7 +264,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         orderProductCard.setProduct(viewModel.orderProduct)
                         orderProductCard.setShop(viewModel.orderShop)
                         orderProductCard.initView()
-                        showMessage(it.data.preference)
+                        showMessage(it.data)
                         if (it.data.preference.profileId > 0 &&
                                 it.data.preference.address.addressId > 0 &&
                                 it.data.preference.shipment.serviceId > 0 &&
@@ -430,7 +430,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun showMessage(preference: ProfileResponse) {
+    private fun showMessage(orderPreference: OrderPreference) {
+        val preference = orderPreference.preference
         if (preference.profileId > 0) {
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
             tvHeader2?.visible()
@@ -475,29 +476,37 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             ImageHandler.LoadImage(it, BELI_LANGSUNG_CART_IMAGE)
         }
         btnOnboardingAction?.setOnClickListener {
-            showOnboarding()
+            showOnboarding(orderPreference.onboarding)
         }
     }
 
-    private fun showOnboarding() {
+    private fun showOnboarding(onboarding: OccMainOnboarding) {
         view?.let {
             val scrollview = it.findViewById<NestedScrollView>(R.id.nested_scroll_view)
-            val layoutpayment = it.findViewById<View>(R.id.layout_payment)
-            val coachMarkItems = ArrayList<CoachMarkItem>().apply {
-                add(CoachMarkItem(it.findViewById(R.id.preference_card), "test1", "desc11"))
-                add(CoachMarkItem(it.findViewById(R.id.iv_edit_preference), "test2", "desc22"))
-                add(CoachMarkItem(it.findViewById(R.id.layout_order_preference_shipping), "test3", "desc33"))
-                add(CoachMarkItem(layoutpayment, "test4", "desc44"))
+            val layoutPayment = it.findViewById<View>(R.id.layout_payment)
+            val coachMarkItems = ArrayList<CoachMarkItem>()
+            for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
+                val view = when (detailIndexed.index) {
+                    0 -> it.findViewById(R.id.preference_card)
+                    1 -> it.findViewById(R.id.iv_edit_preference)
+                    2 -> it.findViewById(R.id.layout_order_preference_shipping)
+                    3 -> layoutPayment
+                    else -> null
+                }
+                coachMarkItems.add(CoachMarkItem(view, detailIndexed.value.title, detailIndexed.value.message, tintBackgroundColor = Color.WHITE))
             }
             val coachMark = CoachMarkBuilder().build()
             coachMark.enableSkip = true
+            if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
+                coachMark.view.skipTextView?.text = onboarding.onboardingCoachMark.skipButtonText
+            }
             coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
                 override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
                     if (nextStep == 0) {
                         scrollview.scrollTo(0, it.findViewById<View>(R.id.tv_header_2).top)
                     }
                     if (nextStep == 3) {
-                        scrollview.scrollTo(0, layoutpayment.bottom)
+                        scrollview.scrollTo(0, layoutPayment.bottom)
                     }
                     return false
                 }

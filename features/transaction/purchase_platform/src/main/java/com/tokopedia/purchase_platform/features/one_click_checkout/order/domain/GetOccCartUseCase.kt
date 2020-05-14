@@ -38,7 +38,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                     }
                     kero = Kero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 }
-                return OrderData(orderCart, response.response.data.profileIndex, response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
+                return OrderData(response.response.data.occMainOnboarding, orderCart, response.response.data.profileIndex, response.response.data.profileRecommendation, response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
             } else if (response.response.data.errors.isNotEmpty()) {
                 throw MessageErrorException(response.response.data.errors[0])
             } else {
