@@ -36,7 +36,7 @@ class PltProductPerformanceTest {
     fun testPageLoadTimePerformance() {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
-        activityRule.activity.finish()
+        activityRule.activity.finishAndRemoveTask()
     }
 
     private fun waitForData() {
