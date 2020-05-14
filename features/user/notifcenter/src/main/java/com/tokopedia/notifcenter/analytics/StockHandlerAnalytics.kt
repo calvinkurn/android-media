@@ -1,7 +1,5 @@
 package com.tokopedia.notifcenter.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
-import com.google.gson.Gson
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 
@@ -119,7 +117,7 @@ class StockHandlerAnalytics {
                 KEY_EVENT_ACTION to eventAction,
                 KEY_EVENT_LABEL to eventLabel,
                 KEY_USER_ID to userId,
-                KEY_EVENT_ITEMS to toJson(listOf(items))
+                KEY_EVENT_ITEMS to listOf(items)
         )
         send(dataTracker)
     }
@@ -148,10 +146,6 @@ class StockHandlerAnalytics {
 
     private fun send(data: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
-    }
-
-    private fun toJson(any: Any): String {
-        return Gson().toJson(any)
     }
 
     companion object {
