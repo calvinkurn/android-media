@@ -3,7 +3,6 @@ package com.tokopedia.applink.order
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.startsWithPattern
-import com.tokopedia.config.GlobalConfig
 
 /**
  * Created by fwidjaja on 2020-01-26.
@@ -12,10 +11,6 @@ object DeeplinkMapperOrder {
     fun getRegisteredNavigationOrder(deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(deeplink)
         else deeplink
-    }
-
-    fun isSellerApp(): Boolean {
-        return GlobalConfig.isSellerApp()
     }
 
     /**
