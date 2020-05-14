@@ -2,6 +2,7 @@ package com.tokopedia.topads.auto.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
@@ -30,9 +31,11 @@ import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.TipSheetBudgetList
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
-import com.tokopedia.topads.common.constant.TopAdsReasonOption
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_autoads_create_auto_ad_layout.*
+import java.lang.NumberFormatException
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 
 class CreateAutoAdsFragment : BaseDaggerFragment() {
@@ -73,7 +76,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
         budgetViewModel.getTopAdsDeposit(userSession.shopId.toInt())
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source, this::onSuccessBudgetInfo)
         btn_submit.setOnClickListener {
-            val budget = budgetEditText.textWithoutPrefix.replace(",", "").toInt()
+            val budget = replace(budgetEditText.textWithoutPrefix).toInt()
             budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                     TOGGLE_ON,
                     CHANNEL,
@@ -117,7 +120,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
 
     fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
         lowClickDivider = data.lowClickDivider
-        price_range.text = getPotentialReach()
+        price_range.text = convertToCurrencyString(getPotentialReach().toString().toLong())
         loading.visibility = View.GONE
     }
 
@@ -144,7 +147,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
         }
         range_start.text = data.minDailyBudgetFmt
         range_end.text = data.maxDailyBudgetFmt
-        budgetEditText.setText(data.minDailyBudgetFmt.replace(".",",").replace("Rp",""))
+        budgetEditText.setText(data.minDailyBudgetFmt.replace("Rp",""))
         shopStatus = data.shopStatus
         seekbar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
         seekbar.value = budget
@@ -163,9 +166,19 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
             }
         })
         budgetEditText.addTextChangedListener(object : NumberTextWatcher(budgetEditText, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val error = budgetViewModel.checkBudget(number, data.minDailyBudget.toDouble(), data.maxDailyBudget.toDouble())
+
+            override fun afterTextChanged(s: Editable?) {
+                budgetEditText.removeTextChangedListener(this)
+                var text = replace(s.toString())
+                if (text.isEmpty())
+                    text = "0"
+                try {
+                    budgetEditText.setText(convertToCurrencyString(text.toLong()))
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                }
+
+                val error = budgetViewModel.checkBudget(text.toDouble(),data.minDailyBudget.toDouble(), data.maxDailyBudgetFmt.toDouble())
                 if (!TextUtils.isEmpty(error)) {
                     error_text.visibility = View.VISIBLE
                     error_text.text = error
@@ -174,25 +187,35 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
                     error_text.visibility = View.GONE
                     btn_submit.isEnabled = true
                 }
+                budgetEditText.addTextChangedListener(this)
+
             }
         })
     }
 
     private fun getPotentialReach(): CharSequence? {
-        return budgetViewModel.getPotentialImpressionGQL(budgetEditText.textWithoutPrefix.replace(",", "").toDouble()
-                , lowClickDivider.toDouble())
+        return budgetViewModel.getPotentialImpressionGQL(replace(budgetEditText.textWithoutPrefix).toInt()
+                , lowClickDivider)
     }
 
     private fun estimateImpression(progress: Int) {
         budgetEditText.setText(progress.toString())
-        price_range.text = getPotentialReach()
+        price_range.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
     }
 
     override fun getScreenName(): String? {
         return CreateAutoAdsFragment::class.java.name
     }
 
+    fun replace(text:String):String{
+        return text.replace(",","").
+        replace(".","").
+        replace("Rp","").trim()
+
+    }
+
     companion object {
+        var locale = Locale("in", "ID")
 
         fun newInstance(): CreateAutoAdsFragment {
 
@@ -201,5 +224,10 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
             fragment.arguments = args
             return fragment
         }
+    }
+
+
+    fun convertToCurrencyString(value: Long): String {
+        return (NumberFormat.getNumberInstance(locale).format(value))
     }
 }

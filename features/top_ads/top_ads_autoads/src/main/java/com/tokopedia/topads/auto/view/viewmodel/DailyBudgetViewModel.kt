@@ -23,7 +23,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONException
-import java.util.function.DoubleBinaryOperator
 import javax.inject.Inject
 
 /**
@@ -156,8 +155,8 @@ class DailyBudgetViewModel @Inject constructor(
         return 100 / 2.5 * (`val` / bid)
     }
 
-    fun getPotentialImpressionGQL(budget: Double, lowClickDivider: Double): String {
-        return String.format("%,.0f", budget / lowClickDivider)
+    fun getPotentialImpressionGQL(budget: Int, lowClickDivider: Int): String {
+        return String.format("%,.0f", (budget / lowClickDivider).toDouble())
     }
 
     fun checkBudget(number: Double, minDailyBudget: Double, maxDailyBudget: Double): String? {
