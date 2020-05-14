@@ -16,14 +16,11 @@ class PlayProcessLifecycleObserver(private val context: Context) : LifecycleObse
 
     private var isFirstTime = true
 
-    private var isPreviouslyPlaying = true
-
     /**
      * Called when app is going to background
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        isPreviouslyPlaying = playVideoManager.isPlaying()
         playVideoManager.stop(false)
     }
 
@@ -32,8 +29,8 @@ class PlayProcessLifecycleObserver(private val context: Context) : LifecycleObse
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        if (!isFirstTime && isPreviouslyPlaying) {
-            playVideoManager.resumeOrPlayPreviousVideo(isPreviouslyPlaying)
+        if (!isFirstTime) {
+            playVideoManager.resumeOrPlayPreviousVideo(true)
         }
 
         if (isFirstTime) isFirstTime = false

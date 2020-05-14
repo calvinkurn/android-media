@@ -27,6 +27,7 @@ import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -36,6 +37,7 @@ import kotlin.properties.Delegates
 /**
  * Created by jegul on 03/12/19
  */
+//TODO("Figure out how to manage cache more graceful")
 class PlayVideoManager private constructor(private val applicationContext: Context) : CoroutineScope {
 
     companion object {
@@ -343,11 +345,19 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
      * If and only if these functions cause leak, please contact the owner of this module
      */
     private suspend fun releaseCache() = withContext(Dispatchers.IO) {
-        playerModel.cache?.release()
+        try {
+            playerModel.cache?.release()
+        } catch (e: Throwable) {
+            Timber.tag("PlayVideoManager").e("Release cache failed: $e")
+        }
     }
 
     private suspend fun deleteCache() = withContext(Dispatchers.IO) {
-        SimpleCache.delete(cacheFile, cacheDbProvider)
+        try {
+            SimpleCache.delete(cacheFile, cacheDbProvider)
+        } catch (e: Throwable) {
+            Timber.tag("PlayVideoManager").e("Delete cache failed: $e")
+        }
     }
     //endregion
 }
