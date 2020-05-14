@@ -19,7 +19,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -69,16 +68,12 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
 
     fun redeemCoupon() {
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                if (userSession.isLoggedIn) {
-                    val data = claimCouponClickUseCase.redeemCoupon(getQueryMap())
-                    couponCode.postValue(data.hachikoRedeem?.coupons?.get(0)?.code)
-                } else {
-                    couponCode.postValue(ClaimCouponConstant.NOT_LOGEDIN)
-                }
+            if (userSession.isLoggedIn) {
+                val data = claimCouponClickUseCase.redeemCoupon(getQueryMap())
+                couponCode.postValue(data.hachikoRedeem?.coupons?.get(0)?.code)
+            } else {
+                couponCode.postValue(ClaimCouponConstant.NOT_LOGGEDIN)
             }
-
-
         }, onError = {
             it.printStackTrace()
         })
