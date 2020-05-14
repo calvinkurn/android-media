@@ -5,16 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.BufferTrackingModel
-import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.analytic.TrackingField
+import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -75,22 +71,18 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
     private lateinit var playViewModel: PlayViewModel
 
     private lateinit var layoutManager: PlayYouTubeLayoutManager
+    private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
     private lateinit var containerYouTube: RoundedConstraintLayout
-
-    @TrackingField
-    private var bufferTrackingModel = BufferTrackingModel(
-            isBuffering = false,
-            bufferCount = 0,
-            lastBufferMs = System.currentTimeMillis(),
-            shouldTrackNext = false
-    )
 
     private val orientationListener: PlayOrientationListener
         get() = requireParentFragment() as PlayOrientationListener
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
+    private val isYouTube: Boolean
+        get() = playViewModel.videoPlayer.isYouTube
 
     override fun getScreenName(): String = "Play YouTube"
 
@@ -120,6 +112,11 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -127,10 +124,20 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         observeBottomInsetsState()
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (isYouTube) videoAnalyticHelper.onPause()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         layoutManager.onDestroy()
         job.cancelChildren()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -145,6 +152,10 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
         sendOrientationChangedEvent(orientation)
+    }
+
+    private fun initAnalytic() {
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
     }
 
     //region observe
@@ -236,36 +247,6 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
     }
 
     private fun handleYouTubeVideoState(state: PlayVideoState) {
-        if (state is PlayVideoState.Error) {
-            PlayAnalytics.errorState(channelId,
-                    "$ERR_STATE_VIDEO: ${state.error.message ?: getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
-                    playViewModel.channelType)
-
-        } else if (state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
-            val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
-
-            bufferTrackingModel = BufferTrackingModel(
-                    isBuffering = true,
-                    bufferCount = nextBufferCount,
-                    lastBufferMs = System.currentTimeMillis(),
-                    shouldTrackNext = bufferTrackingModel.shouldTrackNext
-            )
-
-        } else if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
-            if (bufferTrackingModel.shouldTrackNext) {
-                PlayAnalytics.trackVideoBuffering(
-                        bufferCount = bufferTrackingModel.bufferCount,
-                        bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt(),
-                        userId = playViewModel.userId,
-                        channelId = channelId,
-                        channelType = playViewModel.channelType
-                )
-            }
-
-            bufferTrackingModel = bufferTrackingModel.copy(
-                    isBuffering = false,
-                    shouldTrackNext = true
-            )
-        }
+        if (isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, state)
     }
 }

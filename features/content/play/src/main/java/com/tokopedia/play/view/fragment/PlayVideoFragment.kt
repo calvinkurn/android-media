@@ -88,6 +88,9 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
+    private val isYouTube: Boolean
+        get() = playViewModel.videoPlayer.isYouTube
+
     override fun getScreenName(): String = "Play Video"
 
     override fun initInjector() {
@@ -135,7 +138,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
 
     override fun onPause() {
         super.onPause()
-        videoAnalyticHelper.onPause()
+        if (!isYouTube) videoAnalyticHelper.onPause()
     }
 
     override fun onDestroyView() {
@@ -146,7 +149,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!playViewModel.videoPlayer.isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
+        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -181,7 +184,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, it.state)
+            if (!isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, it.state)
             delegateVideoProperty(it)
         })
     }
