@@ -17,7 +17,8 @@ class ExoPlaybackExceptionParser {
             BehindLiveWindowException::class.java,
             HttpDataSource.InvalidResponseCodeException::class.java,
             ConnectException::class.java,
-            UnknownHostException::class.java
+            UnknownHostException::class.java,
+            Loader.UnexpectedLoaderException::class.java
     )
 
     fun parse(e: ExoPlaybackException): ExceptionWrapper {

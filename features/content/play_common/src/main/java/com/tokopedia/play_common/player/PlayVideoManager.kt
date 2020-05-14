@@ -166,7 +166,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
      * Cache
      */
     private val cacheFile: File
-        get() = File(applicationContext.cacheDir, CACHE_FOLDER_NAME)
+        get() = File(applicationContext.filesDir, CACHE_FOLDER_NAME)
     private val cacheEvictor: CacheEvictor
         get() = LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES)
     private val cacheDbProvider: DatabaseProvider
