@@ -609,40 +609,48 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown() && view != null) {
-            snackBarWebSocket = Snackbar.make(view!!, getString(R.string.connecting), Snackbar.LENGTH_INDEFINITE)
-            isSnackbarEnded = false
-            snackBarWebSocket?.removeCallback(snackBarCallback)
-            snackBarWebSocket?.addCallback(snackBarCallback)
-            snackBarWebSocket?.let {
-                it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
-                if (isPortrait) it.show()
+        try {
+            if (userSession.isLoggedIn && !viewState.errorViewShown() && view != null) {
+                snackBarWebSocket = Snackbar.make(view!!, getString(R.string.connecting), Snackbar.LENGTH_INDEFINITE)
+                isSnackbarEnded = false
+                snackBarWebSocket?.removeCallback(snackBarCallback)
+                snackBarWebSocket?.addCallback(snackBarCallback)
+                snackBarWebSocket?.let {
+                    it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
+                    if (isPortrait) it.show()
+                }
             }
+        } catch (e: java.lang.Exception) {
+            // ignore
         }
     }
 
     override fun setSnackBarRetryConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown() && view != null) {
-            if (isPortrait) snackBarWebSocket = Snackbar.make(view!!, getString(R.string.error_websocket_play), Snackbar.LENGTH_INDEFINITE)
-            isSnackbarEnded = false
-            snackBarWebSocket?.removeCallback(snackBarCallback)
-            snackBarWebSocket?.addCallback(snackBarCallback)
-            snackBarWebSocket?.let {
-                it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
-                it.setAction(getString(R.string.retry)) {
-                    viewState.getChannelInfo()?.let { channelInfo ->
-                        presenter.openWebSocket(
-                                userSession,
-                                channelInfo.channelId,
-                                channelInfo.groupChatToken,
-                                channelInfo.settingGroupChat,
-                                true
-                        )
-                        setSnackBarConnectingWebSocket()
+        try {
+            if (userSession.isLoggedIn && !viewState.errorViewShown() && view != null) {
+                if (isPortrait) snackBarWebSocket = Snackbar.make(view!!, getString(R.string.error_websocket_play), Snackbar.LENGTH_INDEFINITE)
+                isSnackbarEnded = false
+                snackBarWebSocket?.removeCallback(snackBarCallback)
+                snackBarWebSocket?.addCallback(snackBarCallback)
+                snackBarWebSocket?.let {
+                    it.view.minimumHeight = resources.getDimension(R.dimen.snackbar_height).toInt()
+                    it.setAction(getString(R.string.retry)) {
+                        viewState.getChannelInfo()?.let { channelInfo ->
+                            presenter.openWebSocket(
+                                    userSession,
+                                    channelInfo.channelId,
+                                    channelInfo.groupChatToken,
+                                    channelInfo.settingGroupChat,
+                                    true
+                            )
+                            setSnackBarConnectingWebSocket()
+                        }
                     }
+                    it.show()
                 }
-                it.show()
             }
+        } catch (e: java.lang.Exception) {
+            // ignore
         }
     }
 
