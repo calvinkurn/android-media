@@ -181,7 +181,9 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun onVoucherClickListener(voucher: VoucherUiModel) {
-
+        context?.run {
+            startActivity(VoucherDetailActivity.createDetailIntent(this, VoucherDetailActivity.DETAIL_PAGE))
+        }
     }
 
     override fun onShareClickListener(voucher: VoucherUiModel) {
