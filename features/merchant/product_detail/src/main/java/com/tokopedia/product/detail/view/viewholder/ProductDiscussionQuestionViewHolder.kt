@@ -13,7 +13,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
 
     fun bind(question: Question, dynamicProductDetailListener: DynamicProductDetailListener, type: String, name: String, adapterPosition: Int, itemCount: Int) {
         with(question) {
-            showQuestion(content)
+            showQuestion(dynamicProductDetailListener, content, questionID, type, name, adapterPosition, itemCount)
             setChevronClickListener(dynamicProductDetailListener, questionID, type, name, adapterPosition, itemCount)
             if(totalAnswer == 0) {
                 showNoAnswer()
@@ -24,8 +24,13 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         }
     }
 
-    private fun showQuestion(question: String) {
-        itemView.productDetailDiscussionQuestion.text = question
+    private fun showQuestion(dynamicProductDetailListener: DynamicProductDetailListener, question: String, questionId: String, type: String, name: String, adapterPosition: Int, itemCount: Int) {
+        itemView.productDetailDiscussionQuestion.apply {
+            text = question
+            setOnClickListener {
+                dynamicProductDetailListener.goToTalkReply(questionId, ComponentTrackDataModel(type, name, adapterPosition), itemCount.toString())
+            }
+        }
     }
 
     private fun setChevronClickListener(dynamicProductDetailListener: DynamicProductDetailListener, questionId: String, type: String, name: String, adapterPosition: Int, itemCount: Int) {

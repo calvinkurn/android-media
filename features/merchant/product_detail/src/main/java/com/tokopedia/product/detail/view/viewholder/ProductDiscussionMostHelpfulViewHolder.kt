@@ -51,7 +51,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideTitle()
                     hideMultipleQuestion()
                 }
-                totalQuestion == 1 -> {
+                element.questions?.size == 1 -> {
                     showTitle(totalQuestion, type, name)
                     showSingleQuestion(questions?.first(), type, name)
                     hideEmptyState()
