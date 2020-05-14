@@ -40,7 +40,8 @@
             android:layout_marginBottom="@dimen/mvc_create_fill_voucher_name_margin_bottom"
             app:text_field_placeholder="@string/mvc_create_voucher_name_textfield_hint"
             app:text_field_counter="@integer/create_voucher_name_max_length"
-            app:layout_constraintTop_toBottomOf="@id/fillVoucherNameTitle"/>
+            app:layout_constraintTop_toBottomOf="@id/fillVoucherNameTitle"
+            app:layout_constraintBottom_toTopOf="@id/voucherTargetNextButton"/>
 
         <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
             android:id="@+id/voucherTargetNextButton"

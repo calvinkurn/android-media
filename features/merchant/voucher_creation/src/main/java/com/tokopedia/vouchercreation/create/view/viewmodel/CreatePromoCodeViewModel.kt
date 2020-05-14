@@ -29,7 +29,7 @@ class CreatePromoCodeViewModel @Inject constructor(
                 block = {
                     withContext(Dispatchers.IO) {
                         promoCodeValidationUseCase.params = PromoCodeValidationUseCase.createRequestParam(promoCode)
-                        mPromoCodeValidationLiveData.value = Success(promoCodeValidationUseCase.executeOnBackground())
+                        mPromoCodeValidationLiveData.postValue(Success(promoCodeValidationUseCase.executeOnBackground()))
                     }
                 },
                 onError = {
