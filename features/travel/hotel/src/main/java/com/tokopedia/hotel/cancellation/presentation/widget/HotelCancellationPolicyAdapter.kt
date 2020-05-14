@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.cancellation.presentation.widget
 
 import android.content.res.ColorStateList
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +42,6 @@ class HotelCancellationPolicyAdapter: RecyclerView.Adapter<HotelCancellationPoli
         fun bind(item: HotelCancellationModel.CancelPolicy.Policy, isLastItem: Boolean, isOnlyOneItem: Boolean) {
             with(itemView) {
                 hotel_cancellation_policy_item_title.text = item.title
-                hotel_cancellation_policy_item_title.setLineSpacing(0f, 0f)
                 hotel_cancellation_policy_item_desc.text = item.desc
 
                 if (item.styling.equals(ACTIVE_STATE, true)){

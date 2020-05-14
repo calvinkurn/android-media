@@ -10,8 +10,7 @@ enum class HotelCancellationButtonEnum(val value: String, val buttonType: Int,
                                        val buttonVariant: Int = UnifyButton.Variant.FILLED) {
     BUY("buy", UnifyButton.Type.TRANSACTION),
     PRIMARY("primary", UnifyButton.Type.MAIN),
-    SECONDARY("secondary", UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST),
-    RETRYSUBMISSION("RETRYSUBMISSION", UnifyButton.Type.MAIN);
+    SECONDARY("secondary", UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST);
 
     companion object {
         fun getEnumFromValue(value: String): HotelCancellationButtonEnum {
@@ -19,7 +18,6 @@ enum class HotelCancellationButtonEnum(val value: String, val buttonType: Int,
                 BUY.value -> BUY
                 PRIMARY.value -> PRIMARY
                 SECONDARY.value -> SECONDARY
-                RETRYSUBMISSION.value -> RETRYSUBMISSION
                 else -> PRIMARY
             }
         }

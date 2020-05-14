@@ -46,7 +46,8 @@ class HotelCancellationActivity : HotelBaseActivity(), HasComponent<HotelCancell
 
     fun showCancellationReasonFragment() {
         supportFragmentManager.beginTransaction().replace(R.id.hotel_cancellation_parent_view,
-                HotelCancellationReasonFragment.getInstance(invoiceId), CANCELLATION_REASON_FRAGMENT_TAG).addToBackStack(null).commit()
+                HotelCancellationReasonFragment.getInstance(invoiceId), CANCELLATION_REASON_FRAGMENT_TAG)
+                .addToBackStack(null).commit()
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_hotel_cancellation
