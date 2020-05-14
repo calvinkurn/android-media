@@ -127,7 +127,7 @@ object DeeplinkMapper {
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
                     // deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
-                    deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
+                    // deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_FINISHED, true) -> AppLinkMapperSellerHome.getSomDoneAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_CANCELED, true) -> AppLinkMapperSellerHome.getSomCancelledAppLink()
                     deeplink.startsWithPattern(ApplinkConst.FEED_DETAILS) ->
@@ -367,7 +367,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.CHANGE_PASSWORD -> ApplinkConstInternalGlobal.CHANGE_PASSWORD
             // ApplinkConst.SELLER_NEW_ORDER -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
-            ApplinkConst.SELLER_SHIPMENT -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
+            // ApplinkConst.SELLER_SHIPMENT -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
             ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink()
             else -> ""
         }

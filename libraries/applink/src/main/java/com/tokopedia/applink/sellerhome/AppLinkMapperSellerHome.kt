@@ -17,7 +17,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER
         } else {
-            ApplinkConst.SELLER_NEW_ORDER
+            ApplinkConstInternalOrder.NEW_ORDER
         }
     }
 
