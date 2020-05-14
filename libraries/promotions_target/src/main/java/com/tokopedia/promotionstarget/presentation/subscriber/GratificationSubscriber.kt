@@ -227,8 +227,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                     }
 
                                 } else {
+                                    val couponDetail = presenter.composeApi(response.popGratification.popGratificationBenefits)
                                     withContext(Dispatchers.Main) {
-                                        showNonLoggedIn(weakActivity, response, gratificationData)
+                                        showNonLoggedIn(weakActivity, response, couponDetail, gratificationData)
                                     }
                                 }
                             } else {
@@ -258,7 +259,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         if (weakActivity.get() != null) {
 
             val activity = weakActivity.get()!!
-            val dialog = targetPromotionsDialog.showNewLoggedIn(activity,
+            val dialog = targetPromotionsDialog.showAutoClaimLoggedIn(activity,
                     TargetPromotionsDialog.TargetPromotionsCouponType.MULTIPLE_COUPON,
                     popGratificationResponse,
                     claimPopGratificationResponse,
@@ -270,11 +271,11 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, gratificationData: GratificationData) {
+    private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse,couponDetailResponse: GetCouponDetailResponse, gratificationData: GratificationData) {
         val targetPromotionsDialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
-            val dialog = targetPromotionsDialog.showNonLoggedInUi(activity, data, gratificationData)
+            val dialog = targetPromotionsDialog.showNonLoggedInUi(activity, data, couponDetailResponse, gratificationData)
             if (dialog != null) {
                 mapOfDialogs[activity] = Pair(targetPromotionsDialog, dialog)
             }

@@ -1,13 +1,10 @@
 package com.tokopedia.promotionstarget.presentation
 
-import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -64,16 +61,4 @@ fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext
                 }
             }
         }
-
-fun getColor(context: Context, id: Int): Int {
-    try {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ContextCompat.getColor(context, id)
-        } else {
-            context.resources.getColor(id)
-        }
-    } catch (e: NullPointerException) {
-        return 0
-    }
-}
 

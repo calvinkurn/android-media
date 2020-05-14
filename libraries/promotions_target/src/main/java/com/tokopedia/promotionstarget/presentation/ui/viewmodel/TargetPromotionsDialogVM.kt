@@ -37,6 +37,7 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
     fun claimGratification(campaignSlug: String, page: String, benefitIds: List<Int?>?) {
         claimApiLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
+            delay(1000)
             val response = withContext(workerDispatcher) {
                 val claimResponse = claimPopGratificationUseCase.getResponse(claimPopGratificationUseCase.getQueryParams(ClaimPayload(campaignSlug, page)))
                 val couponDetail = composeApi(benefitIds)
