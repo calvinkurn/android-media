@@ -26,12 +26,19 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
         with(itemView) {
             tvMvcRatio.text = element.ratioStr
             tvMvcRatioDescription.text = element.description
+            cbxMvcDownloadVoucher.setOnCheckedChangeListener(null)
             cbxMvcDownloadVoucher.isChecked = element.isSelected
             cbxMvcDownloadVoucher.setOnCheckedChangeListener { _, isChecked ->
                 element.isSelected = isChecked
             }
+            setViewExpansion(element.isExpanded)
             setOnClickListener {
-                setViewExpansion(imgMvcVoucher.isVisible)
+                val isExpanded = imgMvcVoucher.isVisible
+                if (!isExpanded) {
+                    element.onImageOpened(adapterPosition)
+                }
+                toggleViewExpansion(isExpanded)
+                element.isExpanded = imgMvcVoucher.isVisible
             }
             setupDownloadImage(element.downloadVoucherType)
         }
@@ -47,8 +54,13 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
     }
 
     private fun setViewExpansion(isExpanded: Boolean) = with(itemView) {
-        imgMvcVoucher.isVisible = !isExpanded
-        rotateChevronIcon(isExpanded)
+        imgMvcVoucher.isVisible = isExpanded
+        rotateChevronIcon(!isExpanded)
+    }
+
+    private fun toggleViewExpansion(voucherIsVisible: Boolean) = with(itemView) {
+        imgMvcVoucher.isVisible = !voucherIsVisible
+        rotateChevronIcon(voucherIsVisible)
     }
 
     private fun rotateChevronIcon(isExpanded: Boolean) = with(itemView) {
