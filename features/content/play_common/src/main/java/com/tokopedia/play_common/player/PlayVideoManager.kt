@@ -114,13 +114,18 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                     stop(resetState = false)
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
-            }
-            else {
+            } else if (parsedException.isUnexpectedLoaderException) {
+                val prepareState = currentPrepareState
+                if (prepareState is PlayVideoPrepareState.Prepared) {
+                    release()
+                    launch { deleteCache() }
+                    playUri(prepareState.uri, videoPlayer.playWhenReady)
+                }
+            } else {
                 //For now it's the same as the defined exception above
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     stop()
-                    launch { deleteCache() }
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
@@ -283,7 +288,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     //region private method
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Play"))
+        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
         val cacheDataSourceFactory = CacheDataSourceFactory(playerModel.cache, mDataSourceFactory)
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
