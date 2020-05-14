@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
@@ -106,7 +108,9 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 //PromoPerformanceUiModel("Rp3.000.000", 30, 120),
                 UsageProgressUiModel(30),
                 DividerUiModel(8),
-                TipsUiModel("Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat tips & trik", "Lihat tips & trik"),
+                TipsUiModel(
+                        context?.getString(R.string.mvc_detail_ticker_share).toBlankOrString(),
+                        context?.getString(R.string.mvc_detail_ticker_see_tips).toBlankOrString()),
                 DividerUiModel(8),
                 InfoContainerUiModel("Info voucher", listOf(
                         SubInfoItemUiModel("Target Voucher", "Khusus"),
@@ -126,7 +130,9 @@ class VoucherDetailFragment : BaseDetailFragment() {
                 )),
                 DividerUiModel(8),
                 FooterButtonUiModel("Bagikan Voucher", ""),
-                FooterUiModel("Untuk menghentikan promosi, klik disini", "disini")
+                FooterUiModel(
+                        context?.getString(R.string.mvc_detail_ticker_stop_promo).toBlankOrString(),
+                        context?.getString(R.string.mvc_detail_ticker_here).toBlankOrString())
         )
         renderList(dummy)
     }

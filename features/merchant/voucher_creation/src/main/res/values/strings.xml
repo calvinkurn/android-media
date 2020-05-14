@@ -193,5 +193,9 @@
     <string name="mvc_lbl_promo_code">Kode Promo:</string>
     <string name="mvc_asterisk">&#x2a;</string>
     <string name="mvc_detail_promo_usage_used">Voucher yang dipakai dalam transaksi yang menunggu pembayaran : &lt;b>%s Voucher&lt;/b></string>
+    <string name="mvc_detail_ticker_share">Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat Tips &amp; Trik</string>
+    <string name="mvc_detail_ticker_see_tips">Lihat Tips &amp; Trik</string>
+    <string name="mvc_detail_ticker_stop_promo">Untuk menghentikan promosi, klik di sini</string>
+    <string name="mvc_detail_ticker_here">di sini</string>
 
 </resources>
