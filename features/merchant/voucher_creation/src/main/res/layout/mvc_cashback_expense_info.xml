@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/mvc_create_divider_height"
         android:layout_marginTop="@dimen/mvc_create_voucher_cashback_into_divider_margin_top"
-        android:background="@color/mvc_color_grey"
+        android:background="@color/Neutral_N75"
         app:layout_constraintTop_toBottomOf="@id/percentageInfo"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -60,7 +60,7 @@
         android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
         android:layout_marginTop="@dimen/mvc_create_voucher_cashback_discount_title_margin_top"
         android:text="@string/mvc_create_promo_type_bottomsheet_discount"
-        android:textColor="@color/mvc_text_color_black"
+        android:textColor="@color/Neutral_N700_96"
         android:gravity="center_vertical"
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/infoDivider"
@@ -76,7 +76,7 @@
         android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
         android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
         android:paddingBottom="@dimen/mvc_create_margin_padding"
-        android:textColor="@color/mvc_text_color_red"
+        android:textColor="@color/Red_R500"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@id/middleGuide"
@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_create_margin_padding"
         android:maxLines="3"
-        android:textColor="@color/mvc_text_color_black"
+        android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_2"
         app:layout_constraintTop_toBottomOf="@id/infoBackground"/>
 

@@ -9,14 +9,14 @@
         android:id="@+id/typeBudgetTickerDividerTop"
         android:layout_width="match_parent"
         android:layout_height="@dimen/mvc_create_divider_height"
-        android:background="@color/mvc_color_grey"
+        android:background="@color/Neutral_N75"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/typeBudgetTipsIcon"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:tint="@color/mvc_tips_color_yellow"
+        android:tint="@color/Yellow_Y300"
         app:srcCompat="@drawable/ic_tips"
         app:layout_constraintWidth_percent="@integer/mvc_create_voucher_type_budget_ticker_icon_width_percent"
         app:layout_constraintVertical_bias="@integer/mvc_create_voucher_type_budget_ticker_tips_vertical_bias"
@@ -30,7 +30,7 @@
         android:id="@+id/typeBudgetTickerDesc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/mvc_text_color_black"
+        android:textColor="@color/Neutral_N700_96"
         android:layout_marginStart="@dimen/mvc_create_voucher_type_budget_ticker_desc_margin_left"
         android:layout_marginLeft="@dimen/mvc_create_voucher_type_budget_ticker_desc_margin_left"
         android:paddingTop="@dimen/mvc_create_voucher_type_budget_ticker_padding_vertical"
@@ -58,7 +58,7 @@
         android:id="@+id/typeBudgetTickerDividerBottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/mvc_create_divider_height"
-        android:background="@color/mvc_color_grey"
+        android:background="@color/Neutral_N75"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

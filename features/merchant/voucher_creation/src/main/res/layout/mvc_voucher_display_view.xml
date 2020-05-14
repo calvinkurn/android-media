@@ -22,7 +22,7 @@
         android:id="@+id/voucherDisplayText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/mvc_text_color_black"
+        android:textColor="@color/Neutral_N700_96"
         android:layout_marginTop="@dimen/mvc_create_voucher_display_text_margin_top"
         app:layout_constraintTop_toBottomOf="@id/voucherDisplayImage"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,9 +1,8 @@
 package com.tokopedia.vouchercreation.create.view.fragment.bottomsheet
 
 import android.content.Context
-import android.os.Build
-import android.text.Html
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -41,13 +40,7 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
                     CurrencyFormatHelper.convertToRupiah(minimumPurchase.toString())).toBlankOrString()
             percentageInfo?.infoValueString = "$cashbackPercentage%"
             infoDiscountValue?.text = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_discount_value).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(discount.toString()))
-            val description =
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                        Html.fromHtml(String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(discount.toString())),
-                                Html.FROM_HTML_MODE_LEGACY)
-                    } else {
-                        Html.fromHtml(String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(discount.toString())))
-                    }
+            val description = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(discount.toString()).parseAsHtml())
             cashbackExpenseDescription?.text = description
             cashbackExpenseButton?.setOnClickListener {
                 this@CashbackExpenseInfoBottomSheetFragment.dismiss()

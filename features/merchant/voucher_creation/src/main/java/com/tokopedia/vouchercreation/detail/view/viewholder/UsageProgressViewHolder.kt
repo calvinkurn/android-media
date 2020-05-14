@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.detail.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.detail.model.UsageProgressUiModel
@@ -30,6 +31,10 @@ class UsageProgressViewHolder(
             imgInfo.setOnClickListener {
                 setOnTooltipClick()
             }
+
+            val dummyVoucherUsage = 12
+            tvMvcTickerUsage?.text =
+                    String.format(context.getString(R.string.mvc_detail_promo_usage_used), dummyVoucherUsage.toString()).parseAsHtml()
         }
     }
 

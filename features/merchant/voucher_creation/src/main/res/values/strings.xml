@@ -191,5 +191,6 @@
     <string name="mvc_ended">Sudah Berakhir</string>
     <string name="mvc_lbl_promo_code">Kode Promo:</string>
     <string name="mvc_asterisk">&#x2a;</string>
+    <string name="mvc_detail_promo_usage_used">Voucher yang dipakai dalam transaksi yang menunggu pembayaran : &lt;b>%s voucher&lt;/b></string>
 
 </resources>

@@ -2,15 +2,6 @@
 <resources>
     <color name="progress_bar_green">#00AC47</color>
     <color name="mvc_grey_f8fafc">#F8FAFC</color>
-    <color name="mvc_card_border_green">#4FD15A</color>
-    <color name="mvc_text_color_black">#F531353B</color>
-    <color name="mvc_text_color_green">#03AC0E</color>
-    <color name="mvc_text_color_grey">#5231353B</color>
-    <color name="mvc_text_color_light_grey">#AD31353B</color>
-    <color name="mvc_text_color_red">#EF144A</color>
     <color name="mvc_bg_color_grey">#F8FAFC</color>
-    <color name="mvc_color_grey">#E5E7E9</color>
-    <color name="mvc_dot_color_grey">#6C727C</color>
-    <color name="mvc_tips_color_yellow">#FFC400</color>
     <color name="mvc_green_4fd18b">#4FD18B</color>
 </resources>

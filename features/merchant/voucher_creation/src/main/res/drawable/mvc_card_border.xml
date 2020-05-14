@@ -3,7 +3,7 @@
     android:shape="rectangle">
     <stroke
         android:width="@dimen/mvc_create_target_card_border_width"
-        android:color="@color/mvc_card_border_green"/>
+        android:color="@color/Green_G400"/>
     <corners
         android:radius="@dimen/mvc_create_target_card_border_radius"/>
     <solid

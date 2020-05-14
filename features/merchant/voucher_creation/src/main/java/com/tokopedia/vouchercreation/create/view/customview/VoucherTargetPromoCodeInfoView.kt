@@ -53,9 +53,9 @@ class VoucherTargetPromoCodeInfoView @JvmOverloads constructor(
     private fun Typography.setChangeTextColor(isEnabled: Boolean) {
         val textColor =
                 if (isEnabled) {
-                    R.color.mvc_text_color_green
+                    R.color.Green_G500
                 } else {
-                    R.color.mvc_text_color_grey
+                    R.color.Neutral_N700_32
                 }
         setTextColor(ContextCompat.getColor(context, textColor))
     }

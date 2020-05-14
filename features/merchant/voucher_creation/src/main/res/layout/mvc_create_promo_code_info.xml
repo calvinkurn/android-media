@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mvc_create_promo_code_message_letter_number"
-        android:textColor="@color/mvc_text_color_black"
+        android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mvc_create_promo_code_message_no_tokopedia_alias"
-        android:textColor="@color/mvc_text_color_black"
+        android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/createPromoCodeInfo1"
         app:layout_constraintStart_toStartOf="parent"/>
