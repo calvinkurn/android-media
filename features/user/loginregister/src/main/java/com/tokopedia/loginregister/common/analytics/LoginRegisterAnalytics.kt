@@ -236,13 +236,6 @@ class LoginRegisterAnalytics @Inject constructor(
                 "click on lupa kata sandi",
                 ""
         ))
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on lupa kata sandi",
-                ""
-        ))
     }
 
     //#11
