@@ -1,5 +1,6 @@
 package com.tokopedia.reviewseller.feature.reviewlist.view.viewholder
 
+import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -9,21 +10,24 @@ import com.tokopedia.reviewseller.common.util.roundDecimal
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.item_rating_produk.view.*
 
-class SellerReviewListViewHolder(itemView: View,
-                                 private val listenerSellerReview: SellerReviewListListener): AbstractViewHolder<ProductReviewUiModel>(itemView) {
+class SellerReviewListViewHolder(val view: View,
+                                 private val sellerReviewListener: SellerReviewListListener): AbstractViewHolder<ProductReviewUiModel>(view) {
 
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.item_rating_produk
     }
 
-    private val ivItemProduct: ImageUnify = itemView.findViewById(R.id.ivItemProduct)
-    private val tgTitleProduct: Typography = itemView.findViewById(R.id.tgTitleProduct)
-    private val tgRatingCount: Typography = itemView.findViewById(R.id.tgRatingCount)
-    private val tgReviewCount: Typography = itemView.findViewById(R.id.tgReviewCount)
+    private val ivItemProduct: ImageUnify = view.findViewById(R.id.ivItemProduct)
+    private val tgTitleProduct: Typography = view.findViewById(R.id.tgTitleProduct)
+    private val tgRatingCount: Typography = view.findViewById(R.id.tgRatingCount)
+    private val tgReviewCount: Typography = view.findViewById(R.id.tgReviewCount)
 
     override fun bind(element: ProductReviewUiModel) {
+        view.itemRatingProduct.setBackgroundColor(Color.WHITE)
+
         ivItemProduct.setImageUrl(element.productImageUrl.orEmpty())
         tgTitleProduct.text = element.productName
 
@@ -31,11 +35,16 @@ class SellerReviewListViewHolder(itemView: View,
         tgReviewCount.text = String.format(getString(R.string.period_seller_review), element.reviewCount.toString())
 
         itemView.setOnClickListener {
-            listenerSellerReview.onItemProductReviewClicked(element.productID.orZero(), adapterPosition, element.productImageUrl.orEmpty())
+            sellerReviewListener.onItemProductReviewClicked(element.productID.orZero(), adapterPosition, element.productImageUrl.orEmpty())
+        }
+
+        if(adapterPosition == 1) {
+            sellerReviewListener.onAddedCoachMarkItemProduct(itemView)
         }
     }
 
     interface SellerReviewListListener {
         fun onItemProductReviewClicked(productId: Int, position: Int, imageUrl: String)
+        fun onAddedCoachMarkItemProduct(view: View)
     }
 }

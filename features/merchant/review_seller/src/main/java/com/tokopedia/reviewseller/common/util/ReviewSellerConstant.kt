@@ -21,7 +21,7 @@ object ReviewSellerConstant {
     const val HIGHEST_RATING_KEY = "rating_avg desc"
     const val LOWEST_RATING_KEY = "rating_avg asc"
 
-    const val LATEST_REVIEW_KEY = "review desc"
+    const val LATEST_REVIEW_KEY = "create_time desc"
 
     const val LATEST_REVIEW_VALUE = "Ulasan Terbaru"
 
