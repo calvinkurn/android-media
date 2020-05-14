@@ -28,10 +28,6 @@
             android:orientation="vertical">
 
             <include
-                layout="@layout/item_promo_merchant"
-                tools:visibility="gone" />
-
-            <include
                 layout="@layout/item_cart_product"
                 tools:visibility="visible" />
 
@@ -43,22 +39,27 @@
                 layout="@layout/item_shipment_address"
                 tools:visibility="visible" />
 
-            <include
-                layout="@layout/item_shipment_courier"
-                tools:visibility="visible" />
-
+            <!--Shipping: Trade In Pickup-->
             <include
                 layout="@layout/item_shipment_trade_in_pickup"
                 tools:visibility="visible" />
 
+            <!--Shipping: Robinhood v2.1-->
             <include
                 layout="@layout/item_shipment_courier_recommendation"
                 tools:visibility="visible" />
 
+            <!--Shipping: Robinhood v3-->
             <include
                 layout="@layout/item_shipment_courier_blackbox"
                 tools:visibility="visible" />
 
+            <!--Shipping: Shipping Experience-->
+            <include
+                layout="@layout/item_shipment_shipping_experience"
+                tools:visibility="visible" />
+
+            <!--Shipping: Option (Insurance, dropshipper, etc)-->
             <include
                 layout="@layout/item_shipment_shipping_options"
                 tools:visibility="visible" />
