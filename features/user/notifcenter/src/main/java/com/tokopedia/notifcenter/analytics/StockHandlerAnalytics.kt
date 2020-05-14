@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 
@@ -94,30 +95,28 @@ class StockHandlerAnalytics {
         val eventAction = "click on restock product ATC"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val items = hashMapOf(
-                "item_name" to element.getAtcProduct()?.name.toString(),
-                "item_id" to element.getAtcProduct()?.productId.toString(),
-                "price" to element.getAtcProduct()?.price.toString(),
-                "item_brand" to "",
-                "item_category" to "none / other",
-                "item_variant" to "",
-                "list" to "/notifcenter",
-                "quantity" to "1",
-                "dimension69" to element.getAtcProduct()?.shop?.id.toString(),
-                "dimension71" to "",
-                "dimension70" to element.getAtcProduct()?.shop?.name.toString(),
-                "category_id" to "",
-                "dimension42" to cartId,
-                "dimension39" to "/notifcenter"
-        )
-
-        val dataTracker = hashMapOf(
+        val dataTracker = DataLayer.mapOf(
                 KEY_EVENT_NAME to eventName,
                 KEY_EVENT_CATEGORY to eventCategory,
                 KEY_EVENT_ACTION to eventAction,
                 KEY_EVENT_LABEL to eventLabel,
                 KEY_USER_ID to userId,
-                KEY_EVENT_ITEMS to mutableListOf(items)
+                KEY_EVENT_ITEMS to mapOf(
+                        "item_name" to element.getAtcProduct()?.name.toString(),
+                        "item_id" to element.getAtcProduct()?.productId.toString(),
+                        "price" to element.getAtcProduct()?.price.toString(),
+                        "item_brand" to "",
+                        "item_category" to "none / other",
+                        "item_variant" to "",
+                        "list" to "/notifcenter",
+                        "quantity" to "1",
+                        "dimension69" to element.getAtcProduct()?.shop?.id.toString(),
+                        "dimension71" to "",
+                        "dimension70" to element.getAtcProduct()?.shop?.name.toString(),
+                        "category_id" to "",
+                        "dimension42" to cartId,
+                        "dimension39" to "/notifcenter"
+                )
         )
         send(dataTracker)
     }
