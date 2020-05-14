@@ -296,6 +296,7 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val LIST_MIX_LEFT = "dynamic channel left carousel"
         private const val IMPRESSION_MIX_LEFT = "impression on product dynamic channel left carousel"
         private const val IMPRESSION_MIX_LEFT_BANNER = "impression on banner dynamic channel left carousel"
+        private const val CLICK_MIX_LEFT_BANNER = "click on banner dynamic channel left carousel"
         private const val CLICK_MIX_LEFT = "click on product dynamic channel left carousel"
         private const val PROMOTION_BANNER_ID = "%s_%s_%s_%s"
         private const val PROMOTION_BANNER_NAME = "'/ - p%s - dynamic channel left carousel - banner - %s"
@@ -400,7 +401,7 @@ object HomePageTrackingV2 : BaseTracking() {
         fun getMixLeftBannerClick(channel: DynamicHomeChannel.Channels, position: Int) = getBasicPromotionChannelClick(
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = IMPRESSION_MIX_LEFT_BANNER,
+                eventAction = CLICK_MIX_LEFT_BANNER,
                 campaignCode = channel.campaignCode,
                 eventLabel = Label.NONE,
                 channelId = channel.id,
