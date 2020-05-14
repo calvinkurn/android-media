@@ -70,7 +70,6 @@ class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
     fun getSearchQuery() : String {
         return when {
             contains(SearchApiConst.Q) -> get(SearchApiConst.Q)
-            contains(SearchApiConst.KEYWORD) -> get(SearchApiConst.KEYWORD)
             else -> ""
         }
     }

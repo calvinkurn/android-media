@@ -108,13 +108,17 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun onRecentViewImpressed(list: List<InitialStateItem>) {
+        view.onRecentViewImpressed(getDataLayerForRecentView(list))
+    }
+
+    private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
         val dataLayerList: MutableList<Any> = mutableListOf()
 
         list.forEachIndexed { index, item ->
             val position = index + 1
             dataLayerList.add(item.getObjectDataLayerForRecentView(position))
         }
-        view.onRecentViewImpressed(dataLayerList)
+        return dataLayerList
     }
 
     private fun onRecentSearchImpressed(list: List<InitialStateItem>) {

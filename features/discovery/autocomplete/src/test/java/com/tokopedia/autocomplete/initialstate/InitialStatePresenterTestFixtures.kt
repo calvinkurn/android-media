@@ -39,24 +39,4 @@ internal open class InitialStatePresenterTestFixtures {
                 userSession)
         initialStatePresenter.attachView(initialStateView)
     }
-
-    fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
-        val dataLayerList: MutableList<Any> = mutableListOf()
-
-        list.forEachIndexed { index, item ->
-            val position = index + 1
-            dataLayerList.add(item.getObjectDataLayerForRecentView(position))
-        }
-        return dataLayerList
-    }
-
-    fun getDataLayerForPromo(list: List<InitialStateItem>): MutableList<Any> {
-        val dataLayerList: MutableList<Any> = mutableListOf()
-
-        list.forEachIndexed { index, item ->
-            val position = index + 1
-            dataLayerList.add(item.getObjectDataLayerForPromo(position))
-        }
-        return dataLayerList
-    }
 }

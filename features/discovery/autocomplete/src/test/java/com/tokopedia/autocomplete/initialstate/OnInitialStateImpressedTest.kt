@@ -55,6 +55,26 @@ internal class OnInitialStateImpressedTest: InitialStatePresenterTestFixtures() 
         assert(popularSearchItemList.containsAll(popularSearchListResponse))
     }
 
+    private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForRecentView(position))
+        }
+        return dataLayerList
+    }
+
+    private fun getDataLayerForPromo(list: List<InitialStateItem>): MutableList<Any> {
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForPromo(position))
+        }
+        return dataLayerList
+    }
+
     @Test
     fun `test initial state impression with empty items`() {
         `given initial state use case get empty data response`()

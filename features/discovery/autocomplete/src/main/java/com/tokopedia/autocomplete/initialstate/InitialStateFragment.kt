@@ -24,8 +24,7 @@ import com.tokopedia.iris.Iris
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
 
-class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View,
-        InitialStateItemClickListener {
+class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, InitialStateItemClickListener {
 
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
@@ -196,16 +195,16 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View,
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
     }
 
-    override fun onRecentViewImpressed(list: MutableList<Any>) {
+    override fun onRecentViewImpressed(list: List<Any>) {
         AutocompleteTracking.impressedRecentView(iris, list)
     }
 
-    override fun onRecentSearchImpressed(list: MutableList<Any>) {
+    override fun onRecentSearchImpressed(list: List<Any>) {
         val keyword = presenter.getQueryKey()
         AutocompleteTracking.impressedRecentSearch(iris, list, keyword)
     }
 
-    override fun onPopularSearchImpressed(list: MutableList<Any>) {
+    override fun onPopularSearchImpressed(list: List<Any>) {
         AutocompleteTracking.impressedPopularSearch(iris, list)
     }
 }

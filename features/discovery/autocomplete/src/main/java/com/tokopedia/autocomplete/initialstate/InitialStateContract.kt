@@ -12,11 +12,11 @@ interface InitialStateContract {
 
         fun deleteRecentSearch(list: List<Visitable<*>>)
 
-        fun onRecentViewImpressed(list: MutableList<Any>)
+        fun onRecentViewImpressed(list: List<Any>)
 
-        fun onRecentSearchImpressed(list: MutableList<Any>)
+        fun onRecentSearchImpressed(list: List<Any>)
 
-        fun onPopularSearchImpressed(list: MutableList<Any>)
+        fun onPopularSearchImpressed(list: List<Any>)
     }
 
     interface Presenter : CustomerPresenter<View> {
