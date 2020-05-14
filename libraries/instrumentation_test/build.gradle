@@ -83,7 +83,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
@@ -94,7 +94,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
 
     implementation rootProject.ext.testDependencies.mockk
     implementation rootProject.ext.testDependencies.spek2Api, {
@@ -108,6 +112,8 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+
+    implementation rootProject.ext.testDependencies.benchmark
 }
 
 project.ext {
