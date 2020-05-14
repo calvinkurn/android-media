@@ -65,6 +65,7 @@ class ProductCheckoutViewHolder(
             lstProduct.show()
             listener.getAnalytic().trackMultiProductListImpression(
                     userId = element.userInfo.userId,
+                    productNumber = element.indexId,
                     notification = element
             )
             val factory = MultipleProductCardFactoryImpl(
