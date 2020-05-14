@@ -187,10 +187,10 @@ class ShopShowcaseTracking (context: Context?) {
     }
 
     fun addShowcaseIsCreatedSuccessfully(shopId: String, shopType: String, isSuccess: Boolean = false) {
-        if(isSuccess) {
-            eventAction = "click finish success"
+        eventAction = if(isSuccess) {
+            CLICK_FINISH_SUCCESS
         } else {
-            eventAction = "click finish error"
+            CLICK_FINISH_ERROR
         }
         tracker.sendEnhanceEcommerceEvent(
                 getDataLayer(
