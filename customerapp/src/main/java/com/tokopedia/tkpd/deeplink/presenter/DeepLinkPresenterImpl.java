@@ -786,8 +786,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openCategory(String uriData, Bundle bundle) {
         Uri uri = Uri.parse(uriData);
-        String deeplink = "";
-        deeplink = DeeplinkConstant.SCHEME_TOKOPEDIA + ":/" + uri.getPath();
+        String deeplink = DeeplinkConstant.SCHEME_TOKOPEDIA + ":/" + uri.getPath();
         if (uri.getQuery() != null) {
             deeplink =  deeplink+"?"+uri.getQuery();
         }
