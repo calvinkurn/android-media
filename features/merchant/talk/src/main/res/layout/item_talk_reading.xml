@@ -152,6 +152,7 @@
         android:visibility="gone"
         android:text="@string/reading_no_answer"
         android:paddingBottom="@dimen/layout_lvl2"
+        android:enabled="false"
         app:layout_constraintTop_toBottomOf="@id/readingQuestionTitle"
         app:typographyType="body_2"
         app:typographyWeight="reguler"

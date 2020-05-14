@@ -58,7 +58,7 @@ class TalkReadingViewModel @Inject constructor(
     var talkLastAction: TalkLastAction? = null
 
     fun getDiscussionAggregate(productId: String, shopId: String) {
-        setLoading()
+        setLoading(isRefresh = true)
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 getDiscussionAggregateUseCase.setParams(productId, shopId)
@@ -72,9 +72,7 @@ class TalkReadingViewModel @Inject constructor(
     }
 
     fun getDiscussionData(productId: String, shopId: String, page: Int, limit: Int, sortBy: String, category: String, withDelay: Boolean = false, isRefresh: Boolean = false) {
-        if(isRefresh) {
-            setLoading()
-        }
+        setLoading(isRefresh)
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
@@ -139,8 +137,8 @@ class TalkReadingViewModel @Inject constructor(
         talkLastAction = lastAction
     }
 
-    private fun setLoading() {
-        _viewState.value = ViewState.Loading
+    private fun setLoading(isRefresh: Boolean) {
+        _viewState.value = ViewState.Loading(isRefresh)
     }
 
     private fun setError(page: Int) {

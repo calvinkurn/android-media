@@ -329,7 +329,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.sortOptions.observe(this, Observer { sortOptions ->
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
-                loadInitialData()
+                getDiscussionData(isRefresh = false)
             }
         })
     }
@@ -337,7 +337,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun observeFilterCategories() {
         viewModel.filterCategories.observe(this, Observer {
             if(!isLoadingInitialData) {
-                loadInitialData()
+                getDiscussionData(isRefresh = false)
             }
         })
     }
@@ -347,7 +347,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             when(it) {
                 is ViewState.Loading -> {
                     clearAllData()
-                    pageLoading.show()
+                    if(it.isRefreshing) {
+                        pageLoading.show()
+                    } else {
+                        showLoading()
+                    }
                     pageEmpty.hide()
                     hidePageError()
                 }
