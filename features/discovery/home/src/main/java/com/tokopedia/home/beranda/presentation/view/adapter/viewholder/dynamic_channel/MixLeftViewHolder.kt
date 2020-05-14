@@ -99,7 +99,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         if (channel.banner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.addOnImpressionListener(channel){
-                homeCategoryListener.sendEETracking(HomePageTrackingV2.MixLeft.getMixLeftBannerView(channel, adapterPosition) as java.util.HashMap<String, Any>)
+                homeCategoryListener.putEEToTrackingQueue(HomePageTrackingV2.MixLeft.getMixLeftBannerView(channel, adapterPosition) as java.util.HashMap<String, Any>)
             }
             image.loadImage(channel.banner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
@@ -112,9 +112,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                     loadingBackground.hide()
                 }
             })
-            image.setOnClickListener {
-                bannerClick(channel)
-            }
         } else {
             loadingBackground.hide()
         }
@@ -127,7 +124,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(EmptyDataModel())
+        listData.add(EmptyDataModel(channel, adapterPosition))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
         if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) listData.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
@@ -149,13 +146,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     private fun setSnapEffect() {
         val snapHelper: SnapHelper = GravitySnapHelper(Gravity.START)
         snapHelper.attachToRecyclerView(recyclerView)
-    }
-
-    private fun bannerClick(channel: DynamicHomeChannel.Channels){
-        if(channel.banner.applink.isNotBlank()){
-            HomePageTrackingV2.MixLeft.getMixLeftBannerClick(channel, adapterPosition)
-            RouteManager.route(itemView.context, channel.banner.applink)
-        }
     }
 
     private fun getParallaxEffect(): RecyclerView.OnScrollListener {

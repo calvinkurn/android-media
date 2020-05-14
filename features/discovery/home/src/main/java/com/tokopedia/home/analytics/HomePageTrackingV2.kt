@@ -425,6 +425,10 @@ object HomePageTrackingV2 : BaseTracking() {
         fun sendMixLeftSeeAllCardClick(channel: DynamicHomeChannel.Channels){
             getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMoreCard(channel))
         }
+
+        fun sendMixLeftBannerClick(channel: DynamicHomeChannel.Channels, position: Int){
+            getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position))
+        }
     }
 
     object PopularKeyword {
