@@ -287,8 +287,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         pageError.hide()
     }
 
-    private fun bindHeader(talkReadingHeaderModel: TalkReadingHeaderModel) {
-        talkReadingHeader.bind(talkReadingHeaderModel, this)
+    private fun bindHeader(talkReadingHeaderModel: TalkReadingHeaderModel, showBottomSheet: () -> Unit) {
+        talkReadingHeader.bind(talkReadingHeaderModel, this, showBottomSheet)
     }
 
     private fun observeProductHeader() {
@@ -300,7 +300,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                                     it.data.discussionAggregateResponse,
                                     { showBottomSheet() },
                                     this
-                            ))
+                            )) { showBottomSheet() }
                     initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     initSortOptions()
                     showContainer()

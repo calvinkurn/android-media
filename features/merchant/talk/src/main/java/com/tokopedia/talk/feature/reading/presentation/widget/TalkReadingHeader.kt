@@ -30,10 +30,10 @@ class TalkReadingHeader : BaseCustomView {
         View.inflate(context, R.layout.widget_talk_reading_header, this)
     }
 
-    fun bind(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener) {
+    fun bind(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {
         this.readingHeaderProductImage.loadImage(talkReadingHeaderModel.productImageUrl)
         this.readingHeaderProductName.text = talkReadingHeaderModel.productName
-        initSortFilter(talkReadingHeaderModel, onCategoryModifiedListener)
+        initSortFilter(talkReadingHeaderModel, onCategoryModifiedListener, showBottomSheet)
     }
 
     fun updateSelectedSort(chipText: String) {
@@ -46,11 +46,13 @@ class TalkReadingHeader : BaseCustomView {
         }
     }
 
-    private fun initSortFilter(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener) {
+    private fun initSortFilter(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {
         this.readingHeaderChips.apply {
             sortFilterItems.removeAllViews()
             addItem(talkReadingHeaderModel.categories)
-            chipItems.first().refChipUnify.setChevronClickListener {}
+            chipItems.first().refChipUnify.setChevronClickListener {
+                showBottomSheet()
+            }
             filterRelationship = RELATIONSHIP_AND
             filterType = TYPE_QUICK
             dismissListener = {

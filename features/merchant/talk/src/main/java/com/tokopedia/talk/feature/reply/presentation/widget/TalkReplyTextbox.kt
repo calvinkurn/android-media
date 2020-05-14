@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reply.presentation.widget
 
 import android.content.Context
+import android.graphics.Rect
 import android.text.InputFilter
 import android.util.AttributeSet
 import android.view.View
