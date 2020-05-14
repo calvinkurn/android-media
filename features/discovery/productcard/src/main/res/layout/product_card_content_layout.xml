@@ -92,6 +92,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/labelDiscount"
         app:layout_constraintTop_toTopOf="@id/labelDiscount"
+        app:layout_goneMarginLeft="@dimen/dp_0"
         app:typographyType="small"
         tools:text="Rp8.499.000"
         tools:visibility="visible" />
