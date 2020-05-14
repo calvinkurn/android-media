@@ -91,11 +91,9 @@
         android:id="@+id/ovoPointsTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        app:titleText="haha"
         app:tickerType="announcement" />
 
     <View

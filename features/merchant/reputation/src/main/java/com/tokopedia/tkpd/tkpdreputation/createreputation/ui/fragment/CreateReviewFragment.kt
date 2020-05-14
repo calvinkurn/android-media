@@ -11,7 +11,6 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,8 +54,13 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
+import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.IncentiveOvoMapper
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity.ARGS_RATING
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet.Companion.TAG
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
@@ -195,8 +199,8 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
 
         createReviewViewModel.getIncentiveOvo.observe(this, Observer {
             when (it) {
-                is CoroutineSuccess -> onSuccesGetIncentiveOvo(it.data)
-                is CoroutineFail -> onErrorGetIncentiveOvo(it.throwable)
+                is CoroutineSuccess -> onSuccessGetIncentiveOvo(it.data)
+                is CoroutineFail -> onErrorGetIncentiveOvo()
             }
         })
     }
@@ -298,7 +302,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             submitReview()
         }
 
-        ovoPointsTicker.setHtmlDescription("getString(R.string.review_ovo_ticker_description)")
     }
 
     override fun onDestroy() {
@@ -376,12 +379,26 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         }
     }
 
-    private fun onSuccesGetIncentiveOvo(data: ProductRevIncentiveOvo) {
+    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvo) {
         productRevIncentiveOvo = data
         with(data.productrevIncentiveOvo) {
-            Log.d("ovo","${this.subtitle}")
-            Log.d("ovo", "${this.ticker.subtitle}")
+            ovoPointsTicker.visibility = View.VISIBLE
+            ovoPointsTicker.tickerTitle = this.ticker.title
+            ovoPointsTicker.setHtmlDescription(this.ticker.subtitle)
+            ovoPointsTicker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data))
+                    bottomSheet.isFullpage = true
+                    fragmentManager?.let { bottomSheet.show(it, TAG)}
+                }
+
+                override fun onDismiss() {}
+            })
         }
+    }
+
+    private fun onErrorGetIncentiveOvo() {
+        ovoPointsTicker.visibility = View.GONE
     }
 
     private fun generateReviewBackground(position: Int) {
@@ -599,15 +616,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             }
         }
 
-    }
-
-    private fun onErrorGetIncentiveOvo(throwable: Throwable) {
-        if (throwable is MessageErrorException) {
-            activity?.let {
-                Toast.makeText(it, "tidak dapat incentive ovo", Toast.LENGTH_LONG).show()
-                finishIfRoot()
-            }
-        }
     }
 
     private fun finishIfRoot(success: Boolean = false) {

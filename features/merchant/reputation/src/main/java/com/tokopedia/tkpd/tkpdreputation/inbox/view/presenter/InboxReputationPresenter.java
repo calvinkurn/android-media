@@ -120,6 +120,7 @@ public class InboxReputationPresenter
         super.detachView();
         getFirstTimeInboxReputationUseCase.unsubscribe();
         getInboxReputationUseCase.unsubscribe();
+        getProductIncentiveOvoUseCase.unsubscribe();
     }
 
 

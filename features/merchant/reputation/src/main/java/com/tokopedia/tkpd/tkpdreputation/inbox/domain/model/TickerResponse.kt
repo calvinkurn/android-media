@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class TickerResponse(
         @SerializedName("title")
         @Expose
-        val title: String = "",
+        var title: String = "",
 
         @SerializedName("subtitle")
         @Expose
-        val subtitle: String = ""
+        var subtitle: String = ""
 )

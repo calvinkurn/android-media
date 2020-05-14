@@ -9,11 +9,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -39,12 +37,17 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFilt
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.InboxReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactoryImpl;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -214,7 +217,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ovoTicker.setHtmlDescription("getString(R.string.review_ovo_ticker_description)");
         KeyboardHandler.hideSoftKeyboard(getActivity());
         presenter.getProductIncentiveOvo();
         if (savedInstanceState != null)
@@ -228,7 +230,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
             presenter.getFirstTimeInboxReputation(getTab());
         }
     }
-
 
     public int getTab() {
         if (getArguments() != null)
@@ -261,13 +262,28 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetProductRevIncentiveOvo(Throwable throwable) {
-        Log.d("Error", "error");
+        ovoTicker.setVisibility(View.GONE);
     }
 
     @Override
     public void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
-        Log.d("ovo domain", productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTitle());
-        Log.d("ovo domain", productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getSubtitle());
+        ovoTicker.setVisibility(View.VISIBLE);
+        ovoTicker.setTickerTitle(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle());
+        ovoTicker.setHtmlDescription(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle());
+        ovoTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain);
+                bottomSheet.setFullpage(true);
+                assert getFragmentManager() != null;
+                bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        });
     }
 
     @Override

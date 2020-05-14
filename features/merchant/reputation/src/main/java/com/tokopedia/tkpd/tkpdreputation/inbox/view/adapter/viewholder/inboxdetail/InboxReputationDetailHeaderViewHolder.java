@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail;
 
 import androidx.annotation.LayoutRes;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.UserReputationView;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -21,7 +24,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author by nisie on 8/19/17.
@@ -35,6 +42,7 @@ public class InboxReputationDetailHeaderViewHolder extends
     public static final int SMILEY_NEUTRAL = 1;
     public static final int SMILEY_GOOD = 2;
     private final ReputationAdapter.ReputationListener reputationListener;
+    private final ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain;
 
     ImageView userAvatar;
     TextView name;
@@ -56,15 +64,20 @@ public class InboxReputationDetailHeaderViewHolder extends
     LinearLayoutManager linearLayoutManager;
     Context context;
     Ticker ovoTicker;
+    FragmentManager fragmentManager;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_header;
 
     public InboxReputationDetailHeaderViewHolder(View itemView,
-                                                 final ReputationAdapter.ReputationListener reputationListener) {
+                                                 final ReputationAdapter.ReputationListener reputationListener,
+                                                 final ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain,
+                                                 final FragmentManager fragmentManager) {
         super(itemView);
         this.reputationListener = reputationListener;
+        this.productRevIncentiveOvoDomain = productRevIncentiveOvoDomain;
         this.context = itemView.getContext();
+        this.fragmentManager = fragmentManager;
         userAvatar = itemView.findViewById(R.id.user_avatar);
         name = (TextView) itemView.findViewById(R.id.name);
         userReputationView =  itemView.findViewById(R.id.user_reputation);
@@ -106,7 +119,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                 goToInfoPage(element);
             }
         });
-        ovoTicker.setHtmlDescription("getString(R.string.review_ovo_ticker_description)");
+        showIncentiveOvo();
 
         setReputation(element);
 
@@ -292,6 +305,30 @@ public class InboxReputationDetailHeaderViewHolder extends
                     element.getRevieweeBadgeSellerViewModel().getReputationBadge().getLevel(),
                     String.valueOf(element.getRevieweeBadgeSellerViewModel().getScore()));
 
+        }
+    }
+
+    public void showIncentiveOvo() {
+        if (productRevIncentiveOvoDomain == null) {
+            ovoTicker.setVisibility(View.GONE);
+        } else {
+            ovoTicker.setVisibility(View.VISIBLE);
+            ovoTicker.setTickerTitle(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle());
+            ovoTicker.setHtmlDescription(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle());
+            ovoTicker.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain);
+                    bottomSheet.setFullpage(true);
+                    assert fragmentManager != null;
+                    bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
+                }
+
+                @Override
+                public void onDismiss() {
+
+                }
+            });
         }
     }
 }

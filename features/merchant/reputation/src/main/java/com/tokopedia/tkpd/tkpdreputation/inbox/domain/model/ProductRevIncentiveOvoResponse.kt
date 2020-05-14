@@ -6,25 +6,25 @@ import com.google.gson.annotations.SerializedName
 data class ProductRevIncentiveOvoResponse (
         @SerializedName("ticker")
         @Expose
-        val ticker: TickerResponse = TickerResponse(),
+        var ticker: TickerResponse = TickerResponse(),
 
         @SerializedName("title")
         @Expose
-        val title: String = "",
+        var title: String = "",
 
         @SerializedName("subtitle")
         @Expose
-        val subtitle: String = "",
+        var subtitle: String = "",
 
         @SerializedName("description")
         @Expose
-        val description: String = "",
+        var description: String = "",
 
         @SerializedName("numbered_list")
         @Expose
-        val numberedList: List<String> = listOf(),
+        var numberedList: List<String> = listOf(),
 
         @SerializedName("cta_text")
         @Expose
-        val ctaText: String = ""
+        var ctaText: String = ""
 )
