@@ -2,14 +2,11 @@ package com.tokopedia.talk.feature.reply.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
-import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyAnswerCountModel
-import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
-import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
+import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.*
 
 class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory) : BaseAdapter<TalkReplyAdapterTypeFactory>(talkReplyAdapterTypeFactory) {
 
     fun displayAnswers(answerCount: TalkReplyAnswerCountModel, answers: List<TalkReplyUiModel>) {
-        visitables.clear()
         visitables.add(answerCount)
         visitables.addAll(answers)
     }
@@ -17,5 +14,19 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
     fun showEmpty(talkReplyEmptyModel: TalkReplyEmptyModel) {
         visitables.clear()
         visitables.add(talkReplyEmptyModel)
+    }
+
+    fun showProductHeader(talkReplyProductHeaderModel: TalkReplyProductHeaderModel) {
+        visitables.add(talkReplyProductHeaderModel)
+    }
+
+    fun showHeader(talkReplyHeaderModel: TalkReplyHeaderModel) {
+        visitables.add(talkReplyHeaderModel)
+    }
+
+    fun setIsFollowingButton(isFollowing: Boolean) {
+        visitables.forEachIndexed { index, visitable ->
+
+        }
     }
 }

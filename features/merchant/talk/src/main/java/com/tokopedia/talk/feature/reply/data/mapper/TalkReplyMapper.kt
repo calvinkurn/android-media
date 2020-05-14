@@ -4,7 +4,7 @@ import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
-import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
+import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHeaderModel
 
 object TalkReplyMapper {
 

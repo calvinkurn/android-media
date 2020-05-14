@@ -13,7 +13,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabCli
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
-import kotlinx.android.synthetic.main.widget_talk_reply_header.view.*
+import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,

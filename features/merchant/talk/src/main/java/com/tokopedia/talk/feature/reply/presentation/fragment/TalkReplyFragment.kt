@@ -3,6 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,15 +22,14 @@ import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
@@ -41,8 +41,7 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedPr
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyAnswerCountModel
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
-import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
-import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyProductHeaderModel
+import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
@@ -333,13 +332,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onSuccessFollowThread() {
-        talkReplyHeader.setButtonToFollowed()
+        adapter?.setIsFollowingButton(FOLLOWING)
         showSuccessToaster(getString(R.string.toaster_follow_success))
         viewModel.setIsFollowing(FOLLOWING)
     }
 
     private fun onSuccessUnfollowThread() {
-        talkReplyHeader.setButtonToUnfollowed()
+        adapter?.setIsFollowingButton(NOT_FOLLOWING)
         showSuccessToaster(getString(R.string.toaster_unfollow_success))
         viewModel.setIsFollowing(NOT_FOLLOWING)
     }
@@ -421,10 +420,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             when(it) {
                 is Success -> {
                     with(it.data) {
+                        talkReplyRecyclerView.visibility = View.VISIBLE
                         if(isFromInbox && viewModel.isMyShop) {
-                            initProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
+                            adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
-                        bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
+                        adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
                             stopNetworkRequestPerformanceMonitoring()
                             startRenderPerformanceMonitoring()
@@ -485,6 +485,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initView() {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         initAdapter()
         initAttachedProductAdapter()
         initRecyclerView()
@@ -493,7 +494,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initAdapter() {
-        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this, this))
+        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this, this, this, this))
     }
 
     private fun initRecyclerView() {
@@ -519,20 +520,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun initSwipeRefresh() {
         replySwipeRefresh.setOnRefreshListener {
+            adapter?.clearAllElements()
             getDiscussionData()
             showPageLoading()
         }
-    }
-
-    private fun initProductHeader(productHeader: TalkReplyProductHeaderModel) {
-        talkReplyProductHeader.apply {
-            show()
-            bind(productHeader, this@TalkReplyFragment)
-        }
-    }
-
-    private fun bindHeader(talkReplyHeaderModel: TalkReplyHeaderModel) {
-        talkReplyHeader.bind(talkReplyHeaderModel, this, this)
     }
 
     private fun initDialog(dialog: DialogUnify, commentId: String) {
@@ -565,7 +556,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun showAnswers(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
         adapter?.displayAnswers(TalkReplyAnswerCountModel(discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.totalAnswer),
                     TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper))
-        talkReplyRecyclerView.visibility = View.VISIBLE
     }
 
     private fun deleteReply(commentId: String) {
