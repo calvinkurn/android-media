@@ -108,6 +108,7 @@
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
 /features/entertainment/event_home                 		@tokopedia/minion-mark
 /features/entertainment/event_search        			@tokopedia/minion-mark
+/features/entertainment/event_pdp         			    @tokopedia/minion-mark
 
 /features/travel/flight_orderlist                       @tokopedia/minion-mark
 /features/travel/flight/                                @tokopedia/minion-mark
@@ -202,6 +203,7 @@
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
+/libraries/akamai_bot_lib/							    @tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/analytics_debugger/							@tokopedia/core-team
 /libraries/analytics_debugger_noop/					    @tokopedia/core-team
@@ -227,6 +229,7 @@
 /libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
 /libraries/graph_view/									@tokopedia/core-team
+/libraries/graphql/									    @tokopedia/core-team
 /libraries/image_picker/								@tokopedia/core-team
 /libraries/image_preview/								@tokopedia/core-team
 /libraries/imageuploader/								@tokopedia/core-team

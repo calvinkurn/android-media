@@ -23,12 +23,6 @@ class PltHomeDynamicChannelPerformanceTest {
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
-    //for testing purpose, to check if mock response is working
-//    @Test
-//    fun testHomeLayout() {
-//        Thread.sleep(10000000)
-//    }
-
     @Before
     fun deleteDatabase() {
         activityRule. activity.deleteDatabase("HomeCache.db")
@@ -39,9 +33,9 @@ class PltHomeDynamicChannelPerformanceTest {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.deleteDatabase("HomeCache.db")
-        activityRule.activity.finish()
+        activityRule.activity.finishAndRemoveTask()
+        Thread.sleep(1000)
     }
-
 
     private fun waitForData() {
         Thread.sleep(10000)

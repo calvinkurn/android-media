@@ -56,9 +56,9 @@ class ListCarouselUITest : BaseWidgetUiTest(){
     fun test_when_data_list_carousel_available_the_review_widget_show(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.list_carousel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
         coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             emit(data)
         }
@@ -76,9 +76,9 @@ class ListCarouselUITest : BaseWidgetUiTest(){
     fun test_when_data_list_carousel_available_the_review_widget_show_try_close_channel(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.list_carousel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
         coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             emit(data)
         }
@@ -99,9 +99,9 @@ class ListCarouselUITest : BaseWidgetUiTest(){
     fun test_when_data_list_carousel_available_the_review_widget_show_with_out_close_btn(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.list_carousel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
         coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             emit(data)
         }
