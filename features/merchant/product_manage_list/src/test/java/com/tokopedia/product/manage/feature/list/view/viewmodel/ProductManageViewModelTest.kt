@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list
+package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.network.exception.MessageErrorException
@@ -12,7 +12,6 @@ import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaRes
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaWrapper
 import com.tokopedia.product.manage.feature.filter.data.model.Tab
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
-import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
@@ -29,6 +28,7 @@ import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStock
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.*
 import com.tokopedia.product.manage.verification.verifyErrorEquals
 import com.tokopedia.product.manage.verification.verifySuccessEquals
 import com.tokopedia.product.manage.verification.verifyValueEquals
