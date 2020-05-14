@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.database.DatabaseProvider
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -119,6 +120,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 val prepareState = currentPrepareState
                 if (prepareState is PlayVideoPrepareState.Prepared) {
                     stop()
+                    launch { deleteCache() }
                     playUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
@@ -154,6 +156,16 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 is PlayVideoPrepareState.Prepared -> currentState.uri
             }
         }
+
+    /**
+     * Cache
+     */
+    private val cacheFile: File
+        get() = File(applicationContext.cacheDir, CACHE_FOLDER_NAME)
+    private val cacheEvictor: CacheEvictor
+        get() = LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES)
+    private val cacheDbProvider: DatabaseProvider
+        get() = ExoDatabaseProvider(applicationContext)
 
     //region public method
     fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
@@ -208,7 +220,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun release() {
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
-        releaseCache()
+        launch { releaseCache() }
+        playerModel.copy(cache = null)
     }
 
     fun stop(resetState: Boolean = true) {
@@ -314,23 +327,22 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     private fun initCache(playerModel: PlayPlayerModel?): Cache {
         return if (playerModel?.cache == null) {
             SimpleCache(
-                    File(applicationContext.filesDir, CACHE_FOLDER_NAME),
-                    LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES),
-                    ExoDatabaseProvider(applicationContext)
+                    cacheFile,
+                    cacheEvictor,
+                    cacheDbProvider
             )
         } else playerModel.cache
     }
 
     /**
-     * If and only if this function causes leak, please contact the owner of this module
+     * If and only if these functions cause leak, please contact the owner of this module
      */
-    private fun releaseCache() {
-        launch {
-            withContext(Dispatchers.IO) {
-                playerModel.cache?.release()
-            }
-            playerModel.copy(cache = null)
-        }
+    private suspend fun releaseCache() = withContext(Dispatchers.IO) {
+        playerModel.cache?.release()
+    }
+
+    private suspend fun deleteCache() = withContext(Dispatchers.IO) {
+        SimpleCache.delete(cacheFile, cacheDbProvider)
     }
     //endregion
 }
