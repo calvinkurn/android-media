@@ -103,7 +103,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private var topBounds: Int? = null
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
-    private lateinit var videoAnalyticHelper: VideoAnalyticHelper
     private lateinit var playViewModel: PlayViewModel
 
     /**
@@ -148,7 +147,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         startPageMonitoring()
         starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -163,7 +162,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAnalytic()
         initView(view)
         setupView(view)
         setupScreen(view)
@@ -198,8 +196,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         unregisterKeyboardListener(requireView())
         super.onPause()
         if (::orientationManager.isInitialized) orientationManager.disable()
-
-        videoAnalyticHelper.onPause()
     }
 
     override fun onDestroyView() {
@@ -286,10 +282,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
                 requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
                 true
             }
-            else -> {
-                videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
-                false
-            }
+            else -> false
         }
     }
 
@@ -452,10 +445,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         orientationManager = PlaySensorOrientationManager(requireContext(), this)
     }
 
-    private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
-    }
-
     private fun initView(view: View) {
         topBounds?.let { setVideoTopBounds(playViewModel.videoPlayer, playViewModel.videoOrientation, it) }
     }
@@ -515,7 +504,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, it.state)
             layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
         })
     }
