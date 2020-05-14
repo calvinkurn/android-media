@@ -26,7 +26,7 @@ class GqlRekeningPremiumDataUseCase @Inject constructor(
             }
             )
         } catch (throwable: Throwable) {
-            throw throwable
+            onError(throwable)
         }
     }
 }

@@ -17,6 +17,7 @@ class GetBankAccountsUseCase @Inject constructor(
 
     fun getBankAccountList(onSuccess: (bankAccountList: ArrayList<BankAccount>) -> Unit,
                            onError: (Throwable) -> Unit) {
+        this.cancelJobs()
         try {
             this.setTypeClass(GqlGetBankDataResponse::class.java)
             this.setGraphqlQuery(query)
@@ -27,7 +28,7 @@ class GetBankAccountsUseCase @Inject constructor(
                 onError(error)
             })
         } catch (throwable: Throwable) {
-            throw throwable
+            onError(throwable)
         }
     }
 }

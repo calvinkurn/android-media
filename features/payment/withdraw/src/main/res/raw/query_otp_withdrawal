@@ -41,14 +41,14 @@ mutation richieSubmitWithdrawal(
         }
  ){
    process_time
-    message
-    status
-    message_error
-    accountName
-    accountNumber
-    bankName
-    amount
-    adminFee
-    withdrawalNote
+   message
+   status
+   message_error
+   accountName
+   accountNumber
+   bankName
+   amount
+   adminFee
+   withdrawalNote
  }
 }

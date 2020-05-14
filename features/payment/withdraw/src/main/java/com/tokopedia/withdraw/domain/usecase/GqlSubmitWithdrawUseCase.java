@@ -15,13 +15,11 @@ import rx.Subscriber;
 
 public class GqlSubmitWithdrawUseCase {
 
-    private static final String MOBILE_DEVICE = "mobile";
-    private static final String SALDO_OPERATION_NAME = "withdrawSaldoMutation";
-    private static final String PARAM_WITHDRAW_TYPE = "withdrawalType";
     private Map<String, Object> params = new HashMap<>();
     private GraphqlUseCase graphqlUseCase;
     private String query;
 
+    private static final String MOBILE_DEVICE = "mobile";
     private static final String PARAM_IS_SELLER = "isSeller";
     private static final String AMOUNT = "amount";
     private static final String USERID = "userId";
@@ -40,7 +38,6 @@ public class GqlSubmitWithdrawUseCase {
     private static final String PARAM_BANK_NAME = "bankName";
     private static final String VALIDATE_TOKEN = "validateToken";
     private static final String PROGRAM = "program";
-    private static final String PARAM_PASSWORD = "password";
 
 
     @Inject

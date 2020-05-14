@@ -25,12 +25,11 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
-import com.tokopedia.withdraw.di.WithdrawComponent;
+import com.tokopedia.withdraw.di.component.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.WithdrawalFragmentCallback;
 import com.tokopedia.withdraw.view.fragment.SaldoWithdrawalFragment;
 import com.tokopedia.withdraw.view.fragment.SuccessFragmentWithdrawal;
-import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 
 import org.jetbrains.annotations.NotNull;
 

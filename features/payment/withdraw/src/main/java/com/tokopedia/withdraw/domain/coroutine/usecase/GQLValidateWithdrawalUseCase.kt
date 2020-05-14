@@ -28,7 +28,7 @@ class GQLValidateWithdrawalUseCase @Inject constructor(
                 onError(error)
             })
         } catch (throwable: Throwable) {
-            throw throwable
+            onError(throwable)
         }
     }
 

@@ -22,7 +22,7 @@ class RekeningPremiumViewModel @Inject constructor(
 
     val rekeningPremiumMutableData = MutableLiveData<Result<CheckEligible>>()
 
-    private fun loadRekeningPremiumData() {
+    fun loadRekeningPremiumData() {
         gqlRekeningPremiumDataUseCase.getRekeningPremiumData(::onDataLoadedSuccess,
                 ::onDataLoadingError)
     }

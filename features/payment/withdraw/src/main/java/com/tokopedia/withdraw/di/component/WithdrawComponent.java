@@ -1,4 +1,4 @@
-package com.tokopedia.withdraw.di;
+package com.tokopedia.withdraw.di.component;
 
 import android.content.Context;
 

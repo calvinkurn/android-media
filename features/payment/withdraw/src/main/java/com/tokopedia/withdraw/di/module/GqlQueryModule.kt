@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.constant.WithdrawalDomainConstant.GQL_QUERY_GET_BANK_ACCOUNT
 import com.tokopedia.withdraw.constant.WithdrawalDomainConstant.GQL_QUERY_GET_REKENING_PREMIUM
+import com.tokopedia.withdraw.constant.WithdrawalDomainConstant.GQL_QUERY_SUBMIT_WITHDRAWAL
 import com.tokopedia.withdraw.constant.WithdrawalDomainConstant.GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL
 import dagger.Module
 import dagger.Provides
@@ -28,6 +29,10 @@ class GqlQueryModule {
     @Named(GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL)
     fun provideValidatePopUpWithdrawal(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_popup)
+    @Provides
+    @Named(GQL_QUERY_SUBMIT_WITHDRAWAL)
+    fun provideSubmitWithdrawalQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_otp_withdrawal)
 
 
 }

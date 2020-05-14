@@ -26,8 +26,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,8 +38,9 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.WithdrawAnalytics
 import com.tokopedia.withdraw.constant.WithdrawConstant
-import com.tokopedia.withdraw.di.WithdrawComponent
+import com.tokopedia.withdraw.di.component.WithdrawComponent
 import com.tokopedia.withdraw.domain.model.BankAccount
+import com.tokopedia.withdraw.domain.model.SubmitWithdrawalResponse
 import com.tokopedia.withdraw.domain.model.WithdrawalRequest
 import com.tokopedia.withdraw.domain.model.premiumAccount.CheckEligible
 import com.tokopedia.withdraw.domain.model.premiumAccount.CopyWriting
@@ -45,6 +49,7 @@ import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal
 import com.tokopedia.withdraw.view.adapter.SaldoWithdrawalPagerAdapter
 import com.tokopedia.withdraw.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.withdraw.view.viewmodel.RekeningPremiumViewModel
+import com.tokopedia.withdraw.view.viewmodel.SubmitWithdrawalViewModel
 import com.tokopedia.withdraw.view.viewmodel.ValidatePopUpViewModel
 import kotlinx.android.synthetic.main.swd_fragment_saldo_withdrawal.*
 import kotlinx.android.synthetic.main.swd_layout_premium_account.*
@@ -76,6 +81,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     private lateinit var bankAccountListViewModel: BankAccountListViewModel
     private lateinit var rekeningPremiumViewModel: RekeningPremiumViewModel
     private lateinit var validatePopUpViewModel: ValidatePopUpViewModel
+    private lateinit var submitWithdrawalViewModel: SubmitWithdrawalViewModel
 
 
     lateinit var validatePopUpAlertDialog: AlertDialog
@@ -105,6 +111,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         bankAccountListViewModel = viewModelProvider.get(BankAccountListViewModel::class.java)
         rekeningPremiumViewModel = viewModelProvider.get(RekeningPremiumViewModel::class.java)
         validatePopUpViewModel = viewModelProvider.get(ValidatePopUpViewModel::class.java)
+        submitWithdrawalViewModel = viewModelProvider.get(SubmitWithdrawalViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -114,8 +121,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showSellerBlockedTicker()
-        initializeViewPager()
+        loadingLayout.setOnClickListener { }
+        loadingLayout.visible()
         observeViewModel()
     }
 
@@ -135,6 +142,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                 is Success -> {
                     checkEligible = it.data
                     inflateRekeningPremiumWidget()
+                    showUIComponent()
                 }
                 is Fail -> {
                     handleGlobalError(it.throwable)
@@ -142,34 +150,43 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
             }
         })
 
-
         validatePopUpViewModel.validatePopUpWithdrawalMutableData.observe(this, Observer {
+            loadingLayout.hide()
             when (it) {
                 is Success -> {
                     checkAndCreateValidatePopup(it.data)
                 }
                 is Fail -> {
-                    //Tidak ada koneksi internet
-                    //show toaster if failed
-                    //todo handle with error message
+                    handleValidatePopUpError(it.throwable)
                 }
             }
-        }
-        )
+        })
+
+        submitWithdrawalViewModel.submitWithdrawalResponseLiveData.observe(this, Observer {
+            loadingLayout.hide()
+            when (it) {
+                is Success -> {
+                    redirectToSuccessFragment(it.data)
+                }
+                is Fail -> {
+                    handleSubmitWithdrawalError(it.throwable)
+                }
+            }
+        })
     }
 
-    private fun handleGlobalError(throwable: Throwable) {
-        if (throwable is MessageErrorException) {
-            swdGlobalError.setType(GlobalError.SERVER_ERROR)
-        } else {
-            swdGlobalError.setType(GlobalError.NO_CONNECTION)
-        }
-        swdGlobalError.visible()
-        swdGlobalError.setActionClickListener { retryToLoadData() }
+    private fun handleSubmitWithdrawalError(throwable: Throwable) {
+
     }
 
-    private fun retryToLoadData() {
+    private fun redirectToSuccessFragment(submitWithdrawalResponse: SubmitWithdrawalResponse) {
 
+    }
+
+    private fun showUIComponent() {
+        loadingLayout.gone()
+        showSellerBlockedTicker()
+        initializeViewPager()
     }
 
     private fun inflateRekeningPremiumWidget() {
@@ -189,6 +206,35 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                 tv_briProgramButton.setOnClickListener { onRekeningWidgetClick() }
             }
         }
+    }
+
+    private fun handleValidatePopUpError(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        showErrorToaster(message)
+    }
+
+    private fun showErrorToaster(message: String) {
+        view?.let {
+            Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun handleGlobalError(throwable: Throwable) {
+        loadingLayout.gone()
+        if (throwable is MessageErrorException) {
+            swdGlobalError.setType(GlobalError.SERVER_ERROR)
+        } else {
+            swdGlobalError.setType(GlobalError.NO_CONNECTION)
+        }
+        swdGlobalError.visible()
+        swdGlobalError.setActionClickListener { retryToLoadData() }
+    }
+
+    private fun retryToLoadData() {
+        swdGlobalError.gone()
+        loadingLayout.visible()
+        rekeningPremiumViewModel.loadRekeningPremiumData()
+        bankAccountListViewModel.loadBankAccountList()
     }
 
     private fun onRekeningWidgetClick() {
@@ -357,6 +403,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     }
 
     fun initiateBuyerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
+        loadingLayout.visible()
         withdrawalRequest = WithdrawalRequest(
                 userId = userSession.userId, email = userSession.email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
@@ -365,6 +412,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     }
 
     fun initiateSellerWithdrawal(selectedBankAccount: BankAccount, withdrawalAmount: Long) {
+        loadingLayout.visible()
         withdrawalRequest = WithdrawalRequest(
                 userId = userSession.userId, email = userSession.email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
@@ -432,11 +480,9 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     }
 
     private fun submitWithdrawalRequest(withdrawalRequest: WithdrawalRequest, uuid: String) {
-        view?.let {
-            Toaster.make(it, "request submit call", Toaster.LENGTH_LONG)
-        }
+        loadingLayout.visible()
+        submitWithdrawalViewModel.submitWithdraw(withdrawalRequest, uuid)
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

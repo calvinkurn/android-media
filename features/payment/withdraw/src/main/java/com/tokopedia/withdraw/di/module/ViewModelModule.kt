@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.withdraw.di.scope.WithdrawScope
 import com.tokopedia.withdraw.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.withdraw.view.viewmodel.RekeningPremiumViewModel
+import com.tokopedia.withdraw.view.viewmodel.SubmitWithdrawalViewModel
 import com.tokopedia.withdraw.view.viewmodel.ValidatePopUpViewModel
 import dagger.Binds
 import dagger.Module
@@ -36,5 +37,9 @@ abstract class ViewModelModule {
     @ViewModelKey(ValidatePopUpViewModel::class)
     internal abstract fun validatePopUpViewModel(viewModel: ValidatePopUpViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(ValidatePopUpViewModel::class)
+    internal abstract fun provideSubmitWithdrawalViewModel(viewModel: SubmitWithdrawalViewModel): ViewModel
 
 }

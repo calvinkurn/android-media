@@ -21,7 +21,7 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
-import com.tokopedia.withdraw.di.WithdrawComponent;
+import com.tokopedia.withdraw.di.component.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 
 
