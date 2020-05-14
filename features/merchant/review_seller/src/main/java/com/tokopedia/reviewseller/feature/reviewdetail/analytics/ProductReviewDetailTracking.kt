@@ -189,7 +189,7 @@ class ProductReviewDetailTracking {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, EVENT_CLICK_REVIEW,
                 EVENT_CATEGORY, FIELD_PRODUCT_DETAIL,
-                EVENT_ACTION, "$CLICK - select three dots on product review",
+                EVENT_ACTION, "$CLICK - select three dots menu on product review",
                 EVENT_LABEL, "options:Laporkan;$FIELD_FEEDBACK_ID:$feedbackId",
                 FIELD_SHOP_ID, shopId,
                 FIELD_PRODUCT_ID, productId,

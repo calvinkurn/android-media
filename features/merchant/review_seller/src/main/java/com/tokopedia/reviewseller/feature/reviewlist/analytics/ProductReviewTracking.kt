@@ -27,8 +27,6 @@ class ProductReviewTracking {
     private val FIELD_SCREEN_NAME = "screenName"
     private val FIELD_SHOP_ID = "shopId"
     private val FIELD_PRODUCT_ID = "productId"
-    private val FIELD_FEEDBACK_ID = "feedbackId"
-    private val FIELD_IS_ACTIVE = "isActive"
 
     fun sendScreen(shopId: String) {
         val dataLayer = mutableMapOf<String, String>()
@@ -43,7 +41,8 @@ class ProductReviewTracking {
                 EVENT_CATEGORY, FIELD_ULASAN_RATING_PRODUCT,
                 EVENT_ACTION, "$CLICK - rating produk tab",
                 EVENT_LABEL, "",
-                FIELD_SHOP_ID, shopId
+                FIELD_SHOP_ID, shopId,
+                FIELD_SCREEN_NAME, FIELD_RATING_PRODUCT
         ))
     }
 

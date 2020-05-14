@@ -14,7 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.util.toRelativeDayAndWeek
+import com.tokopedia.reviewseller.common.util.toRelativeDate
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.di.component.ReviewReplyComponent
 import com.tokopedia.reviewseller.feature.reviewreply.util.mapper.SellerReviewReplyMapper
@@ -47,7 +47,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
     }
 
     @Inject
-    lateinit var userSesion: UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -163,7 +163,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
             reviewReplyTextBoxWidget?.hide()
             groupReply?.show()
             tvReplyUser?.text = context?.getString(R.string.user_reply)
-            tvReplyDate.text = getReplyTime() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
+            tvReplyDate.text = getReplyTime() toRelativeDate (DATE_REVIEW_FORMAT)
             feedbackUiModel?.replyText = replyEditText.text.toString()
             tvReplyComment.text = feedbackUiModel?.replyText
             replyEditText.text?.clear()
@@ -177,7 +177,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
             replyEditText.text?.clear()
             tvReplyUser?.text = context?.getString(R.string.user_reply)
             feedbackUiModel?.replyText = data.responseMessage
-            tvReplyDate.text = getReplyTime() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
+            tvReplyDate.text = getReplyTime() toRelativeDate  (DATE_REVIEW_FORMAT)
             tvReplyComment.text = feedbackUiModel?.replyText
         }
     }
@@ -280,7 +280,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
                     when (position) {
                         0 -> {
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSesion.shopId)
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSession.shopId)
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID)
                             startActivity(intent)
                         }

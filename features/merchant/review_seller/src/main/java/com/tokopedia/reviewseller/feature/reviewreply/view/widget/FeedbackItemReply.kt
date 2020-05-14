@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
 import com.tokopedia.reviewseller.common.util.getReviewStar
-import com.tokopedia.reviewseller.common.util.toRelativeDayAndWeek
+import com.tokopedia.reviewseller.common.util.toRelativeDate
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewReplyFeedbackImageAdapter
 import kotlinx.android.synthetic.main.widget_reply_feedback_item.view.*
@@ -48,7 +48,7 @@ class FeedbackItemReply : BaseCustomView {
     fun setData(data: FeedbackUiModel) {
         ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
         tvFeedbackUser?.text = MethodChecker.fromHtml(context.getString(R.string.label_name_reviewer_builder, data.reviewerName.orEmpty()))
-        tvFeedbackDate?.text = data.reviewTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
+        tvFeedbackDate?.text = data.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
         setupFeedbackReview(data.reviewText.orEmpty(), data.feedbackID.toString())
         setImageAttachment(data)
         setReplyView(data)
@@ -56,7 +56,7 @@ class FeedbackItemReply : BaseCustomView {
 
     private fun setReplyView(data: FeedbackUiModel) {
         tvReplyComment?.text = data.replyText
-        tvReplyDate?.text = data.replyTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
+        tvReplyDate?.text = data.replyTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
         if (data.autoReply == isAutoReply) {
             tvReplyUser?.text = context?.getString(R.string.user_reply)
         } else {

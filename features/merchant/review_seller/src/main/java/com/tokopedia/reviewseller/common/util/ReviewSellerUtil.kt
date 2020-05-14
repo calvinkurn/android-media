@@ -3,7 +3,7 @@ package com.tokopedia.reviewseller.common.util
 import android.text.Spanned
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.relativeWeekAndDay
+import com.tokopedia.kotlin.extensions.relativeDate
 import com.tokopedia.reviewseller.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -61,7 +61,7 @@ fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
     }
 }
 
-infix fun String.toRelativeDayAndWeek(format: String): String {
+infix fun String.toRelativeDate(format: String): String {
     return if (this.isNotEmpty()) {
         val sdf = SimpleDateFormat(format, Locale.getDefault())
         val date: Date = sdf.parse(this)
@@ -70,7 +70,7 @@ infix fun String.toRelativeDayAndWeek(format: String): String {
         return try {
             val cal = Calendar.getInstance()
             cal.timeInMillis = millis
-            cal.time.relativeWeekAndDay
+            cal.time.relativeDate
         } catch (t: Throwable) {
             ""
         }

@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
 import com.tokopedia.reviewseller.common.util.getReviewStar
-import com.tokopedia.reviewseller.common.util.toRelativeDayAndWeek
+import com.tokopedia.reviewseller.common.util.toRelativeDate
 import com.tokopedia.reviewseller.common.util.toReviewDescriptionFormatted
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
@@ -72,7 +72,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
             setBottomSheetFeedbackOption(element)
         }
         tvFeedbackUser?.text = MethodChecker.fromHtml(getString(R.string.label_name_reviewer_builder, element.reviewerName.orEmpty()))
-        tvFeedbackDate?.text = element.reviewTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
+        tvFeedbackDate?.text = element.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
 
         setFeedbackReply(element)
         setupVariant(element.variantName ?: "")
@@ -116,7 +116,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
             } else {
                 tvReplyUser?.text = getString(R.string.otomatis_reply)
             }
-            tvReplyDate?.text = element.replyTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
+            tvReplyDate?.text = element.replyTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
 
             tvReplyComment?.text = element.replyText.orEmpty()
             tvReplyComment?.let {
