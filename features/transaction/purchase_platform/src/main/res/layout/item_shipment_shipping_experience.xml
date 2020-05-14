@@ -8,6 +8,13 @@
     android:background="@drawable/bg_shipping_container"
     android:padding="@dimen/dp_16">
 
+    <include
+        android:id="@+id/ll_shipping_experience_state_loading"
+        layout="@layout/purchase_platform_partial_shimmering_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16" />
+
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card_shipping_experience"
         android:layout_width="match_parent"

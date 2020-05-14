@@ -92,6 +92,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private static final int DROPSHIPPER_MAX_PHONE_LENGTH = 20;
     private static final String PHONE_NUMBER_REGEX_PATTERN = "[0-9]+";
 
+    private static final int SHIPPING_SAVE_STATE_TYPE_ROBINHOOD = 0;
+    private static final int SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF = 1;
+    private static final int SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE = 2;
+
     private ShipmentAdapterActionListener mActionListener;
     private Context context;
 
@@ -229,6 +233,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     // Shipping Experience
     private LinearLayout llShippingExperienceContainer;
+    private LinearLayout llShippingExperienceStateLoading;
     private CardUnify cardShippingExperience;
     private ConstraintLayout layoutStateNoSelectedShipping;
     private ConstraintLayout layoutStateHasSelectedNormalShipping;
@@ -389,6 +394,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         // Shipping Experience
         llShippingExperienceContainer = itemView.findViewById(R.id.ll_shipping_experience_container);
+        llShippingExperienceStateLoading = itemView.findViewById(R.id.ll_shipping_experience_state_loading);
         cardShippingExperience = itemView.findViewById(R.id.card_shipping_experience);
         layoutStateNoSelectedShipping = itemView.findViewById(R.id.layout_state_no_selected_shipping);
         layoutStateHasSelectedNormalShipping = itemView.findViewById(R.id.layout_state_has_selected_normal_shipping);
@@ -702,6 +708,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             CourierItemData selectedCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             layoutStateNoSelectedShipping.setVisibility(View.GONE);
+
+            llShippingExperienceStateLoading.setVisibility(View.GONE);
+            cardShippingExperience.setVisibility(View.VISIBLE);
+
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                 // Is free ongkir shipping
                 layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
@@ -798,7 +808,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
             );
 
-            // Todo : load save state
+            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
         }
     }
 
@@ -869,7 +879,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else {
                 llShippingOptionsContainer.setVisibility(View.GONE);
                 if (shipmentCartItemModel.isHasSetDropOffLocation()) {
-                    loadCourierState(shipmentCartItemModel, shipmentDetailData, currentAddress, ratesDataConverter, true);
+                    loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
                 } else {
                     tvTradeInShippingPriceDetail.setText(R.string.label_trade_in_shipping_price);
                 }
@@ -1021,35 +1031,49 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 llShippingOptionsContainer.setVisibility(View.GONE);
                 tvLogTicker.setVisibility(View.GONE);
 
-                loadCourierState(shipmentCartItemModel, shipmentDetailData, currentAddress, ratesDataConverter, false);
+                loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_ROBINHOOD);
             }
         }
     }
 
     private void loadCourierState(ShipmentCartItemModel shipmentCartItemModel,
-                                  ShipmentDetailData shipmentDetailData,
                                   RecipientAddressModel recipientAddressModel,
                                   RatesDataConverter ratesDataConverter,
-                                  boolean isTradeInDropOff) {
+                                  int saveStateType) {
+        ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentCartItemModel.isStateLoadingCourierState()) {
-            if (isTradeInDropOff) {
-                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
-                labelChooseDurationTradeIn.setVisibility(View.GONE);
-                tvChooseDurationTradeIn.setVisibility(View.GONE);
-                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-            } else {
-                llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
-                llSelectShipmentRecommendation.setVisibility(View.GONE);
+            switch (saveStateType) {
+                case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
+                    labelChooseDurationTradeIn.setVisibility(View.GONE);
+                    tvChooseDurationTradeIn.setVisibility(View.GONE);
+                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                    break;
+                case SHIPPING_SAVE_STATE_TYPE_ROBINHOOD:
+                    llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
+                    llSelectShipmentRecommendation.setVisibility(View.GONE);
+                    break;
+                case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                    llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
+                    cardShippingExperience.setVisibility(View.GONE);
+                    break;
             }
         } else {
-            boolean hasLoadCourier;
-            if (isTradeInDropOff) {
-                hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourierTradeInDropOff() != null;
-                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
-            } else {
-                hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null;
-                llCourierRecommendationStateLoading.setVisibility(View.GONE);
+            boolean hasLoadCourier = false;
+            switch (saveStateType) {
+                case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                    hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourierTradeInDropOff() != null;
+                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
+                    break;
+                case SHIPPING_SAVE_STATE_TYPE_ROBINHOOD:
+                    hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null;
+                    llCourierRecommendationStateLoading.setVisibility(View.GONE);
+                    break;
+                case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                    hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null;
+                    llShippingExperienceStateLoading.setVisibility(View.GONE);
+                    break;
             }
 
             if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
@@ -1064,7 +1088,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             shipmentCartItemModel, tmpRecipientAddressModel);
 
                     boolean hasLoadCourierState = false;
-                    if (isTradeInDropOff) {
+                    if (saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF) {
                         hasLoadCourierState = shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState();
                     } else {
                         hasLoadCourierState = shipmentCartItemModel.isStateHasLoadCourierState();
@@ -1074,44 +1098,67 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true, isTradeInDropOff);
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(),
+                                    saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
                             shipmentCartItemModel.setStateLoadingCourierState(true);
-                            if (isTradeInDropOff) {
-                                shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
-                                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
-                                labelChooseDurationTradeIn.setVisibility(View.GONE);
-                                tvChooseDurationTradeIn.setVisibility(View.GONE);
-                                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                            } else {
-                                shipmentCartItemModel.setStateHasLoadCourierState(true);
-                                llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
-                                llSelectShipmentRecommendation.setVisibility(View.GONE);
+                            switch (saveStateType) {
+                                case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                                    shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+                                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
+                                    labelChooseDurationTradeIn.setVisibility(View.GONE);
+                                    tvChooseDurationTradeIn.setVisibility(View.GONE);
+                                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                                    break;
+                                case SHIPPING_SAVE_STATE_TYPE_ROBINHOOD:
+                                    shipmentCartItemModel.setStateHasLoadCourierState(true);
+                                    llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
+                                    llSelectShipmentRecommendation.setVisibility(View.GONE);
+                                    break;
+                                case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                                    shipmentCartItemModel.setStateHasLoadCourierState(true);
+                                    llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
+                                    cardShippingExperience.setVisibility(View.GONE);
+                                    break;
                             }
                         }
                     } else {
-                        if (isTradeInDropOff) {
-                            llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
-                            labelChooseDurationTradeIn.setVisibility(View.VISIBLE);
-                            tvChooseDurationTradeIn.setVisibility(View.VISIBLE);
-                            tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                            tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                        } else {
-                            llCourierRecommendationStateLoading.setVisibility(View.GONE);
-                            llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
+                        switch (saveStateType) {
+                            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
+                                labelChooseDurationTradeIn.setVisibility(View.VISIBLE);
+                                tvChooseDurationTradeIn.setVisibility(View.VISIBLE);
+                                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                                break;
+                            case SHIPPING_SAVE_STATE_TYPE_ROBINHOOD:
+                                llCourierRecommendationStateLoading.setVisibility(View.GONE);
+                                llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
+                                break;
+                            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                                llShippingExperienceStateLoading.setVisibility(View.GONE);
+                                cardShippingExperience.setVisibility(View.VISIBLE);
+                                break;
                         }
                     }
                 }
             } else {
-                if (isTradeInDropOff) {
-                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
-                    labelChooseDurationTradeIn.setVisibility(View.VISIBLE);
-                    tvChooseDurationTradeIn.setVisibility(View.VISIBLE);
-                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                } else {
-                    llCourierRecommendationStateLoading.setVisibility(View.GONE);
-                    llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
+                switch (saveStateType) {
+                    case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                        llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
+                        labelChooseDurationTradeIn.setVisibility(View.VISIBLE);
+                        tvChooseDurationTradeIn.setVisibility(View.VISIBLE);
+                        tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                        tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                        break;
+                    case SHIPPING_SAVE_STATE_TYPE_ROBINHOOD:
+                        llCourierRecommendationStateLoading.setVisibility(View.GONE);
+                        llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
+                        break;
+                    case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                        llShippingExperienceStateLoading.setVisibility(View.GONE);
+                        cardShippingExperience.setVisibility(View.VISIBLE);
+                        break;
                 }
             }
         }
@@ -1969,7 +2016,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true, false);
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), false);
                             llCourierBlackboxStateLoading.setVisibility(View.VISIBLE);
                             llSelectShipmentBlackbox.setVisibility(View.GONE);
                         }

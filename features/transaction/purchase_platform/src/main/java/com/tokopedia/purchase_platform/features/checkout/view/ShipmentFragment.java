@@ -643,7 +643,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
             Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL, getString(R.string.label_action_snackbar_close), v->{});
+                    Toaster.TYPE_NORMAL, getString(R.string.label_action_snackbar_close), v -> {
+                    });
         }
     }
 
@@ -2387,7 +2388,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     ShipmentDetailData shipmentDetailData,
                                     ShipmentCartItemModel shipmentCartItemModel,
                                     List<ShopShipment> shopShipmentList,
-                                    boolean useCourierRecommendation, boolean isTradeInDropOff) {
+                                    boolean isTradeInDropOff) {
         if (shopShipmentList != null && shopShipmentList.size() > 0) {
             shipmentDetailData.setTradein(isTradeIn());
             shipmentPresenter.processGetCourierRecommendation(
@@ -2739,7 +2740,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setCouponStateChanged(true);
         if (!ignoreAPIResponse) {
             Toaster.INSTANCE.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi",
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,"", v->{});
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
+                    });
         }
     }
 
@@ -2910,10 +2912,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     /*
-    * This method is to solve expired dialog not shown up after time expired in background
-    * Little caveat: what if device's time is tempered and not synchronized with server?
-    * Later: consider serverTimeOffset, need more time
-    * */
+     * This method is to solve expired dialog not shown up after time expired in background
+     * Little caveat: what if device's time is tempered and not synchronized with server?
+     * Later: consider serverTimeOffset, need more time
+     * */
     private void checkCampaignTimer() {
         if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();

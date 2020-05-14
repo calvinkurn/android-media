@@ -83,7 +83,7 @@ public interface ShipmentAdapterActionListener {
                              ShipmentDetailData shipmentDetailData,
                              ShipmentCartItemModel shipmentCartItemModel,
                              List<ShopShipment> shopShipmentList,
-                             boolean isCourierRecommendation, boolean isTradeInDropOff);
+                             boolean isTradeInDropOff);
 
     void onCourierPromoCanceled(String shipperName, String promoCode);
 
