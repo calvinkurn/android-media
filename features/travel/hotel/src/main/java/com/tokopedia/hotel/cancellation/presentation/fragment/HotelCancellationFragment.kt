@@ -20,6 +20,7 @@ import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationRefundDetailWidget
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.kotlin.extensions.view.hide
@@ -48,6 +49,9 @@ class HotelCancellationFragment : HotelBaseFragment() {
     private val cancelInfoBottomSheet = BottomSheetUnify()
 
     private var invoiceId: String = ""
+
+    @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -195,11 +199,16 @@ class HotelCancellationFragment : HotelBaseFragment() {
         } else hotel_cancellation_page_footer.hide()
 
         hotel_cancellation_button_next.setOnClickListener {
+            trackingHotelUtil.clickNextOnCancellationPage(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_SCREEN_NAME)
             (activity as HotelCancellationActivity).showCancellationReasonFragment()
         }
+
+        trackingHotelUtil.viewHotelCancellationPage(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_SCREEN_NAME)
     }
 
     companion object {
+        const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
+
         private const val EXTRA_INVOICE_ID = "extra_invoice_id"
         fun getInstance(invoiceId: String): HotelCancellationFragment =
                 HotelCancellationFragment().also {
