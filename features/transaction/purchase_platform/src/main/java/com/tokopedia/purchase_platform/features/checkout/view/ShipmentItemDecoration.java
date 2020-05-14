@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentNotifierViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.
@@ -45,7 +47,12 @@ public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
+        } else if (viewHolder instanceof ShipmentCostViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof ShipmentInsuranceTncViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+        } else if (viewHolder instanceof ShippingCompletionTickerViewHolder) {
+            outRect.top = verticalSpaceHeight;
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else {
             outRect.bottom = verticalSpaceHeight;

@@ -532,6 +532,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.addShipmentButtonPaymentModel(shipmentButtonPaymentModel);
+        shipmentAdapter.updateShippingCompletionTickerVisibility();
 
         if (isInitialRender) {
             sendEEStep2();
@@ -3087,4 +3088,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    @Override
+    public void onCheckShippingCompletionClicked() {
+        if (!isTradeInByDropOff()) {
+            List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
+            for (int i = 0; i < shipmentDataList.size(); i++) {
+                if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
+                        rvShipment.smoothScrollToPosition(i);
+                        // Todo : trigger shake shake
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }

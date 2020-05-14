@@ -374,4 +374,5 @@
 
     <string name="label_choose_shipping">Pilih Pengiriman</string>
     <string name="label_otdg_tnc"><![CDATA[S&K Berlaku]]></string>
+    <string name="label_check">Cek</string>
 </resources>

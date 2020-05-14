@@ -114,4 +114,6 @@ public interface ShipmentAdapterActionListener {
     void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes);
 
     void onSendAnalyticsViewPromoCheckoutApplied();
+
+    void onCheckShippingCompletionClicked();
 }
