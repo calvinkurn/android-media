@@ -2,6 +2,9 @@ package com.tokopedia.changepassword.common.analytics
 
 import com.tokopedia.track.TrackApp
 
+/**
+ * @author by nisie on 7/25/18.
+ */
 class ChangePasswordAnalytics{
 
     private val tracker = TrackApp.getInstance().gtm
