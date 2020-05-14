@@ -9,11 +9,13 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
     fun displayAnswers(answerCount: TalkReplyAnswerCountModel, answers: List<TalkReplyUiModel>) {
         visitables.add(answerCount)
         visitables.addAll(answers)
+        notifyDataSetChanged()
     }
 
     fun showEmpty(talkReplyEmptyModel: TalkReplyEmptyModel) {
         visitables.clear()
         visitables.add(talkReplyEmptyModel)
+        notifyDataSetChanged()
     }
 
     fun showProductHeader(talkReplyProductHeaderModel: TalkReplyProductHeaderModel) {
