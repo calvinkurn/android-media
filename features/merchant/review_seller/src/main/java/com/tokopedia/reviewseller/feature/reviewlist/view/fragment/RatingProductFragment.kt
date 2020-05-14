@@ -134,6 +134,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tracking.sendScreen(userSession.shopId.orEmpty())
         tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -442,7 +443,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
 
     override fun onAddedCoachMarkOverallRating(view: View) {
-//        coachMarkTabRatingProduct()
+        coachMarkTabRatingProduct()
         coachMarkFilterAndSort()
         val coachMarkSummary: CoachMarkItem by lazy {
             CoachMarkItem(view.findViewById(R.id.cardSummary),
