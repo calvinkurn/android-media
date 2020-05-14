@@ -113,7 +113,7 @@ class StockHandlerAnalytics {
                 "dimension39" to "/notifcenter"
         )
 
-        val dataTracker = DataLayer.mapOf(
+        val dataTracker = mapOf(
                 KEY_EVENT_NAME to eventName,
                 KEY_EVENT_CATEGORY to eventCategory,
                 KEY_EVENT_ACTION to eventAction,
