@@ -1,23 +1,37 @@
 package com.tokopedia.settingnotif.usersetting.view.listener
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 
 interface SettingFieldContract {
 
-    interface View : CustomerView {
-        fun onSuccessGetUserSetting(data: UserSettingViewModel)
-        fun onSuccessSetUserSetting(data: SetUserSettingResponse)
-        fun onErrorSetUserSetting()
-        fun onErrorGetUserSetting()
+    interface UserSetting {
+        fun requestUpdateUserSetting(
+                notificationType: String,
+                updatedSettingIds: List<Map<String, Any>>
+        )
+        fun loadUserSettings()
+        fun requestUpdateMoengageUserSetting(updatedSettingIds: List<Map<String, Any>>)
     }
 
-    interface Presenter : CustomerPresenter<View> {
-        fun loadUserSettings()
-        fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
-        fun requestUpdateMoengageUserSetting(updatedSettingIds: List<Map<String, Any>>)
+    interface SettingState {
+        fun addPinnedPushNotificationItems(
+                isNotificationEnabled: Boolean,
+                data: UserSettingDataView
+        )
+        fun addPinnedPermission(
+                isNotificationEnabled: Boolean,
+                activation: NotificationActivation
+        )
+        fun addPinnedEmailItems(data: UserSettingDataView)
+        fun addPinnedSellerSection()
+        fun saveLastStateAll(list: MutableList<Visitable<*>>)
+        fun getPinnedItems(): List<VisitableSettings>
+        fun getSettingStates(): List<ParentSetting>
+        fun updateSettingState(setting: ParentSetting?)
     }
 
 }

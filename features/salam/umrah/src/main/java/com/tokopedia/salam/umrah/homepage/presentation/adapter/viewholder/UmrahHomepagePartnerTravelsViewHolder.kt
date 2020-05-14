@@ -30,6 +30,9 @@ class UmrahHomepagePartnerTravelsViewHolder(view: View, private val onItemBindLi
                     adapter = adapterPartnerTravel
                     layoutManager = GridLayoutManager(context, COLUMN_SIZE)
                 }
+                tg_umrah_list_travel.setOnClickListener {
+                    onItemBindListener.onClickAllPartner()
+                }
             } else {
                 umrah_partner_section_layout.hide()
                 umrah_partner_section_shimmering.show()

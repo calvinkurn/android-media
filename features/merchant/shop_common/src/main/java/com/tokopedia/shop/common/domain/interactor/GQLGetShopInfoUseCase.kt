@@ -38,7 +38,18 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         private const val PARAM_SHOP_FIELDS = "fields"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
         private const val PARAM_SOURCE = "source"
-        const val SHOP_PAGE_SOURCE = "shoppage"
+        const val SHOP_PAGE_SOURCE = "gql-shoppage"
+        const val MERCHANT_VOUCHER_SOURCE = "gql-mv"
+        const val PRODUCT_ADD_SOURCE = "gql-product-add"
+        const val PRODUCT_EDIT_SOURCE = "gql-product-edit"
+        const val PRODUCT_MANAGE_SOURCE = "gql-product-manage"
+        const val FAVORITE_LIST_SOURCE = "gql-fav-list"
+        const val SHOP_INFO_SOURCE = "gql-shopinfo-widget"
+        const val SHOP_PRODUCT_LIST_RESULT_SOURCE = "gql-productlist-shoppage"
+        const val TOP_ADS_SOURCE = "gql-topads"
+
+
+
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",

@@ -91,6 +91,7 @@ public class RemoteConfigKey {
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
     public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
+    public static final String ANDROID_MAIN_APP_ENABLED_CACHE_PDP = "android_main_app_enabled_cache_pdp";
 
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
@@ -130,7 +131,6 @@ public class RemoteConfigKey {
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
-    public static final String MAINAPP_SMARTCARD_BRIZZI = "android_smartcard_brizzi";
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
@@ -152,6 +152,8 @@ public class RemoteConfigKey {
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
+
+    public static final String APP_SEMUA_CATEGORY_ENABLE = "app_semua_category_enable";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
@@ -182,10 +184,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
 
-    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_seller_app_enable_old_product_manage";
-
-
-
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
 
@@ -211,4 +209,16 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
+    public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
+
+    public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
+
+    public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
+    public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
+
+    public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
+
+    public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
+
+    public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 }

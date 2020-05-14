@@ -23,5 +23,6 @@
         android:paddingEnd="@dimen/dp_2"
         android:paddingRight="@dimen/dp_2"
         app:typographyType="small"
-        tools:text="Travel and Entertainment" />
+        tools:text="Travel and Entertainment"
+        android:textColor="@color/Neutral_N700_96"/>
 </LinearLayout>

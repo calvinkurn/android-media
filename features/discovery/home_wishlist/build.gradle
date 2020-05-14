@@ -61,6 +61,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -91,11 +92,8 @@ dependencies {
 project.ext {
     artifactId = 'home-wishlist'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.2"
     artifactName ="home_wishlist-release"
-    unitTestKotlinIncludes = [
-            '**/WishlistViewModel.*'
-    ]
 }
 
 apply from: '../../../publish_local.gradle'

@@ -63,6 +63,12 @@ public class ShopCommonModule {
     }
 
     @Provides
+    @Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
+    public String provideGqlQueryShopOperationalHourStatus(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_operational_hour_status);
+    }
+
+    @Provides
     public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
         return new GetShopInfoByDomainUseCase(shopCommonRepository);
     }

@@ -11,7 +11,7 @@ public class DealsComponentInstance {
     public static DealsComponent getDealsComponent(Application application) {
         if (dealsComponent == null) {
             dealsComponent = DaggerDealsComponent.builder().baseAppComponent(
-                    ((BaseMainApplication)application).getBaseAppComponent()).build();
+                    ((BaseMainApplication)application).getBaseAppComponent()).dealsModule(new DealsModule(application.getBaseContext())).build();
         }
         return dealsComponent;
     }

@@ -36,7 +36,7 @@ public class InboxModule {
     @InboxScope
     @Provides
     Context provideContext() {
-        return context.getApplicationContext();
+        return context;
     }
 
     @InboxScope

@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifycomponents.TextAreaUnify
         android:id="@+id/textFieldUrl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text_field_label="@string/label_video_url_placeholder"
-        app:text_field_append_drawable_icon_2="@drawable/unify_clear_ic"
-        app:text_field_input_type="text"/>
+        app:text_area_clearable="true" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardThumbnail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -25,10 +24,11 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgThumbnail"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_72"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
                 android:id="@+id/imgPlay"
@@ -42,29 +42,32 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVideoTitle"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
+                android:textColor="@color/video_thumbnail_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imgThumbnail"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_6" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVideoSubtitle"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:textColor="@color/video_thumbnail_desc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imgThumbnail"
                 app:layout_constraintTop_toBottomOf="@id/tvVideoTitle"
-                app:typographyType="body_2" />
+                app:typographyType="small" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

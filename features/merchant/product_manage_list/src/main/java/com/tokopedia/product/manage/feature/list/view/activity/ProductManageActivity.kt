@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -17,18 +16,12 @@ import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import javax.inject.Inject
 
 class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
 
     companion object {
         private const val SCREEN_NAME = "Store - Manage product"
     }
-
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private val productManageSellerFragment by lazy {
         val uri = intent.data
@@ -44,7 +37,6 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         super.onCreate(savedInstanceState)
 
         initInjector()
-        goToOldManageProductIfEnabled()
 
         if (!GlobalConfig.isSellerApp()) {
             setupLayout(savedInstanceState)
@@ -84,14 +76,6 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
     private fun goToSellerAppDashboard() {
         if (GlobalConfig.isSellerApp()) {
             RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD)
-        }
-    }
-
-    private fun goToOldManageProductIfEnabled() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE)) {
-            val intent = Intent(this, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity::class.java)
-            startActivity(intent)
-            finish()
         }
     }
 }

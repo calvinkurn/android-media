@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAddCreditFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
 import com.tokopedia.topads.credit.history.view.fragment.TopAdsCreditHistoryFragment
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.debit.autotopup.view.fragment.TopAdsAutoTopUpFragment
 
 import dagger.Component
@@ -22,4 +23,6 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsAddCreditFragment: TopAdsAddCreditFragment)
     fun inject(topAdsCreditHistoryFragment: TopAdsCreditHistoryFragment)
     fun inject(topAdsAutoTopUpFragment: TopAdsAutoTopUpFragment)
+    fun inject(topAdsDashboardActivity: TopAdsDashboardActivity) {
+    }
 }
