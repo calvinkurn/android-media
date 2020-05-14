@@ -8,10 +8,13 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
 
 /**
@@ -43,7 +46,12 @@ class EditQuotaBottomSheet(
 
         editMvcQuota?.textFieldInput?.run {
             val dummyVoucherQuota = 100
-            addTextChangedListener(object : NumberTextWatcher(this@run){})
+            addTextChangedListener(object : NumberTextWatcher(this@run){
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    changeTickerValue(number.toInt())
+                }
+            })
             setText(dummyVoucherQuota)
             selectAll()
             requestFocus()
@@ -59,6 +67,14 @@ class EditQuotaBottomSheet(
 
         setAction(context.getString(R.string.mvc_retry)) {
 
+        }
+    }
+
+    private fun changeTickerValue(quotaNumber: Int) {
+        context?.run {
+            mvcTicker?.nominal = String.format(
+                    getString(R.string.mvc_rp_value),
+                    CurrencyFormatHelper.convertToRupiah(quotaNumber.toString()).toBlankOrString()).toBlankOrString()
         }
     }
 
