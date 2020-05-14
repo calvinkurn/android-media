@@ -169,34 +169,51 @@ data class DataItem(
 
         @SerializedName("basecode")
         val basecode: String? = "",
+
         @SerializedName("coupon_code")
         val couponCode: String? = "",
+
         @SerializedName("cta")
         val cta: String? = "",
+
         @SerializedName("cta_desktop")
         val ctaDesktop: String? = "",
+
         @SerializedName("disabled_err_msg")
         val disabledErrMsg: String? = "",
+
         @SerializedName("id")
         val claimCouponid: String? = "",
+
         @SerializedName("image_url")
         val imageUrl: String? = "",
+
         @SerializedName("is_disabled")
         val isDisabled: Boolean? = false,
+
         @SerializedName("is_disabled_btn")
         val isDisabledBtn: Boolean? = false,
+
         @SerializedName("min_usage")
         val minUsage: String? = "",
+
         @SerializedName("min_usage_label")
         val minUsageLabel: String? = "",
+
         @SerializedName("slug")
         val slug: String? = "",
+
         @SerializedName("subtitle")
         val subtitle: String? = "",
+
         @SerializedName("thumbnail_url")
         val thumbnailUrl: String? = "",
+
         @SerializedName("upper_text_desc")
-        val upperTextDesc: List<String?>? = null
+        val upperTextDesc: List<String?>? = null,
+
+        @SerializedName("small_image_url_mobile")
+        var smallImageUrlMobile: String? = ""
 
 ) {
     val leftMargin: Int

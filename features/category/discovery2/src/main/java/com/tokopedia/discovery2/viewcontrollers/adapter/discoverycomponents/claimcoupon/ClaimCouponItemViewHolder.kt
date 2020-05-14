@@ -30,7 +30,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             claimCouponImageDouble.show()
             claimCouponImage.hide()
             claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
-                ImageHandler.LoadImage(claimCouponImageDouble, it.imageUrlMobile)
+                ImageHandler.LoadImage(claimCouponImageDouble, it.smallImageUrlMobile)
             })
         } else {
             claimCouponImageDouble.hide()
