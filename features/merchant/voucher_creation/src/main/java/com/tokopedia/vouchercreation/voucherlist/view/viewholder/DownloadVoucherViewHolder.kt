@@ -2,9 +2,12 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherType
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherUiModel
 import kotlinx.android.synthetic.main.item_mvc_download_voucher.view.*
 
@@ -30,7 +33,17 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
             setOnClickListener {
                 setViewExpansion(imgMvcVoucher.isVisible)
             }
+            setupDownloadImage(element.downloadVoucherType)
         }
+    }
+
+    private fun View.setupDownloadImage(downloadVoucherType: DownloadVoucherType) {
+        val imageWidth = resources?.getDimensionPixelSize(downloadVoucherType.widthRes)
+        imgMvcVoucher?.layoutParams?.width = imageWidth.toZeroIfNull()
+        imgMvcVoucher?.requestLayout()
+        Glide.with(this)
+                .load(downloadVoucherType.imageUrl)
+                .into(imgMvcVoucher)
     }
 
     private fun setViewExpansion(isExpanded: Boolean) = with(itemView) {
@@ -42,4 +55,5 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
         val angle = if (isExpanded) 0 else 180
         icMvcChevron.rotation = angle.toFloat()
     }
+
 }

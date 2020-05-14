@@ -80,7 +80,9 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
     }
 
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
-        periodBannerImage?.setImageBitmap(bitmap)
+        activity?.runOnUiThread {
+            periodBannerImage?.setImageBitmap(bitmap)
+        }
     }
 
 }

@@ -44,15 +44,17 @@ class EditQuotaBottomSheet(
         imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
         KeyboardHandler.showSoftKeyboard(activity)
 
+        val dummyVoucherQuota = 100
+        val dummyEstimationAmount = dummyVoucherQuota * voucher.minimumAmt
+
         editMvcQuota?.textFieldInput?.run {
-            val dummyVoucherQuota = 100
             addTextChangedListener(object : NumberTextWatcher(this@run){
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    changeTickerValue(number.toInt())
+                    changeTickerValue(number.toInt() * voucher.minimumAmt)
                 }
             })
-            setText(dummyVoucherQuota)
+            setText(CurrencyFormatHelper.removeCurrencyPrefix(dummyVoucherQuota.toString()))
             selectAll()
             requestFocus()
         }
@@ -62,7 +64,7 @@ class EditQuotaBottomSheet(
         mvcTicker.run {
             title = "Estimasi Maks. Pengeluaran"
             description = "Dipotong dari transaksi selesai"
-            nominal = "Rp3.290.000"
+            nominal = CurrencyFormatHelper.convertToRupiah(dummyEstimationAmount.toString()).toBlankOrString()
         }
 
         setAction(context.getString(R.string.mvc_retry)) {

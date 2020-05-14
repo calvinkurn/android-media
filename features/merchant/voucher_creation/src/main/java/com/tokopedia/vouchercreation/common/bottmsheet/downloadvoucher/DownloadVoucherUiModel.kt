@@ -10,7 +10,8 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.DownloadVo
 data class DownloadVoucherUiModel(
         var isSelected: Boolean,
         val ratioStr: String,
-        val description: String
+        val description: String,
+        val downloadVoucherType: DownloadVoucherType
 ) : Visitable<DownloadVoucherFactory> {
 
     override fun type(typeFactory: DownloadVoucherFactory): Int {
