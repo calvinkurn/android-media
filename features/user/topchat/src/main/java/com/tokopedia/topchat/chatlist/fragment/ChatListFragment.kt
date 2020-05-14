@@ -637,6 +637,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
         private const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
         const val TAG = "ChatListFragment"
 
+        @JvmStatic
         fun createFragment(title: String): ChatListFragment {
             val bundle = Bundle()
             bundle.putString(CHAT_TAB_TITLE, title)
