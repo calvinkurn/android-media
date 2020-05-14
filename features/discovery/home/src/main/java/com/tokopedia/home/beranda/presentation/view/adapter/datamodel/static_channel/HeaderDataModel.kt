@@ -17,10 +17,10 @@ data class HeaderDataModel(
       val tokoPointDrawerData: TokopointHomeDrawerData? = null,
       val tokopointsDrawerHomeData: TokopointsDrawer? = null,
       val cashBackData: CashBackData? = null,
-      val isPendingTokocashChecked: Boolean = false,
+      var isPendingTokocashChecked: Boolean = false,
       val isWalletDataError: Boolean = false,
       val isTokoPointDataError: Boolean = false,
-      val isUserLogin: Boolean = false
+      var isUserLogin: Boolean = false
 ) : HomeVisitable {
 
     fun setCache(cache: Boolean) {

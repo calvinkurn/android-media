@@ -9,7 +9,7 @@ data class TokopointsDrawer(
     @SerializedName("iconImageURL")
     val iconImageURL: String = "",
     @SerializedName("sectionContent")
-    val sectionContent: List<SectionContentItem>? = null,
+    val sectionContent: List<SectionContentItem> = listOf(),
     @SerializedName("redirectAppLink")
     val redirectAppLink: String = "",
     @Expose(serialize = false, deserialize = false)
