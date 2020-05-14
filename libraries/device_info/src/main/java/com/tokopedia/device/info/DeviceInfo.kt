@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -167,6 +169,5 @@ object DeviceInfo {
         val deviceInfoCache = DeviceInfoCache(context.applicationContext)
         return deviceInfoCache.getImei()
     }
-
 }
 

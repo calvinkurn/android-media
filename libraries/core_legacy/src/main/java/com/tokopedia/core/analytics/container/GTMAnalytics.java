@@ -19,6 +19,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.util.PriceUtil;
+import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
@@ -64,6 +65,9 @@ public class GTMAnalytics extends ContextAnalytics {
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
     private UserSessionInterface userSession;
+    private String connectionTypeString = "";
+    private Long lastGetConnectionTimeStamp = 0L;
+    private final Long DELAY_GET_CONN = 120000L; //2 minutes
 
     // have status that describe pending.
 
@@ -784,6 +788,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }else{
             bundle.putString("shopId", "");
         }
+        putNetworkSpeed(bundle);
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
@@ -794,6 +799,15 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", bundle, context);
+    }
+
+    public void putNetworkSpeed(Bundle bundle) {
+        if (TextUtils.isEmpty(connectionTypeString) ||
+                (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)){
+            connectionTypeString = DeviceConnectionInfo.getConnectionType(context);
+            lastGetConnectionTimeStamp = System.currentTimeMillis();
+        }
+        bundle.putString("networkSpeed", connectionTypeString);
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
