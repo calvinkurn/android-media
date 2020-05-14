@@ -48,9 +48,7 @@ class TalkReadingHeader : BaseCustomView {
 
     private fun initSortFilter(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener) {
         this.readingHeaderChips.apply {
-            if(chipItems.isEmpty()) {
-                addItem(talkReadingHeaderModel.categories)
-            }
+            addItem(talkReadingHeaderModel.categories)
             chipItems.first().refChipUnify.setChevronClickListener {}
             filterRelationship = RELATIONSHIP_AND
             filterType = TYPE_QUICK
