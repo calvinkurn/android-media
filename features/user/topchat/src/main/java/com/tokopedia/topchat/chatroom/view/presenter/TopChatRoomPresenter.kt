@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.VoucherPreview
@@ -41,6 +42,7 @@ import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -89,7 +91,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
-        private var uploadImageUseCase: TopchatUploadImageUseCase
+        private var uploadImageUseCase: TopchatUploadImageUseCase,
+        private var orderProgressUseCase: OrderProgressUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
@@ -605,6 +608,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
 
@@ -629,6 +633,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
 
@@ -701,4 +706,18 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun clearText() { }
+
+    override fun getOrderProgress(messageId: String) {
+        orderProgressUseCase.getOrderProgress(
+                messageId,
+                ::onSuccessGetOrderProgress,
+                ::onErrorGetOrderProgress
+        )
+    }
+
+    private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
+        view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
+    }
+
+    private fun onErrorGetOrderProgress(throwable: Throwable) { }
 }

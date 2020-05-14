@@ -5,7 +5,7 @@ package com.tokopedia.core.util;
  */
 public class ValidationTextUtil {
 
-    public static boolean isValidText(int minChar, String text) {
+    private static boolean isValidText(int minChar, String text) {
         return text.length() >= minChar;
     }
 

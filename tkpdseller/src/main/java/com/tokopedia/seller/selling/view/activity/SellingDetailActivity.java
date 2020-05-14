@@ -3,36 +3,36 @@ package com.tokopedia.seller.selling.view.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.widget.Toolbar;
 import android.view.WindowManager;
 
-import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tokopedia.core2.R;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.tkpd.library.utils.DownloadResultReceiver;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TkpdActivity;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
-import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
+import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
+import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
 import com.tokopedia.seller.orderstatus.fragment.FragmentShopTxStatusDetailV2;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.SellingServiceConstant;
-import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
+import com.tokopedia.seller.selling.presenter.listener.SellingView;
 
 import org.parceler.Parcels;
 
 /**
  * Created by Erry on 7/25/2016.
  */
-public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
+public class SellingDetailActivity extends BaseActivity implements  DownloadResultReceiver.Receiver {
 
     Toolbar toolbar;
 
@@ -49,11 +49,6 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_SHOP_SELLING_DETAIL;
-    }
-
-    @Override
-    public int getDrawerPosition() {
-        return TkpdState.DrawerPosition.SHOP;
     }
 
     private FragmentManager fragmentManager;
@@ -202,4 +197,5 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
                 throw new UnsupportedOperationException("please pass type when want to process it !!!");
         }
     }
+
 }

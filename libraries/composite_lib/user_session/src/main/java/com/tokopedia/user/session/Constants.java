@@ -38,6 +38,8 @@ public class Constants {
     public static final String SHOP_NAME = "NpLxwb+cV23gtf9bh75gfw\u003d\u003d\n";
     public static final String REFRESH_TOKEN_KEY = "qATj1UEgVOFl2HLIBhQDv4MgDa4LrGLiDSz58Z3BA6c\u003d\n";
     public static final String IS_FIRST_TIME_USER = "rl+Q7zc+ACS5K4Mn0BrTwg\u003d\u003d\n";
+    public static final String IS_SHOP_OFFICIAL_STORE = "2cd5pN0RDMVO/wQhSMASy5/yL1g8++2XNoeJ56eyixU=";
+    public static final String GCM_ID_TIMESTAMP = "HL5mkaU60QIbsgmR3RupeDSRBIN4P2kSZYkiH19r3tU=";
 
     /**
      * Twitter Prefs
@@ -55,6 +57,6 @@ public class Constants {
             SHOP_AVATAR, IS_POWER_MERCHANT_IDLE, AUTOFILL_USER_DATA, LOGIN_METHOD,
             TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST, GTM_LOGIN_ID,
             TEMP_USER_ID, GCM_ID, IS_AFFILIATE, IS_FIRST_TIME_USER_NEW_ONBOARDING,
-            UUID_KEY, LOGIN_UUID_KEY
+            UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP, IS_SHOP_OFFICIAL_STORE
     };
 }
