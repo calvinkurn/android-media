@@ -295,6 +295,7 @@ open class HomeFragment : BaseDaggerFragment(),
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
+        injectCouponTimeBased()
         stickyContent
     }
 
@@ -1045,6 +1046,10 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isShowSticky && !userSession?.isLoggedIn) viewModel.getStickyContent()
         return true
     }
+
+    private fun injectCouponTimeBased() {
+         if(userSession.isLoggedIn()) viewModel.injectCouponTimeBased();
+     }
 
     private fun hideLoading() {
         refreshLayout.isRefreshing = false

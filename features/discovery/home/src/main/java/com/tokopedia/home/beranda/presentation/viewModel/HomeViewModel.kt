@@ -83,6 +83,7 @@ open class HomeViewModel @Inject constructor(
         private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
         private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
+        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -177,6 +178,7 @@ open class HomeViewModel @Inject constructor(
     private var buWidgetJob: Job? = null
     private var getRechargeRecommendationJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
+    private var injectCouponTimeBasedJob: Job? = null
     private var jobChannel: Job? = null
     private var channel : Channel<UpdateLiveDataModel>? = null
 
@@ -959,6 +961,15 @@ open class HomeViewModel @Inject constructor(
                     tokopointsDrawer = null,
                     tokopointHomeDrawerData = null
             )
+        }
+    }
+
+    fun injectCouponTimeBased() {
+        if(injectCouponTimeBasedJob?.isActive == true) return
+        injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
+            injectCouponTimeBasedUseCase.executeOnBackground()
+        }){
+            it.printStackTrace()
         }
     }
 
