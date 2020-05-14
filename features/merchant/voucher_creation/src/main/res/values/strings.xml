@@ -120,6 +120,7 @@
     <string name="mvc_public">Publik</string>
     <string name="mvc_special">Khusus</string>
     <string name="mvc_cashback">Cashback</string>
+    <string name="mvc_cashback_formatted">Cashback %s</string>
     <string name="mvc_no_result_found">Voucher yang kamu cari enggak ditemukan</string>
     <string name="mvc_please_try_to_search_again">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
     <string name="mvc_voucher_quota">Kuota voucher</string>
@@ -191,6 +192,6 @@
     <string name="mvc_ended">Sudah Berakhir</string>
     <string name="mvc_lbl_promo_code">Kode Promo:</string>
     <string name="mvc_asterisk">&#x2a;</string>
-    <string name="mvc_detail_promo_usage_used">Voucher yang dipakai dalam transaksi yang menunggu pembayaran : &lt;b>%s voucher&lt;/b></string>
+    <string name="mvc_detail_promo_usage_used">Voucher yang dipakai dalam transaksi yang menunggu pembayaran : &lt;b>%s Voucher&lt;/b></string>
 
 </resources>

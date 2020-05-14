@@ -1,11 +1,13 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -35,10 +37,15 @@ class VoucherPeriodBottomSheet(
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.setupBottomSheetChildNoMargin()
+    }
+
     private fun setupView(view: View) = with(view) {
         imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
         tvMvcVoucherName.text = voucher.name
-        tvMvcVoucherDescription.text = voucher.discountAmtFormatted
+        tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), voucher.discountAmtFormatted)
 
         edtMvcStartDate.setOnClickListener {
             showDatePicker {
@@ -59,6 +66,15 @@ class VoucherPeriodBottomSheet(
 
     private fun showDatePicker(function: () -> Unit) {
 
+    }
+
+    private fun View.setupBottomSheetChildNoMargin() {
+        val initialPaddingTop = paddingTop
+        val initialPaddingBottom = paddingBottom
+        val initialPaddingLeft = paddingLeft
+        val initialPaddingRight = paddingRight
+        setPadding(0,initialPaddingTop,0,initialPaddingBottom)
+        bottomSheetHeader.setPadding(initialPaddingLeft, 0, initialPaddingRight, 0)
     }
 
     fun setOnSaveClickListener(callback: () -> Unit): VoucherPeriodBottomSheet {

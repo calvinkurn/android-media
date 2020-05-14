@@ -41,6 +41,7 @@ class EditQuotaBottomSheet(
     }
 
     private fun setupView(view: View) = with(view) {
+        setupBottomSheetChildNoMargin()
         imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
         KeyboardHandler.showSoftKeyboard(activity)
 
@@ -60,7 +61,7 @@ class EditQuotaBottomSheet(
         }
 
         tvMvcVoucherName.text = voucher.name
-        tvMvcVoucherDescription.text = voucher.discountAmtFormatted
+        tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), voucher.discountAmtFormatted)
         mvcTicker.run {
             title = "Estimasi Maks. Pengeluaran"
             description = "Dipotong dari transaksi selesai"
@@ -78,6 +79,15 @@ class EditQuotaBottomSheet(
                     getString(R.string.mvc_rp_value),
                     CurrencyFormatHelper.convertToRupiah(quotaNumber.toString()).toBlankOrString()).toBlankOrString()
         }
+    }
+
+    private fun View.setupBottomSheetChildNoMargin() {
+        val initialPaddingTop = paddingTop
+        val initialPaddingBottom = paddingBottom
+        val initialPaddingLeft = paddingLeft
+        val initialPaddingRight = paddingRight
+        setPadding(0,initialPaddingTop,0,initialPaddingBottom)
+        bottomSheetHeader.setPadding(initialPaddingLeft, 0, initialPaddingRight, 0)
     }
 
     fun show(fm: FragmentManager) {
