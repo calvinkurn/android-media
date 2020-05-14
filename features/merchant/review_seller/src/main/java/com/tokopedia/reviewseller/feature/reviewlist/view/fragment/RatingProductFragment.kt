@@ -108,8 +108,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
 
-    private var tabReview: View? = null
     private var firstTabItem: View? = null
+
+    private var itemViewSummary: View? = null
 
     var chipsSortText: String? = ""
     var chipsFilterText: String? = ""
@@ -118,12 +119,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
-    }
-
-    private val coachMarkTabRatingProduct: CoachMarkItem by lazy {
-        CoachMarkItem(rootRatingProduct,
-                getString(R.string.full_summary_of_product_ratings),
-                getString(R.string.desc_full_summary_of_product_ratings))
     }
 
     private val coachMarkFilterAndSort: CoachMarkItem by lazy {
@@ -272,10 +267,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 }
             }
             searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
-                if(hasFocus) tracking.eventClickSearchBar(userSession.shopId.orEmpty())
+                if (hasFocus) tracking.eventClickSearchBar(userSession.shopId.orEmpty())
             }
             searchBarTextField.afterTextChanged {
-                if(it.isEmpty()) {
+                if (it.isEmpty()) {
                     onSearchKeywordEmpty()
                 }
             }
@@ -285,7 +280,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
                     tracking.eventSubmitSearchBar(userSession.shopId.orEmpty(), query)
 
-                    if(query.length < MAX_LENGTH_SEARCH) {
+                    if (query.length < MAX_LENGTH_SEARCH) {
                         showEmptyState()
                         tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_keyword)
                     } else {
@@ -380,7 +375,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             showEmptyState()
             tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_filter)
             isEmptyFilter = false
-        } else if(reviewProductList.isEmpty() && !isEmptyFilter) {
+        } else if (reviewProductList.isEmpty() && !isEmptyFilter) {
             showEmptyState()
             tvContentNoReviewsYet?.text = getString(R.string.content_no_reviews_yet)
         } else {
@@ -402,15 +397,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 filterBy = viewModelListReviewList?.filterAllText.orEmpty(),
                 page = page
         )
-    }
-
-    private fun coachMarkTabRatingProduct() {
-        prefs?.let {
-            if (!it.getBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, false)) {
-                coachMarkItems.add(coachMarkTabRatingProduct)
-                it.edit().putBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, true).apply()
-            }
-        }
     }
 
     private fun coachMarkFilterAndSort() {
@@ -443,10 +429,25 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
 
     override fun onAddedCoachMarkOverallRating(view: View) {
-        coachMarkTabRatingProduct()
+        itemViewSummary = view
+    }
+
+    override fun onAddedCoachMarkItemProduct(view: View) {
+        val coachMarkTabRatingProduct: CoachMarkItem by lazy {
+            CoachMarkItem(view.findViewById(R.id.itemRatingProduct),
+                    getString(R.string.full_summary_of_product_ratings),
+                    getString(R.string.desc_full_summary_of_product_ratings))
+        }
+        prefs?.let {
+            if (!it.getBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, false)) {
+                coachMarkItems.add(coachMarkTabRatingProduct)
+                it.edit().putBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, true).apply()
+            }
+        }
+
         coachMarkFilterAndSort()
         val coachMarkSummary: CoachMarkItem by lazy {
-            CoachMarkItem(view.findViewById(R.id.cardSummary),
+            CoachMarkItem(itemViewSummary?.findViewById(R.id.cardSummary),
                     getString(R.string.average_rating_title),
                     getString(R.string.average_rating_desc)
             )
@@ -518,7 +519,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    private fun populateFilterDate(): ArrayList<ListItemUnify>{
+    private fun populateFilterDate(): ArrayList<ListItemUnify> {
         val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
         val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
 

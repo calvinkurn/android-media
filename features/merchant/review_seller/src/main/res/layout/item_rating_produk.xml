@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginLeft="@dimen/spacing_lvl4"
-    android:layout_marginRight="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:id="@+id/itemRatingProduct"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ImageUnify

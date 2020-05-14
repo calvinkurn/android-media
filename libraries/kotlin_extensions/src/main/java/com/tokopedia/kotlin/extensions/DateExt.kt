@@ -25,31 +25,32 @@ val Date.relativeDate: String
         val dateActive = Calendar.getInstance(Locale.getDefault())
         dateActive.timeInMillis = time
         val stringToday = "Hari ini"
-        val stringDays = "hari lalu"
-        val stringWeeks = "minggu lalu"
-        val stringMonths = "bulan lalu"
-        val oneMoreYear = "Lebih dari 1 tahun lalu"
+        val stringDaysAgo = "hari lalu"
+        val stringWeeksAgo = "minggu lalu"
+        val stringMonthsAgo = "bulan lalu"
+        val stringOverOneYearAgo = "Lebih dari 1 tahun lalu"
         val timeOffset = System.currentTimeMillis() - dateActive.timeInMillis
+
         val days = (timeOffset / (24.0 * 60 * 60 * 1000)).roundToInt()
 
         return when {
             DateUtils.isToday(time) -> stringToday
-            days in 1..6 -> "$days $stringDays"
+            days in 1..6 -> "$days $stringDaysAgo"
             days < 30 -> {
                 val weeks = (days / 7)
-                "$weeks $stringWeeks"
+                "$weeks $stringWeeksAgo"
             }
             days < 365 -> {
                 val month = (days / 30)
-                "$month $stringMonths"
+                "$month $stringMonthsAgo"
             }
             days > 365 -> {
-                oneMoreYear
+                stringOverOneYearAgo
             }
             else -> dateFormat.format(this)
         }
     }
-}
+
 
 fun Date.toFormattedString(format: String, locale: Locale = Locale.getDefault()): String {
     val formatter = SimpleDateFormat(format, locale)
