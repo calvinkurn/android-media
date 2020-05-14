@@ -142,6 +142,8 @@
     <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 
+    <string name="title_invoice">Invoice</string>
+    <string name="button_order_detail_download_invoice">Unduh</string>
     <string name="button_order_detail_accept_order">Terima Pesanan</string>
     <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
     <string name="button_order_detail_change_courier">Ganti Kurir</string>
@@ -267,6 +269,24 @@ Anda di sini.</string>
     <string name="detail_label_digital">Detail Pembelian</string>
     <string name="lihat_detail">Lihat Detail</string>
     <string name="detail_label">Detail E-voucher Deals</string>
+
+    <!-- OMS Insurance-->
+
+    <string name="insurance_ticker">Polis asuransi akan dikirimkan lewat email.</string>
+    <string name="insurance_policy">Polis Asuransi</string>
+    <string name="insurance_detail_label">Daftar Produk</string>
+    <string name="protection_details">Detail Proteksi</string>
+    <string name="insurance_claim">Lihat Cara Klaim</string>
+    <string name="insurance_claim_content">Info lengkap benefit asuransi dan cara pengajuan klaim asuransi</string>
+    <string name="insurance_policy_content">Bukti perjanjian tertulis tertanggung dan pihak asuransi</string>
+    <string name="insurance_type">Jenis Asuransi</string>
+    <string name="product_category">Kategori Produk</string>
+    <string name="insurance_length">Masa Perlindungan</string>
+    <string name="insurance_quantity">Jumlah Proteksi</string>
+    <string name="insurance_price">Harga Proteksi</string>
+
+    <!-- OMS Insurance-->
+
     <string name="detail_label_events">Detail E-Tiket</string>
     <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>
@@ -337,7 +357,7 @@ Anda di sini.</string>
     <string name="user_label">Data Pemegang E-tiket</string>
     <string name="booking_code_title">Kode Booking:</string>
     <string name="btn_redeem_ticket">Tutup</string>
-    <string name="voucher_code_title">Kode voucher:</string>
+    <string name="voucher_code_title">Kode Booking :</string>
     <string name="voucher_code_title_deals">Voucher Deals</string>
     <string name="redeem_deals_btn">Redeem</string>
     <string name="event_ticket_voucher_multiple">x E-Tiket</string>
@@ -362,4 +382,36 @@ Anda di sini.</string>
     <string name="tkpdtransaction_oms_retry_failed_event">E-tiket belum terbit. Tunggu 30 detik untuk cek ulang, ya.</string>
     <string name="tkpdtransaction_oms_retry_success">Hore! E-voucher kamu sudah terbit.</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
+    <string name="title_voucher_code_copied">Kode Voucher berhasil tersalin</string>
+
+    <string name="redeem_dialog_powered_by">Powered by  </string>
+    <string name="redeem_dialog_voucher_code">Kode Voucher</string>
+
+
+    <string name="tkpdtransaction_filter_terapkan">Terapkan</string>
+    <string name="tkpdtransaction_filter_sampai">Sampai</string>
+    <string name="tkpdtransaction_filter_title">Filter Tanggal</string>
+    <string name="tkpdtransaction_filter_mulai">Mulai Dari</string>
+    <string name="tkpdtransaction_filter_custom_date">"Pilih Tanggal Sendiri"</string>
+    <string name="tkpdtransaction_filter_90_days">90 Hari Terakhir</string>
+    <string name="tkpdtransaction_90_days_found_nothing">Tidak ada transaksi dalam 90 hari terakhir</string>
+    <string name="tkpdtransaction_web_title">Info Pembeli</string>
+    <string name="month_1">Jan</string>
+    <string name="month_2">Feb</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Apr</string>
+    <string name="month_5">Mei</string>
+    <string name="month_6">Jun</string>
+    <string name="month_7">Jul</string>
+    <string name="month_8">Ags</string>
+    <string name="month_9">Sep</string>
+    <string name="month_10">Okt</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Des</string>
+    <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="lihat_order_detail">Lihat Order Detail</string>
+    <string name="label_shop_title">Toko: </string>
+    <string name="invoice_label">invoice</string>
+    <string name="invoice_copied">Kode invoice telah tersalin</string>
+
 </resources>

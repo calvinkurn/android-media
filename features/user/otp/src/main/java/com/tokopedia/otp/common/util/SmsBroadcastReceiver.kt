@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.IntentFilter.SYSTEM_HIGH_PRIORITY
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
@@ -19,7 +20,8 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     fun register(context: Context, listener: ReceiveSMSListener) {
         this.listener = listener
         val filter = IntentFilter()
-        filter.addAction(ACTION_SMS_RECEIVED)
+        filter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION)
+        filter.priority = SYSTEM_HIGH_PRIORITY
         context.registerReceiver(this, filter)
     }
 
@@ -28,6 +30,8 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action
+
         if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
             val extras = intent.extras
             val status = extras?.get(SmsRetriever.EXTRA_STATUS) as Status
@@ -35,10 +39,13 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             when (status.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
                     val message = extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as String
-                    val otp = message.substringAfter("masuk:").substring(0,6)
-                    if(::listener.isInitialized
-                            && otp.toIntOrNull() != null)
-                    listener.onReceiveOTP(otp)
+                    val subMessage = message.substringAfter("masuk:")
+                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(subMessage)?.value?.length as Int
+                    val otp = subMessage.substring(0, otpDigit)
+
+                    if(::listener.isInitialized && otp.toIntOrNull() != null) {
+                        listener.onReceiveOTP(otp)
+                    }
                 }
                 CommonStatusCodes.TIMEOUT -> {
                    //Do nothing
@@ -48,7 +55,7 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
     }
 
     companion object {
-
-        private val ACTION_SMS_RECEIVED = "com.google.android.gms.auth.api.phone.SMS_RETRIEVED"
+        /** */
+        private const val REGEX_NUMERIC_PATTERN = "^[\\d]*"
     }
 }

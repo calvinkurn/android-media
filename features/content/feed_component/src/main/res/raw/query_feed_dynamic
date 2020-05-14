@@ -53,6 +53,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               viewURL
               type
               source
+              viewType
+              recomID
             }
           }
         }
@@ -86,6 +88,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 viewURL
                 type
                 source
+                viewType
+                recomID
               }
             }
           }
@@ -115,6 +119,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
             avatarApplink
             avatarBadgeImage
             avatarDescription
+            cardSummary
             reportable
             editable
             deletable
@@ -139,6 +144,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 id
                 text
                 price
+                priceOriginal
                 type
                 appLink
                 webLink
@@ -155,19 +161,30 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 	viewURL
                 	type
                 	source
+                    viewType
+                    recomID
               	}
+              	tags {
+                    linkType
+                    text
+                    type
+                }
               }
               isVoted
               totalVoter
               text
               tags {
                 linkType
+                text
+                type
               }
               tracking {
                 clickURL
                 viewURL
                 type
                 source
+                viewType
+                recomID
               }
               videos {
                 url
@@ -185,6 +202,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 id
                 text
                 price
+                priceOriginal
                 type
                 appLink
                 webLink
@@ -200,10 +218,13 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                   viewURL
                   type
                   source
+                  viewType
+                  recomID
                 }
                 tags {
                   linkType
                   text
+                  type
                   textColor {
                     hex
                     opacity
@@ -227,12 +248,16 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               text
               tags {
                 linkType
+                text
+                type
               }
               tracking {
                 clickURL
                 viewURL
                 type
                 source
+                viewType
+                recomID
               }
             }
             caption {
@@ -264,12 +289,18 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               imageURL
               description
             }
+            stats {
+              text
+              productIDs
+            }
           }
           tracking {
             clickURL
             viewURL
             type
             source
+            viewType
+            recomID
           }
         }
         cardhighlight {
@@ -335,6 +366,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               viewURL
               type
               source
+              viewType
+              recomID
             }
           }
         }
@@ -522,6 +555,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               comment
               share
               ctaLink
+              stats
             }
           }
           cardhighlight {

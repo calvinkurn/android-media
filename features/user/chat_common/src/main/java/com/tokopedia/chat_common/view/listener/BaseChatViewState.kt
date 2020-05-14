@@ -27,4 +27,12 @@ interface BaseChatViewState {
 
     fun onReceiveRead()
 
+    fun clear()
+
+    fun isAttachmentMenuVisible(): Boolean
+
+    fun hideAttachmentMenu()
+
+    fun showErrorWebSocket(isWebSocketError: Boolean)
+
 }

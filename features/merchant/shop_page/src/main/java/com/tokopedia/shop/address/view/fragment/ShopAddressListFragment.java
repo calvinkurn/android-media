@@ -52,7 +52,7 @@ public class ShopAddressListFragment extends BaseListFragment<ShopAddressViewMod
 
     @Override
     public void loadData(int page) {
-        shopAddressListPresenter.getshopAddressList(shopId);
+        shopAddressListPresenter.getShopAddressList(shopId);
     }
 
     @Override

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dp_12"
+        app:cardCornerRadius="@dimen/dp_14"
+        app:cardElevation="@dimen/dp_2">
+
+        <com.tokopedia.design.image.SquareImageView
+            android:id="@+id/category_frame_image"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_margin="@dimen/dp_12"
+            android:layout_gravity="center"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/category_frame_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="@dimen/dp_2"
+        android:paddingLeft="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_2"
+        app:typographyType="small"
+        tools:text="Digital Home" />
+</LinearLayout>

@@ -7,7 +7,7 @@
   android:layout_width="match_parent"
   android:layout_height="@dimen/dp_48"
   android:orientation="horizontal"
-  android:background="@drawable/card_shadow_top"
+  android:background="@color/white"
   app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
   tools:listitem="@layout/layout_list_email_extension">
   

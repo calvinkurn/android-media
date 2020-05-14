@@ -4,4 +4,5 @@
     <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_half">0.5dp</dimen>
     <dimen name="account_recommendation_separator_size">8dp</dimen>
+    <dimen name="account_icon_toolbar">38dp</dimen>
 </resources>

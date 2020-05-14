@@ -1,12 +1,12 @@
 package com.tokopedia.feedplus.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
-import com.tokopedia.feedplus.NON_LOGIN_USER_ID
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
@@ -39,7 +39,8 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 GetDynamicFeedUseCase.createRequestParams(
                         userId = getUserId(),
                         cursor = cursor,
-                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending
+                ),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
@@ -67,7 +68,7 @@ class DynamicFeedPresenter @Inject constructor(private val userSession: UserSess
                 GetDynamicFeedUseCase.createRequestParams(
                         userId = getUserId(),
                         cursor = cursor,
-                        source = GetDynamicFeedUseCase.SOURCE_TRENDING),
+                        source = GetDynamicFeedUseCase.FeedV2Source.Trending),
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {

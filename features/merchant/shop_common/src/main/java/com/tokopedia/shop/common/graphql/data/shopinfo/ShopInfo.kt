@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.graphql.data.shopinfo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 
 data class ShopInfo(
@@ -25,14 +26,6 @@ data class ShopInfo(
         @Expose
         val isAllowManage: Int = 0,
 
-        @SerializedName("isOpen")
-        @Expose
-        val isOpen: Int = 0,
-
-        @SerializedName("isOwner")
-        @Expose
-        val isOwner: Int = 0,
-
         @SerializedName("location")
         @Expose
         val location: String = "",
@@ -53,10 +46,6 @@ data class ShopInfo(
         @Expose
         val shopLastActive: String = "",
 
-        @SerializedName("shopTerms")
-        @Expose
-        val shopTerms: Int = 0,
-
         @SerializedName("statusInfo")
         @Expose
         val statusInfo: StatusInfo = StatusInfo(),
@@ -71,8 +60,37 @@ data class ShopInfo(
 
         @SerializedName("freeOngkir")
         @Expose
-        val freeOngkir: FreeOngkir = FreeOngkir()
+        val freeOngkir: FreeOngkir = FreeOngkir(),
+
+        @SerializedName("addressData")
+        @Expose
+        val addressData: AddressData = AddressData(),
+
+        @SerializedName("shopHomeType")
+        @Expose
+        val shopHomeType: String = ""
+
 ) {
+    fun mapToShopInfoData(): ShopInfoData {
+        val shipmentsData = shipments.map {
+            it.mapToShipmentData()
+        }
+
+        return ShopInfoData(
+                shopCore.shopID,
+                shopCore.name,
+                shopCore.description,
+                shopCore.url,
+                location,
+                shopAssets.cover,
+                shopCore.tagLine,
+                goldOS.isOfficial,
+                goldOS.isGold,
+                createdInfo.openSince,
+                shipmentsData
+        )
+    }
+
     companion object{
         @JvmField
         val TAG : String = ShopInfo::class.java.simpleName
@@ -165,10 +183,6 @@ data class ShopInfo(
     )
 
     data class CreatedInfo(
-            @SerializedName("shopCreated")
-            @Expose
-            val created: String = "",
-
             @SerializedName("openSince")
             @Expose
             val openSince: String = ""
@@ -177,10 +191,36 @@ data class ShopInfo(
     data class TopContent(
             @SerializedName("topURL")
             @Expose
-            val topUrl: String = "",
+            val topUrl: String = ""
+    )
 
-            @SerializedName("bottomURL")
+    data class AddressData(
+            @SerializedName("id")
             @Expose
-            val bottomUrl: String = ""
+            val id: String = "",
+
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SerializedName("address")
+            @Expose
+            val address: String = "",
+
+            @SerializedName("area")
+            @Expose
+            val area: String = "",
+
+            @SerializedName("email")
+            @Expose
+            val email: String = "",
+
+            @SerializedName("phone")
+            @Expose
+            val phone: String = "",
+
+            @SerializedName("fax")
+            @Expose
+            val fax: String = ""
     )
 }

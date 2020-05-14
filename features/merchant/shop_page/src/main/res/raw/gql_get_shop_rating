@@ -1,7 +1,0 @@
-query GetShopRating($shopId: Int!){
-  ShopRatingQuery(shopId: $shopId){
-    ratingScore
-    starLevel
-    totalReview
-  }
-}

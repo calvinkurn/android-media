@@ -8,8 +8,8 @@ import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.data.model.response.DataResponse;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
@@ -396,9 +396,9 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             actionShare(shareData, Constants.PackageName.Companion.PINTEREST, Constants.Label.Companion.PINTEREST);
         } else {
             shareApp(fragmentManager);
-            referralAnalytics.eventReferralAndShare(
-                    Constants.Values.Companion.SELECT_CHANNEL, Constants.Label.Companion.OTHER);
-
+            /*
+            We are not sending gtm here because it is sending automatically from share module
+             */
         }
     }
 
@@ -420,7 +420,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     }
                 })
         );
-        referralAnalytics.sendAnalyticsEventToGtm(media);
+        referralAnalytics.sendAnalyticsShareEventToGtm(media);
     }
 
     private static LinkerShareData mapperLinkerData(HashMap<String, String> keyValueMap) {

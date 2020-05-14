@@ -1,13 +1,21 @@
 package com.tokopedia.search.result.presentation;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -17,18 +25,8 @@ import java.util.Map;
 
 public interface ProductListSectionContract {
 
-    interface View extends SearchSectionContract.View {
-        boolean isUserHasLogin();
-
+    interface View extends CustomerView {
         String getUserId();
-
-        void initTopAdsParams();
-
-        void incrementStart();
-
-        void storeTotalData(int totalData);
-
-        void setHeaderTopAds(boolean hasHeader);
 
         void addProductList(List<Visitable> list);
 
@@ -36,15 +34,17 @@ public interface ProductListSectionContract {
 
         void addRecommendationList(List<Visitable> list);
 
-        void disableWishlistButton(String productId);
-
-        void enableWishlistButton(String productId);
-
         void showNetworkError(int startRow);
 
         String getQueryKey();
 
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
+
+        void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
+
+        void trackEventImpressionBannedProducts(boolean isEmptySearch);
+
+        void trackEventImpressionSortPriceMinTicker();
 
         void backToTop();
 
@@ -52,21 +52,9 @@ public interface ProductListSectionContract {
 
         void removeLoading();
 
-        void successAddWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorAddWishList(String errorMessage, String productId);
-
-        void successRemoveWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorRemoveWishlist(String errorMessage, String productId);
-
-        void notifyAdapter();
-
         void stopTracePerformanceMonitoring();
 
         void initQuickFilter(List<Filter> quickFilterList);
-
-        void setAdditionalParams(String additionalParams);
 
         void setAutocompleteApplink(String autocompleteApplink);
 
@@ -74,7 +62,7 @@ public interface ProductListSectionContract {
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
-        void setFirstTimeLoad(boolean isFirstTimeLoad);
+        void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
@@ -88,43 +76,133 @@ public interface ProductListSectionContract {
 
         boolean isAnyFilterActive();
 
-        Map<String, String> getAdditionalParamsMap();
-
         void launchLoginActivity(String productId);
 
         void showAdultRestriction();
 
-        void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel);
-
         void redirectSearchToAnotherPage(String applink);
 
-        void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
+        void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
         void setDefaultLayoutType(int defaultView);
 
-        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
-
-        void hideErrorMessage();
-
-        void successRemoveRecommendationWishlist(String productId);
-
-        void successAddRecommendationWishlist(String productId);
-
-        void errorRecommendationWishlist(String errorMessage, String productId);
-
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
-        boolean isTickerHasDismissed();
+        void redirectToBrowser(String url);
+
+        HashMap<String, String> getSelectedSort();
+
+        void setSelectedSort(HashMap<String, String> selectedSort);
+
+        HashMap<String, String> getSelectedFilter();
+
+        void refreshFilterController(HashMap<String, String> selectedFilter);
+
+        void showRefreshLayout();
+
+        void hideRefreshLayout();
+
+        String getScreenNameId();
+
+        void setTotalSearchResultCount(String formattedResultCount);
+
+        BaseAppComponent getBaseAppComponent();
+
+        void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
+
+        void renderFailRequestDynamicFilter();
+
+        boolean isFirstActiveTab();
+
+        void setupSearchNavigation();
+
+        void trackScreenAuthenticated();
+
+        void reloadData();
+
+        void showBottomNavigation();
+
+        void hideBottomNavigation();
+
+        void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
+
+        RemoteConfig getABTestRemoteConfig();
+
+        void trackWishlistRecommendationProductLoginUser(boolean isAddWishlist);
+
+        void trackWishlistRecommendationProductNonLoginUser();
+
+        void trackWishlistProduct(WishlistTrackingModel wishlistTrackingModel);
+
+        void updateWishlistStatus(String productId, boolean isWishlisted);
+
+        void showMessageSuccessWishlistAction(boolean isWishlisted);
+
+        void showMessageFailedWishlistAction(boolean isWishlisited);
+
+        String getPreviousKeyword();
+
+        boolean isLandingPage();
+
+        void logWarning(String message, @Nullable Throwable throwable);
+
+        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
+
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
+
+        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+
+        void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
+
+        void stopPreparePagePerformanceMonitoring();
+
+        void startNetworkRequestPerformanceMonitoring();
+
+        void stopNetworkRequestPerformanceMonitoring();
+
+        void startRenderPerformanceMonitoring();
     }
 
-    interface Presenter extends SearchSectionContract.Presenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
 
-        void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
+        void requestDynamicFilter(Map<String, Object> searchParameter);
 
-        void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);
+        void loadMoreData(Map<String, Object> searchParameter);
 
-        void handleWishlistButtonClicked(final ProductItemViewModel productItem);
+        void loadData(Map<String, Object> searchParameter);
 
-        void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
+        void onBannedProductsGoToBrowserClick(String url);
+
+        boolean isUsingBottomSheetFilter();
+
+        String getUserId();
+
+        boolean isUserLoggedIn();
+
+        String getDeviceId();
+
+        void onPriceFilterTickerDismissed();
+
+        boolean getIsTickerHasDismissed();
+
+        boolean hasNextPage();
+
+        void clearData();
+
+        void setStartFrom(int startFrom);
+
+        int getStartFrom();
+
+        void onViewCreated();
+
+        void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
+
+        void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
+
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+
+        void onProductClick(ProductItemViewModel item, int adapterPosition);
     }
 }

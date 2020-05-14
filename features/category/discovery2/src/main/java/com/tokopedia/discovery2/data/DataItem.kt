@@ -7,6 +7,33 @@ import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
 
 data class DataItem(
 
+        @SerializedName("chipSelectionType")
+        var chipSelectionType: String = "0",
+
+        @SerializedName("key")
+        val key: String? = "",
+
+        @SerializedName("target_component")
+        val targetComponent: String? = "",
+
+        @SerializedName("value")
+        val value: String? = "",
+
+        @SerializedName("target_component_id")
+        val targetComponentId: String? = "",
+
+        @SerializedName("background_image")
+        val backgroundImage: String? = "",
+
+        @SerializedName("filter")
+        val filter: String? = "",
+
+        @SerializedName("filter_value")
+        val filterValue: String? = "",
+
+        @SerializedName("isSelected")
+        var isSelected: Boolean = false,
+
         @SerializedName("end_date")
         val endDate: String? = "",
 
@@ -43,7 +70,7 @@ data class DataItem(
         @SerializedName("applinks", alternate = ["applink"])
         var applinks: String? = "",
 
-        @SerializedName("name")
+        @SerializedName("name", alternate = ["text"])
         var name: String? = "",
 
         @SerializedName("action")
@@ -79,19 +106,22 @@ data class DataItem(
         @SerializedName("alternate_background_url_mobile")
         val alternateBackgroundUrlMobile: String? = "",
 
-        @SerializedName("box_color")
+        @SerializedName("box_color", alternate = ["background_color"])
         val boxColor: String? = "",
 
-        @SerializedName("font_color")
+        @SerializedName("font_color", alternate = ["text_color"])
         val fontColor: String? = "",
 
         @field:SerializedName("button_text")
         var buttonText: String? = "",
 
+        @field:SerializedName("creative_name")
+        var creativeName: String? = "",
+
         @SerializedName("title")
         val title: String? = "",
 
-        @SerializedName("thumbnail_url_mobile")
+        @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
         val thumbnailUrlMobile: String? = "",
 
         @SerializedName("points_str")
@@ -115,7 +145,7 @@ data class DataItem(
         @field:SerializedName("price_format")
         var priceFormat: String? = "",
 
-        @field:SerializedName("image_click_url")
+        @field:SerializedName("image_click_url", alternate = ["url"])
         var imageClickUrl: String? = "",
 
         @SerializedName("size_mobile")
@@ -127,11 +157,71 @@ data class DataItem(
         @SerializedName("video_id")
         val videoId: String? = "",
 
+        @SerializedName("category_rows")
+        val categoryRows: List<DataItem>? = ArrayList(),
+
+        @SerializedName("type")
+        val type: String = "",
+
+        @SerializedName("categoryLabel")
+        val categoryLabel: String = "",
+
+        @SerializedName("ID")
+        val id: String? = "",
+
+        @SerializedName("shop_id")
+        val shopId: String? = "",
+
+        @SerializedName("basecode")
+        val basecode: String? = "",
+
+        @SerializedName("coupon_code")
+        val couponCode: String? = "",
+
+        @SerializedName("cta")
+        val cta: String? = "",
+
+        @SerializedName("cta_desktop")
+        val ctaDesktop: String? = "",
+
+        @SerializedName("disabled_err_msg")
+        val disabledErrMsg: String? = "",
+
+        @SerializedName("id")
+        val claimCouponid: String? = "",
+
+        @SerializedName("image_url")
+        val imageUrl: String? = "",
+
+        @SerializedName("is_disabled")
+        val isDisabled: Boolean? = false,
+
+        @SerializedName("is_disabled_btn")
+        val isDisabledBtn: Boolean? = false,
+
+        @SerializedName("min_usage")
+        val minUsage: String? = "",
+
+        @SerializedName("min_usage_label")
+        val minUsageLabel: String? = "",
+
+        @SerializedName("subtitle")
+        val subtitle: String? = "",
+
+        @SerializedName("thumbnail_url")
+        val thumbnailUrl: String? = "",
+
+        @SerializedName("upper_text_desc")
+        val upperTextDesc: List<String?>? = null,
+
+        @SerializedName("small_image_url_mobile")
+        var smallImageUrlMobile: String? = "",
+
         @SerializedName("cashback")
         val cashback: String? = "",
 
         @SerializedName("is_topads")
-        val isTopads: String? = "",
+        val isTopads: Boolean? = false,
 
         @SerializedName("discounted_price")
         val discountedPrice: String? = "",
@@ -185,21 +275,16 @@ data class DataItem(
         val topadsClickUrl: String? = "",
 
         @SerializedName("free_ongkir")
-        val freeOngkir: Any? = ""
-
-
-
+        val freeOngkir: FreeOngkir? = null
 
         ) {
     val leftMargin: Int
         get() {
-            if (leftMarginMobile != null && !leftMarginMobile.isEmpty()) leftMarginMobile.toInt()
-            return 0
+            return leftMarginMobile?.toIntOrNull() ?: 0
         }
 
     val rightMargin: Int
         get() {
-            if (rightMarginMobile != null && !rightMarginMobile.isEmpty()) rightMarginMobile.toInt()
-            return 0
+            return rightMarginMobile?.toIntOrNull() ?: 0
         }
 }

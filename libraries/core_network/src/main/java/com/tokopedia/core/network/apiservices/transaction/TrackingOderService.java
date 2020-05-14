@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class TrackingOderService extends AuthService<TrackingOrderApi> {
-    private static final String TAG = TrackingOderService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

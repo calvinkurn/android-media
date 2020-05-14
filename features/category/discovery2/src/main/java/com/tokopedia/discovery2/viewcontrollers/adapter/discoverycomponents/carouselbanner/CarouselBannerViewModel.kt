@@ -3,8 +3,9 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.car
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,22 +23,12 @@ class CarouselBannerViewModel(val application: Application, components: Componen
 
     init {
         componentData.value = components
-        listData.value = convertToComponentList(components)
-        seeAllButton.value = components.data?.get(0)?.buttonApplink
-    }
-
-    private fun convertToComponentList(components: ComponentsItem): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        components.data?.forEach {
-            val componentsItem = ComponentsItem()
-            componentsItem.name = "carousel_banner_item"
-            val dataItem = mutableListOf<DataItem>()
-            dataItem.add(it)
-            componentsItem.data = dataItem
-            list.add(componentsItem)
+        components.data?.let {
+            if (it.isNotEmpty()) {
+                listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.CarouselBannerItemView.componentName)
+                seeAllButton.value = it[0].buttonApplink
+            }
         }
-        list[1].name = "banner_image"
-        return list
     }
 
     fun getComponentLiveData(): LiveData<ComponentsItem> {

@@ -11,15 +11,20 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
 public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFactory> {
     private String labelLeft;
     private String amountLeft;
+    private String labelCentre;
+    private String amountCentre;
     private String labelRight;
     private String amountRight;
     private String applinkLeft;
+    private String applinkCentre;
     private String applinkRight;
     private String iconUrlRight;
+    private String iconUrlCentre;
     private String iconUrlLeft;
     private boolean isRightImportant;
     private boolean isRightSaldo;
     private TokopediaPayBSModel bsDataLeft;
+    private TokopediaPayBSModel bsDataCentre;
     private TokopediaPayBSModel bsDataRight;
     private boolean isLinked;
     private String walletType;
@@ -150,6 +155,46 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         isRightSaldo = rightSaldo;
     }
 
+    public String getLabelCentre() {
+        return labelCentre;
+    }
+
+    public void setLabelCentre(String labelCentre) {
+        this.labelCentre = labelCentre;
+    }
+
+    public String getAmountCentre() {
+        return amountCentre;
+    }
+
+    public void setAmountCentre(String amountCentre) {
+        this.amountCentre = amountCentre;
+    }
+
+    public String getApplinkCentre() {
+        return applinkCentre;
+    }
+
+    public void setApplinkCentre(String applinkCentre) {
+        this.applinkCentre = applinkCentre;
+    }
+
+    public String getIconUrlCentre() {
+        return iconUrlCentre;
+    }
+
+    public void setIconUrlCentre(String iconUrlCentre) {
+        this.iconUrlCentre = iconUrlCentre;
+    }
+
+    public TokopediaPayBSModel getBsDataCentre() {
+        return bsDataCentre;
+    }
+
+    public void setBsDataCentre(TokopediaPayBSModel bsDataCentre) {
+        this.bsDataCentre = bsDataCentre;
+    }
+
     public TokopediaPayViewModel() {
     }
 
@@ -162,15 +207,20 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.labelLeft);
         dest.writeString(this.amountLeft);
+        dest.writeString(this.labelCentre);
+        dest.writeString(this.amountCentre);
         dest.writeString(this.labelRight);
         dest.writeString(this.amountRight);
         dest.writeString(this.applinkLeft);
+        dest.writeString(this.applinkCentre);
         dest.writeString(this.applinkRight);
         dest.writeString(this.iconUrlRight);
+        dest.writeString(this.iconUrlCentre);
         dest.writeString(this.iconUrlLeft);
         dest.writeByte(this.isRightImportant ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isRightSaldo ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.bsDataLeft, flags);
+        dest.writeParcelable(this.bsDataCentre, flags);
         dest.writeParcelable(this.bsDataRight, flags);
         dest.writeByte(this.isLinked ? (byte) 1 : (byte) 0);
         dest.writeString(this.walletType);
@@ -180,15 +230,20 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     protected TokopediaPayViewModel(Parcel in) {
         this.labelLeft = in.readString();
         this.amountLeft = in.readString();
+        this.labelCentre = in.readString();
+        this.amountCentre = in.readString();
         this.labelRight = in.readString();
         this.amountRight = in.readString();
         this.applinkLeft = in.readString();
+        this.applinkCentre= in.readString();
         this.applinkRight = in.readString();
         this.iconUrlRight = in.readString();
+        this.iconUrlCentre= in.readString();
         this.iconUrlLeft = in.readString();
         this.isRightImportant = in.readByte() != 0;
         this.isRightSaldo = in.readByte() != 0;
         this.bsDataLeft = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
+        this.bsDataCentre = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
         this.bsDataRight = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
         this.isLinked = in.readByte() != 0;
         this.walletType = in.readString();

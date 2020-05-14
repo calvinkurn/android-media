@@ -64,7 +64,9 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
 
                 if(rawModels.isEmpty())
                     return;
-
+                if (callback != null) {
+                    callback.onItemClicked(t);
+                }
                 // change rawModels read status
                 Integer pos = positions.get(t);
                 if(pos != null){
@@ -73,10 +75,6 @@ public class SellerInfoAdapter extends BaseListAdapter<SellerInfoModel> {
                 // change data status
                 SellerInfoAdapter.this.data.get(position).setRead(true);
                 notifyItemChanged(position);
-
-                if (callback != null) {
-                    callback.onItemClicked(t);
-                }
             }
         });
         switch (t.getType()){

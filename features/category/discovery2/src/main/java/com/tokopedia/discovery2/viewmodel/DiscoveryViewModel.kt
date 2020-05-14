@@ -1,55 +1,78 @@
 package com.tokopedia.discovery2.viewmodel
 
-import android.app.Application
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DiscoveryResponse
+import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val userSession: UserSessionInterface) : BaseViewModel(), CoroutineScope {
 
-    private val discoveryPageTitle = MutableLiveData<Result<String>>()
+    private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
+    private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
     var pageIdentifier: String = ""
 
+    @Inject
+    lateinit var customTopChatUseCase: CustomTopChatUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
 
     fun getDiscoveryData() {
-        progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    withContext(Dispatchers.IO) {
-                        val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
+                    val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
                         data.let {
                             withContext(Dispatchers.Default) {
-                                checkLoginAndUpdateList(data.components)
+                                checkLoginAndUpdateList(it.components)
+                                findCustomTopChatComponentsIfAny(it.components)
                             }
-                            discoveryPageTitle.postValue(Success(it.title ?: ""))
+                            setPageInfo(it.pageInfo)
                         }
-                    }
                 },
                 onError = {
-                    discoveryPageTitle.value = Fail(it)
+                    discoveryPageInfo.value = Fail(it)
                 }
         )
+
+    }
+
+    private fun setPageInfo(pageInfo: PageInfo?) {
+        if(pageInfo!=null)
+            discoveryPageInfo.value = Success(pageInfo)
+    }
+
+    private fun findCustomTopChatComponentsIfAny(components: List<ComponentsItem>?) {
+        val customTopChatComponent = components?.find {
+            it.name == ComponentNames.CustomTopchat.componentName
+        }
+        if (customTopChatComponent != null) {
+            discoveryFabLiveData.postValue(Success(customTopChatComponent))
+        } else {
+            discoveryFabLiveData.postValue(Fail(Throwable()))
+        }
 
     }
 
@@ -64,8 +87,47 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
-    fun getDiscoveryPageTitle(): LiveData<Result<String>> = discoveryPageTitle
+    fun getBitmapFromURL(src: String?): Bitmap? = runBlocking {
+        getBitmap(src).await()
+    }
+
+    fun getBitmap(src:String?) = async (Dispatchers.IO){
+            val url = URL(src)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            val input: InputStream = connection.inputStream
+            BitmapFactory.decodeStream(input)
+    }
+
+    fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<ArrayList<ComponentsItem>>> = discoveryResponseList
+    fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
 
+    private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
+        val queryMap:MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
+        launchCatchError(
+                block = {
+                    val customTopChatResponse = customTopChatUseCase.getCustomTopChatMessageId(queryMap)
+                    customTopChatResponse?.let {
+                        it.chatExistingChat?.let { chatExistingChat ->
+                            if (chatExistingChat.messageId != 0) {
+                                RouteManager.route(context, appLinks.plus(chatExistingChat.messageId.toString()))
+                            }
+                        }
+                    }
+                },
+                onError = {
 
+                }
+        )
+    }
+
+    fun openCustomTopChat(context: Context, appLinks: String, shopId: Int) {
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        } else {
+            fetchTopChatMessageId(context, appLinks, shopId)
+        }
+    }
 }

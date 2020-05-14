@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.view.subscriber
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import rx.Subscriber
 
 /**

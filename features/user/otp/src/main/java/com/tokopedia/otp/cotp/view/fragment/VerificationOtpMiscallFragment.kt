@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ScrollView
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -25,10 +26,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.common.di.DaggerOtpComponent
-import com.tokopedia.otp.common.util.PhoneCallReceiver
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
@@ -41,13 +43,12 @@ import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMiscall.View, PhoneCallReceiver.OnCallStateChange {
+class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMiscall.View {
 
     private var countDownTimer: CountDownTimer? = null
     private var isRunningTimer = false
     private lateinit var cacheHandler: LocalCacheHandler
     private lateinit var viewModel: VerificationViewModel
-    private lateinit var callReceiver: PhoneCallReceiver
 
     @Inject
     lateinit var presenter: VerificationPresenter
@@ -77,12 +78,9 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         }
 
         cacheHandler = LocalCacheHandler(activity, CACHE_OTP)
-
-        if (!::callReceiver.isInitialized) {
-            callReceiver = PhoneCallReceiver()
-        }
-        callReceiver.registerReceiver(activity, this)
     }
+
+
 
     private fun parseViewModel(bundle: Bundle): VerificationViewModel {
         viewModel = bundle.getParcelable(ARGS_PASS_DATA) as VerificationViewModel
@@ -114,7 +112,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupGeneralView()
-        setData()
         updateViewFromServer()
         requestOtp()
     }
@@ -127,18 +124,16 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         presenter.requestOTP(viewModel)
     }
 
-    private fun setData() {
-        val imageId = viewModel.iconResId
-        if (!TextUtils.isEmpty(viewModel.imageUrl)) {
-            ImageHandler.LoadImage(imgVerify, viewModel.imageUrl)
-        } else if (imageId != 0)
-            ImageHandler.loadImageWithId(imgVerify, imageId)
-        else {
-            imgVerify.visibility = View.GONE
-        }
-    }
-
     private fun setupGeneralView() {
+
+        ImageHandler.loadImageAndCache(imgVerify, IMAGE_URL)
+        textInputOtp?.setLength(viewModel.numberOtpDigit)
+        textInputOtp?.setOnClickListener {
+            scrollView.postDelayed({
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+            }, 500)
+        }
+
         textInputOtp?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -149,7 +144,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (textInputOtp?.text?.length == MAX_OTP_LENGTH) {
+                if (textInputOtp?.text?.length == viewModel.numberOtpDigit) {
                     enableVerifyButton()
                     verifyOtp()
                 } else {
@@ -159,11 +154,15 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         })
 
         textInputOtp?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE && textInputOtp?.length() == MAX_OTP_LENGTH) {
+            if (actionId == EditorInfo.IME_ACTION_DONE && textInputOtp?.length() == viewModel.numberOtpDigit) {
                 verifyOtp()
                 true
             }
             false
+        }
+
+        textUseOtherMethod?.setOnClickListener {
+            onOtherMethodClick()
         }
 
         buttonVerify?.setOnClickListener {
@@ -267,7 +266,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     override fun onLimitOTPReached(errorMessage: String) {
-        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.show()
         textMessageVerify?.text = errorMessage
         textMessageVerify?.setTextColor(MethodChecker.getColor(activity, R.color.red_500))
         setLimitReachedCountdownText()
@@ -288,29 +287,22 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         textInputOtp?.text?.clear()
         textInputOtp?.isError = true
-        textErrorVerify?.visibility = View.VISIBLE
+        textErrorVerify?.show()
+        textErrorVerify?.text = errorMessage.substring(0, errorMessage.indexOf("("))
 
-        if (errorMessage.contains(PIN_ERR_MSG) && errorMessage.isNotEmpty()) {
-            textErrorVerify?.text = errorMessage.substring(0, errorMessage.indexOf("("))
-
-            if (errorMessage.contains(LIMIT_ERR_MSG)) {
-                buttonVerify?.visibility = View.VISIBLE
-                buttonVerify?.setText(R.string.other_method)
-                buttonVerify?.setOnClickListener { onOtherMethodClick() }
-            }
+        if (errorMessage.contains(LIMIT_ERR_MSG)) {
+            buttonVerify?.show()
+            buttonVerify?.setText(R.string.other_method)
+            buttonVerify?.setOnClickListener { onOtherMethodClick() }
         }
     }
 
     override fun onErrorVerifyOtpCode(errorMessage: String) {
-        if (errorMessage.contains(VERIFICATION_CODE) || errorMessage.contains(PIN_ERR_MSG)) {
-            setErrorView(errorMessage)
-        } else {
-            onErrorVerifyLogin(errorMessage)
-        }
+        setErrorView(errorMessage)
     }
 
     override fun onErrorVerifyLogin(errorMessage: String) {
-        view?.let { Toaster.showError(it, errorMessage, Snackbar.LENGTH_LONG) }
+        setErrorView(errorMessage)
     }
 
     override fun onErrorVerifyOtpCode(resId: Int) {
@@ -325,11 +317,11 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     override fun showLoadingProgress() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.show()
     }
 
     override fun dismissLoadingProgress() {
-        progressBar.visibility = View.GONE
+        progressBar.hide()
     }
 
     override fun isCountdownFinished(): Boolean {
@@ -347,7 +339,9 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             cacheHandler.applyEditor()
         }
 
-        textResend?.visibility = View.GONE
+        textResend?.hide()
+        textOr?.hide()
+        textUseOtherMethod?.hide()
         if (!isRunningTimer) {
             countDownTimer = object : CountDownTimer((cacheHandler.remainingTime * INTERVAL).toLong(), INTERVAL.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -368,11 +362,12 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     private fun setFinishedCountdownText() {
-        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.show()
         textMessageVerify?.text = MethodChecker.fromHtml(getString(R.string.not_received_code))
 
-        textOr?.visibility = View.VISIBLE
-        textResend?.visibility = View.VISIBLE
+        textOr?.show()
+        textUseOtherMethod?.show()
+        textResend?.show()
         textResend?.text = MethodChecker.fromHtml(getString(R.string.cotp_miscall_verification_resend))
         textResend?.setOnClickListener {
             analytics.eventClickResendOtp(viewModel.otpType)
@@ -384,13 +379,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             removeErrorOtp()
             requestOtp()
         }
-
-        if (viewModel.canUseOtherMethod()) {
-            textUseOtherMethod?.visibility = View.VISIBLE
-            textUseOtherMethod?.setOnClickListener { onOtherMethodClick() }
-        } else {
-            textUseOtherMethod?.visibility = View.GONE
-        }
     }
 
     private fun onOtherMethodClick() {
@@ -401,7 +389,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     private fun removeErrorOtp() {
         textInputOtp?.isError = false
-        textErrorVerify?.visibility = View.INVISIBLE
+        textErrorVerify?.hide()
     }
 
     private fun setLimitReachedCountdownText() {
@@ -409,9 +397,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         textInputOtp?.isEnabled = false
 
         if (viewModel.canUseOtherMethod()) {
-            textResend?.visibility = View.GONE
-            textOr?.visibility = View.GONE
-            textUseOtherMethod?.visibility = View.GONE
+            textResend?.hide()
 
             buttonVerify?.text = getString(R.string.cotp_miscall_verification_with_other_method)
             buttonVerify?.isEnabled = true
@@ -422,7 +408,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     private fun setRunningCountdownText(countdown: String) {
-        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.show()
         textMessageVerify?.setOnClickListener(null)
 
         val text = String.format("%s <b> %s %s</b> %s",
@@ -447,49 +433,19 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             countDownTimer = null
         }
         presenter.detachView()
-        activity?.unregisterReceiver(callReceiver)
-    }
-
-    fun setData(bundle: Bundle) {
-        viewModel = parseViewModel(bundle)
     }
 
     override fun onSuccessGetModelFromServer(methodItem: MethodItem) {
         this.viewModel.imageUrl = methodItem.imageUrl
         this.viewModel.message = methodItem.verificationText
-        setData()
     }
-
-    override fun onIncomingCallEnded(phoneNumber: String) {
-
-    }
-
-    override fun onIncomingCallStart(phoneNumber: String) {
-        autoFillPhoneNumber(phoneNumber)
-    }
-
-    override fun onMissedCall(phoneNumber: String) {
-
-    }
-
-    private fun autoFillPhoneNumber(number: String) {
-        val regex = Regex(pattern = """[+()\-\s]""")
-        val phoneHint = textPhoneHint?.text?.toString()?.replace(regex, "") as String
-        val phoneNumber = number.replace(regex, "")
-
-        if ((phoneHint.isNotEmpty() || phoneHint != "") && phoneNumber.contains(phoneHint)) {
-            textInputOtp?.setText(phoneNumber.substring(phoneHint.length))
-            disableVerifyButton()
-        }
-    }
-
+  
     companion object {
         private const val ARGS_DATA = "ARGS_DATA"
         private const val ARGS_PASS_DATA = "pass_data"
 
         private const val COUNTDOWN_LENGTH = 30
         private const val INTERVAL = 1000
-        private const val MAX_OTP_LENGTH = 6
 
         private const val CACHE_OTP = "CACHE_OTP"
         private const val HAS_TIMER = "has_timer"
@@ -498,6 +454,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         private const val VERIFICATION_CODE = "Kode verifikasi"
         private const val PIN_ERR_MSG = "PIN"
+
+        private const val IMAGE_URL = "https://ecs7.tokopedia.net/android/others/otp_miscall_verification.png"
 
         fun createInstance(passModel: VerificationViewModel): Fragment {
             val fragment = VerificationOtpMiscallFragment()

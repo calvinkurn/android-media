@@ -178,7 +178,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     override fun onDestroy() {
         super.onDestroy()
         viewModel.postResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
     }
 
     private fun loadData(isForceRefresh: Boolean = false){

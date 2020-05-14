@@ -41,25 +41,19 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun setUpObservers() {
-        if (!carouselBannerViewModel.getComponentLiveData().hasActiveObservers()) {
-            carouselBannerViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                carouselBannerTitle.setTextAndCheckShow(item.title)
-            })
-        }
+        carouselBannerViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            carouselBannerTitle.setTextAndCheckShow(item.title)
+        })
 
-        if (!carouselBannerViewModel.getListDataLiveData().hasActiveObservers()) {
-            carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-                carouselBannerRecycleAdapter.setDataList(item)
-            })
-        }
+        carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            carouselBannerRecycleAdapter.setDataList(item)
+        })
 
-        if (carouselBannerViewModel.getSeeAllButtonLiveData().hasActiveObservers()) {
-            carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
-                it?.let {
-                    bannerDotIndicator.setBtnAppLink(it)
-                }
-            })
-        }
+        carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            it?.let {
+                bannerDotIndicator.setBtnAppLink(it)
+            }
+        })
     }
 
     override fun attachRecyclerView() {
@@ -80,9 +74,9 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
 
     private fun getBannerDotIndicator(context: Context): BannerDotIndicator {
         context.run {
-            val radius = resources.getDimensionPixelSize(R.dimen.radius)
-            val padding = resources.getDimensionPixelSize(R.dimen.itemDecorationInnerPadding)
-            val indicatorPadding = resources.getDimensionPixelSize(R.dimen.itemDecorationOuterPadding)
+            val radius = resources.getDimensionPixelSize(R.dimen.dp_4)
+            val padding = resources.getDimensionPixelSize(R.dimen.dp_5)
+            val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
             val activeColor = ContextCompat.getColor(context, R.color.activeBannerDot)
             val inActiveColor = ContextCompat.getColor(context, R.color.inActiveBannerDot)
             return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.CAROUSEL_BANNER_INDICATOR)

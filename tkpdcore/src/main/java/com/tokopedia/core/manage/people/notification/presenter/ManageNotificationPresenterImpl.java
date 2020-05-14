@@ -1,11 +1,9 @@
 package com.tokopedia.core.manage.people.notification.presenter;
 
 import android.app.Activity;
-import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.core.SettingsNotification;
-import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationCacheInteractor;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationCacheInteractorImpl;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationRetrofitInteractor;
@@ -21,7 +19,9 @@ import java.util.Map;
 /**
  * Created by Nisie on 6/22/16.
  */
-public class ManageNotificationPresenterImpl implements ManageNotificationPresenter, ManageConstant{
+public class ManageNotificationPresenterImpl implements ManageNotificationPresenter {
+
+    String STATUS_MESSAGE = "status_message";
 
     ManageNotificationFragmentView viewListener;
     ManageNotificationCacheInteractor cacheInteractor;
@@ -88,11 +88,6 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
     }
 
     @Override
-    public void onGoToSetRing() {
-        viewListener.getActivity().startActivity(new Intent(viewListener.getActivity(), SettingsNotification.class));
-    }
-
-    @Override
     public void checkCache() {
         cacheInteractor.getSettingNotificationCache(new ManageNotificationCacheInteractor.SettingNotificationCacheListener() {
             @Override
@@ -130,7 +125,8 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
                     @Override
                     public void onTimeout() {
                         viewListener.finishLoading();
-                        viewListener.showSnackbar();
+                        // Will disable the snackbar error as infra team not ready
+//                        viewListener.showSnackbar();
                     }
 
                     @Override

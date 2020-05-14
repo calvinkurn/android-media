@@ -8,7 +8,9 @@
 
     <TextView
         android:id="@+id/text_view_content"
-        style="@style/TextSmallNormalBlack70"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/black_70"
+        android:fontFamily="sans-serif"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Make sure you have followed this terms to use Bayar di Tempat:\n\n\t•All the products you buy must support Bayar di Tempat\n\n\t•Maximum amount of transaction is IDR 1.000.000 excluding shipping cost\n\n" />

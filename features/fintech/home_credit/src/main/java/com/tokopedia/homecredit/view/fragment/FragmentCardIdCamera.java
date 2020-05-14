@@ -3,17 +3,17 @@ package com.tokopedia.homecredit.view.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.cameraview.Facing;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
+
+import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -22,7 +22,6 @@ import com.tokopedia.homecredit.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FragmentCardIdCamera extends HomeCreditKTPFragment{
     private ActionCreator actionCreator;

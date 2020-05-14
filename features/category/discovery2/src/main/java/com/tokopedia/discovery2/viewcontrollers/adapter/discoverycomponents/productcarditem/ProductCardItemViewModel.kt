@@ -1,14 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel() {
@@ -30,7 +26,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     fun getDataItemValue(): LiveData<DataItem> {
         dataItem.value = components.data?.get(0)
-        Log.d("sgvs",components.data?.get(0)?.name)
         return dataItem
     }
 
@@ -53,13 +48,11 @@ class ProductCardItemViewModel(val application: Application, private val compone
     }
 
     fun getFreeOngkirImage(): LiveData<String> {
-//        val data = components.data?.get(0)
-//        Log.d("freeongkirdata", data?.freeOngkir.toString())
-      //  val freeOngkir = (data?.freeOngkir as Map<String,Any>)
-//        val freeOngkir = GsonBuilder().create()
-//                .fromJson<FreeOngkir>(data?.freeOngkir.toString(),
-//                        FreeOngkir::class.java)
-       // freeOngkirImage.value = if (freeOngkir.get("is_active") == true) freeOngkir.get("img_url").toString() else ""
+        if (dataItem.value?.freeOngkir?.isActive!!) {
+            freeOngkirImage.value = dataItem.value?.freeOngkir?.imgUrl
+        } else {
+            freeOngkirImage.value = ""
+        }
         return freeOngkirImage
     }
 }

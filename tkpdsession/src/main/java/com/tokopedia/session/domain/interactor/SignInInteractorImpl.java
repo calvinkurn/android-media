@@ -7,8 +7,6 @@ import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.GsonBuilder;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
@@ -20,6 +18,7 @@ import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.service.AccountsService;
 
 import org.parceler.Parcels;
 
@@ -33,6 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by stevenfredian on 1/19/17.
@@ -203,7 +203,7 @@ public class SignInInteractorImpl implements SignInInteractor{
             @Override
             public AccountsParameter call(AccountsParameter accountsParameter, Response<String> stringResponse) {
                 String response = String.valueOf(stringResponse.body());
-                CommonUtils.dumper("o2o Response signing "+response);
+                Timber.d("o2o Response signing "+response);
                 ErrorModel errorModel = new GsonBuilder().create().fromJson(response, ErrorModel.class);
                 if (errorModel.getError() == null) {
                     TokenModel model = new GsonBuilder().create().fromJson(response, TokenModel.class);

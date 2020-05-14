@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.base.di.component.HasComponent;

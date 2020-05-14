@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.shipping.customdialog;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -8,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Window;
 
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
@@ -34,25 +32,6 @@ public class UploadImageShippingResCenterDialog extends BaseUploadImageDialog {
         this.cache = LocalCacheManager
                 .AttachmentShippingResCenter
                 .Builder(this.fragment.getActivity().getApplication(), resolutionID);
-    }
-
-    public UploadImageShippingResCenterDialog(Activity activity, String resolutionID) {
-        this.activity = activity;
-        this.resolutionID = resolutionID;
-        this.context = activity;
-        this.cache = LocalCacheManager
-                .AttachmentShippingResCenter
-                .Builder(this.fragment.getActivity().getApplication(), resolutionID);
-    }
-
-    @Override
-    protected void processImageDataFromCamera(String cameraFileLoc, UploadImageDialogListener listener) {
-        cache.setImageLocalPath(cameraFileLoc)
-                .setImageUUID(UUID.randomUUID().toString())
-                .save();
-        listener.onSuccess(LocalCacheManager
-                .AttachmentShippingResCenter
-                .Builder(this.fragment.getActivity().getApplication(), resolutionID).getCache());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tokopedia.broadcast.message.view.listener
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 interface BroadcastMessageCreateView: CustomerView {
     fun onErrorGetShopInfo(e: Throwable)

@@ -6,12 +6,11 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:label="@string/autocomplete_app_name"
         android:largeHeap="true"
         android:supportsRtl="true">
 
         <activity
-            android:name=".presentation.activity.AutoCompleteActivity"
+            android:name=".AutoCompleteActivity"
             android:label="@string/title_autocomplete"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"

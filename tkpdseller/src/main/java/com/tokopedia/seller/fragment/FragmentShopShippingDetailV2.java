@@ -1,6 +1,5 @@
 package com.tokopedia.seller.fragment;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,10 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,24 +23,29 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
@@ -70,9 +70,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 /**
  * Created by Tkpd_Eka on 2/17/2015.
@@ -442,10 +445,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onBuyerName() {
-        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
-            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                    .getTopProfileIntent(getActivity(), userId));
-        }
+        startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, userId));
     }
 
     public void onDetailClick() {
@@ -487,7 +487,10 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onInvoiceClick() {
-        AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, invoice.getText().toString());
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
+        intent.putExtra(KEY_URL, invoiceUrl);
+        intent.putExtra(KEY_TITLE, "Invoice");
+        startActivity(intent);
     }
 
     private String[] getPermissions() {
@@ -703,7 +706,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void onResume() {
         super.onResume();
-        CommonUtils.dumper("NISTAG : ONRESUME");
+        Timber.d("NISTAG : ONRESUME");
         getEditShippingForm();
     }
 
@@ -718,22 +721,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void showProgress() {
         progressDialog.showDialog();
-    }
-
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-        switch (type) {
-            case SellingService.CONFIRM_SHIPPING:
-            case SellingService.CANCEL_SHIPPING:
-                progressDialog.dismiss();
-                break;
-        }
     }
 
     @Override

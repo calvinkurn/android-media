@@ -6,10 +6,10 @@ import android.os.Bundle;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.service.AccountsService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -18,6 +18,7 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -82,7 +83,8 @@ public class ProfileCompletionModule {
     Bundle provideAccountsBundle(@ApplicationContext Context context,
                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();
-        String authKey = sessionHandler.getAccessToken(context);
+        UserSessionInterface userSession = new UserSession(context);
+        String authKey = userSession.getAccessToken();
         authKey = sessionHandler.getTokenType(context) + " " + authKey;
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         return bundle;

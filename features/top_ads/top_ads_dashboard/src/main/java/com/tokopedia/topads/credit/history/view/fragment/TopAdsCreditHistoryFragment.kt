@@ -252,7 +252,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     }
 
     override fun onDestroy() {
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 }

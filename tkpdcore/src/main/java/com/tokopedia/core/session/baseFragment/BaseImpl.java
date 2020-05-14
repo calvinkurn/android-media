@@ -25,16 +25,6 @@ public abstract class BaseImpl<T extends BaseView> implements Base {
     }
 
     @Override
-    public boolean isAfterRotate() {
-        return isAfterRotate;
-    }
-
-    @Override
-    public boolean isAfterRotate(Bundle savedInstanceState) {
-        return isAfterRotate = (savedInstanceState != null);
-    }
-
-    @Override
     public void fetchRotationData(Bundle argument) {
         isAfterRotate = argument != null;
 

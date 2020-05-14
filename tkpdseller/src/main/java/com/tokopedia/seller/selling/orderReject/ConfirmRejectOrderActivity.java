@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.network.constant.ResponseStatus;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.SellingService;

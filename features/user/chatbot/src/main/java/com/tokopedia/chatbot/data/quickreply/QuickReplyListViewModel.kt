@@ -26,17 +26,4 @@ class QuickReplyListViewModel(msgId: String = "",
         return typeFactory.type(this)
     }
 
-    fun EMPTY(): QuickReplyListViewModel {
-        return QuickReplyListViewModel(
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                ArrayList())
-    }
-
 }

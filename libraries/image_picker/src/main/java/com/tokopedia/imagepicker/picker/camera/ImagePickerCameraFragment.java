@@ -24,15 +24,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraUtils;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.controls.Flash;
+import com.otaliastudios.cameraview.controls.Mode;
+import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.cameraview.CameraListener;
-import com.tokopedia.cameraview.CameraOptions;
-import com.tokopedia.cameraview.CameraUtils;
-import com.tokopedia.cameraview.CameraView;
-import com.tokopedia.cameraview.Flash;
-import com.tokopedia.cameraview.Mode;
-import com.tokopedia.cameraview.PictureResult;
-import com.tokopedia.cameraview.Size;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -452,6 +452,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     @Override
     public void onPause() {
+        hideLoading();
         super.onPause();
         // https://github.com/natario1/CameraView/issues/122
         stopCamera();
@@ -459,6 +460,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     @Override
     public void onDestroy() {
+        hideLoading();
         super.onDestroy();
         stopCamera();
     }

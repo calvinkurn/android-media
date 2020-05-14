@@ -94,8 +94,8 @@ public class CMInApp {
     @ColumnInfo(name = "last_shown")
     public long lastShownTime;
 
-    @Ignore
-    public View cmInAppView;
+    @ColumnInfo(name = "is_test")
+    private boolean isTest;
 
 
 
@@ -142,14 +142,14 @@ public class CMInApp {
     public void setCmLayout(CMLayout cmLayout) {
         this.cmLayout = cmLayout;
     }
-
+/*
     public View getCmInAppView() {
         return cmInAppView;
     }
 
     public void setCmInAppView(View cmInAppView) {
         this.cmInAppView = cmInAppView;
-    }
+    }*/
 
     public long getId() {
         return id;
@@ -246,5 +246,13 @@ public class CMInApp {
 
     public void setLastShownTime(long lastShownTime) {
         this.lastShownTime = lastShownTime;
+    }
+
+    public boolean isTest() {
+        return isTest;
+    }
+
+    public void setTest(boolean test) {
+        isTest = test;
     }
 }

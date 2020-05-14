@@ -4,9 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetCuratedProductSortUseCase;
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetCuratedProductListUseCase;
+import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetCuratedProductSortUseCase;
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateCuratedProductPresenter;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -68,13 +67,13 @@ public class DashboardModule {
     @Provides
     @Named("travel_calendar_holiday_query")
     String providerTravelCalendarHolidayQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_travel_calendar_holiday);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday);
     }
 
     @DashboardScope
     @Provides
-    TravelCalendarHolidayRepository provideTravelCalendarHolidayRepository(CacheManager cacheManager) {
-        return new TravelCalendarHolidayRepository(cacheManager);
+    TravelCalendarHolidayRepository provideTravelCalendarHolidayRepository() {
+        return new TravelCalendarHolidayRepository();
     }
 
     @DashboardScope

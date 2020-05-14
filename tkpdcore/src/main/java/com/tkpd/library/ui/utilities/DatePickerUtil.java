@@ -139,12 +139,6 @@ public class DatePickerUtil {
         }
     }
 
-    public void DatePickerCalendarShopClose(onDateSelectedListener Listener) {
-        if (!IS_PICKING_DATE) {
-            DatePickerSpinnerShopClose(Listener);
-        }
-    }
-
     public void DatePickerSpinnerShopClose(onDateSelectedListener Listener) {
         IS_PICKING_DATE = true;
         listener = Listener;

@@ -102,7 +102,8 @@ public interface OrderListDetailContract {
 
         void askPermission();
 
-        void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse);
+        void setRecommendation(Object object);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -112,9 +113,9 @@ public interface OrderListDetailContract {
 
         List<ActionButton> getActionList();
 
-        void onBuyAgainAllItems(String eventActionLabel);
+        void onBuyAgainAllItems(String eventActionLabel, String statusCode);
 
-        void onBuyAgainItems(List<Items> items, String eventActionLabel);
+        void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
 
         void assignInvoiceDataTo(Intent intent);
 

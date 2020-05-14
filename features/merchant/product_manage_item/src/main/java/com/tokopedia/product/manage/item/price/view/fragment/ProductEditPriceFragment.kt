@@ -12,9 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.design.utils.StringUtils.removeComma
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
@@ -68,7 +70,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        idrTextWatcher = object : CurrencyIdrTextWatcher(counterEditText.editText) {
+        idrTextWatcher = object : CurrencyIdrTextWatcher(counterEditText.textFieldInput) {
             override fun onNumberChanged(number: Double) {
                 isPriceValid()
             }
@@ -99,12 +101,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
         textAddMaksimumBuy.setOnClickListener{showOrderMaxForm()}
 
-        imageViewEdit.setOnClickListener {showEditPriceDialog()}
+        counterEditText.textFieldIcon1.setOnClickListener { showEditPriceDialog() }
 
         labelViewWholesale.setOnClickListener {
             startActivityForResult(ProductAddWholesaleActivity
                     .getIntent(context, wholesalePrice, selectedCurrencyType, counterEditText
-                            .editText.text.toString().replace(",", "").toDouble(),
+                            .textFieldInput.text.toString().replace(",", "").toDouble(),
                             isOfficialStore, hasVariant), REQUEST_CODE_GET_WHOLESALE) }
     }
 
@@ -131,8 +133,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun showDataPrice(productPrice: ProductPrice){
         selectedCurrencyType = productPrice.currencyType
         setPriceTextChangedListener()
-        counterEditText.setValue(productPrice.price)
-        counterEditText.setError(null)
+        counterEditText.textFieldInput.setText(String.format("%.0f", productPrice.price))
+        counterEditText.setError(false)
         wholesalePrice = productPrice.wholesalePrice
         setEditTextPriceState(wholesalePrice)
         setLabelViewWholesale(wholesalePrice)
@@ -149,7 +151,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         }
     }
 
-    private fun getPriceValue() = counterEditText.doubleValue
+    private fun getPriceValue() = removeComma(counterEditText.textFieldInput.text.toString()).toDouble()
 
     private fun getMinOrderValue() = editTextMinOrder.doubleValue
 
@@ -159,7 +161,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun isPriceValid(): Boolean {
         if (!ProductPriceRangeUtils.isPriceValid(getPriceValue(), selectedCurrencyType, isOfficialStore) || getPriceValue() == DEFAULT_PRICE) {
-            counterEditText.setError(
+            counterEditText.setError(true)
+            counterEditText.setMessage(
                             getString(R.string.product_error_product_price_not_valid,
                             ProductPriceRangeUtils.getMinPriceString(selectedCurrencyType, isOfficialStore),
                             ProductPriceRangeUtils.getMaxPriceString(selectedCurrencyType, isOfficialStore)))
@@ -170,7 +173,8 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
             labelViewWholesale.visibility = View.VISIBLE
             dividerLabelViewWholesale.visibility = View.VISIBLE
         }
-        counterEditText.setError(null)
+        counterEditText.setError(false)
+        counterEditText.setMessage("")
         return true
     }
 
@@ -250,7 +254,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 }
                 val view = activity!!.currentFocus
                 if (view != null) {
-                    CommonUtils.hideSoftKeyboard(view)
+                    KeyboardHandler.hideSoftKeyboard(activity)
                     view.clearFocus()
                 }
             })
@@ -264,9 +268,9 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
 
     private fun setPriceTextChangedListener(){
         if (selectedCurrencyType == CurrencyTypeDef.TYPE_IDR) {
-            counterEditText.addTextChangedListener(idrTextWatcher)
+            counterEditText.textFieldInput.addTextChangedListener(idrTextWatcher)
         } else {
-            counterEditText.removeTextChangedListener(idrTextWatcher)
+            counterEditText.textFieldInput.removeTextChangedListener(idrTextWatcher)
         }
     }
 
@@ -277,16 +281,16 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun setEditTextPriceState(wholesaleList: ArrayList<ProductWholesaleViewModel>){
         if (wholesaleList.size == 0 && !hasVariant) {
             setEnablePriceForm(true)
-            counterEditText.editText.setSelection(
-                    counterEditText.editText.text.length)
+            counterEditText.textFieldInput.setSelection(
+                    counterEditText.textFieldInput.text.length)
         } else {
             setEnablePriceForm(false)
         }
     }
 
     private fun setEnablePriceForm(isEnabled : Boolean){
-        counterEditText.isEnabled = isEnabled
-        imageViewEdit.visibility = if(isEnabled) View.GONE else View.VISIBLE
+        counterEditText.textFieldInput.isEnabled = isEnabled
+        counterEditText.textFieldIcon1.visibility = if(isEnabled) View.GONE else View.VISIBLE
     }
 
     private fun saveData(productPrice: ProductPrice) = productPrice.apply {
@@ -330,7 +334,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
         const val SAVED_PRODUCT_PRICE = "SAVED_PRODUCT_PRICE"
         const val DEFAULT_PRICE = 0.0
         const val MIN_ORDER = "1"
-        const val MAX_ORDER = "10,000"
+        const val MAX_ORDER = "999,999"
         const val REQUEST_CODE_GET_WHOLESALE = 1
         fun createInstance() = ProductEditPriceFragment()
     }

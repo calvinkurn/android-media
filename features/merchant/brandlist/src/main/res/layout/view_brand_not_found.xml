@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/brand_not_found_layout">
+
+    <ImageView
+        android:id="@+id/img_brand_not_found"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl8"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:layout_constraintStart_toEndOf="@id/img_brand_not_found"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_header"
+            android:text="@string/title_brand_not_found"
+            android:textColor="@color/defaultText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/layout_lvl1"
+            android:textAlignment="textStart"
+            android:layout_gravity="start"
+            android:lines="1"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_subtitle"
+            android:text="@string/subtitle_brand_not_found"
+            android:textColor="@color/charcoal_grey_68"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-16dp"
+            android:padding="@dimen/layout_lvl1"
+            android:textAlignment="textStart"
+            android:layout_gravity="start"
+            android:lines="2"
+            app:typographyType="body_3" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_check_balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_brand_not_found"
+        android:padding="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        app:unifyButtonSize="small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_brand_not_found"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/btn_check_balance" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

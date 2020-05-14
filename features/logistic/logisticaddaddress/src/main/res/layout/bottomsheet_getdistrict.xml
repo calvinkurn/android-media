@@ -225,7 +225,7 @@
             android:textSize="@dimen/sp_12"
             tools:text="Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail..." />
 
-        <ImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/invalid_img"
             android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_180"

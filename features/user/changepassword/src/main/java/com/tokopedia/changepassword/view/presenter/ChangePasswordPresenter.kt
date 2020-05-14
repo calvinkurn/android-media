@@ -5,17 +5,14 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.changepassword.domain.ChangePasswordUseCase
 import com.tokopedia.changepassword.domain.model.ChangePasswordDomain
 import com.tokopedia.changepassword.view.listener.ChangePasswordContract
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
 /**
  * @author by nisie on 7/25/18.
  */
-class ChangePasswordPresenter(private val changePasswordUseCase: ChangePasswordUseCase,
-                              val userSession: UserSessionInterface) :
-        ChangePasswordContract.Presenter,
-        BaseDaggerPresenter<ChangePasswordContract.View>() {
+class ChangePasswordPresenter(
+        private val changePasswordUseCase: ChangePasswordUseCase
+) : ChangePasswordContract.Presenter, BaseDaggerPresenter<ChangePasswordContract.View>() {
 
     override fun submitChangePasswordForm(oldPassword: String,
                                           newPassword: String,

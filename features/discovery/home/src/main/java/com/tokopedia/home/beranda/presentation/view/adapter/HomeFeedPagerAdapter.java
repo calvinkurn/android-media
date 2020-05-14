@@ -1,15 +1,18 @@
 package com.tokopedia.home.beranda.presentation.view.adapter;
 
+import android.view.ViewGroup;
+
+import androidx.collection.SparseArrayCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.collection.SparseArrayCompat;
-import android.view.ViewGroup;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
@@ -17,49 +20,52 @@ import java.util.List;
 
 public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
-    private SparseArrayCompat<HomeFeedFragment> registeredFragments = new SparseArrayCompat<>();
+    private final RecyclerView.RecycledViewPool parentPool;
+    private final HomeCategoryListener homeCategoryListener;
+    private SparseArrayCompat<HomeRecommendationFragment> registeredFragments = new SparseArrayCompat<>();
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
-    private final TrackingQueue homeTrackingQueue;
-    private List<FeedTabModel> feedTabModelList = new ArrayList<>();
+    private List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
 
-    public HomeFeedPagerAdapter(HomeEggListener homeEggListener,
+    public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
+                                HomeEggListener homeEggListener,
                                 HomeTabFeedListener homeTabFeedListener,
                                 FragmentManager fragmentManager,
-                                List<FeedTabModel> feedTabModelList,
-                                TrackingQueue homeTrackingQueue) {
+                                List<RecommendationTabDataModel> recommendationTabDataModelList,
+                                RecyclerView.RecycledViewPool parentPool) {
         super(fragmentManager);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
-        this.homeTrackingQueue = homeTrackingQueue;
-        updateData(feedTabModelList);
+        this.parentPool = parentPool;
+        this.homeCategoryListener = homeCategoryListener;
+        updateData(recommendationTabDataModelList);
     }
 
-    public void updateData(List<FeedTabModel> feedTabModelList) {
-        this.feedTabModelList.clear();
-        this.feedTabModelList.addAll(feedTabModelList);
+    public void updateData(List<RecommendationTabDataModel> recommendationTabDataModelList) {
+        this.recommendationTabDataModelList.clear();
+        this.recommendationTabDataModelList.addAll(recommendationTabDataModelList);
         registeredFragments.clear();
         notifyDataSetChanged();
     }
 
     @Override
     public Fragment getItem(int position) {
-        HomeFeedFragment homeFeedFragment = HomeFeedFragment.newInstance(
+        HomeRecommendationFragment homeFeedFragment = HomeRecommendationFragment.Companion.newInstance(
                 position,
-                Integer.parseInt(feedTabModelList.get(position).getId()),
-                feedTabModelList.get(position).getName()
+                Integer.parseInt(recommendationTabDataModelList.get(position).getId()),
+                recommendationTabDataModelList.get(position).getName()
         );
-        homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
-        homeFeedFragment.setHomeTrackingQueue(homeTrackingQueue);
+        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setParentPool(parentPool);
         return homeFeedFragment;
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        HomeFeedFragment homeFeedFragment = (HomeFeedFragment) o;
-        homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
-        homeFeedFragment.setHomeTrackingQueue(homeTrackingQueue);
+        HomeRecommendationFragment homeFeedFragment = (HomeRecommendationFragment) o;
+        homeFeedFragment.setListener(homeCategoryListener, homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setParentPool(parentPool);
         registeredFragments.put(position, homeFeedFragment);
         return o;
     }
@@ -70,18 +76,18 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
-    public HomeFeedFragment getRegisteredFragment(int position) {
+    public HomeRecommendationFragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return feedTabModelList.size();
+        return recommendationTabDataModelList.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return feedTabModelList.get(position).getName();
+        return recommendationTabDataModelList.get(position).getName();
     }
 
     @Override

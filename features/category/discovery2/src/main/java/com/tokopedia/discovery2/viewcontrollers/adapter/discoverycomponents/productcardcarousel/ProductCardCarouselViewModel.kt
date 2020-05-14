@@ -21,10 +21,10 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
     @Inject
     lateinit var productCardCarouselUseCase: ProductCardCarouselUseCase
 
-    private val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
-    private val RPC_PAGE_SIZE = "rpc_page_size"
-    private var pageNumber = 1
-    private var productPerPage = 6
+    private val RPC_ROWS = "rpc_Rows"
+    private val RPC_START = "rpc_Start"
+    private val PRODUCT_PER_PAGE = 20
+    private val START_POINT = 0
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -47,7 +47,7 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
 
     fun fetchProductCarouselData(pageEndPoint: String) {
         launchCatchError(block = {
-            productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero()!!, getQueryParameterMap(), pageEndPoint)
+            productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint)
         }, onError = {
             it.printStackTrace()
         })
@@ -55,8 +55,8 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
 
     private fun getQueryParameterMap(): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
-        queryParameterMap[RPC_PAGE_NUMBER_KEY] = pageNumber.toString()
-        queryParameterMap[RPC_PAGE_SIZE] = productPerPage.toString()
+        queryParameterMap[RPC_ROWS] = PRODUCT_PER_PAGE.toString()
+        queryParameterMap[RPC_START] = START_POINT.toString()
         return queryParameterMap
     }
 }

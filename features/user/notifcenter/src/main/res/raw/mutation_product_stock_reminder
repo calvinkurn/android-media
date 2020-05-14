@@ -1,0 +1,14 @@
+mutation notifcenter_setReminderBump($product_id: String!, $notif_id: String!) {
+    notifcenter_setReminderBump(id: $product_id, notif_id: $notif_id) {
+      links {
+        self
+      }
+      status
+      server_proccess_time
+      server
+      message_error
+      data {
+        is_success
+      }
+    }
+}

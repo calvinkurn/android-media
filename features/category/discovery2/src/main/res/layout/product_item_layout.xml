@@ -281,16 +281,16 @@
             tools:visibility="visible"
             tools:text="(3000)" />
 
-        <com.tokopedia.unifycomponents.ProgressBarUnify
-            android:id="@+id/stockPercentageProgress"
-            android:layout_width="100dp"
-            android:layout_height="@dimen/dp_20"
-            android:visibility="gone"
-            app:fromColor="#fa591d"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayoutImageRating"
-            app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:toColor="#d6001c"
-             />
+<!--        <com.tokopedia.unifycomponents.ProgressBarUnify-->
+<!--            android:id="@+id/stockPercentageProgress"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="@dimen/dp_20"-->
+<!--            android:visibility="gone"-->
+<!--            app:fromColor="#fa591d"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/linearLayoutImageRating"-->
+<!--            app:layout_constraintStart_toStartOf="@id/imageProduct"-->
+<!--            app:toColor="#d6001c"-->
+<!--             />-->
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelCredibility"
@@ -308,7 +308,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageFreeOngkirPromo"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"

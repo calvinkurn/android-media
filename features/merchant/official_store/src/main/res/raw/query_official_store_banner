@@ -7,6 +7,11 @@ query OfficialStoreBanners($page: String) {
           topads_view_url
           redirect_url
           applink
+      	  galaxy_attribution
+          persona
+       	  category_persona
+       	  brand_id
+       	  campaignCode
         }
     }
 }

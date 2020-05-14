@@ -3,13 +3,12 @@ apply plugin: 'kotlin'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    
 }
 
 project.ext {
     artifactId = 'authentication_common'
     groupId = 'com.tokopedia.authentication'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "authentication_common"
 }
 

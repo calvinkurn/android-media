@@ -4,6 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.data.model.ShopShipmentData
+import com.tokopedia.shop.common.data.model.ShopShipmentData.*
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 data class ShopShipment(
@@ -89,6 +91,10 @@ data class ShopShipment(
             return 0
         }
 
+        fun mapToShipmentProductData(): ShipmentProductData {
+            return ShipmentProductData(isAvailable, shipProdID, name, uiHidden)
+        }
+
         companion object CREATOR : Parcelable.Creator<ShipmentProduct> {
             override fun createFromParcel(parcel: Parcel): ShipmentProduct {
                 return ShipmentProduct(parcel)
@@ -114,6 +120,13 @@ data class ShopShipment(
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    fun mapToShipmentData(): ShopShipmentData {
+        val shipmentProductData = product.map {
+            it.mapToShipmentProductData()
+        }
+        return ShopShipmentData(image, name, shipmentProductData)
     }
 
     companion object CREATOR : Parcelable.Creator<ShopShipment> {

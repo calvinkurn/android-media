@@ -1,14 +1,11 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.search.di.module.GCMLocalCacheHandlerModule
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule
@@ -18,6 +15,7 @@ import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperM
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -28,8 +26,7 @@ import javax.inject.Named
     SearchShopUseCaseModule::class,
     GetDynamicFilterCoroutineUseCaseModule::class,
     ShopViewModelMapperModule::class,
-    SearchLocalCacheHandlerModule::class,
-    GCMLocalCacheHandlerModule::class
+    SearchLocalCacheHandlerModule::class
 ])
 internal class SearchShopViewModelFactoryModule(
         private val searchParameter: Map<String, Any> = mapOf()
@@ -49,9 +46,7 @@ internal class SearchShopViewModelFactoryModule(
             shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
             searchLocalCacheHandler: SearchLocalCacheHandler,
-            userSession: UserSessionInterface,
-            @Named(SearchConstant.GCM.GCM_LOCAL_CACHE)
-            localCacheHandler: LocalCacheHandler
+            userSession: UserSessionInterface
     ): ViewModelProvider.Factory {
         return SearchShopViewModelFactory(
                 ProductionDispatcherProvider(),
@@ -63,8 +58,7 @@ internal class SearchShopViewModelFactoryModule(
                 shopTotalCountViewModelMapper,
                 shopViewModelMapper,
                 searchLocalCacheHandler,
-                userSession,
-                localCacheHandler
+                userSession
         )
     }
 }

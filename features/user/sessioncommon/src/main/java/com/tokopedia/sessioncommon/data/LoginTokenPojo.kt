@@ -36,6 +36,9 @@ data class LoginToken(
         @SerializedName("event_code")
         @Expose
         var eventCode: String = "",
+        @SerializedName("action")
+        @Expose
+        var action: Int = 0,
         @SerializedName("errors")
         @Expose
         var errors: ArrayList<Error> = arrayListOf()

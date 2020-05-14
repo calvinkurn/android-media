@@ -2,7 +2,7 @@ package com.tokopedia.session.addname.fragment;
 
 import android.os.Bundle;
 
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameRegisterPhoneFragment;
 
 /**

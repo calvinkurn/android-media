@@ -3,47 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/white">
 
-    <com.tokopedia.product.manage.item.utils.LabelRadioButton
-        android:id="@+id/labelRadioButtonStockAvailable"
+    <com.tokopedia.product.manage.item.utils.LabelSwitch
+        android:id="@+id/labelSwitchStock"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:padding="@dimen/dp_16"
-        app:lr_title="@string/product_label_stock_always_available" />
+        app:ls_title="@string/product_stock_available_label" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:background="@drawable/line_divider"
-        android:layout_marginLeft="@dimen/dp_16" />
-
-    <com.tokopedia.product.manage.item.utils.LabelRadioButton
-        android:id="@+id/labelRadioButtonStockLimited"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:padding="@dimen/dp_16"
-        app:lr_title="@string/product_label_stock_limited" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:background="@drawable/line_divider"
-        android:layout_marginLeft="@dimen/dp_16" />
-
-    <com.tokopedia.product.manage.item.utils.LabelRadioButton
-        android:id="@+id/labelRadioButtonStockEmpty"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:padding="@dimen/dp_16"
-        app:lr_title="@string/product_label_stock_empty" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/static_text_status"
+        style="@style/TextView.Nano"
+        android:text="@string/product_helper_product_stock_static"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_5"
+        tools:visibility="visible"
+        android:visibility="gone"/>
 
     <View
         android:layout_width="match_parent"
@@ -59,8 +40,8 @@
         android:layout_marginRight="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
         app:decimal_max_length="@integer/product_max_counter_int_length"
-        app:decimal_input_hint="@string/product_label_stock_count"
-        android:visibility="gone"/>
+        tools:visibility="visible"
+        app:decimal_input_hint="@string/product_label_stock_count"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textViewHelperStock"
@@ -68,6 +49,7 @@
         android:text="@string/product_helper_product_stock"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        tools:visibility="visible"
         android:visibility="gone"/>
 
     <androidx.appcompat.widget.AppCompatTextView

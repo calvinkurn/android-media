@@ -14,22 +14,25 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private lateinit var mProductCarouselRecyclerView: RecyclerView
-    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var mProductCarouselRecyclerView: RecyclerView
+    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
 
-    override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
-        initView()
-        setUpDataObserver(fragment.viewLifecycleOwner)
-        mProductCarouselComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
-    }
-
-    private fun initView() {
+    init {
         mProductCarouselRecyclerView = itemView.findViewById(R.id.tokopoints_rv)
         mProductCarouselRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
+    }
+
+    override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
+        mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
+        init()
+    }
+
+    private fun init() {
+        setUpDataObserver(fragment.viewLifecycleOwner)
+        mProductCarouselComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
     }
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {

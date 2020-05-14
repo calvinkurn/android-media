@@ -16,7 +16,7 @@ import com.tokopedia.seller.selling.model.ResponseConfirmShipping;
 import com.tokopedia.seller.selling.constant.shopshippingdetail.ShopShippingDetailView;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.network.constant.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -37,6 +37,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.selling.network.apiservices.MyShopOrderActService;
 import com.tokopedia.seller.selling.network.apiservices.ProductActService;
 import com.tokopedia.seller.selling.network.apiservices.ProductService;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -381,8 +383,8 @@ public class SellingService extends IntentService implements SellingServiceConst
                     public Observable<OrderProduct> call(OrderProduct orderProduct) {
 
                         final Map<String, String> paramsGetProduct = new HashMap<String, String>();
-                        SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
-                        paramsGetProduct.put("shop_id", sessionHandler.getShopID());
+                        UserSessionInterface userSession = new UserSession(getApplicationContext());
+                        paramsGetProduct.put("shop_id", userSession.getShopId());
                         paramsGetProduct.put(ModelEditDescription.PRODUCT_ID, orderProduct.getProductId().toString());
 
                         ProductService productService = new ProductService();

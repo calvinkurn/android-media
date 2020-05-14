@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.cardview.widget.CardView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -20,6 +16,11 @@ import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -29,12 +30,13 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule;
+import com.tokopedia.topchat.chatroom.di.DaggerChatComponent;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
-import com.tokopedia.topchat.common.util.Utils;
-import com.tokopedia.topchat.chatroom.di.DaggerChatComponent;
 import com.tokopedia.topchat.common.TopChatInternalRouter;
+import com.tokopedia.topchat.common.util.Utils;
 
 import javax.inject.Inject;
 
@@ -115,8 +117,9 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     @Override
     protected void initInjector() {
         if (getActivity() != null) {
-            DaggerChatComponent.builder().baseAppComponent(
-                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+            DaggerChatComponent.builder()
+                    .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                    .chatRoomContextModule(new ChatRoomContextModule(getContext()))
                     .build()
                     .inject(this);
         }
@@ -238,7 +241,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                 setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
             } else if (chatRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
-                layoutParams.setMargins(0, (int) getResources().getDimension(R.dimen.dp_24), 0, 0);
+                layoutParams.setMargins(0, (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5), 0, 0);
                 chatPromotionalcardView.requestLayout();
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
                 chatPersonalCardView.setVisibility(View.VISIBLE);

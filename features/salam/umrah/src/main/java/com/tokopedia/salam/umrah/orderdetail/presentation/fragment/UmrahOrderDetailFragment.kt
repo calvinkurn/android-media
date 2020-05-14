@@ -17,18 +17,19 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
+import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
-import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
 import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.UmrahOrderDetailButtonAdapter
 import com.tokopedia.salam.umrah.orderdetail.presentation.util.UmrahOrderDetailConst.BATALKAN_LABEL
-import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
+import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailButtonModel
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,9 +51,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     lateinit var umrahOrderDetailViewModel: UmrahOrderDetailViewModel
 
     @Inject
-    lateinit var trackingUmrahUtil: TrackingUmrahUtil
+    lateinit var trackingUmrahUtil: UmrahTrackingAnalytics
 
     lateinit var orderId: String
+
+    lateinit var performanceMonitoring: PerformanceMonitoring
 
     override fun getScreenName(): String = ""
 
@@ -60,7 +63,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        initializePerformance()
         orderId = savedInstanceState?.getString(EXTRA_ORDER_ID)
                 ?: arguments?.getString(EXTRA_ORDER_ID) ?: ""
     }
@@ -76,6 +79,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
                 is Success -> {
                     hideLoading()
                     renderData(it.data)
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
                     val data = it.throwable
@@ -120,6 +124,10 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         if (::orderId.isInitialized) {
             outState.putString(EXTRA_ORDER_ID, orderId)
         }
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_ORDER_DETAIL_PAGE_PERFORMANCE)
     }
 
     fun showLoading() {
@@ -231,20 +239,21 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         }))
     }
 
-    private fun renderMyUmrahWidget(data: MyUmrahWidgetModel) {
+    private fun renderMyUmrahWidget(data: UmrahMyUmrahWidgetModel) {
         if (data.header.isNotEmpty()) {
             my_umrah_widget.myUmrahModel = data
             my_umrah_widget.buildView(trackingUmrahUtil)
+            my_umrah_widget.setWidthMatchParent()
         } else {
             my_umrah_widget.visibility = View.GONE
         }
     }
 
-    override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {
-        when(buttonViewModel.label){
+    override fun onItemClicked(buttonModel: UmrahOrderDetailButtonModel, position: Int) {
+        when(buttonModel.label){
             BATALKAN_LABEL -> trackingUmrahUtil.umrahOrderDetailBatalkanPesanan()
         }
-        RouteManager.route(context, "${buttonViewModel.buttonLink}")
+        RouteManager.route(context, buttonModel.buttonLink)
     }
 
     private fun getTextFromHtml(htmlText: String): CharSequence =
@@ -284,6 +293,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     companion object {
 
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
+        const val UMRAH_ORDER_DETAIL_PAGE_PERFORMANCE = "sl_umrah_order_detail"
 
         fun getInstance(orderId: String): UmrahOrderDetailFragment = UmrahOrderDetailFragment().also {
             it.arguments = Bundle().apply {
@@ -291,6 +301,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             }
         }
 
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 
 }

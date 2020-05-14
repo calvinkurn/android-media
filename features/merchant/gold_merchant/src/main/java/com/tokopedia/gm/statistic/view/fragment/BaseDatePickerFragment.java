@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.View;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.datepicker.range.utils.DatePickerUtils;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
