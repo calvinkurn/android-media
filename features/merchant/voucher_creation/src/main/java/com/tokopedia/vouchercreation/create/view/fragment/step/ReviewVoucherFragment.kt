@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
@@ -64,7 +65,9 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 ), hasCta = true),
                 DividerUiModel(8),
                 FooterButtonUiModel("Tambah Voucher", ""),
-                FooterUiModel("Dengan klik Tambah Voucher, saya menyetujui syarat dan ketentuan yang berlaku", "syarat dan ketentuan")
+                FooterUiModel(
+                        context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
+                        context?.getString(R.string.mvc_review_terms).toBlankOrString())
         )
         renderList(dummyList)
     }
