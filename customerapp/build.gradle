@@ -170,6 +170,7 @@ android {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
+            debuggable = isDebugable(project).toBoolean()
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
             if (isFirebasePerformanceLogEnabled().toBoolean()) {
@@ -275,6 +276,7 @@ dependencies {
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.event)
+    implementation project(rootProject.ext.features.eventPDP)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
@@ -434,13 +436,13 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
 
     if (rootProject.ext.debugToolsEnabled) {

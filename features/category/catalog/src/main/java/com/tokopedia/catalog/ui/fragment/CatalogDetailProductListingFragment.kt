@@ -19,6 +19,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
+import com.tokopedia.catalog.di.CatalogComponent
+import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.adapter.ProductNavListAdapter
 import com.tokopedia.common_category.adapter.QuickFilterAdapter
@@ -31,10 +35,6 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.analytics.CatalogDetailPageAnalytics
-import com.tokopedia.catalog.di.CatalogComponent
-import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.util.ParamMapToUrl
@@ -237,7 +237,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             it?.let {
                 setTotalSearchResultCount(it)
                 if (!TextUtils.isEmpty(it)) {
-                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it))
+                    setQuickFilterAdapter(getString(R.string.catalog_result_count_template_text, it))
                 } else {
                     setQuickFilterAdapter("")
                 }

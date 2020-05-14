@@ -144,6 +144,7 @@ object DeeplinkMapper {
                     DeeplinkMapperMerchant.isShopPageResultEtalaseDeepLink(uri) -> DeeplinkMapperMerchant.getShopPageResultEtalaseInternalAppLink(uri)
                     deeplink.startsWith(ApplinkConst.SELLER_INFO_DETAIL, true) -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri)
                     deeplink.startsWithPattern(ApplinkConst.ORDER_TRACKING) -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink)
+                    deeplink.startsWith(ApplinkConst.ORDER_HISTORY, true) -> getRegisteredNavigationOrderHistory(uri)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(deeplink)
@@ -171,6 +172,13 @@ object DeeplinkMapper {
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    private fun getRegisteredNavigationOrderHistory(uri: Uri?): String {
+        val path = uri?.lastPathSegment ?: ""
+        return if (path.isNotEmpty()) {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, path)
+        } else { "" }
     }
 
     private fun isProductTalkDeeplink(deeplink: String): Boolean {
@@ -300,6 +308,7 @@ object DeeplinkMapper {
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
             ApplinkConst.BUYER_INFO -> ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
+            ApplinkConst.HAS_PASSWORD -> return ApplinkConstInternalGlobal.HAS_PASSWORD
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {

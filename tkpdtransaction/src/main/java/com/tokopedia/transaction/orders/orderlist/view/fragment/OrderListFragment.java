@@ -57,6 +57,7 @@ import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDat
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseListener;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory;
@@ -206,6 +207,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
     private CloseableBottomSheetDialog changeDateBottomSheetDialog;
+
+    private boolean isPulledToRefresh = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -412,6 +415,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
         filterDate.setOnClickListener(this);
+
+        swipeToRefresh.setOnRefreshListener(() -> {
+            isPulledToRefresh = true;
+            doRefresh();
+        });
     }
 
     private void addRecyclerListener() {
@@ -451,6 +459,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onRefresh(View view) {
+        doRefresh();
+    }
+
+    private void doRefresh() {
         page_num = 1;
         isLoading = true;
         presenter.onRefresh();
@@ -460,6 +472,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
             quickSingleFilterView.setVisibility(View.VISIBLE);
             simpleSearchView.setVisibility(View.VISIBLE);
+        }
+        if (isPulledToRefresh && getActivity() != null) {
+            ((OrderListActivity)getActivity()).getInitialData();
+            isPulledToRefresh = false;
         }
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
@@ -925,13 +941,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
                 if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
-                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase(), order.paymentID(), order.cartString());
                 else
                     handleDefaultCase(actionButton);
                 break;
             case ACTION_SUBMIT_CANCELLATION:
             case ACTION_ASK_SELLER:
-                presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase(), "", "");
                 break;
             case ACTION_TRACK_IT:
                 trackOrder();
