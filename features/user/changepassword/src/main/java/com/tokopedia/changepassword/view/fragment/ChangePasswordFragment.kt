@@ -55,8 +55,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tracker.onViewChangePassword()
-
         userSession = UserSession(context)
         if (!userSession.isLoggedIn) {
             var intent: Intent
@@ -121,6 +119,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     private fun onGoToForgotPass() {
+        tracker.onClickForgotPassword()
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)

@@ -101,8 +101,6 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tracker.onViewForgotPassword();
-
         if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
             onSuccessResetPassword();
         }
@@ -122,17 +120,14 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToRegister();
-            }
+        registerButton.setOnClickListener(v -> {
+            tracker.onCLickRegister();
+            goToRegister();
         });
         emailEditText.addTextChangedListener(watcher(tilEmail));
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tracker.onSubmitClicked();
                 KeyboardHandler.DropKeyboard(getActivity(), emailEditText);
                 presenter.resetPassword();
             }
