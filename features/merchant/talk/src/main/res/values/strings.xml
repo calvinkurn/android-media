@@ -99,7 +99,7 @@
     <string name="delete_question_toaster_success">Pertanyaanmu berhasil dihapus.</string>
     <string name="reading_create_question_toaster_success">Yay, pertanyaan berhasil dibuat. Tunggu notifikasi jawaban di Inbox, ya!</string>
     <string name="reading_attached_product">%d produk</string>
-    <string name="reading_other_answers">Lihat %d Jawaban Lainnya</string>
+    <string name="reading_other_answers">Lihat %d jawaban lainnya</string>
 
     <string name="toaster_follow_success">Kamu berhasil follow Q&amp;A ini. Nantikan notifikasinya di Inbox, ya!</string>
     <string name="toaster_unfollow_success">Kamu berhasil unfollow Q&amp;A ini.</string>

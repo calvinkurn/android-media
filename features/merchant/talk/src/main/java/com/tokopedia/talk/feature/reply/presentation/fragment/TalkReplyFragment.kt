@@ -353,6 +353,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessDeleteComment() {
         showSuccessToaster(getString(R.string.delete_toaster_success))
+        adapter?.clearAllElements()
         getDiscussionData()
         showPageLoading()
     }
@@ -381,6 +382,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showSuccessToaster(getString(R.string.reply_toaster_success))
         resetTextBox()
         resetAttachedProducts()
+        adapter?.clearAllElements()
         getDiscussionData()
         showPageLoading()
     }

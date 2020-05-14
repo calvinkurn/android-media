@@ -13,7 +13,6 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
     }
 
     fun showEmpty(talkReplyEmptyModel: TalkReplyEmptyModel) {
-        visitables.clear()
         visitables.add(talkReplyEmptyModel)
         notifyDataSetChanged()
     }
