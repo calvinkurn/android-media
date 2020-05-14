@@ -33,7 +33,4 @@ object ApplinkConstInternalCategory {
 
     @JvmField
     val INTERNAL_CATEGORY_DETAIL = "$INTERNAL_CATEGORY/{DEPARTMENT_ID}"
-
-    @JvmField
-    val INTERNAL_CATEGORY_DETAIL_QUERY = "$INTERNAL_CATEGORY/{DEPARTMENT_ID}?{query_param}"
 }

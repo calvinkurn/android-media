@@ -21,8 +21,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.categoryLevels.R
 import com.tokopedia.categoryLevels.adapters.SelectedFilterAdapter
@@ -463,8 +463,9 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     override fun OnSubCategoryClicked(id: String, categoryName: String) {
+        val internalCategoryLinkWithQuery = "$INTERNAL_CATEGORY_DETAIL?{query_param}"
         activity?.let {
-            val deeplink = UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL_QUERY, id, "categoryName=$categoryName")
+            val deeplink = UriUtil.buildUri(internalCategoryLinkWithQuery, id, "categoryName=$categoryName")
             val intent = RouteManager.getIntent(it, deeplink)
             intent.putExtra(EXTRA_PARENT_ID, mDepartmentId)
             intent.putExtra(EXTRA_PARENT_NAME, mDepartmentName)
