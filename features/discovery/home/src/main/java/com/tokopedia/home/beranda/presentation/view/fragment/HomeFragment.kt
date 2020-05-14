@@ -1495,9 +1495,11 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-            homeMainToolbar.setNotificationNumber(notificationCount)
-            homeMainToolbar.setInboxNumber(inboxCount)
+        homeMainToolbar?.let {
+            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+                homeMainToolbar.setNotificationNumber(notificationCount)
+                homeMainToolbar.setInboxNumber(inboxCount)
+            }
         }
     }
     

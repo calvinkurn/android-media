@@ -1,6 +1,6 @@
-package com.tokopedia.digital_brizzi.di
+package com.tokopedia.brizzi.di
 
-import com.tokopedia.digital_brizzi.mapper.BrizziCardObjectMapper
+import com.tokopedia.brizzi.mapper.BrizziCardObjectMapper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module

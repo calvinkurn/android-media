@@ -25,7 +25,6 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonElectronicMoney)
-    implementation project(rootProject.ext.features.digitalEmoney)
 
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)

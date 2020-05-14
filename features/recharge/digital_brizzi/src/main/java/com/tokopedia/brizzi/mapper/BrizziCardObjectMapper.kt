@@ -1,10 +1,10 @@
-package com.tokopedia.digital_brizzi.mapper
+package com.tokopedia.brizzi.mapper
 
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
 import com.tokopedia.common_electronic_money.util.NFCUtils
-import com.tokopedia.digital_brizzi.viewmodel.BrizziBalanceViewModel
+import com.tokopedia.brizzi.viewmodel.BrizziBalanceViewModel
 import id.co.bri.sdk.BrizziCardObject
 import javax.inject.Inject
 

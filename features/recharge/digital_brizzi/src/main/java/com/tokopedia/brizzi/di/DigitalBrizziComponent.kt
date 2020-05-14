@@ -1,7 +1,7 @@
-package com.tokopedia.digital_brizzi.di
+package com.tokopedia.brizzi.di
 
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceComponent
-import com.tokopedia.digital_brizzi.fragment.BrizziCheckBalanceFragment
+import com.tokopedia.brizzi.fragment.BrizziCheckBalanceFragment
 import dagger.Component
 
 @DigitalBrizziScope

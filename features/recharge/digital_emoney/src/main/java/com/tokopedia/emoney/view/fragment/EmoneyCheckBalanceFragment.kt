@@ -17,9 +17,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
+import com.tokopedia.common_electronic_money.util.CardUtils
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
@@ -47,10 +49,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
         }
-    }
-
-    fun setOnNewIntent(intent: Intent) {
-        processTagIntent(intent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,7 +82,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
-    protected fun processTagIntent(intent: Intent) {
+    override fun processTagIntent(intent: Intent) {
         if (isTagNfcValid(intent)) {
             if (!isDigitalSmartcardEnabled()) {
                 onNavigateToHome()
@@ -97,22 +95,18 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeMandiri(intent: Intent) {
-        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-        try {
+        if (CardUtils.cardIsEmoney(intent)) {
+            val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
             if (tag != null) {
-                var isodep = IsoDep.get(tag);
-                if (isodep != null) {
-                    emoneyBalanceViewModel.processEmoneyTagIntent(isodep,
-                            GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
-                            0)
-                } else {
-                    showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
-                }
+                emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
+                        GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
+                        0)
+            } else {
+                showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
             }
-        } catch (e: Exception) {
-            showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
+        } else {
+            processBrizzi(intent)
         }
-
         emoneyBalanceViewModel.emoneyInquiry.observe(this, Observer { emoneyInquiry ->
             emoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
                 when (attributes.status) {
@@ -141,19 +135,16 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             tapETollCardView.setIssuerId(it)
         })
 
-        emoneyBalanceViewModel.cardIsNotEmoney.observe(this, Observer {
-            processBrizzi(intent)
-        })
     }
 
     protected open fun processBrizzi(intent: Intent) {
         activity?.let { context ->
-            val intentBrizzi = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMARTCARD,
-                    intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD), "true")
-            intentBrizzi.putExtras(intent.extras)
-            intentBrizzi.action = intent.action
-            startActivity(intentBrizzi)
             context.finish()
+            val newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI,
+                    DigitalExtraParam.EXTRA_NFC)
+            newIntent.replaceExtras(intent)
+            newIntent.setAction(intent.getAction())
+            startActivity(newIntent)
         }
     }
 

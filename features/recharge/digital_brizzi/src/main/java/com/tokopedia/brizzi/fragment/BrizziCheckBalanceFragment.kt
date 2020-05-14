@@ -1,4 +1,4 @@
-package com.tokopedia.digital_brizzi.fragment
+package com.tokopedia.brizzi.fragment
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -14,18 +14,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.brizzi.di.DaggerDigitalBrizziComponent
+import com.tokopedia.brizzi.viewmodel.BrizziBalanceViewModel
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
-import com.tokopedia.digital_brizzi.R
-import com.tokopedia.digital_brizzi.di.DaggerDigitalBrizziComponent
-import com.tokopedia.digital_brizzi.viewmodel.BrizziBalanceViewModel
-import com.tokopedia.emoney.view.fragment.EmoneyCheckBalanceFragment
-import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
+import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
+import com.tokopedia.common_electronic_money.util.CardUtils
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
 
-class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
+class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var brizziBalanceViewModel: BrizziBalanceViewModel
@@ -35,11 +37,15 @@ class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
     @Inject
     lateinit var brizziInstance: Brizzi
 
-    override fun initiateViewModel() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initiateViewModel()
+    }
+
+    fun initiateViewModel() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactories)
             brizziBalanceViewModel = viewModelProvider.get(BrizziBalanceViewModel::class.java)
-            emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
         }
     }
 
@@ -51,6 +57,18 @@ class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
         activity?.let {
             brizziInstance.setNfcAdapter(it)
             processTagIntent(it.intent)
+        }
+    }
+
+    override fun processTagIntent(intent: Intent) {
+        if (isTagNfcValid(intent)) {
+            if (!isDigitalSmartcardEnabled()) {
+                onNavigateToHome()
+            } else {
+                // nfc enabled and process Mandiri NFC as default
+                showLoading()
+                processBrizzi(intent)
+            }
         }
     }
 
@@ -86,8 +104,23 @@ class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
                 abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)
     }
 
-    override fun processBrizzi(intent: Intent) {
-        executeBrizzi(false, intent)
+    fun processBrizzi(intent: Intent) {
+        if(CardUtils.cardIsEmoney(intent)){
+            processEmoney(intent)
+        } else {
+            executeBrizzi(false, intent)
+        }
+    }
+
+    protected open fun processEmoney(intent: Intent) {
+        activity?.let { context ->
+            context.finish()
+            val newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY,
+                    DigitalExtraParam.EXTRA_NFC)
+            newIntent.replaceExtras(intent)
+            newIntent.setAction(intent.getAction())
+            startActivity(newIntent)
+        }
     }
 
     private fun executeBrizzi(needRefreshToken: Boolean, intent: Intent) {
@@ -112,18 +145,18 @@ class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
 
             brizziBalanceViewModel.cardIsNotBrizzi.observe(this, Observer {
                 emoneyAnalytics.onErrorReadingCard()
-                showError(resources.getString(R.string.emoney_card_isnot_supported))
+                showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_card_is_not_supported))
             })
         } else {
-            showError(resources.getString(R.string.emoney_device_isnot_supported))
+            showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported))
         }
     }
 
     private fun getBalanceBrizzi(needRefreshToken: Boolean, intent: Intent) {
         try {
             brizziBalanceViewModel.processBrizziTagIntent(intent, brizziInstance,
-                    GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi),
-                    GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
+                    GraphqlHelper.loadRawString(resources, com.tokopedia.brizzi.R.raw.query_token_brizzi),
+                    GraphqlHelper.loadRawString(resources, com.tokopedia.brizzi.R.raw.mutation_emoney_log_brizzi),
                     needRefreshToken)
         } catch (e: Exception) {
             Log.e(BrizziCheckBalanceFragment.javaClass.simpleName, e.message)
@@ -147,7 +180,7 @@ class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
             }
             grantPermissionNfc()
         } else {
-            showErrorDeviceUnsupported(resources.getString(R.string.emoney_nfc_not_supported))
+            showErrorDeviceUnsupported(resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported))
         }
     }
 
@@ -158,12 +191,12 @@ class BrizziCheckBalanceFragment : EmoneyCheckBalanceFragment() {
                 tapETollCardView.visibility = View.GONE
 
                 AlertDialog.Builder(it)
-                        .setMessage(getString(R.string.emoney_please_activate_nfc_from_settings))
-                        .setPositiveButton(getString(R.string.emoney_activate)) { p0, p1 ->
+                        .setMessage(getString(com.tokopedia.brizzi.R.string.brizzi_please_activate_nfc_from_settings))
+                        .setPositiveButton(getString(com.tokopedia.brizzi.R.string.brizzi_activate)) { p0, p1 ->
                             emoneyAnalytics.onActivateNFCFromSetting()
                             navigateToNFCSettings()
                         }
-                        .setNegativeButton(getString(R.string.emoney_cancel)) { p0, p1 ->
+                        .setNegativeButton(getString(com.tokopedia.brizzi.R.string.brizzi_cancel)) { p0, p1 ->
                             emoneyAnalytics.onCancelActivateNFCFromSetting()
                             nfcDisabledView.visibility = View.VISIBLE
                         }.show()

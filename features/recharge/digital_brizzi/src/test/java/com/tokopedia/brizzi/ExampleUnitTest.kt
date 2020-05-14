@@ -1,4 +1,4 @@
-package com.tokopedia.digital_brizzi
+package com.tokopedia.brizzi
 
 import org.junit.Test
 

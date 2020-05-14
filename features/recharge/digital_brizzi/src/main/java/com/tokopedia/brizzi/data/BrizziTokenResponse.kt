@@ -1,4 +1,4 @@
-package com.tokopedia.digital_brizzi.data
+package com.tokopedia.brizzi.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

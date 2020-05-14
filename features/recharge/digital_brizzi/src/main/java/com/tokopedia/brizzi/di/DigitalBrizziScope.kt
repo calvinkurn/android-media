@@ -1,4 +1,4 @@
-package com.tokopedia.digital_brizzi.di
+package com.tokopedia.brizzi.di
 
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy

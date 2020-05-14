@@ -1,5 +1,6 @@
 package com.tokopedia.emoney.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.text.TextUtils
@@ -24,6 +25,7 @@ class EmoneyCheckBalanceActivity : NfcCheckBalanceActivity() {
      * this method will be executed first time after NFC card detected
      * @param intent is needed to process data NFC card brizzi and emoney mandiri
      */
+    @SuppressLint("MissingSuperCall")
     override fun onNewIntent(intent: Intent?) {
         intent?.let {
             processTagIntent(intent)
@@ -43,7 +45,7 @@ class EmoneyCheckBalanceActivity : NfcCheckBalanceActivity() {
                 (intent.action == NfcAdapter.ACTION_TECH_DISCOVERED ||
                         intent.action == NfcAdapter.ACTION_TAG_DISCOVERED)) {
             if (fragment != null) {
-                (fragment as EmoneyCheckBalanceFragment).setOnNewIntent(intent)
+                (fragment as EmoneyCheckBalanceFragment).processTagIntent(intent)
             }
         }
     }

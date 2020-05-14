@@ -1,4 +1,4 @@
-package com.tokopedia.digital_brizzi.viewmodel
+package com.tokopedia.brizzi.viewmodel
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -9,11 +9,11 @@ import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
-import com.tokopedia.digital_brizzi.data.BrizziInquiryLog
-import com.tokopedia.digital_brizzi.data.BrizziInquiryLogResponse
-import com.tokopedia.digital_brizzi.data.BrizziToken
-import com.tokopedia.digital_brizzi.data.BrizziTokenResponse
-import com.tokopedia.digital_brizzi.mapper.BrizziCardObjectMapper
+import com.tokopedia.brizzi.data.BrizziInquiryLog
+import com.tokopedia.brizzi.data.BrizziInquiryLogResponse
+import com.tokopedia.brizzi.data.BrizziToken
+import com.tokopedia.brizzi.data.BrizziTokenResponse
+import com.tokopedia.brizzi.mapper.BrizziCardObjectMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse

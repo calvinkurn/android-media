@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.digital_brizzi">
+    package="com.tokopedia.brizzi">
 
     <!-- add library brizzi and force it to use minSdkVersion same as Tokopedia -->
     <uses-sdk tools:overrideLibrary="id.co.bri.sdk.brizzi" />
@@ -8,7 +8,7 @@
     <application>
 
         <activity
-            android:name=".activity.BrizziCheckBalanceActivity"
+            android:name="com.tokopedia.brizzi.activity.BrizziCheckBalanceActivity"
             android:label="@string/emoney_toolbar_title_etoll_check_balance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
