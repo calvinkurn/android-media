@@ -28,7 +28,6 @@ class CardViewHolder(
 
     override fun bind(element: CardWidgetUiModel) {
         observeState(element)
-        listener.getCardData()
 
         itemView.tvCardTitle.text = element.title
     }
