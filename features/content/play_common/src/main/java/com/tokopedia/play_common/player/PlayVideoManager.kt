@@ -217,7 +217,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Unprepared && prepareState.previousUri != null) {
             playUri(prepareState.previousUri, autoPlay)
-        }
+        } else if (prepareState is PlayVideoPrepareState.Prepared) resume()
     }
 
     fun reset() {
