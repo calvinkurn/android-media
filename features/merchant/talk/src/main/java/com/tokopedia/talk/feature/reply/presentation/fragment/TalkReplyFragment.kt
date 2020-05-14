@@ -639,6 +639,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showEmpty(userId: Int) {
         adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
+        replyTextBox.requestFocus()
     }
 
 

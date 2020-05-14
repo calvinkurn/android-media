@@ -80,6 +80,7 @@
     <string name="talk_retry">Refresh</string>
     <string name="talk_ok">Oke</string>
     <string name="talk_formatted_date">• %s</string>
+    <string name="talk_like_count_place_holder">Like</string>
 
     <string name="reading_connection_error_title">Koneksi internetmu terganggu!</string>
     <string name="reading_connection_error_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
@@ -93,7 +94,6 @@
     <string name="reading_popular_sort_option">Pertanyaan Terpopuler</string>
     <string name="reading_sort_bottom_sheet_title">Urutkan berdasarkan</string>
     <string name="reading_sort_chip_string">%s (%d)</string>
-    <string name="reading_like_count_place_holder">Like</string>
     <string name="reading_seller_label">Penjual</string>
     <string name="reading_no_answer">Belum ada jawaban</string>
     <string name="delete_question_toaster_success">Pertanyaanmu berhasil dihapus.</string>

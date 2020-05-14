@@ -34,7 +34,6 @@ class TalkReplyViewHolder(view: View,
             showDate(createTimeFormatted)
             showSellerLabelWithCondition(isSeller)
             showAnswer(content, state.isMasked, maskedContent)
-            showNumberOfLikesWithCondition(likeCount)
             if(attachedProductCount > 0) {
                 showAttachedProducts(attachedProducts)
             }
@@ -100,12 +99,6 @@ class TalkReplyViewHolder(view: View,
                 text = answer
                 show()
             }
-        }
-    }
-
-    private fun showNumberOfLikesWithCondition(likeCount: Int) {
-        if(likeCount > 0) {
-            itemView.replyLikeCount.text = likeCount.toString()
         }
     }
 

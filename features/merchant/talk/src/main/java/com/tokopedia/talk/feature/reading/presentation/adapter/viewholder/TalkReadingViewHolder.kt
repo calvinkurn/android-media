@@ -32,7 +32,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                     return
                 }
                 showAnswer(answer.content, questionID)
-                showNumberOfLikesWithCondition(answer.likeCount, answer.state.allowLike)
                 showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
                 showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
             } else {
@@ -72,8 +71,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     private fun hideNoAnswersText() {
         itemView.apply {
             readingNoAnswersText.hide()
-            likeIcon.show()
-            likeCount.show()
         }
     }
 
@@ -132,18 +129,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         return String.format(itemView.context.getString(R.string.talk_formatted_date), date)
     }
 
-    private fun showNumberOfLikesWithCondition(likeCount: Int, allowLike: Boolean) {
-        if(!allowLike) {
-            return
-        }
-        if(likeCount > 0) {
-            itemView.likeCount.apply {
-                text = likeCount.toString()
-                show()
-            }
-        }
-    }
-
     private fun showNumberOfAttachedProductsWithCondition(attachedProducts: Int) {
         if(attachedProducts > 0) {
             itemView.apply {
@@ -169,8 +154,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
 
     private fun hideOtherElements() {
         itemView.apply {
-            likeIcon.hide()
-            likeCount.hide()
             attachedProductCount.hide()
             attachedProductIcon.hide()
             readingMessage.hide()
