@@ -12,10 +12,11 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/mvc_download_voucher_description"
         android:textColor="@color/light_N700_96"
+        
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMvcVouchers"
