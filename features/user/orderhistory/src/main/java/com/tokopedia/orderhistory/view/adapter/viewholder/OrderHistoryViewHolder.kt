@@ -24,6 +24,7 @@ class OrderHistoryViewHolder(
         fun onClickBuyAgain(product: Product)
         fun onClickAddToWishList(product: Product)
         fun onClickCardProduct(product: Product)
+        fun trackSeenProduct(product: Product, position: Int)
     }
 
     private var thumbnail: ImageView? = itemView?.findViewById(R.id.iv_thumbnail)
@@ -47,6 +48,7 @@ class OrderHistoryViewHolder(
         bindPrice(product)
         bindFreeShipping(product)
         bindCtaButton(product)
+        listener?.trackSeenProduct(product, adapterPosition)
     }
 
     private fun bindCardClick(product: Product) {
@@ -107,13 +109,12 @@ class OrderHistoryViewHolder(
     }
 
     private fun bindFreeShipping(product: Product) {
-        // TODO: impl free shipping later
-//        if (product.hasFreeShipping) {
-//            freeShipping?.show()
-//            ImageHandler.loadImageRounded2(itemView.context, freeShipping, product.getFreeShippingImageUrl())
-//        } else {
-//            freeShipping?.hide()
-//        }
+        if (product.hasFreeShipping) {
+            freeShipping?.show()
+            ImageHandler.loadImageRounded2(itemView.context, freeShipping, product.freeShipping.imageUrl)
+        } else {
+            freeShipping?.hide()
+        }
     }
 
     private fun bindClickBuyAgain(product: Product) {

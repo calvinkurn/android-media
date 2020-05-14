@@ -29,10 +29,12 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -62,9 +64,11 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_chat_list.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -161,12 +165,34 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         initView(view)
         setObserver()
         setupSellerBroadcast()
+        setupTicker()
     }
 
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
+    }
+
+    private fun setupTicker() {
+        if( !isTabSeller()) return
+        topChatSellerMigrationTicker?.apply {
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
+            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDismiss() {}
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    openSellerMigrationBottomSheet()
+                }
+            })
+            show()
+        }
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            SellerMigrationChatBottomSheet.createNewInstance(it).show(this.childFragmentManager, "")
+        }
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {

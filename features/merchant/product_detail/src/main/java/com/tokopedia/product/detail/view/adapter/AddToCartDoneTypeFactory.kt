@@ -4,8 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
+import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
@@ -22,6 +24,10 @@ class AddToCartDoneTypeFactory(
         return AddToCartDoneAddedProductViewHolder.LAYOUT_RES
     }
 
+    fun type(addToCardRecommendationCarouselDataModel: AddToCartDoneRecommendationCarouselDataModel): Int{
+        return AddToCartDoneRecommendationCarouselViewHolder.LAYOUT_RES
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             AddToCartDoneRecommendationViewHolder.LAYOUT_RES -> AddToCartDoneRecommendationViewHolder(
@@ -30,6 +36,11 @@ class AddToCartDoneTypeFactory(
             )
             AddToCartDoneAddedProductViewHolder.LAYOUT_RES -> AddToCartDoneAddedProductViewHolder(
                     parent,
+                    addToCartDoneAddedProductListener
+            )
+            AddToCartDoneRecommendationCarouselViewHolder.LAYOUT_RES -> AddToCartDoneRecommendationCarouselViewHolder(
+                    parent,
+                    recommendationListener,
                     addToCartDoneAddedProductListener
             )
             else -> return super.createViewHolder(parent, type)

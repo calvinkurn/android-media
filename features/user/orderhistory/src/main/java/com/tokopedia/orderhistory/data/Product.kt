@@ -37,12 +37,12 @@ data class Product(
         @SerializedName("shopId")
         val shopId: String = "",
         @SerializedName("status")
-        val status: Int = 0
+        val status: Int = 0,
+        @SerializedName("freeOngkir")
+        val freeShipping: FreeShipping = FreeShipping()
 ) : Visitable<OrderHistoryTypeFactory> {
 
-    // TODO: impl free shipping later
-    // val hasFreeShipping: Boolean get() = freeShipping.isActive && freeShipping.imageUrl.isNotEmpty()
-
+    val hasFreeShipping: Boolean get() = freeShipping.isActive && freeShipping.imageUrl.isNotEmpty()
     val buyEventAction: String = "click on buy again"
     val hasEmptyStock: Boolean get() = status == statusDeleted || status == statusWarehouse
     val hasDiscount: Boolean

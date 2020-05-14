@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -15,7 +16,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
@@ -55,6 +58,8 @@ class TransactionOrderProgressLayout : LinearLayout {
         initViewLayout()
         initBindView()
     }
+
+    fun shouldRefreshOnStart(): Boolean = chatOrder.isCtaFinish
 
     fun renderIfExist() {
         canBeRendered = true
@@ -140,6 +145,7 @@ class TransactionOrderProgressLayout : LinearLayout {
             renderEstimation()
             renderActionButton()
         } else {
+            unbindClickStatus()
             hideDescription()
             renderCloseStateChangerButton()
             bindClickCloseState()
@@ -200,8 +206,9 @@ class TransactionOrderProgressLayout : LinearLayout {
         productName?.text = MethodChecker.fromHtml(chatOrder.name)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderEstimation() {
-        estimateTitle?.text = chatOrder.label.title
+        estimateTitle?.text = chatOrder.label.title + ":"
         estimateValue?.text = chatOrder.label.value
     }
 
@@ -210,9 +217,19 @@ class TransactionOrderProgressLayout : LinearLayout {
             actionBtn?.text = chatOrder.button.label
             actionBtn?.setOnClickListener {
                 analytics?.eventClickCtaButton(chatOrder)
+                if (handleTrackClick()) return@setOnClickListener
                 RouteManager.route(context, chatOrder.button.uri)
             }
         }
+    }
+
+    private fun handleTrackClick(): Boolean {
+        if (chatOrder.isCtaTrack) {
+            val uri = UriUtil.buildUri(ApplinkConst.ORDER_TRACKING, chatOrder.orderId)
+            RouteManager.route(context, uri)
+            return true
+        }
+        return false
     }
 
     private fun renderCloseStateChangerButton() {
@@ -295,6 +312,10 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun showDescription() {
         descriptionContainer?.show()
+    }
+
+    private fun unbindClickStatus() {
+        status?.setOnClickListener(null)
     }
 
     private fun hideDescription() {

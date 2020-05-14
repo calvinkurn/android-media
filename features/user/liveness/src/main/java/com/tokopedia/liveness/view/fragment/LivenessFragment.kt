@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.util.FileUtils
@@ -42,10 +41,10 @@ import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.net.SocketTimeoutException
-import java.util.*
 import javax.inject.Inject
 
 class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, LivenessCallback, OnBackListener {
@@ -345,12 +344,19 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         activity?.run {
             val mImageBitmap = LivenessResult.livenessBitmap
             facePath = saveToFile(mImageBitmap)
-            if (isFileExists(facePath) && isFileExists(ktpPath)) {
-                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
-                        ?: DEFAULT_ID)
-            } else {
-                setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
-                finish()
+            when {
+                !isFileExists(facePath) -> {
+                    setResult(LivenessConstants.KYC_LIVENESS_FILE_NOT_FOUND)
+                    finish()
+                }
+                !isFileExists(ktpPath) -> {
+                    setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
+                    finish()
+                }
+                else -> {
+                    livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
+                            ?: DEFAULT_ID)
+                }
             }
         }
     }
@@ -382,13 +388,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 if (cameraResultFile.exists()) {
                     return cameraResultFile.absolutePath
                 } else {
-                    NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+                    Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
                 }
             } else {
-                NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_image_null))
+                Timber.d("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
             }
         } catch (error: Throwable) {
-            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_set_file))
+            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
         }
         return ""
     }
@@ -399,7 +405,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun writeImageToTkpdPath(bitmap: Bitmap): File {
-        val cacheDir = File(context?.cacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
+        val cacheDir = File(context?.externalCacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
         val cachePath = cacheDir.absolutePath
         val file = File(cachePath)
         if (file.exists()) {
@@ -412,6 +418,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             out.close()
         } catch (e: Throwable) {
             e.printStackTrace()
+            Timber.d("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
         }
         return file
     }

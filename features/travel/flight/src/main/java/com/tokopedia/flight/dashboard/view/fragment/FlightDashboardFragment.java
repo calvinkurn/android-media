@@ -33,28 +33,28 @@ import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.Indicator;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget;
@@ -112,8 +112,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Inject
     FlightDashboardPresenter presenter;
-    private FlightDashboardViewModel viewModel;
-    private FlightDashboardPassDataViewModel passData;
+    private FlightDashboardModel viewModel;
+    private FlightDashboardPassDataModel passData;
 
     private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
@@ -172,7 +172,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         departureDateTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_date_return);
         returnDateSeparatorView = view.findViewById(com.tokopedia.flight.R.id.separator_date_return);
-        bannerLayout = view.findViewById(com.tokopedia.flight.R.id.banner_layout);
+        bannerLayout = view.findViewById(com.tokopedia.flight.R.id.bannerLayout);
         bannerView = view.findViewById(com.tokopedia.flight.R.id.banner);
         progressBar = view.findViewById(com.tokopedia.flight.R.id.progress_bar);
         formContainerLayout = view.findViewById(com.tokopedia.flight.R.id.dashboard_container);
@@ -202,14 +202,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         airportDepartureLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_departure_title));
+                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_title));
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE);
             }
         });
         airportArrivalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_arrival_title));
+                Intent intent = FlightAirportPickerActivity.createInstance(getActivity(), getString(com.tokopedia.flight.R.string.flight_airportpicker_title));
                 startActivityForResult(intent, REQUEST_CODE_AIRPORT_ARRIVAL);
             }
         });
@@ -292,7 +292,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        passData = new FlightDashboardPassDataViewModel();
+        passData = new FlightDashboardPassDataModel();
         presenter.attachView(this);
         presenter.sendAnalyticsOpenScreen(FlightAnalytics.Screen.HOMEPAGE);
         presenter.initialize();
@@ -349,12 +349,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public FlightDashboardPassDataViewModel getDashboardPassData() {
+    public FlightDashboardPassDataModel getDashboardPassData() {
         return passData;
     }
 
     @Override
-    public void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel) {
+    public void setDashboardPassData(FlightDashboardPassDataModel flightDashboardPassDataViewModel) {
         this.passData = flightDashboardPassDataViewModel;
     }
 
@@ -426,7 +426,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public FlightDashboardViewModel getCurrentDashboardViewModel() {
+    public FlightDashboardModel getCurrentDashboardViewModel() {
         return viewModel;
     }
 
@@ -610,13 +610,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+    public void renderTickerView(TravelTickerModel travelTickerModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerModel, tickerView);
     }
 
     @Override
-    public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
-        FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
+    public void navigateToSearchPage(FlightDashboardModel currentDashboardViewModel) {
+        FlightSearchPassDataModel passDataViewModel = new FlightSearchPassDataModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
                 .setDepartureDate(currentDashboardViewModel.getDepartureDate())
                 .setDepartureAirport(currentDashboardViewModel.getDepartureAirport())
@@ -633,7 +633,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void setDashBoardViewModel(FlightDashboardViewModel viewModel) {
+    public void setDashBoardViewModel(FlightDashboardModel viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -644,19 +644,19 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_AIRPORT_CLASSES:
-                    FlightClassViewModel viewModel = data.getParcelableExtra(FlightClassesActivity.EXTRA_FLIGHT_CLASS);
+                    FlightClassModel viewModel = data.getParcelableExtra(FlightClassesActivity.EXTRA_FLIGHT_CLASS);
                     presenter.onFlightClassesChange(viewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_PASSENGER:
-                    FlightPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
+                    FlightPassengerModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
                     presenter.onFlightPassengerChange(passengerViewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_DEPARTURE:
-                    FlightAirportViewModel departureAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
+                    FlightAirportModel departureAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onDepartureAirportChange(departureAirport);
                     break;
                 case REQUEST_CODE_AIRPORT_ARRIVAL:
-                    FlightAirportViewModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
+                    FlightAirportModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
                     break;
             }

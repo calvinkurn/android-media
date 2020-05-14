@@ -228,6 +228,7 @@ public interface ApplinkConst {
     String PINJAMAN_ONLINE_TAB = "tokopedia://loan/category/pinjamanonline";
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
+    String HAS_PASSWORD = "tokopedia://settings/haspassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
     String SETTING_NOTIFICATION = "tokopedia://settings/notification";
 
@@ -466,6 +467,7 @@ public interface ApplinkConst {
         String ORDER_DETAIL = "tokopedia://digital/order/{order_id}";
         String ORDER_OMS_DETAIL = "tokopedia://order/{order_id}";
         String ORDER_MARKETPLACE_DETAIL = "tokopedia://marketplace/order/{order_id}";
+        String ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE = "tokopedia://marketplace/order?payment_id={payment_id}&cart_string={cart_string}";
         String ORDER_OMS_DETAIL_UPSTREAM = "tokopedia://order/{order_id}?upstream={upstream}";
 
         String EXTRA_SHOP_ID = "shop_id";
@@ -487,6 +489,7 @@ public interface ApplinkConst {
         String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
         String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
         String EXTRA_LAYOUT_NAME = "layout_name";
+        String EXTRA_ATC_EXTERNAL_SOURCE = "atc_external_source";
 
         String EXTRA_CATEGORY_ID = "category_id";
         String EXTRA_CATEGORY_NAME = "category_name";
