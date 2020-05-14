@@ -75,6 +75,10 @@ ext {
     chuckerVersion = '3.0.1'
     sliceVersion = '1.0.0-alpha6'
 
+    benchmarkTestVersion = '1.0.0'
+    testCore = '1.2.0'
+    fragmentTest = "1.1.0"
+
     debugToolsEnabled = true
 
     debugToolsEnabled = true
@@ -86,8 +90,8 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.1.5'
-    unifyComponentsVersion = '1.1.33'
+    unifyPrinciplesVersion = '1.1.7'
+    unifyComponentsVersion = '1.1.36'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -100,7 +104,7 @@ ext {
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
-    unifyCarouselVersion = '1.0.2'
+    unifyCarouselVersion = '1.0.4'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -300,7 +304,10 @@ ext {
             junitPlatformRunner   : "org.junit.platform:junit-platform-runner:1.0.0",
             archCoreTesting       : "androidx.arch.core:core-testing:$lifeCycleVersion",
             couroutinesTest       : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion",
-            json                  : "org.json:json:20140107"
+            json                  : "org.json:json:20140107",
+            benchmark             : "androidx.benchmark:benchmark-junit4:$benchmarkTestVersion",
+            testCore              : "androidx.test:core:$testCore",
+            fragmentTest          : "androidx.fragment:fragment-testing:$fragmentTest"
     ]
 
     debugToolsDependencies = [

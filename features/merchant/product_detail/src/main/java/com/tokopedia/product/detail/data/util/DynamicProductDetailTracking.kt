@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataMode
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
@@ -732,6 +733,44 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Label.EMPTY_LABEL)
             TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
         }
+
+        fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+            val valueLoginOrNotLogin = if (!isSessionActive)
+                " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
+            else ""
+            val listValue = ProductTrackingConstant.Tracking.LIST_PRODUCT_AFTER_ATC + pageName + ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + valueLoginOrNotLogin +
+                    product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+            val actionValuePostfix = if (!isSessionActive)
+                " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
+            else
+                ""
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.Action.PRODUCT_CLICK,
+                    ProductTrackingConstant.Category.PDP_AFTER_ATC,
+                    ProductTrackingConstant.Action.TOPADS_ATC_CLICK + actionValuePostfix,
+                    pageTitle
+            )
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
+                ProductTrackingConstant.Action.CLICK, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.ACTION_FIELD, DataLayer.mapOf(ProductTrackingConstant.Tracking.LIST, listValue),
+                    ProductTrackingConstant.Tracking.PRODUCTS,  DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    ProductTrackingConstant.Tracking.PROMO_NAME, product.name,
+                                    ProductTrackingConstant.Tracking.ID, product.productId.toString(),
+                                    ProductTrackingConstant.Tracking.PRICE, removeCurrencyPrice(product.price),
+                                    ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                                    ProductTrackingConstant.Tracking.CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
+                                    ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                                    ProductTrackingConstant.Tracking.PROMO_POSITION, position,
+                                    ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (product.isFreeOngkirActive) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
+                            )
+                    )
+                )
+            )
+
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
+        }
     }
 
     object Iris {
@@ -770,7 +809,7 @@ object DynamicProductDetailTracking {
                     "shopId" to (productInfo?.basic?.shopID ?: ""),
                     "shopName" to shopName,
                     "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
-                            ?: 0))
+                            ?: 0)) as MutableMap<String, Any>
 
             TrackingUtil.addComponentTracker(mapOfData, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_DISKUSI_PRODUCT_TAB)
 
