@@ -2,8 +2,6 @@ package com.tokopedia.notifcenter.analytics
 
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
-import kotlin.collections.mapOf
-import com.tokopedia.analyticconstant.DataLayer.mapOf as layerMapOf
 
 class StockHandlerAnalytics {
 
@@ -14,27 +12,27 @@ class StockHandlerAnalytics {
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
         val impressions = hashMapOf(
-                "name" to element.getAtcProduct()?.name,
-                "id" to element.getAtcProduct()?.productId,
-                "price" to element.getAtcProduct()?.price,
+                "name" to element.getAtcProduct()?.name.toString(),
+                "id" to element.getAtcProduct()?.productId.toString(),
+                "price" to element.getAtcProduct()?.price.toString(),
                 "brand" to "",
                 "category" to "",
                 "variant" to "",
                 "list" to "/notifcenter",
                 "position" to "0",
-                "dimension79" to element.getAtcProduct()?.shop?.id
+                "dimension79" to element.getAtcProduct()?.shop?.id.toString()
         )
-        val ecommerce = hashMapOf(
+        val ecommerce = mapOf(
                 KEY_CURRENCY_CODE to VALUE_CURRENCY_CODE,
                 KEY_IMPRESSIONS to listOf(impressions)
         )
-        val dataTracker = layerMapOf(
-                KEY_EVENT_NAME, eventName,
-                KEY_EVENT_CATEGORY, eventCategory,
-                KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, eventLabel,
-                KEY_USER_ID, userId,
-                KEY_ECOMMERCE, ecommerce
+        val dataTracker = hashMapOf(
+                KEY_EVENT_NAME to eventName,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_USER_ID to userId,
+                KEY_ECOMMERCE to ecommerce
         )
         send(dataTracker)
     }
@@ -46,15 +44,15 @@ class StockHandlerAnalytics {
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
         val product = hashMapOf(
-                "name" to element.getAtcProduct()?.name,
-                "id" to element.getAtcProduct()?.productId,
-                "price" to element.getAtcProduct()?.price,
+                "name" to element.getAtcProduct()?.name.toString(),
+                "id" to element.getAtcProduct()?.productId.toString(),
+                "price" to element.getAtcProduct()?.price.toString(),
                 "brand" to "",
                 "category" to "",
                 "variant" to "",
                 "list" to "/notifcenter",
                 "position" to "0",
-                "dimension79" to element.getAtcProduct()?.shop?.id
+                "dimension79" to element.getAtcProduct()?.shop?.id.toString()
         )
         val click = mapOf(
                 KEY_ACTION_FIELD to mapOf(
@@ -62,13 +60,13 @@ class StockHandlerAnalytics {
                 ),
                 KEY_PRODUCTS to listOf(product)
         )
-        val dataTracker = layerMapOf(
-                KEY_EVENT_NAME, eventName,
-                KEY_EVENT_CATEGORY, eventCategory,
-                KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, eventLabel,
-                KEY_USER_ID, userId,
-                KEY_ECOMMERCE, mapOf(KEY_CLICK to click)
+        val dataTracker = hashMapOf(
+                KEY_EVENT_NAME to eventName,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_USER_ID to userId,
+                KEY_ECOMMERCE to mapOf(KEY_CLICK to click)
         )
         send(dataTracker)
     }
@@ -79,13 +77,13 @@ class StockHandlerAnalytics {
         val eventAction = "click on reminder button"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val dataTracker = layerMapOf(
-                KEY_EVENT_NAME, eventName,
-                KEY_EVENT_CATEGORY, eventCategory,
-                KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, eventLabel,
-                KEY_USER_ID, userId,
-                KEY_SHOP_ID, element.getAtcProduct()?.shop?.id?: ""
+        val dataTracker = hashMapOf(
+                KEY_EVENT_NAME to eventName,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_USER_ID to userId,
+                KEY_SHOP_ID to element.getAtcProduct()?.shop?.id.toString()
         )
         send(dataTracker)
     }
@@ -97,29 +95,29 @@ class StockHandlerAnalytics {
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
         val items = hashMapOf(
-                "item_name" to element.getAtcProduct()?.name,
-                "item_id" to element.getAtcProduct()?.productId,
-                "price" to element.getAtcProduct()?.price,
+                "item_name" to element.getAtcProduct()?.name.toString(),
+                "item_id" to element.getAtcProduct()?.productId.toString(),
+                "price" to element.getAtcProduct()?.price.toString(),
                 "item_brand" to "",
                 "item_category" to "none / other",
-                "item_variant" to element.getAtcProduct()?.variant,
+                "item_variant" to "",
                 "list" to "/notifcenter",
                 "quantity" to "1",
-                "dimension69" to element.getAtcProduct()?.shop?.id,
+                "dimension69" to element.getAtcProduct()?.shop?.id.toString(),
                 "dimension71" to "",
-                "dimension70" to element.getAtcProduct()?.shop?.name,
+                "dimension70" to element.getAtcProduct()?.shop?.name.toString(),
                 "category_id" to "",
                 "dimension42" to cartId,
                 "dimension39" to "/notifcenter"
         )
 
-        val dataTracker = layerMapOf(
-                KEY_EVENT_NAME, eventName,
-                KEY_EVENT_CATEGORY, eventCategory,
-                KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, eventLabel,
-                KEY_USER_ID, userId,
-                KEY_EVENT_ITEMS, mutableListOf(items)
+        val dataTracker = hashMapOf(
+                KEY_EVENT_NAME to eventName,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_USER_ID to userId,
+                KEY_EVENT_ITEMS to mutableListOf(items)
         )
         send(dataTracker)
     }
@@ -135,13 +133,13 @@ class StockHandlerAnalytics {
         val eventAction = "swipe on restock product list"
         val eventLabel = "$notificationId - $productId"
 
-        val dataTracker = layerMapOf(
-                KEY_EVENT_NAME, eventName,
-                KEY_EVENT_CATEGORY, eventCategory,
-                KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, eventLabel,
-                KEY_USER_ID, userId,
-                KEY_SHOP_ID, shopId
+        val dataTracker = hashMapOf(
+                KEY_EVENT_NAME to eventName,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_USER_ID to userId,
+                KEY_SHOP_ID to shopId
         )
         send(dataTracker)
     }
