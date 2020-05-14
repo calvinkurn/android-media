@@ -63,7 +63,6 @@ import java.util.List;
 
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_CONFIRM_SHIPPING;
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_IN_SHIPPING;
-import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_NEW_ORDER;
 
 //import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 
