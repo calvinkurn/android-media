@@ -159,7 +159,7 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(deeplink)
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink()
-            deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
+            // deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> AppLinkMapperSellerHome.getSomShippedAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.FINISHED) -> AppLinkMapperSellerHome.getSomDoneAppLink()
@@ -366,7 +366,7 @@ object DeeplinkMapper {
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.CHANGE_PASSWORD -> ApplinkConstInternalGlobal.CHANGE_PASSWORD
-            ApplinkConst.SELLER_NEW_ORDER -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
+            // ApplinkConst.SELLER_NEW_ORDER -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
             ApplinkConst.SELLER_SHIPMENT -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
             ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink()
             else -> ""
