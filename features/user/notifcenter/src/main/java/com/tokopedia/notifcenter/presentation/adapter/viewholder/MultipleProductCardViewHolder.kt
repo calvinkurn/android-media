@@ -94,6 +94,7 @@ class MultipleProductCardViewHolder(
                 is SourceMultipleProductView.BottomSheetDetail -> {
                     listener.getAnalytic().trackMultiProductCheckoutCardClick(
                             eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
+                            productNumber = adapterPosition,
                             notification = element
                     )
                 }
@@ -109,13 +110,15 @@ class MultipleProductCardViewHolder(
             when(sourceView) {
                 is SourceMultipleProductView.NotificationCenter -> {
                     listener.getAnalytic().trackAtcOnMultiProductClick(
-                            notification = element
+                            notification = element,
+                            productNumber = adapterPosition
                     )
                 }
                 is SourceMultipleProductView.BottomSheetDetail -> {
                     listener.getAnalytic().trackAtcOnMultiProductClick(
                             eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
-                            notification = element
+                            notification = element,
+                            productNumber = adapterPosition
                     )
                 }
             }
