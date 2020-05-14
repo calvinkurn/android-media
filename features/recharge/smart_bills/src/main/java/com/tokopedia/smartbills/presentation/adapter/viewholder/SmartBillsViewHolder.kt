@@ -11,7 +11,7 @@ import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
-class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListener):
+class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListener) :
         BaseCheckableViewHolder<RechargeBills>(view, listener) {
 
     companion object {
@@ -21,7 +21,7 @@ class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListene
 
     override fun bind(element: RechargeBills) {
         super.bind(element)
-        with (view) {
+        with(view) {
             tv_smart_bills_item_title.text = element.productName
             val description = if (element.operatorName.isNotEmpty()) {
                 String.format(getString(R.string.smart_bills_item_description),
@@ -32,13 +32,6 @@ class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListene
             tv_smart_bills_item_description.text = description
             tv_smart_bills_item_price.text = element.amountText
             ImageHandler.LoadImage(iv_smart_bills_item_icon, element.iconURL)
-
-            if (element.errorMessage.isNotEmpty()) {
-                tv_smart_bills_item_error.show()
-                tv_smart_bills_item_error.text = element.errorMessage
-            } else {
-                tv_smart_bills_item_error.hide()
-            }
 
             setOnClickListener {
                 toggle()
