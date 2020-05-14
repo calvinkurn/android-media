@@ -1,8 +1,8 @@
 import com.tokopedia.plugin.ReadVersionConfigTask
-import com.tokopedia.plugin.ScanProjectTaskNew
+import com.tokopedia.plugin.ScanProjectTask
 import com.tokopedia.plugin.ScanLatestVersionTask
 import com.tokopedia.plugin.ScanModuleToPublishTask
-import com.tokopedia.plugin.PublishCompositeTaskNew
+import com.tokopedia.plugin.PublishCompositeTask
 import com.tokopedia.plugin.PrintLatestVersionTask
 
 // -PmoduleLatestVersion=<location of latest Version File Path>
@@ -35,7 +35,7 @@ task readVersionConfigTask(type: ReadVersionConfigTask) {
 }
 
 
-task scanProjectTaskNew(type: ScanProjectTaskNew) {
+task scanProjectTask(type: ScanProjectTask) {
     dependsOn 'readVersionConfigTask'
     dependsOn 'scanLatestVersion'
     dependsOn 'scanModuleToPublish'
@@ -60,13 +60,13 @@ task scanProjectTaskNew(type: ScanProjectTaskNew) {
 task writeLatestVersion(type: PrintLatestVersionTask){
     dependsOn 'scanLatestVersion'
     doFirst {
-        if (!versionDependencyNew.successPublish) {
+        if (!versionDependency.successPublish) {
             throw new StopExecutionException()
         }
         println("[WRITE LATEST VERSION START]")
-        projectToArtifactInfoList = versionDependencyNew.projectToArtifactInfoList
-        artifactIdToProjectNameList = versionDependencyNew.artifactIdToProjectNameList
-        successModuleList = versionDependencyNew.successModuleList
+        projectToArtifactInfoList = versionDependency.projectToArtifactInfoList
+        artifactIdToProjectNameList = versionDependency.artifactIdToProjectNameList
+        successModuleList = versionDependency.successModuleList
         moduleLatestVersionMap = scanLatestVersion.moduleLatestVersionMap
     }
     doLast {
@@ -77,14 +77,14 @@ task writeLatestVersion(type: PrintLatestVersionTask){
 // need parameter
 // -PmoduleToPublish=<list Of module To Publish> and
 // -PmoduleLatestVersion=<location of latest Version>
-task versionDependencyNew(type: PublishCompositeTaskNew){
-    dependsOn 'scanProjectTaskNew'
+task versionDependency(type: PublishCompositeTask){
+    dependsOn 'scanProjectTask'
     doFirst {
         println("[PUBLISH COMPOSITE TASK START]")
-        dependenciesProjectNameHashSet = scanProjectTaskNew.dependenciesProjectNameHashSet
-        projectToArtifactInfoList = scanProjectTaskNew.projectToArtifactInfoList
-        artifactIdToProjectNameList = scanProjectTaskNew.artifactIdToProjectNameList
-        moduleToPublishList = scanProjectTaskNew.moduleToPublishList
+        dependenciesProjectNameHashSet = scanProjectTask.dependenciesProjectNameHashSet
+        projectToArtifactInfoList = scanProjectTask.projectToArtifactInfoList
+        artifactIdToProjectNameList = scanProjectTask.artifactIdToProjectNameList
+        moduleToPublishList = scanProjectTask.moduleToPublishList
     }
     doLast{
         println("[PUBLISH COMPOSITE TASK FINISHED]")

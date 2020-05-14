@@ -5,7 +5,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-open class PublishCompositeTaskNew : DefaultTask() {
+open class PublishCompositeTask : DefaultTask() {
 
     //input:
     var dependenciesProjectNameHashSet = HashSet<Pair<String, String>>()
