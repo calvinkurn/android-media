@@ -62,26 +62,14 @@ class TalkReplyHeaderViewHolder(view: View,
                     talkReplyHeaderListener.onFollowUnfollowButtonClicked()
                 }
                 if(isFollowed) {
-                    setButtonToFollowed()
+                    text = context.getString(R.string.reply_header_following_button)
+                    buttonType = UnifyButton.Type.ALTERNATE
                 } else {
-                    setButtonToUnfollowed()
+                    text = context.getString(R.string.reply_header_follow_button)
+                    buttonType = UnifyButton.Type.MAIN
                 }
                 show()
             }
-        }
-    }
-
-    private fun setButtonToFollowed() {
-        itemView.replyHeaderFollowButton.apply {
-            text = context.getString(R.string.reply_header_following_button)
-            buttonType = UnifyButton.Type.ALTERNATE
-        }
-    }
-
-    private fun setButtonToUnfollowed() {
-        itemView.replyHeaderFollowButton.apply {
-            text = context.getString(R.string.reply_header_follow_button)
-            buttonType = UnifyButton.Type.MAIN
         }
     }
 }
