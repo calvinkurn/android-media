@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
 
 class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View,
-        InitialStateItemClickListener, InitialStateImpressionListener {
+        InitialStateItemClickListener {
 
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
@@ -80,7 +80,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View,
     }
 
     private fun prepareView(view: View) {
-        val typeFactory = InitialStateAdapterTypeFactory(this, this)
+        val typeFactory = InitialStateAdapterTypeFactory(this)
         val layoutManager = LinearLayoutManager(view.context,
                 LinearLayoutManager.VERTICAL, false)
         adapter = InitialStateAdapter(typeFactory)
@@ -196,37 +196,16 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View,
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
     }
 
-    override fun onRecentViewImpressed(list: List<BaseItemInitialStateSearch>) {
-        val dataLayerList: MutableList<Any> = mutableListOf()
-
-        list.forEachIndexed { index, item ->
-            val position = index + 1
-            dataLayerList.add(item.getObjectDataLayerForRecentView(position))
-        }
-
-        AutocompleteTracking.impressedRecentView(iris, dataLayerList)
+    override fun onRecentViewImpressed(list: MutableList<Any>) {
+        AutocompleteTracking.impressedRecentView(iris, list)
     }
 
-    override fun onRecentSearchImpressed(list: List<BaseItemInitialStateSearch>) {
+    override fun onRecentSearchImpressed(list: MutableList<Any>) {
         val keyword = presenter.getQueryKey()
-        val dataLayerList: MutableList<Any> = mutableListOf()
-
-        list.forEachIndexed { index, item ->
-            val position = index + 1
-            dataLayerList.add(item.getObjectDataLayerForPromo(position))
-        }
-
-        AutocompleteTracking.impressedRecentSearch(iris, dataLayerList, keyword)
+        AutocompleteTracking.impressedRecentSearch(iris, list, keyword)
     }
 
-    override fun onPopularSearchImpressed(list: List<BaseItemInitialStateSearch>) {
-        val dataLayerList: MutableList<Any> = mutableListOf()
-
-        list.forEachIndexed { index, item ->
-            val position = index + 1
-            dataLayerList.add(item.getObjectDataLayerForPromo(position))
-        }
-
-        AutocompleteTracking.impressedPopularSearch(iris, dataLayerList)
+    override fun onPopularSearchImpressed(list: MutableList<Any>) {
+        AutocompleteTracking.impressedPopularSearch(iris, list)
     }
 }
