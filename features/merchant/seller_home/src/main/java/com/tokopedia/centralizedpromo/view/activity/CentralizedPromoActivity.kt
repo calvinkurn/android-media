@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.centralizedpromo.view.customview.FirstVoucherBottomSheetView
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
+import com.tokopedia.centralizedpromo.view.fragment.FirstVoucherBottomSheetFragment
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class CentralizedPromoActivity : BaseSimpleActivity() {
 
@@ -23,15 +21,11 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     }
 
     private val bottomSheet by lazy {
-        BottomSheetUnify().apply {
+        FirstVoucherBottomSheetFragment.createInstance(this).apply {
             setCloseClickListener {
                 this.dismiss()
             }
         }
-    }
-
-    private val bottomSheetView by lazy {
-        FirstVoucherBottomSheetView(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,14 +45,13 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     private fun handleIntent(intent: Intent?) {
         intent?.data?.toString()?.let { uri ->
             if (uri.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER)) {
-                showBottomSheet(bottomSheetView)
+                showBottomSheet()
             }
         }
     }
 
-    private fun showBottomSheet(view: View) {
+    private fun showBottomSheet() {
         bottomSheet.run {
-            setChild(view)
             show(supportFragmentManager, FIRST_VOUCHER_BOTTOMSHEET_TAG)
         }
     }
