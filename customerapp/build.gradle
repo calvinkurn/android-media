@@ -139,12 +139,11 @@ android {
     }
 
     lintOptions {
+        checkReleaseBuilds false
         checkDependencies true
-        htmlReport true
-        htmlOutput file("lint-report.html")
+        htmlReport false
         warningsAsErrors false
         abortOnError false
-        checkReleaseBuilds false
         check lintchecks
     }
 
