@@ -128,6 +128,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private var skipBtnAction = false
     private var screenWidth = 0f
     private var IS_DISMISSED = false
+    private var fakeUserLoggedIn = false
 
     @PopUpVersion
     private var popUpVersion = NORMAL
@@ -180,6 +181,10 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                           data: GetPopGratificationResponse,
                           couponDetailResponse: GetCouponDetailResponse,
                           gratificationData: GratificationData): Dialog? {
+
+        DestroyedActivity.couponDetailResponse = couponDetailResponse
+        DestroyedActivity.popGratificationResponse = data
+
         return nonLoggedInUiUi(activityContext, data, couponDetailResponse, gratificationData)
     }
 
@@ -193,32 +198,40 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 //        setNonLoginUiData(getPopGratificationResponse)
         setUiData(couponDetailResponse)
         setNonLoggedInListeners()
+
         return pair.second
     }
 
     fun showNonLoggedInDestroyedActivity(activityContext: Context,
                                          referenceId: IntArray,
                                          gratificationData: GratificationData): Dialog? {
-        val bottomSheet = commonNonLoggedInUi(activityContext, null, gratificationData)
+//        val bottomSheet = commonNonLoggedInUi(activityContext, DestroyedActivity.popGratificationResponse, gratificationData)
 
-        referenceId.forEach {
-            referenceIds.add(it)
+//        referenceId.forEach {
+//            referenceIds.add(it)
+//        }
+        if (DestroyedActivity.popGratificationResponse != null && DestroyedActivity.couponDetailResponse != null) {
+
+            val dialog = nonLoggedInUiUi(activityContext, DestroyedActivity.popGratificationResponse!!, DestroyedActivity.couponDetailResponse!!, gratificationData)
+            viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
+            return dialog
         }
-        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
-        return bottomSheet
+        return null
+//        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
+//        return bottomSheet
     }
 
-    private fun commonNonLoggedInUi(activityContext: Context, data: GratificationDataContract?, gratificationData: GratificationData): Dialog? {
-        popUpVersion = AUTO_CLAIM
-
-        val pair = prepareBottomSheet(activityContext, TargetPromotionsCouponType.SINGLE_COUPON)
-        val view = pair.first
-
-        initViews(view, activityContext, data, null, gratificationData)
-//        setNonLoginUiData()
-        setNonLoggedInListeners()
-        return pair.second
-    }
+//    private fun commonNonLoggedInUi(activityContext: Context, data: GratificationDataContract?, gratificationData: GratificationData): Dialog? {
+//        popUpVersion = AUTO_CLAIM
+//
+//        val pair = prepareBottomSheet(activityContext, TargetPromotionsCouponType.SINGLE_COUPON)
+//        val view = pair.first
+//
+//        initViews(view, activityContext, data, DestroyedActivity.couponDetailResponse, gratificationData)
+////        setNonLoginUiData()
+//        setNonLoggedInListeners()
+//        return pair.second
+//    }
 
     //todo Rahul (DONE)
     fun showAutoClaimLoggedIn(activityContext: Context,
@@ -272,6 +285,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
         btnAction.text = originalBtnText
         imageViewRight.loadImageGlide(R.drawable.t_promo_server_error)
+        imageViewRight.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
     }
 
 
@@ -390,6 +405,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         pageSnaper.attachToRecyclerView(recyclerView)
 
         recyclerView.isNestedScrollingEnabled = false
+        recyclerView.addItemDecoration(CouponItemDecoration())
 
         val session = UserSession(activityContext)
         originallyLoggedIn = session.isLoggedIn
@@ -451,12 +467,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 if (couponDetailResponse.couponList != null) {
                     couponDetailList.addAll(couponDetailResponse.couponList)
                 }
+                imageViewRight.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
                 couponListAdapter = CouponListAdapter(couponDetailList)
                 recyclerView.adapter = couponListAdapter
-                recyclerView.addItemDecoration(CouponItemDecoration())
+
                 viewFlipper.displayedChild = CONTAINER_COUPON
 
-                tvSubTitle.text = tvSubTitle.context.getString(R.string.t_promo_apakah_kamu_mau_klaim_kupon_ini)
+//                tvSubTitle.text = tvSubTitle.context.getString(R.string.t_promo_apakah_kamu_mau_klaim_kupon_ini)
 
             } else {
 
@@ -522,10 +540,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         val couponDetailList = ArrayList<GetCouponDetail>()
         couponDetailResponse?.couponList?.let {
+            imageViewRight.visibility = View.GONE
             couponDetailList.addAll(it)
             couponListAdapter = CouponListAdapter(couponDetailList)
             recyclerView.adapter = couponListAdapter
-            recyclerView.addItemDecoration(CouponItemDecoration())
+            recyclerView.visibility = View.VISIBLE
             viewFlipper.displayedChild = CONTAINER_COUPON
         }
 
@@ -559,10 +578,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         //todo check 1
         val couponDetailList = ArrayList<GetCouponDetail>()
         couponDetailResponse?.couponList?.let {
+            imageViewRight.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
             couponDetailList.addAll(it)
             couponListAdapter = CouponListAdapter(couponDetailList)
             recyclerView.adapter = couponListAdapter
-            recyclerView.addItemDecoration(CouponItemDecoration())
             viewFlipper.displayedChild = CONTAINER_COUPON
         }
 
@@ -581,6 +601,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
         btnAction.text = originalBtnText
+
+        imageViewRight.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
         imageViewRight.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
             expandBottomSheet()
         }
@@ -610,6 +633,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     if (retryAvailable) {
 
                         if (UserSession(activity).isLoggedIn) {
+//                        if (fakeUserLoggedIn) {
 
                             //coupon is yet to be claimed
                             if (data == null && referenceIds.isNotEmpty()) {
@@ -625,8 +649,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                             }
                         } else {
                             //todo Rahul uncomment
-//                            routeToLogin(activity)
-                            fake1()
+                            routeToLogin(activity)
+//                            fake1()
                         }
                     } else {
                         dismissAfterRetryIsOver(activity, btnActionText)
@@ -640,9 +664,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    fun fake1(){
-        viewModel.claimGratification(gratificationData.popSlug,gratificationData.page, arrayListOf(2446))
+    fun fake1() {
+        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, arrayListOf(2446))
+        fakeUserLoggedIn = true
     }
+
 
     fun observeLiveData(activity: AppCompatActivity, errorUi: (() -> Unit)? = null) {
         viewModel.claimApiLiveData.observe(activity, Observer {
@@ -700,12 +726,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         if (useLeftView) {
             tvTitle.text = context.getString(R.string.t_promo_disturbance_at_toko_house)
             tvSubTitle.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
-            imageViewRight.loadImageGlide(R.drawable.t_promo_server_error)
         } else {
             tvTitleRight.text = context.getString(R.string.t_promo_disturbance_at_toko_house)
             tvSubTitleRight.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
-            imageViewRight.loadImageGlide(R.drawable.t_promo_server_error)
         }
+
+        imageViewRight.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        imageViewRight.loadImageGlide(R.drawable.t_promo_server_error)
 
         if (lessThanThreeTimes) {
             originalBtnText = context.getString(R.string.t_promo_coba_lagi)

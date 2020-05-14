@@ -33,11 +33,15 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
 
     val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
     val claimApiLiveData = MutableLiveData<LiveDataResult<Pair<ClaimPopGratificationResponse, GetCouponDetailResponse>>>()
-
+    var a = true
     fun claimGratification(campaignSlug: String, page: String, benefitIds: List<Int?>?) {
         claimApiLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
             delay(1000)
+            if(a){
+                a = false
+                throw Exception()
+            }
             val response = withContext(workerDispatcher) {
                 val claimResponse = claimPopGratificationUseCase.getResponse(claimPopGratificationUseCase.getQueryParams(ClaimPayload(campaignSlug, page)))
                 val couponDetail = composeApi(benefitIds)
