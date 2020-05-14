@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 data class FreeOngkir(
         @SerializedName("img_url")
-        val imgUrl: String? ,
+        var freeOngkirImageUrl : String = "",
+
         @SerializedName("is_active")
         val isActive: Boolean? = false
 )

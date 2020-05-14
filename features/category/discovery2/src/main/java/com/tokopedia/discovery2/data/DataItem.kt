@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.data
 
-import android.media.Rating
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
 
