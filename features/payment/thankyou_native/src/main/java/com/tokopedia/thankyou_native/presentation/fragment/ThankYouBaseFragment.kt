@@ -95,13 +95,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList() {
         try {
+            //todo need multi deeplink once other type of transaction integrated.
+            // ..currently it is for only market place
             getThankPageAnalytics().sendCheckTransactionListEvent()
-            val list: List<String> = getThankPageData().shopOrder.map {
-                it.orderId
-            }
-
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
-            val orderListListIntent = RouteManager.getIntent(context, ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL, list[0])
+            val orderListListIntent = RouteManager.getIntent(context, ApplinkConst.MARKETPLACE_ORDER)
             orderListListIntent?.let {
                 TaskStackBuilder.create(context)
                         .addNextIntent(homeIntent)
