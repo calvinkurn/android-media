@@ -384,7 +384,7 @@ object HomePageTrackingV2 : BaseTracking() {
         )
 
         fun getMixLeftBannerView(channel: DynamicHomeChannel.Channels, position: Int) = getBasicPromotionView(
-                event = Event.PRODUCT_VIEW,
+                event = Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT_BANNER,
                 eventLabel = Label.NONE,
@@ -399,7 +399,7 @@ object HomePageTrackingV2 : BaseTracking() {
         )
 
         fun getMixLeftBannerClick(channel: DynamicHomeChannel.Channels, position: Int) = getBasicPromotionChannelClick(
-                event = Event.PRODUCT_VIEW,
+                event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT_BANNER,
                 campaignCode = channel.campaignCode,
@@ -428,7 +428,7 @@ object HomePageTrackingV2 : BaseTracking() {
         }
 
         fun sendMixLeftBannerClick(channel: DynamicHomeChannel.Channels, position: Int){
-            getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position))
+                getTracker().sendEnhanceEcommerceEvent(getMixLeftBannerClick(channel, position))
         }
     }
 
