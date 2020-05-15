@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.otaliastudios.cameraview.CameraException;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
@@ -132,6 +134,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             public void onCameraOpened(CameraOptions options) {
                 initialFlash();
                 isCameraOpen = true;
+            }
+
+            @Override
+            public void onCameraError(@NonNull CameraException exception) {
+                super.onCameraError(exception);
             }
 
             @Override
@@ -280,6 +287,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             cameraView.addCameraListener(cameraListener);
             cameraView.open();
         } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 

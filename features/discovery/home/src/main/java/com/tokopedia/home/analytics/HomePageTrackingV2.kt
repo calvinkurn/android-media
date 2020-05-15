@@ -26,7 +26,6 @@ object HomePageTrackingV2 : BaseTracking() {
                                 id= bannerModel.id.toString(),
                                 name = PROMO_VALUE,
                                 creative = bannerModel.creativeName,
-                                creativeUrl = bannerModel.imageUrl,
                                 position = bannerModel.position.toString(),
                                 promoCodes = Label.NONE,
                                 promoIds = Label.NONE
@@ -44,7 +43,6 @@ object HomePageTrackingV2 : BaseTracking() {
                                 id= bannerModel.id.toString(),
                                 name = PROMO_OVERLAY_VALUE,
                                 creative = bannerModel.creativeName,
-                                creativeUrl = bannerModel.imageUrl,
                                 position = bannerModel.position.toString(),
                                 promoCodes = Label.NONE,
                                 promoIds = Label.NONE
@@ -68,7 +66,6 @@ object HomePageTrackingV2 : BaseTracking() {
                                 id= bannerModel.id.toString(),
                                 name = PROMO_VALUE,
                                 creative = bannerModel.creativeName,
-                                creativeUrl = bannerModel.imageUrl,
                                 position = bannerModel.position.toString(),
                                 promoCodes = Label.NONE,
                                 promoIds = Label.NONE
@@ -92,7 +89,6 @@ object HomePageTrackingV2 : BaseTracking() {
                                 id= bannerModel.id.toString(),
                                 name = PROMO_OVERLAY_VALUE,
                                 creative = bannerModel.creativeName,
-                                creativeUrl = bannerModel.imageUrl,
                                 position = bannerModel.position.toString(),
                                 promoCodes = Label.NONE,
                                 promoIds = Label.NONE
@@ -113,7 +109,6 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = grid.attribution,
-                            creativeUrl = grid.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
                             position = (index + 1).toString()
                     )
@@ -135,7 +130,6 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
-                            creativeUrl = it.imageUrl,
                             name = channel.promoName,
                             position = position.toString()
                     )
@@ -245,7 +239,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 CurrentSite.KEY, CurrentSite.DEFAULT
         )
 
-        fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, userId: String = "") = DataLayer.mapOf(
+        fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
                 Event.KEY, Event.PRODUCT_ADD_TO_CART,
                 Category.KEY, Category.HOMEPAGE,
                 Label.KEY, channel.header.name,
@@ -271,6 +265,7 @@ object HomePageTrackingV2 : BaseTracking() {
                                     persoType = channel.persoType,
                                     categoryId = channel.categoryID,
                                     isTopAds = grid.isTopads,
+                                    quantity = quantity,
                                     cartId = cartId
                             )
                     ),
@@ -303,8 +298,35 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getMixLeftClickLoadMore(channel))
         }
 
-        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
-                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position:Int) = getBasicProductChannelView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_MIX_LEFT,
+                eventLabel = channel.header.name,
+                products =  listOf(Product(
+                        name = grid.name,
+                        id = grid.id,
+                        productPrice = convertRupiahToInt(
+                                grid.price
+                        ).toString(),
+                        brand = Value.NONE_OTHER,
+                        category = Value.NONE_OTHER,
+                        variant = Value.NONE_OTHER,
+                        productPosition = (position + 1).toString(),
+                        channelId = channel.id,
+                        isFreeOngkir = grid.freeOngkir.isActive,
+                        persoType = channel.persoType,
+                        categoryId = channel.categoryID,
+                        isTopAds = grid.isTopads
+                )),
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
+                ),
+                channelId = channel.id
+        )
+
+        fun getMixLeftIrisProductView(channel: DynamicHomeChannel.Channels) = getBasicProductChannelView(
+                event = Event.PRODUCT_VIEW_IRIS,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT,
                 eventLabel = channel.header.name,
@@ -381,7 +403,6 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = channel.id,
                             creative = it.attribution,
-                            creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
                             position = position.toString()
                     )
@@ -398,7 +419,6 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = channel.id,
                             creative = it.attribution,
-                            creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
                             position = position.toString()
                     )
@@ -420,7 +440,6 @@ object HomePageTrackingV2 : BaseTracking() {
                     Promotion(
                             id = channel.id,
                             creative = it.attribution,
-                            creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
                             position = position.toString()
                     )

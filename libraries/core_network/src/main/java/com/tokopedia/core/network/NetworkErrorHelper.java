@@ -7,10 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +15,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.network.R;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.unifycomponents.Toaster;
 
 /**
  * Created by ricoharisin on 5/30/16.
@@ -120,9 +119,9 @@ public class NetworkErrorHelper {
 
     public static void showSnackbar(Activity activity) {
         if (activity != null) {
-            ToasterError.make(BaseToaster.getContentView(activity),
+            Toaster.INSTANCE.make(activity.findViewById(android.R.id.content),
                     activity.getResources().getString(R.string.msg_network_error),
-                    BaseToaster.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v->{});
         }
     }
 

@@ -40,25 +40,28 @@ import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import dagger.Lazy
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import retrofit2.Response
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeViewModel @Inject constructor(
-        private val homeUseCase: HomeUseCase,
+        private val homeUseCase: Lazy<HomeUseCase>,
         private val userSession: UserSessionInterface,
         private val closeChannelUseCase: CloseChannelUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
@@ -74,7 +77,7 @@ open class HomeViewModel @Inject constructor(
         private val getRecommendationTabUseCase: GetRecommendationTabUseCase,
         private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
-        private val sendGeolocationInfoUseCase: SendGeolocationInfoUseCase,
+        private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val stickyLoginUseCase: StickyLoginUseCase,
         private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
@@ -91,13 +94,14 @@ open class HomeViewModel @Inject constructor(
         const val ATC = "atc"
         const val CHANNEL = "channel"
         const val GRID = "grid"
+        const val QUANTITIY = "quantity"
         const val POSITION = "position"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.getHomeData().flowOn(homeDispatcher.io())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.io())
 
 // ============================================================================================
 // ================================ Live data UI Controller ===================================
@@ -146,6 +150,14 @@ open class HomeViewModel @Inject constructor(
             get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
+    val isViewModelInitalized: LiveData<Event<Boolean>>
+        get() = _isViewModelInitalized
+    private val _isViewModelInitalized = MutableLiveData<Event<Boolean>>(null)
+
+    val isRequestNetworkLiveData: LiveData<Event<Boolean>>
+        get() = _isRequestNetworkLiveData
+    private val _isRequestNetworkLiveData = MutableLiveData<Event<Boolean>>(null)
+
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
 // ================================= PLEASE SORT BY NAME A-Z ==================================
@@ -181,6 +193,7 @@ open class HomeViewModel @Inject constructor(
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
     init {
+        _isViewModelInitalized.value = Event(true)
         initChannel()
         initFlow()
     }
@@ -199,7 +212,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun sendGeolocationData() {
-        sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
+        sendGeolocationInfoUseCase.get().createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -247,34 +260,34 @@ open class HomeViewModel @Inject constructor(
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
         if(headerDataModel == null){
-            headerDataModel = _homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?
+            headerDataModel = (_homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)
         }
 
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
 
         headerDataModel?.let { headerViewModel ->
             tokopointsDrawer?.let {
-                headerViewModel.tokopointsDrawerHomeData = it
+                headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
             }
             homeHeaderWalletAction?.let {
-                headerViewModel.homeHeaderWalletActionData = it
+                headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
             }
             cashBackData?.let {
-                headerViewModel.cashBackData = it
+                headerDataModel = headerDataModel?.copy(cashBackData = it)
             }
             tokopointHomeDrawerData?.let {
-                headerViewModel.tokoPointDrawerData = it
+                headerDataModel = headerDataModel?.copy(tokoPointDrawerData = it)
             }
             isPendingTokocashChecked?.let {
-                headerViewModel.isPendingTokocashChecked = it
+                headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
             }
             isWalletDataError?.let {
-                headerViewModel.isWalletDataError = it
+                headerDataModel = headerDataModel?.copy(isWalletDataError = it)
             }
             isTokoPointDataError?.let {
-                headerViewModel.isTokoPointDataError = it
+                headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
-            headerViewModel.isUserLogin = userSession.isLoggedIn
+            headerDataModel = headerDataModel?.copy(isUserLogin = userSession.isLoggedIn)
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
         }
 
@@ -462,6 +475,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun onRefreshTokoPoint() {
+        if (!userSession.isLoggedIn) return
         updateHeaderViewModel(
                 isTokoPointDataError = false,
                 tokopointsDrawer = null,
@@ -578,7 +592,7 @@ open class HomeViewModel @Inject constructor(
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
                 }
-                return homeDataModel.copy(
+                homeDataModel.copy(
                         list = visitableMutableList)
             }
         }
@@ -612,9 +626,11 @@ open class HomeViewModel @Inject constructor(
 // ===========================================================================================
 
     private fun initFlow() {
+        _isRequestNetworkLiveData.value = Event(true)
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
+                    _isRequestNetworkLiveData.postValue(Event(false))
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
                     getReviewData()
@@ -636,7 +652,7 @@ open class HomeViewModel @Inject constructor(
         channel = Channel()
         if(channel != null) {
             jobChannel?.cancelChildren()
-            jobChannel = launch(coroutineContext) {
+            jobChannel = launch(homeDispatcher.ui()) {
                 updateChannel(channel!!)
             }
         }
@@ -645,7 +661,7 @@ open class HomeViewModel @Inject constructor(
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            homeUseCase.updateHomeData().collect {
+            homeUseCase.get().updateHomeData().collect {
                 _updateNetworkLiveData.postValue(it)
             }
         }) {
@@ -728,6 +744,8 @@ open class HomeViewModel @Inject constructor(
 
     private fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
+        if(!isRechargeModelAvailable()) return
+
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.setParams()
             val data = getRechargeRecommendationUseCase.executeOnBackground()
@@ -735,6 +753,12 @@ open class HomeViewModel @Inject constructor(
         }) {
             removeRechargeRecommendation()
         }
+    }
+
+    private fun isRechargeModelAvailable(): Boolean {
+        return _homeLiveData.value?.list?.find {
+            visitable -> visitable is RechargeRecommendationViewModel
+        } != null
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
@@ -773,11 +797,6 @@ open class HomeViewModel @Inject constructor(
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
-            val findLoadingModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeLoadingMoreModel
-            }
-
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
@@ -856,14 +875,16 @@ open class HomeViewModel @Inject constructor(
         sendTopAdsUseCase.executeOnBackground(url)
     }
 
-
     fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
         val requestParams = RequestParams()
+        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
         requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
                 productId = grid.id,
-                quantity = "1",
+                quantity = quantity,
                 shopId = grid.shop.shopId,
-                warehouseId = grid.warehouseId
+                warehouseId = grid.warehouseId,
+                productName = grid.name,
+                price = grid.price
         ))
         getAtcUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
@@ -876,6 +897,7 @@ open class HomeViewModel @Inject constructor(
                                                 ATC to it,
                                                 CHANNEL to channel,
                                                 GRID to grid,
+                                                QUANTITIY to quantity,
                                                 POSITION to position
 
                                         )
@@ -899,8 +921,8 @@ open class HomeViewModel @Inject constructor(
                     isWalletDataError = false,
                     homeHeaderWalletAction = homeHeaderWalletAction
             )
-            if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton != null && homeHeaderWalletAction.appLinkActionButton?.isNotEmpty() == true) {
-                _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton ?: ""))
+            if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
+                _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
             }
         }){
             updateHeaderViewModel(
@@ -914,9 +936,7 @@ open class HomeViewModel @Inject constructor(
         if(getPendingCashBalanceJob?.isActive != true){
             getPendingCashBalanceJob = launchCatchError(coroutineContext, block={
                 val data = getPendingCashbackUseCase.executeOnBackground()
-                val cashBackData = CashBackData()
-                cashBackData.amount = data.amount
-                cashBackData.amountText = data.amountText
+                val cashBackData = CashBackData(data.amount, data.amountText)
                 updateHeaderViewModel(
                         isWalletDataError = false,
                         cashBackData = cashBackData,
@@ -958,9 +978,7 @@ open class HomeViewModel @Inject constructor(
                 data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
-                    withContext(homeDispatcher.ui()) {
                         _homeLiveData.value = homeDataModel
-                    }
                 }
             } else {
                 val newList = _homeLiveData.value?.list?.toMutableList()
@@ -982,9 +1000,7 @@ open class HomeViewModel @Inject constructor(
                             }
                             ACTION_DELETE -> newList.remove(homeVisitable)
                         }
-                        withContext(homeDispatcher.ui()) {
-                            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-                        }
+                        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
                     }
                 }
             }
@@ -1016,22 +1032,22 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
-        val data = HomeHeaderWalletAction()
-        data.isLinked = walletBalanceModel.link
-        data.balance = walletBalanceModel.balance
-        data.labelTitle = walletBalanceModel.titleText
-        data.appLinkBalance = walletBalanceModel.applinks
-        data.labelActionButton = walletBalanceModel.actionBalanceModel?.labelAction ?: ""
-        data.isVisibleActionButton = (walletBalanceModel.actionBalanceModel?.visibility == "1")
-        data.appLinkActionButton = walletBalanceModel.actionBalanceModel?.applinks ?: ""
-        data.abTags = if (walletBalanceModel.abTags == null) ArrayList() else walletBalanceModel.abTags
-        data.pointBalance = walletBalanceModel.pointBalance
-        data.rawPointBalance = walletBalanceModel.rawPointBalance
-        data.cashBalance = walletBalanceModel.cashBalance
-        data.rawCashBalance = walletBalanceModel.rawCashBalance
-        data.walletType = walletBalanceModel.walletType
-        data.isShowAnnouncement = walletBalanceModel.isShowAnnouncement
-        return data
+        return HomeHeaderWalletAction(
+                isLinked = walletBalanceModel.link,
+                balance = walletBalanceModel.balance,
+                labelTitle = walletBalanceModel.titleText,
+                appLinkBalance = walletBalanceModel.applinks,
+                labelActionButton = walletBalanceModel.actionBalanceModel?.labelAction ?: "",
+                isVisibleActionButton = (walletBalanceModel.actionBalanceModel?.visibility == "1"),
+                appLinkActionButton = walletBalanceModel.actionBalanceModel?.applinks ?: "",
+                abTags = walletBalanceModel.abTags ?: listOf(),
+                pointBalance = walletBalanceModel.pointBalance,
+                rawPointBalance = walletBalanceModel.rawPointBalance,
+                cashBalance = walletBalanceModel.cashBalance,
+                rawCashBalance = walletBalanceModel.rawCashBalance,
+                walletType = walletBalanceModel.walletType,
+                isShowAnnouncement = walletBalanceModel.isShowAnnouncement
+        )
     }
 
 }
