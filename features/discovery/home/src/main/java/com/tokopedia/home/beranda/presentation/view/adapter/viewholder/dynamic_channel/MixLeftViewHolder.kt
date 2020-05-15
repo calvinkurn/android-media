@@ -45,11 +45,11 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
-    private val recyclerView: RecyclerView = itemView.findViewById(R.id.rv_product)
-    private val image: ImageView = itemView.findViewById(R.id.parallax_image)
-    private val loadingBackground: ImageView = itemView.findViewById(R.id.background_loader)
-    private val parallaxBackground: View = itemView.findViewById(R.id.parallax_background)
-    private val parallaxView: View = itemView.findViewById(R.id.parallax_view)
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var image: ImageView
+    private lateinit var loadingBackground: ImageView
+    private lateinit var parallaxBackground: View
+    private lateinit var parallaxView: View
 
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -61,6 +61,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
+        initVar()
         setupBackground(channel)
         setupList(channel)
         setSnapEffect()
@@ -89,6 +90,14 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         //because we have empty value at beginning of list, we need to reduce pos by 1
         RouteManager.route(itemView.context, applink)
         HomePageTrackingV2.MixLeft.sendMixLeftProductClick(channel, grid, position - 1)
+    }
+
+    private fun initVar() {
+        recyclerView = itemView.findViewById(R.id.rv_product)
+        image = itemView.findViewById(R.id.parallax_image)
+        loadingBackground = itemView.findViewById(R.id.background_loader)
+        parallaxBackground = itemView.findViewById(R.id.parallax_background)
+        parallaxView = itemView.findViewById(R.id.parallax_view)
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
