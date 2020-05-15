@@ -116,7 +116,7 @@ object DeeplinkDFMapper {
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     private const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
-    const val DF_GAMIFICATION = "df_gamification"
+    const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
 
     private var manager: SplitInstallManager? = null
@@ -200,13 +200,13 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
 
             // Promo
-            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_PROMO_TOKOPOINTS, R.string.title_tokopoints, { DFWebviewFallbackUrl.PROMO_TOKOPOINTS }))
+            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_PROMO_TOKOPOINTS, R.string.title_tokopoints))
 
             add(DFP({ it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT)
-            }, DF_GAMIFICATION,R.string.internet_title_gamification))
+            }, DF_PROMO_GAMIFICATION,R.string.internet_title_gamification, { DFWebviewFallbackUrl.PROMO_GAMIFICATION }))
 
             //Entertainment
             add(DFP({ it.startsWith(EVENT_HOME) }, DF_BASE, R.string.title_home_event))
