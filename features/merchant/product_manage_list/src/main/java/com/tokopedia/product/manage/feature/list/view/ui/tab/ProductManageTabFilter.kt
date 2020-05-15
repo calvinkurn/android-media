@@ -53,8 +53,13 @@ class ProductManageTabFilter: RecyclerView {
     }
 
     fun setFilterCount(filterCount: Int) {
-        tabFilterAdapter?.list?.set(TAB_MORE_FILTER_POSITION, MoreFilter(filterCount))
-        tabFilterAdapter?.notifyItemChanged(TAB_MORE_FILTER_POSITION)
+        val filterTabs = tabFilterAdapter?.data
+        val tabCount = filterTabs?.count().orZero()
+
+        if(tabCount > 0) {
+            filterTabs?.set(TAB_MORE_FILTER_POSITION, MoreFilter(filterCount))
+            tabFilterAdapter?.notifyItemChanged(TAB_MORE_FILTER_POSITION)
+        }
     }
 
     fun setSelectedFilter(selectedFilter: FilterTabViewModel) {

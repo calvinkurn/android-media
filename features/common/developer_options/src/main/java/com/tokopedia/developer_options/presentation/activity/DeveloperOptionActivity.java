@@ -262,6 +262,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
+        validateIfSellerapp();
     }
 
     private void initListener() {
@@ -275,12 +276,14 @@ public class DeveloperOptionActivity extends BaseActivity {
             throw new RuntimeException("Throw Runtime Exception");
         });
 
-        vDevOptionRN.setOnClickListener(v ->
+        vDevOptionRN.setOnClickListener(v -> {
+            if (!GlobalConfig.isSellerApp()) {
                 RouteManager.route(this,
                         ApplinkConst.SETTING_DEVELOPER_OPTIONS
                                 .replace("{type}", RN_DEV_LOGGER)
-                ));
-
+                );
+            }
+        });
 
         resetOnBoarding.setOnClickListener(v -> {
             userSession.setFirstTimeUser(true);
@@ -594,6 +597,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         SharedPreferences.Editor editor = groupChatSf.edit();
         editor.putBoolean(LOG_GROUPCHAT, check);
         editor.apply();
+    }
+
+    private void validateIfSellerapp() {
+        if (GlobalConfig.isSellerApp() && vDevOptionRN != null) {
+            vDevOptionRN.setVisibility(View.GONE);
+        }
     }
 
     private SharedPreferences getSharedPreferences(String name) {
