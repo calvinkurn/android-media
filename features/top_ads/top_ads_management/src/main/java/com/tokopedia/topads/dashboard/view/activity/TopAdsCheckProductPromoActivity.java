@@ -8,9 +8,6 @@ import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
@@ -27,7 +24,7 @@ import com.tokopedia.user.session.UserSession;
  * Created by hadi.putra on 17/04/18.
  */
 
-public class TopAdsCheckProductPromoActivity extends TopAdsBaseActivity implements HasComponent<BaseAppComponent>{
+public class TopAdsCheckProductPromoActivity extends TopAdsBaseActivity implements HasComponent<TopAdsComponent>{
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_SOURCE = "source";
 
@@ -117,7 +114,7 @@ public class TopAdsCheckProductPromoActivity extends TopAdsBaseActivity implemen
     }
 
     @Override
-    public BaseAppComponent getComponent() {
-        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
+    public TopAdsComponent getComponent() {
+        return TopAdsComponentInstance.getComponent(getApplication());
     }
 }
