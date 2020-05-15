@@ -409,7 +409,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     true,
                     View.OnClickListener {
                         if(profileCompletionData.msisdn.isNotEmpty() && profileCompletionData.isMsisdnVerified){
-                            goToChangeEmail(profileCompletionData.email)
+                            goToChangeEmail()
                         } else if(profileCompletionData.msisdn.isNotEmpty() && !profileCompletionData.isMsisdnVerified) {
                             showVerifyEmailDialog()
                         }else{
@@ -525,38 +525,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
-    private fun goToChangeEmail(email: String){
-        val encodedUrlB = URLEncoder.encode(
-                Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
-                    appendPath(UrlSettingProfileConst.USER_PATH_URL)
-                    appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
-                    appendPath(UrlSettingProfileConst.EDIT_PATH_URL)
-                    appendQueryParameter(UrlSettingProfileConst.PARAM_IS_BACK, true.toString())
-                }.build().toString(),
-                "UTF-8"
-        )
-
-        val encodedUrlLd = URLEncoder.encode(
-                Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
-                    appendPath(UrlSettingProfileConst.USER_PATH_URL)
-                    appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
-                    appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
-                    appendQueryParameter(UrlSettingProfileConst.PARAM_V_OEMAIL, email)
-                    appendQueryParameter(UrlSettingProfileConst.PARAM_TYPE, "change")
-                }.build().toString(),
-                "UTF-8"
-        )
-
-        val encodedEmail = URLEncoder.encode(email, "UTF-8")
-
+    private fun goToChangeEmail(){
         val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
-            appendPath(UrlSettingProfileConst.OTP_PATH_URL)
-            appendPath(UrlSettingProfileConst.CHECK_PATH_URL)
-            appendPath(UrlSettingProfileConst.PAGE_PATH_URL)
-            appendQueryParameter(UrlSettingProfileConst.PARAM_B, encodedUrlB)
-            appendQueryParameter(UrlSettingProfileConst.PARAM_EMAIL, encodedEmail)
-            appendQueryParameter(UrlSettingProfileConst.PARAM_LD, encodedUrlLd)
-            appendQueryParameter(UrlSettingProfileConst.PARAM_OTP_TYPE, 14.toString())
+            appendPath(UrlSettingProfileConst.USER_PATH_URL)
+            appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
+            appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
         }.build().toString()
 
         RouteManager.route(
