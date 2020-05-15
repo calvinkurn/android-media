@@ -13,14 +13,15 @@ import kotlinx.android.synthetic.main.widget_reply_textbox.view.*
 
 class ReviewReplyTextBox : BaseCustomView {
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
     }
 
@@ -36,7 +37,7 @@ class ReviewReplyTextBox : BaseCustomView {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(count > 0) {
+                if (count > 0) {
                     replySendButton?.isEnabled = true
                     replySendButton?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_cta_send_active))
                 } else {
@@ -46,7 +47,4 @@ class ReviewReplyTextBox : BaseCustomView {
             }
         })
     }
-
-
-
 }
