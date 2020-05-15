@@ -39,7 +39,7 @@ object SellerReviewReplyMapper {
                     isSelected = true
             ))
         }
-        return data.take(5)
+        return data
     }
 
     fun mapToItemUnifyMenuReport(context: Context): ArrayList<ListItemUnify> {
