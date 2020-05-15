@@ -15,10 +15,10 @@ class TalkReplyAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(v
             replyAttachedProductImage.loadImage(attachedProduct.thumbnail)
             replyAttachedProductName.text = attachedProduct.name
             replyAttachedProductPrice.text = attachedProduct.priceFormatted
-            setOnClickListener {
-                attachedProductCardListener.onClickAttachedProduct(attachedProduct.productId)
-            }
             if(isInViewHolder) {
+                setOnClickListener {
+                    attachedProductCardListener.onClickAttachedProduct(attachedProduct.productId)
+                }
                 itemView.replyAttachedProductRemoveButton.hide()
                 return
             }
