@@ -12,23 +12,23 @@ const val STATUS_MATCH = "Match"
 const val TOPADS_LOG_TABLE_NAME = "topads_log"
 
 @Entity(tableName = TOPADS_LOG_TABLE_NAME)
-class TopAdsLogDB {
+data class TopAdsLogDB (
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    var id: Long = 0,
 
     @ColumnInfo(name = "url")
-    var url: String? = null
+    var url: String = "",
 
     @ColumnInfo(name = "eventType")
-    var eventType: String? = null
+    var eventType: String = "",
 
     @ColumnInfo(name = "sourceName")
-    var sourceName: String? = null
+    var sourceName: String = "",
 
     @ColumnInfo(name = "eventStatus")
-    var eventStatus: String? = null
+    var eventStatus: String = "",
 
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = 0
-}
+)
