@@ -96,7 +96,7 @@ class StockHandlerAnalytics {
             userId: String,
             cartId: String
     ) {
-        val eventName = "add_to_cart"
+        val eventName = "addToCart"
         val eventCategory = "notif center"
         val eventAction = "click on restock product ATC"
         val eventLabel = "$notificationId - ${product.productId}"
