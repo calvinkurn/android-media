@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -48,6 +49,7 @@ import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
@@ -390,11 +392,15 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showBottomSheet() {
-        val sortOptionsBottomSheet = context?.let { context ->
-            viewModel.sortOptions.value?.let {
-                TalkReadingSortBottomSheet.createInstance(context,it , this) }
+        context?.let { context ->
+            val sortOptionsBottomSheet = viewModel.sortOptions.value?.let { TalkReadingSortBottomSheet.createInstance(context,it , this) }
+            sortOptionsBottomSheet?.setShowListener {
+                val headerMargin = 16.toPx()
+                sortOptionsBottomSheet.bottomSheetWrapper.setPadding(0,0,0,0)
+                (sortOptionsBottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin,headerMargin,headerMargin,headerMargin)
+            }
+            this.childFragmentManager.let { sortOptionsBottomSheet?.show(it,"BottomSheetTag") }
         }
-        this.childFragmentManager.let { sortOptionsBottomSheet?.show(it,"BottomSheetTag") }
     }
 
     private fun initSortOptions() {
