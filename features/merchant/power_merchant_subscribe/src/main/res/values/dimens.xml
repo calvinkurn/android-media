@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="power_merchant_horizontal_spacing">14dp</dimen>
+    <dimen name="power_merchant_image_icon_small">20dp</dimen>
+    <dimen name="power_merchant_feature_card_width">248dp</dimen>
+    <dimen name="power_merchant_image_icon_large">36dp</dimen>
+    <dimen name="power_merchant_feature_description_height">58dp</dimen>
 </resources>
