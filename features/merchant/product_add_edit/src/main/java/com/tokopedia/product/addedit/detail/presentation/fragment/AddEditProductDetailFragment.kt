@@ -283,7 +283,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productWholeSaleInputLayout = view.findViewById(R.id.wholesale_input_layout)
         productWholeSaleInputFormsView = view.findViewById(R.id.rv_wholesale_input_forms)
         wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this,
-
                 onDeleteWholesale = {
                     if (viewModel.isEditing && !viewModel.isAdding) {
                         ProductEditMainTracking.clickRemoveWholesale(shopId)
@@ -296,14 +295,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     addNewWholeSalePriceButton?.visibility = View.VISIBLE
-                },
-
-                onAddWholesale = {
-                    if (viewModel.isEditing && !viewModel.isAdding) {
-                        ProductEditMainTracking.clickAddWholesale(shopId)
-                    } else {
-                        ProductAddMainTracking.clickAddWholesale(shopId)
-                    }
                 })
 
         productWholeSaleInputFormsView?.apply {
@@ -312,6 +303,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
         addNewWholeSalePriceButton?.setOnClickListener {
+            if (viewModel.isEditing && !viewModel.isAdding) {
+                ProductEditMainTracking.clickAddWholesale(shopId)
+            } else {
+                ProductAddMainTracking.clickAddWholesale(shopId)
+            }
             wholeSaleInputFormsAdapter?.itemCount?.let {
                 if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
                     addNewWholeSalePriceButton?.visibility = View.GONE
