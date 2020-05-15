@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.widget_reply_feedback_item.*
 import kotlinx.android.synthetic.main.widget_reply_textbox.*
 import javax.inject.Inject
 
-class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHolder.ReviewTemplateListener {
+class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHolder.ReviewTemplateListener {
 
     companion object {
         const val EXTRA_FEEDBACK_DATA = "EXTRA_FEEDBACK_DATA"
@@ -129,7 +129,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
     private fun observeLiveData() {
         viewModelReviewReply?.reviewTemplate?.observe(this, Observer {
             showData()
-            when(it) {
+            when (it) {
                 is Success -> {
                     replyTemplateList = it.data
                     setTemplateList(it.data)
@@ -139,15 +139,15 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
                         Toaster.make(it1, it.throwable.message.orEmpty(), Toaster.TYPE_ERROR,
                                 actionText = context?.getString(R.string.retry_label).orEmpty(),
                                 clickListener = View.OnClickListener {
-                            getReviewTemplate()
-                        })
+                                    getReviewTemplate()
+                                })
                     }
                 }
             }
         })
 
         viewModelReviewReply?.insertReviewReply?.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     insertReviewReplySuccess(it.data)
                 }
@@ -160,7 +160,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
         })
 
         viewModelReviewReply?.updateReviewReply?.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     updateReviewReplySuccess(it.data)
                 }
@@ -175,7 +175,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
         getReviewTemplate()
 
         replySendButton.setOnClickListener {
-            if(replyEditText.text?.isNotEmpty() == true) {
+            if (replyEditText.text?.isNotEmpty() == true) {
                 if (isEmptyReply) {
                     //Insert
                     viewModelReviewReply?.insertReviewReply(
@@ -193,7 +193,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
     }
 
     private fun insertReviewReplySuccess(data: InsertReplyResponseUiModel) {
-        if(data.isSuccess == 1) {
+        if (data.isSuccess == 1) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             reviewReplyTextBoxWidget?.hide()
             groupReply?.show()
@@ -206,13 +206,13 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
     }
 
     private fun updateReviewReplySuccess(data: UpdateReplyResponseUiModel) {
-        if(data.isSuccess) {
+        if (data.isSuccess) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             reviewReplyTextBoxWidget?.hide()
             replyEditText.text?.clear()
             tvReplyUser?.text = context?.getString(R.string.user_reply)
             feedbackUiModel?.replyText = data.responseMessage
-            tvReplyDate.text = viewModelReviewReply?.getReplyTime().orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
+            tvReplyDate.text = viewModelReviewReply?.getReplyTime().orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
             tvReplyComment.text = feedbackUiModel?.replyText
         }
     }
@@ -222,6 +222,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
         productItemReplyWidget?.show()
         feedbackItemReplyWidget?.show()
         reviewReplyTextBoxWidget?.show()
+        add_template_area?.show()
     }
 
     private fun hideData() {
@@ -237,7 +238,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
                 shopId = getStringExtra(EXTRA_SHOP_ID).toIntOrZero()
                 isEmptyReply = getBooleanExtra(IS_EMPTY_REPLY_REVIEW, false)
                 val objectId = getStringExtra(CACHE_OBJECT_ID)
-                val manager = if(savedInstanceState == null) {
+                val manager = if (savedInstanceState == null) {
                     SaveInstanceCacheManager(it, objectId)
                 } else {
                     cacheManager
@@ -256,27 +257,27 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
     }
 
     private fun initViewReply() {
-        if(isEmptyReply) {
+        if (isEmptyReply) {
             groupReply?.hide()
             reviewReplyTextBoxWidget?.show()
         } else {
             groupReply?.show()
             reviewReplyTextBoxWidget?.hide()
-            showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
+            tvReplyEdit?.setOnClickListener {
+                reviewReplyTextBoxWidget?.show()
+                showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
+            }
         }
     }
 
     private fun showTextReplyEditText(replyText: String) {
-        tvReplyEdit?.setOnClickListener {
-            reviewReplyTextBoxWidget?.show()
-            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            replyEditText?.run {
-                isFocusable = true
-                isFocusableInTouchMode = true
-                requestFocus()
-                setText(replyText)
-                imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-            }
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        replyEditText?.run {
+            isFocusable = true
+            isFocusableInTouchMode = true
+            requestFocus()
+            setText(replyText)
+            imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
