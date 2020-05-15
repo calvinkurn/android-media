@@ -41,12 +41,16 @@ class TalkReplyTextbox : BaseCustomView {
             }
         }
         val textWatcher = TalkReplyTextWatcher(textLimit, talkReplyTextboxListener, replyEditText)
-        replyEditText.addTextChangedListener(textWatcher)
-        replyEditText.filters = arrayOf(InputFilter.LengthFilter(textLimit))
+        replyEditText.apply {
+            addTextChangedListener(textWatcher)
+            filters = arrayOf(InputFilter.LengthFilter(textLimit))
+        }
     }
 
     fun reset() {
-        replyEditText.setText("")
-        replyEditText.clearFocus()
+        replyEditText.apply{
+            setText("")
+            replyEditText.clearFocus()
+        }
     }
 }

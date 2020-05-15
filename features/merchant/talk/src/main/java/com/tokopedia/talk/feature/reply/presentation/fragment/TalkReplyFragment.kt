@@ -54,6 +54,7 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
+import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.*
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
@@ -422,14 +423,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             when(it) {
                 is Success -> {
                     with(it.data) {
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
                         talkReplyRecyclerView.visibility = View.VISIBLE
                         if(isFromInbox && viewModel.isMyShop) {
                             adapter?.showProductHeader(TalkReplyProductHeaderModel(discussionDataByQuestionID.productName, discussionDataByQuestionID.thumbnail))
                         }
                         adapter?.showHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, viewModel.isMyShop))
                         if(discussionDataByQuestionID.question.totalAnswer > 0) {
-                            stopNetworkRequestPerformanceMonitoring()
-                            startRenderPerformanceMonitoring()
                             showAnswers(this)
                         } else {
                             onAnswersEmpty(discussionDataByQuestionID.question.userId)
@@ -631,7 +632,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showEmpty(userId: Int) {
         adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
-        replyTextBox.requestFocus()
+        replyTextBox.replyEditText.requestFocus()
     }
 
 

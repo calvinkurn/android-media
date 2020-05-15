@@ -53,6 +53,7 @@
             android:label="@string/title_reply_page"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize"
             android:configChanges="keyboardHidden|orientation|screenSize">
 
             <intent-filter android:autoVerify="true">
