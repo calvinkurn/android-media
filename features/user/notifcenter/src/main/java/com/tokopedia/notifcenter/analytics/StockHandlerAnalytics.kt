@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
@@ -100,30 +101,30 @@ class StockHandlerAnalytics {
         val eventAction = "click on restock product ATC"
         val eventLabel = "$notificationId - ${product.productId}"
 
-        val items = mapOf(
-                "item_name" to product.name,
-                "item_id" to product.productId,
-                "price" to product.price,
-                "item_brand" to "",
-                "item_category" to "none / other",
-                "item_variant" to "",
-                "list" to "/notifcenter",
-                "quantity" to "1",
-                "dimension69" to product.shop?.id.toString(),
-                "dimension71" to "",
-                "dimension70" to product.shop?.name.toString(),
-                "category_id" to "",
-                "dimension42" to cartId,
-                "dimension39" to "/notifcenter"
+        val items = DataLayer.mapOf(
+                "item_name", product.name,
+                "item_id", product.productId,
+                "price", product.price,
+                "item_brand", "",
+                "item_category", "none / other",
+                "item_variant", "",
+                "list", "/notifcenter",
+                "quantity", "1",
+                "dimension69", product.shop?.id.toString(),
+                "dimension71", "",
+                "dimension70", product.shop?.name.toString(),
+                "category_id", "",
+                "dimension42", cartId,
+                "dimension39", "/notifcenter"
         )
 
-        val dataTracker = mapOf(
-                KEY_EVENT_NAME to eventName,
-                KEY_EVENT_CATEGORY to eventCategory,
-                KEY_EVENT_ACTION to eventAction,
-                KEY_EVENT_LABEL to eventLabel,
-                KEY_USER_ID to userId,
-                KEY_EVENT_ITEMS to listOf(items)
+        val dataTracker = DataLayer.mapOf(
+                KEY_EVENT_NAME, eventName,
+                KEY_EVENT_CATEGORY, eventCategory,
+                KEY_EVENT_ACTION, eventAction,
+                KEY_EVENT_LABEL, eventLabel,
+                KEY_USER_ID, userId,
+                KEY_EVENT_ITEMS, items
         )
         send(dataTracker)
     }
