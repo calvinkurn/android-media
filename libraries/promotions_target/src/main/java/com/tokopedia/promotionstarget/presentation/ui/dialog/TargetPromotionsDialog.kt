@@ -53,8 +53,8 @@ import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApiResponseCallback
 import com.tokopedia.promotionstarget.presentation.TargetedPromotionAnalytics
-import com.tokopedia.promotionstarget.presentation.dpToPx
 import com.tokopedia.promotionstarget.presentation.loadImageGlide
+import com.tokopedia.promotionstarget.presentation.loadImageWithNoPlaceholder
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.presentation.ui.AnimationListener
@@ -72,16 +72,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-//todo Rahul need to changes assets for non-login state
-/**
- * Notes -
- * ImageViewRight is used to display image for non-logged in state
- * */
-
-//todo Rahul List
-// ALREADY LOGGED IN FLOW (DONE)
-// RETRY FLOW (DONE)
-// ALL ERROR STATES FOR BOTH UI (DONE)
 class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     private val CONTAINER_COUPON = 0
@@ -128,7 +118,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private var skipBtnAction = false
     private var screenWidth = 0f
     private var IS_DISMISSED = false
-    private var fakeUserLoggedIn = false
 
     @PopUpVersion
     private var popUpVersion = NORMAL
@@ -195,7 +184,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         val view = pair.first
 
         initViews(view, activityContext, getPopGratificationResponse, couponDetailResponse, gratificationData)
-//        setNonLoginUiData(getPopGratificationResponse)
         setUiData(couponDetailResponse)
         setNonLoggedInListeners()
 
@@ -203,13 +191,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     fun showNonLoggedInDestroyedActivity(activityContext: Context,
-                                         referenceId: IntArray,
                                          gratificationData: GratificationData): Dialog? {
-//        val bottomSheet = commonNonLoggedInUi(activityContext, DestroyedActivity.popGratificationResponse, gratificationData)
-
-//        referenceId.forEach {
-//            referenceIds.add(it)
-//        }
         if (DestroyedActivity.popGratificationResponse != null && DestroyedActivity.couponDetailResponse != null) {
 
             val dialog = nonLoggedInUiUi(activityContext, DestroyedActivity.popGratificationResponse!!, DestroyedActivity.couponDetailResponse!!, gratificationData)
@@ -217,23 +199,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             return dialog
         }
         return null
-//        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
-//        return bottomSheet
     }
 
-//    private fun commonNonLoggedInUi(activityContext: Context, data: GratificationDataContract?, gratificationData: GratificationData): Dialog? {
-//        popUpVersion = AUTO_CLAIM
-//
-//        val pair = prepareBottomSheet(activityContext, TargetPromotionsCouponType.SINGLE_COUPON)
-//        val view = pair.first
-//
-//        initViews(view, activityContext, data, DestroyedActivity.couponDetailResponse, gratificationData)
-////        setNonLoginUiData()
-//        setNonLoggedInListeners()
-//        return pair.second
-//    }
-
-    //todo Rahul (DONE)
     fun showAutoClaimLoggedIn(activityContext: Context,
                               couponUiType: TargetPromotionsCouponType,
                               popGratificationResponse: GetPopGratificationResponse,
@@ -275,8 +242,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         retryCount += 1
         val lessThanThreeTimes = retryCount < MAX_RETRY_COUNT
         val context = tvTitle.context
-        tvTitleRight.text = context.getString(R.string.t_promo_disturbance_at_toko_house)
-        tvSubTitleRight.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
+        tvTitle.text = context.getString(R.string.t_promo_disturbance_at_toko_house)
+        tvSubTitle.text = context.getString(R.string.t_promo_we_will_fix_it_as_soon_as_poss)
 
         if (lessThanThreeTimes) {
             originalBtnText = context.getString(R.string.t_promo_coba_lagi)
@@ -396,8 +363,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         leftViewList.add(tvSubTitle)
         leftViewList.add(tvTitle)
 
-        //todo Rahul think later
-//        initialAnimation(popUpVersion)
+        initialAnimation(popUpVersion)
 
         recyclerView.layoutManager = LinearLayoutManager(activityContext, LinearLayoutManager.HORIZONTAL, false)
 
@@ -420,29 +386,12 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun initialAnimation(@PopUpVersion popUpVersion: Int) {
-        if (popUpVersion == AUTO_CLAIM) {
-            leftViewList.forEach {
-                it.translationX = screenWidth
-                it.alpha = 0f
-            }
-        } else {
+        if (popUpVersion == NORMAL) {
             rightViewList.forEach {
                 it.translationX = screenWidth
                 it.alpha = 0f
             }
         }
-
-    }
-
-    private fun setNonLoginUiData(popGratificationResponse: GetPopGratificationResponse) {
-        tvTitleRight.text = tvTitle.context.getString(R.string.t_promo_non_login_title)
-        tvSubTitleRight.text = tvTitle.context.getString(R.string.t_promo_non_login_sub_title)
-        originalBtnText = tvTitle.context.getString(R.string.t_promo_login_sekarang)
-        btnAction.text = originalBtnText
-        imageViewRight.layoutParams.apply {
-            height = imageViewRight.dpToPx(280).toInt()
-        }
-        imageViewRight.setImageResource(R.drawable.t_promo_non_login)
     }
 
     private fun setUiData(couponDetailResponse: GetCouponDetailResponse) {
@@ -474,8 +423,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
                 viewFlipper.displayedChild = CONTAINER_COUPON
 
-//                tvSubTitle.text = tvSubTitle.context.getString(R.string.t_promo_apakah_kamu_mau_klaim_kupon_ini)
-
             } else {
 
                 val imageUrl = couponDetail.popGratification?.imageUrl
@@ -484,7 +431,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 if (showError) {
                     val urlToDisplay = if (TextUtils.isEmpty(imageUrl)) imageUrlMobile else imageUrl
                     uiType = TargetPromotionsCouponType.COUPON_ERROR
-                    imageView.loadImageGlide(urlToDisplay) { success ->
+                    imageView.loadImageWithNoPlaceholder(urlToDisplay) { success ->
                         expandBottomSheet()
                     }
                     val label = couponDetail.popGratification?.title
@@ -550,7 +497,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         //todo Rahul-> we have to use rightImage & right textviews
         if (couponDetailList.isEmpty()) {
-            imageView.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
+            imageView.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
                 viewFlipper.displayedChild = CONTAINER_IMAGE
             }
@@ -588,7 +535,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         //todo check 2
         if (couponDetailList.isEmpty()) {
-            imageView.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
+            imageView.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
             }
         }
@@ -603,8 +550,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         btnAction.text = originalBtnText
 
         imageViewRight.visibility = View.VISIBLE
-        recyclerView.visibility = View.GONE
-        imageViewRight.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
+
+        imageViewRight.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
             expandBottomSheet()
         }
 
@@ -633,7 +580,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     if (retryAvailable) {
 
                         if (UserSession(activity).isLoggedIn) {
-//                        if (fakeUserLoggedIn) {
 
                             //coupon is yet to be claimed
                             if (data == null && referenceIds.isNotEmpty()) {
@@ -648,9 +594,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                                 performActionBasedOnClaim(popGratificationActionBtn)
                             }
                         } else {
-                            //todo Rahul uncomment
                             routeToLogin(activity)
-//                            fake1()
                         }
                     } else {
                         dismissAfterRetryIsOver(activity, btnActionText)
@@ -659,16 +603,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 skipBtnAction = true
             }
 
-            //todo Rahul - set error ui (DONE)
             observeLiveData(activity, errorUi = { showErrorUIForClaimGratification() })
         }
     }
-
-    fun fake1() {
-        viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, arrayListOf(2446))
-        fakeUserLoggedIn = true
-    }
-
 
     fun observeLiveData(activity: AppCompatActivity, errorUi: (() -> Unit)? = null) {
         viewModel.claimApiLiveData.observe(activity, Observer {

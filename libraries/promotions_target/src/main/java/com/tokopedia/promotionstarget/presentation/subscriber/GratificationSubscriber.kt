@@ -192,7 +192,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
         if (waitingForLogin && referenceIdArray != null) {
             //Flow when activity is killed due to low memory
-            showNonLoggedInDestroyedActivity(weakActivity, referenceIdArray, gratificationData)
+            showNonLoggedInDestroyedActivity(weakActivity, gratificationData)
         } else {
             scope?.launch(Dispatchers.IO + ceh) {
                 supervisorScope {
@@ -200,8 +200,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                         val response = presenter.getGratificationAndShowDialog(gratificationData)
                         val canShowDialog = response.popGratification?.isShow
                         var isAutoClaim = response.popGratification?.isAutoClaim
-                        //todo Rahul remove
-                        isAutoClaim = true
 
                         if (canShowDialog != null && canShowDialog) {
                             if (isAutoClaim != null && isAutoClaim) {
@@ -273,7 +271,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse,couponDetailResponse: GetCouponDetailResponse, gratificationData: GratificationData) {
+    private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse, gratificationData: GratificationData) {
         val targetPromotionsDialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
@@ -284,11 +282,11 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    private fun showNonLoggedInDestroyedActivity(weakActivity: WeakReference<Activity>, referenceId: IntArray, gratificationData: GratificationData) {
+    private fun showNonLoggedInDestroyedActivity(weakActivity: WeakReference<Activity>, gratificationData: GratificationData) {
         val targetPromotionsDialog = TargetPromotionsDialog(this)
         if (weakActivity.get() != null) {
             val activity = weakActivity.get()!!
-            val dialog = targetPromotionsDialog.showNonLoggedInDestroyedActivity(activity, referenceId, gratificationData)
+            val dialog = targetPromotionsDialog.showNonLoggedInDestroyedActivity(activity, gratificationData)
             if (dialog != null) {
                 mapOfDialogs[activity] = Pair(targetPromotionsDialog, dialog)
             }
