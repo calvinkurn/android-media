@@ -182,7 +182,7 @@ class CentralizedPromoViewModelTest {
     }
 
     @Test
-    fun `Success get layout data for promo creation`() = runBlocking {
+    fun `Success get layout data for promo creation with free broadcast chat quota`() = runBlocking {
 
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
@@ -194,7 +194,26 @@ class CentralizedPromoViewModelTest {
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
-        assert(result != null && result is Success)
+        assert(result != null && result is Success &&
+                result.data is PromoCreationListUiModel &&
+                (result.data as PromoCreationListUiModel).items[1].extra == "200 kuota gratis")
+    }
+
+    @Test
+    fun `Success get layout data for promo creation with no broadcast chat quota`() = runBlocking {
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 0)
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        delay(100)
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result != null && result is Success &&
+                result.data is PromoCreationListUiModel &&
+                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
     }
 
     @Test
