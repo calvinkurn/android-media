@@ -139,12 +139,12 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:paddingBottom="@dimen/layout_lvl2"
         android:textColor="@color/Green_G500"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        app:layout_constraintTop_toBottomOf="@id/likeIcon"
-        app:layout_constraintStart_toStartOf="@id/likeIcon" />
+        app:layout_goneMarginTop="@dimen/layout_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/attachedProductCount"
+        app:layout_constraintStart_toStartOf="@id/readingMessage" />
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/readingNoAnswersText"
@@ -168,6 +168,5 @@
         app:layout_goneMarginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/seeOtherAnswers"
         app:layout_constraintBottom_toBottomOf="parent"/>
-    
 
 </androidx.constraintlayout.widget.ConstraintLayout>
