@@ -147,6 +147,7 @@ class LoaderFragment : BaseDaggerFragment() {
         if (thanksPageData.pushGtm)
             thankYouPageAnalytics.sendThankYouPageData(thanksPageData)
         thankYouPageAnalytics.appsFlyerPurchaseEvent(thanksPageData,"MarketPlace")
+        thankYouPageAnalytics.sendBranchIOEvent(thanksPageData)
     }
 
     companion object {

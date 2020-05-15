@@ -58,8 +58,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.applink)
-
     implementation project(rootProject.ext.features.carouselProductCard)
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation project(rootProject.ext.libraries.linker)
 
 
     testImplementation rootProject.ext.testDependencies.mockk
@@ -67,7 +68,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.couroutinesTest
     testImplementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.analyticsDependencies.appsflyer
+
 
 
 }
