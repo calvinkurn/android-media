@@ -120,7 +120,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void openFilter() {
-
         Intent intent = InboxReputationFilterActivity.createIntent(getActivity(),
                 timeFilter, scoreFilter, getTab());
         startActivityForResult(intent, REQUEST_FILTER);
@@ -226,6 +225,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
             );
         else {
             presenter.getFirstTimeInboxReputation(getTab());
+        }
+        if(getTab() == 1) {
+
+        } else if(getTab() == 2) {
+
+        } else {
+
         }
     }
 
