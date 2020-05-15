@@ -30,7 +30,7 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
         val item = subCategoryList[position]
 
         if (item.is_default) {
-            holder.img_sub_category.setImageResource(R.drawable.ic_default_category_icon)
+            holder.img_sub_category.setImageResource(R.drawable.categorylevels_ic_default_category_icon)
         } else {
             ImageHandler.loadImage(holder.itemView.context,
                     holder.img_sub_category,

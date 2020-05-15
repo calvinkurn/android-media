@@ -26,7 +26,7 @@
                 android:id="@+id/subcategory_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_light_pink_gradient"
+                android:background="@drawable/categorylevels_bg_light_pink_gradient"
                 android:paddingTop="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
                 android:visibility="gone"
