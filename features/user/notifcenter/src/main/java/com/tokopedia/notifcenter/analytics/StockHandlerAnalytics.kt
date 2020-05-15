@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 
@@ -88,24 +89,29 @@ class StockHandlerAnalytics {
         send(dataTracker)
     }
 
-    fun addToCardClicked(element: NotificationItemViewBean, userId: String, cartId: String) {
+    fun addToCardClicked(
+            notificationId: String,
+            product: ProductData,
+            userId: String,
+            cartId: String
+    ) {
         val eventName = "add_to_cart"
         val eventCategory = "notif center"
         val eventAction = "click on restock product ATC"
-        val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
+        val eventLabel = "$notificationId - ${product.productId}"
 
         val items = mapOf(
-                "item_name" to element.getAtcProduct()?.name.toString(),
-                "item_id" to element.getAtcProduct()?.productId.toString(),
-                "price" to element.getAtcProduct()?.price.toString(),
+                "item_name" to product.name,
+                "item_id" to product.productId,
+                "price" to product.price,
                 "item_brand" to "",
                 "item_category" to "none / other",
                 "item_variant" to "",
                 "list" to "/notifcenter",
                 "quantity" to "1",
-                "dimension69" to element.getAtcProduct()?.shop?.id.toString(),
+                "dimension69" to product.shop?.id.toString(),
                 "dimension71" to "",
-                "dimension70" to element.getAtcProduct()?.shop?.name.toString(),
+                "dimension70" to product.shop?.name.toString(),
                 "category_id" to "",
                 "dimension42" to cartId,
                 "dimension39" to "/notifcenter"

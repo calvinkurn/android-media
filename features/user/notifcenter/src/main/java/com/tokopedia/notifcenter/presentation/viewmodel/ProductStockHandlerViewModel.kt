@@ -50,8 +50,8 @@ class ProductStockHandlerViewModel @Inject constructor(
     private val _productHighlight = MutableLiveData<List<ProductHighlightViewBean>>()
     val productHighlight: LiveData<List<ProductHighlightViewBean>> get() = _productHighlight
 
-    private val _addToCart = SingleLiveEvent<AddToCartDataModel>()
-    val addToCart: LiveData<AddToCartDataModel> get() = _addToCart
+    private val _addToCart = SingleLiveEvent<Pair<ProductData, AddToCartDataModel>>()
+    val addToCart: LiveData<Pair<ProductData, AddToCartDataModel>> get() = _addToCart
 
     private val _errorMessage = SingleLiveEvent<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -71,6 +71,7 @@ class ProductStockHandlerViewModel @Inject constructor(
     }
 
     override fun addProductToCart(product: ProductData?) {
+        if (product == null) return
         addToCartUseCase.createObservable(atcParams(product))
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -78,7 +79,7 @@ class ProductStockHandlerViewModel @Inject constructor(
                 .subscribe({
                     if (it.status.equals(STATUS_OK, true)
                         && it.data.success == 1) {
-                        _addToCart.setValue(it)
+                        _addToCart.setValue(Pair(product, it))
                     } else {
                         _errorMessage.setValue(it.errorMessage.first())
                     }

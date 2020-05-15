@@ -108,15 +108,21 @@ class ProductStockHandlerDialog(
         })
 
         viewModel.addToCart.observe(viewLifecycleOwner, Observer {
+            val productData = it.first
+            val atcResponse = it.second
+
+            // showing the success toaster
             val actionText = getString(R.string.notifcenter_title_view)
-            onSuccessListener(it.data.message.first(), actionText) {
+            onSuccessListener(atcResponse.data.message.first(), actionText) {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
             }
 
+            // send tracker
             analytics.addToCardClicked(
-                    element,
+                    element.notificationId,
+                    productData,
                     userSession.userId,
-                    it.data.cartId
+                    atcResponse.data.cartId
             )
         })
 
