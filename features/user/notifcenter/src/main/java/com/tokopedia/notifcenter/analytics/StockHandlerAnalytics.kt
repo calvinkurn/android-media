@@ -1,6 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
@@ -101,21 +101,29 @@ class StockHandlerAnalytics {
         val eventAction = "click on restock product ATC"
         val eventLabel = "$notificationId - ${product.productId}"
 
-        val items = DataLayer.mapOf(
-                "item_name", product.name,
-                "item_id", product.productId,
-                "price", product.price,
-                "item_brand", "",
-                "item_category", "none / other",
-                "item_variant", "",
-                "list", "/notifcenter",
-                "quantity", "1",
-                "dimension69", product.shop?.id.toString(),
-                "dimension71", "",
-                "dimension70", product.shop?.name.toString(),
-                "category_id", "",
-                "dimension42", cartId,
-                "dimension39", "/notifcenter"
+        val items = mapOf(
+                "name" to product.name,
+                "id" to product.productId,
+                "price" to product.price,
+                "brand" to "",
+                "category" to "none / other",
+                "variant" to "",
+                "quantity" to "1",
+                "dimension79" to product.shop?.id.toString(),
+                "dimension81" to "",
+                "dimension80" to product.shop?.name.toString(),
+                "dimension82" to "",
+                "dimension45" to cartId,
+                "dimension40" to "/notifcenter"
+        )
+
+        val products = mapOf(
+                KEY_PRODUCTS to listOf(items)
+        )
+
+        val ecommerce = mapOf(
+                KEY_CURRENCY_CODE to VALUE_CURRENCY_CODE,
+                KEY_ADD to products
         )
 
         val dataTracker = DataLayer.mapOf(
@@ -124,7 +132,7 @@ class StockHandlerAnalytics {
                 KEY_EVENT_ACTION, eventAction,
                 KEY_EVENT_LABEL, eventLabel,
                 KEY_USER_ID, userId,
-                KEY_EVENT_ITEMS, items
+                KEY_ECOMMERCE, ecommerce
         )
         send(dataTracker)
     }
@@ -173,6 +181,7 @@ class StockHandlerAnalytics {
         private const val KEY_LIST = "list"
         private const val KEY_PRODUCTS = "products"
         private const val KEY_SHOP_ID = "shopId"
+        private const val KEY_ADD = "add"
 
         //const value
         private const val VALUE_CURRENCY_CODE = "IDR"
