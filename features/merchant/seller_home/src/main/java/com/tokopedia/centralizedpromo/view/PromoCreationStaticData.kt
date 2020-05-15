@@ -6,7 +6,7 @@ import com.tokopedia.sellerhome.R
 
 
 object PromoCreationStaticData {
-    fun provideStaticData(): PromoCreationListUiModel = PromoCreationListUiModel(
+    fun provideStaticData(broadcastChatExtra: String): PromoCreationListUiModel = PromoCreationListUiModel(
             items = arrayListOf(
                     PromoCreationUiModel(
                             R.drawable.sh_ic_top_ads_color,
@@ -19,7 +19,7 @@ object PromoCreationStaticData {
                             R.drawable.ic_broadcast_chat,
                             "Broadcast Chat",
                             "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli",
-                            "",
+                            broadcastChatExtra,
                             "tokopedia://webview?url=https://m.tokopedia.com/broadcast-chat/create"
                     )
             ),

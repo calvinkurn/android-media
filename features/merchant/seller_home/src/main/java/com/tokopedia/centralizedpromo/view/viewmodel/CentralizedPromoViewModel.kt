@@ -1,7 +1,9 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -21,6 +23,7 @@ class CentralizedPromoViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
         private val getPostUseCase: GetPostUseCase,
+        private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -79,9 +82,14 @@ class CentralizedPromoViewModel @Inject constructor(
         }
     }
 
-    private fun getPromoCreation(): Result<BaseUiModel> {
-        return try {
-            Success(PromoCreationStaticData.provideStaticData())
+    private suspend fun getPromoCreation(): Result<BaseUiModel> = runBlocking {
+        try {
+            val chatBlastSellerMetadataUiModel = getChatBlastSellerMetadataUseCase.executeOnBackground()
+            Log.d("ChatBlast", "${chatBlastSellerMetadataUiModel.promo}, ${chatBlastSellerMetadataUiModel.promoType}, ${chatBlastSellerMetadataUiModel.promo > 0 && chatBlastSellerMetadataUiModel.promoType == 2}")
+            val broadcastChatExtra = if (chatBlastSellerMetadataUiModel.promo > 0 && chatBlastSellerMetadataUiModel.promoType == 2){
+                "${chatBlastSellerMetadataUiModel.promo} kuota gratis"
+            } else ""
+            Success(PromoCreationStaticData.provideStaticData(broadcastChatExtra))
         } catch (t: Throwable) {
             Fail(t)
         }
