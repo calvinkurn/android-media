@@ -35,6 +35,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -82,6 +83,15 @@ import javax.inject.Inject
 /**
  * @author by nisie on 23/11/18.
  */
+private const val ACTION_CSAT_SMILEY_BUTTON_CLICKED = "click csat smiley button"
+private const val ACTION_QUICK_REPLY_BUTTON_CLICKED = "click quick reply button"
+private const val ACTION_REPLY_BUTTON_CLICKED = "click reply"
+private const val ACTION_ACTION_BUBBLE_CLICKED = "click action button"
+private const val ACTION_THUMBS_UP_BUTTON_CLICKED = "click thumbs up button"
+private const val ACTION_THUMBS_DOWN_BUTTON_CLICKED = "click thumbs down button"
+private const val ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED = "click thumbs down reason button"
+private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley form"
+private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
@@ -137,23 +147,39 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onEmojiClick(view: View?) {
         when (view?.id) {
-            R.id.btn_inactive_1 -> onClickEmoji(1)
-            R.id.btn_inactive_2 -> onClickEmoji(2)
-            R.id.btn_inactive_3 -> onClickEmoji(3)
-            R.id.btn_inactive_4 -> onClickEmoji(4)
-            R.id.btn_inactive_5 -> onClickEmoji(5)
+            R.id.btn_inactive_1 -> {
+                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "1")
+                onClickEmoji(1)
+            }
+            R.id.btn_inactive_2 -> {
+                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "2")
+                onClickEmoji(2)
+            }
+            R.id.btn_inactive_3 -> {
+                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "3")
+                onClickEmoji(3)
+            }
+            R.id.btn_inactive_4 -> {
+                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "4")
+                onClickEmoji(4)
+            }
+            R.id.btn_inactive_5 -> {
+                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "5")
+                onClickEmoji(5)
+            }
         }
     }
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
-        if(::mCsatResponse.isInitialized){
+        if (::mCsatResponse.isInitialized) {
             list_quick_reply.hide()
             showCsatRatingView()
         }
     }
 
     private fun showCsatRatingView() {
+        chatbotAnalytics.eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
         chatbot_view_help_rate.txt_help_title.setText(mCsatResponse.attachment?.attributes?.title)
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(new_comment.getWindowToken(), 0)
@@ -394,6 +420,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onQuickReplyClicked(model: QuickReplyViewModel) {
+        chatbotAnalytics.eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime(), opponentId)
     }
 
@@ -460,6 +487,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         hideCsatRatingView()
         return { str ->
             view?.let {
+                chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
                 Toaster.showNormalWithAction(it, str, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
             }
             list_quick_reply.show()
@@ -519,6 +547,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onSendButtonClicked() {
+        chatbotAnalytics.eventClick(ACTION_REPLY_BUTTON_CLICKED)
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
@@ -534,12 +563,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
+        chatbotAnalytics.eventClick(ACTION_ACTION_BUBBLE_CLICKED)
         presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
     }
 
     override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
+        sendEvent(rating)
         presenter.sendRating(messageId, rating, element.replyTimeNano.toString(), onError(),
                 onSuccessSendRating(rating, element))
+    }
+
+    private fun sendEvent(rating: Int) {
+        if (rating == ChatRatingViewModel.RATING_GOOD) {
+            chatbotAnalytics.eventClick(ACTION_THUMBS_UP_BUTTON_CLICKED)
+        } else {
+            chatbotAnalytics.eventClick(ACTION_THUMBS_DOWN_BUTTON_CLICKED)
+        }
     }
 
     private fun onSuccessSendRating(rating: Int, element: ChatRatingViewModel): (SendRatingPojo) ->
@@ -554,6 +593,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onClickReasonRating(timestamp: String): (String) -> Unit {
         return {
+            chatbotAnalytics.eventClick(ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED, it)
             (viewState as ChatbotViewState).onClickReasonRating()
             presenter.sendReasonRating(messageId, it, timestamp, onError(),
                     onSuccessSendReasonRating())
