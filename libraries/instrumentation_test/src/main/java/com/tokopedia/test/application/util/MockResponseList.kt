@@ -21,6 +21,8 @@ object MockResponseList {
 
         //official store
         responseList.put("slides", getRawString(context, R.raw.response_mock_data_official_store_banners))
+
+        responseList.put("pdpGetLayout", getRawString(context, R.raw.response_mock_data_pdp_get_layout))
         return responseList
     }
 
