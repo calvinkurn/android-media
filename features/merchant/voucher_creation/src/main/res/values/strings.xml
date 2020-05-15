@@ -94,8 +94,6 @@
     <string name="mvc_create_promo_type_textfield_alert_maximum_percentage">Maks. %s%&#37;</string>
     <string name="mvc_create_promo_type_textfield_alert_no_under_discount">Tidak boleh kurang dari potongan harga</string>
     <string name="mvc_create_promo_type_textfield_alert_discount_above">Potongan harga harus di atas&#160;</string>
-    <string name="mvc_create_promo_type_estimation">Estimasi Maks. Pengeluaran&#160;</string>
-    <string name="mvc_create_promo_type_estimation_explanation">Dipotong dari transaksi selesai</string>
     <string name="mvc_create_promo_type_bottomsheet_title_promo_expenses">Pengeluaran Promosi</string>
     <string name="mvc_create_promo_type_bottomsheet_subtitle_increase_discount">Tingkatkan Potongan Hargamu</string>
     <string name="mvc_create_promo_type_bottomsheet_minimum_purchase">Minimum Pembelian</string>
@@ -199,5 +197,7 @@
     <string name="mvc_detail_ticker_here">di sini</string>
     <string name="mvc_review_agreement">Dengan klik Tambah Voucher, saya menyetujui syarat dan ketentuan yang berlaku.</string>
     <string name="mvc_review_terms">syarat dan ketentuan</string>
+    <string name="mvc_estimation_title">Estimasi Maks. Pengeluaran</string>
+    <string name="mvc_estimation_description">Dipotong dari transaksi selesai</string>
 
 </resources>

@@ -32,7 +32,7 @@ class VoucherTickerView(context: Context, attrs: AttributeSet?) : ConstraintLayo
 
     var nominal: String = ""
         set(value) {
-            tvMvcExpanse.text = value
+            tvMvcExpense.text = value
             field = value
         }
 

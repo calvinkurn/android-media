@@ -1,58 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
-    android:layout_margin="@dimen/layout_lvl2"
-    android:paddingStart="@dimen/mvc_dimen_12dp"
-    android:paddingLeft="@dimen/mvc_dimen_12dp"
-    android:paddingTop="@dimen/mvc_dimen_10dp"
-    android:paddingEnd="@dimen/mvc_dimen_12dp"
-    android:paddingRight="@dimen/mvc_dimen_12dp"
-    android:paddingBottom="@dimen/mvc_dimen_10dp">
+    android:layout_margin="@dimen/layout_lvl2">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvMvcTickerTitle"
-        android:layout_width="wrap_content"
+    <com.tokopedia.vouchercreation.common.view.voucherticker.VoucherTickerView
+        android:id="@+id/tickerView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/light_N700_96"
-        android:text="@string/mvc_create_promo_type_estimation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/estimationTooltip"
-        android:layout_width="@dimen/mvc_tooltip_size"
-        android:layout_height="@dimen/mvc_tooltip_size"
-        app:srcCompat="@drawable/ic_information"
-        app:layout_constraintVertical_bias="0.7"
-        app:layout_constraintTop_toTopOf="@id/tvMvcTickerTitle"
-        app:layout_constraintBottom_toBottomOf="@id/tvMvcTickerTitle"
-        app:layout_constraintStart_toEndOf="@id/tvMvcTickerTitle" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvMvcTickerDescription"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:textColor="@color/light_N700_96"
-        android:text="@string/mvc_create_promo_type_estimation_explanation"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvMvcExpense"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvMvcTickerTitle"
-        app:typographyType="body_3" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvMvcExpense"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/light_N700_96"
-        app:layout_constraintBottom_toBottomOf="@+id/tvMvcTickerDescription"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvMvcTickerTitle"
-        app:typographyType="heading_4"
-        tools:text="Rp3.000.000" />
 </androidx.constraintlayout.widget.ConstraintLayout>
