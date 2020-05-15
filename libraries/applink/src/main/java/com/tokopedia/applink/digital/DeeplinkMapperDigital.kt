@@ -10,6 +10,8 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -71,6 +73,12 @@ object DeeplinkMapperDigital {
                 }
                 TEMPLATE_ID_CC -> {
                     ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE
+                }
+                TEMPLATE_PREPAID_TELCO -> {
+                    ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL
+                }
+                TEMPLATE_POSTPAID_TELCO -> {
+                    ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
                 }
                 else -> deeplink
             }

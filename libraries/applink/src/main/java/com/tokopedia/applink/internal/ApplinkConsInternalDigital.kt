@@ -15,6 +15,8 @@ object ApplinkConsInternalDigital {
 
     const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart"
     const val TELCO_DIGITAL = "$INTERNAL_DIGITAL/telco"
+    const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
+    const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"
     const val VOUCHER_GAME = "$INTERNAL_DIGITAL/vouchergame"
     const val GENERAL_TEMPLATE = "$INTERNAL_DIGITAL/general"
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
