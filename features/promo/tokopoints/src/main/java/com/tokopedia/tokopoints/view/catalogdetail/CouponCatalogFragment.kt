@@ -10,6 +10,7 @@ import android.os.CountDownTimer
 import android.view.*
 import android.webkit.WebView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AlertDialog
@@ -35,6 +36,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
@@ -656,6 +658,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun loadWebViewInBottomsheet(data: String, title: String) {
         val bottomSheet = BottomSheetUnify()
+        bottomSheet.setShowListener {
+            val sideMargin = 16.toPx()
+            bottomSheet.bottomSheetWrapper.setPadding(0, 0, 0, 0)
+            (bottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, sideMargin)
+        }
         val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
         val webView = view.findViewById<WebView>(R.id.catalog_webview)
         webView.loadData(data, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)

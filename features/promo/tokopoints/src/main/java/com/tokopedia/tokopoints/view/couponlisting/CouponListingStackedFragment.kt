@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -25,6 +26,7 @@ import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.view.*
 import javax.inject.Inject
@@ -81,9 +83,9 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun initInjector() {
         DaggerTokopointBundleComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .tokopointsQueryModule(TokopointsQueryModule(requireActivity()))
-            .build().inject(this)
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .tokopointsQueryModule(TokopointsQueryModule(requireActivity()))
+                .build().inject(this)
     }
 
     override fun onClick(source: View) {
@@ -120,7 +122,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
         swipe_refresh_layout.setOnRefreshListener {
             val id = presenter.category
-            id?.let {  presenter.getCoupons(id) }
+            id?.let { presenter.getCoupons(id) }
         }
 
         addListObserver()
@@ -196,11 +198,17 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     fun showCouponInStackBottomSheet(data: TokoPointPromosEntity) {
         this.context?.let { context ->
-            this.fragmentManager?.let {fm->
+            this.fragmentManager?.let { fm ->
                 val closeableBottomSheetDialog = BottomSheetUnify()
+
+                closeableBottomSheetDialog.setShowListener {
+                    val sideMargin = 8.toPx()
+                    closeableBottomSheetDialog.bottomSheetWrapper.setPadding(sideMargin, sideMargin, sideMargin, 0)
+                    (closeableBottomSheetDialog.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, 0)
+                }
+
                 val view = layoutInflater.inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false)
                 val recyclerView = view.findViewById<RecyclerView>(R.id.rv_coupon_in_stack)
-
                 if (mItemDecoration != null) {
                     recyclerView.addItemDecoration(mItemDecoration!!)
                 }
@@ -219,7 +227,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
                     }
 
                     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-                        closeableBottomSheetDialog.show(childFragmentManager, "")
+                        closeableBottomSheetDialog.show(fm, "")
                     }
 
                     override fun onStartPageLoad(pageNumber: Int) {
@@ -242,7 +250,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
                     isHideable = true
                     showCloseIcon = false
                     showHeader = false
-                    showKnob=true
+                    isFullpage = false
+                    showKnob = true
                     this@CouponListingStackedFragment.view?.height?.div(2)?.let { height ->
                         customPeekHeight = height
                     }

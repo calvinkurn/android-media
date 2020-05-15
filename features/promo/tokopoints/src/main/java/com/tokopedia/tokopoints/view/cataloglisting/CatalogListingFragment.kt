@@ -191,6 +191,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         //adding bottom dots(Page Indicator)
         val pageIndicator: PageControl? = view?.findViewById(R.id.page_indicator)
         pageIndicator?.setCurrentIndicator(0)
+        pageIndicator?.setIndicator(banners.size)
         view!!.findViewById<View>(R.id.container_pager).visibility = View.VISIBLE
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }

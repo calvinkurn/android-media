@@ -46,6 +46,7 @@ import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
+import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.CustomViewPager
@@ -60,6 +61,7 @@ import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -733,19 +735,33 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             tickerContainer!!.visibility = View.GONE
             return
         }
-        tickerContainer?.visibility = View.VISIBLE
-        val ticker: Ticker = view!!.findViewById(R.id.ticker_section)
-        val tickerDataList = content.layoutTickerAttr.tickerList as ArrayList<TickerData>
-        val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
-        ticker.addPagerView(tickerPagerAdapter, tickerDataList)
 
-        ticker.setOnClickListener {
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.VIEW_TICKER,
-                    "")
+        val pager: ViewPager = view!!.findViewById(R.id.view_pager_ticker)
+        pager.adapter = SectionTickerPagerAdapter(context, content.layoutTickerAttr.tickerList)
+        val pageIndicator: PageControl = view!!.findViewById(R.id.page_indicator_ticker)
+        val hideTickerView = view!!.findViewById<View>(R.id.ic_close_ticker)
+        hideTickerView.setOnClickListener {
+            tickerContainer?.visibility = View.GONE
         }
+        if (content.layoutTickerAttr.tickerList.size > 1) { //adding bottom dots(Page Indicator)
+            pageIndicator.setIndicator(2)
+            pageIndicator.visibility = View.VISIBLE
+        } else {
+            pageIndicator.visibility = View.GONE
+        }
+        tickerContainer?.visibility = View.VISIBLE
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                AnalyticsTrackerUtil.sendEvent(context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.VIEW_TICKER,
+                        "")
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
     }
 
     override fun renderCategory(content: SectionContent) {

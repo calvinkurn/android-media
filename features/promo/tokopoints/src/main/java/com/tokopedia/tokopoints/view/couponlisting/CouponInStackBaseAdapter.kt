@@ -204,6 +204,7 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPr
             holder.cvShadow2.hide()
             layoutParamsCv1.setMargins(0, 0, 0, 0)
             layoutParamsCvData.setMargins(0, 0, 0, 0)
+            holder.cvData.setPadding(0,0,0,0)
             holder.cvShadow1.layoutParams = layoutParamsCv1
             holder.cvData.layoutParams = layoutParamsCvData
         }
