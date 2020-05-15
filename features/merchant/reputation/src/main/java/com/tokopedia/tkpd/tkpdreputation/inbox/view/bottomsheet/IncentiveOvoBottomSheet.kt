@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.tkpd.tkpdreputation.R
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
@@ -43,8 +44,10 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             adapter = adapterIncentiveOvo
         }
 
+        val reputationTracking = ReputationTracking()
         view.btnContinueReview.setOnClickListener {
             dismiss()
+            reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker()
         }
     }
 

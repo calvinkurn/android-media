@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,12 +45,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxR
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 
 /**
@@ -267,9 +265,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
+        String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
+        String subtitle = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle();
         ovoTicker.setVisibility(View.VISIBLE);
-        ovoTicker.setTickerTitle(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle());
-        ovoTicker.setHtmlDescription(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle());
+        ovoTicker.setTickerTitle(title);
+        ovoTicker.setHtmlDescription(subtitle);
         ovoTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
@@ -277,11 +277,20 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 bottomSheet.setFullpage(true);
                 assert getFragmentManager() != null;
                 bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
+                bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
+                    @Override
+                    public Unit invoke(View view) {
+                        reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
+                        bottomSheet.dismiss();
+                        return Unit.INSTANCE;
+                    }
+                });
+                reputationTracking.onClickReadSkIncentiveOvoTracker(title);
             }
 
             @Override
             public void onDismiss() {
-
+                reputationTracking.onClickDismissIncentiveOvoTracker(title);
             }
         });
     }

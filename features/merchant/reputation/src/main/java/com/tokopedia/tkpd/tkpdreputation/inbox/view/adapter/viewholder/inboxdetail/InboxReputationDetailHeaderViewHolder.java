@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView;
@@ -29,6 +30,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * @author by nisie on 8/19/17.
@@ -312,9 +316,12 @@ public class InboxReputationDetailHeaderViewHolder extends
         if (productRevIncentiveOvoDomain == null) {
             ovoTicker.setVisibility(View.GONE);
         } else {
+            ReputationTracking reputationTracking = new ReputationTracking();
+            String title = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle();
+            String subtitle = productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle();
             ovoTicker.setVisibility(View.VISIBLE);
-            ovoTicker.setTickerTitle(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getTitle());
-            ovoTicker.setHtmlDescription(productRevIncentiveOvoDomain.getProductrevIncentiveOvo().getTicker().getSubtitle());
+            ovoTicker.setTickerTitle(title);
+            ovoTicker.setHtmlDescription(subtitle);
             ovoTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
@@ -322,13 +329,23 @@ public class InboxReputationDetailHeaderViewHolder extends
                     bottomSheet.setFullpage(true);
                     assert fragmentManager != null;
                     bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
+                    bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
+                        @Override
+                        public Unit invoke(View view) {
+                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
+                            bottomSheet.dismiss();
+                            return Unit.INSTANCE;
+                        }
+                    });
+                    reputationTracking.onClickReadSkIncentiveOvoTracker(title);
                 }
 
                 @Override
                 public void onDismiss() {
-
+                    reputationTracking.onClickDismissIncentiveOvoTracker(title);
                 }
             });
+            reputationTracking.onSuccessGetIncentiveOvoTracker(title);
         }
     }
 }
