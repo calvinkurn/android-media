@@ -128,6 +128,10 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         presenter.search(searchParameter)
     }
 
+    fun setIsTyping(isTyping: Boolean) {
+        presenter.setIsTyping(isTyping)
+    }
+
     override fun onItemClicked(item: BaseSuggestionViewModel) {
         presenter.onSuggestionItemClicked(item)
     }

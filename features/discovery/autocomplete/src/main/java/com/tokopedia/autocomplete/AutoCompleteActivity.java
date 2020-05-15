@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -238,5 +239,11 @@ public class AutoCompleteActivity extends BaseActivity
     @Override
     public void setSearchQuery(@NotNull String keyword) {
         searchBarView.setQuery(keyword, false, true);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        suggestionFragment.setIsTyping(true);
+        return super.onKeyUp(keyCode, event);
     }
 }
