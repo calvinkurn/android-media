@@ -26,6 +26,7 @@
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintStart_toEndOf="@id/replyAttachedProductImage"
             app:layout_constraintTop_toTopOf="@id/replyAttachedProductImage"
             app:typographyType="body_3"

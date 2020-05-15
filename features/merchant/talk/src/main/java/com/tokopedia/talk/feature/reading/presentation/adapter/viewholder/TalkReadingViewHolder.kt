@@ -148,6 +148,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 }
                 show()
             }
+        } else {
+            itemView.seeOtherAnswers.hide()
         }
     }
 

@@ -28,7 +28,10 @@ class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessi
         createTalkUsecase.execute(CreateTalkUsecase.getParam(userSession.userId, productId, text), object : Subscriber<TalkThreadViewModel>(){
             override fun onNext(t: TalkThreadViewModel?) {
                 isRequesting = false
-                view.onSuccessCreateTalk(productId)
+                t?.let {
+                    view.onSuccessCreateTalk(productId, it.headThread.talkId)
+                }
+
             }
 
             override fun onCompleted() {

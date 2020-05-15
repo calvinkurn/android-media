@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.di.DaggerAddTalkComponent
@@ -129,12 +131,24 @@ class AddTalkFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessCreateTalk(productId: String) {
+    override fun onSuccessCreateTalk(productId: String, talkId: String) {
         send_progress.visibility = View.GONE
+        goToReply(productId, talkId)
+    }
+
+    private fun goToReply(productId: String, talkId: String) {
+//        val intent = context?.let {
+//            if(talkId.isNotEmpty()) {
+//                RouteManager.getIntent(it, ApplinkConstInternalGlobal.TALK_REPLY, talkId)
+//            } else {
+//                RouteManager.getIntent(it, ApplinkConstInternalGlobal.PRODUCT_TALK, productId)
+//            }
+//        }
         activity?.run {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+//        startActivity(intent)
     }
 
     override fun onDestroyView() {

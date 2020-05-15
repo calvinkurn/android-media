@@ -48,49 +48,41 @@
         android:paddingEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle"
-        app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
+        app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle" />
 
     <include layout="@layout/partial_dynamic_discussion_most_helpful_single_question"
         android:id="@+id/productDiscussionMostHelpfulSingleQuestionLayout"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle"
-        app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator" />
+        android:paddingBottom="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle" />
 
     <include layout="@layout/partial_dynamic_discussion_most_helpful_empty_state"
         android:id="@+id/productDiscussionMostHelpfulEmptyLayout"
         android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:paddingBottom="@dimen/layout_lvl2"
         app:layout_goneMarginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
-        app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
+        app:layout_constraintTop_toBottomOf="@id/talk_top_separator" />
 
     <include layout="@layout/partial_dynamic_discussion_shimmer"
         android:id="@+id/productDiscussionShimmerLayout"
         android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:paddingBottom="@dimen/layout_lvl2"
         app:layout_goneMarginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
-        app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
+        app:layout_constraintTop_toBottomOf="@id/talk_top_separator" />
 
     <include layout="@layout/partial_dynamic_discussion_local_load"
         android:id="@+id/productDiscussionLocalLoadLayout"
         android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:paddingBottom="@dimen/layout_lvl2"
         app:layout_goneMarginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
-        app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator"/>
-
-    <View
-        android:id="@+id/talk_bottom_separator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl1"
-        android:background="@color/grey_separator"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/talk_top_separator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

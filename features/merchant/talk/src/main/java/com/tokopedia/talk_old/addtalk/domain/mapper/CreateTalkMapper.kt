@@ -34,7 +34,7 @@ class CreateTalkMapper @Inject constructor() : Func1<Response<DataResponse<Creat
     }
 
     private fun mapToViewModel(pojo: CreateTalkPojo): TalkThreadViewModel {
-        return TalkThreadViewModel(ProductTalkItemViewModel(), ArrayList<Visitable<*>>())
+        return TalkThreadViewModel(ProductTalkItemViewModel(talkId = pojo.talkId.toString()), ArrayList<Visitable<*>>())
     }
 }
 

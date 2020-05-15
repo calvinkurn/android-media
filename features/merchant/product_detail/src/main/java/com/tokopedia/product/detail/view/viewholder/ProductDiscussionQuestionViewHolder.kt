@@ -2,7 +2,9 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
@@ -40,13 +42,18 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
     }
 
     private fun showNoAnswer() {
-        itemView.productDetailDiscussionQuestionNoAnswers.visibility = View.VISIBLE
+        itemView.productDetailDiscussionTotalAnswer.apply {
+            text = context.getString(R.string.product_detail_discussion_no_answers)
+            setTextColor(context.getResColor(R.color.Neutral_N700_32))
+            show()
+        }
     }
 
     private fun showAnswersCount(answer: Int) {
         itemView.productDetailDiscussionTotalAnswer.apply {
             text = itemView.context.getString(R.string.product_detail_discussion_total_answers, answer)
-            visibility = View.VISIBLE
+            setTextColor(context.getResColor(R.color.Neutral_N700_68))
+            show()
         }
     }
 
@@ -54,7 +61,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         if(userThumbnail.isNotEmpty()) {
             itemView.productDetailDiscussionProfilePicture.apply {
                 loadImage(userThumbnail)
-                visibility = View.VISIBLE
+                show()
             }
         }
     }

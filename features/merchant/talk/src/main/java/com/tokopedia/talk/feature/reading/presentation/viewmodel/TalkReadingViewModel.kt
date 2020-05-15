@@ -145,7 +145,7 @@ class TalkReadingViewModel @Inject constructor(
         _viewState.value = ViewState.Error(page)
     }
 
-    private fun setSuccess(isEmpty: Boolean, page: Int) {
+    fun setSuccess(isEmpty: Boolean, page: Int) {
         _viewState.value = ViewState.Success(isEmpty, page)
     }
 

@@ -14,6 +14,8 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         android:maxLines="2"
         android:ellipsize="end"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionQuestionChevron"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,24 +46,9 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
         app:layout_goneMarginStart="@dimen/layout_lvl0"
-        app:layout_goneMarginEnd="@dimen/layout_lvl0"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionQuestion"
         app:layout_constraintStart_toEndOf="@id/productDetailDiscussionProfilePicture" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/productDetailDiscussionQuestionNoAnswers"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:visibility="gone"
-        android:text="@string/product_detail_discussion_no_answers"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionQuestion"
-        app:layout_constraintStart_toStartOf="@id/productDetailDiscussionQuestion"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

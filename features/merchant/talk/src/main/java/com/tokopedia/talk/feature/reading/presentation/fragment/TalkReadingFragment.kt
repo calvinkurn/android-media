@@ -422,6 +422,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             (adapter as? TalkReadingAdapter)?.removeQuestion(questionID)
         }
         showSuccessToaster(getString(R.string.delete_question_toaster_success))
+        if(adapter.data.isEmpty()) {
+            viewModel.setSuccess(true, 0)
+        }
     }
 
     private fun showSuccessToaster(message: String) {

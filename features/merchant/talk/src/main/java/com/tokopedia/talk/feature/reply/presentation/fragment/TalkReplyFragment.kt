@@ -352,11 +352,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showErrorToaster(getString(R.string.toaster_unfollow_fail))
     }
 
-    private fun onSuccessDeleteComment() {
+    private fun onSuccessDeleteComment(answerId: String) {
         showSuccessToaster(getString(R.string.delete_toaster_success))
-        adapter?.clearAllElements()
-        getDiscussionData()
-        showPageLoading()
+        adapter?.deleteQuestion(answerId)
     }
 
     private fun onFailDeleteComment() {
@@ -461,7 +459,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun observeDeleteCommentResponse() {
         viewModel.deleteCommentResult.observe(this, Observer {
             when(it) {
-                is Success -> onSuccessDeleteComment()
+                is Success -> onSuccessDeleteComment(it.data.talkDeleteComment.data.commentId.toString())
                 else -> onFailDeleteComment()
             }
         })
