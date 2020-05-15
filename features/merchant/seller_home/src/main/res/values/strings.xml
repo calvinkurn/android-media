@@ -100,6 +100,12 @@
     <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Toko pertamamu!</string>
     <string name="centralized_promo_bottomsheet_detail">Dapatkan keuntungannya!</string>
     <string name="centralized_promo_bottomsheet_next">Buat Voucher</string>
+    <string name="centralized_promo_bottomsheet_increase_sell">Tingkatkan penjualanmu</string>
+    <string name="centralized_promo_bottomsheet_increase_sell_desc">Terbukti ampuh menarik perhatian pembeli dan meningkatkan penjualan produk.</string>
+    <string name="centralized_promo_bottomsheet_time">Kelola waktu aktif voucher</string>
+    <string name="centralized_promo_bottomsheet_time_desc">Cukup atur anggaran dan periode promosi sesuai strategi penjualanmu.</string>
+    <string name="centralized_promo_bottomsheet_flexible">Penggunaan fleksibel</string>
+    <string name="centralized_promo_bottomsheet_flexible_desc">Voucher berlaku untuk seluruh produkmu. Download &amp; bagikan ke sosial media.</string>
 
     <string name="seller_home_logout_title">Keluar dari Tokopedia</string>
     <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>

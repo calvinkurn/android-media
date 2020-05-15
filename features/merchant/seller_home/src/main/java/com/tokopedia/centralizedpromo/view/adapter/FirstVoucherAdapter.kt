@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.centralizedpromo.view.model.FirstVoucherUiModel
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.sellerhome.R
 import kotlinx.android.synthetic.main.centralized_promo_first_voucher_item_layout.view.*
 
@@ -27,8 +28,8 @@ class FirstVoucherAdapter(private val itemList: List<FirstVoucherUiModel>) : Rec
                 ContextCompat.getDrawable(context, item.iconDrawableRes)?.let {
                     firstVoucherItemIcon.setImageDrawable(it)
                 }
-                firstVoucherItemTitle.text = item.title
-                firstVoucherItemDescription.text = item.description
+                firstVoucherItemTitle.text = context?.getString(item.titleRes).toBlankOrString()
+                firstVoucherItemDescription.text = context?.getString(item.descriptionRes).toBlankOrString()
             }
         }
 

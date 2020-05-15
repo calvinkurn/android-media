@@ -5,28 +5,28 @@ import com.tokopedia.sellerhome.R
 
 object FirstVoucherDataSource {
 
-    private const val INCREASE_SELLS_TITLE = "Tingkatkan penjualanmu"
-    private const val INCREASE_SELLS_DESCRIPTION = "Terbukti ampuh menarik menarik perhatian pembeli dan meningkatkan penjualan."
-    private const val TIME_TITLE = "Kelola waktu aktif voucher"
-    private const val TIME_DESCRIPTION = "Cukup atur anggaran dan periode promosi sesuai strategi penjualanmu."
-    private const val FLEXIBLE_PROMOTION_TITLE = "Penggunaan fleksibel"
-    private const val FLEXIBLE_PROMOTION_DESCRIPTION = "Voucher berlaku untuk seluruh produkmu. Download & bagikan ke sosial media."
+    private val INCREASE_SELLS_TITLE = R.string.centralized_promo_bottomsheet_increase_sell
+    private val INCREASE_SELLS_DESCRIPTION = R.string.centralized_promo_bottomsheet_increase_sell_desc
+    private val TIME_TITLE = R.string.centralized_promo_bottomsheet_time
+    private val TIME_DESCRIPTION = R.string.centralized_promo_bottomsheet_time_desc
+    private val FLEXIBLE_PROMOTION_TITLE = R.string.centralized_promo_bottomsheet_flexible
+    private val FLEXIBLE_PROMOTION_DESCRIPTION = R.string.centralized_promo_bottomsheet_flexible_desc
 
     fun getFirstVoucherInfoItems() = listOf(
             FirstVoucherUiModel(
                     iconDrawableRes = R.drawable.ic_voucher_increase_sells,
-                    title = INCREASE_SELLS_TITLE,
-                    description = INCREASE_SELLS_DESCRIPTION
+                    titleRes = INCREASE_SELLS_TITLE,
+                    descriptionRes = INCREASE_SELLS_DESCRIPTION
             ),
             FirstVoucherUiModel(
                     iconDrawableRes = R.drawable.ic_voucher_waktu,
-                    title = TIME_TITLE,
-                    description = TIME_DESCRIPTION
+                    titleRes = TIME_TITLE,
+                    descriptionRes = TIME_DESCRIPTION
             ),
             FirstVoucherUiModel(
                     iconDrawableRes = R.drawable.ic_voucher_promosi_fleksibel,
-                    title = FLEXIBLE_PROMOTION_TITLE,
-                    description = FLEXIBLE_PROMOTION_DESCRIPTION
+                    titleRes = FLEXIBLE_PROMOTION_TITLE,
+                    descriptionRes = FLEXIBLE_PROMOTION_DESCRIPTION
             )
     )
 }
