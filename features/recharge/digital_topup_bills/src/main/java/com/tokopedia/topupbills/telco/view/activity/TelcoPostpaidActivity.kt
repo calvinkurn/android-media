@@ -1,10 +1,8 @@
 package com.tokopedia.topupbills.telco.view.activity
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
