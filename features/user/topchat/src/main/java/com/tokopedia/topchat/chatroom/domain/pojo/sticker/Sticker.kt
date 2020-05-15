@@ -4,8 +4,8 @@ package com.tokopedia.topchat.chatroom.domain.pojo.sticker
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
-import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentData
 
@@ -40,6 +40,10 @@ data class Sticker(
                 WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE,
                 data
         )
+    }
+
+    fun generateStickerProfile(): StickerProfile {
+        return StickerProfile(groupUUID, imageUrl, intention, stickerUUID)
     }
 
     @Keep

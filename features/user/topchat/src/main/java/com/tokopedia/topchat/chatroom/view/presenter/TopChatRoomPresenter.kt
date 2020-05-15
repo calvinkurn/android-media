@@ -481,15 +481,15 @@ class TopChatRoomPresenter @Inject constructor(
             onSendingMessage: () -> Unit
     ) {
         onSendingMessage()
-//        processDummyMessage(mapToDummySticker(messageId, sticker, startTime))
-        sendStickerWithWebSocket(messageId, sticker, startTime, opponentId)
+        processDummyMessage(mapToDummySticker(messageId, sticker, startTime))
+        sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
     }
 
-//    private fun mapToDummySticker(messageId: String, sticker: Sticker, startTime: String): Visitable<*> {
-//        return StickerUiModel(
-//
-//        )
-//    }
+    private fun mapToDummySticker(messageId: String, sticker: Sticker, startTime: String): Visitable<*> {
+        return StickerUiModel(
+                messageId, userSession.userId, userSession.name, startTime, sticker.generateStickerProfile()
+        )
+    }
 
     private fun sendStickerWithWebSocket(
             messageId: String,

@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.transition.Slide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.chat_common.data.SendableViewModel.Companion.PAYLOAD_EVENT_READ
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
@@ -24,6 +25,14 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
         bindStickerImage(message.sticker)
         bindChatReadStatus(message)
         alignLayout(message)
+    }
+
+    override fun bind(message: StickerUiModel?, payloads: List<Any>) {
+        if (payloads.isEmpty() || message == null) return
+        val payload = payloads[0]
+        if (payload === PAYLOAD_EVENT_READ && message.isSender) {
+            bindChatReadStatus(message)
+        }
     }
 
     private fun bindStickerImage(sticker: StickerProfile) {

@@ -35,18 +35,19 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
         val stickerAttributes = GsonBuilder().create().fromJson<StickerAttributesResponse>(jsonAttributes,
                 StickerAttributesResponse::class.java)
         return StickerUiModel(
-                pojo.msgId.toString(),
-                pojo.fromUid,
-                pojo.from,
-                pojo.fromRole,
-                pojo.attachment?.id.toString(),
-                pojo.attachment?.type.toString(),
-                pojo.message.timeStampUnixNano,
-                pojo.message.censoredReply,
-                false,
-                false,
-                !pojo.isOpposite,
-                stickerAttributes.stickerProfile
+                messageId = pojo.msgId.toString(),
+                fromUid = pojo.fromUid,
+                from = pojo.from,
+                fromRole = pojo.fromRole,
+                attachmentId = pojo.attachment?.id.toString(),
+                attachmentType = pojo.attachment?.type.toString(),
+                replyTime = pojo.message.timeStampUnixNano,
+                startTime = pojo.startTime,
+                message = pojo.message.censoredReply,
+                isRead = false,
+                isDummy = false,
+                isSender = !pojo.isOpposite,
+                sticker = stickerAttributes.stickerProfile
         )
     }
 
