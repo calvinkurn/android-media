@@ -267,27 +267,27 @@ open class HomeViewModel @Inject constructor(
 
         headerDataModel?.let { headerViewModel ->
             tokopointsDrawer?.let {
-                headerViewModel.tokopointsDrawerHomeData = it
+                headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
             }
             homeHeaderWalletAction?.let {
-                headerViewModel.homeHeaderWalletActionData = it
+                headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
             }
             cashBackData?.let {
-                headerViewModel.cashBackData = it
+                headerDataModel = headerDataModel?.copy(cashBackData = it)
             }
             tokopointHomeDrawerData?.let {
-                headerViewModel.tokoPointDrawerData = it
+                headerDataModel = headerDataModel?.copy(tokoPointDrawerData = it)
             }
             isPendingTokocashChecked?.let {
-                headerViewModel.isPendingTokocashChecked = it
+                headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
             }
             isWalletDataError?.let {
-                headerViewModel.isWalletDataError = it
+                headerDataModel = headerDataModel?.copy(isWalletDataError = it)
             }
             isTokoPointDataError?.let {
-                headerViewModel.isTokoPointDataError = it
+                headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
-            headerViewModel.isUserLogin = userSession.isLoggedIn
+            headerDataModel = headerDataModel?.copy(isUserLogin = userSession.isLoggedIn)
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
         }
 
