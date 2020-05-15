@@ -39,6 +39,7 @@
         android:layout_height="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_marginLeft="@dimen/dp_2"
         android:visibility="gone"
+        android:gravity="center"
         app:layout_constraintStart_toEndOf="@+id/ivPdpView"
         app:layout_constraintTop_toTopOf="@+id/ivPdpView"
         app:layout_constraintBottom_toBottomOf="@+id/ivPdpView"
