@@ -10,6 +10,8 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.Inbo
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImpl
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -46,14 +48,20 @@ class InboxModule(private val context: Context) {
                                   submitRatingUseCase: SubmitRatingUseCase,
                                   closeTicketByUserUseCase: CloseTicketByUserUseCase,
                                   uploadImageUseCase: UploadImageUseCase,
+                                  userSession: UserSessionInterface,
                                   dispatcher: CoroutineDispatcher): InboxDetailPresenter {
-        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, uploadImageUseCase,dispatcher)
+        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase, uploadImageUseCase,userSession,dispatcher)
     }
 
 
     @Provides
     fun getDefaultDispatcher():CoroutineDispatcher{
         return Dispatchers.Default
+    }
+
+    @Provides
+    fun provideUserSession(): UserSessionInterface {
+        return UserSession(context)
     }
 
     @Named("close_ticket_by_user")
@@ -73,4 +81,11 @@ class InboxModule(private val context: Context) {
     fun provideSubmitRatingQuery(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.submit_rating)
     }
+
+    @Named("reply_ticket")
+    @Provides
+    fun provideReplyTicketQuery(): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.reply_ticket_query)
+    }
+
 }

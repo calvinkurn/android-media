@@ -1,41 +1,37 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
-import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint
+import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
 import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse
-import com.tokopedia.contactus.orderquery.data.CreateTicketResult
-import com.tokopedia.core.network.constants.TkpdBaseURL
-import java.util.*
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
+import javax.inject.Named
 
-const val TICKET_ID = "ticket_id"
+const val TICKET_ID = "ticketID"
 const val MESSAGE = "message"
-const val IS_IMAGE = "p_photo"
-const val IMAGE_AS_STRING = "p_photo_all"
+const val IS_IMAGE = "pPhoto"
+const val IMAGE_AS_STRING = "pPhotoAll"
+const val USER_ID = "userID"
+const val AGENT_REPLY = "agentReply"
 
-class PostMessageUseCase @Inject constructor(private val repository: ContactUsRepository){
+class PostMessageUseCase @Inject constructor(@Named("reply_ticket") val replyTicketQuery: String,
+                                             private val repository: ContactUsRepository) {
 
-    suspend fun getCreateTicketResult(queryMap: MutableMap<String, Any>): InboxDataResponse<*>? {
-        return (repository.postRestData(
-                url,
-                object : TypeToken<InboxDataResponse<CreateTicketResult>>() {}.type,
-                queryMap) as InboxDataResponse<CreateTicketResult>)
-
+    suspend fun getCreateTicketResult(requestParams: RequestParams): TicketReplyResponse {
+        return repository.getGQLData(replyTicketQuery,
+                TicketReplyResponse::class.java,
+                requestParams.parameters)
     }
 
-    private val url: String
-         get() = TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.SEND_MESSAGE
-
-    fun setQueryMap(id: String, message: String, photo: Int, photoall: String): MutableMap<String, Any>{
-        val queryMap: MutableMap<String, Any> = HashMap()
-        queryMap[TICKET_ID] = id
-        queryMap[MESSAGE] = message
-        if (photo == 1) queryMap[IS_IMAGE] = 1
-        if (photoall.isNotEmpty()) queryMap[IMAGE_AS_STRING] = photoall
-        return queryMap
+    fun createRequestParams(id: String, message: String, photo: Int, photoall: String, agentReply: String, userId: String): RequestParams {
+        val requestParams = RequestParams.create()
+        requestParams.putString(TICKET_ID, id)
+        requestParams.putString(MESSAGE, message)
+        requestParams.putString(AGENT_REPLY, agentReply)
+        requestParams.putString(USER_ID, userId)
+        requestParams.putInt(IS_IMAGE, photo)
+        requestParams.putString(IMAGE_AS_STRING, photoall)
+        return requestParams
     }
 
 
