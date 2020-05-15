@@ -255,14 +255,15 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private fun setCounterNotificationUpdate() {
         val defaultTitle = getString(R.string.title_notification_update)
-        val counter = setCounterText(when {
-            updateCounter > 0 -> updateCounter.toString()
-            updateCounter > 99 -> setCounterText(getString(R.string.exceed_ninety_nine))
-            else -> updateCounter.toString()
-        })
+        var counter = ""
+        if (updateCounter > 0) {
+            counter = setCounterText(updateCounter.toString())
+        } else if (updateCounter > 99) {
+            counter = setCounterText(getString(R.string.exceed_ninety_nine))
+        }
 
-        val tabTitle = String.format("%s%s", defaultTitle, counter)
-        setTabTitle(INDEX_NOTIFICATION_UPDATE, tabTitle)
+        val title = String.format("%s%s", defaultTitle, counter)
+        setTabTitle(INDEX_NOTIFICATION_UPDATE, title)
     }
 
     private fun setTabTitle(tabIndex: Int, title: String) {
