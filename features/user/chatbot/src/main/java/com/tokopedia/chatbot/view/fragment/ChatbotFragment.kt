@@ -24,10 +24,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
@@ -92,6 +89,7 @@ private const val ACTION_THUMBS_DOWN_BUTTON_CLICKED = "click thumbs down button"
 private const val ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED = "click thumbs down reason button"
 private const val ACTION_IMPRESSION_CSAT_SMILEY_VIEW = "impression csat smiley form"
 private const val ACTION_IMPRESSION_WELCOME_MESSAGE = "impression welcome message"
+private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
@@ -378,9 +376,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        sendEventForWelcomeMessage(visitable)
         mapMessageToList(visitable)
         getViewState().hideEmptyMessage(visitable)
         getViewState().onCheckToHideQuickReply(visitable)
+    }
+
+    private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
+        if (visitable is BaseChatViewModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)){
+            chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
+        }
     }
 
     private fun getViewState(): ChatbotViewState {
@@ -487,7 +492,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         hideCsatRatingView()
         return { str ->
             view?.let {
-                chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
                 Toaster.showNormalWithAction(it, str, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
             }
             list_quick_reply.show()
