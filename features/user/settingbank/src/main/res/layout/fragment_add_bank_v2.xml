@@ -178,7 +178,7 @@
         android:background="@drawable/sbank_bg_button_container"
         app:layout_constraintBottom_toTopOf="@+id/add_account_button" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/add_account_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
@@ -193,7 +193,6 @@
         android:text="@string/sbank_save_account"
         android:textColor="@color/sbank_btn_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:typographyType="heading_5"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
