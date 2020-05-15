@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
-import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
@@ -24,13 +23,13 @@ class TelcoPrepaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupCompo
     override fun getNewFragment(): Fragment? {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
-        digitalTelcoExtraParam.menuId = bundle?.getString(TelcoProductActivity.PARAM_MENU_ID)
+        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID)
                 ?: TelcoComponentType.TELCO_PREPAID.toString()
-        digitalTelcoExtraParam.categoryId = bundle?.getString(TelcoProductActivity.PARAM_CATEGORY_ID)
+        digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID)
                 ?: ""
-        digitalTelcoExtraParam.productId = bundle?.getString(TelcoProductActivity.PARAM_PRODUCT_ID)
+        digitalTelcoExtraParam.productId = bundle?.getString(PARAM_PRODUCT_ID)
                 ?: ""
-        digitalTelcoExtraParam.clientNumber = bundle?.getString(TelcoProductActivity.PARAM_CLIENT_NUMBER)
+        digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER)
                 ?: ""
         return DigitalTelcoPrepaidFragment.newInstance(digitalTelcoExtraParam)
     }
@@ -41,7 +40,6 @@ class TelcoPrepaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupCompo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.digital_title_prepaid_page))
         intent?.handleExtra()
     }
 

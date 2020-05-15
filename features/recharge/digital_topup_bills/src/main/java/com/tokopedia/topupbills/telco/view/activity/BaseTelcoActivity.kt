@@ -16,4 +16,11 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity() {
     override fun getToolbarResourceID(): Int {
         return R.id.toolbar_telco
     }
+
+    companion object {
+        const val PARAM_MENU_ID = "menu_id"
+        const val PARAM_PRODUCT_ID = "product_id"
+        const val PARAM_CLIENT_NUMBER = "client_number"
+        const val PARAM_CATEGORY_ID = "category_id"
+    }
 }

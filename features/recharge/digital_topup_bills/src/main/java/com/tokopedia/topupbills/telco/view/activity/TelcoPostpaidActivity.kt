@@ -22,23 +22,18 @@ class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupComp
     override fun getNewFragment(): Fragment? {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
-        digitalTelcoExtraParam.menuId = bundle?.getString(TelcoProductActivity.PARAM_MENU_ID)
+        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID)
                 ?: TelcoComponentType.TELCO_POSTPAID.toString()
-        digitalTelcoExtraParam.categoryId = bundle?.getString(TelcoProductActivity.PARAM_CATEGORY_ID)
+        digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID)
                 ?: ""
-        digitalTelcoExtraParam.productId = bundle?.getString(TelcoProductActivity.PARAM_PRODUCT_ID)
+        digitalTelcoExtraParam.productId = bundle?.getString(PARAM_PRODUCT_ID)
                 ?: ""
-        digitalTelcoExtraParam.clientNumber = bundle?.getString(TelcoProductActivity.PARAM_CLIENT_NUMBER)
+        digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER)
                 ?: ""
         return DigitalTelcoPostpaidFragment.newInstance(digitalTelcoExtraParam)
     }
 
     override fun getComponent(): DigitalTopupComponent {
         return DigitalTopupInstance.getComponent(application)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.digital_title_prepaid_page))
     }
 }
