@@ -51,6 +51,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale.TimerSprintSaleItemViewModel
 import kotlin.reflect.KFunction
 
 class DiscoveryHomeFactory {
@@ -99,6 +101,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ChipsFilterItem, ::ChipsFilterItemViewHolder, ::ChipsFilterItemViewModel)
             initializeComponent(ComponentsList.DynamicCategory, ::DynamicCategoryViewHolder, ::DynamicCategoryViewModel)
             initializeComponent(ComponentsList.DynamicCategoryItem, ::DynamicCategoryItemViewHolder, ::DynamicCategoryItemViewModel)
+            initializeComponent(ComponentsList.TimerSprintSale, ::TimerSprintSaleItemViewHolder, ::TimerSprintSaleItemViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, viewModel: KFunction<E>, componentViewModel: KFunction<T>) {

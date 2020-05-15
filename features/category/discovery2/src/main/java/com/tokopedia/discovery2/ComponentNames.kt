@@ -40,5 +40,6 @@ enum class ComponentNames(val componentName: String) {
     Tabs("tabs"),
     TabsItem("tabs_item"),
     DynamicCategory("dynamic_category"),
-    DynamicCategoryItem("dynamic_category_item")
+    DynamicCategoryItem("dynamic_category_item"),
+    TimerSprintSale("timer_sprint_sale")
 }

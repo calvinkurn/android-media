@@ -13,5 +13,11 @@
     <color name="clr_ea212d">#ea212d</color>
     <color name="clr_ffeaef">#ffeaef</color>
     <color name="voucher_text_color_disable">#abadb1</color>
+    <color name="timer_sale_blue_gradient_start_colour">#32afff</color>
+    <color name="timer_sale_blue_gradient_end_colour">#84c6c9</color>
+    <color name="timer_sale_red_gradient_end_colour">#fa591d</color>
+    <color name="timer_sale_red_gradient_start_colour">#ef144a</color>
+    <color name="timer_sale_grey_gradient_start_colour">#6C727C</color>
+    <color name="timer_sale_grey_gradient_end_colour">#b5bbc5</color>
 
 </resources>
