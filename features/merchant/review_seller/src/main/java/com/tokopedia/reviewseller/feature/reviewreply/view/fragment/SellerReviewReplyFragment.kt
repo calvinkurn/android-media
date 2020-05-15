@@ -280,8 +280,8 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
                     when (position) {
                         0 -> {
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSession.shopId)
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID)
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSession.shopId.toInt())
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID.toString())
                             startActivity(intent)
                         }
                     }
