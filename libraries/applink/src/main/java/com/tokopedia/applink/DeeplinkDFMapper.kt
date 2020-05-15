@@ -11,7 +11,8 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
@@ -138,7 +139,8 @@ object DeeplinkDFMapper {
             // Digital
             add(DFP({
                 it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
-                    it.startsWith(TELCO_DIGITAL) ||
+                    it.startsWith(TELCO_POSTPAID_DIGITAL) ||
+                    it.startsWith(TELCO_PREPAID_DIGITAL) ||
                     it.startsWith(DIGITAL_PRODUCT_FORM) ||
                     it.startsWith(GENERAL_TEMPLATE) ||
                     it.startsWith(CAMERA_OCR) ||
