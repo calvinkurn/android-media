@@ -123,6 +123,9 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+    val userId: String
+        get() = userSession.userId
+
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
@@ -339,8 +342,8 @@ class PlayViewModel @Inject constructor(
         if (!videoPlayer.isYouTube) playVideoManager.resume()
     }
 
-    fun getDurationCurrentVideo(): Long {
-        return playVideoManager.getDurationVideo()
+    fun getVideoDuration(): Long {
+        return playVideoManager.getVideoDuration()
     }
 
     private fun initiateVideo(channel: Channel) {

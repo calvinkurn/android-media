@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
  * Created by jegul on 05/05/20
  */
 class FragmentYouTubeComponent(
+        channelId: String,
         container: ViewGroup,
         fragmentManager: FragmentManager,
         private val bus: EventBusFactory,
@@ -25,7 +26,7 @@ class FragmentYouTubeComponent(
 ) : UIComponent<FragmentYouTubeInteractionEvent>, FragmentYouTubeView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val uiView = initView(container, fragmentManager)
+    val uiView = initView(channelId, container, fragmentManager)
 
     init {
         scope.launch(dispatchers.immediate) {
@@ -66,7 +67,7 @@ class FragmentYouTubeComponent(
         }
     }
 
-    protected open fun initView(container: ViewGroup, fragmentManager: FragmentManager) =
-            FragmentYouTubeView(container, fragmentManager, this)
+    protected open fun initView(channelId: String, container: ViewGroup, fragmentManager: FragmentManager) =
+            FragmentYouTubeView(channelId, container, fragmentManager, this)
 
 }

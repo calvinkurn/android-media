@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -74,15 +75,21 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     @Inject
     lateinit var playVideoUtil: PlayVideoUtil
 
+    private var channelId = ""
+
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayVideoViewModel
 
     private lateinit var layoutManager: PlayVideoLayoutManager
+    private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
+    private val isYouTube: Boolean
+        get() = playViewModel.videoPlayer.isYouTube
 
     override fun getScreenName(): String = "Play Video"
 
@@ -101,6 +108,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -110,6 +118,11 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
         initComponents(view as ViewGroup)
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -123,10 +136,20 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
         observeVideoStream()
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (!isYouTube) videoAnalyticHelper.onPause()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         layoutManager.onDestroy()
         job.cancelChildren()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -140,6 +163,10 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         sendOrientationChangedEvent(ScreenOrientation.getByInt(newConfig.orientation))
+    }
+
+    private fun initAnalytic() {
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
     }
 
     //region observe
@@ -156,7 +183,10 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver(::delegateVideoProperty))
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
+            if (!isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, it.state)
+            delegateVideoProperty(it)
+        })
     }
 
     private fun observeOneTapOnboarding() {

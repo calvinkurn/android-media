@@ -10,7 +10,6 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -21,19 +20,17 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
 import com.tokopedia.play.*
-import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.analytic.TrackingField
+import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.extensions.*
+import com.tokopedia.play.extensions.isAnyBottomSheetsShown
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.closebutton.CloseButtonComponent
 import com.tokopedia.play.ui.closebutton.interaction.CloseButtonInteractionEvent
 import com.tokopedia.play.ui.fragment.bottomsheet.FragmentBottomSheetComponent
@@ -63,11 +60,9 @@ import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
-import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -101,26 +96,13 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
 
-    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
-
-    private var channelId = ""
-
-    private var topBounds: Int? = null
-
-    @TrackingField
-    private var bufferTrackingModel = BufferTrackingModel(
-            isBuffering = false,
-            bufferCount = 0,
-            lastBufferMs = System.currentTimeMillis(),
-            shouldTrackNext = false
-    )
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
+    private var channelId = ""
+    private var topBounds: Int? = null
 
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
     private lateinit var playViewModel: PlayViewModel
 
     /**
@@ -165,7 +147,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         startPageMonitoring()
         starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
+        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -214,12 +196,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         unregisterKeyboardListener(requireView())
         super.onPause()
         if (::orientationManager.isInitialized) orientationManager.disable()
-
-        bufferTrackingModel = bufferTrackingModel.copy(
-                isBuffering = false,
-                bufferCount = if (bufferTrackingModel.isBuffering) bufferTrackingModel.bufferCount - 1 else bufferTrackingModel.bufferCount,
-                shouldTrackNext = false
-        )
     }
 
     override fun onDestroyView() {
@@ -376,7 +352,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     override fun onInitYouTubeFragment(container: ViewGroup): Int {
-        val fragmentYouTubeComponent = FragmentYouTubeComponent(container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+        val fragmentYouTubeComponent = FragmentYouTubeComponent(channelId, container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
         scope.launch {
             fragmentYouTubeComponent.getUserInteractionEvents()
@@ -528,38 +504,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
-            if (it.state is PlayVideoState.Error) {
-                PlayAnalytics.errorState(channelId,
-                        "$ERR_STATE_VIDEO: ${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
-                        playViewModel.channelType)
-
-            } else if (it.state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
-                val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
-
-                bufferTrackingModel = BufferTrackingModel(
-                        isBuffering = true,
-                        bufferCount = nextBufferCount,
-                        lastBufferMs = System.currentTimeMillis(),
-                        shouldTrackNext = bufferTrackingModel.shouldTrackNext
-                )
-
-            } else if ((it.state is PlayVideoState.Playing || it.state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
-                if (bufferTrackingModel.shouldTrackNext) {
-                    PlayAnalytics.trackVideoBuffering(
-                            bufferCount = bufferTrackingModel.bufferCount,
-                            bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt(),
-                            userId = userSession.userId,
-                            channelId = channelId,
-                            channelType = playViewModel.channelType
-                    )
-                }
-
-                bufferTrackingModel = bufferTrackingModel.copy(
-                        isBuffering = false,
-                        shouldTrackNext = true
-                )
-            }
-
             layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
         })
     }
@@ -700,7 +644,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     private fun sendTrackerWhenRotateScreen(screenOrientation: ScreenOrientation, isTilting: Boolean) {
         if (screenOrientation.isLandscape && isTilting) {
             PlayAnalytics.userTiltFromPortraitToLandscape(
-                    userId = userSession.userId,
+                    userId = playViewModel.userId,
                     channelId = channelId,
                     channelType = playViewModel.channelType)
         }

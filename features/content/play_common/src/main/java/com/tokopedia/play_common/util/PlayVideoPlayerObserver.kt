@@ -44,7 +44,7 @@ class PlayVideoPlayerObserver(private val context: Context) : LifecycleObserver 
     fun onResume() {
         synchronized(this) {
             if (!isChangingConfig) {
-                if (isVideoPlaying) playVideoManager.resume()
+                playVideoManager.resumeOrPlayPreviousVideo(isVideoPlaying)
                 playVideoManager.mute(false)
             }
         }

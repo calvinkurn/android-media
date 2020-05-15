@@ -15,6 +15,7 @@ import com.tokopedia.play.view.fragment.PlayYouTubeFragment
  * Created by jegul on 05/05/20
  */
 class FragmentYouTubeView(
+        private val channelId: String,
         container: ViewGroup,
         private val fragmentManager: FragmentManager,
         private val listener: Listener
@@ -37,7 +38,7 @@ class FragmentYouTubeView(
     }
 
     internal fun init() {
-        fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) ?: PlayYouTubeFragment.newInstance().also {
+        fragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) ?: PlayYouTubeFragment.newInstance(channelId).also {
             fragmentManager.beginTransaction()
                     .replace(view.id, it, YOUTUBE_FRAGMENT_TAG)
                     .commit()

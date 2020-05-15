@@ -135,9 +135,6 @@ class PlayUserInteractionFragment :
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
 
@@ -652,7 +649,7 @@ class PlayUserInteractionFragment :
                             is ImmersiveBoxInteractionEvent.BoxClicked -> {
                                 PlayAnalytics.clickWatchArea(
                                         channelId = channelId,
-                                        userId = userSession.userId,
+                                        userId = playViewModel.userId,
                                         channelType = playViewModel.channelType,
                                         screenOrientation = orientation
                                 )
@@ -722,7 +719,7 @@ class PlayUserInteractionFragment :
                         when (it) {
                             VideoSettingsInteractionEvent.EnterFullscreenClicked -> {
                                 PlayAnalytics.clickCtaFullScreenFromPortraitToLandscape(
-                                        userId = userSession.userId,
+                                        userId = playViewModel.userId,
                                         channelId = channelId,
                                         channelType = playViewModel.channelType
                                 )
@@ -855,7 +852,6 @@ class PlayUserInteractionFragment :
     }
 
     private fun doLeaveRoom() {
-        PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.channelType)
         activity?.onBackPressed()
     }
 

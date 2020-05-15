@@ -5,11 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -28,6 +29,7 @@ import com.tokopedia.play.view.layout.youtube.PlayYouTubeLayoutManagerImpl
 import com.tokopedia.play.view.layout.youtube.PlayYouTubeViewInitializer
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -41,8 +43,12 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
 
     companion object {
 
-        fun newInstance(): PlayYouTubeFragment {
-            return PlayYouTubeFragment()
+        fun newInstance(channelId: String): PlayYouTubeFragment {
+            return PlayYouTubeFragment().apply {
+                val bundle = Bundle()
+                bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                arguments = bundle
+            }
         }
     }
 
@@ -60,9 +66,12 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
 
+    private var channelId: String = ""
+
     private lateinit var playViewModel: PlayViewModel
 
     private lateinit var layoutManager: PlayYouTubeLayoutManager
+    private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
     private lateinit var containerYouTube: RoundedConstraintLayout
 
@@ -71,6 +80,9 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+
+    private val isYouTube: Boolean
+        get() = playViewModel.videoPlayer.isYouTube
 
     override fun getScreenName(): String = "Play YouTube"
 
@@ -88,6 +100,7 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -99,6 +112,11 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -106,10 +124,20 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         observeBottomInsetsState()
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (isYouTube) videoAnalyticHelper.onPause()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         layoutManager.onDestroy()
         job.cancelChildren()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -124,6 +152,10 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
         sendOrientationChangedEvent(orientation)
+    }
+
+    private fun initAnalytic() {
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
     }
 
     //region observe
@@ -179,6 +211,7 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
                         when (it) {
                             YouTubeInteractionEvent.EnterFullscreenClicked -> enterFullscreen()
                             YouTubeInteractionEvent.ExitFullscreenClicked -> exitFullscreen()
+                            is YouTubeInteractionEvent.YouTubeVideoStateChanged -> handleYouTubeVideoState(it.videoState)
                         }
                     }
         }
@@ -211,5 +244,9 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer, Pl
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(ScreenStateEvent::class.java, ScreenStateEvent.OrientationChanged(orientation, playViewModel.getStateHelper(orientation)))
         }
+    }
+
+    private fun handleYouTubeVideoState(state: PlayVideoState) {
+        if (isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, state)
     }
 }
