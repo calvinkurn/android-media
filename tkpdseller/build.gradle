@@ -34,6 +34,8 @@ dependencies {
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.features.productManageCommon)
+    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.categoryCommon)
@@ -60,7 +62,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

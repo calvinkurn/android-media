@@ -32,6 +32,7 @@ interface Iris {
     /**
      * direct send event to server
      */
+    @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(map)"))
     fun sendEvent(map: Map<String, Any>)
 
     fun setUserId(userId: String)
