@@ -43,6 +43,7 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
@@ -457,6 +458,35 @@ class TopChatRoomPresenter @Inject constructor(
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
             view?.clearAttachmentPreviews()
         }
+    }
+
+    override fun sendAttachmentsAndSticker(
+            messageId: String,
+            sticker: Sticker,
+            opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        sendAttachments(messageId, opponentId, sticker.intention)
+        sendSticker(messageId, sticker, opponentId, onSendingMessage)
+        view?.clearAttachmentPreviews()
+    }
+
+    private fun sendSticker(
+            messageId: String,
+            sticker: Sticker,
+            opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        onSendingMessage()
+        sendStickerWithWebSocket(messageId, sticker, opponentId)
+    }
+
+    private fun sendStickerWithWebSocket(messageId: String, sticker: Sticker, opponentId: String) {
+        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId)
+        val stringContract = CommonUtil.toJson(stickerContract)
+//        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
+        RxWebSocket.send(stringContract, listInterceptor)
+//        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
     }
 
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {

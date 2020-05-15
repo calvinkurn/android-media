@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
@@ -119,6 +120,9 @@ interface TopChatContract {
         fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
                                       startTime: String, opponentId: String,
                                       onSendingMessage: () -> Unit)
+
+        fun sendAttachmentsAndSticker(messageId: String, sticker: Sticker,
+                                      opponentId: String, onSendingMessage: () -> Unit)
 
         fun initProductPreview(savedInstanceState: Bundle?)
 

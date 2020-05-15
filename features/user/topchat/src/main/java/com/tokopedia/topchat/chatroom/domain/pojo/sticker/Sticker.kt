@@ -1,7 +1,13 @@
 package com.tokopedia.topchat.chatroom.domain.pojo.sticker
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
+import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
+import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentData
 
 data class Sticker(
         @SerializedName("groupUUID")
@@ -12,4 +18,32 @@ data class Sticker(
         val intention: String = "",
         @SerializedName("stickerUUID")
         val stickerUUID: String = ""
-)
+) {
+
+    fun generateWebSocketPayload(messageId: String, opponentId: String): WebsocketAttachmentContract {
+        val startTime = SendableViewModel.generateStartTime()
+        val payload = WebSocketStickerPayload(
+                groupUUID, stickerUUID, imageUrl, intention
+        )
+        val data = WebsocketAttachmentData(
+                messageId.toInt(),
+                intention,
+                "inbox",
+                TYPE_STICKER,
+                startTime,
+                payload
+        )
+        return WebsocketAttachmentContract(
+                WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE,
+                data
+        )
+    }
+
+    @Keep
+    class WebSocketStickerPayload(
+            val group_id: String,
+            val sticker_id: String,
+            val image_url: String,
+            val intention: String
+    )
+}

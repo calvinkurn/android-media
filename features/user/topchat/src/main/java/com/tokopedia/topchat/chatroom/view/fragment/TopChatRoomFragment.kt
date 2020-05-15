@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -531,11 +530,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 sendMessage,
                 startTime,
                 opponentId,
-                onSendingMessage(sendMessage, startTime)
+                onSendingMessage()
         )
     }
 
-    private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
+    override fun onClickSticker(sticker: Sticker) {
+        presenter.sendAttachmentsAndSticker(
+                messageId,
+                sticker,
+                opponentId,
+                onSendingMessage()
+        )
+    }
+
+    private fun onSendingMessage(): () -> Unit {
         return {
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
@@ -1096,9 +1104,5 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getFragmentActivity(): FragmentActivity? {
         return activity
-    }
-
-    override fun onClickSticker(sticker: Sticker) {
-        Toast.makeText(context, sticker.stickerUUID, Toast.LENGTH_SHORT).show()
     }
 }
