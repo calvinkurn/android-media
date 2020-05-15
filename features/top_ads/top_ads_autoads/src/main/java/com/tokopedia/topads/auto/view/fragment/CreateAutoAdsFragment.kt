@@ -56,6 +56,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
     private var MORE_INFO = " Info Selengkapnya"
     private var lowClickDivider = 1
     private var topAdsDeposit:Int = 0
+    private var highImpression = 0.0
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -84,7 +85,6 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
                     userSession.shopId.toInt(),
                     SOURCE
             )))
-
         }
 
         budgetViewModel.topAdsDeposit.observe(this, Observer {
@@ -120,7 +120,8 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
 
     fun onSuccessPotentialEstimation(data: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) {
         lowClickDivider = data.lowClickDivider
-        price_range.text = convertToCurrencyString(getPotentialReach().toString().toLong())
+        highImpression = data.highImpMultiplier
+        price_range.text = convertToCurrencyString(replace(getPotentialReach().toString()).toLong())
         loading.visibility = View.GONE
     }
 
@@ -178,7 +179,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
                     e.printStackTrace()
                 }
 
-                val error = budgetViewModel.checkBudget(text.toDouble(),data.minDailyBudget.toDouble(), data.maxDailyBudgetFmt.toDouble())
+                val error = budgetViewModel.checkBudget(text.toDouble(),data.minDailyBudget.toDouble(), data.maxDailyBudget.toDouble())
                 if (!TextUtils.isEmpty(error)) {
                     error_text.visibility = View.VISIBLE
                     error_text.text = error
@@ -194,8 +195,8 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
     }
 
     private fun getPotentialReach(): CharSequence? {
-        return budgetViewModel.getPotentialImpressionGQL(replace(budgetEditText.textWithoutPrefix).toInt()
-                , lowClickDivider)
+        return budgetViewModel.getPotentialImpressionGQL(replace(budgetEditText.textWithoutPrefix).toDouble()
+                , highImpression)
     }
 
     private fun estimateImpression(progress: Int) {
