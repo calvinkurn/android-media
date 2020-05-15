@@ -70,7 +70,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
@@ -187,6 +189,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         setUiData(couponDetailResponse)
         setNonLoggedInListeners()
 
+        TargetedPromotionAnalytics.prepareDataForViewCouponAnalytics(getPopGratificationResponse,false)
         return pair.second
     }
 
@@ -233,7 +236,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
         observeLiveData(activityContext as AppCompatActivity, errorUi = { showErrorUIForClaimGratificationLoggedIn() })
         setListenersLoggedIn(activityContext as AppCompatActivity)
-
+        TargetedPromotionAnalytics.prepareDataForViewCouponAnalytics(popGratificationResponse,true)
         return bottomSheet
     }
 
@@ -313,14 +316,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
 
         if (data is GetPopGratificationResponse) {
-            val benefits = data.popGratification?.popGratificationBenefits
-            if (benefits != null && benefits.isNotEmpty()) {
-                val referenceId = benefits[0]?.referenceID
-                if (referenceId != null) {
-                    catalogId = referenceId
-                }
-            }
-            TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), UserSession(activityContext).isLoggedIn)
+            TargetedPromotionAnalytics.prepareDataForViewCouponAnalytics(data,UserSession(activityContext).isLoggedIn)
         }
 
         return bottomSheet
@@ -475,7 +471,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         imageView.loadImageGlide(R.drawable.t_promo_server_error)
     }
 
-    //todo Rahul
     private fun setUiForSuccessClaimGratificationVersionAutoClaim(data: ClaimPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse? = null) {
         tvTitle.text = data.popGratificationClaim?.title
         tvSubTitle.text = data.popGratificationClaim?.text
@@ -495,21 +490,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             viewFlipper.displayedChild = CONTAINER_COUPON
         }
 
-        //todo Rahul-> we have to use rightImage & right textviews
         if (couponDetailList.isEmpty()) {
             imageView.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
                 viewFlipper.displayedChild = CONTAINER_IMAGE
             }
         }
-
-        //todo Rahul - need to add new animation of just fadein-fade out -> no translatio
-        // or do transation from coupon to non coupon, in case of coupon to coupon -> do fade effect
-//        performAnimationClaimUiVersionAutoClaim()
-
     }
 
-    //todo Rahul
     private fun setLoggedInUiForSuccessClaimGratificationVersionAutoClaim(data: ClaimPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse? = null) {
 
         tvTitle.text = data.popGratificationClaim?.title
@@ -519,10 +507,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         popGratificationActionBtn = data.popGratificationClaim?.popGratificationActionButton
         this.data = data
 
-        //load data in rv
-        // check for error as well
-
-        //todo check 1
         val couponDetailList = ArrayList<GetCouponDetail>()
         couponDetailResponse?.couponList?.let {
             imageViewRight.visibility = View.GONE
@@ -533,7 +517,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             viewFlipper.displayedChild = CONTAINER_COUPON
         }
 
-        //todo check 2
         if (couponDetailList.isEmpty()) {
             imageView.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
@@ -541,7 +524,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    //todo Rahul (NOW - coupod detail is empty because benefits are empty in claim response)
     private fun setUiForSuccessClaimGratification(data: ClaimPopGratificationResponse) {
         tvTitleRight.text = data.popGratificationClaim?.title
         tvSubTitleRight.text = data.popGratificationClaim?.text
@@ -567,7 +549,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    //todo Rahul not ready
     private fun setNonLoggedInListeners() {
         if (btnAction.context is AppCompatActivity) {
             val activity = btnAction.context as AppCompatActivity
@@ -635,7 +616,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     fun performActionBasedOnClaim(popGratificationActionButton: PopGratificationActionButton?) {
         if (popGratificationActionButton != null) {
-            if (!popGratificationActionButton.type.isNullOrEmpty() && popGratificationActionButton.type == DISMISS) {
+            if (!popGratificationActionButton.type.isNullOrEmpty() && popGratificationActionButton.type.toLowerCase(Locale.getDefault()) == DISMISS) {
                 bottomSheetDialog.dismiss()
             } else if (!popGratificationActionButton.appLink.isNullOrEmpty()) {
                 RouteManager.route(btnAction.context, popGratificationActionButton.appLink)
@@ -734,39 +715,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    //todo Rahul same code as performAnimationToGotoClaimUI - refactor this
-    // todo Rahul imageView is switched with imageViewRight
-    private fun performAnimationClaimUiVersionAutoClaim() {
-        val alphaDuration = 300L
-        val translateAnimationDuration = 600L
-        val startDelay = alphaDuration
-
-        //fade out
-        rightViewList.forEach {
-            it.animate().setDuration(alphaDuration).alpha(0f)
-        }
-
-        imageViewRight.animate().setDuration(translateAnimationDuration).translationX(-screenWidth).setListener(object : AnimationListener() {
-            override fun onAnimationEnd(animation: Animator?) {
-                imageViewRight.visibility = View.GONE
-                expandBottomSheet()
-            }
-        })
-        tvTitleRight.animate().setStartDelay(100L).setDuration(translateAnimationDuration).translationX(-screenWidth)
-        tvSubTitleRight.animate().setStartDelay(150L).setDuration(translateAnimationDuration).translationX(-screenWidth)
-
-
-        //fade in
-
-        leftViewList.forEach {
-            it.animate().setStartDelay(startDelay).setDuration(translateAnimationDuration).alpha(1f)
-        }
-
-        viewFlipper.animate().setStartDelay(startDelay).setDuration(translateAnimationDuration).translationX(0f)
-        tvTitle.animate().setStartDelay(startDelay + 100L).setDuration(translateAnimationDuration).translationX(0f)
-        tvSubTitle.animate().setStartDelay(startDelay + 150L).setDuration(translateAnimationDuration).translationX(0f)
-    }
-
     private fun performAnimationToGotoClaimUI() {
 
         val alphaDuration = 300L
@@ -791,7 +739,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     }
 
-    //todo Rahul needs to refactor
     private fun performActionAfterCouponIsClaimed(activityContext: Activity, data: ClaimPopGratificationResponse, buttonText: String) {
 
         val applink = data.popGratificationClaim?.popGratificationActionButton?.appLink

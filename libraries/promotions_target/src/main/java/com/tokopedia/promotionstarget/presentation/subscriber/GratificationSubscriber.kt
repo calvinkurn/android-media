@@ -216,8 +216,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                         couponDetail = presenter.composeApi(popBenefits)
 
                                     } catch (ex: Exception) {
-                                        //todo Rahul - remove this
-                                        ex.printStackTrace()
                                     }
 
                                     withContext(Dispatchers.Main) {

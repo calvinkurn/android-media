@@ -1,5 +1,6 @@
 package com.tokopedia.promotionstarget.presentation
 
+import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -18,6 +19,18 @@ object TargetedPromotionAnalytics {
 
     private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
+    }
+
+    fun prepareDataForViewCouponAnalytics(data:GetPopGratificationResponse,isLoggedIn:Boolean ){
+        var catalogId = 0
+        val benefits = data.popGratification?.popGratificationBenefits
+        if (benefits != null && benefits.isNotEmpty()) {
+            val referenceId = benefits[0]?.referenceID
+            if (referenceId != null) {
+                catalogId = referenceId
+            }
+        }
+        viewCoupon(catalogId.toString(), isLoggedIn)
     }
 
     //3, 17
