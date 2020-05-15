@@ -1,11 +1,15 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
+import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.transition.Slide
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.chat_common.data.SendableViewModel.Companion.PAYLOAD_EVENT_READ
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
@@ -16,15 +20,17 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
 
     private var statusFooter: LinearLayout? = itemView?.findViewById(R.id.ll_footer)
     private var stickerImage: ImageView? = itemView?.findViewById(R.id.iv_sticker_message)
+    private var loader: AnimatedVectorDrawableCompat? = null
 
     override fun alwaysShowTime(): Boolean = true
 
     override fun bind(message: StickerUiModel?) {
         if (message == null) return
         super.bind(message)
+        initLoader()
         bindStickerImage(message.sticker)
-        bindChatReadStatus(message)
         alignLayout(message)
+        bindChatReadStatus(message)
     }
 
     override fun bind(message: StickerUiModel?, payloads: List<Any>) {
@@ -35,8 +41,30 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
         }
     }
 
+    private fun initLoader() {
+        itemView.context?.let {
+            loader = AnimatedVectorDrawableCompat.create(it, com.tokopedia.unifycomponents.R.drawable.unify_loader)
+            loader?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    stickerImage?.handler?.post {
+                        loader?.start()
+                    }
+                }
+            })
+            loader?.start()
+        }
+    }
+
     private fun bindStickerImage(sticker: StickerProfile) {
-        ImageHandler.LoadImage(stickerImage, sticker.imageUrl)
+        stickerImage?.let {
+            Glide.with(itemView.context)
+                    .load(sticker.imageUrl)
+                    .dontAnimate()
+                    .placeholder(loader)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(it)
+        }
     }
 
     private fun alignLayout(message: StickerUiModel) {
