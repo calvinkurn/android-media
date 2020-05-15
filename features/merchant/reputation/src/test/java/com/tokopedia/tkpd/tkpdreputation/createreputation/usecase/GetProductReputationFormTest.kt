@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tkpd.tkpdreputation.createreputation.Query
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
@@ -15,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 /**
  * Created By @ilhamsuaib on 2020-01-03
@@ -49,11 +51,13 @@ class GetProductReputationFormTest {
 
         val json = this.javaClass.classLoader?.getResourceAsStream(successResponse)?.readBytes()?.toString(Charsets.UTF_8)
         val response = gson.fromJson(json, ProductRevGetForm::class.java)
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(ProductRevGetForm::class.java to response),
-                mapOf(ProductRevGetForm::class.java to listOf()),
-                false
-        )
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = ProductRevGetForm::class.java
+        result[objectType] = response
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
 
         coEvery {
             graphqlRepository.getReseponse(any(), any())

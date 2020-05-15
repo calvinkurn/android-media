@@ -102,4 +102,8 @@ public abstract class ContextAnalytics implements Analytics {
                                     @Nullable Map<String, Object> customDimension) { }
     public String getDefferedDeeplinkPathIfExists(){return null;}
 
+
+    @Override
+    public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
+    }
 }

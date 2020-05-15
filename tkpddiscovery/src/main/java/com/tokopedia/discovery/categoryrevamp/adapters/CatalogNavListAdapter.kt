@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
-import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.BigListCatalogShimmerModel
-import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.GridListCatalogShimmerModel
-import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.ListCatalogShimmerModel
+import com.tokopedia.common_category.viewholders.CatalogShimmer.model.BigListCatalogShimmerModel
+import com.tokopedia.common_category.viewholders.CatalogShimmer.model.GridListCatalogShimmerModel
+import com.tokopedia.common_category.viewholders.CatalogShimmer.model.ListCatalogShimmerModel
 import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.BaseProductTypeFactory
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
+import com.tokopedia.common_category.data.catalog.CatalogTypeFactory
 
 
 class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,

@@ -1,4 +1,5 @@
 apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+apply from: "$rootProject.projectDir/tools/set_debug_tools.gradle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -27,6 +28,7 @@ android {
         release {
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
+            debuggable = isDebugable(project).toBoolean()
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
         }
@@ -71,7 +73,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.robust
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
