@@ -12,9 +12,9 @@ import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoPostpaidFragment
 
 /**
  * applink
- * tokopedia://digital/form?category_id=1&menu_id=2&template=telcopost
+ * tokopedia://digital/form?category_id=9&menu_id=3&template=telcopost
  * or
- * RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, 17, 2, telcopost)
+ * RouteManager.route(this, ApplinkConsInternalDigital.PRODUCT_TEMPLATE, 17, 3, telcopost)
  */
 
 class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupComponent> {
