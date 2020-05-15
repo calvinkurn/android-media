@@ -1,6 +1,5 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
@@ -85,7 +84,6 @@ class CentralizedPromoViewModel @Inject constructor(
     private suspend fun getPromoCreation(): Result<BaseUiModel> = runBlocking {
         try {
             val chatBlastSellerMetadataUiModel = getChatBlastSellerMetadataUseCase.executeOnBackground()
-            Log.d("ChatBlast", "${chatBlastSellerMetadataUiModel.promo}, ${chatBlastSellerMetadataUiModel.promoType}, ${chatBlastSellerMetadataUiModel.promo > 0 && chatBlastSellerMetadataUiModel.promoType == 2}")
             val broadcastChatExtra = if (chatBlastSellerMetadataUiModel.promo > 0 && chatBlastSellerMetadataUiModel.promoType == 2){
                 "${chatBlastSellerMetadataUiModel.promo} kuota gratis"
             } else ""
