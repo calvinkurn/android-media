@@ -5,6 +5,6 @@ package com.tokopedia.hotel.common.data
  */
 
 enum class HotelSourceEnum(val value: String) {
-    HOMEPAGE("Homepage"),
-    SEARCHRESULT("Search Result")
+    HOMEPAGE("HOMEPAGE"),
+    SEARCHRESULT("SEARCHRESULT")
 }
