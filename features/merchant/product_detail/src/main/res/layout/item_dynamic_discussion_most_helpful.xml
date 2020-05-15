@@ -56,8 +56,6 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:visibility="gone"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_goneMarginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/productDiscussionMostHelpfulTitle"
         app:layout_constraintBottom_toTopOf="@id/talk_bottom_separator" />
 
