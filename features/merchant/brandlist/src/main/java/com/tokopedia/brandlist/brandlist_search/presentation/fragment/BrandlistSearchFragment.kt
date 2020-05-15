@@ -18,6 +18,7 @@ import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_category.presentation.fragment.BrandlistContainerFragment.Companion.CATEGORY_INTENT
+import com.tokopedia.brandlist.brandlist_page.data.model.Brand
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
 //import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
@@ -91,7 +92,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadMoreBrands()
+                val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else ""
+                viewModel.loadMoreBrands(brandFirstLetter)
+                isLoadMore = true
+
                 if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
                     adapterBrandSearch?.showLoading()
                 }
@@ -251,7 +255,8 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     } else {
                         adapterBrandSearch?.updateSearchResultData(
                                 BrandlistSearchMapper.mapSearchResultResponseToVisitable(
-                                        response, searchView?.searchText ?: "", this))
+                                        response, searchView?.searchText ?: "", this,
+                                        adapterBrandSearch, stateLoadBrands, isLoadMore))
                     }
                     recyclerView?.removeOnScrollListener(endlessScrollListener)
                 }
@@ -268,7 +273,13 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 is Success -> {
                     val response = it.data.shops
                     adapterBrandSearch?.updateSearchRecommendationData(
-                            BrandlistSearchMapper.mapSearchRecommendationResponseToVisitable(response, this))
+                            BrandlistSearchMapper.mapSearchRecommendationResponseToVisitable(
+                                    response,
+                                    this,
+                                    adapterBrandSearch,
+                                    stateLoadBrands, isLoadMore
+                            )
+                    )
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
@@ -313,12 +324,35 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 //                    adapter?.getVisitables()?.set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip))
 //                    adapter?.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
 
-                    adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip)
+                    val existingTotalBrands: Int = viewModel.getTotalBrandSizeForChipHeader()
+                    if (!isLoadMore && existingTotalBrands !== totalBrandsFiltered) {
+                        adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip)
+                    }
+
+//                    adapterBrandSearch?.updateBrands(
+//                            response.brands, "", this,
+//                            adapterBrandSearch, stateLoadBrands, isLoadMore
+//                    )
+//
+                    val brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
+                            response.brands, "", this,
+                            adapterBrandSearch, stateLoadBrands, isLoadMore)
+
+                    adapterBrandSearch?.updateBrands(brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
+
+                    // adapterBrandSearch?.updateBrands(BrandlistSearchMapper.mapSearchResultResponseToVisitable(
+                    //         response.brands,
+                    //         "",
+                    //         this,
+                    //         stateLoadBrands,
+                    //         isLoadMore,
+                    //         adapterBrandSearch))
 
 //                    adapterBrandSearch?.getVisitables()?.add(BrandlistSearchAllBrandGroupHeaderViewModel(this, totalBrandsFiltered, selectedChip))
 //                    adapterBrandSearch?.notifyItemRangeInserted((adapterBrandSearch as BrandlistSearchResultAdapter).lastIndex, 1)
 
-                    adapterBrandSearch?.updateBrands(BrandlistSearchMapper.mapSearchResultResponseToVisitable(response.brands, "", this))
+
+                    viewModel.updateTotalBrandSizeForChipHeader(response.totalBrands)
                     viewModel.updateTotalBrandSize(response.totalBrands)
                     viewModel.updateCurrentOffset(response.brands.size)
 //                    viewModel.updateCurrentLetter()
@@ -337,6 +371,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
     private fun loadInitialData() {
         if (!isInitialDataLoaded) {
+            isLoadMore = false
             viewModel.loadInitialBrands()
             isInitialDataLoaded = true
         }

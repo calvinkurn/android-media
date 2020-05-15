@@ -47,6 +47,7 @@ class BrandlistSearchViewModel @Inject constructor(
 
     private var firstLetterChanged = false
     private var totalBrandSize = 0
+    private var totalBrandOnTheChipHeader = 0
     var currentOffset = INITIAL_OFFSET
     var currentLetter = INITIAL_LETTER
 
@@ -82,6 +83,23 @@ class BrandlistSearchViewModel @Inject constructor(
         )
     }
 
+    fun loadMoreBrands(brandFirstLetter: String){
+        val requestSize = getRequestSize(totalBrandSize, currentOffset)
+        searchAllBrands(
+                offset = currentOffset,
+                query = ALL_BRANDS_QUERY,
+                brandSize = requestSize,
+                sortType = ALPHABETIC_ASC_SORT,
+                firstLetter = brandFirstLetter
+        )
+    }
+
+    fun getTotalBrandSizeForChipHeader(): Int = totalBrandOnTheChipHeader
+    fun updateTotalBrandSizeForChipHeader(totalNumber: Int) {
+        this.totalBrandOnTheChipHeader = totalNumber
+    }
+
+    fun getTotalBrandSize(): Int = totalBrandSize
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
     }
