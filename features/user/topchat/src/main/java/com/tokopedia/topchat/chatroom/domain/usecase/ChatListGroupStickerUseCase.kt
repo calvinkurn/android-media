@@ -77,7 +77,11 @@ class ChatListGroupStickerUseCase @Inject constructor(
             cacheMap[stickerGroup.groupUUID] = stickerGroup
         }
         for (stickerGroup in response.stickerGroups) {
-            val cached = cacheMap[stickerGroup.groupUUID] ?: continue
+            val cached = cacheMap[stickerGroup.groupUUID]
+            if (cached == null) {
+                invalidCache.add(stickerGroup)
+                continue
+            }
             if (cached.lastUpdate != stickerGroup.lastUpdate) {
                 invalidCache.add(stickerGroup)
             }
