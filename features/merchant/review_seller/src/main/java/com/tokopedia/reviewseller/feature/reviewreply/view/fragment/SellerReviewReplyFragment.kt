@@ -336,7 +336,6 @@ class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHol
     }
 
     private fun setTemplateList(data: List<ReplyTemplateUiModel>) {
-
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         list_template?.apply {
             layoutManager = linearLayoutManager
