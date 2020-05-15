@@ -189,7 +189,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         setUiData(couponDetailResponse)
         setNonLoggedInListeners()
 
-        TargetedPromotionAnalytics.prepareDataForViewCouponAnalytics(getPopGratificationResponse,false)
+        prePareCatalogId(getPopGratificationResponse)
+        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(),false)
         return pair.second
     }
 
@@ -236,7 +237,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
         observeLiveData(activityContext as AppCompatActivity, errorUi = { showErrorUIForClaimGratificationLoggedIn() })
         setListenersLoggedIn(activityContext as AppCompatActivity)
-        TargetedPromotionAnalytics.prepareDataForViewCouponAnalytics(popGratificationResponse,true)
+        prePareCatalogId(popGratificationResponse)
+        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(),true)
         return bottomSheet
     }
 
@@ -270,8 +272,10 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 if (retryAvailable) {
                     if (data == null) {
                         viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
+                        TargetedPromotionAnalytics.tryAgain()
                     } else {
                         performActionBasedOnClaim(popGratificationActionBtn)
+                        TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), UserSession(btnAction.context).isLoggedIn, btnActionText)
                     }
 
                 } else {
@@ -316,7 +320,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
 
         if (data is GetPopGratificationResponse) {
-            TargetedPromotionAnalytics.prepareDataForViewCouponAnalytics(data,UserSession(activityContext).isLoggedIn)
+            prePareCatalogId(data)
+            TargetedPromotionAnalytics.viewCoupon(catalogId.toString(),UserSession(activityContext).isLoggedIn)
         }
 
         return bottomSheet
@@ -566,17 +571,22 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                             if (data == null && referenceIds.isNotEmpty()) {
                                 //activity was destroyed - case
                                 viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
+                                TargetedPromotionAnalytics.tryAgain()
                             } else if (data is GetPopGratificationResponse) {
                                 viewModel.claimGratification(gratificationData.popSlug,
                                         gratificationData.page,
                                         (data as GetPopGratificationResponse).popGratification?.popGratificationBenefits?.map { benefit -> benefit?.referenceID })
+                                TargetedPromotionAnalytics.tryAgain()
                             } else {
                                 //coupon is claimed
                                 performActionBasedOnClaim(popGratificationActionBtn)
+                                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), true, btnActionText)
                             }
                         } else {
                             routeToLogin(activity)
+                            TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), true, btnActionText)
                         }
+
                     } else {
                         dismissAfterRetryIsOver(activity, btnActionText)
                     }
@@ -616,16 +626,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     fun performActionBasedOnClaim(popGratificationActionButton: PopGratificationActionButton?) {
         if (popGratificationActionButton != null) {
-            if (!popGratificationActionButton.type.isNullOrEmpty() && popGratificationActionButton.type.toLowerCase(Locale.getDefault()) == DISMISS) {
-                bottomSheetDialog.dismiss()
-            } else if (!popGratificationActionButton.appLink.isNullOrEmpty()) {
+            if (!popGratificationActionButton.appLink.isNullOrEmpty()) {
                 RouteManager.route(btnAction.context, popGratificationActionButton.appLink)
-            } else {
-                bottomSheetDialog.dismiss()
             }
-        } else {
-            bottomSheetDialog.dismiss()
         }
+        bottomSheetDialog.dismiss()
     }
 
     fun dismissAfterRetryIsOver(activityContext: AppCompatActivity, btnActionText: String) {
@@ -774,7 +779,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             if (retryCount > 0) {
                 TargetedPromotionAnalytics.tryAgain()
             } else if (TextUtils.isEmpty(applink)) {
-                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn)
+                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText)
             } else {
                 TargetedPromotionAnalytics.performButtonAction(btnActionText)
             }
@@ -888,6 +893,16 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     fun removeAutoApplyLiveDataObserver() {
         if (autoApplyObserver != null) {
             viewModel.autoApplyLiveData.removeObserver((autoApplyObserver!!))
+        }
+    }
+
+    fun prePareCatalogId(data: GetPopGratificationResponse){
+        val benefits = data.popGratification?.popGratificationBenefits
+        if (benefits != null && benefits.isNotEmpty()) {
+            val referenceId = benefits[0]?.referenceID
+            if (referenceId != null) {
+                catalogId = referenceId
+            }
         }
     }
 }

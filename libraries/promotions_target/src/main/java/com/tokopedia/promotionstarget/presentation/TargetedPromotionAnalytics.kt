@@ -21,20 +21,8 @@ object TargetedPromotionAnalytics {
         return TrackApp.getInstance().gtm
     }
 
-    fun prepareDataForViewCouponAnalytics(data:GetPopGratificationResponse,isLoggedIn:Boolean ){
-        var catalogId = 0
-        val benefits = data.popGratification?.popGratificationBenefits
-        if (benefits != null && benefits.isNotEmpty()) {
-            val referenceId = benefits[0]?.referenceID
-            if (referenceId != null) {
-                catalogId = referenceId
-            }
-        }
-        viewCoupon(catalogId.toString(), isLoggedIn)
-    }
-
     //3, 17
-    fun viewCoupon(catalogId:String, isLoogedIn:Boolean) {
+    fun viewCoupon(catalogId: String, isLoogedIn: Boolean) {
         val map = mutableMapOf<String, Any>()
 
         val isLoggedInText = if (isLoogedIn) "login" else "nonlogin"
@@ -46,13 +34,13 @@ object TargetedPromotionAnalytics {
     }
 
     //4,18
-    fun clickClaimCoupon(catalogId:String, isLoogedIn:Boolean) {
+    fun clickClaimCoupon(catalogId: String, isLoogedIn: Boolean, buttonText: String) {
         val map = mutableMapOf<String, Any>()
 
         val isLoggedInText = if (isLoogedIn) "login" else "nonlogin"
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
-        map[KEY_EVENT_ACTION] = "click claim coupon - $isLoggedInText"
+        map[KEY_EVENT_ACTION] = "click $buttonText - $isLoggedInText"
         map[KEY_EVENT_LABEL] = catalogId
         getTracker().sendGeneralEvent(map)
     }
@@ -82,7 +70,7 @@ object TargetedPromotionAnalytics {
     }
 
     //7
-    fun claimSucceedPopup(label:String){
+    fun claimSucceedPopup(label: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = VIEW_TARGETED_PROMO_IRIS
@@ -93,7 +81,7 @@ object TargetedPromotionAnalytics {
     }
 
     //9
-    fun couponClaimedLastOccasion(label:String){
+    fun couponClaimedLastOccasion(label: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = VIEW_TARGETED_PROMO_IRIS
@@ -104,7 +92,7 @@ object TargetedPromotionAnalytics {
     }
 
     //13
-    fun performButtonAction(label: String){
+    fun performButtonAction(label: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
@@ -115,7 +103,7 @@ object TargetedPromotionAnalytics {
     }
 
     //15
-    fun tryAgain(){
+    fun tryAgain() {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
