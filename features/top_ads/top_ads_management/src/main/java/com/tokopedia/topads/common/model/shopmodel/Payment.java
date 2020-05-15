@@ -4,7 +4,6 @@ package com.tokopedia.topads.common.model.shopmodel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Deprecated
 public class Payment {
 
     @SerializedName("payment_image")

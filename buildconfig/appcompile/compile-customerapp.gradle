@@ -57,6 +57,7 @@ include "features:entertainment:event_search"
 include "features:entertainment:digital_deals"
 
 include "features:salam:umrah"
+
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include "features:discovery:productcard"

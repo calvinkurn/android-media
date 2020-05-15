@@ -15,7 +15,6 @@ import com.tokopedia.topads.R;
 /**
  * Do not use dialog, consult to unify team
  */
-@Deprecated
 public class TkpdProgressDialog {
 
     public static int NORMAL_PROGRESS = 1;

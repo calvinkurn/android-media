@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Get shop info object from tkpd shop
  */
-@Deprecated
 public class ShopModel {
 
     public static final int IS_OPEN = 1; //FROM API
