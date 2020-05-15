@@ -1,0 +1,8 @@
+package com.tokopedia.power_merchant.subscribe.view.constant
+
+object PowerMerchantUrl {
+
+    const val URL_FREE_SHIPPING_TERMS_AND_CONDITION = "https://seller.tokopedia.com/edu/bebas-ongkir/"
+    const val URL_BROADCAST_CHAT_TERMS_AND_CONDITION = "https://seller.tokopedia.com/edu/gratis-broadcast-chat/"
+    const val URL_LEARN_MORE_BENEFIT = "https://seller.tokopedia.com/edu/power-merchant/"
+}
