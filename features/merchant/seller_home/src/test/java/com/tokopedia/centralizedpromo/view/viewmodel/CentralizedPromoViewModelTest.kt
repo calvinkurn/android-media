@@ -2,6 +2,7 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -35,6 +36,9 @@ class CentralizedPromoViewModelTest {
     @RelaxedMockK
     lateinit var getPostUseCase: GetPostUseCase
 
+    @RelaxedMockK
+    lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -58,7 +62,7 @@ class CentralizedPromoViewModelTest {
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     private val viewModel : CentralizedPromoViewModel by lazy {
-        CentralizedPromoViewModel(userSession, getOnGoingPromotionUseCase, getPostUseCase, testCoroutineDispatcher)
+        CentralizedPromoViewModel(userSession, getOnGoingPromotionUseCase, getPostUseCase, getChatBlastSellerMetadataUseCase, testCoroutineDispatcher)
     }
 
     @Test
@@ -178,6 +182,10 @@ class CentralizedPromoViewModelTest {
     @Test
     fun `Success get layout data for promo creation`() = runBlocking {
 
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(200, 2)
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
         delay(100)
@@ -189,9 +197,8 @@ class CentralizedPromoViewModelTest {
 
     @Test
     fun `Failed get layout data for promo creation`() = runBlocking {
-
         every {
-            PromoCreationStaticData.provideStaticData()
+            PromoCreationStaticData.provideStaticData(any())
         } throws ResponseErrorException()
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
