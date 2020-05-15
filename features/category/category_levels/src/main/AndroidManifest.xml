@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.categoryLevels">
+    package="com.tokopedia.categorylevels">
 
     <application>
         <activity
-            android:name="com.tokopedia.categoryLevels.view.activity.CategoryNavActivity"
+            android:name="com.tokopedia.categorylevels.view.activity.CategoryNavActivity"
             android:label="Urutkan"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
