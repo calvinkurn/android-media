@@ -6,21 +6,12 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
-import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewTemplateListAdapter
-import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_reply_textbox.view.*
 
 class ReviewReplyTextBox : BaseCustomView {
-
-    private val reviewTemplateListAdapter by lazy {
-        ReviewTemplateListAdapter()
-    }
 
     constructor(context: Context): super(context) {
         init()
@@ -38,8 +29,7 @@ class ReviewReplyTextBox : BaseCustomView {
     }
 
     fun setReplyAction() {
-//        setTemplateList()
-
+        btnAddTemplate?.hide()
         replyEditText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
 
@@ -55,27 +45,8 @@ class ReviewReplyTextBox : BaseCustomView {
                 }
             }
         })
-
-        replySendButton?.setOnClickListener {
-
-        }
     }
 
-    private fun setTemplateList(data: List<ReplyTemplateUiModel>) {
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        list_template?.apply {
-            layoutManager = linearLayoutManager
-            if (itemDecorationCount == 0) {
-                addItemDecoration(PaddingItemDecoratingReviewSeller())
-            }
-            adapter = reviewTemplateListAdapter
-        }
-        if (data.isEmpty()) {
-            list_template?.hide()
-        } else {
-            reviewTemplateListAdapter.submitList(data)
-            list_template?.show()
-        }
-    }
+
 
 }

@@ -14,6 +14,6 @@ data class ProductReviewDetailOverallResponse(
             @SerializedName("ratingAverage")
             val ratingAverage: Float? = 0.0F,
             @SerializedName("ratingCount")
-            val ratingCount: Int? = -1
+            val ratingCount: Int? = 0
     )
 }

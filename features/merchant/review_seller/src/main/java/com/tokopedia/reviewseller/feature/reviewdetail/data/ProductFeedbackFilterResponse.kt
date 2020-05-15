@@ -18,11 +18,11 @@ data class ProductFeedbackFilterData(
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
         @SerializedName("limit")
-        val limit: Int? = -1,
+        val limit: Int? = 0,
         @SerializedName("list")
         val list: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.FeedbackList> = listOf(),
         @SerializedName("page")
-        val page: Int? = -1,
+        val page: Int? = 0,
         @SerializedName("sortBy")
         val sortBy: String? = "",
         @SerializedName("topics")

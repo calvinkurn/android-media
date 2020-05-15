@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
@@ -14,13 +15,17 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
 import com.tokopedia.reviewseller.common.util.toRelativeDate
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.di.component.ReviewReplyComponent
 import com.tokopedia.reviewseller.feature.reviewreply.util.mapper.SellerReviewReplyMapper
+import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewTemplateListAdapter
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.UpdateReplyResponseUiModel
+import com.tokopedia.reviewseller.feature.reviewreply.view.viewholder.ReviewTemplateListViewHolder
 import com.tokopedia.reviewseller.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -31,11 +36,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_seller_review_reply.*
 import kotlinx.android.synthetic.main.widget_reply_feedback_item.*
 import kotlinx.android.synthetic.main.widget_reply_textbox.*
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
-class SellerReviewReplyFragment: BaseDaggerFragment() {
+class SellerReviewReplyFragment: BaseDaggerFragment(), ReviewTemplateListViewHolder.ReviewTemplateListener {
 
     companion object {
         const val EXTRA_FEEDBACK_DATA = "EXTRA_FEEDBACK_DATA"
@@ -61,8 +64,14 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
 
     private var cacheManager: SaveInstanceCacheManager? = null
 
+    private val reviewTemplateListAdapter by lazy {
+        ReviewTemplateListAdapter(this)
+    }
+
     private var shopId = 0
     private var isEmptyReply = false
+
+    private var replyTemplateList: List<ReplyTemplateUiModel>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initData(savedInstanceState)
@@ -112,7 +121,31 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
         super.onDestroy()
     }
 
+    private fun getReviewTemplate() {
+        hideData()
+        viewModelReviewReply?.getTemplateListReply(userSession.shopId.toIntOrZero())
+    }
+
     private fun observeLiveData() {
+        viewModelReviewReply?.reviewTemplate?.observe(this, Observer {
+            showData()
+            when(it) {
+                is Success -> {
+                    replyTemplateList = it.data
+                    setTemplateList(it.data)
+                }
+                is Fail -> {
+                    view?.let { it1 ->
+                        Toaster.make(it1, it.throwable.message.orEmpty(), Toaster.TYPE_ERROR,
+                                actionText = context?.getString(R.string.retry_label).orEmpty(),
+                                clickListener = View.OnClickListener {
+                            getReviewTemplate()
+                        })
+                    }
+                }
+            }
+        })
+
         viewModelReviewReply?.insertReviewReply?.observe(this, Observer {
             when(it) {
                 is Success -> {
@@ -139,6 +172,8 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
             }
         })
 
+        getReviewTemplate()
+
         replySendButton.setOnClickListener {
             if(replyEditText.text?.isNotEmpty() == true) {
                 if (isEmptyReply) {
@@ -163,7 +198,7 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
             reviewReplyTextBoxWidget?.hide()
             groupReply?.show()
             tvReplyUser?.text = context?.getString(R.string.user_reply)
-            tvReplyDate.text = getReplyTime() toRelativeDate (DATE_REVIEW_FORMAT)
+            tvReplyDate.text = viewModelReviewReply?.getReplyTime().orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
             feedbackUiModel?.replyText = replyEditText.text.toString()
             tvReplyComment.text = feedbackUiModel?.replyText
             replyEditText.text?.clear()
@@ -177,13 +212,9 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
             replyEditText.text?.clear()
             tvReplyUser?.text = context?.getString(R.string.user_reply)
             feedbackUiModel?.replyText = data.responseMessage
-            tvReplyDate.text = getReplyTime() toRelativeDate  (DATE_REVIEW_FORMAT)
+            tvReplyDate.text = viewModelReviewReply?.getReplyTime().orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
             tvReplyComment.text = feedbackUiModel?.replyText
         }
-    }
-
-    private fun getReplyTime(): String {
-        return SimpleDateFormat(DATE_REVIEW_FORMAT, Locale.getDefault()).format(Calendar.getInstance().time)
     }
 
     private fun showData() {
@@ -231,16 +262,20 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
         } else {
             groupReply?.show()
             reviewReplyTextBoxWidget?.hide()
-            tvReplyEdit?.setOnClickListener {
-                reviewReplyTextBoxWidget?.show()
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                replyEditText?.run {
-                    isFocusable = true
-                    isFocusableInTouchMode = true
-                    requestFocus()
-                    setText(feedbackUiModel?.replyText.orEmpty())
-                    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-                }
+            showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
+        }
+    }
+
+    private fun showTextReplyEditText(replyText: String) {
+        tvReplyEdit?.setOnClickListener {
+            reviewReplyTextBoxWidget?.show()
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            replyEditText?.run {
+                isFocusable = true
+                isFocusableInTouchMode = true
+                requestFocus()
+                setText(replyText)
+                imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
             }
         }
     }
@@ -260,7 +295,6 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
     override fun initInjector() {
         getComponent(ReviewReplyComponent::class.java).inject(this)
     }
-
 
     private fun initBottomSheetReplyReview() {
         val optionMenuReport = context?.let { SellerReviewReplyMapper.mapToItemUnifyMenuReport(it) }
@@ -299,6 +333,29 @@ class SellerReviewReplyFragment: BaseDaggerFragment() {
         bottomSheetReplyReview = BottomSheetUnify()
         optionMenuReplyReview = viewMenu.findViewById(R.id.optionMenuReply)
         bottomSheetReplyReview?.setChild(viewMenu)
+    }
+
+    private fun setTemplateList(data: List<ReplyTemplateUiModel>) {
+
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        list_template?.apply {
+            layoutManager = linearLayoutManager
+            if (itemDecorationCount == 0) {
+                addItemDecoration(PaddingItemDecoratingReviewSeller())
+            }
+            adapter = reviewTemplateListAdapter
+        }
+        if (data.isEmpty()) {
+            list_template?.hide()
+        } else {
+            reviewTemplateListAdapter.submitList(data)
+            list_template?.show()
+        }
+    }
+
+    override fun onItemReviewTemplateClicked(view: View, title: String) {
+        val message = replyTemplateList?.firstOrNull { it.title == title }?.message
+        showTextReplyEditText(message.orEmpty())
     }
 
 }
