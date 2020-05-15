@@ -234,7 +234,7 @@ class MixTopBannerViewHolder(
         val channelProductData = convertDataToProductData(channel)
         setRecyclerViewAndCardHeight(channelProductData)
         visitables.addAll(channelProductData)
-        if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) visitables.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
+        if(homeCategoryListener.isShowSeeAllCard() && channel.grids.size > 1 && channel.header.applink.isNotEmpty()) visitables.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
         return visitables
     }
 

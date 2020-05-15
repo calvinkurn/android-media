@@ -127,7 +127,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         listData.add(EmptyDataModel(channel, adapterPosition))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
-        if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) listData.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
+        if(homeCategoryListener.isShowSeeAllCard() && channel.grids.size > 1 && channel.header.applink.isNotEmpty()) listData.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
 
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
