@@ -410,10 +410,12 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
             isLoadMore = false
             setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
             viewModel.resetParams()
-            viewModel.searchAllBrands(
-                    INITIAL_OFFSET, "",
-                    ALL_BRANDS_REQUEST_SIZE,
-                    ALPHABETIC_ASC_SORT, "")
+//            viewModel.searchAllBrands(
+//                    INITIAL_OFFSET, "",
+//                    ALL_BRANDS_REQUEST_SIZE,
+//                    ALPHABETIC_ASC_SORT, "")
+            isInitialDataLoaded = false
+            loadInitialData()
         } else if (position >= 2) {     // Load per alphabet
             isLoadMore = false
             selectedBrandLetter = chipName

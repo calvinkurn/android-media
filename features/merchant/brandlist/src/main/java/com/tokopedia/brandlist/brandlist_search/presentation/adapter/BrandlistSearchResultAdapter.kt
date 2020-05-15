@@ -76,11 +76,11 @@ class BrandlistSearchResultAdapter(
 //        val _list = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>()
 //        val _startIndex = getVisitables().indexOf(list.first())
 //        val _lastIndex = getVisitables().indexOf(list.last())
+        val _totalUnusedData = getVisitables().size - 1
+        val _startIndex = 1
 
         if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
             if (!isLoadMore) {
-                val _totalUnusedData = getVisitables().size - 1
-                val _startIndex = 1
                 getVisitables().subList(_startIndex, _totalUnusedData).clear()
                 visitables.addAll(_startIndex, searchResultList)
                 notifyItemRangeRemoved(_startIndex, _totalUnusedData)
@@ -92,10 +92,10 @@ class BrandlistSearchResultAdapter(
 
         } else if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) {
             if (!isLoadMore) {
-//                getVisitables().subList(_startIndex, _list.size).clear()
-//                visitables.addAll(lastIndex, searchResultList)
-//                notifyItemRangeRemoved(lastIndex, _list.size)
-//                notifyItemRangeInserted(lastIndex, searchResultList.size)
+                getVisitables().subList(_startIndex, _totalUnusedData).clear()
+                visitables.addAll(_startIndex, searchResultList)
+                notifyItemRangeRemoved(_startIndex, _totalUnusedData)
+                notifyItemRangeInserted(_startIndex, searchResultList.size)
             } else {
                 visitables.addAll(lastIndex, searchResultList)
                 notifyItemRangeInserted(lastIndex, searchResultList.size)
