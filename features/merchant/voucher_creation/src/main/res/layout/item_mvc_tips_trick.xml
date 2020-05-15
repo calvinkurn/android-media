@@ -16,19 +16,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="1" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/tvMvcTipsTrickTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:textColor="@color/light_N700_96"
+        android:textSize="@dimen/fontSize_lvl3"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvMvcTipsTrickNumber"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
         tools:text="Sebarkan voucher toko di media sosial mu." />
 
     <com.tokopedia.unifyprinciples.Typography

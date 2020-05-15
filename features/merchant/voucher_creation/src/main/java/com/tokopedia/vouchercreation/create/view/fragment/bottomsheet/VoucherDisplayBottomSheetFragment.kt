@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
 import com.tokopedia.vouchercreation.create.view.adapter.vouchertarget.VoucherDisplayAdapter
-import com.tokopedia.vouchercreation.create.view.decorator.VoucherDisplayItemDecoration
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.listener.VoucherDisplayScrollListener
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.*

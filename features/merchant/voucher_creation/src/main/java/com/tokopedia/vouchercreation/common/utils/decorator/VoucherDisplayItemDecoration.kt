@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.view.decorator
+package com.tokopedia.vouchercreation.common.utils.decorator
 
 import android.content.Context
 import android.graphics.Rect

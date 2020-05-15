@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.tipstrick
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,6 +18,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.adapter.TipsTri
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.adapter.TipsTrickCarouselAdapter
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickCarouselModel
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickModel
+import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
 import com.tokopedia.vouchercreation.create.view.enums.VoucherDisplay
 import kotlinx.android.synthetic.main.bottomsheet_mvc_tips_trick.view.*
 import timber.log.Timber
@@ -56,6 +58,11 @@ class TipsTrickBottomSheet(
         }
         setupTipsAndTrick(child)
         setupCarouselImage(child)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.setupBottomSheetChildNoMargin()
     }
 
     private fun getBottomSheetTitle(): String {
@@ -99,6 +106,7 @@ class TipsTrickBottomSheet(
             } catch (e: IllegalArgumentException) {
                 Timber.e(e)
             }
+            addItemDecoration(VoucherDisplayItemDecoration(context))
         }
 
         if (isPrivateVoucher) {
@@ -178,6 +186,15 @@ class TipsTrickBottomSheet(
                 )
         )
         tipsTrickAdapter.setItems(items)
+    }
+
+    private fun View.setupBottomSheetChildNoMargin() {
+        val initialPaddingTop = paddingTop
+        val initialPaddingBottom = paddingBottom
+        val initialPaddingLeft = paddingLeft
+        val initialPaddingRight = paddingRight
+        setPadding(0,initialPaddingTop,0,initialPaddingBottom)
+        bottomSheetHeader.setPadding(initialPaddingLeft, 0, initialPaddingRight, 0)
     }
 
     fun setOnDownloadClickListener(action: () -> Unit): TipsTrickBottomSheet {
