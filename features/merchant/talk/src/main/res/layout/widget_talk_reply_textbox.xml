@@ -22,6 +22,7 @@
         android:background="@drawable/bg_rounded_chat_input"
         android:hint="@string/reply_editText_placeholder"
         android:inputType="textMultiLine"
+        android:textColorHint="@color/Neutral_N700_32"
         android:maxLines="4"
         android:scrollbars="vertical"
         android:minHeight="@dimen/layout_lvl5"
@@ -34,29 +35,27 @@
         android:textSize="@dimen/fontSize_lvl4" />
 
     <FrameLayout
-        android:layout_width="@dimen/spacing_lvl7"
-        android:layout_height="@dimen/spacing_lvl7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_alignEnd="@+id/replyEditText"
         android:layout_alignRight="@+id/replyEditText"
-        android:layout_alignBottom="@+id/replyEditText"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3">
 
         <ImageView
             android:id="@+id/replyAttachProduct"
-            android:layout_width="@dimen/spacing_lvl7"
-            android:layout_height="@dimen/spacing_lvl7"
-            android:padding="@dimen/spacing_lvl3"
-            app:srcCompat="@drawable/talk_ic_attached_product" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/talk_ic_attach_product_chat" />
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_alignStart="@+id/replyEditText"
         android:layout_alignLeft="@+id/replyEditText"
-        android:layout_alignTop="@id/replyEditText"
-        android:layout_alignBottom="@id/replySendButton"
+        android:layout_centerVertical="true"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl1"

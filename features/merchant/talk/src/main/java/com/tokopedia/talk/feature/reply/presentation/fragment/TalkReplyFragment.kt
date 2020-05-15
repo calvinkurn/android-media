@@ -318,8 +318,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         replyAttachedProductContainer.visibility = View.GONE
     }
 
-    private fun showSuccessToaster(successMessage: String) {
-        adjustToasterHeight()
+    private fun showSuccessToaster(successMessage: String, adjustHeight: Boolean = false) {
+        if(adjustHeight) {
+            adjustToasterHeight()
+        }
         view?.let {
             Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
         }
@@ -334,13 +336,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessFollowThread() {
         adapter?.setIsFollowingButton(FOLLOWING)
-        showSuccessToaster(getString(R.string.toaster_follow_success))
+        showSuccessToaster(getString(R.string.toaster_follow_success), true)
         viewModel.setIsFollowing(FOLLOWING)
     }
 
     private fun onSuccessUnfollowThread() {
         adapter?.setIsFollowingButton(NOT_FOLLOWING)
-        showSuccessToaster(getString(R.string.toaster_unfollow_success))
+        showSuccessToaster(getString(R.string.toaster_unfollow_success), true)
         viewModel.setIsFollowing(NOT_FOLLOWING)
     }
 
@@ -353,7 +355,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onSuccessDeleteComment(answerId: String) {
-        showSuccessToaster(getString(R.string.delete_toaster_success))
+        showSuccessToaster(getString(R.string.delete_toaster_success), true)
         adapter?.deleteQuestion(answerId)
     }
 
@@ -400,7 +402,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onSuccessReport() {
-        showSuccessToaster(getString(R.string.toaster_report_success))
+        showSuccessToaster(getString(R.string.toaster_report_success), true)
     }
 
     private fun observeFollowUnfollowResponse() {

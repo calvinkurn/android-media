@@ -29,7 +29,7 @@ class TalkReplyTextWatcher(private val textLimit: Int, private val talkReplyText
     private fun updateListener(text: String) {
         val mainHandler = Handler(this.editText.context.mainLooper)
         val myRunnable = Runnable {
-            if(text.length > textLimit ) {
+            if(text.length >= textLimit ) {
                 talkReplyTextboxListener.onMaximumTextLimitReached()
             }
         }

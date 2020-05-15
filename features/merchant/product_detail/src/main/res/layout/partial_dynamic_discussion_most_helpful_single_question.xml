@@ -84,7 +84,7 @@
         app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@id/productDetailDiscussionSingleQuestionSellerLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionSingleQuestionSellerLabel" />
+        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionSingleQuestionDisplayName" />
 
     <ImageView
         android:id="@+id/productDetailDiscussionSingleQuestionAttachedProductIcon"
