@@ -1,19 +1,21 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -197,9 +199,9 @@ class CentralizedPromoViewModelTest {
 
     @Test
     fun `Failed get layout data for promo creation`() = runBlocking {
-        every {
-            PromoCreationStaticData.provideStaticData(any())
-        } throws ResponseErrorException()
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } throws MessageErrorException()
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 

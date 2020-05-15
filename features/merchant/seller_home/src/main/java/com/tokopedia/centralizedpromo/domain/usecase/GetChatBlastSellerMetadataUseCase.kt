@@ -1,6 +1,6 @@
 package com.tokopedia.centralizedpromo.domain.usecase
 
-import com.tokopedia.centralizedpromo.domain.mapper.BroadcastChatMetadataMapper
+import com.tokopedia.centralizedpromo.domain.mapper.ChatBlastSellerMetadataMapper
 import com.tokopedia.centralizedpromo.domain.model.ChatBlastSellerMetadataResponse
 import com.tokopedia.centralizedpromo.view.model.ChatBlastSellerMetadataUiModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class GetChatBlastSellerMetadataUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
-        private val mapper: BroadcastChatMetadataMapper
+        private val mapper: ChatBlastSellerMetadataMapper
 ) : BaseGqlUseCase<ChatBlastSellerMetadataUiModel>() {
     override suspend fun executeOnBackground(): ChatBlastSellerMetadataUiModel {
         val gqlRequest = GraphqlRequest(QUERY, ChatBlastSellerMetadataResponse::class.java)
