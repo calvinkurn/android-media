@@ -25,7 +25,7 @@
         android:id="@+id/productDetailDiscussionSingleQuestionProfilePicture"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:visibility="gone"
         app:unify_image_type="circle"
         app:layout_constraintStart_toStartOf="@id/productDetailDiscussionSingleQuestion"
@@ -47,8 +47,8 @@
         android:id="@+id/productDetailDiscussionSingleQuestionDisplayName"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
         android:visibility="gone"
         android:textColor="@color/Neutral_N700_68"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
@@ -84,15 +84,14 @@
         app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@id/productDetailDiscussionSingleQuestionSellerLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionSingleQuestionDisplayName" />
+        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionSingleQuestionSellerLabel" />
 
     <ImageView
         android:id="@+id/productDetailDiscussionSingleQuestionAttachedProductIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_36"
-        android:layout_marginLeft="@dimen/dp_36"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/layout_lvl1"
         app:srcCompat="@drawable/ic_discussion_attached_product"
         app:layout_constraintStart_toStartOf="@id/productDetailDiscussionSingleQuestionMessage"
         app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionSingleQuestionMessage"/>
