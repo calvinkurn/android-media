@@ -2,4 +2,5 @@
 <resources>
     <color name="talk_send_background">#fbfbfb</color>
     <color name="text_hint">#2e000000</color>
+    <color name="talk_reading_color">#31353B</color>
 </resources>

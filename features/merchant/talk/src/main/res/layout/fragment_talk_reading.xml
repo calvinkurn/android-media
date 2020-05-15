@@ -24,7 +24,7 @@
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                     <com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingHeader
                         android:id="@+id/talkReadingHeader"

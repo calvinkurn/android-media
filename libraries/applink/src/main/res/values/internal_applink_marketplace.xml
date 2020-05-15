@@ -94,6 +94,4 @@
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
     <string name="path_etalase_dynamic_picker">/etalase-dynamic-picker</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
-
-    <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/.*\\/</string>
 </resources>

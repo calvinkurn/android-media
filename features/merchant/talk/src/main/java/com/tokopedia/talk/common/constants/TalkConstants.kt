@@ -7,6 +7,6 @@ object TalkConstants {
     const val COMMENT_ID = "comment_id"
     const val PARAM_SHOP_ID = "shop_id"
     const val IS_FROM_INBOX = "is_from_inbox"
-    const val PRODUCT_ID = "product_id"
+    const val PARAM_PRODUCT_ID = "product_id"
 
 }

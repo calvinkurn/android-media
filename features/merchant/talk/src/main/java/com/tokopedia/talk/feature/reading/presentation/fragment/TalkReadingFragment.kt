@@ -28,7 +28,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
-import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
@@ -73,7 +73,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
             TalkReadingFragment().apply {
                 arguments = Bundle()
-                arguments?.putString(PRODUCT_ID, productId)
+                arguments?.putString(PARAM_PRODUCT_ID, productId)
                 arguments?.putString(PARAM_SHOP_ID, shopId)
             }
     }
@@ -440,7 +440,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getDataFromArguments() {
         arguments?.let {
-            productId = it.getString(PRODUCT_ID, "")
+            productId = it.getString(PARAM_PRODUCT_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
         }
     }
@@ -453,8 +453,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun goToReplyActivity(questionID: String) {
         val intent = RouteManager.getIntent(
                 context,
-                Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID, productId))
+                Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                         .buildUpon()
+                        .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )

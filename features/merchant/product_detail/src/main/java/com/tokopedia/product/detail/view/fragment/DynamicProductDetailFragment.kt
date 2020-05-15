@@ -73,6 +73,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -2845,8 +2846,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let {
             val intent = RouteManager.getIntent(
                     context,
-                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID, it.basic.productID))
+                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                             .buildUpon()
+                            .appendQueryParameter(PARAM_APPLINK_PRODUCT_ID, it.basic.productID)
                             .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
                             .build().toString()
             )

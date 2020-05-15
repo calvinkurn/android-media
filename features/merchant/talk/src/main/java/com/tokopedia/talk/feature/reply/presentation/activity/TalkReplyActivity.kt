@@ -48,11 +48,11 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     private fun getDataFromAppLink() {
         val uri = intent.data ?: return
-        val questionIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
+        val questionIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
         if (questionIdString.isNotEmpty()) {
             this.questionId = questionIdString
         }
-        val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
+        val productIdString = uri.getQueryParameter(TalkConstants.PARAM_PRODUCT_ID) ?: ""
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString
         }

@@ -28,7 +28,7 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
-import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
@@ -78,7 +78,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     arguments?.apply {
                         putString(QUESTION_ID, questionId)
                         putString(PARAM_SHOP_ID, shopId)
-                        putString(PRODUCT_ID, productId)
+                        putString(PARAM_PRODUCT_ID, productId)
                         putBoolean(IS_FROM_INBOX, isFromInbox)
                     }
                 }
@@ -615,7 +615,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         arguments?.let {
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
-            productId = it.getString(PRODUCT_ID, "")
+            productId = it.getString(PARAM_PRODUCT_ID, "")
             isFromInbox = it.getBoolean(IS_FROM_INBOX)
         }
         viewModel.setIsMyShop(shopId)
