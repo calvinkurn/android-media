@@ -1,16 +1,8 @@
 package com.tokopedia.power_merchant.subscribe.view.ui
 
 import android.content.Context
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.AttributeSet
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
@@ -22,18 +14,19 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_REGULAR
+import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
 import com.tokopedia.user_identification_common.KYCConstant
 import kotlinx.android.synthetic.main.layout_power_merchant_registration.view.*
 
-class PowerMerchantRegistrationView: ConstraintLayout {
+class PowerMerchantRegistrationView : ConstraintLayout {
 
     private var tracker: PowerMerchantTracking? = null
 
-    constructor (context: Context): super(context)
+    constructor (context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         inflate(context, R.layout.layout_power_merchant_registration, this)
@@ -61,8 +54,9 @@ class PowerMerchantRegistrationView: ConstraintLayout {
             kycVerified && shopScoreEligible -> {
                 val text = context.getString(R.string.power_merchant_full_eligibility_description)
                 val clickableText = context.getString(R.string.power_merchant_register_text)
+                val clickableTextColor = ContextCompat.getColor(context, R.color.light_N700)
 
-                createSpannableString(text, clickableText, isBold = true) { goToTermsAndConditionPage() }
+                createSpannableString(text, clickableText, clickableTextColor, true) { goToTermsAndConditionPage() }
             }
             shopScoreEligible -> {
                 context.getString(R.string.power_merchant_kyc_verified_description)
@@ -70,8 +64,9 @@ class PowerMerchantRegistrationView: ConstraintLayout {
             else -> {
                 val text = context.getString(R.string.power_merchant_shop_score_description)
                 val clickableText = context.getString(R.string.power_merchant_see_tips)
+                val clickableTextColor = ContextCompat.getColor(context, R.color.pm_main_color)
 
-                createSpannableString(text, clickableText, R.color.pm_main_color) { goToLearMorePage() }
+                createSpannableString(text, clickableText, clickableTextColor) { goToLearMorePage() }
             }
         }
 
@@ -80,7 +75,7 @@ class PowerMerchantRegistrationView: ConstraintLayout {
     }
 
     private fun showVerificationCheckList(kycVerified: Boolean) {
-        val checkListIcon = if(kycVerified) {
+        val checkListIcon = if (kycVerified) {
             R.drawable.ic_pm_steps_active
         } else {
             R.drawable.ic_pm_steps_not_active
@@ -89,7 +84,7 @@ class PowerMerchantRegistrationView: ConstraintLayout {
     }
 
     private fun showShopScoreCheckList(shopScoreEligible: Boolean) {
-        val checkListIcon = if(shopScoreEligible) {
+        val checkListIcon = if (shopScoreEligible) {
             R.drawable.ic_pm_steps_active
         } else {
             R.drawable.ic_pm_steps_not_active
@@ -105,39 +100,5 @@ class PowerMerchantRegistrationView: ConstraintLayout {
     private fun goToLearMorePage() {
         tracker?.eventLearnMorePm()
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT)
-    }
-
-    private fun createSpannableString(
-        text: String,
-        clickableText: String,
-        colorId: Int = R.color.light_N700,
-        isBold: Boolean = false,
-        onClick: () -> Unit
-    ): SpannableString {
-        val spannableString = SpannableString(text)
-        val startIndex = text.indexOf(clickableText)
-        val endIndex = text.length
-
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(textView: View) {
-                onClick.invoke()
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-            }
-        }
-
-        val colorSpan = ForegroundColorSpan(ContextCompat.getColor(context, colorId))
-        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(colorSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        if(isBold) {
-            val styleSpan = StyleSpan(Typeface.BOLD)
-            spannableString.setSpan(styleSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-
-        return spannableString
     }
 }
