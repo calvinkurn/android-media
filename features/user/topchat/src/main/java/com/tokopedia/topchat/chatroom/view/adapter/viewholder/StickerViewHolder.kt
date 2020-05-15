@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 
@@ -26,7 +26,7 @@ class StickerViewHolder(
     }
 
     private fun bindStickerImage(sticker: Sticker) {
-        ImageLoader.LoadImage(stickerImage, sticker.imageUrl)
+        ImageHandler.loadImage(itemView.context, stickerImage, sticker.imageUrl, R.drawable.ic_loading_image)
     }
 
     private fun bindStickerImageClick(sticker: Sticker) {
