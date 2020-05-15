@@ -113,7 +113,6 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingle
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.cod_bottomsheet.CodBottomSheetFragment;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.promo_benefit.TotalBenefitBottomSheetFragment;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.webview.CheckoutWebViewActivity;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
@@ -1895,10 +1894,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
+                onDataDisableToCheckout(null);
+                String message = getActivity().getString(R.string.message_error_dropshipper_empty);
+                showToastNormal(message);
+                ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
+                ((ShipmentCartItemModel) shipmentData).setStateAllItemViewExpanded(false);
+                onNeedUpdateViewItem(errorPosition);
             }
-            onDataDisableToCheckout(null);
-            ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
-            checkShippingCompletion(true);
         } else if (shipmentData == null) {
             if (isTradeIn()) {
                 checkoutAnalyticsCourierSelection.eventClickBayarCourierNotComplete();
@@ -3095,20 +3097,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkShippingCompletion(false);
     }
 
-    private void checkShippingCompletion(boolean isBorderRed) {
+    private void checkShippingCompletion(boolean isTriggeredByPaymentButton) {
         if (!isTradeInByDropOff()) {
             List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                     ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
-                        if (isBorderRed) {
-                            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
+                        if (isTriggeredByPaymentButton) {
+                            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
                         }
                         rvShipment.smoothScrollToPosition(i);
                         shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
                         shipmentCartItemModel.setStateAllItemViewExpanded(false);
-                        shipmentCartItemModel.setShippingBorderRed(isBorderRed);
+                        shipmentCartItemModel.setShippingBorderRed(isTriggeredByPaymentButton);
                         onNeedUpdateViewItem(i);
                         break;
                     }
