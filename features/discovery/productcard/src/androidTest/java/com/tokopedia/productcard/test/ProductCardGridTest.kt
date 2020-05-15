@@ -9,16 +9,16 @@ import org.junit.Rule
 import org.junit.Test
 
 // Uncomment to enable, also uncomment build.gradle ln 24, 58-60
-//internal class ProductCardGridTest {
-//
-//    @Rule
-//    @JvmField
-//    val activityTestRule = ActivityTestRule<ProductCardGridActivityTest>(ProductCardGridActivityTest::class.java)
-//
-//    @Test
-//    fun testProductCardGrid() {
-//        val recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
-//
-//        ProductCardTest(recyclerViewViewInteraction, productCardGridTestData).startTest()
-//    }
-//}
+internal class ProductCardGridTest {
+
+    @Rule
+    @JvmField
+    val activityTestRule = ActivityTestRule<ProductCardGridActivityTest>(ProductCardGridActivityTest::class.java)
+
+    @Test
+    fun testProductCardGrid() {
+        val recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
+
+        ProductCardTest(recyclerViewViewInteraction, productCardGridTestData).startTest()
+    }
+}
