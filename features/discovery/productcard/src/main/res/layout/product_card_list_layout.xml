@@ -164,10 +164,10 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonDeleteProduct"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/product_card_button_delete_product_height"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
+            android:layout_marginTop="@dimen/product_card_button_delete_product_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:text="@string/product_card_text_remove_product"
