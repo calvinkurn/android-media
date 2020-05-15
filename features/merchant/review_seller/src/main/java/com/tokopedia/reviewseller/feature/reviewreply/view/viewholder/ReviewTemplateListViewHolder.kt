@@ -7,7 +7,8 @@ import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUi
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class ReviewTemplateListViewHolder(
-        itemView: View): RecyclerView.ViewHolder(itemView) {
+        val view: View,
+        private val reviewTemplateListener: ReviewTemplateListener): RecyclerView.ViewHolder(view) {
 
     private val chipsTemplate: ChipsUnify = itemView.findViewById(R.id.chipsTemplateChat)
 
@@ -16,5 +17,13 @@ class ReviewTemplateListViewHolder(
             chipText = data.title
             chipType = ChipsUnify.TYPE_SELECTED
         }
+
+        itemView.setOnClickListener {
+            reviewTemplateListener.onItemReviewTemplateClicked(view, chipsTemplate.chipText.orEmpty())
+        }
+    }
+
+    interface ReviewTemplateListener {
+        fun onItemReviewTemplateClicked(view: View, title: String)
     }
 }

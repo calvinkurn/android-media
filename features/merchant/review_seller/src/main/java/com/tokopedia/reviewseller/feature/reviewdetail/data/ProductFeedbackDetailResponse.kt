@@ -14,11 +14,11 @@ data class ProductFeedbackDetailResponse(
             @SerializedName("hasNext")
             val hasNext: Boolean = false,
             @SerializedName("limit")
-            val limit: Int? = -1,
+            val limit: Int? = 0,
             @SerializedName("list")
             val list: List<FeedbackList> = listOf(),
             @SerializedName("page")
-            val page: Int? = -1,
+            val page: Int? = 0,
             @SerializedName("sortBy")
             val sortBy: String? = "",
             @SerializedName("topics")
@@ -32,9 +32,9 @@ data class ProductFeedbackDetailResponse(
                 @SerializedName("autoReply")
                 val autoReply: Boolean = false,
                 @SerializedName("feedbackID")
-                val feedbackID: Int? = -1,
+                val feedbackID: Int? = 0,
                 @SerializedName("rating")
-                val rating: Int? = -1,
+                val rating: Int? = 0,
                 @SerializedName("replyText")
                 val replyText: String? = "",
                 @SerializedName("replyTime")
@@ -58,18 +58,18 @@ data class ProductFeedbackDetailResponse(
 
         data class Topic(
                 @SerializedName("count")
-                val count: Int,
+                val count: Int? = 0,
                 @SerializedName("formatted")
-                val formatted: String,
+                val formatted: String? = "",
                 @SerializedName("title")
-                val title: String
+                val title: String? = ""
         )
 
         data class AggregatedRating(
                 @SerializedName("rating")
-                val rating: Int,
+                val rating: Int = 0,
                 @SerializedName("ratingCount")
-                val ratingCount: Int
+                val ratingCount: Int = 0
         )
     }
 }

@@ -16,6 +16,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class SellerReviewReplyViewModel @Inject constructor(
@@ -24,6 +26,8 @@ class SellerReviewReplyViewModel @Inject constructor(
         private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
         private val updateSellerResponseUseCase: UpdateSellerResponseUseCase)
     : BaseViewModel(dispatcherProvider.main()) {
+
+    private val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
     private val _updateReviewReply = MutableLiveData<Result<UpdateReplyResponseUiModel>>()
     val updateReviewReply: LiveData<Result<UpdateReplyResponseUiModel>>
@@ -81,5 +85,9 @@ class SellerReviewReplyViewModel @Inject constructor(
     private suspend fun getTemplateList(shopId: Int): List<ReplyTemplateUiModel> {
         getReviewTemplateListUseCase.params = GetReviewTemplateListUseCase.createParams(shopId)
         return SellerReviewReplyMapper.mapToItemTemplateUiModel(getReviewTemplateListUseCase.executeOnBackground())
+    }
+
+    fun getReplyTime(): String {
+        return SimpleDateFormat(DATE_REVIEW_FORMAT, Locale.getDefault()).format(Calendar.getInstance().time)
     }
 }

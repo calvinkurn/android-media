@@ -30,14 +30,14 @@ object SellerReviewProductDetailMapper {
 
     fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackFilterData, oldData: List<RatingBarUiModel>): ProductReviewFilterUiModel {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
-        val totalAggregateRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
+        val totalAggregateRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount.orZero() }
 
         productFeedbackDataPerProduct.aggregatedRating.mapIndexed { index, it ->
             ratingBarListUiModel.add(
                     RatingBarUiModel(
                             ratingProgressBar = if (totalAggregateRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregateRating.toFloat()) * 100,
                             ratingLabel = it.rating,
-                            ratingCount = it.ratingCount,
+                            ratingCount = it.ratingCount.orZero(),
                             ratingIsChecked = oldData.getOrNull(index)?.ratingIsChecked ?: false
                     )
             )
@@ -157,11 +157,11 @@ object SellerReviewProductDetailMapper {
         val maxData = updatedData.take(6)
         maxData.map {
             val sortFilter = SortFilterItem(
-                    title = it.first.formatted,
+                    title = it.first.formatted.orEmpty(),
                     type = ChipsUnify.TYPE_NORMAL,
                     size = ChipsUnify.SIZE_SMALL)
 
-            itemSortFilterList.add(SortFilterItemWrapper(sortFilter, it.second, it.first.count, it.first.title))
+            itemSortFilterList.add(SortFilterItemWrapper(sortFilter, it.second, it.first.count.orZero(), it.first.title.orEmpty()))
         }
         return itemSortFilterList
     }
