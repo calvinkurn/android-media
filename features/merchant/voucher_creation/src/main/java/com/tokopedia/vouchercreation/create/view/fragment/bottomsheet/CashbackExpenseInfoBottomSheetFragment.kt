@@ -39,8 +39,8 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
                     bottomSheetContext.getString(R.string.mvc_rp_value),
                     CurrencyFormatHelper.convertToRupiah(minimumPurchase.toString())).toBlankOrString()
             percentageInfo?.infoValueString = "$cashbackPercentage%"
-            infoDiscountValue?.text = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_discount_value).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(discount.toString()))
-            val description = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(discount.toString()).parseAsHtml())
+            infoDiscountValue?.text = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_discount_value).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString()))
+            val description = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString())).parseAsHtml()
             cashbackExpenseDescription?.text = description
             cashbackExpenseButton?.setOnClickListener {
                 this@CashbackExpenseInfoBottomSheetFragment.dismiss()

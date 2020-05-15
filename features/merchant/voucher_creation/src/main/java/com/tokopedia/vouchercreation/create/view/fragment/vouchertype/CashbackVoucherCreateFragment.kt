@@ -64,7 +64,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
         CashbackTypePickerUiModel(::onCashbackSelectedType)
     }
 
-    private val rupiahExpenseBottomSheet by lazy {
+    private val expensesInfoBottomSheetFragment by lazy {
         GeneralExpensesInfoBottomSheetFragment.createInstance(viewContext).apply {
             setTitle(bottomSheetViewTitle.toBlankOrString())
         }
@@ -255,7 +255,15 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
     }
 
     private fun onNext() {
-        onNextStep()
+        if (activeCashbackType is CashbackType.Percentage) {
+            if (checkIfValuesAreCorrect(cashbackPercentageInfoUiModel.minimumDiscount, cashbackPercentageInfoUiModel.maximumDiscount)) {
+                onNextStep()
+            } else {
+                percentageExpenseBottomSheet.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
+            }
+        } else {
+            onNextStep()
+        }
     }
 
     /**
@@ -263,7 +271,6 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
      * The text field index is equal to total visitables adapter size minus the bottom section model size and the input field itself
      */
     private fun onCashbackSelectedType(cashbackType: CashbackType) {
-        val oldList = adapter.data
         val extraSize = INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
         textFieldIndex = adapter.data.size - extraSize
         adapter.data.removeAt(textFieldIndex)
@@ -293,16 +300,13 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
     }
 
     private fun onTooltipClicked() {
-        when(activeCashbackType) {
-            CashbackType.Rupiah -> {
-                rupiahExpenseBottomSheet.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
-            }
-            CashbackType.Percentage -> {
-                percentageExpenseBottomSheet.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
-            }
-        }
+        expensesInfoBottomSheetFragment.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
     }
 
     private fun getCashbackInfo(): CashbackPercentageInfoUiModel = cashbackPercentageInfoUiModel
+
+    private fun checkIfValuesAreCorrect(minimumDiscount: Int, maximumDiscount: Int): Boolean =
+            minimumDiscount < maximumDiscount
+
 
 }

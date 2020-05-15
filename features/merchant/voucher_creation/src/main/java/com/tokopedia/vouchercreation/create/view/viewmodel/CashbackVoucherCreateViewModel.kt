@@ -111,7 +111,15 @@ class CashbackVoucherCreateViewModel @Inject constructor(
             value = CashbackPercentageInfoUiModel(
                     mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
                     mPercentageDiscountAmountLiveData.value.toZeroIfNull(),
-                    mTresholdValueLiveData.value.toZeroIfNull())
+                    mTresholdValueLiveData.value.toZeroIfNull(),
+                    mPercentageMaximumDiscountLiveData.value.toZeroIfNull())
+        }
+        addSource(mPercentageMaximumDiscountLiveData) {
+            value = CashbackPercentageInfoUiModel(
+                    mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
+                    mPercentageDiscountAmountLiveData.value.toZeroIfNull(),
+                    mTresholdValueLiveData.value.toZeroIfNull(),
+                    mPercentageMaximumDiscountLiveData.value.toZeroIfNull())
         }
     }
     val cashbackPercentageInfoUiModelLiveData : LiveData<CashbackPercentageInfoUiModel>
