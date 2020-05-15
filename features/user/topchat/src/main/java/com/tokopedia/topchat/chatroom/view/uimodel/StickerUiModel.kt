@@ -21,7 +21,7 @@ class StickerUiModel : SendableViewModel, Visitable<TopChatTypeFactory> {
             attachmentId: String,
             attachmentType: String,
             replyTime: String,
-            startTime: String,
+            startTime: String = "",
             message: String,
             isRead: Boolean,
             isDummy: Boolean,
