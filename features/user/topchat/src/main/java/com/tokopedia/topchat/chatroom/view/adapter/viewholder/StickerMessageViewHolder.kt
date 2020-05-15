@@ -61,7 +61,6 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
                     .load(sticker.imageUrl)
                     .dontAnimate()
                     .placeholder(loader)
-                    .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(it)
         }
