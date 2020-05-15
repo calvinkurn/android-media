@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.data.model.UpdateLiveDataModel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -120,6 +121,10 @@ open class HomeViewModel @Inject constructor(
     val stickyLogin: LiveData<Result<StickyLoginTickerPojo.TickerDetail>>
         get() = _stickyLogin
     private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
+
+    val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
+        get() = _injectCouponTimeBasedResult
+    private val _injectCouponTimeBasedResult : MutableLiveData<Result<InjectCouponTimeBased>> = MutableLiveData()
 
 // ============================================================================================
 // ==================================== Helper Live Data ======================================
@@ -967,9 +972,10 @@ open class HomeViewModel @Inject constructor(
     fun injectCouponTimeBased() {
         if(injectCouponTimeBasedJob?.isActive == true) return
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
-            injectCouponTimeBasedUseCase.executeOnBackground()
+            _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.executeOnBackground().data)
         }){
             it.printStackTrace()
+            _injectCouponTimeBasedResult.postValue(Result.error(it))
         }
     }
 
