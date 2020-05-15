@@ -14,9 +14,12 @@ import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.deprecated.SessionHandler;
@@ -24,6 +27,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.test.application.environment.interceptor.MockInterceptor;
@@ -50,8 +54,11 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
         FirebaseApp.initializeApp(this);
         FpmLogger.init(this);
         TrackApp.initTrackApp(this);
+        NetworkClient.init(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
@@ -124,11 +131,6 @@ public void sendAnalyticsAnomalyResponse(String title,
     }
 
     @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(Context mContext) {
         return null;
     }
@@ -169,7 +171,7 @@ public void sendAnalyticsAnomalyResponse(String title,
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+    public Class<?> getHomeClass() {
         return null;
     }
 
@@ -186,18 +188,9 @@ public void sendAnalyticsAnomalyResponse(String title,
     @Override
     public SessionHandler legacySessionHandler() {
         return new SessionHandler(this) {
-            @Override
-            public String getLoginName() {
-                return "null";
-            }
 
             @Override
             public String getGTMLoginID() {
-                return "null";
-            }
-
-            @Override
-            public String getShopID() {
                 return "null";
             }
 
@@ -207,62 +200,12 @@ public void sendAnalyticsAnomalyResponse(String title,
             }
 
             @Override
-            public boolean isUserHasShop() {
-                return false;
-            }
-
-            @Override
-            public boolean isV4Login() {
-                return false;
-            }
-
-            @Override
-            public String getPhoneNumber() {
-                return "null";
-            }
-
-            @Override
-            public String getEmail() {
-                return "null";
-            }
-
-            @Override
             public String getRefreshToken() {
                 return "null";
             }
 
             @Override
-            public String getAccessToken() {
-                return "null";
-            }
-
-            @Override
-            public String getFreshToken() {
-                return null;
-            }
-
-            @Override
-            public String getUserId() {
-                return "null";
-            }
-
-            @Override
-            public String getDeviceId() {
-                return "null";
-            }
-
-            @Override
-            public String getProfilePicture() {
-                return "null";
-            }
-
-            @Override
             public boolean isMsisdnVerified() {
-                return false;
-            }
-
-            @Override
-            public boolean isHasPassword() {
                 return false;
             }
         };

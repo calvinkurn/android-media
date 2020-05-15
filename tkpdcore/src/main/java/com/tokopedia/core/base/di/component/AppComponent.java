@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -119,8 +118,6 @@ public interface AppComponent {
     SessionHandler sessionHandler();
 
     GCMHandler gcmHandler();
-
-    ImageHandler imageHandler();
 
     BearerInterceptor bearerInterceptor();
 

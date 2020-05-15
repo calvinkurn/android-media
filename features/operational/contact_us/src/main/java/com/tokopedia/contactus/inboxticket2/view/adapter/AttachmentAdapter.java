@@ -2,14 +2,15 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter;
@@ -22,14 +23,12 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
 
     private List<AttachmentItem> attachmentList;
     private Context mContext;
-    private ImageHandler imageHandler;
     private InboxDetailPresenter mPresenter;
 
     AttachmentAdapter(Context context, List<AttachmentItem> data, InboxDetailPresenter presenter) {
         mContext = context;
         attachmentList = new ArrayList<>();
         attachmentList.addAll(data);
-        imageHandler = new ImageHandler(mContext);
         mPresenter = presenter;
     }
 
@@ -71,7 +70,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
         void bindView(int index) {
             String thumbnail = attachmentList.get(index).getThumbnail();
             if (isUrl(thumbnail)) {
-                imageHandler.loadImage(ivAttachment, thumbnail);
+                ImageHandler.LoadImage(ivAttachment, thumbnail);
             } else {
                 ivAttachment.setImageURI(Uri.fromFile(new File(thumbnail)));
             }
