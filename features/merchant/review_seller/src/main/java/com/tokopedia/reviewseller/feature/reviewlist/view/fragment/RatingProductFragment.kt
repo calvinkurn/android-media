@@ -112,10 +112,15 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var itemViewSummary: View? = null
 
+    private var productItemList: List<ProductReviewUiModel>? = null
+
     var chipsSortText: String? = ""
     var chipsFilterText: String? = ""
     var searchFilterText: String? = ""
     var isEmptyFilter = false
+
+    private var coachMarkSummary: CoachMarkItem? = null
+    private var coachMarkItemRatingProduct: CoachMarkItem? = null
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -126,6 +131,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 getString(R.string.label_filter_and_sort),
                 getString(R.string.desc_filter_and_sort))
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -321,6 +327,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             hideLoading()
             when (it) {
                 is Success -> {
+                    productItemList = it.data.second
                     onSuccessGetReviewProductListData(it.data.first, it.data.second)
                 }
                 is Fail -> {
@@ -408,6 +415,26 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
+    private fun coachMarkSummary() {
+        prefs?.let {
+            coachMarkSummary?.also { coachMark ->
+                if (!it.getBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, false)) {
+                    coachMarkItems.add(coachMark)
+                    it.edit().putBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, true).apply()
+                }
+            }
+        }
+    }
+
+    private fun coachMarkItemRatingProduct() {
+        prefs?.let {
+            if (!it.getBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, false)) {
+                coachMarkItemRatingProduct?.let { it1 -> coachMarkItems.add(it1) }
+                it.edit().putBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, true).apply()
+            }
+        }
+    }
+
     private fun initCoachMark(): CoachMark {
         val coachMark = CoachMarkBuilder().build()
 
@@ -421,7 +448,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         coachMark.onFinishListener = {
             viewModelListReviewList?.isCompletedCoachMark = true
-            firstTabItem?.setBackgroundColor(Color.TRANSPARENT)
         }
 
         return coachMark
@@ -430,35 +456,29 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onAddedCoachMarkOverallRating(view: View) {
         itemViewSummary = view
+        coachMarkSummary = CoachMarkItem(itemViewSummary?.findViewById(R.id.cardSummary),
+                getString(R.string.average_rating_title),
+                getString(R.string.average_rating_desc))
+
+        if(productItemList?.isEmpty() == true) {
+            coachMarkFilterAndSort()
+            coachMarkSummary()
+            showCoachMark()
+        }
     }
 
     override fun onAddedCoachMarkItemProduct(view: View) {
-        val coachMarkTabRatingProduct: CoachMarkItem by lazy {
-            CoachMarkItem(view.findViewById(R.id.itemRatingProduct),
-                    getString(R.string.full_summary_of_product_ratings),
-                    getString(R.string.desc_full_summary_of_product_ratings))
-        }
-        prefs?.let {
-            if (!it.getBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, false)) {
-                coachMarkItems.add(coachMarkTabRatingProduct)
-                it.edit().putBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, true).apply()
-            }
-        }
 
-        coachMarkFilterAndSort()
-        val coachMarkSummary: CoachMarkItem by lazy {
-            CoachMarkItem(itemViewSummary?.findViewById(R.id.cardSummary),
-                    getString(R.string.average_rating_title),
-                    getString(R.string.average_rating_desc)
-            )
+        coachMarkItemRatingProduct = CoachMarkItem(view.findViewById(R.id.itemRatingProduct),
+                getString(R.string.full_summary_of_product_ratings),
+                getString(R.string.desc_full_summary_of_product_ratings))
+
+        if(productItemList?.isNotEmpty() == true) {
+            coachMarkItemRatingProduct()
+            coachMarkFilterAndSort()
+            coachMarkSummary()
+            showCoachMark()
         }
-        prefs?.let {
-            if (!it.getBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, false)) {
-                coachMarkItems.add(coachMarkSummary)
-                it.edit().putBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, true).apply()
-            }
-        }
-        showCoachMark()
     }
 
     private fun showCoachMark() {
