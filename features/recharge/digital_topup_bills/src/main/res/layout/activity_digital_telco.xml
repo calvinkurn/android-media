@@ -1,35 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/banner_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:orientation="vertical">
+    android:background="@color/white">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <FrameLayout
+        android:id="@+id/container_background"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:elevation="@dimen/dp_4"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:elevation="@dimen/dp_4">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/toolbar_title"
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/img_banner_background"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
-            app:typographyType="heading_4" />
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/digital_common_ic_bg_header" />
+    </FrameLayout>
 
-    </androidx.appcompat.widget.Toolbar>
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/toolbar_telco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_transparent_mode="true" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="?actionBarSize"
+        tools:layout_constraintGuide_begin="50dp" />
 
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
