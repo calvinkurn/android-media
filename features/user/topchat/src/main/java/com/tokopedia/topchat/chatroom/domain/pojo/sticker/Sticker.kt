@@ -20,8 +20,11 @@ data class Sticker(
         val stickerUUID: String = ""
 ) {
 
-    fun generateWebSocketPayload(messageId: String, opponentId: String): WebsocketAttachmentContract {
-        val startTime = SendableViewModel.generateStartTime()
+    fun generateWebSocketPayload(
+            messageId: String,
+            opponentId: String,
+            startTime: String
+    ): WebsocketAttachmentContract {
         val payload = WebSocketStickerPayload(
                 groupUUID, stickerUUID, imageUrl, intention
         )

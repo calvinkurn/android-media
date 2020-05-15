@@ -122,7 +122,8 @@ interface TopChatContract {
                                       onSendingMessage: () -> Unit)
 
         fun sendAttachmentsAndSticker(messageId: String, sticker: Sticker,
-                                      opponentId: String, onSendingMessage: () -> Unit)
+                                      startTime: String, opponentId: String,
+                                      onSendingMessage: () -> Unit)
 
         fun initProductPreview(savedInstanceState: Bundle?)
 

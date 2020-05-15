@@ -535,9 +535,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun onClickSticker(sticker: Sticker) {
+        val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndSticker(
                 messageId,
                 sticker,
+                startTime,
                 opponentId,
                 onSendingMessage()
         )

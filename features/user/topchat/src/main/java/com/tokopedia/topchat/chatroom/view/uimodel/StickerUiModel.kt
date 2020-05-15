@@ -5,31 +5,42 @@ import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-class StickerUiModel(
-        messageId: String,
-        fromUid: String,
-        from: String,
-        fromRole: String,
-        attachmentId: String,
-        attachmentType: String,
-        replyTime: String,
-        message: String,
-        isRead: Boolean,
-        isDummy: Boolean,
-        isSender: Boolean,
-        val sticker: StickerProfile
-) : SendableViewModel(messageId,
-        fromUid,
-        from,
-        fromRole,
-        attachmentId,
-        attachmentType,
-        replyTime,
-        "",
-        isRead,
-        isDummy,
-        isSender,
-        message), Visitable<TopChatTypeFactory> {
+class StickerUiModel : SendableViewModel, Visitable<TopChatTypeFactory> {
+
+    val sticker: StickerProfile
+
+    /**
+     * Constructor when message received from WebSocket
+     */
+    constructor(
+            messageId: String,
+            fromUid: String,
+            from: String,
+            fromRole: String,
+            attachmentId: String,
+            attachmentType: String,
+            replyTime: String,
+            message: String,
+            isRead: Boolean,
+            isDummy: Boolean,
+            isSender: Boolean,
+            sticker: StickerProfile
+    ) : super(messageId,
+            fromUid,
+            from,
+            fromRole,
+            attachmentId,
+            attachmentType,
+            replyTime,
+            "",
+            isRead,
+            isDummy,
+            isSender,
+            message) {
+        this.sticker = sticker
+    }
+
+
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }

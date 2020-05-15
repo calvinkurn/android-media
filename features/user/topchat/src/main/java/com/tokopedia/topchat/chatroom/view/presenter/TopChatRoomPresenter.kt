@@ -50,6 +50,7 @@ import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
@@ -463,30 +464,42 @@ class TopChatRoomPresenter @Inject constructor(
     override fun sendAttachmentsAndSticker(
             messageId: String,
             sticker: Sticker,
+            startTime: String,
             opponentId: String,
             onSendingMessage: () -> Unit
     ) {
         sendAttachments(messageId, opponentId, sticker.intention)
-        sendSticker(messageId, sticker, opponentId, onSendingMessage)
+        sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
         view?.clearAttachmentPreviews()
     }
 
     private fun sendSticker(
             messageId: String,
             sticker: Sticker,
+            startTime: String,
             opponentId: String,
             onSendingMessage: () -> Unit
     ) {
         onSendingMessage()
-        sendStickerWithWebSocket(messageId, sticker, opponentId)
+//        processDummyMessage(mapToDummySticker(messageId, sticker, startTime))
+        sendStickerWithWebSocket(messageId, sticker, startTime, opponentId)
     }
 
-    private fun sendStickerWithWebSocket(messageId: String, sticker: Sticker, opponentId: String) {
-        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId)
+//    private fun mapToDummySticker(messageId: String, sticker: Sticker, startTime: String): Visitable<*> {
+//        return StickerUiModel(
+//
+//        )
+//    }
+
+    private fun sendStickerWithWebSocket(
+            messageId: String,
+            sticker: Sticker,
+            opponentId: String,
+            startTime: String
+    ) {
+        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime)
         val stringContract = CommonUtil.toJson(stickerContract)
-//        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         RxWebSocket.send(stringContract, listInterceptor)
-//        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
     }
 
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {
