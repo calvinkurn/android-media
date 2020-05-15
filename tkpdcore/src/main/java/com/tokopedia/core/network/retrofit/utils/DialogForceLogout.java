@@ -21,7 +21,6 @@ public class DialogForceLogout {
     private static final String IS_DIALOG_SHOWN = "IS_DIALOG_SHOWN";
 
     public static void createShow(Context context, String screenName, @Nullable final ActionListener listener) {
-        if(true) return;
             AlertDialog alertDialog = create(context, listener, screenName);
             alertDialog.show();
             setIsDialogShown(context, true);
