@@ -226,13 +226,6 @@ public class InboxReputationFragment extends BaseDaggerFragment
         else {
             presenter.getFirstTimeInboxReputation(getTab());
         }
-        if(getTab() == 1) {
-
-        } else if(getTab() == 2) {
-
-        } else {
-
-        }
     }
 
     public int getTab() {
@@ -299,6 +292,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 reputationTracking.onClickDismissIncentiveOvoTracker(title);
             }
         });
+        // hit tracking while first time success get gql incentive ovo
+        if(getTab() == 1) {
+            reputationTracking.onSuccessGetIncentiveOvoTracker(title);
+        }
+        InboxReputationActivity.tickerTitle = title;
     }
 
     @Override
