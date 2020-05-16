@@ -3,7 +3,9 @@ package com.tokopedia.play.view.activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Trace
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -145,6 +147,9 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     private fun starPrepareMonitoring() {
         pageMonitoring.startPreparePagePerformanceMonitoring()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.beginSection("prepare")
+        }
     }
 
     fun getPageMonitoring(): PageLoadTimePerformanceInterface {

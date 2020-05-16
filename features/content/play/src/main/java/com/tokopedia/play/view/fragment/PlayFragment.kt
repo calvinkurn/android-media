@@ -6,7 +6,9 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Trace
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
@@ -424,23 +426,38 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun stopPrepareMonitoring() {
         pageMonitoring?.stopPreparePagePerformanceMonitoring()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.endSection()
+        }
     }
 
     private fun startNetworkMonitoring() {
         pageMonitoring?.startNetworkRequestPerformanceMonitoring()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.beginSection("network")
+        }
     }
 
     private fun stopNetworkMonitoring() {
         pageMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.endSection()
+        }
     }
 
     fun startRenderMonitoring() {
         stopNetworkMonitoring()
         pageMonitoring?.startRenderPerformanceMonitoring()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.beginSection("render")
+        }
     }
 
     fun stopRenderMonitoring() {
         pageMonitoring?.stopRenderPerformanceMonitoring()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.endSection()
+        }
         stopPageMonitoring()
     }
 
