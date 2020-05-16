@@ -89,6 +89,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     private static final String ORDER_CATEGORY = "orderCategoryStr";
     private static final String ORDER_ID = "orderId";
+    private static final String PAYMENT_ID = "paymentId";
+    private static final String CART_STRING = "cartString";
     private static final String DETAIL = "detail";
     private static final String ACTION = "action";
     private static final String UPSTREAM = "upstream";
@@ -227,7 +229,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             variables.put(START_DATE, getView().getStartDate());
             variables.put(END_DATE, getView().getEndDate());
             variables.put(SORT, "");
-            variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
+            if(orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
+            }
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderlist_marketplace), Data.class, variables, false);

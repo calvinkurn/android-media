@@ -20,8 +20,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -52,7 +54,6 @@ class ShopOpenRevampQuisionerFragment :
 
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
-    lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var btnNext: UnifyButton
     private lateinit var btnBack: ImageView
     private lateinit var btnSkip: TextView
@@ -62,6 +63,7 @@ class ShopOpenRevampQuisionerFragment :
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampQuisionerAdapter? = null
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+    private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var isNeedLocation = false
     private lateinit var loading: LoaderUnify
     private lateinit var toolbar: Toolbar
@@ -120,7 +122,7 @@ class ShopOpenRevampQuisionerFragment :
 
         btnBack.setOnClickListener {
             shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
-            showExitDialog()
+            fragmentNavigationInterface?.showExitDialog()
         }
 
         btnSkip.setOnClickListener {
@@ -237,7 +239,7 @@ class ShopOpenRevampQuisionerFragment :
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
                     if (isSuccess) {
                         showLoader()
-                        fragmentNavigationInterface.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
+                        fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
                     } else {
                         showLoader()
                         gotoPickLocation()
@@ -279,26 +281,6 @@ class ShopOpenRevampQuisionerFragment :
                         retry.invoke()
                     }
             )
-        }
-    }
-
-    private fun showExitDialog() {
-        activity?.also {
-            var exitDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            exitDialog.apply {
-                setTitle(ExitDialog.TITLE)
-                setDescription(ExitDialog.DESCRIPTION)
-                setPrimaryCTAText("Batal")
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                }
-                setSecondaryCTAText("Keluar")
-                setSecondaryCTAClickListener {
-                    this.dismiss()
-                    activity?.finish()
-                }
-                show()
-            }
         }
     }
 
@@ -374,11 +356,34 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                if (isNeedLocation)  {
+                if (isNeedLocation) {
                     activity?.finish()
                 } else {
                     hideLoader()
+                    showExitOrPickLocationDialog()
                 }
+            }
+        }
+    }
+
+    private fun showExitOrPickLocationDialog() {
+        activity?.let {
+            val exitDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            exitDialog.apply {
+                setTitle(ExitDialog.TITLE)
+                setDescription(ExitDialog.DESCRIPTION)
+                setPrimaryCTAText(getString(R.string.open_shop_cancel))
+                setPrimaryCTAClickListener {
+                    gotoPickLocation()
+                }
+                setSecondaryCTAText(getString(R.string.open_shop_logout_button))
+                setSecondaryCTAClickListener {
+                    if (GlobalConfig.isSellerApp()) {
+                        RouteManager.route(exitDialog.context, ApplinkConstInternalGlobal.LOGOUT)
+                    }
+                    it.finish()
+                }
+                show()
             }
         }
     }

@@ -42,9 +42,8 @@
 
         </LinearLayout>
 
-        <include
+        <com.tokopedia.common_category.customview.NoDataView
             android:id="@+id/layout_no_data"
-            layout="@layout/layout_nav_no_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
@@ -54,14 +53,14 @@
 
     </FrameLayout>
 
-    <com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
-        android:id="@+id/search_nav_container"
+    <com.tokopedia.common_category.customview.SearchNavigationView
+        android:id="@+id/category_search_nav_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="@dimen/dp_20">
 
-    </com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView>
+    </com.tokopedia.common_category.customview.SearchNavigationView>
 
     <ProgressBar
         android:id="@+id/progressBar"
