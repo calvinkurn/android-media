@@ -33,7 +33,7 @@ object ShopShowcaseListParam {
     const val EXTRA_IS_MY_SHOP = "IS_MY_SHOP"
     const val EXTRA_SHOP_TYPE = "EXTRA_SHOP_TYPE"
     const val EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE = "EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE"
-//    const val EXTRA_TOTAL_PRODUCT = "EXTRA_TOTAL_PRODUCT"
+    const val EXTRA_IS_NEED_TO_RELOAD_DATA = "EXTRA_IS_NEED_TO_RELOAD_DATA"
 }
 
 object ShopShowcaseEditParam {

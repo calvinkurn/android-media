@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.model.*
 import android.content.ClipData
@@ -15,6 +14,8 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DISCOUNT_OR_CASHBACK_VOUCHER_IMAGE_URL
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.*
@@ -194,6 +195,8 @@ open class MerchantVoucherView : CustomVoucherView {
                     btnUseVoucher?.text = context.getString(R.string.in_use)
                 }
             }
+            tvCode?.hide()
+            btnUseVoucher?.hide()
         }
     }
 

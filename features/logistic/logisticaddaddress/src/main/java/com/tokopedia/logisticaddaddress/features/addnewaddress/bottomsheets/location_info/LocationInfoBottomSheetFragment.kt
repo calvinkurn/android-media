@@ -20,7 +20,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
@@ -61,12 +61,7 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
         btnActivateLocation.setOnClickListener {
-            if(isFullFlow) {
-                AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = LOGISTIC_LABEL)
-            }
-            else {
-                AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
-            }
+            AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps(isFullFlow)
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
@@ -82,12 +77,7 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            if(isFullFlow) {
-                AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = LOGISTIC_LABEL)
-            }
-            else {
-                AddNewAddressAnalytics.eventClickButtonXOnBlockGps(eventLabel = NON_LOGISTIC_LABEL)
-            }
+            AddNewAddressAnalytics.eventClickButtonXOnBlockGps(isFullFlow)
             onCloseButtonClick()
         }
     }

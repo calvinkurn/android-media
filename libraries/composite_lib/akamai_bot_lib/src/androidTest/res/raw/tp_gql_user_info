@@ -1,0 +1,5 @@
+query {
+    mf_get_user_info({
+      verified_msisdn
+    }
+}

@@ -14,4 +14,29 @@
             <enum name="GREEN" value="2"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="GfCardConstraintLayout">
+        <attr name="gfShadowTopOffset" format="dimension"/>
+        <attr name="gfShadowBottomOffset" format="dimension"/>
+        <attr name="gfShadowStartOffset" format="dimension"/>
+        <attr name="gfShadowEndOffset" format="dimension"/>
+        <attr name="gfShadowStartY" format="dimension"/>
+        <attr name="gfShadowColor" format="color"/>
+        <attr name="gfShadowStrokeWidth" format="dimension"/>
+        <attr name="gfCornerRadius" format="dimension"/>
+        <attr name="gfBlurRadius" format="dimension"/>
+        <attr name="gfEnableShadow" format="boolean"/>
+        <attr name="gfEnableBorder" format="boolean"/>
+        <attr name="gfBorderHeight" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="GfCouponView">
+        <attr name="gfCvCircleColor" format="color" />
+        <attr name="gfCvCircleRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="GamificationRoundImageView">
+        <attr name="gfRoundImageRadius" format="dimension" />
+    </declare-styleable>
+
 </resources>

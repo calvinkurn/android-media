@@ -38,8 +38,8 @@ dependencies {
 project.ext {
     artifactId = 'liveness_lib'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
-    artifactName = "liveness-lib"
+    versionName = "0.0.2"
+    artifactName = "liveness_lib-release"
 }
 
 apply from: '../../publish_local.gradle'

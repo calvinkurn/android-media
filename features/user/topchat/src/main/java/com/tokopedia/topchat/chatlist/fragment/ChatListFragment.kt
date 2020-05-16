@@ -112,9 +112,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
+    }
+
+    private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
+        TopChatAnalytics.FPM_CHAT_LIST_SELLERAPP
+    } else {
+        TopChatAnalytics.FPM_CHAT_LIST
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -217,7 +223,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> adapter?.deleteItem(itemPositionLongClicked)
+                is Success -> {
+                    adapter?.deleteItem(itemPositionLongClicked)
+                    decreaseNotificationCounter()
+                }
                 is Fail -> view?.let {
                     Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
@@ -233,15 +242,11 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 return
             } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
                 return
-            } else if (chatItemListViewModel.hasBeenUpdated(newChat)) {
-                return
             }
 
-            val existingThread = adapter.list.find {
-                it is ItemChatListPojo && it.msgId == newChat.messageId
+            val index = adapter.list.indexOfFirst { chat ->
+                return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
             }
-
-            val index = adapter.list.indexOf(existingThread)
 
             updateItemOnIndex(index, newChat)
         }
@@ -253,7 +258,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD
     ) {
         adapter?.let { adapter ->
-            chatItemListViewModel.updateLastReply(newChat)
             when {
                 index >= adapter.list.size -> { return }
                 //not found on list
@@ -265,6 +269,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     val item = ItemChatListPojo(newChat.messageId, attributes, "")
                     adapter.list.add(0, item)
                     adapter.notifyItemInserted(0)
+                    increaseNotificationCounter()
                     animateWhenOnTop()
                 }
                 //found on list, not the first
@@ -293,8 +298,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             if (index >= adapter.list.size) return
             adapter.list[index].apply {
                 if (this is ItemChatListPojo) {
+                    if (
+                            attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
+                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                    ) {
+                        increaseNotificationCounter()
+                    }
                     attributes?.lastReplyMessage = newChat.message
                     attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
+                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
                     attributes?.readStatus = readStatus
                     attributes?.lastReplyTimeStr = newChat.time
                 }
@@ -338,11 +350,20 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
+        fpmStopTrace()
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
-
+        fpmStopTrace()
     }
+
+    private fun fpmStopTrace() {
+        if (::performanceMonitoring.isInitialized && isFirstPage()) {
+            performanceMonitoring.stopTrace()
+        }
+    }
+
+    private fun isFirstPage(): Boolean = currentPage == 1
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {

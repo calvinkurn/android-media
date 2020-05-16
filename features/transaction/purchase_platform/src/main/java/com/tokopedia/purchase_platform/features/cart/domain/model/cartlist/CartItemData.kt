@@ -130,7 +130,8 @@ data class CartItemData(
             var promoDetails: String? = null,
             var priceOriginal: Int = 0,
             var isFreeShipping: Boolean = false,
-            var freeShippingBadgeUrl: String? = null
+            var freeShippingBadgeUrl: String? = null,
+            var listPromoCheckout: List<String> = emptyList()
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),

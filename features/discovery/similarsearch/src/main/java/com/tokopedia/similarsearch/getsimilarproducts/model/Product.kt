@@ -89,10 +89,4 @@ internal data class Product(
 ) {
 
         var position: Int = 0
-
-        fun getLabelPromo() = labelGroups.filter { it.position == LABEL_GROUP_POSITION_PROMO }.getOrNull(0)
-
-        fun getLabelCredibility() = labelGroups.filter { it.position == LABEL_GROUP_POSITION_CREDIBILITY }.getOrNull(0)
-
-        fun getLabelOffers() = labelGroups.filter { it.position == LABEL_GROUP_POSITION_OFFERS }.getOrNull(0)
 }

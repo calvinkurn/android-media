@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -33,15 +34,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
@@ -72,7 +67,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -100,12 +94,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     companion object {
         private const val TAG_BULK_EDIT_PRICE: String = "TAG_BULK_EDIT_PRICE"
 
-        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isAdding: Boolean): Fragment {
+        fun createInstance(cacheManagerId: String?): Fragment {
             return AddEditProductDetailFragment().apply {
-                val args = Bundle()
-                args.putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-                args.putBoolean(EXTRA_IS_EDITING_PRODUCT, isEditing)
-                args.putBoolean(EXTRA_IS_ADDING_PRODUCT, isAdding)
+                val args = Bundle().apply { putString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId) }
                 arguments = args
             }
         }
@@ -194,23 +185,20 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+        val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+
         // set detail and variant input model
-        arguments?.getParcelable<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)?.run {
-            viewModel.productInputModel = this
-            viewModel.hasVariants = this.variantInputModel.productVariant.isNotEmpty()
+        cacheManagerId?.run {
+            viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+            viewModel.hasVariants = viewModel.productInputModel.variantInputModel.productVariant.isNotEmpty()
             var pictureIndex = 0
-            viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
-                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) this.detailInputModel.pictureList[pictureIndex++].urlThumbnail
+            viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
                 else urlOrPath
             }.toMutableList()
-        }
-        // set isEditing status
-        arguments?.getBoolean(EXTRA_IS_EDITING_PRODUCT)?.run {
-            viewModel.isEditing = this
-        }
-        // set isAdding status
-        arguments?.getBoolean(EXTRA_IS_ADDING_PRODUCT)?.run {
-            viewModel.isAdding = this
+            viewModel.isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java) ?: false
+            viewModel.isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java) ?: false
         }
 
         userSession = UserSession(requireContext())
@@ -295,22 +283,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productWholeSaleInputLayout = view.findViewById(R.id.wholesale_input_layout)
         productWholeSaleInputFormsView = view.findViewById(R.id.rv_wholesale_input_forms)
         wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this,
-
                 onDeleteWholesale = {
                     if (viewModel.isEditing && !viewModel.isAdding) {
                         ProductEditMainTracking.clickRemoveWholesale(shopId)
                     } else {
                         ProductAddMainTracking.clickRemoveWholesale(shopId)
                     }
-                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
-                },
-
-                onAddWholesale = {
-                    if (viewModel.isEditing && !viewModel.isAdding) {
-                        ProductEditMainTracking.clickAddWholesale(shopId)
-                    } else {
-                        ProductAddMainTracking.clickAddWholesale(shopId)
+                    wholeSaleInputFormsAdapter?.itemCount?.let {
+                        if (it == 1) {
+                            productWholeSaleSwitch?.isChecked = false
+                        }
                     }
+                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
                 })
 
         productWholeSaleInputFormsView?.apply {
@@ -319,6 +303,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
         addNewWholeSalePriceButton?.setOnClickListener {
+            if (viewModel.isEditing && !viewModel.isAdding) {
+                ProductEditMainTracking.clickAddWholesale(shopId)
+            } else {
+                ProductAddMainTracking.clickAddWholesale(shopId)
+            }
             wholeSaleInputFormsAdapter?.itemCount?.let {
                 if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
                     addNewWholeSalePriceButton?.visibility = View.GONE
@@ -437,13 +426,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isWholeSalePriceActivated.value = isChecked
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.clickWholesale(shopId)
-            } else {
-                ProductAddMainTracking.clickWholesale(shopId)
-            }
 
             if (isChecked) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.clickWholesale(shopId)
+                } else {
+                    ProductAddMainTracking.clickWholesale(shopId)
+                }
+
                 val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
                 val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
@@ -649,10 +639,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         activity?.finish()
                         return
                     }
-                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
-                    val descriptionInputModel = data.getParcelableExtra(EXTRA_DESCRIPTION_INPUT) ?: DescriptionInputModel()
-                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
-                    submitInput(shipmentInputModel, descriptionInputModel, variantInputModel)
+                    val cacheManagerId = data.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+                    submitInput(cacheManagerId)
                 }
             }
         }
@@ -727,8 +715,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     fun sendDataBack() {
         if (!viewModel.isEditing) {
             inputAllDataInProductInputModel()
+            val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+            SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
+
             val intent = Intent()
-            intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
+            intent.putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
             intent.putExtra(EXTRA_BACK_PRESSED, 1)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
@@ -1161,7 +1152,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             ProductAddMainTracking.clickContinue(shopId)
         }
         inputAllDataInProductInputModel()
-        val intent = AddEditProductDescriptionActivity.createInstance(context, viewModel.productInputModel)
+        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+        SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
+
+        val intent = AddEditProductDescriptionActivity.createInstance(context, cacheManagerId)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
     }
 
@@ -1294,9 +1288,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         return productPriceBulkPriceEditBottomSheetContent
     }
 
-    private fun submitInput(shipmentInputModel: ShipmentInputModel,
-                            descriptionInputModel: DescriptionInputModel,
-                            variantInputModel: ProductVariantInputModel) {
+    private fun submitInput(cacheManagerId: String) {
         val detailInputModel = DetailInputModel(
                 productNameField.getText(),
                 viewModel.productInputModel.detailInputModel.categoryName,
@@ -1318,18 +1310,20 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         )
 
         updateImageList(detailInputModel)
+        SaveInstanceCacheManager(requireContext(), cacheManagerId).apply {
+            val productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java, ProductInputModel())
+            productInputModel?.apply {
+                this.detailInputModel = detailInputModel
+            }
+            put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+        }
         val intent = Intent()
-        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
-        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-        intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
+        intent.putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
     private fun submitInputEdit() {
-        val intent = Intent()
-
         val detailInputModel = viewModel.productInputModel.detailInputModel
         detailInputModel.apply {
             productName = productNameField.getText()
@@ -1347,7 +1341,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             wholesaleList = getWholesaleInput()
         }
         updateImageList(detailInputModel)
-        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
 
         val variantInputModel = viewModel.productInputModel.variantInputModel
         if (viewModel.shouldUpdateVariant) {
@@ -1356,7 +1349,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             viewModel.shouldUpdateVariant = false
         }
-        intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
 
         if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.clickContinue(shopId)
@@ -1364,6 +1356,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             ProductAddMainTracking.clickContinue(shopId)
         }
 
+        viewModel.productInputModel.detailInputModel = detailInputModel
+        viewModel.productInputModel.variantInputModel = variantInputModel
+
+        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+        SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
+
+        val intent = Intent()
+        intent.putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

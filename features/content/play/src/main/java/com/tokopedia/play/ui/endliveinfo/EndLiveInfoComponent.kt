@@ -44,8 +44,8 @@ open class EndLiveInfoComponent(
                             } else {
                                 uiView.hide()
                             }
-                            is ScreenStateEvent.SetTotalViews -> uiView.statsView.setTotalViews(it.totalView)
-                            is ScreenStateEvent.SetTotalLikes -> uiView.statsView.setTotalLikes(it.totalLikes)
+                            is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
+                            is ScreenStateEvent.SetTotalLikes -> uiView.setTotalLikes(it.totalLikes)
                         }
                     }
         }

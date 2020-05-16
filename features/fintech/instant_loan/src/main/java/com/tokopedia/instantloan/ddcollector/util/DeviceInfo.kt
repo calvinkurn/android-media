@@ -30,27 +30,7 @@ object DeviceInfo {
     val systemLanguage: String
         get() = Resources.getSystem().configuration.locale.language
 
-    fun getDeviceName(context: Context): String? {
-        var deviceName: String? = NOT_AVAILABLE
-
-        try {
-            deviceName = BluetoothAdapter.getDefaultAdapter().name
-        } catch (e: Exception) {
-            Log.d("Exception", "Error while retrieving device name from bluetooth adapter")
-        }
-
-        if (deviceName == null || deviceName.isEmpty()) {
-            deviceName = Settings.Secure.getString(context.contentResolver, "bluetooth_name")
-        }
-
-        if (deviceName == null || deviceName.isEmpty()) {
-            deviceName = Settings.System.getString(context.contentResolver, "device_name")
-        }
-
-        return deviceName
-    }
-
-    fun getDeviceModelNumber(context: Context): String {
+    fun getDeviceModelNumber(): String {
         return if (Build.MODEL == null || Build.MODEL.trim { it <= ' ' }.isEmpty()) {
             NOT_AVAILABLE
         } else Build.MODEL
