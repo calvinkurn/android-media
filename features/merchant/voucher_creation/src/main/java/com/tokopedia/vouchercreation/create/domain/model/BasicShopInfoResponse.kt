@@ -9,10 +9,10 @@ data class BasicShopInfoResponse(
 
 data class ShopInfoMoengage (
         @SerializedName("info")
-        var info: Info = Info()
+        var shopInfo: ShopInfo = ShopInfo()
 )
 
-data class Info (
+data class ShopInfo (
         @SerializedName("shop_name")
         var shopName: String = "",
         @SerializedName("shop_avatar")

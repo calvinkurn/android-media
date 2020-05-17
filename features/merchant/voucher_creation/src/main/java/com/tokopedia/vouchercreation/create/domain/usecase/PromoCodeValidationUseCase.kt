@@ -3,8 +3,9 @@ package com.tokopedia.vouchercreation.create.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.vouchercreation.create.domain.model.VoucherSource
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PromoCodeValidation
+import javax.inject.Inject
 
-class PromoCodeValidationUseCase (gqlRepository: GraphqlRepository) : BaseValidationUseCase<PromoCodeValidation>(gqlRepository) {
+class PromoCodeValidationUseCase @Inject constructor(gqlRepository: GraphqlRepository) : BaseValidationUseCase<PromoCodeValidation>(gqlRepository) {
 
     companion object {
         const val QUERY = "query validateVoucherTarget(\$code: String!, \$source: String!) {\n" +

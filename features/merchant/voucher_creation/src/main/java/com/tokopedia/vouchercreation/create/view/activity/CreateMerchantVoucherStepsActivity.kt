@@ -60,8 +60,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
-            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
-            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, viewModel::setVoucherPreviewBitmap))
+            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep, ::onSetVoucherName))
+            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel))
             put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance())
         }
@@ -98,6 +98,14 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var currentProgress = 0
 
     private var voucherBitmap: Bitmap? = null
+
+    private var bannerVoucherUiModel =
+            BannerVoucherUiModel(
+                    VoucherImageType.FreeDelivery(0),
+                    "",
+                    "",
+                    "",
+                    BANNER_BASE_URL)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,12 +206,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         viewModel.setNextStep()
     }
 
-    private fun getBannerVoucherUiModel(): BannerVoucherUiModel? = BannerVoucherUiModel(
-            VoucherImageType.FreeDelivery(10000),
-            "harusnyadaristep1",
-            "Ini Harusnya dari Backend",
-            "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
-            BANNER_BASE_URL
-    )
+    private fun onSetVoucherName(voucherName: String) {
+        bannerVoucherUiModel.promoName = voucherName
+    }
+
+    private fun getBannerVoucherUiModel(): BannerVoucherUiModel? = bannerVoucherUiModel
 
 }

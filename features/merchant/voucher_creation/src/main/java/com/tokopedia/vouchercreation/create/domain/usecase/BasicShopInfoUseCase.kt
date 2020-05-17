@@ -3,12 +3,13 @@ package com.tokopedia.vouchercreation.create.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.create.domain.model.BasicShopInfoResponse
-import com.tokopedia.vouchercreation.create.domain.model.Info
+import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
 import javax.inject.Inject
 
-class BasicShopInfoUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<Info>() {
+class BasicShopInfoUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<ShopInfo>() {
 
     companion object {
 
@@ -23,13 +24,13 @@ class BasicShopInfoUseCase @Inject constructor(private val gqlRepository: Graphq
 
         private const val USER_ID_KEY = "userId"
 
-        fun createRequestParams(userId: Int) = HashMap<String, Any>().apply {
-            put(USER_ID_KEY, userId)
+        fun createRequestParams(userId: Int) = RequestParams().apply {
+            putInt(USER_ID_KEY, userId)
         }
 
     }
 
-    override suspend fun executeOnBackground(): Info {
+    override suspend fun executeOnBackground(): ShopInfo {
         val request = GraphqlRequest(QUERY, BasicShopInfoResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
@@ -44,5 +45,5 @@ class BasicShopInfoUseCase @Inject constructor(private val gqlRepository: Graphq
         }
     }
 
-    private fun BasicShopInfoResponse.mapToShopInfo(): Info = shopInfoMoengage.info
+    private fun BasicShopInfoResponse.mapToShopInfo(): ShopInfo = shopInfoMoengage.shopInfo
 }

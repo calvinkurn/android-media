@@ -4,7 +4,7 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 
 data class BannerVoucherUiModel(
         override var imageType: VoucherImageType,
-        override val promoName: String,
-        override val shopName: String,
-        override val shopAvatar: String,
+        override var promoName: String,
+        override var shopName: String,
+        override var shopAvatar: String,
         val bannerUrl: String) : VoucherImage

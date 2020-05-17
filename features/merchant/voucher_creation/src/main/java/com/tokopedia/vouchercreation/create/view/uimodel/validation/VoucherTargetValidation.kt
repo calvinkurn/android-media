@@ -7,8 +7,9 @@ data class VoucherTargetValidation (
         val isPublicError: String = "",
         @SerializedName("code")
         val codeError: String = "",
-        @SerializedName("coupon_type")
+        @SerializedName("coupon_name")
         val couponNameError: String = "") {
 
-        val checkHasError: Boolean = isPublicError.isNotBlank() || codeError.isNotBlank() || couponNameError.isNotBlank()
+        fun checkHasError() = isPublicError.isNotBlank() || codeError.isNotBlank() || couponNameError.isNotBlank()
+
 }

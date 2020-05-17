@@ -9,12 +9,16 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
@@ -32,13 +36,15 @@ import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
 class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
+                                     private val getVoucherUiModel: () -> BannerVoucherUiModel?,
                                      private val setVoucherBitmap: (Bitmap) -> Unit)
     : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit,
-                           setVoucherBitmap: (Bitmap) -> Unit) = PromotionBudgetAndTypeFragment(onNext, setVoucherBitmap)
+                           getVoucherUiModel: () -> BannerVoucherUiModel?,
+                           setVoucherBitmap: (Bitmap) -> Unit) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
         private const val FREE_DELIVERY = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
@@ -70,34 +76,27 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         }
     }
 
-    private val bannerVoucherUiModel: BannerVoucherUiModel =
-            // todo: change dummy
-            BannerVoucherUiModel(
-                    VoucherImageType.FreeDelivery(0),
-                    "harusnyadaristep1",
-                    "Ini Harusnya dari Backend",
-                    "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
-                    BANNER_BASE_URL
-            )
+    private var bannerVoucherUiModel: BannerVoucherUiModel? = getVoucherUiModel()
 
     private var painter: VoucherPreviewPainter? = null
 
     private var voucherPreviewBitmap: Bitmap? = null
 
+    private var isWaitingForShopInfo = false
+
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
             listOf(promotionTypeInputWidget)
 
-    override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
-
+    override fun onResume() {
+        super.onResume()
+        bannerVoucherUiModel = getVoucherUiModel()
     }
 
-    override fun onBeforeShowBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
+    override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}
 
-    }
+    override fun onBeforeShowBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}
 
-    override fun onFinishRenderInitial() {
-
-    }
+    override fun onFinishRenderInitial() {}
 
     override fun getAdapterTypeFactory(): PromotionTypeBudgetAdapterTypeFactory =
             PromotionTypeBudgetAdapterTypeFactory(this, onNextStep, ::onShouldChangeBannerValue)
@@ -119,7 +118,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         super.setupView()
         setupBottomSheet()
         observeLiveData()
-        drawInitialVoucherPreview()
+        initiateVoucherPreview()
     }
 
     private fun setupBottomSheet() {
@@ -129,10 +128,35 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.bannerBitmapLiveData) { bitmap ->
-            bannerImage?.setImageBitmap(bitmap)
-            setVoucherBitmap(bitmap)
+        viewLifecycleOwner.run {
+            observe(viewModel.basicShopInfoLiveData) { result ->
+                if (isWaitingForShopInfo) {
+                    when(result) {
+                        is Success -> {
+                            bannerVoucherUiModel?.shopName = result.data.shopName
+                            bannerVoucherUiModel?.shopAvatar = result.data.shopAvatar
+                            drawInitialVoucherPreview()
+                        }
+                        is Fail -> {
+                            val error = result.throwable.message.toBlankOrString()
+                            showErrorToaster(error)
+                        }
+                    }
+                    isWaitingForShopInfo = false
+                }
+            }
+            observe(viewModel.bannerBitmapLiveData) { bitmap ->
+                bannerImage?.setImageBitmap(bitmap)
+                setVoucherBitmap(bitmap)
+            }
         }
+
+    }
+
+    private fun initiateVoucherPreview() {
+        isWaitingForShopInfo = true
+        viewModel.getBasicShopInfo()
+        drawInitialVoucherPreview()
     }
 
     private fun drawInitialVoucherPreview() {
@@ -152,7 +176,9 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
                             if (painter == null) {
                                 painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner)
                             }
-                            painter?.drawInitial(bannerVoucherUiModel)
+                            bannerVoucherUiModel?.let {
+                                painter?.drawInitial(it)
+                            }
                             return false
                         }
                     })
@@ -174,5 +200,14 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
 
     private fun onSuccessGetBanner(bitmap: Bitmap) {
         bannerImage?.setImageBitmap(bitmap)
+    }
+
+    private fun showErrorToaster(errorMessage: String) {
+        view?.run {
+            Toaster.make(this,
+                    errorMessage,
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR)
+        }
     }
 }

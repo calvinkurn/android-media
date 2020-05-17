@@ -30,7 +30,8 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTarget
 import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import javax.inject.Inject
 
-class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {})
+class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
+                                    private val onSetVoucherName: (String) -> Unit)
     : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>() {
 
     companion object {
@@ -38,7 +39,8 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {})
         private const val MIN_TEXTFIELD_LENGTH = 5
 
         @JvmStatic
-        fun createInstance(onNext: () -> Unit) = MerchantVoucherTargetFragment(onNext)
+        fun createInstance(onNext: () -> Unit,
+                           onSetVoucherName: (String) -> Unit) = MerchantVoucherTargetFragment(onNext, onSetVoucherName)
     }
 
     @Inject
@@ -67,6 +69,8 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {})
     private var shouldReturnToInitialValue = true
 
     private var promoCodeText = ""
+
+    private var couponName = ""
 
     private var lastClickedVoucherDisplayType = VoucherTargetCardType.PUBLIC
 
@@ -155,7 +159,8 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {})
                 when(result) {
                     is Success -> {
                         val validation = result.data
-                        if (!validation.checkHasError) {
+                        if (!validation.checkHasError()) {
+                            onSetVoucherName(couponName)
                             onNext()
                         } else {
                             validation.couponNameError.run {
@@ -223,7 +228,7 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {})
             setOnClickListener {
                 if (!isLoading) {
                     isLoading = true
-                    val couponName = fillVoucherNameTextfield?.textFieldInput?.text?.toString().toBlankOrString()
+                    couponName = fillVoucherNameTextfield?.textFieldInput?.text?.toString().toBlankOrString()
                     viewModel.validateVoucherTarget(promoCodeText, couponName)
                 }
             }
