@@ -20,6 +20,7 @@ class PromoCodeValidationUseCase @Inject constructor(gqlRepository: GraphqlRepos
                 "      messages\n" +
                 "      reason\n" +
                 "      error_code\n" +
+                "    }\n" +
                 "    data{\n" +
                 "      validation_error{\n" +
                 "        code\n" +

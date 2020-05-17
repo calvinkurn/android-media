@@ -12,9 +12,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
+import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -26,7 +30,7 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
 import javax.inject.Inject
 
-class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
+class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
                                         private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                         private val viewContext: Context): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
@@ -88,6 +92,10 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
         }
     }
 
+    private val nextButtonUiModel by lazy {
+        NextButtonUiModel(::validateValues)
+    }
+
     private val promotionExpenseEstimationUiModel =
             PromotionExpenseEstimationUiModel(
                     onTooltipClicked = ::onTooltipClicked
@@ -98,9 +106,11 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
                 promoDescTickerModel,
                 freeDeliveryTextFieldsUiModel,
                 promotionExpenseEstimationUiModel,
-                NextButtonUiModel(onNextStep)
+                nextButtonUiModel
         )
     }
+
+    private var isWaitingForValidation = false
 
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 
@@ -163,6 +173,41 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
             observe(viewModel.voucherImageValueLiveData) { imageValue ->
                 onShouldChangeBannerValue(imageValue)
             }
+            observe(viewModel.freeDeliveryValidationLiveData) { result ->
+                if (isWaitingForValidation) {
+                    viewModel.refreshTextFieldValue()
+                    when(result) {
+                        is Success -> {
+                            val validation = result.data
+                            if (!validation.getIsHaveError()) {
+                                onNextStep()
+                            } else {
+                                validation.benefitIdrError.setTextFieldError(freeDeliveryAmountTextFieldModel)
+                                validation.minPurchaseError.setTextFieldError(minimumPurchaseTextFieldModel)
+                                validation.quotaError.setTextFieldError(voucherQuotaTextFieldModel)
+                                validation.benefitTypeError.let { error ->
+                                    if (error.isNotBlank()) {
+                                        view?.showErrorToaster(error)
+                                        return@observe
+                                    }
+                                }
+                                validation.couponTypeError.let { error ->
+                                    if (error.isNotBlank()) {
+                                        view?.showErrorToaster(error)
+                                        return@observe
+                                    }
+                                }
+                            }
+                        }
+                        is Fail -> {
+                            val error = result.throwable.message.toBlankOrString()
+                            view?.showErrorToaster(error)
+                        }
+                    }
+                    adapter.notifyDataSetChanged()
+                    isWaitingForValidation = false
+                }
+            }
         }
     }
 
@@ -185,6 +230,17 @@ class FreeDeliveryVoucherCreateFragment(onNextStep: () -> Unit,
 
     private fun onTooltipClicked() {
         freeDeliveryExpenseInfoBottomSheetField.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
+    }
+
+    private fun validateValues() {
+        isWaitingForValidation = true
+        viewModel.validateFreeDeliveryValues()
+    }
+
+    private fun String.setTextFieldError(voucherTextFieldUiModel: VoucherTextFieldUiModel) {
+        if (isNotBlank()) {
+            freeDeliveryTextFieldsList[freeDeliveryTextFieldsList.indexOf(voucherTextFieldUiModel)].currentErrorPair = Pair(true, this)
+        }
     }
 
 }

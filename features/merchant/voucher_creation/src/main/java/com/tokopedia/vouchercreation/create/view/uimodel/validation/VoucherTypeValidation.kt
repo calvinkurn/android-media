@@ -11,4 +11,9 @@ open class VoucherTypeValidation (
         val minPurchaseError: String = "",
         @SerializedName("quota")
         val quotaError: String = ""
-) : Validation
+) : Validation {
+
+        fun getIsVoucherError() =
+                benefitTypeError.isNotBlank() || couponTypeError.isNotBlank() || minPurchaseError.isNotBlank() || quotaError.isNotBlank()
+
+}

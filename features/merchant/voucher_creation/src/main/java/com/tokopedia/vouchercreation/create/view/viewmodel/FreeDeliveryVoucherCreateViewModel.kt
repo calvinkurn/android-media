@@ -5,14 +5,23 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.create.domain.usecase.validation.FreeDeliveryValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.uimodel.validation.FreeDeliveryValidation
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class FreeDeliveryVoucherCreateViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher
+        @Named("Main") dispatcher: CoroutineDispatcher,
+        private val freeDeliveryValidationUseCase: FreeDeliveryValidationUseCase
 ) : BaseViewModel(dispatcher) {
 
     private val mFreeDeliveryAmountLiveData = MutableLiveData<Int>()
@@ -47,6 +56,10 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
     }
     val expensesExtimationLiveData: LiveData<Int>
         get() = mExpensesExtimationLiveData
+
+    private val mFreeDeliveryValidationLiveData = MutableLiveData<Result<FreeDeliveryValidation>>()
+    val freeDeliveryValidationLiveData: LiveData<Result<FreeDeliveryValidation>>
+        get() = mFreeDeliveryValidationLiveData
 
     fun refreshTextFieldValue() {
         mIsFirstTimeDraw.value?.let { isFirstTimeDraw ->
@@ -96,6 +109,26 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
             }
             PromotionType.FreeDelivery.VoucherQuota -> {
                 mVoucherQuotaErrorPairLiveData.value = Pair(isError, errorMessage)
+            }
+        }
+    }
+
+    fun validateFreeDeliveryValues() {
+        mFreeDeliveryAmountLiveData.value?.let { benefitIdr ->
+            mMinimumPurchaseLiveData.value?.let { minPurchase ->
+                mVoucherQuotaLiveData.value?.let { quota ->
+                    launchCatchError(
+                            block = {
+                                mFreeDeliveryValidationLiveData.value = Success(withContext(Dispatchers.IO) {
+                                    freeDeliveryValidationUseCase.params = FreeDeliveryValidationUseCase.createRequestParam(benefitIdr, minPurchase, quota)
+                                    freeDeliveryValidationUseCase.executeOnBackground()
+                                })
+                            },
+                            onError = {
+                                mFreeDeliveryValidationLiveData.value = Fail(it)
+                            }
+                    )
+                }
             }
         }
     }

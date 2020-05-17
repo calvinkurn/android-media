@@ -9,18 +9,17 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
@@ -142,7 +141,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
                         }
                         is Fail -> {
                             val error = result.throwable.message.toBlankOrString()
-                            showErrorToaster(error)
+                            view?.showErrorToaster(error)
                         }
                     }
                     isWaitingForShopInfo = false
@@ -212,14 +211,5 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         bannerImage?.setImageBitmap(bitmap)
         isReadyToDraw = true
         onShouldChangeBannerValue(tempVoucherType)
-    }
-
-    private fun showErrorToaster(errorMessage: String) {
-        view?.run {
-            Toaster.make(this,
-                    errorMessage,
-                    Snackbar.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR)
-        }
     }
 }

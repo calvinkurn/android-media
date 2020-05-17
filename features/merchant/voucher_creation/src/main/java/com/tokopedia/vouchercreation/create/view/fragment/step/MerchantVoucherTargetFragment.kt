@@ -5,16 +5,15 @@ import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
@@ -173,13 +172,13 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
                             }
                             validation.isPublicError.let { error ->
                                 if (error.isNotBlank()) {
-                                    showErrorToaster(error)
+                                    view?.showErrorToaster(error)
                                     return@Observer
                                 }
                             }
                             validation.codeError.let { error ->
                                 if (error.isNotBlank()) {
-                                    showErrorToaster(error)
+                                    view?.showErrorToaster(error)
                                     return@Observer
                                 }
                             }
@@ -187,7 +186,7 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
                     }
                     is Fail -> {
                         val error = result.throwable.message.toBlankOrString()
-                        showErrorToaster(error)
+                        view?.showErrorToaster(error)
                     }
                 }
             })
@@ -261,12 +260,5 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
 
     private fun getClickedVoucherDisplayType() : VoucherTargetCardType = lastClickedVoucherDisplayType
 
-    private fun showErrorToaster(errorMessage: String) {
-        view?.run {
-            Toaster.make(this,
-                    errorMessage,
-                    Snackbar.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR)
-        }
-    }
+
 }
