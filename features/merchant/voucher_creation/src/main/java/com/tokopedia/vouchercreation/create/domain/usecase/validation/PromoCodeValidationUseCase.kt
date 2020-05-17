@@ -15,6 +15,11 @@ class PromoCodeValidationUseCase @Inject constructor(gqlRepository: GraphqlRepos
                 "      code: \$code,\n" +
                 "      source: \$source\n" +
                 "    }) {\n" +
+                "    header{\n" +
+                "      process_time\n" +
+                "      messages\n" +
+                "      reason\n" +
+                "      error_code\n" +
                 "    data{\n" +
                 "      validation_error{\n" +
                 "        code\n" +

@@ -17,6 +17,11 @@ class VoucherTargetValidationUseCase @Inject constructor(gqlRepository: GraphqlR
                 "      coupon_name: \$coupon_name,\n" +
                 "      source : \$source,\n" +
                 "    }) {\n" +
+                "    header{\n" +
+                "      process_time\n" +
+                "      messages\n" +
+                "      reason\n" +
+                "      error_code\n" +
                 "    data{\n" +
                 "      validation_error{\n" +
                 "        is_public\n" +
