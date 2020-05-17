@@ -9,10 +9,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
-class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListener) :
-        BaseCheckableViewHolder<RechargeBills>(view, listener) {
+class SmartBillsViewHolder(val view: View,
+                           checkableListener: CheckableInteractionListener,
+                           val detailListener: DetailListener) :
+        BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
 
     companion object {
         @LayoutRes
@@ -38,6 +41,22 @@ class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListene
             }
             cb_smart_bills_item.isEnabled = !element.disabled
 
+            smart_bills_item_info_container.setOnClickListener {
+                val billDetailView = View.inflate(context, R.layout.view_smart_bills_item_detail, null)
+                with(billDetailView) {
+                    // TODO: Add bill detail
+                }
+
+                val billDetailBottomSheet = BottomSheetUnify()
+                billDetailBottomSheet.setTitle(getString(R.string.smart_bills_item_detail_title))
+                billDetailBottomSheet.setChild(billDetailView)
+                billDetailBottomSheet.clearAction()
+                billDetailBottomSheet.setCloseClickListener {
+                    billDetailBottomSheet.dismiss()
+                }
+                detailListener.onShowBillDetail(element, billDetailBottomSheet)
+            }
+
             ticker_smart_bills_item_error.show()
             if (element.disabled) {
                 smart_bills_item_disabled_overlay.show()
@@ -55,6 +74,10 @@ class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListene
 
     override fun getCheckable(): CompoundButton {
         return view.cb_smart_bills_item
+    }
+
+    interface DetailListener{
+        fun onShowBillDetail(bill: RechargeBills, bottomSheet: BottomSheetUnify)
     }
 
 }

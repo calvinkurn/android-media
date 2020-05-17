@@ -32,12 +32,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
+import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivity
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
+import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -49,6 +52,7 @@ import javax.inject.Inject
 class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFactory>(),
         BaseCheckableViewHolder.CheckableInteractionListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
+        SmartBillsViewHolder.DetailListener,
         TopupBillsCheckoutWidget.ActionListener {
 
     @Inject
@@ -61,6 +65,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
     lateinit var adapter: SmartBillsAdapter
+
+    @Inject
+    lateinit var smartBillsAnalytics: SmartBillsAnalytics
 
     private var totalPrice = 0
     private var maximumPrice = 0
@@ -108,6 +115,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     if (it.data.bills.isNotEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
                         renderList(it.data.bills)
+                        smartBillsAnalytics.impressionAllProducts(it.data.bills)
 
                         // Save maximum price
                         maximumPrice = 0
@@ -138,6 +146,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                     } else { // Else, show error message in affected items
+                        smartBillsAnalytics.clickPayFailed()
+
                         NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.smart_bills_checkout_error))
 
                         for (errorItem in it.data.attributes.errors) {
@@ -155,6 +165,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     }
                 }
                 is Fail -> {
+                    smartBillsAnalytics.clickPayFailed()
                     NetworkErrorHelper.showRedSnackbar(activity, it.throwable.message)
                 }
             }
@@ -191,6 +202,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 ticker_smart_bills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
                 ticker_smart_bills.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        smartBillsAnalytics.clickSubscription()
                         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
                     }
 
@@ -270,12 +282,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun createAdapterInstance(): BaseListAdapter<RechargeBills, SmartBillsAdapterFactory> {
-        adapter = SmartBillsAdapter(SmartBillsAdapterFactory(this), this)
+        adapter = SmartBillsAdapter(adapterTypeFactory, this)
         return adapter
     }
 
     override fun getAdapterTypeFactory(): SmartBillsAdapterFactory {
-        return SmartBillsAdapterFactory(this)
+        return SmartBillsAdapterFactory(this, this)
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -299,8 +311,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
         if (isChecked) {
+            smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
             totalPrice += item.amount.toInt()
         } else {
+            smartBillsAnalytics.clickUntickBill(item)
             totalPrice -= item.amount.toInt()
         }
         setTotalPrice()
@@ -309,10 +323,19 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     private fun toggleAllItems(value: Boolean) {
+        smartBillsAnalytics.clickAllBills()
         adapter.toggleAllItems(value)
 
         totalPrice = if (value) maximumPrice else 0
         setTotalPrice()
+    }
+
+    override fun onShowBillDetail(bill: RechargeBills, bottomSheet: BottomSheetUnify) {
+        smartBillsAnalytics.clickBillDetail(bill)
+
+        fragmentManager?.run {
+            bottomSheet.show(this, getString(R.string.smart_bills_item_detail_bottomsheet_label))
+        }
     }
 
     private fun setTotalPrice() {
@@ -336,6 +359,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     adapter.notifyItemChanged(index)
                 }
             }
+
+            smartBillsAnalytics.clickPay(adapter.checkedDataList)
 
             viewModel.runMultiCheckout(
                     viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)

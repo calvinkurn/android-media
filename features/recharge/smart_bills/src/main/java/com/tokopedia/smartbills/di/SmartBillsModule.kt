@@ -12,6 +12,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.api.SmartBillsApi
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.smartbills.data.api.SmartBillsRepositoryImpl
@@ -103,6 +104,12 @@ class SmartBillsModule {
     @Provides
     fun provideRepository(rechargeCCApi: SmartBillsApi): SmartBillsRepository {
         return SmartBillsRepositoryImpl(rechargeCCApi)
+    }
+
+    @SmartBillsScope
+    @Provides
+    fun provideAnalytics(): SmartBillsAnalytics {
+        return SmartBillsAnalytics()
     }
 
     companion object {
