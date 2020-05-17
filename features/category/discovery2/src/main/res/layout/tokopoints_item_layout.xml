@@ -26,8 +26,8 @@
             android:id="@+id/img_points_stack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/slashed_price_tv"
             app:srcCompat="@drawable/ic_tokopoints_stack" />

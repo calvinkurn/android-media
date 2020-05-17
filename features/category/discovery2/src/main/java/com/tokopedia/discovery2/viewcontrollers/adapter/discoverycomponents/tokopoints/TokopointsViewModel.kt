@@ -44,7 +44,7 @@ class TokopointsViewModel(val application: Application, components: ComponentsIt
     fun getTokopointsItemsListData() = tokopointsList
 
     fun fetchTokopointsListData(pageEndPoint: String) {
-        if(tokopointsList.value == null || tokopointsList.value?.size == 0) {
+        if(tokopointsList.value.isNullOrEmpty()) {
             launchCatchError(block = {
                 tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParameterMap(), pageEndPoint)
             }, onError = {
