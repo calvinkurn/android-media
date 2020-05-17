@@ -722,7 +722,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
-                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                 }

@@ -42,6 +42,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.config.GlobalConfig
@@ -59,10 +60,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
-import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
-import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
@@ -183,7 +181,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         val itemId = item.itemId
         if (itemId == R.id.add_product_menu) {
             item.subMenu.findItem(R.id.label_view_add_image).setOnMenuItemClickListener { item ->
-                startActivity(ProductAddNameCategoryActivity.createInstance(activity))
+                RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                 ProductManageTracking.eventProductManageTopNav(item.title.toString())
                 true
             }
@@ -953,16 +951,24 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    private fun goToDuplicateProduct(productId: String) {
+    private fun goToAddEditProduct(productId: String, mode: String) {
         activity?.let {
-            val intent = ProductDuplicateActivity.createInstance(it, productId)
-            startActivity(intent)
+            val uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, mode)
+                    .build()
+                    .toString()
+            RouteManager.route(context, uri)
         }
     }
 
+    private fun goToDuplicateProduct(productId: String) {
+        goToAddEditProduct(productId, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
+    }
+
     private fun goToEditProduct(productId: String) {
-        val intent = ProductEditActivity.createInstance(activity, productId)
-        startActivity(intent)
+        goToAddEditProduct(productId, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
     }
 
     private fun showDialogActionDeleteProduct(productIdList: List<String>, onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {
@@ -1099,5 +1105,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
+        const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
+        const val EXTRA_IS_DUPLICATE = "IS_DUPLICATE"
     }
 }
