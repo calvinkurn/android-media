@@ -5,18 +5,18 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -66,11 +66,12 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     private var alertMinimumMessage = bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
     private var easyRememberMessage = bottomSheetContext?.resources?.getString(TEXTFIELD_MESSAGE_EASY_REMEMBER).toBlankOrString()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initInjector()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+    private var isWaitingForValidation = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -88,6 +89,11 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
         }
     }
 
+    override fun onDestroy() {
+        viewModel.flush()
+        super.onDestroy()
+    }
+
     private fun initInjector() {
         DaggerVoucherCreationComponent.builder()
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -96,24 +102,26 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.promoCodeValidationLiveData) { result ->
+        viewModel.promoCodeValidationLiveData.observe(viewLifecycleOwner, Observer { result ->
             createPromoCodeSaveButton?.isLoading = false
             when(result) {
                 is Success -> {
                     val errorMessage = result.data.promoCodeError
                     errorMessage.run {
-                        if (isBlank()) {
-                            onNextClick(this)
+                        if (isBlank() && isWaitingForValidation) {
+                            onNextClick(createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
                         } else {
                             createPromoCodeTextField?.setTextFieldError(this)
                         }
                     }
                 }
                 is Fail -> {
-
+                    val error = result.throwable.message.toBlankOrString()
+                    showErrorToaster(error)
                 }
             }
-        }
+            isWaitingForValidation = false
+        })
     }
 
     private fun setupView() {
@@ -163,6 +171,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     val canValidateCode = promoCode.length in MIN_TEXTFIELD_LENGTH..MAX_TEXTFIELD_LENGTH && !isLoading
                     if (canValidateCode) {
                         isLoading = true
+                        isWaitingForValidation = true
                         viewModel.validatePromoCode(promoCode)
                     }
                 }
@@ -173,6 +182,15 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     private fun TextFieldUnify.setTextFieldError(errorMessage: String) {
         setError(true)
         setMessage(errorMessage)
+    }
+
+    private fun showErrorToaster(errorMessage: String) {
+        view?.run {
+            Toaster.make(this,
+                    errorMessage,
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR)
+        }
     }
 
 }

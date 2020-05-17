@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.activity
 
+import android.animation.ObjectAnimator
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -9,11 +10,11 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -32,7 +33,7 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucher
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import javax.inject.Inject
 
-class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
+class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     companion object {
         private const val PROGRESS_ATTR_TAG = "progress"
@@ -99,26 +100,19 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
     private var voucherBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_create_merchant_voucher_steps)
+        initInjector()
         setupView()
         observeLiveData()
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        onBackStep()
-    }
-
-    override fun getListFragment(): MutableList<Fragment> {
-        return fragmentStepsHashMap.values.toMutableList()
-    }
-
-    override fun getLayoutRes(): Int = R.layout.activity_create_merchant_voucher_steps
-
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        setContentView(layoutRes)
-        setupToolbar()
+        if (currentStepPosition == 0) {
+            super.onBackPressed()
+        } else {
+            onBackStep()
+        }
     }
 
     private fun initInjector() {
@@ -128,13 +122,7 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
                 .inject(this)
     }
 
-    private fun setupView() {
-        window.decorView.setBackgroundColor(Color.WHITE)
-        setupStatusBar()
-        viewModel.setMaxPosition(fragmentStepsHashMap.size - 1)
-    }
-
-    override fun setupStatusBar() {
+    private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
                 setStatusBarColor(ContextCompat.getColor(this, R.color.transparent))
@@ -144,7 +132,12 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
         }
     }
 
-    override fun updateToolbarTitle() {}
+    private fun setupView() {
+        window.decorView.setBackgroundColor(Color.WHITE)
+        setupStatusBar()
+        setupToolbar()
+        setupViewPager()
+    }
 
     private fun setupToolbar() {
         createMerchantVoucherHeader?.run {
@@ -160,11 +153,21 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
         }
     }
 
+    private fun setupViewPager() {
+        viewModel.setMaxPosition(fragmentStepsHashMap.size - 1)
+        createMerchantVoucherViewPager.run {
+            isUserInputEnabled = false
+            adapter = viewPagerAdapter
+            registerOnPageChangeCallback(viewPagerOnPageChangeCallback)
+        }
+    }
+
     private fun observeLiveData() {
         viewModel.stepPositionLiveData.observe(this, Observer { position ->
             val stepInfo = fragmentStepsHashMap.toList().getOrNull(position)?.first
             stepInfo?.run {
                 changeStepsInformation(this)
+                createMerchantVoucherViewPager?.currentItem = stepPosition
             }
         })
         viewModel.voucherPreviewBitmapLiveData.observe(this, Observer { bitmap ->
@@ -176,6 +179,14 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
         stepInfo.run {
             currentStepPosition = stepPosition
             createMerchantVoucherHeader?.headerSubTitle = resources?.getString(stepDescriptionRes).toBlankOrString()
+            createMerchantVoucherProgressBar?.run {
+                ObjectAnimator.ofInt(createMerchantVoucherProgressBar, PROGRESS_ATTR_TAG, currentProgress, progressPercentage).run {
+                    duration = PROGRESS_DURATION
+                    interpolator = progressBarInterpolator
+                    start()
+                }
+                currentProgress = progressPercentage
+            }
         }
     }
 
@@ -184,7 +195,6 @@ class CreateMerchantVoucherStepsActivity : BaseStepperActivity() {
     }
 
     private fun onNextStep() {
-        goToNextPage(null)
         viewModel.setNextStep()
     }
 

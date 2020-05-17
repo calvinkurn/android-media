@@ -8,6 +8,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -139,6 +140,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
             Glide.with(context)
                     .asDrawable()
                     .load(BANNER_BASE_URL)
+                    .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             return false

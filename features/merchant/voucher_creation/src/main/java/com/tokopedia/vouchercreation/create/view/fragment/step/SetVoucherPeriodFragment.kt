@@ -12,6 +12,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -33,9 +34,9 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
     private val bannerVoucherUiModel: BannerVoucherUiModel =
             // todo: change dummy
             BannerVoucherUiModel(
-                    VoucherImageType.FreeDelivery(10000),
-                    "harusnyadaristep1",
-                    "Ini Harusnya dari Backend",
+                    VoucherImageType.Rupiah(50000),
+                    "iniudahfix",
+                    "Ini udh dari step 2",
                     "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
                     BANNER_BASE_URL
             )
@@ -60,6 +61,7 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
                 Glide.with(this)
                         .asDrawable()
                         .load(BANNER_BASE_URL)
+                        .signature(ObjectKey(System.currentTimeMillis().toString()))
                         .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                                 return false
