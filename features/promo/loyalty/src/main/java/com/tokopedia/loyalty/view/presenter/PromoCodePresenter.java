@@ -2,11 +2,15 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.graphql.GraphqlConstant;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
@@ -23,6 +27,7 @@ import com.tokopedia.user.session.UserSession;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author anggaprasetiyo on 27/11/17.
@@ -91,6 +96,10 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                }
+
                 view.hideProgressLoading();
                 if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException
                         || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
@@ -148,6 +157,10 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        if (e instanceof JsonSyntaxException) {
+                            Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                        }
+
                         view.hideProgressLoading();
                         if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
                             view.onPromoCodeError(e.getMessage());
@@ -207,6 +220,10 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                }
+
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
@@ -234,6 +251,10 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                }
+
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
@@ -260,6 +281,10 @@ public class PromoCodePresenter implements IPromoCodePresenter {
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                }
+
                 view.hideProgressLoading();
                 view.sendTrackingOnCheckDigitalVoucherError(e.getMessage());
                 if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
