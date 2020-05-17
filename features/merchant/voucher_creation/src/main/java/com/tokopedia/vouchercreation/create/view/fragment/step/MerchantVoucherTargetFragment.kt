@@ -107,6 +107,7 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
             CreateVoucherBottomSheetType.CREATE_PROMO_CODE -> {
                 if (shouldReturnToInitialValue) {
                     viewModel.setDefaultVoucherTargetListData()
+                    viewModel.setActiveVoucherTargetType(VoucherTargetType.PUBLIC)
                     super.setupView()
                 }
             }

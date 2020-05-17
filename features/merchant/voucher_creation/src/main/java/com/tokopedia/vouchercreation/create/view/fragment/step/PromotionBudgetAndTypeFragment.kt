@@ -90,6 +90,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
     override fun onResume() {
         super.onResume()
         bannerVoucherUiModel = getVoucherUiModel()
+        initiateVoucherPreview()
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}
@@ -118,7 +119,6 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         super.setupView()
         setupBottomSheet()
         observeLiveData()
-        initiateVoucherPreview()
     }
 
     private fun setupBottomSheet() {
