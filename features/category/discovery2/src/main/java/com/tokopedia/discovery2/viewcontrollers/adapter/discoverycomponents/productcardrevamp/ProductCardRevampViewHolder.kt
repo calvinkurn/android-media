@@ -32,7 +32,6 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
         mProductRevampComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
 
         if (fragment.last){
-            Log.d("page last", fragment.last.toString())
             mProductRevampComponentViewModel.fetchProductCarouselDataSecond((fragment as DiscoveryFragment).pageEndPoint)
             discoveryProgressBar.show()
             fragment.last = false

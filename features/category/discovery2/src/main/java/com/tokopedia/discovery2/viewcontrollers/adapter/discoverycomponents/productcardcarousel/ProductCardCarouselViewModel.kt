@@ -46,11 +46,13 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
     fun getProductCarouselItemsListData() = productCarouselList
 
     fun fetchProductCarouselData(pageEndPoint: String) {
-        launchCatchError(block = {
-            productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint)
-        }, onError = {
-            it.printStackTrace()
-        })
+        if(productCarouselList.value.isNullOrEmpty()) {
+            launchCatchError(block = {
+                productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint)
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
     }
 
     private fun getQueryParameterMap(): MutableMap<String, Any> {

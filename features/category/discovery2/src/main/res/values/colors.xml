@@ -22,7 +22,7 @@
     <color name="product_card_shop_name_text_color">#f531353b</color>
     <color name="product_card_product_name_text_color">#f531353b</color>
     <color name="product_card_slashed_price_text_color">#7031353b</color>
-    <color name="product_card_price_text_color">#fa591d</color>
+    <color name="product_card_price_text_color">#f531353b</color>
     <color name="product_card_location_text_color">#ae31353b</color>
     <color name="product_card_review_count_text_color">#7031353b</color>
 

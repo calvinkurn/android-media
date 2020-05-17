@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
 import android.app.Application
+import android.content.Context
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -12,11 +14,17 @@ class ProductCardItemViewModel(val application: Application, private val compone
     val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val shopBadge: MutableLiveData<Int> = MutableLiveData()
     private val freeOngkirImage: MutableLiveData<String> = MutableLiveData()
+    private lateinit var context :Context
+
 
     companion object {
         const val OFFICAIL_STORE = 1
         const val GOLD_MERCHANT = 2
         const val EMPTY = 0
+    }
+
+    fun setContext(context: Context ){
+        this.context = context
     }
 
 
@@ -55,4 +63,10 @@ class ProductCardItemViewModel(val application: Application, private val compone
         }
         return freeOngkirImage
     }
+
+    fun handleUIClick(view : View) {
+        navigate(context, dataItem.value?.applinks)
+
+    }
+
 }

@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -19,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 
 
 class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
@@ -32,11 +34,12 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     private var textViewShopName: TextView
     private var textViewReviewCount: TextView
     private var textViewShopLocation: TextView
-    private var labelPromo: Label
+    private var labelCashbackPromo: Label
     private var shopImage: ImageView
     private var shopBadge: ImageView
     private var imageFreeOngkirPromo: ImageView
-    //    private lateinit var stockPercentageProgress: ProgressBarUnify
+    private var productCardView: CardView
+    private var stockPercentageProgress: ProgressBarUnify
     private var linearLayoutImageRating: LinearLayout
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
 
@@ -52,11 +55,12 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         textViewSlashedPrice = itemView.findViewById(R.id.textViewSlashedPrice)
         linearLayoutImageRating = itemView.findViewById(R.id.linearLayoutImageRating)
         textViewReviewCount = itemView.findViewById(R.id.textViewReviewCount)
-        labelPromo = itemView.findViewById(R.id.labelPromo)
+        labelCashbackPromo = itemView.findViewById(R.id.labelCashBack)
         shopBadge = itemView.findViewById(R.id.imageViewShopBadge)
         textViewShopLocation = itemView.findViewById(R.id.textViewShopLocation)
         imageFreeOngkirPromo = itemView.findViewById(R.id.imageFreeOngkirPromo)
-//        stockPercentageProgress = itemView.findViewById(R.id.stockPercentageProgress)
+        stockPercentageProgress = itemView.findViewById(R.id.stockPercentageProgress)
+        productCardView = itemView.findViewById(R.id.cardViewProductCard)
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -65,6 +69,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     fun init() {
+        productCardItemViewModel.setContext(productCardView.context)
         setUpObserver()
     }
 
@@ -84,7 +89,9 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         productCardItemViewModel.getFreeOngkirImage().observe(lifecycleOwner, Observer {
             showFreeOngKir(it)
         })
-
+        productCardView.setOnClickListener {
+            productCardItemViewModel.handleUIClick(it)
+        }
     }
 
     private fun showFreeOngKir(freeOngkirActive: String) {
@@ -105,12 +112,12 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         setSlashedPrice(dataItem.discountedPrice)
         setRating(dataItem.rating.toIntOrZero())
         setTextViewReviewCount(dataItem.countReview.toIntOrZero())
-        setLabelPromo(dataItem.cashback)
+        setCashbackLabel(dataItem.cashback)
         textViewShopLocation.setTextAndCheckShow(dataItem.shopLocation)
         setShopIcon(dataItem.shopLogo)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
-//        setStockProgress(dataItem.stockSoldPercentage)
+        setStockProgress(dataItem.stockSoldPercentage)
 
     }
 
@@ -126,13 +133,13 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         ImageHandler.LoadImage(productImage, imageUrlMobile)
     }
 
-//    private fun setStockProgress(stockPercent: String?) {
-//        if (!stockPercent.isNullOrEmpty()){
-//            stockPercentageProgress.setValue(stockPercent.toIntOrZero())
-//            stockPercentageProgress.show()
-//        }
-//
-//    }
+    private fun setStockProgress(stockPercent: String?) {
+        if (!stockPercent.isNullOrEmpty()){
+            stockPercentageProgress.setValue(stockPercent.toIntOrZero())
+            stockPercentageProgress.show()
+        }
+
+    }
 
     private fun setShopIcon(shopLogo: String?) {
         if (!shopLogo.isNullOrEmpty()) {
@@ -140,12 +147,15 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
-    private fun setLabelPromo(cashback: String?) {
+    private fun setCashbackLabel(cashback: String?) {
         if (!cashback.isNullOrEmpty()) {
-            labelPromo.let {
+            labelCashbackPromo.let {
                 it.text = String.format("%s", "Cashback $cashback%")
                 it.setLabelType(Label.GENERAL_LIGHT_GREEN)
+                it.show()
             }
+        } else {
+            labelCashbackPromo.hide()
         }
     }
 

@@ -92,7 +92,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (!recyclerView.canScrollVertically(1)) {
-                    Toast.makeText(context, "Last", Toast.LENGTH_LONG).show()
+                    // Toast.makeText(context, "Last", Toast.LENGTH_LONG).show()
                     last = true
 
                 }

@@ -8,7 +8,7 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="@dimen/dp_200"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,8 +30,7 @@
             android:src="@drawable/error_drawable"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/buttonWishlist"
@@ -50,7 +49,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.Label
-            android:id="@+id/labelPromo"
+            android:id="@+id/labelCashBack"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginLeft="@dimen/dp_4"
@@ -94,6 +93,40 @@
             tools:visibility="visible"
             tools:text="Shop Name"/>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewProductView"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/textViewShopName"
+            tools:src="@drawable/ic_product_view"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewProductViewcount"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginStart="@dimen/dp_3"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/product_card_location_text_color"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="@+id/imageViewProductView"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewProductView"
+            app:layout_constraintLeft_toRightOf="@+id/imageViewProductView"
+            app:typographyType="small"
+            tools:visibility="visible"
+            tools:text="200 rb orang" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductName"
             android:layout_width="@dimen/dp_0"
@@ -109,8 +142,8 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/textViewShopName"
-            app:typographyType="heading_5"
+            app:layout_constraintTop_toBottomOf="@id/imageViewProductView"
+            app:typographyType="body_3"
             tools:visibility="visible"
             tools:text="Nama" />
 
@@ -171,6 +204,27 @@
             tools:text="Rp 9999999999999999999999999999999999999999"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewProductInterestedView"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/product_card_location_text_color"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+            app:typographyWeight="bold"
+            app:typographyType="small"
+            tools:visibility="visible"
+            tools:text="13 rb orang tertarik" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageViewShopBadge"
             android:layout_width="wrap_content"
@@ -180,7 +234,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="visible"
             android:paddingTop="@dimen/dp_1"
-            app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewProductInterestedView"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             tools:src="@drawable/discovery_gold_merchant_icon"
             tools:visibility="visible" />
@@ -199,7 +253,7 @@
             android:textColor="@color/product_card_location_text_color"
             android:gravity="center_vertical"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewProductInterestedView"
             app:layout_constraintStart_toEndOf="@id/imageViewShopBadge"
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
             app:typographyType="body_3"
@@ -281,16 +335,16 @@
             tools:visibility="visible"
             tools:text="(3000)" />
 
-<!--        <com.tokopedia.unifycomponents.ProgressBarUnify-->
-<!--            android:id="@+id/stockPercentageProgress"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="@dimen/dp_20"-->
-<!--            android:visibility="gone"-->
-<!--            app:fromColor="#fa591d"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/linearLayoutImageRating"-->
-<!--            app:layout_constraintStart_toStartOf="@id/imageProduct"-->
-<!--            app:toColor="#d6001c"-->
-<!--             />-->
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/stockPercentageProgress"
+            android:layout_width="100dp"
+            android:layout_height="@dimen/dp_20"
+            android:visibility="gone"
+            app:unify_progress_bar_from_color="#fa591d"
+            app:unify_progress_bar_to_color="#d6001c"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutImageRating"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+             />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelCredibility"
