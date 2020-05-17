@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.create.domain.usecase.PromoCodeValidationUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.validation.PromoCodeValidationUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PromoCodeValidation
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

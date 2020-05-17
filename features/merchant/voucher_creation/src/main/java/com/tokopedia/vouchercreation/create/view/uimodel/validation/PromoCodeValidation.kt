@@ -5,4 +5,4 @@ import com.google.gson.annotations.SerializedName
 data class PromoCodeValidation(
         @SerializedName("code")
         val promoCodeError: String
-)
+) : Validation

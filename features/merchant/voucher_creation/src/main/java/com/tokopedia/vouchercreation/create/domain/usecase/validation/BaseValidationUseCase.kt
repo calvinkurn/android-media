@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.domain.usecase
+package com.tokopedia.vouchercreation.create.domain.usecase.validation
 
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -7,8 +7,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherValidationPartial
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherValidationPartialResponse
+import com.tokopedia.vouchercreation.create.view.uimodel.validation.Validation
 
-abstract class BaseValidationUseCase<T : Any> (private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<T>() {
+abstract class BaseValidationUseCase<T : Validation> (private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<T>() {
 
     abstract val queryString: String
 

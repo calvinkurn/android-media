@@ -10,7 +10,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.NonNullLiveData
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
-import com.tokopedia.vouchercreation.create.domain.usecase.VoucherTargetValidationUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.validation.VoucherTargetValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.VoucherTargetValidation
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
