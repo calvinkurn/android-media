@@ -117,11 +117,7 @@ class VoucherPreviewPainter(private val context: Context,
 
     fun drawInitial(uiModel: BannerVoucherUiModel) {
         uiModel.run {
-            val bannerRect = Rect().apply {
-                set(0, 0, bitmapWidth, bitmapHeight)
-            }
             canvas.drawText(shopName, shopNameX, shopNameY, shopNamePaint)
-            canvas.drawText(promoName, promoNameX, promoNameY, promoNamePaint)
             Glide.with(context)
                     .asBitmap()
                     .load(shopAvatar)

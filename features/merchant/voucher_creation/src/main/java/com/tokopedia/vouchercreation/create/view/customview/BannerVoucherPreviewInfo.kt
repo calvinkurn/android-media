@@ -54,6 +54,10 @@ class BannerVoucherPreviewInfo @JvmOverloads constructor(
         }
     }
 
+    fun setPromoName(promoName: String) {
+        bannerPromoName?.text = promoName
+    }
+
     private fun loadPreviewInfo(labelUrl: String, value: Int) {
         Glide.with(context)
                 .load(labelUrl)

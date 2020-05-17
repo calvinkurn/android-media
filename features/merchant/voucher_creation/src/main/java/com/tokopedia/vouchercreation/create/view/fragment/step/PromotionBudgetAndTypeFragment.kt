@@ -36,14 +36,14 @@ import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
 class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
-                                     private val getVoucherUiModel: () -> BannerVoucherUiModel?,
+                                     private val getVoucherUiModel: () -> BannerVoucherUiModel,
                                      private val setVoucherBitmap: (Bitmap) -> Unit)
     : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit,
-                           getVoucherUiModel: () -> BannerVoucherUiModel?,
+                           getVoucherUiModel: () -> BannerVoucherUiModel,
                            setVoucherBitmap: (Bitmap) -> Unit) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
@@ -76,21 +76,23 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         }
     }
 
-    private var bannerVoucherUiModel: BannerVoucherUiModel? = getVoucherUiModel()
+    private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherUiModel()
 
     private var painter: VoucherPreviewPainter? = null
 
     private var voucherPreviewBitmap: Bitmap? = null
 
     private var isWaitingForShopInfo = false
+    private var isReadyToDraw = false
+
+    private var tempVoucherType: VoucherImageType = VoucherImageType.FreeDelivery(0)
 
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
             listOf(promotionTypeInputWidget)
 
     override fun onResume() {
-        super.onResume()
         bannerVoucherUiModel = getVoucherUiModel()
-        initiateVoucherPreview()
+        super.onResume()
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}
@@ -119,6 +121,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
         super.setupView()
         setupBottomSheet()
         observeLiveData()
+        initiateVoucherPreview()
     }
 
     private fun setupBottomSheet() {
@@ -160,6 +163,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
     }
 
     private fun drawInitialVoucherPreview() {
+        bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
         bannerImage?.run {
             Glide.with(context)
                     .asDrawable()
@@ -176,7 +180,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
                             if (painter == null) {
                                 painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner)
                             }
-                            bannerVoucherUiModel?.let {
+                            bannerVoucherUiModel.let {
                                 painter?.drawInitial(it)
                             }
                             return false
@@ -187,19 +191,27 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
     }
 
     private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
-        val labelUrl = when(voucherImageType) {
-            is VoucherImageType.FreeDelivery -> FREE_DELIVERY
-            else -> CASHBACK
-        }
-        if (voucherImageType is VoucherImageType.Percentage) {
-            bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, CASHBACK_UNTIL)
+        if (isReadyToDraw) {
+            val labelUrl = when(voucherImageType) {
+                is VoucherImageType.FreeDelivery -> FREE_DELIVERY
+                else -> CASHBACK
+            }
+            activity?.runOnUiThread {
+                if (voucherImageType is VoucherImageType.Percentage) {
+                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, CASHBACK_UNTIL)
+                } else {
+                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl)
+                }
+            }
         } else {
-            bannerInfo?.setPreviewInfo(voucherImageType, labelUrl)
+            tempVoucherType = voucherImageType
         }
     }
 
     private fun onSuccessGetBanner(bitmap: Bitmap) {
         bannerImage?.setImageBitmap(bitmap)
+        isReadyToDraw = true
+        onShouldChangeBannerValue(tempVoucherType)
     }
 
     private fun showErrorToaster(errorMessage: String) {

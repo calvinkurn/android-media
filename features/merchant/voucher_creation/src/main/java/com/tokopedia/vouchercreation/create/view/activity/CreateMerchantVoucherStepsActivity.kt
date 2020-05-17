@@ -210,6 +210,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         bannerVoucherUiModel.promoName = voucherName
     }
 
-    private fun getBannerVoucherUiModel(): BannerVoucherUiModel? = bannerVoucherUiModel
+    private fun getBannerVoucherUiModel(): BannerVoucherUiModel = bannerVoucherUiModel
 
 }

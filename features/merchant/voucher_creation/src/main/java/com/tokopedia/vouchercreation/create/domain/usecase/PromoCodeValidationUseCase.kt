@@ -11,6 +11,7 @@ class PromoCodeValidationUseCase @Inject constructor(gqlRepository: GraphqlRepos
         const val QUERY = "query validateVoucherTarget(\$code: String!, \$source: String!) {\n" +
                 "  VoucherValidationPartial(VoucherValidationPartialInput: \n" +
                 "    {\n" +
+                "      is_public: 0,\n" +
                 "      code: \$code,\n" +
                 "      source: \$source\n" +
                 "    }) {\n" +
