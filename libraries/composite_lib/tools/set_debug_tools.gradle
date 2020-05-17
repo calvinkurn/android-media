@@ -1,0 +1,8 @@
+task("configDebugTools") {
+    rootProject.ext.debugToolsEnabled = false
+}
+preBuild.dependsOn configDebugTools
+
+ext {
+    isDebugable = true
+}
