@@ -72,7 +72,13 @@ class MerchantVoucherTargetViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
-                        voucherTargetValidationUseCase.params = VoucherTargetValidationUseCase.createRequestParam(mVoucherTargetTypeLiveData.value, promoCode, couponName)
+                        val code =
+                                if (mVoucherTargetTypeLiveData.value == VoucherTargetType.PUBLIC) {
+                                    ""
+                                } else {
+                                    promoCode
+                                }
+                        voucherTargetValidationUseCase.params = VoucherTargetValidationUseCase.createRequestParam(mVoucherTargetTypeLiveData.value, code, couponName)
                         mVoucherTargetValidationLiveData.postValue(Success(voucherTargetValidationUseCase.executeOnBackground()))
                     }
                 },
