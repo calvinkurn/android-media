@@ -12,9 +12,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
+import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
@@ -159,6 +163,9 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
 
     private var activeCashbackType: CashbackType = CashbackType.Rupiah
 
+    private var isRupiahWaitingForValidation = false
+    private var isPercentageWaitingForValidation = false
+
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 
     override fun onItemClicked(t: Visitable<*>?) {}
@@ -238,6 +245,77 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
             observe(viewModel.voucherImageValueLiveData) { imageValue ->
                 onShouldChangeBannerValue(imageValue)
             }
+            observe(viewModel.rupiahValidationLiveData) { result ->
+                if (isRupiahWaitingForValidation) {
+                    when(result) {
+                        is Success -> {
+                            val validation = result.data
+                            if (!validation.getIsHaveError()) {
+                                onNextStep()
+                            } else {
+                                validation.run {
+                                    benefitMaxError.setRupiahTextFieldError(rupiahMaximumDiscountTextFieldModel)
+                                    minPurchaseError.setRupiahTextFieldError(rupiahMinimumPurchaseTextFieldModel)
+                                    quotaError.setRupiahTextFieldError(rupiahVoucherQuotaTextFieldModel)
+                                    benefitTypeError.let { error ->
+                                        if (error.isNotBlank()) {
+                                            view?.showErrorToaster(error)
+                                            return@observe
+                                        }
+                                    }
+                                    couponTypeError.let { error ->
+                                        if (error.isNotBlank()) {
+                                            view?.showErrorToaster(error)
+                                            return@observe
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        is Fail -> {
+                            val error = result.throwable.message.toBlankOrString()
+                            view?.showErrorToaster(error)
+                        }
+                    }
+                    adapter.notifyDataSetChanged()
+                    isRupiahWaitingForValidation = false
+                }
+            }
+            observe(viewModel.percentageValidationLiveData) { result ->
+                when(result) {
+                    is Success -> {
+                        val validation = result.data
+                        if (!validation.getIsHaveError()) {
+                            onNextStep()
+                        } else {
+                            validation.run {
+                                benefitPercentError.setPercentageTextFieldError(discountAmountTextFieldModel)
+                                benefitMaxError.setPercentageTextFieldError(percentageMaximumDiscountTextFieldModel)
+                                minPurchaseError.setPercentageTextFieldError(percentageMinimumPurchaseTextFieldModel)
+                                quotaError.setPercentageTextFieldError(percentageVoucherQuotaTextFieldModel)
+                                benefitTypeError.let { error ->
+                                    if (error.isNotBlank()) {
+                                        view?.showErrorToaster(error)
+                                        return@observe
+                                    }
+                                }
+                                couponTypeError.let { error ->
+                                    if (error.isNotBlank()) {
+                                        view?.showErrorToaster(error)
+                                        return@observe
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        val error = result.throwable.message.toBlankOrString()
+                        view?.showErrorToaster(error)
+                    }
+                }
+                adapter.notifyDataSetChanged()
+                isPercentageWaitingForValidation = false
+            }
         }
     }
 
@@ -257,12 +335,12 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
     private fun onNext() {
         if (activeCashbackType is CashbackType.Percentage) {
             if (checkIfValuesAreCorrect(cashbackPercentageInfoUiModel.minimumDiscount, cashbackPercentageInfoUiModel.maximumDiscount)) {
-                onNextStep()
+                validatePercentageValues()
             } else {
                 percentageExpenseBottomSheet.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
             }
         } else {
-            onNextStep()
+            validateRupiahValues()
         }
     }
 
@@ -308,5 +386,30 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
     private fun checkIfValuesAreCorrect(minimumDiscount: Int, maximumDiscount: Int): Boolean =
             minimumDiscount < maximumDiscount
 
+    private fun validateRupiahValues() {
+        isRupiahWaitingForValidation = true
+        viewModel.validateCashbackRupiahValues()
+    }
+
+    private fun validatePercentageValues() {
+        isPercentageWaitingForValidation = true
+        viewModel.validateCashbackPercentageValues()
+    }
+
+    private fun String.setRupiahTextFieldError(voucherTextFieldUiModel: VoucherTextFieldUiModel) {
+        if (isNotBlank()) {
+            rupiahCashbackTextFieldList.run {
+                get(indexOf(voucherTextFieldUiModel)).currentErrorPair = Pair(true, this@setRupiahTextFieldError)
+            }
+        }
+    }
+
+    private fun String.setPercentageTextFieldError(voucherTextFieldUiModel: VoucherTextFieldUiModel) {
+        if (isNotBlank()) {
+            percentageCashbackTextFieldList.run {
+                get(indexOf(voucherTextFieldUiModel)).currentErrorPair = Pair(true, this@setPercentageTextFieldError)
+            }
+        }
+    }
 
 }

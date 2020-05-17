@@ -8,7 +8,7 @@ import javax.inject.Inject
 class PromoCodeValidationUseCase @Inject constructor(gqlRepository: GraphqlRepository) : BaseValidationUseCase<PromoCodeValidation>(gqlRepository) {
 
     companion object {
-        const val QUERY = "query validateVoucherTarget(\$code: String!, \$source: String!) {\n" +
+        const val QUERY = "query validatePromoCode(\$code: String!, \$source: String!) {\n" +
                 "  VoucherValidationPartial(VoucherValidationPartialInput: \n" +
                 "    {\n" +
                 "      is_public: 0,\n" +

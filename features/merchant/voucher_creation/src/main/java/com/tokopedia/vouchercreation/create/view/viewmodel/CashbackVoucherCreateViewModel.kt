@@ -4,18 +4,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackPercentageValidationUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackRupiahValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.uimodel.validation.CashbackPercentageValidation
+import com.tokopedia.vouchercreation.create.view.uimodel.validation.CashbackRupiahValidation
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackPercentageInfoUiModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class CashbackVoucherCreateViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher
+        @Named("Main") dispatcher: CoroutineDispatcher,
+        private val cashbackRupiahValidationUseCase: CashbackRupiahValidationUseCase,
+        private val cashbackPercentageValidationUseCase: CashbackPercentageValidationUseCase
 ) : BaseViewModel(dispatcher) {
 
     private val mRupiahMaximumDiscountLiveData = MutableLiveData<Int>()
@@ -173,6 +185,14 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         value = true
     }
 
+    private val mRupiahValidationLiveData = MutableLiveData<Result<CashbackRupiahValidation>>()
+    val rupiahValidationLiveData: LiveData<Result<CashbackRupiahValidation>>
+        get() = mRupiahValidationLiveData
+
+    private val mPercentageValidationLiveData = MutableLiveData<Result<CashbackPercentageValidation>>()
+    val percentageValidationLiveData: LiveData<Result<CashbackPercentageValidation>>
+        get() = mPercentageValidationLiveData
+
     fun<T> addTextFieldValueToCalculation(value: Int?, type: T) {
         when(type) {
             PromotionType.Cashback.Rupiah.MaximumDiscount -> {
@@ -294,6 +314,48 @@ class CashbackVoucherCreateViewModel @Inject constructor(
             return Pair(currentValue > thresholdValue, fullErrorMessage)
         }
         return Pair(true, "")
+    }
+
+    fun validateCashbackRupiahValues() {
+        mRupiahMaximumDiscountLiveData.value?.let { benefitMax ->
+            mRupiahMinimumPurchaseLiveData.value?.let { minPurchase ->
+                mRupiahVoucherQuotaLiveData.value?.let { quota ->
+                    launchCatchError(
+                            block = {
+                                mRupiahValidationLiveData.value = Success(withContext(Dispatchers.IO) {
+                                    cashbackRupiahValidationUseCase.params = CashbackRupiahValidationUseCase.createRequestParam(benefitMax, minPurchase, quota)
+                                    cashbackRupiahValidationUseCase.executeOnBackground()
+                                })
+                            },
+                            onError = {
+                                mRupiahValidationLiveData.value = Fail(it)
+                            }
+                    )
+                }
+            }
+        }
+    }
+
+    fun validateCashbackPercentageValues() {
+        mPercentageDiscountAmountLiveData.value?.let { benefitPercent ->
+            mPercentageMaximumDiscountLiveData.value?.let { benefitMax ->
+                mPercentageMinimumPurchaseLiveData.value?.let { minPurchase ->
+                    mPercentageVoucherQuotaLiveData.value?.let { quota ->
+                        launchCatchError(
+                                block = {
+                                    mPercentageValidationLiveData.value = Success(withContext(Dispatchers.IO) {
+                                        cashbackPercentageValidationUseCase.params = CashbackPercentageValidationUseCase.createRequestParam(benefitPercent, benefitMax, minPurchase, quota)
+                                        cashbackPercentageValidationUseCase.executeOnBackground()
+                                    })
+                                },
+                                onError = {
+                                    mPercentageValidationLiveData.value = Fail(it)
+                                }
+                        )
+                    }
+                }
+            }
+        }
     }
 
 }

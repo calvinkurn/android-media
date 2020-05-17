@@ -182,19 +182,21 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
                             if (!validation.getIsHaveError()) {
                                 onNextStep()
                             } else {
-                                validation.benefitIdrError.setTextFieldError(freeDeliveryAmountTextFieldModel)
-                                validation.minPurchaseError.setTextFieldError(minimumPurchaseTextFieldModel)
-                                validation.quotaError.setTextFieldError(voucherQuotaTextFieldModel)
-                                validation.benefitTypeError.let { error ->
-                                    if (error.isNotBlank()) {
-                                        view?.showErrorToaster(error)
-                                        return@observe
+                                validation.run {
+                                    benefitIdrError.setTextFieldError(freeDeliveryAmountTextFieldModel)
+                                    minPurchaseError.setTextFieldError(minimumPurchaseTextFieldModel)
+                                    quotaError.setTextFieldError(voucherQuotaTextFieldModel)
+                                    benefitTypeError.let { error ->
+                                        if (error.isNotBlank()) {
+                                            view?.showErrorToaster(error)
+                                            return@observe
+                                        }
                                     }
-                                }
-                                validation.couponTypeError.let { error ->
-                                    if (error.isNotBlank()) {
-                                        view?.showErrorToaster(error)
-                                        return@observe
+                                    couponTypeError.let { error ->
+                                        if (error.isNotBlank()) {
+                                            view?.showErrorToaster(error)
+                                            return@observe
+                                        }
                                     }
                                 }
                             }
@@ -239,7 +241,9 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
 
     private fun String.setTextFieldError(voucherTextFieldUiModel: VoucherTextFieldUiModel) {
         if (isNotBlank()) {
-            freeDeliveryTextFieldsList[freeDeliveryTextFieldsList.indexOf(voucherTextFieldUiModel)].currentErrorPair = Pair(true, this)
+            freeDeliveryTextFieldsList.run {
+                get(indexOf(voucherTextFieldUiModel)).currentErrorPair = Pair(true, this@setTextFieldError)
+            }
         }
     }
 

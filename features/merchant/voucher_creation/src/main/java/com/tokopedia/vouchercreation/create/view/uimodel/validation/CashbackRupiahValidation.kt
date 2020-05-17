@@ -5,4 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class CashbackRupiahValidation (
         @SerializedName("benefit_max")
         val benefitMaxError: String = ""
-) : Validation
+) : VoucherTypeValidation(), Validation {
+
+        fun getIsHaveError() =
+                benefitMaxError.isNotBlank() || getIsVoucherError()
+}

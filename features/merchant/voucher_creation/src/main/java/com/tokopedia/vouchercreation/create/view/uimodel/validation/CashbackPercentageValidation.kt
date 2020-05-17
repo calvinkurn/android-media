@@ -7,4 +7,8 @@ data class CashbackPercentageValidation (
         val benefitPercentError: String = "",
         @SerializedName("benefit_max")
         val benefitMaxError: String = ""
-) : Validation
+) : VoucherTypeValidation(), Validation {
+
+        fun getIsHaveError() =
+                benefitPercentError.isNotBlank() || benefitMaxError.isNotBlank() || getIsVoucherError()
+}
