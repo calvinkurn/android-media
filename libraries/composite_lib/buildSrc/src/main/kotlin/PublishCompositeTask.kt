@@ -228,13 +228,15 @@ open class PublishCompositeTask : DefaultTask() {
         }
 
         var gitCommandAssembleString = ""
+        var gitCommandAssembleResultString = ""
         try {
             gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
+            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         } catch (e:java.lang.Exception) {
             gitCommandAssembleString = "gradle assembleDebug  -p $module --stacktrace"
+            gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         }
-
-        val gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        
         if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
             return false
         }
@@ -243,12 +245,14 @@ open class PublishCompositeTask : DefaultTask() {
         }
 
         var gitCommandString = ""
+        var gitResultLog = ""
         try {
             gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
+            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         } catch (e:java.lang.Exception) {
             gitCommandString = "gradle artifactoryPublish  -p $module --stacktrace"
+            gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         }
-        val gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         print(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
     }
