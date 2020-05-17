@@ -11,7 +11,7 @@ import com.tokopedia.vouchercreation.create.view.viewholder.NextButtonViewHolder
 import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.widget.PromotionTypeInputViewHolder
 
 class PromotionTypeBudgetAdapterTypeFactory(private val fragment: Fragment,
-                                            private val onNextStep: () -> Unit = {},
+                                            private val onNextStep: (VoucherImageType) -> Unit = {},
                                             private val onShouldChangeBannerValue: (VoucherImageType) -> Unit = {})
     : BaseAdapterTypeFactory(), PromotionTypeBudgetTypeFactory {
 

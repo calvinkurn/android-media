@@ -212,4 +212,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun getBannerVoucherUiModel(): BannerVoucherUiModel = bannerVoucherUiModel
 
+    private fun onNextStep(imageType: VoucherImageType) {
+        bannerVoucherUiModel.imageType = imageType
+        onNextStep()
+    }
+
 }

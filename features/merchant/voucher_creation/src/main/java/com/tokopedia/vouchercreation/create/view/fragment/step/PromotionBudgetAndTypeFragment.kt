@@ -34,14 +34,14 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTyp
 import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
-class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
+class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType) -> Unit = {},
                                      private val getVoucherUiModel: () -> BannerVoucherUiModel,
                                      private val setVoucherBitmap: (Bitmap) -> Unit)
     : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNext: () -> Unit,
+        fun createInstance(onNext: (VoucherImageType) -> Unit,
                            getVoucherUiModel: () -> BannerVoucherUiModel,
                            setVoucherBitmap: (Bitmap) -> Unit) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap)
 
@@ -135,8 +135,8 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: () -> Unit = {},
                 if (isWaitingForShopInfo) {
                     when(result) {
                         is Success -> {
-                            bannerVoucherUiModel?.shopName = result.data.shopName
-                            bannerVoucherUiModel?.shopAvatar = result.data.shopAvatar
+                            bannerVoucherUiModel.shopName = result.data.shopName
+                            bannerVoucherUiModel.shopAvatar = result.data.shopAvatar
                             drawInitialVoucherPreview()
                         }
                         is Fail -> {

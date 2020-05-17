@@ -30,13 +30,13 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
 import javax.inject.Inject
 
-class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
+class FreeDeliveryVoucherCreateFragment(private val onNextStep: (VoucherImageType) -> Unit,
                                         private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                         private val viewContext: Context): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNextStep: () -> Unit = {},
+        fun createInstance(onNextStep: (VoucherImageType) -> Unit = {},
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit = {},
                            context: Context) = FreeDeliveryVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
 
@@ -112,6 +112,8 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
 
     private var isWaitingForValidation = false
 
+    private var voucherImageType : VoucherImageType = VoucherImageType.FreeDelivery(0)
+
     override fun getAdapterTypeFactory(): PromotionTypeItemAdapterFactory = PromotionTypeItemAdapterFactory()
 
     override fun onItemClicked(t: Visitable<*>?) {}
@@ -171,6 +173,7 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
                 }
             }
             observe(viewModel.voucherImageValueLiveData) { imageValue ->
+                voucherImageType = imageValue
                 onShouldChangeBannerValue(imageValue)
             }
             observe(viewModel.freeDeliveryValidationLiveData) { result ->
@@ -180,7 +183,7 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
-                                onNextStep()
+                                onNextStep(voucherImageType)
                             } else {
                                 validation.run {
                                     benefitIdrError.setTextFieldError(freeDeliveryAmountTextFieldModel)
@@ -218,9 +221,9 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: () -> Unit,
         adapter.notifyItemRemoved(TICKER_INDEX_POSITION)
     }
 
-    private fun onTextFieldValueChanged(value: Int?, typeType: PromotionType) {
-        if (typeType is PromotionType.FreeDelivery) {
-            viewModel.addTextFieldValueToCalculation(value, typeType)
+    private fun onTextFieldValueChanged(value: Int?, type: PromotionType) {
+        if (type is PromotionType.FreeDelivery) {
+            viewModel.addTextFieldValueToCalculation(value, type)
         }
     }
 

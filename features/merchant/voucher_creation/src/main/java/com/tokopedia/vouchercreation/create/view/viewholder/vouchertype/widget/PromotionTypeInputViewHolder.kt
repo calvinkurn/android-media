@@ -10,12 +10,13 @@ import com.tokopedia.vouchercreation.create.view.adapter.vouchertype.PromotionTy
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.FreeDeliveryVoucherCreateFragment
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 import kotlinx.android.synthetic.main.mvc_type_budget_promotion_widget.view.*
 
 class PromotionTypeInputViewHolder(itemView: View,
                                    private val fragment: Fragment,
-                                   private val onNextStep: () -> Unit,
+                                   private val onNextStep: (VoucherImageType) -> Unit,
                                    private val onShouldChangeBannerValue: (VoucherImageType) -> Unit)
     : AbstractViewHolder<PromotionTypeInputUiModel>(itemView) {
 

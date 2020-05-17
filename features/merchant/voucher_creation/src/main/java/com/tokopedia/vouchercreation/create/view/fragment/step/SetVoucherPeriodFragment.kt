@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.view.fragment.step
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,33 +16,30 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 
 class SetVoucherPeriodFragment(private val onNext: () -> Unit,
-                               private val getVoucherBanner: () -> BannerVoucherUiModel?) : Fragment() {
+                               private val getVoucherBanner: () -> BannerVoucherUiModel) : Fragment() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit,
-                           getVoucherBanner: () -> BannerVoucherUiModel?) = SetVoucherPeriodFragment(onNext, getVoucherBanner)
+                           getVoucherBanner: () -> BannerVoucherUiModel) = SetVoucherPeriodFragment(onNext, getVoucherBanner)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
     }
 
-    private val bannerVoucherUiModel: BannerVoucherUiModel =
-            // todo: change dummy
-            BannerVoucherUiModel(
-                    VoucherImageType.Rupiah(50000),
-                    "iniudahfix",
-                    "Ini udh dari step 2",
-                    "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
-                    BANNER_BASE_URL
-            )
+    private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherBanner()
 
     private var bannerBitmap: Bitmap? = null
+
+    override fun onResume() {
+        super.onResume()
+        bannerVoucherUiModel = getVoucherBanner()
+        drawBanner()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.mvc_set_voucher_period_fragment, container, false)
@@ -53,9 +51,31 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
     }
 
     private fun setupView() {
+        disableTextFieldEdit()
         setDateNextButton?.setOnClickListener {
             onNext()
         }
+
+    }
+
+    private fun onSuccessGetBitmap(bitmap: Bitmap) {
+        activity?.runOnUiThread {
+            periodBannerImage?.setImageBitmap(bitmap)
+        }
+    }
+
+    private fun disableTextFieldEdit() {
+        startDateTextField?.textFieldInput?.run {
+            isEnabled = false
+            inputType = InputType.TYPE_NULL
+        }
+        endDateTextField?.textFieldInput?.run {
+            isEnabled = false
+            inputType = InputType.TYPE_NULL
+        }
+    }
+
+    private fun drawBanner() {
         if (bannerBitmap == null) {
             context?.run {
                 Glide.with(this)
@@ -78,12 +98,6 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
                         })
                         .submit()
             }
-        }
-    }
-
-    private fun onSuccessGetBitmap(bitmap: Bitmap) {
-        activity?.runOnUiThread {
-            periodBannerImage?.setImageBitmap(bitmap)
         }
     }
 

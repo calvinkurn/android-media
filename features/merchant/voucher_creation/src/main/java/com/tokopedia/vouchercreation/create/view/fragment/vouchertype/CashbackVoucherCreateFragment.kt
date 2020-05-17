@@ -34,13 +34,13 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import javax.inject.Inject
 
-class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
+class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType) -> Unit,
                                     private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                     private val viewContext: Context) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNextStep: () -> Unit = {},
+        fun createInstance(onNextStep: (VoucherImageType) -> Unit = {},
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                            context: Context) = CashbackVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
 
@@ -75,7 +75,13 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
     }
     
     private val percentageExpenseBottomSheet by lazy {
-        CashbackExpenseInfoBottomSheetFragment.createInstance(viewContext, ::getCashbackInfo)
+        CashbackExpenseInfoBottomSheetFragment.createInstance(viewContext, ::getCashbackInfo).apply {
+            setOnDismissListener {
+                adapter.run {
+                    notifyItemChanged(dataSize)
+                }
+            }
+        }
     }
 
     private val rupiahMaximumDiscountTextFieldModel =
@@ -163,6 +169,8 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
 
     private var activeCashbackType: CashbackType = CashbackType.Rupiah
 
+    private var voucherImageType: VoucherImageType = VoucherImageType.Rupiah(0)
+
     private var isRupiahWaitingForValidation = false
     private var isPercentageWaitingForValidation = false
 
@@ -243,6 +251,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
                 activeCashbackType = type
             }
             observe(viewModel.voucherImageValueLiveData) { imageValue ->
+                voucherImageType = imageValue
                 onShouldChangeBannerValue(imageValue)
             }
             observe(viewModel.rupiahValidationLiveData) { result ->
@@ -251,7 +260,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
-                                onNextStep()
+                                onNextStep(voucherImageType)
                             } else {
                                 validation.run {
                                     benefitMaxError.setRupiahTextFieldError(rupiahMaximumDiscountTextFieldModel)
@@ -286,7 +295,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: () -> Unit,
                     is Success -> {
                         val validation = result.data
                         if (!validation.getIsHaveError()) {
-                            onNextStep()
+                            onNextStep(voucherImageType)
                         } else {
                             validation.run {
                                 benefitPercentError.setPercentageTextFieldError(discountAmountTextFieldModel)
