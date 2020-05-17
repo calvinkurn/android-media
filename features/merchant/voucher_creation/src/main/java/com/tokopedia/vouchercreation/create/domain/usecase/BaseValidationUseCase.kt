@@ -4,18 +4,15 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherValidationPartial
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherValidationPartialResponse
 
-abstract class BaseValidationUseCase<T : Any> (private val gqlRepository: GraphqlRepository) : UseCase<T>() {
+abstract class BaseValidationUseCase<T : Any> (private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<T>() {
 
     abstract val queryString: String
 
     abstract val validationClassType: Class<out T>
-
-    open var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): T {
         val request = GraphqlRequest(queryString, VoucherValidationPartialResponse::class.java, params.parameters)
@@ -23,7 +20,7 @@ abstract class BaseValidationUseCase<T : Any> (private val gqlRepository: Graphq
 
         val error = response.getError(VoucherValidationPartialResponse::class.java)
         if (error.isNullOrEmpty()) {
-            val validationPartialResponse: VoucherValidationPartialResponse = response.getData(VoucherValidationPartialResponse::class.java)
+            val validationPartialResponse: VoucherValidationPartialResponse = response.getData()
             val validationPartial = validationPartialResponse.response.validationPartialErrorData.validationPartial
             return validationPartial.convertToUiModel()
         } else {

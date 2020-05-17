@@ -1,20 +1,12 @@
 package com.tokopedia.vouchercreation.create.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.vouchercreation.create.domain.model.VoucherSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
-import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherValidationPartial
-import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherValidationPartialResponse
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.VoucherTargetValidation
 import javax.inject.Inject
 
-class VoucherTargetValidationUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository
-) : UseCase<VoucherTargetValidation>() {
+class VoucherTargetValidationUseCase @Inject constructor(gqlRepository: GraphqlRepository) : BaseValidationUseCase<VoucherTargetValidation>(gqlRepository) {
 
     companion object {
         const val QUERY = "query validateVoucherTarget(\$is_public: Int!, \$code: String!, \$coupon_name: String!, \$source: String!) {\n" +
@@ -50,28 +42,8 @@ class VoucherTargetValidationUseCase @Inject constructor(
                 }
     }
 
-    var params: RequestParams = RequestParams.EMPTY
+    override val queryString: String = QUERY
 
-    override suspend fun executeOnBackground(): VoucherTargetValidation {
-        val request = GraphqlRequest(QUERY, VoucherValidationPartialResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+    override val validationClassType: Class<out VoucherTargetValidation> = VoucherTargetValidation::class.java
 
-        val error = response.getError(VoucherValidationPartialResponse::class.java)
-        if (error.isNullOrEmpty()) {
-            val validationPartialResponse: VoucherValidationPartialResponse = response.getData(VoucherValidationPartialResponse::class.java)
-            val validationPartial = validationPartialResponse.response.validationPartialErrorData.validationPartial
-            return mapToUiModel(validationPartial)
-        } else {
-            throw MessageErrorException(error.first().toString())
-        }
-    }
-
-    private fun mapToUiModel(voucherValidationPartial: VoucherValidationPartial) =
-            voucherValidationPartial.run {
-                VoucherTargetValidation(
-                        isPublicError,
-                        promoCodeError,
-                        couponNameError
-                )
-            }
 }
