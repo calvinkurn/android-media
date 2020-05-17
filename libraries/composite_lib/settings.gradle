@@ -17,12 +17,10 @@ buildCache {
 }
 
 include ":authentication"
-include ":akamai_bot_lib"
 include ":analytic_constant"
 include ":cache_api"
 include ":cache_manager"
 include ":global_config"
-include ":graphql"
 include ":url"
 include ":user_session"
 include ":use_case"
