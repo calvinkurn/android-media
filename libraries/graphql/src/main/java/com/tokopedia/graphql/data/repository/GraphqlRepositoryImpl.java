@@ -1,8 +1,10 @@
 package com.tokopedia.graphql.data.repository;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.GraphqlConstant;
@@ -28,6 +30,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * This class will responsible for data fetching either from cloud or cache based on provided GraphqlCacheStrategy
@@ -59,7 +62,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 return getCloudResponse(requests, cacheStrategy);
             } else if (cacheStrategy.getType() == CacheType.CACHE_ONLY) {
                 return mGraphqlCache.getResponse(requests, cacheStrategy);
-            } else if (cacheStrategy.getType() == CacheType.CLOUD_THEN_CACHE){
+            } else if (cacheStrategy.getType() == CacheType.CLOUD_THEN_CACHE) {
                 return getCloudResponse(requests, cacheStrategy)
                         .onErrorReturn(
                                 throwable -> getCachedResponse(requests, cacheStrategy).map(
@@ -92,6 +95,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                             errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                             }.getType()));
                         }
+                    } catch (JsonSyntaxException jse) {
+                        jse.printStackTrace();
+                        Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -135,7 +141,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 mRefreshRequests.add(requests.get(i));
                 requests.remove(requests.get(i));
             }
-        } catch (Exception e){
+        } catch (JsonSyntaxException jse) {
+            Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
