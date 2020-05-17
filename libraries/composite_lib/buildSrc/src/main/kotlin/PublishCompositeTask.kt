@@ -226,8 +226,14 @@ open class PublishCompositeTask : DefaultTask() {
         if (outputFile2.exists()) {
             outputFile2.delete()
         }
-        
-        val gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
+
+        var gitCommandAssembleString = ""
+        try {
+            gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
+        } catch (e:java.lang.Exception) {
+            gitCommandAssembleString = "gradle assembleDebug  -p $module --stacktrace"
+        }
+
         val gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
             return false
@@ -236,7 +242,12 @@ open class PublishCompositeTask : DefaultTask() {
             outputFile2.copyTo(outputFile, true)
         }
 
-        val gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
+        var gitCommandString = ""
+        try {
+            gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
+        } catch (e:java.lang.Exception) {
+            gitCommandString = "gradle artifactoryPublish  -p $module --stacktrace"
+        }
         val gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         print(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")
