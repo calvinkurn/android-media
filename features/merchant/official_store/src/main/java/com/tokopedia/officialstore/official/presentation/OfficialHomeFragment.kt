@@ -766,8 +766,8 @@ class OfficialHomeFragment :
         if (getOfficialStorePageLoadTimeCallback() != null) {
             getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
         }
-        setPerformanceListenerForRecyclerView(
-          
+        setPerformanceListenerForRecyclerView()
+
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel
