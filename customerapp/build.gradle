@@ -261,7 +261,6 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.feed)
@@ -276,6 +275,7 @@ dependencies {
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.event)
+    implementation project(rootProject.ext.features.eventPDP)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
@@ -312,7 +312,6 @@ dependencies {
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
@@ -400,6 +399,7 @@ dependencies {
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
@@ -411,7 +411,9 @@ dependencies {
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.agerestriction)
-    implementation project(rootProject.ext.libraries.promotionsTarget)
+
+    implementation project(rootProject.ext.features.promotionsTarget)
+    implementation project(rootProject.ext.features.findNative)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
     if (rootProject.ext.debugToolsEnabled) {
@@ -427,6 +429,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.iconNotification
+    implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -461,7 +466,6 @@ dependencies {
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.debugToolsDependencies.chuck

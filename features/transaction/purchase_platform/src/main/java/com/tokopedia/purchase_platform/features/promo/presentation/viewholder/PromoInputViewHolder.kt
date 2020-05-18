@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
@@ -48,6 +49,7 @@ class PromoInputViewHolder(private val view: View,
             textFieldInputPromo.setFirstIcon(R.color.white)
         }
 
+        textFieldInputPromo.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
         textFieldInputPromo.textFieldInput.setText(element.uiData.promoCode)
         textFieldInputPromo.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {

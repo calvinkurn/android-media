@@ -45,7 +45,7 @@ class ReviewViewHolder(
                 itemView.addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
                         HomePageTracking.homeReviewImpression(
-                                categoryListener.trackingQueue,
+                                categoryListener.getTrackingQueueObj(),
                                 suggestedProductReview.suggestedProductReview,
                                 adapterPosition,
                                 suggestedProductReview.suggestedProductReview.orderId,

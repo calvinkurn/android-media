@@ -1,22 +1,23 @@
 package com.tokopedia.kategori.view.fragments
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kategori.R
-import com.tokopedia.kategori.di.CategoryNavigationComponent
-
 import com.tokopedia.kategori.adapters.CategoryLevelOneAdapter
+import com.tokopedia.kategori.di.CategoryNavigationComponent
 import com.tokopedia.kategori.di.DaggerCategoryNavigationComponent
 import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.kategori.view.PerformanceMonitoringListener
 import com.tokopedia.kategori.view.activity.ActivityStateListener
 import com.tokopedia.kategori.view.activity.CategoryChangeListener
 import com.tokopedia.kategori.viewmodel.CategoryLevelOneViewModel
@@ -24,7 +25,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_categorylevel_one.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
@@ -37,6 +37,8 @@ class CategoryLevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     private val categoryList = ArrayList<CategoriesItem>()
 
     var activityStateListener: ActivityStateListener? = null
+
+    var performanceMonitoringListener: PerformanceMonitoringListener? = null
 
     private var selectedPosition = 0
 
@@ -87,7 +89,7 @@ class CategoryLevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         categoryBrowseViewModel = viewModelProvider.get(CategoryLevelOneViewModel::class.java)
-        categoryBrowseViewModel.bound()
+        categoryBrowseViewModel.bound(performanceMonitoringListener)
     }
 
     private fun addShimmerItems(categoryList: ArrayList<CategoriesItem>) {
@@ -115,6 +117,7 @@ class CategoryLevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                     master_list.adapter?.notifyDataSetChanged()
                     master_list.layoutManager?.scrollToPosition(selectedPosition)
                     initiateSlaveFragmentLoading(selectedPosition)
+                    stopCategoryPagePerformanceMonitoring()
                 }
                 is Fail -> {
                     (activity as CategoryChangeListener).onError(it.throwable)
@@ -122,6 +125,17 @@ class CategoryLevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
             }
 
         })
+    }
+
+    private fun stopCategoryPagePerformanceMonitoring() {
+        master_list.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        performanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                        performanceMonitoringListener?.stopPerformanceMonitoring()
+                        master_list.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 
     private fun getPositionFromIdentifier(categoryList: ArrayList<CategoriesItem>): Int {
@@ -138,7 +152,7 @@ class CategoryLevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
 
     fun reloadData() {
-        categoryBrowseViewModel.bound()
+        categoryBrowseViewModel.bound(performanceMonitoringListener)
     }
 
     private fun initiateSlaveFragmentLoading(position: Int) {

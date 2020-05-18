@@ -7,4 +7,10 @@
     <string name="path_event_search" translatable="false">/search</string>
     <string name="path_event_category" translatable="false">/category</string>
     <string name="path_event_location" translatable="false">/location</string>
+
+    <string name="path_event_pdp" translatable="false">/detail/.*\</string>
+    <string name="path_event_choose_package" translatable="false">/choose-package/.*\</string>
+
+    <string name="path_event_checkout" translatable="false">/checkout</string>
+    <string name="path_event_form" translatable="false">/form/.*\</string>
 </resources>

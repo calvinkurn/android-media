@@ -7,12 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -27,10 +21,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.events.EventModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.view.adapter.CardPagerAdapter;
@@ -238,8 +240,7 @@ public class EventsHomeActivity extends EventBaseActivity
             @Override
             public void onClick(View v) {
                 showProgressBar();
-                Intent intent = ((EventModuleRouter) getApplication()).
-                        getLoginIntent(getActivity());
+                Intent intent = RouteManager.getIntent(EventsHomeActivity.this, ApplinkConst.LOGIN);
                 navigateToActivityRequest(intent, 1099);
             }
         });

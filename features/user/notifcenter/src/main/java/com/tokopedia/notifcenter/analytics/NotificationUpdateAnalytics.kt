@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.analytics
 
+import android.util.Log
+import com.google.gson.Gson
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.data.entity.ProductData
@@ -68,11 +70,13 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     // multi product
     fun trackMultiProductListImpression(
             userId: String,
-            location: String = LABEL_LOCATION,
+            location: String = "notif_list",
+            productNumber: Int = 0,
             notification: BaseNotificationItemViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
+                productNumber = productNumber,
                 location = location
         )
         trackProductListImpression(
@@ -83,10 +87,31 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         )
     }
 
+    fun trackMultiProductListBottomSheetImpression(
+            userId: String,
+            shopId: String,
+            productNumber: Int = 0,
+            notificationId: String,
+            product: ProductData
+    ) {
+        val eventLabel = getImpressionTrackLabel(
+                notificationId = notificationId,
+                productNumber = productNumber,
+                location = LABEL_BOTTOM_SHEET_LOCATION
+        )
+        trackProductListBottomSheetImpression(
+                userId = userId,
+                eventLabel = eventLabel,
+                shopId = shopId,
+                index = productNumber.toString(),
+                product = product
+        )
+    }
+
     //single product
     fun trackProductListImpression(
             userId: String,
-            location: String = LABEL_LOCATION,
+            location: String = "notif_list",
             notification: BaseNotificationItemViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
@@ -111,16 +136,16 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         val impressions = arrayListOf<Map<String, Any>>()
         for ((index, product) in notification.products.withIndex()) {
             impressions.add(
-                    DataLayer.mapOf(
-                            "name", product.name,
-                            "id", product.productId,
-                            "price", product.price,
-                            "brand", "",
-                            "category", "",
-                            "variant", "",
-                            "list", "/notifcenter",
-                            "position", index,
-                            "dimension79", notification.userInfo.shopId
+                    mutableMapOf(
+                            "name" to product.name,
+                            "id" to product.productId,
+                            "price" to product.price,
+                            "brand" to "",
+                            "category" to "",
+                            "variant" to "",
+                            "list" to "/notifcenter",
+                            "position" to index,
+                            "dimension79" to notification.userInfo.shopId
                     )
             )
         }
@@ -129,6 +154,42 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                         EVENT_NAME, NAME_EVENT_PRODUCT_VIEW,
                         EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
                         EVENT_ACTION, eventAction,
+                        EVENT_LABEL, eventLabel,
+                        EVENT_USER_ID, userId,
+                        ECOMMERCE, DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "impressions", impressions
+                        )
+                )
+        )
+    }
+
+    private fun trackProductListBottomSheetImpression(
+            userId: String,
+            eventLabel: String,
+            index: String,
+            shopId: String,
+            product: ProductData
+    ) {
+        val impressions = arrayListOf<Map<String, Any>>()
+        impressions.add(
+                mutableMapOf(
+                        "name" to product.name,
+                        "id" to product.productId,
+                        "price" to product.price,
+                        "brand" to "",
+                        "category" to "",
+                        "variant" to "",
+                        "list" to "/notifcenter",
+                        "position" to index,
+                        "dimension79" to shopId
+                )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, NAME_EVENT_PRODUCT_VIEW,
+                        EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                        EVENT_ACTION, ACTION_VIEW_PRODUCT_THUMBNAIL,
                         EVENT_LABEL, eventLabel,
                         EVENT_USER_ID, userId,
                         ECOMMERCE, DataLayer.mapOf(
@@ -230,10 +291,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackMultiProductCheckoutCardClick(
             eventLocation: String = "notif_list",
+            productNumber: Int = 0,
             notification: NotificationItemViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
+                productNumber = productNumber,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -245,10 +308,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackMultiProductCheckoutCardClick(
             eventLocation: String = "notif_list",
+            productNumber: Int = 0,
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
+                productNumber = productNumber,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -428,10 +493,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackAtcOnMultiProductClick(
             eventLocation: String = "notif_list",
+            productNumber: Int = 0,
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
+                productNumber = productNumber,
                 location = eventLocation
         )
         trackAtcOnProductClick(
