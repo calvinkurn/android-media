@@ -15,8 +15,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -26,6 +28,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
 import com.tokopedia.tokopoints.view.util.*
+import javax.inject.Inject
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
     private var mContainerMain: ViewFlipper? = null
@@ -36,7 +39,9 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     private var mWrapperEmail: TkpdHintTextInputLayout? = null
     var tokoPointComponent: TokopointBundleComponent? = null
 
-    lateinit var mViewModel: SendGiftViewModel
+    @Inject
+    lateinit var factory : ViewModelFactory
+    private val mViewModel: SendGiftViewModel by lazy { ViewModelProviders.of(this,factory)[SendGiftViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
