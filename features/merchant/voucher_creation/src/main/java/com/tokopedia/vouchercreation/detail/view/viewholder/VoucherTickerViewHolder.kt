@@ -23,8 +23,6 @@ class VoucherTickerViewHolder(
 
     override fun bind(element: VoucherTickerUiModel) {
         with(itemView.tickerMvcVoucher) {
-            title = element.title
-            description = element.description
             nominal = element.nominalStr
             if (element.hasTooltip) {
                 setOnTooltipClick(onTooltipClick)

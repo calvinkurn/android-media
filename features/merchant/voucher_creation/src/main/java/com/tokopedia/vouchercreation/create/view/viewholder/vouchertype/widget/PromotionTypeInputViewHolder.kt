@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.mvc_type_budget_promotion_widget.view.*
 
 class PromotionTypeInputViewHolder(itemView: View,
                                    private val fragment: Fragment,
-                                   private val onNextStep: (VoucherImageType) -> Unit,
+                                   private val onNextStep: (VoucherImageType, Int, Int) -> Unit,
                                    private val onShouldChangeBannerValue: (VoucherImageType) -> Unit)
     : AbstractViewHolder<PromotionTypeInputUiModel>(itemView) {
 

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -30,13 +31,13 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
 import javax.inject.Inject
 
-class FreeDeliveryVoucherCreateFragment(private val onNextStep: (VoucherImageType) -> Unit,
+class FreeDeliveryVoucherCreateFragment(private val onNextStep: (VoucherImageType, Int, Int) -> Unit,
                                         private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                         private val viewContext: Context): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNextStep: (VoucherImageType) -> Unit = {},
+        fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit = {},
                            context: Context) = FreeDeliveryVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
 
@@ -183,7 +184,7 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: (VoucherImageTyp
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
-                                onNextStep(voucherImageType)
+                                onNextStep(voucherImageType, getMinimumPurchaseValue(), getVoucherQuotaValue())
                             } else {
                                 validation.run {
                                     benefitIdrError.setTextFieldError(freeDeliveryAmountTextFieldModel)
@@ -250,4 +251,13 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: (VoucherImageTyp
         }
     }
 
+    private fun getMinimumPurchaseValue() =
+            with(freeDeliveryTextFieldsList) {
+                get(indexOf(minimumPurchaseTextFieldModel)).currentValue.toZeroIfNull()
+            }
+
+    private fun getVoucherQuotaValue() =
+            with(freeDeliveryTextFieldsList) {
+                get(indexOf(voucherQuotaTextFieldModel)).currentValue.toZeroIfNull()
+            }
 }

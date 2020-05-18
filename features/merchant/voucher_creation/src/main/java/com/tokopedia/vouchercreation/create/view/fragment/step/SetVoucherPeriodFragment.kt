@@ -31,12 +31,12 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.SetVoucherPeriodViewM
 import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import javax.inject.Inject
 
-class SetVoucherPeriodFragment(private val onNext: () -> Unit,
+class SetVoucherPeriodFragment(private val onNext: (String, String, String, String) -> Unit,
                                private val getVoucherBanner: () -> BannerVoucherUiModel) : Fragment() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNext: () -> Unit,
+        fun createInstance(onNext: (String, String, String, String) -> Unit,
                            getVoucherBanner: () -> BannerVoucherUiModel) = SetVoucherPeriodFragment(onNext, getVoucherBanner)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
@@ -58,6 +58,11 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
     private var bannerBitmap: Bitmap? = null
 
     private var isWaitingForValidation = false
+
+    private var dummyStartDate = "2020-06-01"
+    private var dummyEndDate = "2020-06-30"
+    private var dummyStartHour = "12:00"
+    private var dummyEndHour = "12:00"
 
     override fun onResume() {
         super.onResume()
@@ -111,7 +116,7 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
                     is Success -> {
                         val validation = result.data
                         if (!validation.getIsHaveError()) {
-                            onNext()
+                            onNext(dummyStartDate, dummyStartHour, dummyEndDate, dummyEndHour)
                         } else {
                             if (validation.dateStartError.isNotBlank() && validation.hourStartError.isNotBlank()) {
                                 startDateTextField?.run {
@@ -150,8 +155,8 @@ class SetVoucherPeriodFragment(private val onNext: () -> Unit,
     }
 
     private fun setDummyDate() {
-        viewModel.setStartPeriod("2020-06-01", "12:00")
-        viewModel.setEndPeriod("2020-06-30", "12:00")
+        viewModel.setStartPeriod(dummyStartDate, dummyStartHour)
+        viewModel.setEndPeriod(dummyEndDate, dummyEndHour)
         startDateTextField?.textFieldInput?.setText("Kam, 01 Juni 2020, 12:00 WIB")
         endDateTextField?.textFieldInput?.setText("Sel, 30 Juni 2020, 12:00 WIB")
     }

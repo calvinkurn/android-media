@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.detail.model.InfoContainerUiModel
 import com.tokopedia.vouchercreation.detail.view.adapter.SubInfoAdapter
@@ -29,7 +30,7 @@ class InfoContainerViewHolder(
 
     override fun bind(element: InfoContainerUiModel) {
         with(itemView) {
-            tvMvcInfoTitle.text = element.title
+            tvMvcInfoTitle.text = context?.getString(element.titleRes).toBlankOrString()
             rvMvcSubInfo.layoutManager = getLinearLayoutManager(context)
             rvMvcSubInfo.adapter = subInfoAdapter
             tvMvcInfoCta.isVisible = element.hasCta

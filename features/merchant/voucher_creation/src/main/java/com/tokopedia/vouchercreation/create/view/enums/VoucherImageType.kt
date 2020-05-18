@@ -4,10 +4,10 @@ import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.R
 
-sealed class VoucherImageType {
-    data class FreeDelivery(val value: Int) : VoucherImageType()
-    data class Rupiah(val value: Int) : VoucherImageType()
-    data class Percentage(val value: Int, val percentage: Int) : VoucherImageType()
+sealed class VoucherImageType(val value: Int) {
+    class FreeDelivery(value: Int) : VoucherImageType(value)
+    class Rupiah(value: Int) : VoucherImageType(value)
+    class Percentage(value: Int, val percentage: Int) : VoucherImageType(value)
 }
 
 enum class VoucherImageTextType(@DimenRes val dimenRes: Int) {

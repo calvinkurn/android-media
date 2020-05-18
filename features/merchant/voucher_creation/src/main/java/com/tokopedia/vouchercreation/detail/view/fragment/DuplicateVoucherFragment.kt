@@ -111,19 +111,19 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
                 VoucherPreviewUiModel("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeAXT6zjKmrSVxiyxhNo36-3Rd7WNBtXjevcmrN9azk562wctF&usqp=CAU"),
                 TipsUiModel("<b>Voucher kamu akan tampil</b> di halaman detail produk dan halaman toko. Lihat Tampilan", "Lihat Tampilan"),
                 DividerUiModel(2),
-                InfoContainerUiModel("Info voucher", listOf(
-                        SubInfoItemUiModel("Target Voucher", "Khusus"),
-                        SubInfoItemUiModel("Nama Voucher", "Voucher Hura Test Doang"),
-                        SubInfoItemUiModel("Kode Promo", "TESTDOANG")
+                InfoContainerUiModel(R.string.mvc_detail_voucher_info, listOf(
+                        SubInfoItemUiModel(R.string.mvc_voucher_target, "Khusus"),
+                        SubInfoItemUiModel(R.string.mvc_detail_voucher_name, "Voucher Hura Test Doang"),
+                        SubInfoItemUiModel(R.string.mvc_detail_promo_code, "TESTDOANG")
                 ), DATA_KEY_VOUCHER_INFO, true),
                 DividerUiModel(2),
-                InfoContainerUiModel("Keuntungan voucher", listOf(
-                        SubInfoItemUiModel("Tipe Voucher", "Cashback"),
-                        SubInfoItemUiModel("Nominal Diskon", "10%"),
-                        SubInfoItemUiModel("Kuota", "100"),
-                        SubInfoItemUiModel("Syarat Pembelian", "Min. pembelian Rp50.000 - <br>Max. potongan Rp20.000")
+                InfoContainerUiModel(R.string.mvc_detail_voucher_benefit, listOf(
+                        SubInfoItemUiModel(R.string.mvc_type_of_voucher, "Cashback"),
+                        SubInfoItemUiModel(R.string.mvc_detail_discount_amount, "10%"),
+                        SubInfoItemUiModel(R.string.mvc_detail_quota, "100"),
+                        SubInfoItemUiModel(R.string.mvc_detail_terms, "Min. pembelian Rp50.000 - <br>Max. potongan Rp20.000")
                 ), DATA_KEY_VOUCHER_BENEFIT, true),
-                VoucherTickerUiModel("Estimasi Maks. Pengeluaran", "Dipotong dari transaksi selesai", "Rp3.000.000", true),
+                VoucherTickerUiModel("Rp3.000.000", true),
                 DividerUiModel(2),
                 WarningPeriodUiModel(DATA_KEY_VOUCHER_PERIOD),
                 DividerUiModel(8),

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -34,13 +35,13 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import javax.inject.Inject
 
-class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType) -> Unit,
+class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, Int, Int) -> Unit,
                                     private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                                     private val viewContext: Context) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(onNextStep: (VoucherImageType) -> Unit = {},
+        fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit,
                            context: Context) = CashbackVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
 
@@ -260,7 +261,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType) -
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
-                                onNextStep(voucherImageType)
+                                onNextStep(voucherImageType, getRupiahValue(rupiahMinimumPurchaseTextFieldModel), getRupiahValue(rupiahVoucherQuotaTextFieldModel))
                             } else {
                                 validation.run {
                                     benefitMaxError.setRupiahTextFieldError(rupiahMaximumDiscountTextFieldModel)
@@ -295,7 +296,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType) -
                     is Success -> {
                         val validation = result.data
                         if (!validation.getIsHaveError()) {
-                            onNextStep(voucherImageType)
+                            onNextStep(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
                         } else {
                             validation.run {
                                 benefitPercentError.setPercentageTextFieldError(discountAmountTextFieldModel)
@@ -420,5 +421,15 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType) -
             }
         }
     }
+
+    private fun getRupiahValue(voucherTextFieldUiModel: VoucherTextFieldUiModel) =
+            with(rupiahCashbackTextFieldList) {
+                get(indexOf(voucherTextFieldUiModel)).currentValue.toZeroIfNull()
+            }
+
+    private fun getPercentageValue(voucherTextFieldUiModel: VoucherTextFieldUiModel) =
+            with(percentageCashbackTextFieldList) {
+                get(indexOf(voucherTextFieldUiModel)).currentValue.toZeroIfNull()
+            }
 
 }

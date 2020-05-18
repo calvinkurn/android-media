@@ -183,7 +183,7 @@ class VoucherPreviewPainter(private val context: Context,
                                 }
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    (imageType as? VoucherImageType.FreeDelivery)?.value?.let {
+                                    imageType.value.let {
                                         canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
                                     }
                                     return false
@@ -201,7 +201,7 @@ class VoucherPreviewPainter(private val context: Context,
                                 }
 
                                 override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    (imageType as? VoucherImageType.Rupiah)?.value?.let {
+                                    imageType.value.let {
                                         canvas.drawPromotionLabel(resource, middleLabelY, it, VoucherValuePosition.CENTER)
                                     }
                                     return false

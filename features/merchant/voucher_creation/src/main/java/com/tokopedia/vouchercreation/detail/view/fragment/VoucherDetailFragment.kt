@@ -12,7 +12,6 @@ import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottom
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
 import com.tokopedia.vouchercreation.voucherlist.model.remote.MerchantVoucherModel
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 
 /**
@@ -112,21 +111,21 @@ class VoucherDetailFragment : BaseDetailFragment() {
                         context?.getString(R.string.mvc_detail_ticker_share).toBlankOrString(),
                         context?.getString(R.string.mvc_detail_ticker_see_tips).toBlankOrString()),
                 DividerUiModel(8),
-                InfoContainerUiModel("Info voucher", listOf(
-                        SubInfoItemUiModel("Target Voucher", "Khusus"),
-                        SubInfoItemUiModel("Nama Voucher", "Voucher Hura Test Doang"),
-                        SubInfoItemUiModel("Kode Promo", "TESTDOANG", true)
+                InfoContainerUiModel(R.string.mvc_detail_voucher_info, listOf(
+                        SubInfoItemUiModel(R.string.mvc_voucher_target, "Khusus"),
+                        SubInfoItemUiModel(R.string.mvc_detail_voucher_name, "Voucher Hura Test Doang"),
+                        SubInfoItemUiModel(R.string.mvc_detail_promo_code, "TESTDOANG")
                 )),
                 DividerUiModel(2),
-                InfoContainerUiModel("Keuntungan voucher", listOf(
-                        SubInfoItemUiModel("Tipe Voucher", "Cashback"),
-                        SubInfoItemUiModel("Nominal Diskon", "10%"),
-                        SubInfoItemUiModel("Kuota", "100"),
-                        SubInfoItemUiModel("Syarat Pembelian", "Min. pembelian Rp50.000 - <br>Max. potongan Rp20.000")
+                InfoContainerUiModel(R.string.mvc_detail_voucher_benefit, listOf(
+                        SubInfoItemUiModel(R.string.mvc_type_of_voucher, "Cashback"),
+                        SubInfoItemUiModel(R.string.mvc_detail_discount_amount, "10%"),
+                        SubInfoItemUiModel(R.string.mvc_detail_quota, "100"),
+                        SubInfoItemUiModel(R.string.mvc_detail_terms, "Min. pembelian Rp50.000 - <br>Max. potongan Rp20.000")
                 )),
                 DividerUiModel(2),
-                InfoContainerUiModel("Periode tampil", listOf(
-                        SubInfoItemUiModel("Periode", "17 Jan 2020, 08:30 WIB - <br>17 Feb 2020, 22:00 WIB")
+                InfoContainerUiModel(R.string.mvc_detail_voucher_period, listOf(
+                        SubInfoItemUiModel(R.string.mvc_period, "17 Jan 2020, 08:30 WIB - <br>17 Feb 2020, 22:00 WIB")
                 )),
                 DividerUiModel(8),
                 FooterButtonUiModel("Bagikan Voucher", ""),

@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -29,6 +30,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAn
 import com.tokopedia.vouchercreation.create.view.fragment.step.ReviewVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import javax.inject.Inject
@@ -60,10 +62,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
-            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep, ::onSetVoucherName))
+            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onSetVoucherName))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel))
-            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance())
+            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel))
         }
     }
 
@@ -106,6 +108,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     "",
                     "",
                     BANNER_BASE_URL)
+
+    private var voucherReviewUiModel = VoucherReviewUiModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -206,15 +210,41 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         viewModel.setNextStep()
     }
 
-    private fun onSetVoucherName(voucherName: String) {
+    private fun onNextStep(imageType: VoucherImageType, minPurchase: Int, quota: Int) {
+        bannerVoucherUiModel.imageType = imageType
+        voucherReviewUiModel.run {
+            voucherType = imageType
+            this.minPurchase = minPurchase
+            voucherQuota = quota
+        }
+        onNextStep()
+    }
+
+    private fun onNextStep(dateStart: String,
+                           dateEnd: String,
+                           hourStart: String,
+                           hourEnd: String) {
+        voucherReviewUiModel.run {
+            startDate = dateStart
+            endDate = dateEnd
+            startHour = hourStart
+            endHour = hourEnd
+        }
+        onNextStep()
+    }
+
+    private fun onSetVoucherName(@VoucherTargetType targetType: Int, voucherName: String, promoCode: String) {
         bannerVoucherUiModel.promoName = voucherName
+        voucherReviewUiModel.run {
+            this.targetType = targetType
+            this.voucherName = voucherName
+            this.promoCode = promoCode
+        }
+        viewModel.setNextStep()
     }
 
     private fun getBannerVoucherUiModel(): BannerVoucherUiModel = bannerVoucherUiModel
 
-    private fun onNextStep(imageType: VoucherImageType) {
-        bannerVoucherUiModel.imageType = imageType
-        onNextStep()
-    }
+    private fun getVoucherReviewUiModel(): VoucherReviewUiModel = voucherReviewUiModel
 
 }

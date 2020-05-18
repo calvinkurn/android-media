@@ -29,8 +29,7 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTarget
 import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import javax.inject.Inject
 
-class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
-                                    private val onSetVoucherName: (String) -> Unit)
+class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) -> Unit = { _,_,_ -> })
     : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>() {
 
     companion object {
@@ -38,8 +37,7 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
         private const val MIN_TEXTFIELD_LENGTH = 5
 
         @JvmStatic
-        fun createInstance(onNext: () -> Unit,
-                           onSetVoucherName: (String) -> Unit) = MerchantVoucherTargetFragment(onNext, onSetVoucherName)
+        fun createInstance(onNext: (Int, String, String) -> Unit) = MerchantVoucherTargetFragment(onNext)
     }
 
     @Inject
@@ -160,8 +158,7 @@ class MerchantVoucherTargetFragment(private val onNext: () -> Unit = {},
                     is Success -> {
                         val validation = result.data
                         if (!validation.checkHasError()) {
-                            onSetVoucherName(couponName)
-                            onNext()
+                            onNext(lastClickedVoucherDisplayType.targetType, couponName, promoCodeText)
                         } else {
                             validation.couponNameError.run {
                                 if (isNotBlank()) {

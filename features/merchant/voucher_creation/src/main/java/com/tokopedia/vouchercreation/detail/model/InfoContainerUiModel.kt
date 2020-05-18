@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.detail.model
 
+import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactory
 
 /**
@@ -7,7 +8,7 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
  */
 
 data class InfoContainerUiModel(
-        val title: String,
+        @StringRes val titleRes: Int,
         val informationList: List<SubInfoItemUiModel>,
         val dataKey: String = "",
         val hasCta: Boolean = false

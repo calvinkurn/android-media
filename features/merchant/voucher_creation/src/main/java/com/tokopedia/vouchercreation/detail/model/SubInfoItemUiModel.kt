@@ -1,11 +1,13 @@
 package com.tokopedia.vouchercreation.detail.model
 
+import androidx.annotation.StringRes
+
 /**
  * Created By @ilhamsuaib on 05/05/20
  */
 
 data class SubInfoItemUiModel(
-        val infoKey: String,
+        @StringRes val infoKey: Int,
         val infoValue: String,
         val canCopy: Boolean = false
 )

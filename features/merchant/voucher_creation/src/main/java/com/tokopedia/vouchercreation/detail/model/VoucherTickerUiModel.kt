@@ -7,8 +7,6 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
  */
 
 data class VoucherTickerUiModel(
-        val title: String,
-        val description: String,
         val nominalStr: String,
         val hasTooltip: Boolean = false
 ) : VoucherDetailUiModel {

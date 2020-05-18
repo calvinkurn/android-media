@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.detail.model.SubInfoItemUiModel
@@ -41,7 +42,7 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
     inner class SubInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(model: SubInfoItemUiModel) = with(itemView) {
-            tvMvcInfoKey.text = model.infoKey
+            tvMvcInfoKey.text = context?.getString(model.infoKey).toBlankOrString()
             tvMvcInfoValue.text = model.infoValue.parseAsHtml()
             imgMvcVoucherCopy.isVisible = model.canCopy
             imgMvcVoucherCopy.setOnClickListener {
