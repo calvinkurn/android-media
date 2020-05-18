@@ -29,5 +29,11 @@
     <color name="product_card_review_count_text_color">#7031353b</color>
 
     <color name="product_card_button_buy_background_color">#fa591d</color>
+    <color name="timer_sale_blue_gradient_start_colour">#32afff</color>
+    <color name="timer_sale_blue_gradient_end_colour">#84c6c9</color>
+    <color name="timer_sale_red_gradient_end_colour">#fa591d</color>
+    <color name="timer_sale_red_gradient_start_colour">#ef144a</color>
+    <color name="timer_sale_grey_gradient_start_colour">#6C727C</color>
+    <color name="timer_sale_grey_gradient_end_colour">#b5bbc5</color>
 
 </resources>

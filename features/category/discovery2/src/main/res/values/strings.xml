@@ -12,4 +12,7 @@
     <string name="discovery_please_log_in">Please Log in</string>
     <string name="review_count_format">(%d)</string>
     <string name="product_card_module_label_add_to_card">+ Keranjang</string>
+    <string name="discovery_sale_begins_in">Dimulai dalam</string>
+    <string name="discovery_sale_has_ended">Telah berakhir</string>
+    <string name="discovery_sale_ends_in">Berakhir dalam</string>
 </resources>

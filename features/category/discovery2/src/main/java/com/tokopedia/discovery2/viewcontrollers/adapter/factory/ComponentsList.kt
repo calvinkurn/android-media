@@ -45,4 +45,5 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardCarousel(R.layout.tokopoints_layout, ComponentNames.ProductCardCarousel.componentName),
     ProductCardItem(R.layout.product_item_layout, ComponentNames.ProductCardItem.componentName),
     PrductCardSprintSaleCarousel(R.layout.tokopoints_layout, ComponentNames.PrductCardSprintSaleCarousel.componentName),
+    TimerSprintSale(R.layout.discovery_timer_sprint_sale_layout, ComponentNames.TimerSprintSale.componentName)
 }
