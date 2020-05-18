@@ -119,12 +119,12 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
 
         when (element.first) {
             RATING -> {
+                view.setOnClickListener { listener.onReviewClick() }
                 textSocialProofView?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_rating_gold), null, null, null)
-                view.setOnClickListener { listener.onDiscussionClicked(getComponentTrackData(data)) }
                 textSocialProof = view.context.getString(R.string.rating_template_builder, rating.toString(), element.second.productThousandFormatted())
             }
             TALK -> {
-                view.setOnClickListener { listener.onReviewClick() }
+                view.setOnClickListener { listener.onDiscussionClicked(getComponentTrackData(data)) }
                 textSocialProof = view.context.getString(R.string.qna_template_builder, element.second.productThousandFormatted())
             }
             PAYMENT_VERIFIED -> {
