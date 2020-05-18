@@ -67,7 +67,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_password_old, container, false);
         etPassword = (EditText) view.findViewById(R.id.et_password);
         btnContinue = (TextView) view.findViewById(R.id.btn_continue);
         error = (TextView) view.findViewById(R.id.tv_error);
