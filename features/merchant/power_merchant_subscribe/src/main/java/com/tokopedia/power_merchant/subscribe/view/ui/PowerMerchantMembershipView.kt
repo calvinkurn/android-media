@@ -11,7 +11,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
-import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_REGULAR
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
 import kotlinx.android.synthetic.main.layout_power_merchant_membership.view.*
 
@@ -53,15 +53,15 @@ class PowerMerchantMembershipView: ConstraintLayout {
     }
 
     private fun showShopScoreDescription(shopScore: Int) {
-        textShopScoreDescription.text = if (shopScore >= MINIMUM_SCORE_ACTIVATE_REGULAR) {
-            context.getString(R.string.power_merchant_shop_description_good)
-        } else {
+        textShopScoreDescription.text = if (shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
             context.getString(R.string.power_merchant_shop_score_description_not_eligible)
+        } else {
+            context.getString(R.string.power_merchant_shop_score_description_good)
         }
     }
 
     private fun showPerformanceTipsBtn(shopScore: Int) {
-        val shouldShow = shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR
+        val shouldShow = shopScore < MINIMUM_SCORE_ACTIVATE_IDLE
         btnPerformanceTips.showWithCondition(shouldShow)
         btnPerformanceTips.setOnClickListener {
             goToWebViewPage(PowerMerchantUrl.URL_SHOP_PERFORMANCE_TIPS)
