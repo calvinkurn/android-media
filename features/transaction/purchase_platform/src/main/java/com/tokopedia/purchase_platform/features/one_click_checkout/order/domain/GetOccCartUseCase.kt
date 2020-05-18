@@ -24,7 +24,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
 
     fun createRequestParams(source: String): RequestParams {
         return RequestParams.create().apply {
-            putString("dummy", "1")
             putString(PARAM_SOURCE, source)
         }
     }
