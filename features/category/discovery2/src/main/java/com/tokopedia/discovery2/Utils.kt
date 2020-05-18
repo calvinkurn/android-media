@@ -12,6 +12,7 @@ class Utils {
     companion object {
         const val TIME_ZONE = "Asia/Jakarta"
         const val TIMER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm"
+        const val TIMER_SPRINT_SALE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val DEFAULT_BANNER_WIDTH = 800
         const val DEFAULT_BANNER_HEIGHT = 150
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1

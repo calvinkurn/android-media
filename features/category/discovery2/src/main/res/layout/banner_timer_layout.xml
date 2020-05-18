@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="@id/hours_layout"
         app:layout_constraintEnd_toStartOf="@id/minutes_layout"
         app:layout_constraintStart_toEndOf="@id/hours_layout"
-        app:layout_constraintTop_toTopOf="@id/minutes_layout"
+        app:layout_constraintTop_toTopOf="@id/hours_layout"
         app:layout_constraintVertical_bias="0.23" />
 
     <com.tokopedia.unifyprinciples.Typography
