@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sticky Login</string>
+  
+  <string name="sticky_page_home">home</string>
+  <string name="sticky_page_pdp">home</string>
+  <string name="sticky_page_shop">home</string>
+</resources>
