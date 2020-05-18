@@ -8,7 +8,7 @@ import javax.inject.Inject
 class CashbackRupiahValidationUseCase @Inject constructor(gqlRepository: GraphqlRepository): BaseValidationUseCase<CashbackRupiahValidation>(gqlRepository) {
 
     companion object {
-        const val QUERY = "query ValidateCashbackIdr (\$benefit_max: Int!, \$min_purchase: Int!, \$quota: Int!) {\n" +
+        const val QUERY = "query ValidateCashbackIdr (\$benefit_max: Int!, \$min_purchase: Int!, \$quota: Int!, \$source: String!) {\n" +
                 "  VoucherValidationPartial(VoucherValidationPartialInput: \n" +
                 "    {\n" +
                 "      benefit_type: \"idr\",\n" +
@@ -16,7 +16,7 @@ class CashbackRupiahValidationUseCase @Inject constructor(gqlRepository: Graphql
                 "      benefit_max: \$benefit_max,\n" +
                 "      min_purchase: \$min_purchase,\n" +
                 "      quota: \$quota,\n" +
-                "      source : \"android-sellerapp\",\n" +
+                "      source : \$source\n" +
                 "    }) {\n" +
                 "    header{\n" +
                 "      process_time\n" +

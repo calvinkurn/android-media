@@ -8,7 +8,7 @@ import javax.inject.Inject
 class FreeDeliveryValidationUseCase @Inject constructor(gqlRepository: GraphqlRepository): BaseValidationUseCase<FreeDeliveryValidation>(gqlRepository) {
 
     companion object {
-        const val QUERY = "query ValidateFreeDelivery (\$benefit_idr: Int!, \$min_purchase: Int!, \$quota: Int!) {\n" +
+        const val QUERY = "query ValidateFreeDelivery (\$benefit_idr: Int!, \$min_purchase: Int!, \$quota: Int!, \$source: String!) {\n" +
                 "  VoucherValidationPartial(VoucherValidationPartialInput: \n" +
                 "    {\n" +
                 "      benefit_type: \"idr\",\n" +
@@ -16,7 +16,7 @@ class FreeDeliveryValidationUseCase @Inject constructor(gqlRepository: GraphqlRe
                 "      benefit_idr: \$benefit_idr,\n" +
                 "      min_purchase: \$min_purchase,\n" +
                 "      quota: \$quota,\n" +
-                "      source : \"android-sellerapp\",\n" +
+                "      source : \$source\n" +
                 "    }) {\n" +
                 "    header{\n" +
                 "      process_time\n" +
