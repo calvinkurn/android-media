@@ -77,7 +77,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     private static final int REQUEST_AUTO_LOGIN = 101;
     private static final int REQUEST_ACTIVATE_ACCOUNT = 102;
 
-    int PASSWORD_MINIMUM_LENGTH = 6;
+    int PASSWORD_MINIMUM_LENGTH = 10;
 
     String NAME = "NAME";
     String PASSWORD = "PASSWORD";
@@ -482,7 +482,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     boolean isCanRegister(String name, String email, String password) {
         boolean isValid = true;
 
-        int PASSWORD_MINIMUM_LENGTH = 6;
+        int PASSWORD_MINIMUM_LENGTH = 10;
         if (TextUtils.isEmpty(password)) {
             isValid = false;
         } else if (password.length() < PASSWORD_MINIMUM_LENGTH) {
@@ -568,7 +568,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     }
 
     public void showPasswordHint() {
-        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_6_character));
+        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_10_character));
     }
 
     public void showNameHint() {

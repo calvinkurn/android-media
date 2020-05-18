@@ -23,6 +23,7 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.addchangepassword.di.DaggerAddChangePasswordComponent;
 import com.tokopedia.session.addchangepassword.view.listener.AddPasswordListener;
 import com.tokopedia.session.addchangepassword.view.presenter.AddPasswordPresenter;
+import com.tokopedia.unifycomponents.TextFieldUnify;
 
 import javax.inject.Inject;
 
@@ -42,8 +43,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
     @Inject
     AddPasswordPresenter presenter;
 
-    private EditText etPassword;
-    private TextView message, error;
+    private TextFieldUnify etPassword;
     private TextView btnContinue;
 
     private TkpdProgressDialog progressDialog;
@@ -68,10 +68,8 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_password, container, false);
-        etPassword = (EditText) view.findViewById(R.id.et_password);
+        etPassword = view.findViewById(R.id.et_password);
         btnContinue = (TextView) view.findViewById(R.id.btn_continue);
-        error = (TextView) view.findViewById(R.id.tv_error);
-        message = (TextView) view.findViewById(R.id.tv_message);
         return view;
     }
 
@@ -90,7 +88,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
 
     private void setViewListener() {
 
-        etPassword.addTextChangedListener(new TextWatcher() {
+        etPassword.getTextFieldInput().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -110,7 +108,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.submitPassword(etPassword.getText().toString());
+                presenter.submitPassword(etPassword.getTextFieldInput().getText().toString());
             }
         });
     }
@@ -125,13 +123,23 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
         disableButton(btnContinue);
     }
 
+    @Override
+    public void setErrorMessage(String msg) {
+        if (!msg.isEmpty()) {
+            etPassword.setError(true);
+            etPassword.setMessage(msg);
+        } else {
+            etPassword.setError(false);
+            etPassword.setMessage("");
+        }
+    }
 
     @Override
     public void onErrorSubmitPassword(String error) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.submitPassword(etPassword.getText().toString());
+                presenter.submitPassword(etPassword.getTextFieldInput().getText().toString());
             }
         }).showRetrySnackbar();
     }
