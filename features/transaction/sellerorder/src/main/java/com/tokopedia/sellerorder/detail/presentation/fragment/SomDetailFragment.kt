@@ -284,7 +284,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private fun loadDetail() {
         activity?.let { SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId) }
         somDetailViewModel.loadDetailOrder(
-            GraphqlHelper.loadRawString(resources, R.raw.gql_som_detail), orderId)
+            GraphqlHelper.loadRawString(activity?.resources, R.raw.gql_som_detail), orderId)
     }
 
     override fun getScreenName(): String = ""
@@ -1278,7 +1278,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun doRejectOrder(orderRejectRequest: SomRejectRequest) {
-        somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+        somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.gql_som_reject_order), orderRejectRequest)
         SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequest.reason)
     }
 
