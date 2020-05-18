@@ -184,6 +184,25 @@ class ProductStockHandlerDialog(
         viewModel.addProductToCart(mapToProductData(element))
     }
 
+    override fun productStockListCardImpression(data: ProductHighlightViewBean, index: Int) {
+        analytics.productStockListCardImpression(
+                element.notificationId,
+                mapToProductData(data),
+                userSession.userId,
+                element.getAtcProduct()?.shop?.id.toString(),
+                index
+        )
+    }
+
+    override fun productStockListCardClicked(data: ProductHighlightViewBean) {
+        analytics.productStockListCardClicked(
+                element.notificationId,
+                mapToProductData(data),
+                userSession.userId,
+                element.getAtcProduct()?.shop?.id.toString()
+        )
+    }
+
     private fun onProductCardClicked(product: ProductData) {
         analytics.productCardClicked(element, userSession.userId)
         RouteManager.route(

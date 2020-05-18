@@ -35,28 +35,31 @@ class ProductHighlightViewHolder(
 
     fun bind(element: ProductHighlightViewBean?) {
         if (element == null) return
-        container.setOnClickListener { productDetailClicked(element.id.toString()) }
-        viewCampaignTag.setCampaign(mapToCampaign(element))
+        // impression tracker
+        listener.productStockListCardImpression(element, adapterPosition)
 
+        // content
         imgProduct.loadImage(element.imageUrl)
         txtProductName.text = element.name
         txtProductPrice.text = element.price
+        viewCampaignTag.setCampaign(mapToCampaign(element))
 
         if (element.isFreeOngkir && element.freeOngkirIcon.isNotEmpty()) {
             imgCampaign.loadImage(element.freeOngkirIcon)
             imgCampaign.show()
         }
 
-        btnAddToCart.setOnClickListener {
-            listener.onAddToCartProduct(element)
-        }
+        container.setOnClickListener { productDetailClicked(element) }
+        btnAddToCart.setOnClickListener { listener.onAddToCartProduct(element) }
     }
 
-    private fun productDetailClicked(productId: String) {
+    private fun productDetailClicked(element: ProductHighlightViewBean) {
+        listener.productStockListCardClicked(element)
+
         RouteManager.route(
                 itemView.context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
+                element.id.toString()
         )
     }
 

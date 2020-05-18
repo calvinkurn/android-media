@@ -90,6 +90,81 @@ class StockHandlerAnalytics {
         send(dataTracker)
     }
 
+    fun productStockListCardImpression(
+            notificationId: String,
+            product: ProductData,
+            userId: String,
+            shopId: String,
+            productIndex: Int
+    ) {
+        val eventName = "productView"
+        val eventCategory = "notif center"
+        val eventAction = "view on restock product list"
+
+        val impressions = hashMapOf(
+                "name" to product.name,
+                "id" to product.productId,
+                "price" to product.price,
+                "brand" to "",
+                "category" to "",
+                "variant" to "",
+                "list" to "/notifcenter",
+                "position" to productIndex.toString(),
+                "dimension79" to shopId
+        )
+        val ecommerce = mapOf(
+                KEY_CURRENCY_CODE to VALUE_CURRENCY_CODE,
+                KEY_IMPRESSIONS to listOf(impressions)
+        )
+        val dataTracker = hashMapOf(
+                KEY_EVENT_NAME to eventName,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to notificationId,
+                KEY_USER_ID to userId,
+                KEY_ECOMMERCE to ecommerce
+        )
+        send(dataTracker)
+    }
+
+    fun productStockListCardClicked(
+            notificationId: String,
+            productData: ProductData,
+            userId: String,
+            shopId: String
+    ) {
+        val eventName = "productClick"
+        val eventCategory = "notif center"
+        val eventAction = "click on restock product list"
+
+        val product = hashMapOf(
+                "name" to productData.name,
+                "id" to productData.productId,
+                "price" to productData.price,
+                "brand" to "",
+                "category" to "",
+                "variant" to "",
+                "list" to "/notifcenter",
+                "position" to "0",
+                "dimension79" to shopId
+        )
+        val click = mapOf(
+                KEY_ACTION_FIELD to mapOf(
+                        KEY_LIST to "/notifcenter"
+                ),
+                KEY_PRODUCTS to listOf(product)
+        )
+        val dataTracker = hashMapOf(
+                KEY_EVENT_NAME to eventName,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to notificationId,
+                KEY_USER_ID to userId,
+                KEY_ECOMMERCE to mapOf(KEY_CLICK to click)
+        )
+        send(dataTracker)
+    }
+
     fun addToCardClicked(
             notificationId: String,
             product: ProductData,
