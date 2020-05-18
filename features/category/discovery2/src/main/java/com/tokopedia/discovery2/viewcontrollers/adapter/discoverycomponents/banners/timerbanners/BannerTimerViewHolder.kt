@@ -83,6 +83,11 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         bannerTimerViewModel.stopTimer()
     }
 
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        bannerTimerViewModel.startTimer()
+    }
+
     private fun setTimerUI(componentItem: ComponentsItem?, timeType: Int) {
         when (timeType) {
             DAYS -> {

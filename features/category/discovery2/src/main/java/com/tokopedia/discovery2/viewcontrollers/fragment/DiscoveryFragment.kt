@@ -56,12 +56,12 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_discovery, container, false)
+        return inflater.inflate(R.layout.fragment_discovery, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView(view)
-        mDiscoveryViewModel = (activity as DiscoveryActivity).getViewModel()
-        mDiscoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
-        pageEndPoint = mDiscoveryViewModel.pageIdentifier
-        return view
     }
 
     private fun initView(view: View) {
@@ -78,14 +78,14 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mPageComponentRecyclerView.addOnChildAttachStateChangeListener(this)
     }
 
-    override fun onDetach() {
-        mPageComponentRecyclerView.removeOnChildAttachStateChangeListener(this)
-        super.onDetach()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mDiscoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+//        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
+        mDiscoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        pageEndPoint = mDiscoveryViewModel.pageIdentifier
         mDiscoveryViewModel.getDiscoveryData()
+
         setUpObserver()
         mPageComponentRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -101,7 +101,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     }
 
     private fun setUpObserver() {
-        mDiscoveryViewModel.getDiscoveryResponseList().observe(this, Observer {
+        mDiscoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     mDiscoveryRecycleAdapter.setDataList(it.data)
@@ -109,7 +109,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
             }
         })
 
-        mDiscoveryViewModel.getDiscoveryFabLiveData().observe(this, Observer {
+        mDiscoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.data?.get(0)?.let { data ->
@@ -124,7 +124,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
             }
         })
 
-        mDiscoveryViewModel.getDiscoveryPageInfo().observe(this, Observer {
+        mDiscoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     ivSearch.show()
@@ -150,7 +150,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                 }
             }
             ivSearch.setOnClickListener {
-                if(data.searchApplink?.isNotEmpty() == true) {
+                if (data.searchApplink?.isNotEmpty() == true) {
                     RouteManager.route(context, data.searchApplink)
                 } else {
                     RouteManager.route(context, Utils.SEARCH_DEEPLINK)
@@ -221,5 +221,10 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                     requestCode, permissions,
                     grantResults)
         }
+    }
+
+    override fun onDetach() {
+        mPageComponentRecyclerView.removeOnChildAttachStateChangeListener(this)
+        super.onDetach()
     }
 }

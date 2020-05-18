@@ -23,7 +23,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
     private lateinit var mProductCarouselRecyclerView: RecyclerView
     private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
-    private val discoveryProgressBar: ProgressBar = itemView.findViewById(R.id.discovery_progress_bar)
+//    private val discoveryProgressBar: ProgressBar = itemView.findViewById(R.id.discovery_progress_bar)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
@@ -33,7 +33,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
         if (fragment.last){
             mProductRevampComponentViewModel.fetchProductCarouselDataSecond((fragment as DiscoveryFragment).pageEndPoint)
-            discoveryProgressBar.show()
+//            discoveryProgressBar.show()
             fragment.last = false
 
         }

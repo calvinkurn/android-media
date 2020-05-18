@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         editTextUser.setText("elly.susilowati+089@tokopedia.com")
         editTextPassword.setText("tokopedia2015")
         val loginButton = findViewById<Button>(R.id.loginButton)
+//        goTo()
 
         applinkEditText = findViewById<EditText>(R.id.editTextApplink)
 

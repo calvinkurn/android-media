@@ -216,6 +216,24 @@ data class DataItem(
         @SerializedName("small_image_url_mobile")
         var smallImageUrlMobile: String? = "",
 
+        @SerializedName("ongoing_campaign_start_time")
+        val ongoingCampaignStartTime: String? = "",
+
+        @SerializedName("ongoing_campaign_end_time")
+        val ongoingCampaignEndTime: String? = "",
+
+        @SerializedName("upcoming_campaign_start_time")
+        val upcomingCampaignStartTime: String? = "",
+
+        @SerializedName("upcoming_campaign_end_time")
+        val upcomingCampaignEndTime: String? = "",
+
+        @SerializedName("timer_font_color")
+        val timerFontColor: String? = "",
+
+        @SerializedName("timer_box_color")
+        val timerBoxColor: String? = "",
+
         @SerializedName("cashback")
         val cashback: String? = "",
 
