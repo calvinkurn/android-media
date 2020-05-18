@@ -33,32 +33,62 @@ class ChatListStickerUseCase @Inject constructor(
         launchCatchError(dispatchers.IO,
                 {
                     val params = generateParams(stickerUID)
+                    val isPreviousRequestSuccess = getPreviousRequestState(stickerUID)
                     val cache = getCacheStickerGroup(stickerUID)?.also {
                         withContext(dispatchers.Main) {
-                            if (needUpdate) {
-                                onLoading(it.chatBundleSticker.list)
-                            } else {
+                            if (!needUpdate && isPreviousRequestSuccess) {
                                 onSuccess(it.chatBundleSticker.list)
+                            } else {
+                                onLoading(it.chatBundleSticker.list)
                             }
                         }
                     }
-                    if (cache != null && !needUpdate) return@launchCatchError
+                    if (cache != null && !needUpdate && isPreviousRequestSuccess) return@launchCatchError
                     val response = gqlUseCase.apply {
                         setTypeClass(StickerResponse::class.java)
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     saveToCache(stickerUID, response)
+                    saveSuccessRequestState(stickerUID)
                     withContext(dispatchers.Main) {
                         onSuccess(response.chatBundleSticker.list)
                     }
                 },
                 { exception ->
                     withContext(dispatchers.Main) {
+                        saveFailRequestState(stickerUID)
                         onError(exception)
                     }
                 }
         )
+    }
+
+    private fun getPreviousRequestState(stickerUID: String): Boolean {
+        try {
+            val stateCacheKey = generateStateCacheKey(stickerUID)
+            return cacheManager.getPreviousState(stateCacheKey)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
+
+    private fun saveSuccessRequestState(stickerUID: String) {
+        saveRequestState(stickerUID, true)
+    }
+
+    private fun saveFailRequestState(stickerUID: String) {
+        saveRequestState(stickerUID, false)
+    }
+
+    private fun saveRequestState(stickerUID: String, isSuccess: Boolean) {
+        val stateCacheKey = generateStateCacheKey(stickerUID)
+        cacheManager.saveState(stateCacheKey, isSuccess)
+    }
+
+    private fun generateStateCacheKey(stickerUID: String): String {
+        return "state - $stickerUID"
     }
 
     fun safeCancel() {
