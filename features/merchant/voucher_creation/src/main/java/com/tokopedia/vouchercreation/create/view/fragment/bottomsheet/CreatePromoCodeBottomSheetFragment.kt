@@ -28,7 +28,8 @@ import javax.inject.Inject
 
 class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                                          val onNextClick: (String) -> Unit = {},
-                                         val getPromoCode: () -> String) : BottomSheetUnify(), VoucherBottomView {
+                                         val getPromoCode: () -> String,
+                                         val getPromoCodePrefix: () -> String) : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
         private val TEXFIELD_ALERT_MINIMUM = R.string.mvc_create_alert_minimum
@@ -39,8 +40,9 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
 
         fun createInstance(context: Context?,
                            onNextClick: (String) -> Unit,
-                           getPromoCode: () -> String = {""}) : CreatePromoCodeBottomSheetFragment {
-            return CreatePromoCodeBottomSheetFragment(context, onNextClick, getPromoCode).apply {
+                           getPromoCode: () -> String = {""},
+                           getPromoCodePrefix: () -> String) : CreatePromoCodeBottomSheetFragment {
+            return CreatePromoCodeBottomSheetFragment(context, onNextClick, getPromoCode, getPromoCodePrefix).apply {
                 context?.run {
                     val view = View.inflate(this, R.layout.mvc_create_promo_code_bottom_sheet_view, null)
                     setChild(view)
@@ -126,6 +128,11 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
 
     private fun setupView() {
         createPromoCodeTextField?.run {
+            getPromoCodePrefix().run {
+                if (isNotBlank()) {
+                    prependText(this)
+                }
+            }
             textFieldInput.run {
                 filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
                 setOnFocusChangeListener { _, hasFocus ->

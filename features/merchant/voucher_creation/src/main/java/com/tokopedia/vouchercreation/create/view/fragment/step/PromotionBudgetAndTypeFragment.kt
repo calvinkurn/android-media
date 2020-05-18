@@ -27,6 +27,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExp
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
@@ -36,20 +37,16 @@ import javax.inject.Inject
 
 class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ ->  },
                                      private val getVoucherUiModel: () -> BannerVoucherUiModel,
-                                     private val setVoucherBitmap: (Bitmap) -> Unit)
+                                     private val setVoucherBitmap: (Bitmap) -> Unit,
+                                     private val getBannerBaseUiModel: () -> BannerBaseUiModel)
     : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
                            getVoucherUiModel: () -> BannerVoucherUiModel,
-                           setVoucherBitmap: (Bitmap) -> Unit) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap)
-
-        private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
-        private const val FREE_DELIVERY = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
-        private const val CASHBACK = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
-        private const val CASHBACK_UNTIL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
-
+                           setVoucherBitmap: (Bitmap) -> Unit,
+                           getBannerBaseUiModel: () -> BannerBaseUiModel) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap, getBannerBaseUiModel)
     }
 
     @Inject
@@ -166,7 +163,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, 
         bannerImage?.run {
             Glide.with(context)
                     .asDrawable()
-                    .load(BANNER_BASE_URL)
+                    .load(getBannerBaseUiModel().bannerBaseUrl)
                     .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -177,7 +174,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, 
                             val bitmap = resource.toBitmap()
                             voucherPreviewBitmap = bitmap
                             if (painter == null) {
-                                painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner)
+                                painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner, getBannerBaseUiModel())
                             }
                             bannerVoucherUiModel.let {
                                 painter?.drawInitial(it)
@@ -192,12 +189,12 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, 
     private fun onShouldChangeBannerValue(voucherImageType: VoucherImageType) {
         if (isReadyToDraw) {
             val labelUrl = when(voucherImageType) {
-                is VoucherImageType.FreeDelivery -> FREE_DELIVERY
-                else -> CASHBACK
+                is VoucherImageType.FreeDelivery -> getBannerBaseUiModel().freeDeliveryLabelUrl
+                else -> getBannerBaseUiModel().cashbackLabelUrl
             }
             activity?.runOnUiThread {
                 if (voucherImageType is VoucherImageType.Percentage) {
-                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, CASHBACK_UNTIL)
+                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, getBannerBaseUiModel().cashbackUntilLabelUrl)
                 } else {
                     bannerInfo?.setPreviewInfo(voucherImageType, labelUrl)
                 }

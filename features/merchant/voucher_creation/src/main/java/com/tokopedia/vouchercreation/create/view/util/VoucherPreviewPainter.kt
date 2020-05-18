@@ -18,17 +18,15 @@ import com.tokopedia.vouchercreation.create.view.enums.CurrencyScale
 import com.tokopedia.vouchercreation.create.view.enums.ValueScaleType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 
 class VoucherPreviewPainter(private val context: Context,
                             private val bitmap: Bitmap,
-                            var onSuccessGetBitmap: (Bitmap) -> Unit = { _ -> }) {
+                            var onSuccessGetBitmap: (Bitmap) -> Unit = { _ -> },
+                            private val bannerBaseUiModel: BannerBaseUiModel) {
 
     companion object {
-        private const val FREE_DELIVERY = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
-        private const val CASHBACK = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
-        private const val CASHBACK_UNTIL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
-
         private const val ASTERISK = "*"
         private const val PERCENT = "%"
     }
@@ -176,7 +174,7 @@ class VoucherPreviewPainter(private val context: Context,
                 is VoucherImageType.FreeDelivery -> {
                     Glide.with(context)
                             .asBitmap()
-                            .load(FREE_DELIVERY)
+                            .load(bannerBaseUiModel.freeDeliveryLabelUrl)
                             .listener(object : RequestListener<Bitmap> {
                                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
                                     return false
@@ -194,7 +192,7 @@ class VoucherPreviewPainter(private val context: Context,
                 is VoucherImageType.Rupiah -> {
                     Glide.with(context)
                             .asBitmap()
-                            .load(CASHBACK)
+                            .load(bannerBaseUiModel.cashbackLabelUrl)
                             .listener(object : RequestListener<Bitmap> {
                                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
                                     return false
@@ -213,7 +211,7 @@ class VoucherPreviewPainter(private val context: Context,
                 is VoucherImageType.Percentage -> {
                     Glide.with(context)
                             .asBitmap()
-                            .load(CASHBACK)
+                            .load(bannerBaseUiModel.cashbackLabelUrl)
                             .listener(object : RequestListener<Bitmap> {
                                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
                                     return false
@@ -230,7 +228,7 @@ class VoucherPreviewPainter(private val context: Context,
 
                     Glide.with(context)
                             .asBitmap()
-                            .load(CASHBACK_UNTIL)
+                            .load(bannerBaseUiModel.cashbackUntilLabelUrl)
                             .listener(object : RequestListener<Bitmap> {
                                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
                                     return false

@@ -83,7 +83,7 @@ class DownloadVoucherBottomSheet(
                         isSelected = true,
                         ratioStr = parent.context.getString(R.string.mvc_ratio_16_9),
                         description = parent.context.getString(R.string.mvc_for_post_instagram_story),
-                        downloadVoucherType = DownloadVoucherType.InstaStory("https://ecs7.tokopedia.net/img/attachment/2020/4/8/8967394/8967394_227e871b-f414-4d7d-b1be-2db25d516f19"),
+                        downloadVoucherType = DownloadVoucherType.InstaStory("https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_story.jpg"),
                         onImageOpened = ::onImageExpanded
                 ),
                 DownloadVoucherUiModel(

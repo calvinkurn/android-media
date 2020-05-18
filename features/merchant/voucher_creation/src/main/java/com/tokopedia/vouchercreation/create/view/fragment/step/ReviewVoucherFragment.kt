@@ -14,11 +14,15 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherRe
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
 
-class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherReviewUiModel) : BaseDetailFragment() {
+class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherReviewUiModel,
+                            private val getToken: () -> String,
+                            private val getIgPostVoucherUrl: () -> String) : BaseDetailFragment() {
 
     companion object {
         @JvmStatic
-        fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel): ReviewVoucherFragment = ReviewVoucherFragment(getVoucherReviewUiModel)
+        fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel,
+                           getToken: () -> String,
+                           getIgPostVoucherUrl: () -> String): ReviewVoucherFragment = ReviewVoucherFragment(getVoucherReviewUiModel, getToken, getIgPostVoucherUrl)
 
         private const val VOUCHER_INFO_DATA_KEY = "voucher_info"
         private const val VOUCHER_BENEFIT_DATA_KEY = "voucher_benefit"
@@ -68,10 +72,11 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         return PostVoucherUiModel(
                 VoucherImageType.FreeDelivery(0),
                 "harusnyadaristep1",
-                "Ini Harusnya dari Backend",
                 "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
+                "Ini Harusnya dari Backend",
                 "CODETEST",
-                "10 Mei 2020")
+                "10 Mei 2020",
+                getIgPostVoucherUrl())
     }
 
     private fun getVoucherInfoSection(@VoucherTargetType targetType: Int,

@@ -5,12 +5,21 @@ import androidx.annotation.IntRange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class CreateMerchantVoucherStepsViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher
+        @Named("Main") dispatcher: CoroutineDispatcher,
+        private val initiateVoucherUseCase: InitiateVoucherUseCase
 ) : BaseViewModel(dispatcher) {
 
     private var maxPosition: Int? = null
@@ -24,6 +33,10 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     private val mVoucherPreviewBitmapLiveData = MutableLiveData<Bitmap>()
     val voucherPreviewBitmapLiveData : LiveData<Bitmap>
         get() = mVoucherPreviewBitmapLiveData
+
+    private val mInitiateVoucherLiveData = MutableLiveData<Result<InitiateVoucherUiModel>>()
+    val initiateVoucherLiveData: LiveData<Result<InitiateVoucherUiModel>>
+        get() = mInitiateVoucherLiveData
 
     fun setStepPosition(@IntRange(from = 0) stepPosition: Int) {
         val max = maxPosition
@@ -63,6 +76,19 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
 
     fun setVoucherPreviewBitmap(bitmap: Bitmap) {
         mVoucherPreviewBitmapLiveData.value = bitmap
+    }
+
+    fun initiateVoucherPage() {
+        launchCatchError(
+                block = {
+                    mInitiateVoucherLiveData.value = Success(withContext(Dispatchers.IO) {
+                        initiateVoucherUseCase.executeOnBackground()
+                    })
+                },
+                onError = {
+                    mInitiateVoucherLiveData.value = Fail(it)
+                }
+        )
     }
 
 }

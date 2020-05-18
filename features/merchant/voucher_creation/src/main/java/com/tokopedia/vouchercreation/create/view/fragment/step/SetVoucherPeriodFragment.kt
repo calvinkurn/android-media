@@ -25,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.viewmodel.SetVoucherPeriodViewModel
@@ -32,12 +33,14 @@ import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import javax.inject.Inject
 
 class SetVoucherPeriodFragment(private val onNext: (String, String, String, String) -> Unit,
-                               private val getVoucherBanner: () -> BannerVoucherUiModel) : Fragment() {
+                               private val getVoucherBanner: () -> BannerVoucherUiModel,
+                               private val getBannerBaseUiModel: () -> BannerBaseUiModel) : Fragment() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: (String, String, String, String) -> Unit,
-                           getVoucherBanner: () -> BannerVoucherUiModel) = SetVoucherPeriodFragment(onNext, getVoucherBanner)
+                           getVoucherBanner: () -> BannerVoucherUiModel,
+                           getBannerBaseUiModel: () -> BannerBaseUiModel) = SetVoucherPeriodFragment(onNext, getVoucherBanner, getBannerBaseUiModel)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
     }
@@ -176,7 +179,7 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
                             override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                                 activity?.runOnUiThread {
                                     val bitmap = resource.toBitmap()
-                                    val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetBitmap)
+                                    val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetBitmap, getBannerBaseUiModel())
                                     painter.drawFull(bannerVoucherUiModel, bitmap)
                                 }
                                 return false

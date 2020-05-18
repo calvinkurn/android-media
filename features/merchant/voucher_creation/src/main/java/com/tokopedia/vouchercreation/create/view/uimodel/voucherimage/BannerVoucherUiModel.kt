@@ -6,5 +6,4 @@ data class BannerVoucherUiModel(
         override var imageType: VoucherImageType,
         override var promoName: String,
         override var shopName: String,
-        override var shopAvatar: String,
-        val bannerUrl: String) : VoucherImage
+        override var shopAvatar: String) : VoucherImage

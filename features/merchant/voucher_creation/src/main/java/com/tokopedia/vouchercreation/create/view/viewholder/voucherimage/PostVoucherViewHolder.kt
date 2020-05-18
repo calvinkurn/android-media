@@ -14,13 +14,12 @@ class PostVoucherViewHolder(itemView: View?) : AbstractViewHolder<PostVoucherUiM
         @LayoutRes
         val RES_LAYOUT = R.layout.mvc_post_image
 
-        private const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
     }
 
     override fun bind(element: PostVoucherUiModel) {
         itemView.run {
             Glide.with(context)
-                    .load(POST_IMAGE_URL)
+                    .load(element.postImageUrl)
                     .into(postVoucherImage)
         }
     }

@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
@@ -29,6 +31,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTa
 import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.ReviewVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
@@ -41,7 +44,12 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         private const val PROGRESS_ATTR_TAG = "progress"
         private const val PROGRESS_DURATION = 200L
 
+        //These are default url for banners that we will use in case the server returned error
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
+        private const val FREE_DELIVERY_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
+        private const val CASHBACK_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
+        private const val CASHBACK_UNTIL_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
+        private const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
 
     }
 
@@ -62,10 +70,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
-            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onSetVoucherName))
-            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap))
-            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel))
-            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel))
+            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onSetVoucherName, ::getPromoCodePrefix))
+            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel))
+            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, ::getBannerBaseUiModel))
+            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getIgPostVoucherUrl))
         }
     }
 
@@ -101,13 +109,26 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private var voucherBitmap: Bitmap? = null
 
+    private var promoCodePrefix = ""
+
+    private var bannerBaseUiModel =
+            BannerBaseUiModel(
+                    BANNER_BASE_URL,
+                    FREE_DELIVERY_URL,
+                    CASHBACK_URL,
+                    CASHBACK_UNTIL_URL
+            )
+
+    private var token = ""
+
+    private var igPostVoucherUrl = POST_IMAGE_URL
+
     private var bannerVoucherUiModel =
             BannerVoucherUiModel(
                     VoucherImageType.FreeDelivery(0),
                     "",
                     "",
-                    "",
-                    BANNER_BASE_URL)
+                    "")
 
     private var voucherReviewUiModel = VoucherReviewUiModel()
 
@@ -125,6 +146,11 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         } else {
             onBackStep()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.flush()
     }
 
     private fun initInjector() {
@@ -148,7 +174,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         window.decorView.setBackgroundColor(Color.WHITE)
         setupStatusBar()
         setupToolbar()
-        setupViewPager()
+        initiateVoucherPage()
     }
 
     private fun setupToolbar() {
@@ -163,6 +189,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             }
             setNavigationOnClickListener(onNavigationClickListener)
         }
+    }
+
+    private fun initiateVoucherPage() {
+        viewModel.initiateVoucherPage()
     }
 
     private fun setupViewPager() {
@@ -184,6 +214,33 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         })
         viewModel.voucherPreviewBitmapLiveData.observe(this, Observer { bitmap ->
             voucherBitmap = bitmap
+        })
+        viewModel.initiateVoucherLiveData.observe(this, Observer { result ->
+            when(result) {
+                is Success -> {
+                    result.data.run {
+                        if (bannerBaseUrl.isNotEmpty()) {
+                            bannerBaseUiModel =
+                                    BannerBaseUiModel(
+                                            bannerBaseUrl,
+                                            bannerFreeShippingLabelUrl,
+                                            bannerCashbackLabelUrl,
+                                            bannerCashbackUntilLabelUrl
+                                    )
+                        }
+                        this@CreateMerchantVoucherStepsActivity.token = token
+                        promoCodePrefix = voucherCodePrefix
+                        if (bannerIgPostUrl.isNotBlank()) {
+                            igPostVoucherUrl = bannerIgPostUrl
+                        }
+                    }
+
+                    setupViewPager()
+                }
+                is Fail -> {
+                    finish()
+                }
+            }
         })
     }
 
@@ -243,8 +300,15 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         viewModel.setNextStep()
     }
 
-    private fun getBannerVoucherUiModel(): BannerVoucherUiModel = bannerVoucherUiModel
+    private fun getBannerVoucherUiModel() = bannerVoucherUiModel
 
-    private fun getVoucherReviewUiModel(): VoucherReviewUiModel = voucherReviewUiModel
+    private fun getVoucherReviewUiModel() = voucherReviewUiModel
 
+    private fun getPromoCodePrefix(): String = promoCodePrefix
+
+    private fun getBannerBaseUiModel() = bannerBaseUiModel
+
+    private fun getToken() = token
+
+    private fun getIgPostVoucherUrl() = igPostVoucherUrl
 }

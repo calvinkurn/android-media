@@ -29,7 +29,8 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTarget
 import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import javax.inject.Inject
 
-class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) -> Unit = { _,_,_ -> })
+class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) -> Unit = { _,_,_ -> },
+                                    private val getPromoCodePrefix: () -> String)
     : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>() {
 
     companion object {
@@ -37,7 +38,8 @@ class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) ->
         private const val MIN_TEXTFIELD_LENGTH = 5
 
         @JvmStatic
-        fun createInstance(onNext: (Int, String, String) -> Unit) = MerchantVoucherTargetFragment(onNext)
+        fun createInstance(onNext: (Int, String, String) -> Unit,
+                           getPromoCodePrefix: () -> String) = MerchantVoucherTargetFragment(onNext, getPromoCodePrefix)
     }
 
     @Inject
@@ -52,7 +54,7 @@ class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) ->
     }
 
     private val createPromoCodeBottomSheetFragment by lazy {
-        CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString)
+        CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, getPromoCodePrefix)
     }
 
     private val voucherDisplayBottomSheetFragment by lazy {

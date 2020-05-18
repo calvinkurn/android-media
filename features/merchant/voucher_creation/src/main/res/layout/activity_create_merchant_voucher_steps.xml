@@ -30,6 +30,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_header_is_show_shadow="false"/>
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/createMerchantVoucherLoader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/progressBarFrame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:loader_type="circle"/>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/createMerchantVoucherViewPager"
         android:layout_width="match_parent"

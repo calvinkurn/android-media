@@ -10,7 +10,8 @@ class PostVoucherUiModel(
         override val shopAvatar: String,
         override val shopName: String,
         val promoCode: String,
-        val promoPeriod: String
+        val promoPeriod: String,
+        val postImageUrl: String
 ) : VoucherDetailUiModel, VoucherImage {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int =

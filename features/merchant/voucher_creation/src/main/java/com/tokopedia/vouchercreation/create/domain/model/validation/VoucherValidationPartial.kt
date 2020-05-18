@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.create.domain.model.validation
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.network.exception.Header
+import com.tokopedia.network.data.model.response.Header
 
 data class VoucherValidationPartialResponse(
         @SerializedName("VoucherValidationPartial")
