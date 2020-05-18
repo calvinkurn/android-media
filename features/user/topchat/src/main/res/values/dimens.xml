@@ -35,8 +35,11 @@
     <dimen name="dp_topchat_1">1dp</dimen>
     <dimen name="dp_topchat_2">2dp</dimen>
     <dimen name="dp_topchat_3">3dp</dimen>
+    <dimen name="dp_topchat_4">4dp</dimen>
     <dimen name="dp_topchat_5">5dp</dimen>
     <dimen name="dp_topchat_6">6dp</dimen>
+    <dimen name="dp_topchat_7">7dp</dimen>
+    <dimen name="dp_topchat_9">9dp</dimen>
     <dimen name="dp_topchat_10">10dp</dimen>
     <dimen name="dp_topchat_12">12dp</dimen>
     <dimen name="dp_topchat_14">14dp</dimen>
@@ -50,6 +53,7 @@
     <dimen name="dp_topchat_34">34dp</dimen>
     <dimen name="dp_topchat_36">36dp</dimen>
     <dimen name="dp_topchat_44">44dp</dimen>
+    <dimen name="dp_topchat_46">46dp</dimen>
     <dimen name="dp_topchat_50">50dp</dimen>
     <dimen name="dp_topchat_52">52dp</dimen>
     <dimen name="dp_topchat_56">56dp</dimen>

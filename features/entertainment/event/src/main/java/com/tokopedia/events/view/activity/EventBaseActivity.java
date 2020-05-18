@@ -4,21 +4,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.events.R;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.unifycomponents.Toaster;
 
 
 public abstract class EventBaseActivity extends BaseSimpleActivity implements EventBaseContract.EventBaseView {
@@ -73,12 +72,9 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
 
     @Override
     public void showSnackBar(String message, boolean clickable) {
-        Snackbar snackbar = ToasterError.make(getRootView(), message, BaseToaster.LENGTH_SHORT);
-        if (clickable) {
-            snackbar.setDuration(BaseToaster.LENGTH_INDEFINITE);
-            snackbar.setAction(R.string.title_ok, v -> snackbar.dismiss());
-        }
-        snackbar.show();
+        Toaster.INSTANCE.make(getRootView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                (clickable) ? getString(com.tokopedia.abstraction.R.string.title_try_again) : "", v -> {
+                });
     }
 
     @Override

@@ -18,12 +18,19 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistPlt.Companion.CATALOGLIST_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet
 import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet.OnSaveFilterCallback
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
@@ -37,7 +44,7 @@ import com.tokopedia.unifycomponents.PageControl
 import java.util.*
 import javax.inject.Inject
 
-class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View, View.OnClickListener, OnSaveFilterCallback {
+class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View, View.OnClickListener, OnSaveFilterCallback, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerSortType: ViewPager? = null
     private var mTabSortType: TabLayout? = null
@@ -65,7 +72,12 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var filtersBottomSheet: FiltersBottomSheet? = null
     private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onErrorFilter(errorMessage: String, hasInternet: Boolean) {
         mContainerMain!!.displayedChild = CONTAINER_ERROR
@@ -109,6 +121,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         mProgressFlash = view.findViewById(R.id.progress_timer)
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container)
         serverErrorView = view.findViewById(R.id.server_error_view)
+
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         initListener()
         requestHomePageData()
         initObserver()
@@ -137,7 +152,13 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             when (it) {
                 is Loading -> showLoader()
                 is ErrorMessage -> onErrorFilter(it.data, NetworkDetector.isConnectedToInternet(context))
-                is Success -> onSuccessFilter(it.data)
+                is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
+                    onSuccessFilter(it.data)
+                    stopRenderPerformanceMonitoring()
+                    stopPerformanceMonitoring()
+                }
             }
         }
     })
@@ -488,5 +509,46 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                CATALOGLIST_TOKOPOINT_PLT_PREPARE_METRICS,
+                CATALOGLIST_TOKOPOINT_PLT_NETWORK_METRICS,
+                CATALOGLIST_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATALOGLIST_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

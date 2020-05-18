@@ -3,13 +3,14 @@ package com.tokopedia.contactus.inboxticket2.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.contactus.R;
@@ -17,9 +18,7 @@ import com.tokopedia.contactus.inboxticket2.di.DaggerInboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxModule;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.unifycomponents.Toaster;
 
 import javax.inject.Inject;
 
@@ -54,8 +53,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public void showMessage(String message) {
-        Snackbar snackbar = ToasterNormal.make(getRootView(), message, BaseToaster.LENGTH_SHORT);
-        snackbar.show();
+        Toaster.INSTANCE.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v->{});
     }
 
     @Override
@@ -161,11 +159,12 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public void setSnackBarErrorMessage(String message, boolean clickable) {
-        Snackbar snackbar = ToasterError.make(getRootView(), message, BaseToaster.LENGTH_SHORT);
-        if (clickable) {
-            snackbar.setDuration(BaseToaster.LENGTH_INDEFINITE);
-            snackbar.setAction(R.string.ok, v -> snackbar.dismiss());
+        if(clickable){
+            Toaster.INSTANCE.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.ok), v -> {
+            });
+        } else {
+            Toaster.INSTANCE.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
+            });
         }
-        snackbar.show();
     }
 }

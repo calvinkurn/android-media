@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -23,6 +26,11 @@ import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CouponliststackPlt.Companion.COUPONLISTSTACK_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CouponliststackPlt.Companion.COUPONLISTSTACK_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CouponliststackPlt.Companion.COUPONLISTSTACK_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CouponliststackPlt.Companion.COUPONLISTSTACK_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -31,7 +39,7 @@ import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.view.*
 import javax.inject.Inject
 
-class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedContract.View, View.OnClickListener, AdapterCallback {
+class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedContract.View, View.OnClickListener, AdapterCallback, TokopointPerformanceMonitoringListener {
 
     private var mItemDecoration: SpacesItemDecoration? = null
 
@@ -41,7 +49,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     val presenter: CouponLisitingStackedViewModel by lazy { ViewModelProviders.of(this, factory)[CouponLisitingStackedViewModel::class.java] }
 
     private val mAdapter: CouponListStackedBaseAdapter by lazy { CouponListStackedBaseAdapter(presenter, this) }
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.tp_fragment_stacked_coupon_listing, container, false)
@@ -120,6 +133,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
         view!!.findViewById<View>(R.id.text_empty_action).setOnClickListener { v -> RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
 
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         swipe_refresh_layout.setOnRefreshListener {
             val id = presenter.category
             id?.let { presenter.getCoupons(id) }
@@ -143,17 +158,22 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
                     mAdapter.notifyDataSetChanged()
                     mAdapter.startDataLoading()
                 }
-                is Success -> mAdapter.onSuccess(it.data)
-                is ErrorMessage -> mAdapter.onError()
+                is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
+                    setOnRecyclerViewLayoutReady()
+                    mAdapter.onSuccess(it.data)
+                }
+                is ErrorMessage -> {
+                    mAdapter.onError()
+                }
             }
         }
     })
 
-
     override fun openWebView(url: String) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
     }
-
 
     override fun emptyCoupons(errors: Map<String, String>?) {
         if (view == null || errors == null) {
@@ -288,5 +308,60 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         fun newInstance(): CouponListingStackedFragment {
             return CouponListingStackedFragment()
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                COUPONLISTSTACK_TOKOPOINT_PLT_PREPARE_METRICS,
+                COUPONLISTSTACK_TOKOPOINT_PLT_NETWORK_METRICS,
+                COUPONLISTSTACK_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(COUPONLISTSTACK_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun setOnRecyclerViewLayoutReady() {
+        recycler_view_coupons.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (pageLoadTimePerformanceMonitoring != null) {
+                            stopRenderPerformanceMonitoring()
+                            stopPerformanceMonitoring()
+                        }
+                        pageLoadTimePerformanceMonitoring = null
+                        recycler_view_coupons.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 }

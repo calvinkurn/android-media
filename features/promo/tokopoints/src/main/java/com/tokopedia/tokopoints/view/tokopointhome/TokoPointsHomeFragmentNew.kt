@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -36,7 +37,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -54,6 +56,11 @@ import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar.OnTokoPointToolbarClickListener
 import com.tokopedia.tokopoints.view.addPoint.AddPointsFragment
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.StartPurchaseBottomSheet
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.model.*
@@ -67,6 +74,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.tp_layout_section_category_parent.*
+import java.util.*
 import kotlinx.android.synthetic.main.tp_tooltip_es.view.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -75,7 +84,7 @@ import kotlin.collections.ArrayList
  * Dynamic layout params are applied via
  * function setLayoutParams() because configuration in statusBarHeight
  * */
-class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, OnTokoPointToolbarClickListener {
+class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, OnTokoPointToolbarClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mTextMembershipValue: TextView? = null
     private var mTextMembershipValueBottom: TextView? = null
@@ -103,7 +112,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var containerEgg: LinearLayout? = null
     private var appBarCollapseListener: onAppBarCollapseListener? = null
     private var mExploreSectionPagerAdapter: ExploreSectionPagerAdapter? = null
-    private var performanceMonitoring: PerformanceMonitoring? = null
     private var collapsingToolbarLayout: CollapsingToolbarLayout? = null
     private var coordinatorLayout: CoordinatorLayout? = null
     private var statusBarBgView: View? = null
@@ -123,9 +131,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var emptyTitle: TextView? = null
     private var emptySubtitle: TextView? = null
     private var tvNonLoginCta: TextView? = null
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(FPM_TOKOPOINT)
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
     }
 
@@ -253,6 +262,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         initListener()
         mPresenter.getTokoPointDetail()
         val localCacheHandler = LocalCacheHandler(appContext, CommonConstant.PREF_TOKOPOINTS)
@@ -287,7 +298,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         it?.let {
             hideLoading()
             onSuccessTokenDetail(it)
-            onFinishRendering()
         }
     })
 
@@ -298,12 +308,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 is ErrorMessage -> {
                     hideLoading()
                     onError(it.data, NetworkDetector.isConnectedToInternet(context))
-                    onFinishRendering()
                 }
                 is Success -> {
                     hideLoading()
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
+                    setOnRecyclerViewLayoutReady()
                     onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList)
-                    onFinishRendering()
                 }
             }
         }
@@ -726,10 +737,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         tokoPointToolbar!!.setCouponCount(data.sumCoupon, data.sumCouponStr)
     }
 
-    override fun onFinishRendering() {
-        if (performanceMonitoring != null) performanceMonitoring!!.stopTrace()
-    }
-
     override fun renderTicker(content: SectionContent) {
         if (view == null || content == null || content.layoutTickerAttr == null || content.layoutTickerAttr.tickerList == null || content.layoutTickerAttr.tickerList.isEmpty()) {
             tickerContainer!!.visibility = View.GONE
@@ -966,5 +973,62 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             }
             win.attributes = winParams
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                HOME_TOKOPOINT_PLT_PREPARE_METRICS,
+                HOME_TOKOPOINT_PLT_NETWORK_METRICS,
+                HOME_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(HOME_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+
+    }
+
+    private fun setOnRecyclerViewLayoutReady() {
+        rv_dynamic_link.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (pageLoadTimePerformanceMonitoring != null) {
+                            stopRenderPerformanceMonitoring()
+                            stopPerformanceMonitoring()
+                        }
+                        pageLoadTimePerformanceMonitoring = null
+                        rv_dynamic_link.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 }

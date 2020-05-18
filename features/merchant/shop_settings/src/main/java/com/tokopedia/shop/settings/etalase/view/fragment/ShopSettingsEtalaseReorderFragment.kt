@@ -10,15 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
@@ -31,6 +29,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseReorderAdapte
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReorderFactory
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
 import com.tokopedia.shop.settings.etalase.view.viewholder.TickerReadMoreEtalaseViewHolder
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -151,22 +150,20 @@ class ShopSettingsEtalaseReorderFragment :
 
     override fun onSuccessReorderShopEtalase(successMessage: String) {
         hideSubmitLoading()
-        ToasterNormal.make(activity!!.findViewById(android.R.id.content),
-                getString(R.string.etalase_success_reorder), BaseToaster.LENGTH_LONG)
-                .setAction(getString(com.tokopedia.abstraction.R.string.close)) {
-                    // no-op
-                }.show()
+        view?.let {
+            Toaster.make(it, getString(R.string.etalase_success_reorder), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                    getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener {  })
+        }
         listener!!.onSuccessReorderEtalase()
     }
 
     override fun onErrorReorderShopEtalase(throwable: Throwable) {
         hideSubmitLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        ToasterError.make(activity!!.findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_LONG)
-                .setAction(getString(com.tokopedia.design.R.string.close)) {
-                    // no-op
-                }.show()
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener {  })
+        }
     }
 
     fun showSubmitLoading(message: String) {
