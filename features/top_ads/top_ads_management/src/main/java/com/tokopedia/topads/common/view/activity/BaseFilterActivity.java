@@ -11,8 +11,8 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.model.FilterTitleItem;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.fragment.BaseFilterContentFragment;
 import com.tokopedia.topads.common.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.common.view.listener.BaseFilterContentViewListener;

@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
-import com.tokopedia.seller.R;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.listener.StepperListener;
 
 import java.util.List;

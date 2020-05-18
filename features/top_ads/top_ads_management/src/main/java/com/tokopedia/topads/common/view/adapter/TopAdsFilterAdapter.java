@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.model.FilterTitleItem;
+import com.tokopedia.topads.R;
 
 import java.util.ArrayList;
 import java.util.List;

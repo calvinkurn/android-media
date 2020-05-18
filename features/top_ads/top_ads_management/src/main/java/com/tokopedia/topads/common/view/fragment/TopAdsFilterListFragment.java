@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.model.FilterTitleItem;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsFilterAdapter;
 
 import java.util.ArrayList;
