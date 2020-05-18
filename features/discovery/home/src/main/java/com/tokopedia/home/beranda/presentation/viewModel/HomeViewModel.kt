@@ -42,7 +42,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -268,35 +267,35 @@ open class HomeViewModel @Inject constructor(
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
         if(headerDataModel == null){
-            headerDataModel = (_homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)?.copy()
+            headerDataModel = (_homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)
         }
 
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
 
         headerDataModel?.let { headerViewModel ->
             tokopointsDrawer?.let {
-                headerViewModel.tokopointsDrawerHomeData = it
+                headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
             }
             homeHeaderWalletAction?.let {
-                headerViewModel.homeHeaderWalletActionData = it
+                headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
             }
             cashBackData?.let {
-                headerViewModel.cashBackData = it
+                headerDataModel = headerDataModel?.copy(cashBackData = it)
             }
             tokopointHomeDrawerData?.let {
-                headerViewModel.tokoPointDrawerData = it
+                headerDataModel = headerDataModel?.copy(tokoPointDrawerData = it)
             }
             isPendingTokocashChecked?.let {
-                headerViewModel.isPendingTokocashChecked = it
+                headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
             }
             isWalletDataError?.let {
-                headerViewModel.isWalletDataError = it
+                headerDataModel = headerDataModel?.copy(isWalletDataError = it)
             }
             isTokoPointDataError?.let {
-                headerViewModel.isTokoPointDataError = it
+                headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
-            headerViewModel.isUserLogin = userSession.isLoggedIn
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
+            headerDataModel = headerDataModel?.copy(isUserLogin = userSession.isLoggedIn)
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
         }
 
     }
@@ -755,6 +754,8 @@ open class HomeViewModel @Inject constructor(
 
     private fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
+        if(!isRechargeModelAvailable()) return
+
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.setParams()
             val data = getRechargeRecommendationUseCase.executeOnBackground()
@@ -762,6 +763,12 @@ open class HomeViewModel @Inject constructor(
         }) {
             removeRechargeRecommendation()
         }
+    }
+
+    private fun isRechargeModelAvailable(): Boolean {
+        return _homeLiveData.value?.list?.find {
+            visitable -> visitable is RechargeRecommendationViewModel
+        } != null
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {

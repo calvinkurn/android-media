@@ -60,7 +60,7 @@ class FlightHomepageViewModel @Inject constructor(
     val autoSearch: LiveData<Boolean>
         get() = mutableAutoSearch
 
-    init {
+    fun init() {
         mutableDashboardData.value = FlightDashboardModel()
         mutableAutoSearch.value = false
     }
@@ -275,16 +275,8 @@ class FlightHomepageViewModel @Inject constructor(
         return dashboardModel
     }
 
-    private fun cloneViewModel(currentDashboardData: FlightDashboardModel): FlightDashboardModel {
-        val dashboardModel: FlightDashboardModel
-        try {
-            dashboardModel = currentDashboardData.clone() as FlightDashboardModel
-        } catch (e: CloneNotSupportedException) {
-            e.printStackTrace()
-            throw RuntimeException("Failed to Clone FlightDashboardModel")
-        }
-        return dashboardModel
-    }
+    private fun cloneViewModel(currentDashboardData: FlightDashboardModel): FlightDashboardModel =
+            currentDashboardData.clone() as FlightDashboardModel
 
     companion object {
         private const val MAX_YEAR_FOR_FLIGHT = 1

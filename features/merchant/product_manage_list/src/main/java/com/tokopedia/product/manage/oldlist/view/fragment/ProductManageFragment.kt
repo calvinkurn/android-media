@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.oldlist.view.fragment
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
+import android.app.ProgressDialog.show
 import android.content.*
 import android.graphics.Typeface
 import android.net.Uri
@@ -55,6 +56,8 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
@@ -96,6 +99,8 @@ import com.tokopedia.product.manage.oldlist.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationProductBottomSheet
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -103,6 +108,8 @@ import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.UnknownHostException
 import java.util.*
@@ -137,6 +144,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     lateinit var checkBoxView: View
     lateinit var bulkBottomSheet: CloseableBottomSheetDialog
     lateinit var editProductBottomSheet: EditProductBottomSheet
+    lateinit var sellerMigrationTicker: Ticker
 
     @SortProductOption
     private var sortProductOption: String = SortProductOption.POSITION
@@ -238,6 +246,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
 
         displayOnBoardingCheck()
+        setupTicker()
     }
 
     private fun initView(view: View) {
@@ -252,6 +261,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         containerBtnBulk = view.findViewById(com.tokopedia.product.manage.R.id.container_btn_bulk)
         containerChechBoxBulk = view.findViewById(com.tokopedia.product.manage.R.id.container_bulk_check_box)
         checkBoxView = view.findViewById(com.tokopedia.product.manage.R.id.line_check_box)
+        sellerMigrationTicker = view.findViewById(com.tokopedia.product.manage.R.id.product_manage_seller_migration_ticker)
     }
 
     private fun setupBottomSheet() {
@@ -1100,6 +1110,31 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
         intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
         startActivity(intent)
+    }
+
+    private fun setupTicker() {
+        if(isSellerMigrationEnabled(context)) {
+            sellerMigrationTicker.apply {
+                tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_title)
+                setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_content))
+                setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        openSellerMigrationBottomSheet()
+                    }
+                    override fun onDismiss() {
+                        // No Op
+                    }
+                })
+                show()
+            }
+        }
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            val sellerMigrationBottomSheet = SellerMigrationProductBottomSheet.createNewInstance(it)
+            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
+        }
     }
 
     companion object {

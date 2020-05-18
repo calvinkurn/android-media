@@ -304,6 +304,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     }
 
+    @SuppressLint("ResourceType")
     @Override
     public void setTitle(Title title) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
@@ -312,6 +313,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         if (!TextUtils.isEmpty(title.textColor())) {
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
+        } else {
+            doubleTextView.setBottomTextColor(Color.parseColor(getResources().getString(R.color.font_black_secondary_54)));
         }
         if (title.backgroundColor() != null && !title.backgroundColor().isEmpty()) {
             Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline);
