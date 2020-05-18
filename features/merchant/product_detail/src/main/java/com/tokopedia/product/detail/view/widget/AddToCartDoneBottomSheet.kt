@@ -63,6 +63,7 @@ class AddToCartDoneBottomSheet :
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
         private const val abNewPdpAfterAtcKey = "PDP ATC 2020"
         private const val oldVariantPDP = "PDP after ATC"
+        private const val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
     }
 
     @Inject
@@ -84,7 +85,6 @@ class AddToCartDoneBottomSheet :
     private lateinit var stateAtcView: View
     private lateinit var addToCartButton: UnifyButton
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
-    private val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
 
     override fun getLayoutResourceId(): Int {
         return R.layout.add_to_cart_done_bottomsheet

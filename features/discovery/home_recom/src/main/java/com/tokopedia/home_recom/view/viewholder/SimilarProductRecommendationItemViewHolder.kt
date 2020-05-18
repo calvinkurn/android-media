@@ -16,8 +16,11 @@ class SimilarProductRecommendationItemViewHolder (
         private val view: View
 ) : AbstractViewHolder<SimilarProductRecommendationItemDataModel>(view){
 
+    companion object {
+        private const val className: String = "com.tokopedia.home_recom.view.viewholder.SimilarProductRecommendationItemViewHolder"
+    }
+
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
-    private val className: String = "com.tokopedia.home_recom.view.viewholder.SimilarProductRecommendationItemViewHolder"
     override fun bind(element: SimilarProductRecommendationItemDataModel) {
         productCardView.run {
             setProductModel(

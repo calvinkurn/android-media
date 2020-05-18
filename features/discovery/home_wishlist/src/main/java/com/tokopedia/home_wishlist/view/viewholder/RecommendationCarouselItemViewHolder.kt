@@ -21,7 +21,6 @@ class RecommendationCarouselItemViewHolder(
 ) : SmartAbstractViewHolder<RecommendationCarouselItemDataModel>(view){
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
-    private val className: String = "com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder"
 
     override fun bind(element: RecommendationCarouselItemDataModel, listener: SmartListener) {
         productCardView.apply {
@@ -74,6 +73,7 @@ class RecommendationCarouselItemViewHolder(
 
     companion object{
         val LAYOUT = R.layout.layout_recommendation_carousel_item
+        private const val className: String = "com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder"
     }
 
 }

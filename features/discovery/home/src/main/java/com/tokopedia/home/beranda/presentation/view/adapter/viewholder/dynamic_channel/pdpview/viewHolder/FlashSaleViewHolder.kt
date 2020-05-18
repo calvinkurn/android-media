@@ -15,10 +15,10 @@ class FlashSaleViewHolder (view: View,
 
     companion object{
         val LAYOUT = R.layout.home_banner_item_flashsale_carousel
+        private const val className = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder"
     }
 
     private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
-    private val className = "com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder.FlashSaleViewHolder"
 
     override fun bind(element: FlashSaleDataModel) {
         setLayout(element)

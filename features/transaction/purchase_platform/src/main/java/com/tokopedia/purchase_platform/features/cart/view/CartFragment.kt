@@ -197,10 +197,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private val ANIMATION_TYPE = "translationY"
     private val ANIMATION_DURATION_IN_MILIS = 1000L
     private val TRANSLATION_LENGTH = 1800f
-    private val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
 
     companion object {
 
+        private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
         private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false

@@ -17,7 +17,6 @@ class OfficialProductRecommendationViewHolder(
 ): AbstractViewHolder<ProductRecommendationViewModel>(view) {
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
-    private val className: String = "com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder"
 
     override fun bind(element: ProductRecommendationViewModel) {
         productCardView?.run {
@@ -83,6 +82,7 @@ class OfficialProductRecommendationViewHolder(
 
     companion object {
         val LAYOUT = R.layout.viewmodel_product_recommendation_item
+        private const val className: String = "com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder"
     }
 
 }

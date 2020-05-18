@@ -24,7 +24,11 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
-    private val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
+
+    companion object {
+        private const val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
+    }
+
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
         seeMore.visibility = if(element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE

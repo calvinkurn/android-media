@@ -24,7 +24,9 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 @Deprecated("RecommendationCardView replaced with ProductCardView v2")
 open class RecommendationCardView : ProductCardView {
 
-    private val className: String = "com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView"
+    companion object {
+        private const val className: String = "com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView"
+    }
 
     constructor(context: Context) : super(context) {}
 

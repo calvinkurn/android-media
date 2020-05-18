@@ -57,7 +57,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     private Context context;
     private final String PATH_VIEW = "views";
     private ImageLoader imageLoader;
-    private final String className = "com.tokopedia.favorite.view.adapter.TopAdsShopAdapter";
+    private static final String className = "com.tokopedia.favorite.view.adapter.TopAdsShopAdapter";
 
     public TopAdsShopAdapter(FavoriteClickListener favoriteClickListener) {
         this.favoriteClickListener = favoriteClickListener;

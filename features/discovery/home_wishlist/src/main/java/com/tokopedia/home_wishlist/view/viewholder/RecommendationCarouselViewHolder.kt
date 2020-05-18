@@ -23,8 +23,6 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recommendationCarouselProductCardView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.recommendationCarouselProductCardView) }
     private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
-    private val className: String = "com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder"
-
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
         title.text = element.title
         disabledView.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
@@ -108,5 +106,6 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
 
     companion object{
         val LAYOUT = R.layout.layout_recommendation_carousel
+        private const val className: String = "com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder"
     }
 }

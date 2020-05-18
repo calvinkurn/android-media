@@ -19,7 +19,11 @@ class RecommendationItemViewHolder(
 ) : AbstractViewHolder<RecommendationItemDataModel>(view){
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
-    private val className: String = "com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder"
+
+    companion object {
+        private val className: String = "com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder"
+    }
+
     override fun bind(element: RecommendationItemDataModel) {
         productCardView.run {
             setProductModel(

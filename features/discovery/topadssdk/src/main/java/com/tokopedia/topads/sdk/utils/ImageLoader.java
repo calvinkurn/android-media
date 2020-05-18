@@ -42,7 +42,7 @@ public class ImageLoader {
     private ImageCache.ImageCacheParams cacheParams;
     private ImageFetcher imageFetcher;
     private final String PATH_VIEW = "views";
-    private final String className = "com.tokopedia.topads.sdk.utils.ImageLoader";
+    private static final String className = "com.tokopedia.topads.sdk.utils.ImageLoader";
 
     public ImageLoader(Context context) {
         this.context = context;

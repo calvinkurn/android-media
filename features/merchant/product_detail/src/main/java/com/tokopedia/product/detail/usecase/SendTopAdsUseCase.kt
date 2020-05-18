@@ -7,7 +7,11 @@ import javax.inject.Inject
  * Created by Yehezkiel on 01/04/20
  */
 class SendTopAdsUseCase @Inject constructor() {
-    val className: String = "com.tokopedia.product.detail.usecase.SendTopAdsUseCase"
+
+    companion object {
+        private const val className: String = "com.tokopedia.product.detail.usecase.SendTopAdsUseCase"
+    }
+
     fun executeOnBackground(url: String) {
         ImpresionTask(className).execute(url)
     }

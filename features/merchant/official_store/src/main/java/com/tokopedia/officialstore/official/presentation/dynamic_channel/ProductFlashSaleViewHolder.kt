@@ -19,10 +19,10 @@ class ProductFlashSaleViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_product_card_carousel_item
+        private const val className: String = "com.tokopedia.officialstore.official.presentation.dynamic_channel.ProductFlashSaleViewHolder"
     }
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
-    private val className: String = "com.tokopedia.officialstore.official.presentation.dynamic_channel.ProductFlashSaleViewHolder"
 
     override fun bind(element: ProductFlashSaleDataModel) {
         setLayout(element)

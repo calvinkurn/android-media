@@ -40,7 +40,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private Context context;
     private View container;
     private ImageView rating1, rating2, rating3, rating4, rating5;
-    private String className = "com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder";
+    private static final String className = "com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder";
 
 
     public BannerShopProductViewHolder(View itemView, TopAdsBannerClickListener topAdsBannerClickListener,
