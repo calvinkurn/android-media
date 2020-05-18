@@ -11,8 +11,6 @@ from collections import defaultdict
 import argparse
 from fnmatch import fnmatch
 
-# name_to_val = dict()
-
 # This function find all the images in the directory passed as a parameter
 def findDuplicateImages(directory_path, image_to_search_list):
     # Patterns of file to compare
