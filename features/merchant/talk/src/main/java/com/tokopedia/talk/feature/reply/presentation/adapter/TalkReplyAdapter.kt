@@ -37,11 +37,11 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
         }
     }
 
-    fun deleteQuestion(answerId: String) {
+    fun deleteAnswer(answerId: String) {
         visitables.forEachIndexed { index, visitable ->
             if((visitable as? TalkReplyUiModel)?.answer?.answerID == answerId)  {
                 visitables.removeAt(index)
-                notifyItemChanged(index)
+                notifyItemRemoved(index)
                 return
             }
         }

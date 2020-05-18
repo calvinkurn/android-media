@@ -25,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
@@ -348,7 +347,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessDeleteComment(answerId: String) {
         showSuccessToaster(getString(R.string.delete_toaster_success), true)
-        adapter?.deleteQuestion(answerId)
+        adapter?.deleteAnswer(answerId)
     }
 
     private fun onFailDeleteComment() {
