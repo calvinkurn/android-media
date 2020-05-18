@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         editTextUser.setText("fauzanofami.luthfi+01@tokopedia.com")
         editTextPassword.setText("toped12345")
         val loginButton = findViewById<Button>(R.id.loginButton)
+//        goTo()
 
         // simplify login process without error handling/verify number/etc
         loginButton.setOnClickListener {

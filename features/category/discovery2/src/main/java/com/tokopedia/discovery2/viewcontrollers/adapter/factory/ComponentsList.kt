@@ -45,5 +45,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Tabs(R.layout.widget_recycler_view, ComponentNames.Tabs.componentName),
     TabsItem(R.layout.tabs_item_layout, ComponentNames.TabsItem.componentName),
     DynamicCategory(R.layout.dynamic_category_layout, ComponentNames.DynamicCategory.componentName),
-    DynamicCategoryItem(R.layout.dynamic_category_single_item_layout, ComponentNames.DynamicCategoryItem.componentName)
+    DynamicCategoryItem(R.layout.dynamic_category_single_item_layout, ComponentNames.DynamicCategoryItem.componentName),
+    LihatFlashSaleTimer(R.layout.lihat_flash_sale_timer_widget, ComponentNames.FlashSaleTimer.componentName),
+
 }
