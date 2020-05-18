@@ -183,7 +183,7 @@ ext {
             attachinvoice                   : ":features:user:attachinvoice",
             attachvoucher                   : ":features:user:attachvoucher",
             attachcommon                   : ":features:user:attachcommon",
-            changepassword                  : ":features:user:changepassword",
+            managepassword                  : ":features:user:managepassword",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             chatcommon                      : ":features:user:chat_common",
