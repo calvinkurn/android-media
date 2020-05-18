@@ -321,7 +321,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun loadTicker() {
-        somListViewModel.loadTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker))
+        activity?.resources?.let {
+            somListViewModel.loadTickerList(GraphqlHelper.loadRawString(it, R.raw.gql_som_ticker))
+        }
     }
 
     private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
@@ -373,16 +375,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     })
 
     private fun loadFilterStatusList() {
-        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
+        activity?.resources?.let {
+            somListViewModel.loadStatusList(GraphqlHelper.loadRawString(it, R.raw.gql_som_status_list))
+        }
     }
 
     private fun loadOrderList(nextOrderId: Int) {
         paramOrder.nextOrderId = nextOrderId
-        somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
+        activity?.resources?.let {
+            somListViewModel.loadOrderList(GraphqlHelper.loadRawString(it, R.raw.gql_som_order), paramOrder)
+        }
     }
 
     private fun loadFilterList() {
-        somListViewModel.loadFilterList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
+        activity?.resources?.let {
+            somListViewModel.loadFilterList(GraphqlHelper.loadRawString(it, R.raw.gql_som_filter))
+        }
     }
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
