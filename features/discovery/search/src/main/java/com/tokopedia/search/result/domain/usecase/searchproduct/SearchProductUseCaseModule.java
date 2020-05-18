@@ -1,14 +1,8 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.search.R;
-import com.tokopedia.search.di.qualifier.SearchContext;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapperModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;

@@ -1,10 +1,8 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct;
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.search.R;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.usecase.RequestParams;
