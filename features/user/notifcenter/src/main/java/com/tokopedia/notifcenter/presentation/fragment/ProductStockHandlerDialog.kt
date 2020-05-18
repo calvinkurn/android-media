@@ -181,15 +181,13 @@ class ProductStockHandlerDialog(
     }
 
     override fun onAddToCartProduct(data: ProductHighlightViewBean) {
-        element.getAtcProduct()?.let {
-            if (it.stock < 0) {
-                val message = getString(R.string.notifcenter_out_of_stock)
-                showToastErrorMessage(message)
-            } else {
-                viewModel.addProductToCart(
-                        mapToProductData(data)
-                )
-            }
+        if (data.isStockEmpty) {
+            val message = getString(R.string.notifcenter_out_of_stock)
+            showToastErrorMessage(message)
+        } else {
+            viewModel.addProductToCart(
+                    mapToProductData(data)
+            )
         }
     }
 
