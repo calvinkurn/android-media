@@ -75,6 +75,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:paddingBottom="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
@@ -114,7 +115,6 @@
         android:id="@+id/attachedProductIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
         app:srcCompat="@drawable/talk_ic_attached_product"
         app:layout_constraintStart_toStartOf="@id/readingMessage"
@@ -125,6 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:paddingBottom="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:textColor="@color/Neutral_N700_68"
@@ -138,11 +139,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2"
         android:textColor="@color/Green_G500"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        app:layout_goneMarginTop="@dimen/layout_lvl4"
         app:layout_constraintTop_toBottomOf="@id/attachedProductCount"
         app:layout_constraintStart_toStartOf="@id/readingMessage" />
     
@@ -164,9 +164,6 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_goneMarginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/seeOtherAnswers"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
