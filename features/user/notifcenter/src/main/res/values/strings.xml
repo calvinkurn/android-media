@@ -108,4 +108,6 @@
     <string name="product_highlight_empty">Belum ada produk</string>
     <string name="notifcenter_btn_title_atc">+ Keranjang</string>
     <string name="notifcenter_title_product_highlight">Produk unggulan dari toko ini</string>
+
+    <string name="notifcenter_out_of_stock">Yaah, stok barangnya habis. Coba cek barang serupa lainnya, yuk.</string>
 </resources>

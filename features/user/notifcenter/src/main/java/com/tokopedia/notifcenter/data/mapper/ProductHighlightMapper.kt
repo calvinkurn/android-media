@@ -14,6 +14,7 @@ object ProductHighlightMapper {
                     name = it.name,
                     imageUrl = it.imageURL,
                     price = it.price,
+                    priceInt = it.priceInt.toInt(),
                     isStockEmpty = it.isStockEmpty,
                     freeOngkirIcon = it.freeOngkir?.imgURL.toString(),
                     isFreeOngkir = it.freeOngkir?.isActive?: false,
@@ -36,7 +37,8 @@ object ProductHighlightMapper {
         return ProductData(
                 productId = element.id.toString(),
                 shop = element.shop,
-                price = element.originalPrice,
+                price = element.priceInt.toString(),
+                priceFormat = element.price,
                 name = element.name
         )
     }

@@ -7,6 +7,7 @@ class ProductHighlightViewBean(
         val name: String,
         val imageUrl: String,
         val price: String,
+        val priceInt: Int,
         val isStockEmpty: Boolean,
         val freeOngkirIcon: String,
         val isFreeOngkir: Boolean,

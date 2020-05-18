@@ -131,7 +131,8 @@ class StockHandlerAnalytics {
             notificationId: String,
             productData: ProductData,
             userId: String,
-            shopId: String
+            shopId: String,
+            index: Int
     ) {
         val eventName = "productClick"
         val eventCategory = "notif center"
@@ -145,7 +146,7 @@ class StockHandlerAnalytics {
                 "category" to "",
                 "variant" to "",
                 "list" to "/notifcenter",
-                "position" to "0",
+                "position" to index,
                 "dimension79" to shopId
         )
         val click = mapOf(

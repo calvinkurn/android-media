@@ -54,7 +54,7 @@ class ProductHighlightViewHolder(
     }
 
     private fun productDetailClicked(element: ProductHighlightViewBean) {
-        listener.productStockListCardClicked(element)
+        listener.productStockListCardClicked(element, adapterPosition)
 
         RouteManager.route(
                 itemView.context,

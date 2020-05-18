@@ -180,8 +180,17 @@ class ProductStockHandlerDialog(
         }
     }
 
-    override fun onAddToCartProduct(element: ProductHighlightViewBean) {
-        viewModel.addProductToCart(mapToProductData(element))
+    override fun onAddToCartProduct(data: ProductHighlightViewBean) {
+        element.getAtcProduct()?.let {
+            if (it.stock < 0) {
+                val message = getString(R.string.notifcenter_out_of_stock)
+                showToastErrorMessage(message)
+            } else {
+                viewModel.addProductToCart(
+                        mapToProductData(data)
+                )
+            }
+        }
     }
 
     override fun productStockListCardImpression(data: ProductHighlightViewBean, index: Int) {
@@ -194,12 +203,13 @@ class ProductStockHandlerDialog(
         )
     }
 
-    override fun productStockListCardClicked(data: ProductHighlightViewBean) {
+    override fun productStockListCardClicked(data: ProductHighlightViewBean, index: Int) {
         analytics.productStockListCardClicked(
                 element.notificationId,
                 mapToProductData(data),
                 userSession.userId,
-                element.getAtcProduct()?.shop?.id.toString()
+                element.getAtcProduct()?.shop?.id.toString(),
+                index
         )
     }
 

@@ -26,6 +26,7 @@ data class HighlightProducts(
         @Expose @SerializedName("name") val name: String = "",
         @Expose @SerializedName("imageURL") val imageURL: String = "",
         @Expose @SerializedName("price") val price: String = "",
+        @Expose @SerializedName("priceInt") val priceInt: String = "",
         @Expose @SerializedName("isStockEmpty") val isStockEmpty: Boolean = false,
         @Expose @SerializedName("freeOngkir") val freeOngkir: ProductFreeOngkir? = null,
         @Expose @SerializedName("originalPrice") val originalPrice: String = "",
