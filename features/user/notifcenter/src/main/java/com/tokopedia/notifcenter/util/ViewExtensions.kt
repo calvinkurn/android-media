@@ -2,22 +2,9 @@ package com.tokopedia.notifcenter.util
 
 import android.content.res.Resources
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-/**
- * For Fragments, allows declarations like
- * ```
- * val myViewModel = viewModelProvider(myViewModelFactory)
- * ```
- */
-inline fun <reified VM : ViewModel> Fragment.viewModelProvider(
-        provider: ViewModelProvider.Factory
-) = ViewModelProviders.of(this, provider).get(VM::class.java)
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
 fun RecyclerView.endLess(
         onScrolled: (dy: Int) -> Unit,
@@ -41,12 +28,14 @@ fun RecyclerView.endLess(
     })
 }
 
-inline fun <reified T> List<T>.isSingleItem(): Boolean = this.size == 1
-
 fun View.resize(percentage: Int) {
     val displayMetrics = Resources.getSystem().displayMetrics
     val width = displayMetrics.widthPixels
     val params = this.layoutParams
     params.width = width * percentage / 100
     this.layoutParams = params
+}
+
+fun BottomSheetUnify.dialogWindow(): View? {
+    return dialog?.window?.findViewById(android.R.id.content)
 }
