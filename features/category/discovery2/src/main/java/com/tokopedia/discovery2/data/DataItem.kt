@@ -213,7 +213,9 @@ data class DataItem(
         val upperTextDesc: List<String?>? = null,
 
         @SerializedName("small_image_url_mobile")
-        var smallImageUrlMobile: String? = ""
+        var smallImageUrlMobile: String? = "",
+
+        var positionForParentItem:Int = 0
 
 ) {
     val leftMargin: Int

@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity() {
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
 
-        RouteManager.route(this, "tokopedia://discovery/test-disco")
+        RouteManager.route(this, "tokopedia://discovery/produk-terlaris-new-user")
 
     }
 }

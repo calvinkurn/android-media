@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -17,14 +16,20 @@ class TabsViewModel(val application: Application, components: ComponentsItem) : 
 
     init {
         components.data?.let {
-            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.TabsItem.componentName)
+            listData.value = DiscoveryDataMapper.mapTabsListToComponentList(it, ComponentNames.TabsItem.componentName)
         }
     }
 
-    fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> {
+    fun getListDataLiveData(): MutableLiveData<ArrayList<ComponentsItem>> {
         return listData
     }
 
+    //temp code
+    fun setAdapterPositionToChildItems(position: Int){
+        listData.value?.let {list ->
+            list.forEach { it.data?.forEach { it.positionForParentItem = position } }
+        }
+    }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()

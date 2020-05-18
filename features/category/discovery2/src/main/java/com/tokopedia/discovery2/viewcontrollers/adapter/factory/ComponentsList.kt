@@ -25,7 +25,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     CpmTopAds(R.layout.cpm_topads_layout, ComponentNames.CpmTopAds.componentName),
     CpmTopAdsItem(R.layout.item_cpm_topads_shop_layout, ComponentNames.CpmTopAdsShopItem.componentName),
     CpmTopAdsProductItem(R.layout.item_cpm_topads_product_layout, ComponentNames.CpmTopAdsProductItem.componentName),
-    YouTubeView(R.layout.coming_soon_view, ComponentNames.Video.componentName),
+    YouTubeView(R.layout.youtube_player_view, ComponentNames.Video.componentName),
     ChipsFilterView(R.layout.coming_soon_view, ComponentNames.ChipsFilter.componentName),
     HeaderDesktopView(R.layout.coming_soon_view, ComponentNames.HeaderDesktop.componentName),
     ShareEmpty(R.layout.coming_soon_view, ComponentNames.Share.componentName),

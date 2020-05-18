@@ -208,4 +208,6 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                     grantResults)
         }
     }
+
+    fun getDiscoveryRecyclerViewAdapter() = mDiscoveryRecycleAdapter
 }
