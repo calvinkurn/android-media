@@ -24,7 +24,8 @@
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                    android:minHeight="@dimen/layout_lvl3"
+                    app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
                     <com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingHeader
                         android:id="@+id/talkReadingHeader"
@@ -40,10 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl0"
                 android:layout_below="@id/talk_reading_app_bar_layout"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="-334dp"
-                android:layout_marginBottom="334dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:layout_alignParentBottom="true">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/talkReadingRecyclerView"
@@ -72,8 +70,9 @@
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl3"
+            app:maxImageSize="@dimen/layout_lvl3"
+            app:elevation="@dimen/layout_lvl0"
             app:backgroundTint="@color/Green_G500"
-            app:fabSize="normal"
             app:srcCompat="@drawable/talk_reading_ic_plus" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
