@@ -282,6 +282,7 @@ query get_occ_cart_page($dummy: String, $source: String) {
         }
       }
       profile_index_wording
+      profile_recommendation_wording
       profile {
         has_preference
         is_changed_profile
