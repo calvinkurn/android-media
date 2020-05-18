@@ -1,7 +1,7 @@
 package com.tokopedia.smartbills.analytics
 
 /**
- * @author by resakemal on 27/08/19.
+ * @author by resakemal on 17/05/20
  */
 
 interface SmartBillsAnalyticConstants {

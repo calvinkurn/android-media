@@ -40,7 +40,7 @@ import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -48,6 +48,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
+
+/**
+ * @author by resakemal on 17/05/20
+ */
 
 class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFactory>(),
         BaseCheckableViewHolder.CheckableInteractionListener,
@@ -183,6 +187,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_LOGIN)
         } else {
+            smartBillsAnalytics.userId = userSession.userId
+
             context?.let { context ->
                 if (::sharedPrefs.isInitialized) {
                     // Navigate to onboarding if it's the first time
@@ -330,11 +336,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         setTotalPrice()
     }
 
-    override fun onShowBillDetail(bill: RechargeBills, bottomSheet: BottomSheetUnify) {
+    override fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet) {
         smartBillsAnalytics.clickBillDetail(bill)
 
         fragmentManager?.run {
-            bottomSheet.show(this, getString(R.string.smart_bills_item_detail_bottomsheet_label))
+            bottomSheet.setTitle(getString(R.string.smart_bills_item_detail_bottomsheet_title))
+            bottomSheet.show(this)
         }
     }
 

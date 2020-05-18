@@ -6,6 +6,10 @@ import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
+/**
+ * @author by resakemal on 17/05/20
+ */
+
 class SmartBillsAnalytics {
 
     var userId: String = ""
@@ -43,9 +47,9 @@ class SmartBillsAnalytics {
                 map[POSITION] = index
                 return@mapIndexed map
             }
-            DataLayer.mapOf(ECOMMERCE to DataLayer.mapOf(CLICK to DataLayer.mapOf(
-                    ACTION_FIELD to actionField,
-                    PRODUCTS to DataLayer.listOf(products)
+            DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(
+                    ACTION_FIELD, actionField,
+                    PRODUCTS, DataLayer.listOf(products)
             )))
         }
 
@@ -76,9 +80,9 @@ class SmartBillsAnalytics {
     fun impressionAllProducts(bills: List<RechargeBills>) {
         val ecommerce = with (EnhanceEccomerce) {
             val impressions = createEcommerceProducts(bills)
-            DataLayer.mapOf(ECOMMERCE to DataLayer.mapOf(
-                    CURRENCY_CODE to CURRENCY_CODE_VALUE,
-                    IMPRESSIONS to DataLayer.listOf(impressions)
+            DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(
+                    CURRENCY_CODE, CURRENCY_CODE_VALUE,
+                    IMPRESSIONS, DataLayer.listOf(impressions)
             ))
         }
 
@@ -103,9 +107,9 @@ class SmartBillsAnalytics {
                 map[QUANTITY] = 1
                 return@map map
             }
-            DataLayer.mapOf(ECOMMERCE to DataLayer.mapOf(CLICK to DataLayer.mapOf(
-                    ACTION_FIELD to actionField,
-                    PRODUCTS to DataLayer.listOf(products)
+            DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(
+                    ACTION_FIELD, actionField,
+                    PRODUCTS, DataLayer.listOf(products)
             )))
         }
 
@@ -149,12 +153,12 @@ class SmartBillsAnalytics {
         with (EnhanceEccomerce) {
             return bills.map {
                 DataLayer.mapOf(
-                        NAME to it.productName,
-                        ID to it.productID,
-                        PRICE to it.amountText,
-                        BRAND to NONE,
-                        CATEGORY to it.categoryName,
-                        VARIANT to NONE
+                        NAME, it.productName,
+                        ID, it.productID,
+                        PRICE, it.amount,
+                        BRAND, NONE,
+                        CATEGORY, it.categoryName,
+                        VARIANT, NONE
                 )
             }
         }

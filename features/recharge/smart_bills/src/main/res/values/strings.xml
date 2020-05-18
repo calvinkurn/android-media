@@ -11,8 +11,10 @@
     <string name="smart_bills_title">Tagihan yang dibayar sekaligus</string>
     <string name="smart_bills_select_all">Pilih Semua</string>
     <string name="smart_bills_item_description">%1$s - %2$s</string>
-    <string name="smart_bills_item_detail_title">Detil Tagihan</string>
-    <string name="smart_bills_item_detail_bottomsheet_label">Smart bills item detail bottom sheet</string>
+    <string name="smart_bills_item_detail">Lihat Detail</string>
+    <string name="smart_bills_item_detail_bottomsheet_title">Detail pembayaran</string>
+    <string name="smart_bills_item_detail_title">Detail %1$s</string>
+    <string name="smart_bills_item_detail_title_default">Detail Tagihan</string>
     <string name="smart_bills_empty_state_title">Tidak ada tagihan yang dapat dibayar sekaligus</string>
     <string name="smart_bills_empty_state_description">Ayo bayar tagihan kamu di Tokopedia!</string>
     <string name="smart_bills_checkout_view_button_label">Bayar</string>

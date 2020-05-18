@@ -72,6 +72,15 @@
                 app:typographyWeight="bold"
                 tools:text="Rp 200.000.000" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_smart_bills_item_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl1"
+                android:text="@string/smart_bills_item_detail"
+                android:textColor="@color/green_250"
+                app:typographyType="small" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -84,7 +93,8 @@
         app:layout_constraintBottom_toBottomOf="@id/smart_bills_item_container"
         app:layout_constraintLeft_toLeftOf="@id/smart_bills_item_container"
         app:layout_constraintRight_toRightOf="@id/smart_bills_item_container"
-        app:layout_constraintTop_toTopOf="@id/smart_bills_item_container" />
+        app:layout_constraintTop_toTopOf="@id/smart_bills_item_container"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_smart_bills_item_error"

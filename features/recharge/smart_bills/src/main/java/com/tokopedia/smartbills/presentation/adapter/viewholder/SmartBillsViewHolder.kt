@@ -9,8 +9,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
+import com.tokopedia.smartbills.data.SmartBillsItemDetail
+import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
+
+/**
+ * @author by resakemal on 17/05/20
+ */
 
 class SmartBillsViewHolder(val view: View,
                            checkableListener: CheckableInteractionListener,
@@ -41,19 +47,14 @@ class SmartBillsViewHolder(val view: View,
             }
             cb_smart_bills_item.isEnabled = !element.disabled
 
-            smart_bills_item_info_container.setOnClickListener {
-                val billDetailView = View.inflate(context, R.layout.view_smart_bills_item_detail, null)
-                with(billDetailView) {
-                    // TODO: Add bill detail
-                }
-
-                val billDetailBottomSheet = BottomSheetUnify()
-                billDetailBottomSheet.setTitle(getString(R.string.smart_bills_item_detail_title))
-                billDetailBottomSheet.setChild(billDetailView)
-                billDetailBottomSheet.clearAction()
-                billDetailBottomSheet.setCloseClickListener {
-                    billDetailBottomSheet.dismiss()
-                }
+            tv_smart_bills_item_detail.setOnClickListener {
+                val details = listOf(
+                        SmartBillsItemDetail("Nomor Pelanggan", element.clientNumber),
+                        SmartBillsItemDetail("Nama Lengkap", "Nama"),
+                        SmartBillsItemDetail("Total Tagihan", element.amountText)
+                )
+                val billDetailBottomSheet =
+                        SmartBillsItemDetailBottomSheet.newInstance(context, element.categoryName, details)
                 detailListener.onShowBillDetail(element, billDetailBottomSheet)
             }
 
@@ -76,8 +77,8 @@ class SmartBillsViewHolder(val view: View,
         return view.cb_smart_bills_item
     }
 
-    interface DetailListener{
-        fun onShowBillDetail(bill: RechargeBills, bottomSheet: BottomSheetUnify)
+    interface DetailListener {
+        fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet)
     }
 
 }
