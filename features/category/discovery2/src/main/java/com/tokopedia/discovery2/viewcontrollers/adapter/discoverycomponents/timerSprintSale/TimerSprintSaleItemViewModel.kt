@@ -27,7 +27,7 @@ class TimerSprintSaleItemViewModel(val application: Application, components: Com
 
     fun isFutureSale(): Boolean {
         val currentSystemTime = Calendar.getInstance().time
-        val parsedStartDate = SimpleDateFormat(Utils.UTC_TIMER_DATE_FORMAT, Locale.getDefault())
+        val parsedStartDate = SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
                 .parse(componentData.value?.data?.get(0)?.startDate)
 
         return currentSystemTime < parsedStartDate
@@ -35,7 +35,7 @@ class TimerSprintSaleItemViewModel(val application: Application, components: Com
 
     fun isSaleOver(): Boolean {
         val currentSystemTime = Calendar.getInstance().time
-        val parsedEndDate = SimpleDateFormat(Utils.UTC_TIMER_DATE_FORMAT, Locale.getDefault())
+        val parsedEndDate = SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
                 .parse(componentData.value?.data?.get(0)?.endDate)
 
         return currentSystemTime > parsedEndDate
@@ -43,7 +43,7 @@ class TimerSprintSaleItemViewModel(val application: Application, components: Com
 
     fun startTimer() {
         val currentSystemTime = Calendar.getInstance().time
-        val parsedEndDate = SimpleDateFormat(Utils.UTC_TIMER_DATE_FORMAT, Locale.getDefault())
+        val parsedEndDate = SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
                 .parse(componentData.value?.data?.get(0)?.endDate)
 
         val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
