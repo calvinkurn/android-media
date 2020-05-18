@@ -14,8 +14,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.core.util.MethodChecker
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
 import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenTracking
@@ -58,7 +58,7 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
         tv_user_name.text = MethodChecker.fromHtml(helloName)
         button_add_product.setOnClickListener {
             trackingOpenShop.eventButtonAddProduct()
-            val intent = ProductAddNameCategoryActivity.createInstance(activity);
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
             startActivity(intent)
             activity?.finish()
         }

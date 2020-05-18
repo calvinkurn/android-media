@@ -41,6 +41,7 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
@@ -130,6 +131,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var onLoadMore = false
     private var isFilterButtonAnimating = false
     private var _animator: Animator? = null
+    private var isFromWidget: Boolean? = false
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -146,6 +148,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putInt(FILTER_STATUS_ID, bundle.getInt(FILTER_STATUS_ID))
+                    putBoolean(FROM_WIDGET_TAG, bundle.getBoolean(FROM_WIDGET_TAG))
                 }
             }
         }
@@ -168,10 +171,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
             tabStatus = arguments?.getString(TAB_STATUS).toString()
             filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
+            isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
         loadTicker()
         loadFilterList()
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        isFromWidget?.let {
+            if (it) SomAnalytics.eventClickWidgetNewOrder()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -363,7 +370,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     filterList = it.data
                     renderFilter()
                     if (filterStatusId != 0) {
-                        loadFilterStatusList()
+                        loadStatusOrderList()
                     } else {
                         nextOrderId = 0
                         loadOrderList(nextOrderId)
@@ -393,8 +400,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     })
 
-    private fun loadFilterStatusList() {
-        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
+    private fun loadStatusOrderList() {
+        somListViewModel.loadStatusOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
     }
 
     private fun loadOrderList(nextOrderId: Int) {
