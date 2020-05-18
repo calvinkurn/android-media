@@ -7,6 +7,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.testinstance.initialStateCommonResponse
+import com.tokopedia.autocomplete.initialstate.testinstance.initialStateEmptyDataResponse
 import com.tokopedia.autocomplete.initialstate.testinstance.popularSearchCommonResponse
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -265,5 +266,72 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `when presenter delete all recent search`()
         `then verify deleteRecentSearch API is called`()
         `then verify initial state view do nothing behavior`()
+    }
+
+    @Test
+    fun `test get initial state impression`() {
+        `given initial state use case capture request params`()
+        `when presenter get initial state data`()
+        `then verify initial state API is called`()
+        `then verify initial state impression is called`()
+        `then verify list impression data`()
+    }
+
+    private fun `then verify initial state impression is called`() {
+        verify {
+            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
+        }
+    }
+
+    private fun `then verify list impression data`() {
+        val recentViewItemList = slotRecentViewItemList.captured
+        val recentSearchItemList = slotRecentSearchItemList.captured
+        val popularSearchItemList = slotPopularSearchItemList.captured
+
+        val recentSearchListResponse = getDataLayerForPromo(initialStateCommonResponse[0].items)
+        val recentViewListResponse = getDataLayerForRecentView(initialStateCommonResponse[1].items)
+        val popularSearchListResponse = getDataLayerForPromo(initialStateCommonResponse[2].items)
+
+        assert(recentViewItemList.containsAll(recentViewListResponse))
+        assert(recentSearchItemList.containsAll(recentSearchListResponse))
+        assert(popularSearchItemList.containsAll(popularSearchListResponse))
+    }
+
+    private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForRecentView(position))
+        }
+        return dataLayerList
+    }
+
+    private fun getDataLayerForPromo(list: List<InitialStateItem>): MutableList<Any> {
+        val dataLayerList: MutableList<Any> = mutableListOf()
+
+        list.forEachIndexed { index, item ->
+            val position = index + 1
+            dataLayerList.add(item.getObjectDataLayerForPromo(position))
+        }
+        return dataLayerList
+    }
+
+    @Test
+    fun `test initial state impression with empty items`() {
+        `given initial state use case get empty data response`()
+        `when presenter get initial state data`()
+        `then verify initial state API is called`()
+        `then verify initial state view will call showInitialStateResult behavior`()
+        `then verify initial state view do nothing behavior`()
+    }
+
+    private fun `given initial state use case get empty data response`() {
+        every { getInitialStateUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<List<InitialStateData>>>().onStart()
+            secondArg<Subscriber<List<InitialStateData>>>().onNext(initialStateEmptyDataResponse)
+        }
     }
 }
