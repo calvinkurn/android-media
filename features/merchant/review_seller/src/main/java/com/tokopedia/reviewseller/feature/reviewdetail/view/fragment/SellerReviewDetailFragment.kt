@@ -317,7 +317,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                             ?: arrayListOf())
 
                     toolbarTitle = it.data.second
-                    review_detail_toolbar.title = toolbarTitle
+                    review_detail_toolbar?.title = toolbarTitle
 
                     renderList(it.data.first, it.data.third)
                     coachMarkShow()
