@@ -382,25 +382,27 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvo) {
         productRevIncentiveOvo = data
         with(data.productrevIncentiveOvo) {
-            ovoPointsTicker.visibility = View.VISIBLE
-            ovoPointsTicker.tickerTitle = ticker.title
-            ovoPointsTicker.setHtmlDescription(ticker.subtitle)
-            ovoPointsTicker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data))
-                    bottomSheet.isFullpage = true
-                    fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
-                    bottomSheet.setCloseClickListener {
-                        reviewTracker.onClickDismissIncentiveOvoBottomSheetTracker()
-                        bottomSheet.dismiss()
+            ovoPointsTicker.apply {
+                visibility = View.VISIBLE
+                tickerTitle = ticker.title
+                setHtmlDescription(ticker.subtitle)
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data))
+                        bottomSheet.isFullpage = true
+                        fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
+                        bottomSheet.setCloseClickListener {
+                            reviewTracker.onClickDismissIncentiveOvoBottomSheetTracker()
+                            bottomSheet.dismiss()
+                        }
+                        reviewTracker.onClickReadSkIncentiveOvoTracker(ticker.title);
                     }
-                    reviewTracker.onClickReadSkIncentiveOvoTracker(ticker.title);
-                }
 
-                override fun onDismiss() {
-                    reviewTracker.onClickDismissIncentiveOvoTracker(ticker.title);
-                }
-            })
+                    override fun onDismiss() {
+                        reviewTracker.onClickDismissIncentiveOvoTracker(ticker.title);
+                    }
+                })
+            }
             reviewTracker.onSuccessGetIncentiveOvoTracker(ticker.title);
         }
     }
