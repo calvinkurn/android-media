@@ -31,8 +31,8 @@ internal constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
 
             for (item in logDBList) {
                 if (item.eventStatus == STATUS_PENDING && System.currentTimeMillis() - item.timestamp > PENDING_DURATION_MS) {
-                    urlCheckList.add(item.url)
-                    urlCheckMap[item.url] = item
+                    urlCheckList.add(item.url.trim())
+                    urlCheckMap[item.url.trim()] = item
                 }
             }
 
