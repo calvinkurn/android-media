@@ -30,29 +30,17 @@ public class SearchProductUseCaseModule {
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductFirstPageUseCase(
-            @SearchContext Context context,
             Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper
     ) {
-        GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_search_product_first_page),
-                SearchProductModel.class
-        );
-
-        return new SearchProductFirstPageGqlUseCase(graphqlRequest, new GraphqlUseCase(), searchProductModelMapper);
+        return new SearchProductFirstPageGqlUseCase(new GraphqlUseCase(), searchProductModelMapper);
     }
 
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductLoadMoreUseCase(
-            @SearchContext Context context,
             Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper
     ) {
-        GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_search_product_load_more),
-                SearchProductModel.class
-        );
-
-        return new SearchProductLoadMoreGqlUseCase(graphqlRequest, new GraphqlUseCase(), searchProductModelMapper);
+        return new SearchProductLoadMoreGqlUseCase(new GraphqlUseCase(), searchProductModelMapper);
     }
 }

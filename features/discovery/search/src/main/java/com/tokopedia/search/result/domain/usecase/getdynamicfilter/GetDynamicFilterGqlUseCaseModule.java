@@ -26,14 +26,8 @@ public class GetDynamicFilterGqlUseCaseModule {
     @Provides
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
     UseCase<DynamicFilterModel> provideGetDynamicFilterGqlUseCase(
-            @SearchContext Context context,
             Func1<GraphqlResponse, DynamicFilterModel> dynamicFilterModelMapper
     ) {
-        GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_search_filter_product),
-                GqlDynamicFilterResponse.class
-        );
-
-        return new GetDynamicFilterGqlUseCase(graphqlRequest, new GraphqlUseCase(), dynamicFilterModelMapper);
+        return new GetDynamicFilterGqlUseCase(new GraphqlUseCase(), dynamicFilterModelMapper);
     }
 }
