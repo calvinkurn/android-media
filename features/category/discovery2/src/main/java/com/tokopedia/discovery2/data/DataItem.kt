@@ -292,8 +292,7 @@ data class DataItem(
         val topadsClickUrl: String? = "",
 
         @SerializedName("free_ongkir")
-        val freeOngkir: FreeOngkir? = null
-        var smallImageUrlMobile: String? = "",
+        val freeOngkir: FreeOngkir? = null,
 
         var positionForParentItem:Int = 0
 
