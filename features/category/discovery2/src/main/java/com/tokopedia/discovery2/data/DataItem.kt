@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
 
 
 data class DataItem(
@@ -134,6 +135,9 @@ data class DataItem(
         @SerializedName("points_slash")
         val pointsSlash: String? = "",
 
+        @SerializedName("slug")
+        val slug: String? = "",
+
         @SerializedName("btn_applink")
         val btnApplink: String? = "",
 
@@ -200,9 +204,6 @@ data class DataItem(
         @SerializedName("min_usage_label")
         val minUsageLabel: String? = "",
 
-        @SerializedName("slug")
-        val slug: String? = "",
-
         @SerializedName("subtitle")
         val subtitle: String? = "",
 
@@ -231,9 +232,69 @@ data class DataItem(
         val timerFontColor: String? = "",
 
         @SerializedName("timer_box_color")
-        val timerBoxColor: String? = ""
+        val timerBoxColor: String? = "",
 
-) {
+        @SerializedName("cashback")
+        val cashback: String? = "",
+
+        @SerializedName("is_topads")
+        val isTopads: Boolean? = false,
+
+        @SerializedName("discounted_price")
+        val discountedPrice: String? = "",
+
+        @SerializedName("gold_merchant")
+        val goldMerchant: Boolean? = false,
+
+        @SerializedName("price")
+        val price: String? = "",
+
+        @SerializedName("shop_name")
+        val shopName: String? = "",
+
+        @SerializedName("shop_location")
+        val shopLocation: String? = "",
+
+        @SerializedName("discount_percentage")
+        val discountPercentage: String? = "",
+
+        @SerializedName("shop_applink")
+        val shopApplink: String? = "",
+
+        @SerializedName("count_review")
+        val countReview: String? = "",
+
+        @SerializedName("preorder")
+        val preorder: String? = "",
+
+        @SerializedName("topads_view_url")
+        val topadsViewUrl: String? = "",
+
+        @SerializedName("product_id")
+        val productId: String? = "",
+
+        @SerializedName("rating")
+        val rating: String? = "",
+
+        @SerializedName("shop_logo")
+        val shopLogo: String? = "",
+
+        @SerializedName("official_store")
+        val officialStore: Boolean? = false,
+
+        @SerializedName("stock")
+        val stock: String? = "",
+
+        @SerializedName("stock_sold_percentage")
+        val stockSoldPercentage: String? = "",
+
+        @SerializedName("topads_click_url")
+        val topadsClickUrl: String? = "",
+
+        @SerializedName("free_ongkir")
+        val freeOngkir: FreeOngkir? = null
+
+        ) {
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0

@@ -98,11 +98,11 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         navigate(context, applink)
     }
 
-    fun navigate(context: Context, applink: String) {
-        if (applink.isNotEmpty()) {
-            RouteManager.route(context, applink)
-        }
-    }
+//    fun navigate(context: Context, applink: String) {
+//        if (applink.isNotEmpty()) {
+//            RouteManager.route(context, applink)
+//        }
+//    }
 
     private fun getQueryMap(): Map<String, Any> {
         return mapOf("catalogId" to (try {
