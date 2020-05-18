@@ -476,7 +476,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_grey);
         }
         if (shipmentCartItemModel.isTriggerShippingVibrationAnimation()) {
-            containerShippingExperience.animate()
+            llShippingExperienceContainer.animate()
                     .translationX(VIBRATION_ANIMATION_TRANSLATION_X)
                     .setDuration(VIBRATION_ANIMATION_DURATION)
                     .setInterpolator(new CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
