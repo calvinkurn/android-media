@@ -979,15 +979,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun disscussionClicked() {
-        activity?.let {
-            val intent = RouteManager.getIntent(
-                    it,
-                    ApplinkConstInternalGlobal.PRODUCT_TALK,
-                    viewModel.getDynamicProductInfoP1?.basic?.productID,
-                    viewModel.getDynamicProductInfoP1?.basic?.shopID
-            )
-            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TALK_PRODUCT)
-        }
+        goToReadingActivity()
     }
 
     /**
