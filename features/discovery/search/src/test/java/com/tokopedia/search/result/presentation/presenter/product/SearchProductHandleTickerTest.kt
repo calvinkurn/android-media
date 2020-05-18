@@ -12,7 +12,6 @@ import rx.Subscriber
 internal class SearchProductHandleTickerTest: ProductListPresenterTestFixtures() {
 
     private val requestParamsSlot = slot<RequestParams>()
-    private val typeIdSlot = slot<Int>()
 
     @Test
     fun `Tracker for Ticker Impression is called`() {
@@ -27,7 +26,6 @@ internal class SearchProductHandleTickerTest: ProductListPresenterTestFixtures()
 
         `When Load Data`(searchParameter)
         `Then verify track event impression ticker is called`()
-        `Then verify type id is the same`()
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -42,16 +40,7 @@ internal class SearchProductHandleTickerTest: ProductListPresenterTestFixtures()
 
     private fun `Then verify track event impression ticker is called`() {
         verifyOrder {
-            productListView.trackEventImpressionTicker(capture(typeIdSlot))
-        }
-    }
-
-    private fun `Then verify type id is the same`() {
-        val capturedTypeId = typeIdSlot.captured
-        val typeId = searchProductModelTicker.searchProduct.ticker.typeId
-
-        assert(capturedTypeId == typeId) {
-            "Assertion Failed, actual type_id: ${capturedTypeId}, expected type_id: $typeId"
+            productListView.trackEventImpressionTicker(searchProductModelTicker.searchProduct.ticker.typeId)
         }
     }
 }
