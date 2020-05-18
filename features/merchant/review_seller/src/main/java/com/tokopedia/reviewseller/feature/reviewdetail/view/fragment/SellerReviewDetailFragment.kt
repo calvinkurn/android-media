@@ -63,6 +63,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         const val PRODUCT_ID = "EXTRA_PRODUCT_ID"
         const val CHIP_FILTER = "EXTRA_CHIPS_FILTER"
         const val PRODUCT_IMAGE = "EXTRA_PRODUCT_IMAGE"
+        const val SELECTED_DATE_CHIP = "selectedDateChip"
+        const val SELECTED_DATE_POSITION = "selectedDatePosition"
         private const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
     }
 
@@ -437,8 +439,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun setIntentResultChipDate(selectedDateChip: String, position: Int) {
         val returnIntent = Intent()
-        returnIntent.putExtra("selectedDateChip", selectedDateChip)
-        returnIntent.putExtra("selectedDatePosition", position)
+        returnIntent.putExtra(SELECTED_DATE_CHIP, selectedDateChip)
+        returnIntent.putExtra(SELECTED_DATE_POSITION, position)
 
         if (selectedDateChip == ReviewSellerConstant.ALL_VALUE) activity?.setResult(Activity.RESULT_CANCELED) else activity?.setResult(Activity.RESULT_OK, returnIntent)
     }
