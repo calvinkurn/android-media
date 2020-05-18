@@ -132,6 +132,10 @@ class OfficialHomeFragment :
         }
         context?.let { tracking = OfficialStoreTracking(it) }
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        if (getOfficialStorePageLoadTimeCallback() != null) {
+            getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
+            getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -151,7 +155,7 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
-
+      
         return view
     }
 
@@ -160,7 +164,6 @@ class OfficialHomeFragment :
             override fun onGlobalLayout() {
                 if(officialStorePerformanceMonitoringListener != null){
                     officialStorePerformanceMonitoringListener!!.stopOfficialStorePerformanceMonitoring()
-                    officialStorePerformanceMonitoringListener = null
                     recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 }
             }
@@ -169,7 +172,6 @@ class OfficialHomeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (getOfficialStorePageLoadTimeCallback() != null) {
-            getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
             getOfficialStorePageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
         }
         super.onViewCreated(view, savedInstanceState)
@@ -761,6 +763,11 @@ class OfficialHomeFragment :
     }
 
     private fun removeLoading() {
+        if (getOfficialStorePageLoadTimeCallback() != null) {
+            getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+        }
+        setPerformanceListenerForRecyclerView()
+
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel

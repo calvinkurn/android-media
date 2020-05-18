@@ -40,7 +40,9 @@ public class TopChatAnalytics {
     public static final String SCREEN_CHAT_ROOM = "chatroom";
 
     public static final String FPM_DETAIL_CHAT = "mp_detail_chat";
+    public static final String FPM_DETAIL_CHAT_SELLERAPP = "mp_detail_chat_sellerapp";
     public static final String FPM_CHAT_LIST = "mp_chat_list";
+    public static final String FPM_CHAT_LIST_SELLERAPP = "mp_chat_list_sellerapp";
 
     public static final String SELLERAPP_PUSH_NOTIF = "sellerapp_push_notif";
 
