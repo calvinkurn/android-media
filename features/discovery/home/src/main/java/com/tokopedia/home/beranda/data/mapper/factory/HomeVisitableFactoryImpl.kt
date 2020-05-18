@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.*
@@ -237,6 +238,18 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                         isCombined = false
                 ) }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
+                    createDynamicChannel(
+                            channel,
+                            trackingData = CategoryWidgetTracking.getCategoryWidgetBanneImpression(
+                                    channel.grids.toList(),
+                                    userSessionInterface?.userId?:"",
+                                    false,
+                                    channel
+                            ),
+                            isCombined = false
+                    )
+                }
             }
         }
 
