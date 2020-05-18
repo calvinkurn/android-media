@@ -1,6 +1,7 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.adapter
 
 import android.os.Handler
+import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -56,14 +57,17 @@ class BrandlistSearchResultAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateHeaderChipsBrandSearch(listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int) {
+    fun updateHeaderChipsBrandSearch(listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, recyclerViewLastState: Parcelable?) {
         val filteredList = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>()
         if (filteredList.size == 0) {
-            visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip))
+            visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         } else if (filteredList.size > 0) {
-            visitables.set(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip))
+            visitables.set(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
+
+//            BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip)
+//            notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         }
     }
 
@@ -115,15 +119,11 @@ class BrandlistSearchResultAdapter(
         notifyDataSetChanged()
     }
 
-//    fun getVisitables() = this.visitables
-
-//    override fun getHeaderLayout(headerPosition: Int): Int {
-//        return BrandlistSearchAllBrandLabelViewHolder.LAYOUT
-//    }
-//
-//    override fun isHeader(itemPosition: Int): Boolean {
-//        return visitables[itemPosition].type(adapterTypeFactory) == BrandlistSearchAllBrandLabelViewHolder.LAYOUT
-//    }
+    fun refreshSticky() {
+        if (onStickySingleHeaderViewListener != null) {
+            recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
+        }
+    }
 
     override fun showLoading() {
         if (!isLoading) {

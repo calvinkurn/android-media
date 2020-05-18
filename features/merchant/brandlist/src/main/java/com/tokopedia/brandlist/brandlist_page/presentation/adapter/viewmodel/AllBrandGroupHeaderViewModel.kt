@@ -8,7 +8,8 @@ import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.ad
 class AllBrandGroupHeaderViewModel(
         val listener: BrandlistHeaderBrandInterface,
         val totalBrands: Int,
-        val selectedChip: Int
+        val selectedChip: Int,
+        val recyclerViewLastState: Parcelable?
 ) : Visitable<BrandlistPageTypeFactory> {
 
     var recyclerViewState: Parcelable? = null

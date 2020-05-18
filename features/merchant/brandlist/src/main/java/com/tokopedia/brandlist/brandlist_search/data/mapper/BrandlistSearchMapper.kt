@@ -14,10 +14,7 @@ class BrandlistSearchMapper {
 
         fun mapSearchRecommendationResponseToVisitable(
                 shops: List<Shop>,
-                listener: BrandlistSearchTrackingListener,
-                adapter: BrandlistSearchResultAdapter?,
-                stateLoadBrands: String,
-                isLoadMore: Boolean
+                listener: BrandlistSearchTrackingListener
         ): List<BrandlistSearchRecommendationViewModel> {
             val visitables = mutableListOf<BrandlistSearchRecommendationViewModel>()
 
@@ -40,10 +37,7 @@ class BrandlistSearchMapper {
         fun mapSearchResultResponseToVisitable(
                 brands: List<Brand>,
                 searchQuery: String,
-                listener: BrandlistSearchTrackingListener,
-                adapter: BrandlistSearchResultAdapter?,
-                stateLoadBrands: String,
-                isLoadMore: Boolean
+                listener: BrandlistSearchTrackingListener
         ): List<BrandlistSearchResultViewModel> {
             val visitables = mutableListOf<BrandlistSearchResultViewModel>()
 
@@ -57,54 +51,6 @@ class BrandlistSearchMapper {
             }
 
             return visitables
-
-//            val totalData: Int = adapter?.getVisitables()?.size ?: 0
-//
-//            val list = adapter?.getVisitables()?.filterIsInstance<BrandlistSearchResultViewModel>()
-////            val startIndex = adapter?.getVisitables()?.indexOf(list?.first())
-////            val lastIndex = adapter?.getVisitables()?.indexOf(list?.last())
-//
-////            adapter?.getVisitables()?.indexOf(
-////                    list?.first()
-////            )
-//
-//            if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
-//                if (!isLoadMore) {
-//
-//                } else {
-//                    for (brand in brands) {
-//                        visitables.add(BrandlistSearchResultViewModel(
-//                                brand.name, brand.logoUrl, brand.exclusiveLogoURL,
-//                                searchQuery, brand.appsUrl, brand.id, listener)
-//                        )
-//                    }
-////                    adapter?.notifyItemRangeInserted(adapter.lastIndex, brands.size)
-//                }
-//
-//            } else if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND) {
-//                if (!isLoadMore) {
-//
-//                } else {
-//                    for (brand in brands) {
-//                        visitables.add(BrandlistSearchResultViewModel(
-//                                brand.name, brand.logoUrl, brand.exclusiveLogoURL,
-//                                searchQuery, brand.appsUrl, brand.id, listener)
-//                        )
-//                    }
-//                }
-//
-//            } else if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
-//                brands.forEachIndexed { index, brand ->
-//                    visitables.add(
-//                            BrandlistSearchResultViewModel(
-//                                    brand.name, brand.logoUrl, brand.exclusiveLogoURL,
-//                                    searchQuery, brand.appsUrl, brand.id, listener
-//                            )
-//                    )
-//                }
-//            }
-
-//            return visitables
         }
     }
 }

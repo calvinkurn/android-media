@@ -2,6 +2,7 @@ package com.tokopedia.brandlist.brandlist_page.presentation.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -74,6 +75,7 @@ class BrandlistPageFragment :
     private var stateLoadBrands: String = LoadAllBrandState.LOAD_INITIAL_ALL_BRAND
     private var isLoadMore: Boolean = false
     private var selectedBrandLetter: String = "A"
+    private var recyclerViewLastState: Parcelable? = null
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -125,7 +127,7 @@ class BrandlistPageFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter?.initAdapter()
+        adapter?.initAdapter(recyclerViewLastState)
 
         observeFeaturedBrands()
         observePopularBrands()
@@ -196,7 +198,7 @@ class BrandlistPageFragment :
 
             viewModel.resetAllBrandRequestParameter()
             adapter?.notifyDataSetChanged()
-            adapter?.initAdapter()
+            adapter?.initAdapter(recyclerViewLastState)
             category?.let { loadData(it, userSession.userId, true) }
         }
     }
@@ -290,7 +292,7 @@ class BrandlistPageFragment :
 //                        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip)
 //                    }
 
-                    BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip)
+                    BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
                     BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
@@ -385,9 +387,27 @@ class BrandlistPageFragment :
                 imgUrl, false, "")
     }
 
-    override fun onClickedChip(position: Int, chipName: String) {
-        println("position: Int, chipName: String $position $chipName")
+//    override fun onClickedChip(position: Int, chipName: String) {
+//        println("position: Int, chipName: String $position $chipName")
+//        selectedChip = position
+//
+//        if (position > 0 && position < 2) {     // Load Semua Brand
+//            isLoadMore = false
+//            setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
+//            viewModel.resetAllBrandRequestParameter()
+//            viewModel.loadAllBrands(category)
+//        } else if (position >= 2) {     // Load per alphabet
+//            isLoadMore = false
+//            selectedBrandLetter = chipName
+//            setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
+//            viewModel.resetAllBrandRequestParameter()
+//            viewModel.loadBrandsPerAlphabet(category, chipName)
+//        }
+//    }
+
+    override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
         selectedChip = position
+        recyclerViewLastState = recyclerViewState
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false

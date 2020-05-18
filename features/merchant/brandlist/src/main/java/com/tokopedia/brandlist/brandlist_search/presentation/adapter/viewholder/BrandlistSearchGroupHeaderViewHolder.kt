@@ -39,6 +39,7 @@ class BrandlistSearchGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 allBrandGroupHeaderViewModel.recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
+                adapter?.recyclerViewState = allBrandGroupHeaderViewModel.recyclerViewState
             }
         })
     }
@@ -48,13 +49,17 @@ class BrandlistSearchGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<
         val headerList: MutableList<String> = getAlphabeticalShopFilter(totalBrand)
 
         this.allBrandGroupHeaderViewModel = element
-        element.recyclerViewState?.let {
+        element.recyclerViewLastState?.let {
             recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
         }
+//        element.recyclerViewState?.let {
+//            recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
+//        }
 
         adapter = BrandlistSearchAlphabetHeaderAdapter(element.listener)
-        adapter?.updateDataHeaderList(headerList)
+        adapter?.headerList = headerList
         adapter?.selectedPosition = element.selectedChip
+        adapter?.notifyDataSetChanged()
         recyclerViewBrandHeader.adapter = adapter
     }
 

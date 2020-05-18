@@ -1,6 +1,7 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter
 
 import android.content.Context
+import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -15,14 +16,22 @@ class BrandlistAlphabetHeaderAdapter (
 ): RecyclerView.Adapter<BrandlistAlphabetHeaderAdapter.BrandlistAlphabetHeaderViewHolder>()  {
 
     private val DEFAULT_SELECTED_POSITION = 1
-    private var headerList: MutableList<String> = mutableListOf()
+    var headerList: MutableList<String> = mutableListOf()
     var selectedPosition = DEFAULT_SELECTED_POSITION
+    var recyclerViewState: Parcelable? = null
     private val startPosition = 0
 
-    fun updateDataHeaderList(headerList: MutableList<String>) {
-        this.headerList = headerList
-        notifyDataSetChanged()
-    }
+
+//    private val DEFAULT_SELECTED_POSITION = 1
+//    var headerList: MutableList<String> = mutableListOf()
+//    var selectedPosition: Int = DEFAULT_SELECTED_POSITION
+//    var recyclerViewState: Parcelable? = null
+//    private val startPosition = 0
+
+//    fun updateDataHeaderList(headerList: MutableList<String>) {
+//        this.headerList = headerList
+//        notifyDataSetChanged()
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandlistAlphabetHeaderViewHolder {
         return BrandlistAlphabetHeaderViewHolder(parent.inflateLayout(R.layout.brandlist_item_alphabet_header_chip))
@@ -51,22 +60,34 @@ class BrandlistAlphabetHeaderAdapter (
             chipTextView.text = headerItem
 
             if (position == startPosition){
-                chipContainer.background = ContextCompat.getDrawable(context, R.color.white)
-                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_500))
+                setDefaultText()
             }
 
             if (selectedPosition == position && position != startPosition) {
-                chipContainer.background = ContextCompat.getDrawable(context, R.drawable.chip_selected_small)
-                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.green_500))
+                isSelectedChips(true)
             } else if (selectedPosition != position && position != startPosition) {
-                chipContainer.background = ContextCompat.getDrawable(context, R.drawable.chip_normal_small)
-                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_500))
+                isSelectedChips(false)
             }
 
             chipContainer.setOnClickListener {
                 selectedPosition = position
                 notifyDataSetChanged()
-                listener.onClickedChip(position, headerItem)
+                listener.onClickedChip(position, headerItem, recyclerViewState)
+            }
+        }
+
+        private fun setDefaultText() {
+            chipContainer.background = ContextCompat.getDrawable(context, R.color.white)
+            chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_500))
+        }
+
+        private fun isSelectedChips(isSelected: Boolean) {
+            if (isSelected) {
+                chipContainer.background = ContextCompat.getDrawable(context, R.drawable.chip_selected_small)
+                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.green_500))
+            } else {
+                chipContainer.background = ContextCompat.getDrawable(context, R.drawable.chip_normal_small)
+                chipTextView.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_500))
             }
         }
     }

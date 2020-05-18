@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_page.data.mapper
 
+import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
@@ -37,8 +38,8 @@ class BrandlistPageMapper {
 //            notifyElement(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel(title, totalBrands, listener), adapter)
 //        }
 
-        fun mappingAllBrandGroupHeader(adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int) {
-            adapter?.getVisitables()?.set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip))
+        fun mappingAllBrandGroupHeader(adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, recyclerViewLastState: Parcelable?) {
+            adapter?.getVisitables()?.set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
             adapter?.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
             // adapter?.getVisitables()?.add(AllBrandGroupHeaderViewModel(groupHeaderText, listener, totalBrands, totalBrandsPerAlphabet))
             // adapter?.notifyItemRangeInserted(adapter.lastIndex, 1)
