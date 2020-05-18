@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,7 +15,9 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
@@ -37,10 +40,9 @@ class CategoryWidgetViewHolder(val view: View, val categoryListener: HomeCategor
                 GridLayoutManager.HORIZONTAL,
                 false)
         if (recyclerView.itemDecorationCount == 0) {
-            recyclerView.addItemDecoration(GridSpacingItemDecoration(
+            recyclerView.addItemDecoration(CategoryWidgetSpacingItemDecoration(
                     2,
-                    itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8),
-                    true
+                    itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
             ))
         }
     }
@@ -93,7 +95,7 @@ class CategoryWidgetViewHolder(val view: View, val categoryListener: HomeCategor
     }
 
     class CategoryWidgetItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val categoryImageView: ShimmeringImageView = view.findViewById(R.id.category_image)
+        val categoryImageView: ImageView = view.findViewById(R.id.category_image)
         val categoryBackground: View = view.findViewById(R.id.category_background)
         val categoryName: Typography = view.findViewById(R.id.category_item_name)
 
