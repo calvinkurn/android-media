@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -50,4 +51,9 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
         }
         notifyDataSetChanged()
     }
+
+    fun getChildHolderViewModel(position: Int): DiscoveryBaseViewModel? {
+        return viewHolderListModel.getInnerComponentViewModel(position)
+    }
+
 }

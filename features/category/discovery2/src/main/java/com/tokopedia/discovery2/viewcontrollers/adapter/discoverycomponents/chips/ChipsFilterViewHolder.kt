@@ -23,13 +23,11 @@ class ChipsFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         chipsFilterViewModel = discoveryBaseViewModel as ChipsFilterViewModel
+        chipsFilterViewModel.setAdapterPositionToChildItems(adapterPosition)
         setUpObservers()
     }
 
     private fun setUpObservers() {
-        chipsFilterViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
-        })
-
         chipsFilterViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             chipsFilterRecycleAdapter.setDataList(item)
         })

@@ -227,4 +227,6 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mPageComponentRecyclerView.removeOnChildAttachStateChangeListener(this)
         super.onDetach()
     }
+
+    fun getDiscoveryRecyclerViewAdapter() = mDiscoveryRecycleAdapter
 }
