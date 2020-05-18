@@ -470,10 +470,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShippingVibrationAnimation(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isShippingBorderRed()) {
+            containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_red);
+        } else {
+            containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_grey);
+        }
         if (shipmentCartItemModel.isTriggerShippingVibrationAnimation()) {
-            if (shipmentCartItemModel.isShippingBorderRed()) {
-                containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_red);
-            }
             containerShippingExperience.animate()
                     .translationX(VIBRATION_ANIMATION_TRANSLATION_X)
                     .setDuration(VIBRATION_ANIMATION_DURATION)
@@ -486,7 +488,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
                         @Override
                         public void onAnimationEnd(Animator animator) {
-                            shipmentCartItemModel.setShippingBorderRed(false);
                             shipmentCartItemModel.setTriggerShippingVibrationAnimation(false);
                         }
 

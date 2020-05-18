@@ -3098,24 +3098,36 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void checkShippingCompletion(boolean isTriggeredByPaymentButton) {
-        if (!isTradeInByDropOff()) {
+        if (getActivity() != null && !isTradeInByDropOff()) {
             List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
+            int notSelectCourierCount = 0;
+            int firstFoundPosition = 0;
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                     ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
-                        if (isTriggeredByPaymentButton) {
-                            showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
+                        if (firstFoundPosition == 0) {
+                            firstFoundPosition = i;
                         }
-                        rvShipment.smoothScrollToPosition(i);
                         shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
                         shipmentCartItemModel.setStateAllItemViewExpanded(false);
                         shipmentCartItemModel.setShippingBorderRed(isTriggeredByPaymentButton);
                         onNeedUpdateViewItem(i);
-                        break;
+                        notSelectCourierCount++;
                     }
                 }
             }
+
+            rvShipment.smoothScrollToPosition(firstFoundPosition);
+
+            if (isTriggeredByPaymentButton && notSelectCourierCount > 0) {
+                if (notSelectCourierCount == 1) {
+                    showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
+                } else {
+                    showToastNormal(String.format(getString(R.string.message_error_multiple_courier_not_selected), notSelectCourierCount));
+                }
+            }
+
         }
     }
 }

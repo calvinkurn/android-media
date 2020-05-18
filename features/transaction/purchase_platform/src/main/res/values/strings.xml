@@ -97,6 +97,7 @@
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
     <string name="message_error_courier_not_selected">Pilih pengiriman dulu yuk sebelum lanjut bayar.</string>
+    <string name="message_error_multiple_courier_not_selected">Pilih pengiriman untuk %d pesananmu dulu yuk sebelum lanjut bayar.</string>
     <string name="message_error_dropshipper_empty">Pastikan Anda telah melengkapi informasi tambahan.</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
     <string name="cart">Keranjang</string>
