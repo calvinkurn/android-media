@@ -6,12 +6,6 @@ Created on Thu May 14 09:20:56 2020
 @author: sandeepgupta-xps
 """
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May 14 09:20:56 2020
-@author: sandeepgupta-xps
-"""
 import hashlib, os
 from collections import defaultdict
 import argparse
@@ -59,7 +53,7 @@ def findDuplicateImages(directory_path, image_to_search_list):
                 print("no duplicate found for file : "+sf)
                 print("\n")
         else:
-            print("no duplicate found for file : "+sf)
+            print("no entry found for file : "+sf)
             print("\n")
 
 ################################################
@@ -82,5 +76,5 @@ else:
     image_to_search_list = [item for item in args.list.split(',')]
 
 
-#call a function to find duplicates images in directory
+#call this function to find duplicates images in directory
 findDuplicateImages(all_images_path, image_to_search_list)

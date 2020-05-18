@@ -71,18 +71,7 @@ foundDuplicateImages (){
     output=$(python tools/script_detect_duplicate_res.py --path $(git rev-parse --show-toplevel) --list $list_of_file)
 
     #duplicate file found check in output
-    if [[ $output == *"similar image/s found for file"* ]]; then
-        echo -e "\n"
-        echo "##################################"
-        echo "####   Duplicate File Found   ####"
-        echo "##################################"
-        echo -e "\n"
-        echo "Commit Failed, use \"git commit --no-verify\" to bypass the verification"
-        echo -e "\n"
-        echo -e "$output"
-        echo -e "\n"
-        exit 1
-    else
+    if [[ $output == *"command not found"* ]]; then
         echo "#############################################################"
         echo "####   Please install python/ update env path variable   ####"
         echo "#############################################################"
@@ -94,6 +83,21 @@ foundDuplicateImages (){
         echo -e "pip install hashlib"
         echo -e "\n"
         echo -e "pip install argparse"
+        echo -e "\n"
+        exit 0
+    elif [[ $output == *"similar image/s found for file"* ]]; then
+        echo -e "\n"
+        echo "##################################"
+        echo "####   Duplicate File Found   ####"
+        echo "##################################"
+        echo -e "\n"
+        echo "Commit Failed, use \"git commit --no-verify\" to bypass the verification"
+        echo -e "\n"
+        echo -e "$output"
+        echo -e "\n"
+        exit 1
+    else
+        echo "No duplicates found for any committed files."
         echo -e "\n"
         exit 0
     fi
