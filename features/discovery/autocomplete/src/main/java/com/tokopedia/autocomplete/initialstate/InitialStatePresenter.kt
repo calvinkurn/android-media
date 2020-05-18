@@ -38,7 +38,6 @@ class InitialStatePresenter @Inject constructor(
     override fun getQueryKey(): String {
         return when {
             searchParameter.contains(SearchApiConst.Q) -> searchParameter[SearchApiConst.Q] ?: ""
-            searchParameter.contains(SearchApiConst.KEYWORD) -> searchParameter[SearchApiConst.KEYWORD] ?: ""
             else -> ""
         }
     }
