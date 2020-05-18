@@ -668,16 +668,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         if (isLogin) {
-            viewModel?.addProductToCart(
-                    shopHomeProductViewModel?.id ?: "",
-                    shopId,
-                    {
-                        onSuccessAddToCart(it, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
-                    },
-                    {
-                        onErrorAddToCart(it)
-                    }
-            )
+            shopHomeProductViewModel?.let { product ->
+                viewModel?.addProductToCart(
+                        product,
+                        shopId,
+                        {
+                            onSuccessAddToCart(it, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
+                        },
+                        {
+                            onErrorAddToCart(it)
+                        }
+                )
+            }
         } else {
             trackClickAddToCart(
                     null,

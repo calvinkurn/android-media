@@ -14,6 +14,7 @@ import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
 import static com.tokopedia.user.session.Constants.EMAIL;
 import static com.tokopedia.user.session.Constants.FULL_NAME;
 import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_ID_TIMESTAMP;
 import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 import static com.tokopedia.user.session.Constants.GC_TOKEN;
 import static com.tokopedia.user.session.Constants.GTM_LOGIN_ID;
@@ -27,6 +28,7 @@ import static com.tokopedia.user.session.Constants.IS_GOLD_MERCHANT;
 import static com.tokopedia.user.session.Constants.IS_LOGIN;
 import static com.tokopedia.user.session.Constants.IS_MSISDN_VERIFIED;
 import static com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE;
+import static com.tokopedia.user.session.Constants.IS_SHOP_OFFICIAL_STORE;
 import static com.tokopedia.user.session.Constants.LOGIN_ID;
 import static com.tokopedia.user.session.Constants.LOGIN_METHOD;
 import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
@@ -91,6 +93,15 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         return isLogin && u_id != null;
     }
 
+    public boolean isShopOfficialStore() {
+        boolean isShopOfficialStore = getAndTrimOldBoolean(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE, false);
+        return isShopOfficialStore;
+    }
+
+    public void setIsShopOfficialStore(boolean isShopOfficialStore) {
+        setBoolean(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE, isShopOfficialStore);
+    }
+
     public String getShopId() {
         String shopId = getAndTrimOldString(LOGIN_SESSION, SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
         if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId) || TextUtils.isEmpty(shopId)) {
@@ -152,6 +163,11 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public String getTemporaryUserId() {
         return getAndTrimOldString(LOGIN_SESSION, TEMP_USER_ID, "");
+    }
+
+    @Override
+    public void setDeviceId(String deviceId) {
+        setString(GCM_STORAGE, GCM_ID, deviceId);
     }
 
     /**
@@ -367,6 +383,14 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         return getAndTrimOldString(LOGIN_SESSION, REFRESH_TOKEN_KEY, KEY_IV);
     }
 
+    public long getFcmTimestamp() {
+        return getLong(GCM_STORAGE, GCM_ID_TIMESTAMP, 0);
+    }
+
+    public void setFcmTimestamp() {
+        setLong(GCM_STORAGE, GCM_ID_TIMESTAMP, System.currentTimeMillis());
+    }
+
     @Override
     public void setLoginSession(boolean isLogin, String userId, String fullName,
                                 String shopId, boolean isMsisdnVerified, String shopName,
@@ -386,29 +410,27 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     }
 
     public void logoutSession() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(LOGIN_ID, null);
-        editor.putString(FULL_NAME, null);
-        editor.putString(SHOP_ID, null);
-        editor.putString(SHOP_NAME, null);
-        editor.putBoolean(IS_LOGIN, false);
-        editor.putBoolean(IS_MSISDN_VERIFIED, false);
-        editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
-        editor.putBoolean(IS_AFFILIATE, false);
-        editor.putString(PHONE_NUMBER, null);
-        editor.putString(REFRESH_TOKEN, null);
-        editor.putString(TOKEN_TYPE, null);
-        editor.putString(ACCESS_TOKEN, null);
-        editor.putString(PROFILE_PICTURE, null);
-        editor.putString(GC_TOKEN, "");
-        editor.putString(SHOP_AVATAR, "");
-        editor.putBoolean(IS_POWER_MERCHANT_IDLE, false);
-        editor.putString(TWITTER_ACCESS_TOKEN, null);
-        editor.putString(TWITTER_ACCESS_TOKEN_SECRET, null);
-        editor.putBoolean(TWITTER_SHOULD_POST, false);
-        editor.putString(LOGIN_METHOD, "");
-        editor.apply();
+        cleanKey(LOGIN_SESSION, LOGIN_ID);
+        cleanKey(LOGIN_SESSION, FULL_NAME);
+        cleanKey(LOGIN_SESSION, SHOP_ID);
+        cleanKey(LOGIN_SESSION, SHOP_NAME);
+        cleanKey(LOGIN_SESSION, IS_LOGIN);
+        cleanKey(LOGIN_SESSION, IS_MSISDN_VERIFIED);
+        cleanKey(LOGIN_SESSION, HAS_SHOWN_SALDO_WARNING);
+        cleanKey(LOGIN_SESSION, IS_AFFILIATE);
+        cleanKey(LOGIN_SESSION, PHONE_NUMBER);
+        cleanKey(LOGIN_SESSION, REFRESH_TOKEN);
+        cleanKey(LOGIN_SESSION, TOKEN_TYPE);
+        cleanKey(LOGIN_SESSION, ACCESS_TOKEN);
+        cleanKey(LOGIN_SESSION, PROFILE_PICTURE);
+        setString(LOGIN_SESSION, GC_TOKEN, "");
+        setString(LOGIN_SESSION, SHOP_AVATAR, "");
+        setBoolean(LOGIN_SESSION, IS_POWER_MERCHANT_IDLE, false);
+        cleanKey(LOGIN_SESSION, TWITTER_ACCESS_TOKEN);
+        cleanKey(LOGIN_SESSION, TWITTER_ACCESS_TOKEN_SECRET);
+        setString(LOGIN_SESSION, LOGIN_METHOD, "");
+        setBoolean(LOGIN_SESSION, TWITTER_SHOULD_POST, false);
+        cleanKey(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE);
     }
 
     /**

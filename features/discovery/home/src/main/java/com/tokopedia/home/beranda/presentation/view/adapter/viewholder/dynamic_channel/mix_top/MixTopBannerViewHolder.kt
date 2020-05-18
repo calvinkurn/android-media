@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -86,10 +87,17 @@ class MixTopBannerViewHolder(
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+        RouteManager.route(itemView.context, applink)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllCardClick(channel.header.name) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
+        homeCategoryListener.trackingQueue?.putEETracking(
+                MixTopTracking.getMixTopView(
+                        MixTopTracking.mapChannelToProductTracker(channel),
+                        channel.header.name,
+                        position.toString()
+                ) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
@@ -226,6 +234,7 @@ class MixTopBannerViewHolder(
         val channelProductData = convertDataToProductData(channel)
         setRecyclerViewAndCardHeight(channelProductData)
         visitables.addAll(channelProductData)
+        if(homeCategoryListener.isShowSeeAllCard() && channel.grids.size > 1 && channel.header.applink.isNotEmpty()) visitables.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
         return visitables
     }
 

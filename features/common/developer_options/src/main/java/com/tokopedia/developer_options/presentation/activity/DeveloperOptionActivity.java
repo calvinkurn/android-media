@@ -51,6 +51,7 @@ import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
+import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.logger.utils.DataLogConfig;
 import com.tokopedia.logger.utils.TimberReportingTree;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -106,6 +107,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private View routeManagerButton;
     private EditText editTextRouteManager;
+    private EditText editTextChangeVersionName;
+    private EditText editTextChangeVersionCode;
+    private View changeVersionButton;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -238,6 +242,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         editTextRouteManager = findViewById(R.id.et_route_manager);
         routeManagerButton = findViewById(R.id.btn_route_manager);
 
+        editTextChangeVersionName = findViewById(R.id.et_change_version_name);
+        editTextChangeVersionCode = findViewById(R.id.et_change_version_code);
+        changeVersionButton = findViewById(R.id.btn_change_version);
+        editTextChangeVersionName.setText(GlobalConfig.VERSION_NAME);
+        editTextChangeVersionCode.setText(String.valueOf(GlobalConfig.VERSION_CODE));
+
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
         groupChatLogToggle = findViewById(R.id.groupchat_log);
@@ -252,6 +262,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
+        validateIfSellerapp();
     }
 
     private void initListener() {
@@ -265,12 +276,14 @@ public class DeveloperOptionActivity extends BaseActivity {
             throw new RuntimeException("Throw Runtime Exception");
         });
 
-        vDevOptionRN.setOnClickListener(v ->
+        vDevOptionRN.setOnClickListener(v -> {
+            if (!GlobalConfig.isSellerApp()) {
                 RouteManager.route(this,
                         ApplinkConst.SETTING_DEVELOPER_OPTIONS
                                 .replace("{type}", RN_DEV_LOGGER)
-                ));
-
+                );
+            }
+        });
 
         resetOnBoarding.setOnClickListener(v -> {
             userSession.setFirstTimeUser(true);
@@ -318,26 +331,11 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-                String remoteConfigStringKey;
+                String remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_CUSTOMER_APP;
                 if (GlobalConfig.isSellerApp()) {
-                    remoteConfigStringKey = "android_seller_app_log_config";
-                } else {
-                    remoteConfigStringKey = "android_customer_app_log_config";
+                    remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_SELLER_APP;
                 }
-                String logConfigString = remoteConfig.getString(remoteConfigStringKey);
-                if (!TextUtils.isEmpty(logConfigString)) {
-                    DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-                    if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
-                        UserSession userSession = new UserSession(this);
-                        TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
-                        timberReportingTree.setUserId(userSession.getUserId());
-                        timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
-                        timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
-                        timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
-                        Timber.plant(timberReportingTree);
-                    }
-                }
+                TimberWrapper.initByRemoteConfig(this, remoteConfigValue);
                 Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
             } else {
                 Timber.uprootAll();
@@ -378,6 +376,31 @@ public class DeveloperOptionActivity extends BaseActivity {
                             "Route Manager String should not be empty", Toast.LENGTH_SHORT).show();
                 } else {
                     RouteManager.route(DeveloperOptionActivity.this, routeManagerString);
+                }
+            }
+        });
+
+        changeVersionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String versionCode = editTextChangeVersionCode.getText().toString();
+                String versionName = editTextChangeVersionName.getText().toString();
+                if (TextUtils.isEmpty(versionCode)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Version Code should not be empty", Toast.LENGTH_SHORT).show();
+                } else if (TextUtils.isEmpty(versionName)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Version Name should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        GlobalConfig.VERSION_NAME = versionName;
+                        GlobalConfig.VERSION_CODE = Integer.parseInt(versionCode);
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                "Version has been changed: " + versionName + " - " + versionCode, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                e.toString(), Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -576,11 +599,17 @@ public class DeveloperOptionActivity extends BaseActivity {
         editor.apply();
     }
 
+    private void validateIfSellerapp() {
+        if (GlobalConfig.isSellerApp() && vDevOptionRN != null) {
+            vDevOptionRN.setVisibility(View.GONE);
+        }
+    }
+
     private SharedPreferences getSharedPreferences(String name) {
         return getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
     private void initTranslator() {
-//        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 }

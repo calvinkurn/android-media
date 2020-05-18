@@ -13,7 +13,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -30,6 +29,8 @@ import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.SectionContentItem
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_OVO_VIEWHOLDER
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
@@ -58,8 +59,10 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
     private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
 
     override fun bind(element: HeaderDataModel) {
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_OVO_VIEWHOLDER)
         if (element.isUserLogin) renderLogin(element)
         else renderNonLogin()
+        BenchmarkHelper.endSystraceSection()
     }
 
     private fun renderNonLogin() {
@@ -102,7 +105,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val tvTitleTokocash = itemView.findViewById<TextView>(R.id.tv_title_tokocash)
         val tvBalanceTokocash = itemView.findViewById<TextView>(R.id.tv_balance_tokocash)
         val ivLogoTokocash = itemView.findViewById<ImageView>(R.id.iv_logo_tokocash)
-        val tokocashProgressBar = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokocash)
+        val tokocashProgressBar = itemView.findViewById<View>(R.id.progress_bar_tokocash)
         scanHolder.setOnClickListener { goToScanner() }
 
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
@@ -206,7 +209,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val tvBalanceTokoPoint = itemView.findViewById<TextView>(R.id.tv_balance_tokopoint)
         val tvActionTokopoint = itemView.findViewById<TextView>(R.id.tv_btn_action_tokopoint)
         val ivLogoTokoPoint = itemView.findViewById<ImageView>(R.id.iv_logo_tokopoint)
-        val tokopointProgressBarLayout = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokopoint_layout)
+        val tokopointProgressBarLayout = itemView.findViewById<View>(R.id.progress_bar_tokopoint_layout)
         val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
         val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
         ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
