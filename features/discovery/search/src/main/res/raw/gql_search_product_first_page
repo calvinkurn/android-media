@@ -23,6 +23,7 @@ query SearchProduct(
         ticker {
             text
             query
+            type_id
         }
         suggestion {
             currentKeyword
