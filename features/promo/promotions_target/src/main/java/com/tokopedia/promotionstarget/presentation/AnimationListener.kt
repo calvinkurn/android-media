@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget.presentation.ui
+package com.tokopedia.promotionstarget.presentation
 
 import android.animation.Animator
 /*

@@ -1,6 +1,5 @@
 package com.tokopedia.promotionstarget.presentation.ui.dialog
 
-import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
@@ -57,10 +56,10 @@ import com.tokopedia.promotionstarget.presentation.loadImageGlide
 import com.tokopedia.promotionstarget.presentation.loadImageWithNoPlaceholder
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber
-import com.tokopedia.promotionstarget.presentation.ui.AnimationListener
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
-import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.DEFAULT
 import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.DISMISS
+import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.EMPTY
+import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.REDIRECT
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.AUTO_CLAIM
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.NORMAL
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
@@ -70,9 +69,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
@@ -190,7 +187,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         setNonLoggedInListeners()
 
         prePareCatalogId(getPopGratificationResponse)
-        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(),false)
+        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), false)
         return pair.second
     }
 
@@ -238,7 +235,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         observeLiveData(activityContext as AppCompatActivity, errorUi = { showErrorUIForClaimGratificationLoggedIn() })
         setListenersLoggedIn(activityContext as AppCompatActivity)
         prePareCatalogId(popGratificationResponse)
-        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(),true)
+        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), true)
         return bottomSheet
     }
 
@@ -321,7 +318,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         if (data is GetPopGratificationResponse) {
             prePareCatalogId(data)
-            TargetedPromotionAnalytics.viewCoupon(catalogId.toString(),UserSession(activityContext).isLoggedIn)
+            TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), UserSession(activityContext).isLoggedIn)
         }
 
         return bottomSheet
@@ -626,8 +623,14 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     fun performActionBasedOnClaim(popGratificationActionButton: PopGratificationActionButton?) {
         if (popGratificationActionButton != null) {
-            if (!popGratificationActionButton.appLink.isNullOrEmpty()) {
-                RouteManager.route(btnAction.context, popGratificationActionButton.appLink)
+            popGratificationActionButton.type?.let { type ->
+                when (type) {
+                    REDIRECT -> {
+                        if (!popGratificationActionButton.appLink.isNullOrEmpty()) {
+                            RouteManager.route(btnAction.context, popGratificationActionButton.appLink)
+                        }
+                    }
+                }
             }
         }
         bottomSheetDialog.dismiss()
@@ -896,7 +899,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    fun prePareCatalogId(data: GetPopGratificationResponse){
+    fun prePareCatalogId(data: GetPopGratificationResponse) {
         val benefits = data.popGratification?.popGratificationBenefits
         if (benefits != null && benefits.isNotEmpty()) {
             val referenceId = benefits[0]?.referenceID
@@ -908,11 +911,12 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(DISMISS, DEFAULT)
+@StringDef(DISMISS, EMPTY, REDIRECT)
 annotation class BtnType {
     companion object {
         const val DISMISS = "dismiss"
-        const val DEFAULT = "default"
+        const val EMPTY = ""
+        const val REDIRECT = "redirect"
     }
 }
 
