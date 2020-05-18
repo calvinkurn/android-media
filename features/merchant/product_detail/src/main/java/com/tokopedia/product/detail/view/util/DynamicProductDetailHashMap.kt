@@ -117,6 +117,11 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
+                rating = it.basic.stats.rating
+                ratingCount = it.basic.stats.countReview
+                viewCount = it.basic.stats.countView
+                talkCount = it.basic.stats.countTalk
+
                 txStats = it.basic.txStats
                 stats = it.basic.stats
                 rating = it.basic.stats.rating

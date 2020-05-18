@@ -13,15 +13,15 @@ fun Number.getCurrencyFormatted(): String {
     return IDRLocale.format(this)
 }
 
-fun Number.numberFormatted(): String {
-    decimalFormat.maximumFractionDigits = 2
+fun Number.numberFormatted(digitAfterComa: Int = 2): String {
+    decimalFormat.maximumFractionDigits = digitAfterComa
     return decimalFormat.format(this)
 }
 
-fun Number.thousandFormatted(): String {
-    if (toDouble() < 1000) return numberFormatted()
+fun Number.productThousandFormatted(): String {
+    if (toDouble() < 10000) return numberFormatted()
 
-    val exp = (Math.log(this.toDouble())/Math.log(1000.00)).toInt()
-    val number = this.toDouble()/Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted()} ${listOf("rb", "jt", "M", "T")[exp-1]}"
+    val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
+    val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
+    return "${number.numberFormatted(1)} ${listOf("rb", "jt", "M", "T")[exp - 1]}"
 }

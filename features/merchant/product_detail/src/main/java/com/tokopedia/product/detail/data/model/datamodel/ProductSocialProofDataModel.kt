@@ -24,4 +24,14 @@ data class ProductSocialProofDataModel(
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun getAvailableData(): List<Pair<String, Int>> {
+        return listOf(RATING to ratingCount,
+                TALK to talkCount,
+                PAYMENT_VERIFIED to paymentVerifiedCount,
+                WISHLIST to wishlistCount,
+                VIEW_COUNT to viewCount)
+                .filter { it.second > 0 }
+                .take(3)
+    }
 }
