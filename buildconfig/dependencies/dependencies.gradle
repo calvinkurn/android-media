@@ -82,8 +82,8 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.1.5'
-    unifyComponentsVersion = '1.1.35-beta-4'
+    unifyPrinciplesVersion = '1.1.7'
+    unifyComponentsVersion = '1.1.36'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -91,13 +91,11 @@ ext {
     unifyDatePickerVersion = '1.0.3'
     unifyEmptyStateVersion = '1.0.5'
     unifyGlobalErrorVersion = '1.0.8'
-    unifyListVersion = "1.0.2"
     unifyHeaderVersion = '1.1.1'
-    unifySortFilterVersion = '1.0.2'
+    unifySortFilterVersion = '1.0.3'
     unifyGlobalErrorVersion = '1.0.6'
     unifyListVersion = "1.0.4"
     unifyHeaderVersion = '1.1.0'
-    unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
 
     gradlePlugin = [

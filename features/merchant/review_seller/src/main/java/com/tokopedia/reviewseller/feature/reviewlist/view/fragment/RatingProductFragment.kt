@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -27,10 +28,12 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.di.component.DaggerReviewSellerComponent
+import com.tokopedia.reviewseller.common.di.module.ReviewSellerModule
 import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
-import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
+import com.tokopedia.reviewseller.feature.reviewlist.analytics.ProductReviewTracking
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
@@ -39,12 +42,16 @@ import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiM
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.ReviewSummaryViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_rating_product.*
+import kotlinx.android.synthetic.main.item_empty_state_list_rating_product.*
 import kotlinx.android.synthetic.main.item_search_rating_product.*
 import javax.inject.Inject
 
@@ -57,14 +64,23 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     companion object {
         private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
-        val chipsPaddingRight = 8.toPx()
-        val maxChipTextWidth = 116.toPx()
         private const val searchQuery = "search"
+        private const val MAX_LENGTH_SEARCH = 3
+
+        fun createInstance(): RatingProductFragment {
+            return RatingProductFragment()
+        }
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var viewModelListReviewList: SellerReviewListViewModel? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracking: ProductReviewTracking
 
     private var linearLayoutManager: LinearLayoutManager? = null
 
@@ -92,25 +108,22 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private var bottomSheetFilter: BottomSheetUnify? = null
     private var bottomSheetSort: BottomSheetUnify? = null
 
-    private var tabReview: View? = null
     private var firstTabItem: View? = null
+
+    private var itemViewSummary: View? = null
+
+    private var productItemList: List<ProductReviewUiModel>? = null
 
     var chipsSortText: String? = ""
     var chipsFilterText: String? = ""
     var searchFilterText: String? = ""
+    var isEmptyFilter = false
+
+    private var coachMarkSummary: CoachMarkItem? = null
+    private var coachMarkItemRatingProduct: CoachMarkItem? = null
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
-    }
-
-    private val coachMarkTabRatingProduct: CoachMarkItem by lazy {
-
-        tabReview = (view?.rootView?.findViewById<TabsUnify>(R.id.tab_review)?.getUnifyTabLayout()
-                ?.getChildAt(0) as ViewGroup).getChildAt(0)
-
-        CoachMarkItem(tabReview,
-                getString(R.string.full_summary_of_product_ratings),
-                getString(R.string.desc_full_summary_of_product_ratings))
     }
 
     private val coachMarkFilterAndSort: CoachMarkItem by lazy {
@@ -119,8 +132,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 getString(R.string.desc_filter_and_sort))
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tracking.sendScreen(userSession.shopId.orEmpty())
+        tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
@@ -137,7 +153,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
         initSearchBar()
@@ -157,8 +173,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         when (requestCode) {
             ReviewSellerConstant.RESULT_INTENT_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val stringData = data?.getStringExtra("selectedDateChip")
-                    val updatedPosition = data?.getIntExtra("selectedDatePosition", 0) ?: 0
+                    val stringData = data?.getStringExtra(SellerReviewDetailFragment.SELECTED_DATE_CHIP)
+                    val updatedPosition = data?.getIntExtra(SellerReviewDetailFragment.SELECTED_DATE_POSITION, 0) ?: 0
 
                     if (chipsFilterText == stringData) return
 
@@ -172,7 +188,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
 
             else -> super.onActivityResult(requestCode, resultCode, data)
-
         }
     }
 
@@ -189,7 +204,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun initInjector() {
-        getComponent(ReviewProductListComponent::class.java).inject(this)
+        inject()
     }
 
     override fun loadInitialData() {
@@ -209,6 +224,17 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 reviewSellerAdapter.showLoading()
                 loadNextPage(page)
             }
+        }
+    }
+
+    private fun inject() {
+        if (activity != null) {
+            val appComponent = (activity?.application as? BaseMainApplication)?.baseAppComponent
+            DaggerReviewSellerComponent.builder()
+                    .reviewSellerModule(ReviewSellerModule())
+                    .baseAppComponent(appComponent)
+                    .build()
+                    .inject(this)
         }
     }
 
@@ -242,30 +268,46 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         searchBarRatingProduct?.apply {
             isClearable = true
             iconListener = {
-                loadInitialData()
-            }
-            searchBarIcon.setOnClickListener {
                 if (searchBarPlaceholder.isNotEmpty()) {
-                    searchFilterText = "$searchQuery="
-                    viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
-                    searchBarTextField.text.clear()
-                    searchBarPlaceholder = getString(R.string.product_search)
-                    loadInitialData()
+                    onSearchKeywordEmpty()
+                }
+            }
+            searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) tracking.eventClickSearchBar(userSession.shopId.orEmpty())
+            }
+            searchBarTextField.afterTextChanged {
+                if (it.isEmpty()) {
+                    onSearchKeywordEmpty()
                 }
             }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     val query = searchBarRatingProduct?.searchBarTextField?.text.toString()
-                    searchFilterText = "$searchQuery=$query"
-                    viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
-                    searchBarPlaceholder = query
-                    loadInitialData()
+
+                    tracking.eventSubmitSearchBar(userSession.shopId.orEmpty(), query)
+
+                    if (query.length < MAX_LENGTH_SEARCH) {
+                        showEmptyState()
+                        tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_keyword)
+                    } else {
+                        searchFilterText = "$searchQuery=$query"
+                        viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
+                        searchBarPlaceholder = query
+                        loadInitialData()
+                    }
                     return@setOnEditorActionListener true
                 }
                 return@setOnEditorActionListener false
             }
         }
+    }
 
+    private fun onSearchKeywordEmpty() {
+        searchFilterText = "$searchQuery="
+        viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
+        searchBarRatingProduct.searchBarTextField.text.clear()
+        searchBarRatingProduct.searchBarPlaceholder = getString(R.string.product_search)
+        loadInitialData()
     }
 
     private fun observeLiveData() {
@@ -285,6 +327,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             hideLoading()
             when (it) {
                 is Success -> {
+                    productItemList = it.data.second
                     onSuccessGetReviewProductListData(it.data.first, it.data.second)
                 }
                 is Fail -> {
@@ -303,6 +346,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun onErrorGetReviewSellerData(throwable: Throwable) {
+        tracking.eventViewErrorIris(throwable.message.orEmpty())
         swipeToRefreshReviewSeller?.isRefreshing = false
         if (reviewSellerAdapter.itemCount.isZero()) {
             if (throwable.message?.isNotEmpty() == true) {
@@ -311,14 +355,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
 
-            filter_and_sort_layout?.gone()
-            rvRatingProduct?.gone()
-            emptyState_reviewProduct?.gone()
-            search_bar_layout?.show()
-            scrollView_globalError_reviewSeller?.show()
-            globalError_reviewSeller?.show()
+            showErrorState()
 
             globalError_reviewSeller.setActionClickListener {
+                tracking.eventClickRetryError(userSession.shopId.orEmpty(), throwable.message.orEmpty())
                 loadInitialData()
             }
         } else {
@@ -326,33 +366,44 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
+    private fun showErrorState() {
+        filter_and_sort_layout?.gone()
+        rvRatingProduct?.gone()
+        emptyState_reviewProduct?.gone()
+        search_bar_layout?.show()
+        scrollView_globalError_reviewSeller?.show()
+        globalError_reviewSeller?.show()
+    }
+
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
         swipeToRefreshReviewSeller?.isRefreshing = false
-        if (reviewProductList.isEmpty()) {
-            scrollView_emptyState_reviewSeller?.show()
-            emptyState_reviewProduct?.show()
+        if (reviewProductList.isEmpty() && isEmptyFilter) {
+            showEmptyState()
+            tvContentNoReviewsYet?.text = getString(R.string.empty_state_message_wrong_filter)
+            isEmptyFilter = false
+        } else if (reviewProductList.isEmpty() && !isEmptyFilter) {
+            showEmptyState()
+            tvContentNoReviewsYet?.text = getString(R.string.content_no_reviews_yet)
         } else {
             reviewSellerAdapter.setProductListReviewData(reviewProductList)
             updateScrollListenerState(hasNextPage)
         }
     }
 
+    private fun showEmptyState() {
+        rvRatingProduct?.hide()
+        scrollView_emptyState_reviewSeller?.show()
+        emptyState_reviewProduct?.show()
+    }
+
     fun loadNextPage(page: Int) {
+        tracking.eventScrollRatingProduct(userSession.shopId.orEmpty())
         viewModelListReviewList?.getNextProductReviewList(
                 sortBy = viewModelListReviewList?.sortBy.orEmpty(),
                 filterBy = viewModelListReviewList?.filterAllText.orEmpty(),
                 page = page
         )
-    }
-
-    private fun coachMarkTabRatingProduct() {
-        prefs?.let {
-            if (!it.getBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, false)) {
-                coachMarkItems.add(coachMarkTabRatingProduct)
-                it.edit().putBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, true).apply()
-            }
-        }
     }
 
     private fun coachMarkFilterAndSort() {
@@ -364,23 +415,39 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
+    private fun coachMarkSummary() {
+        prefs?.let {
+            coachMarkSummary?.also { coachMark ->
+                if (!it.getBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, false)) {
+                    coachMarkItems.add(coachMark)
+                    it.edit().putBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, true).apply()
+                }
+            }
+        }
+    }
+
+    private fun coachMarkItemRatingProduct() {
+        prefs?.let {
+            if (!it.getBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, false)) {
+                coachMarkItemRatingProduct?.let { it1 -> coachMarkItems.add(it1) }
+                it.edit().putBoolean(ReviewSellerConstant.HAS_TAB_RATING_PRODUCT, true).apply()
+            }
+        }
+    }
+
     private fun initCoachMark(): CoachMark {
         val coachMark = CoachMarkBuilder().build()
 
         coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
             override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
-
-
                 val countCoachMarkItem = coachMarkItems.size - 1
                 coachMark.enableSkip = (nextStep < countCoachMarkItem)
-
                 return false
             }
         })
 
         coachMark.onFinishListener = {
             viewModelListReviewList?.isCompletedCoachMark = true
-            firstTabItem?.setBackgroundColor(Color.TRANSPARENT)
         }
 
         return coachMark
@@ -388,22 +455,30 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
 
     override fun onAddedCoachMarkOverallRating(view: View) {
-        coachMarkTabRatingProduct()
-        coachMarkFilterAndSort()
+        itemViewSummary = view
+        coachMarkSummary = CoachMarkItem(itemViewSummary?.findViewById(R.id.cardSummary),
+                getString(R.string.average_rating_title),
+                getString(R.string.average_rating_desc))
 
-        val coachMarkSummary: CoachMarkItem by lazy {
-            CoachMarkItem(view.findViewById(R.id.cardSummary),
-                    getString(R.string.average_rating_title),
-                    getString(R.string.average_rating_desc)
-            )
+        if(productItemList?.isEmpty() == true) {
+            coachMarkFilterAndSort()
+            coachMarkSummary()
+            showCoachMark()
         }
-        prefs?.let {
-            if (!it.getBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, false)) {
-                coachMarkItems.add(coachMarkSummary)
-                it.edit().putBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, true).apply()
-            }
+    }
+
+    override fun onAddedCoachMarkItemProduct(view: View) {
+
+        coachMarkItemRatingProduct = CoachMarkItem(view.findViewById(R.id.itemRatingProduct),
+                getString(R.string.full_summary_of_product_ratings),
+                getString(R.string.desc_full_summary_of_product_ratings))
+
+        if(productItemList?.isNotEmpty() == true) {
+            coachMarkItemRatingProduct()
+            coachMarkFilterAndSort()
+            coachMarkSummary()
+            showCoachMark()
         }
-        showCoachMark()
     }
 
     private fun showCoachMark() {
@@ -464,7 +539,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    private fun populateFilterDate(): ArrayList<ListItemUnify>{
+    private fun populateFilterDate(): ArrayList<ListItemUnify> {
         val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
         val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
 
@@ -493,14 +568,20 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    override fun onItemProductReviewClicked(productId: Int) {
+    override fun onItemProductReviewClicked(productId: Int, position: Int, imageUrl: String) {
+        tracking.eventClickItemRatingProduct(
+                shopId = userSession.shopId.orEmpty(),
+                productId = productId.toString(),
+                productPosition = position.toString())
         startActivityForResult(Intent(context, SellerReviewDetailActivity::class.java).apply {
             putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
             putExtra(SellerReviewDetailFragment.CHIP_FILTER, chipsFilterText)
+            putExtra(SellerReviewDetailFragment.PRODUCT_IMAGE, imageUrl)
         }, ReviewSellerConstant.RESULT_INTENT_DETAIL)
     }
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
+        tracking.eventClickFilterRatingProduct(userSession.shopId.orEmpty())
 
         bottomSheetFilter?.apply {
             setOnDismissListener {
@@ -534,6 +615,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun initBottomSheetSort(sortListItemUnify: ArrayList<ListItemUnify>, title: String) {
+        tracking.eventClickSortRatingProduct(userSession.shopId.orEmpty())
 
         bottomSheetSort?.apply {
             setOnDismissListener {
@@ -548,7 +630,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         sortListUnify?.let { it ->
             it.onLoadFinish {
-                it.setSelectedFilterOrSort(sortListItemUnify, viewModelListReviewList?.positionFilter.orZero())
+                it.setSelectedFilterOrSort(sortListItemUnify, viewModelListReviewList?.positionSort.orZero())
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemSortClickedBottomSheet(position, sortListItemUnify, it)
                 }
@@ -569,12 +651,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
                                                filterListUnify: ListUnify) {
         try {
+            isEmptyFilter = true
             viewModelListReviewList?.positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
+            tracking.eventClickFilterBottomSheet(userSession.shopId.orEmpty(), chipsFilterText.orEmpty())
             reviewSellerAdapter.updateDatePeriod(ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText))
-            chipsFilter?.apply {
-                chip_text.text = chipsFilterText
-            }
+            chipsFilter?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelListReviewList?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
             viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
@@ -587,8 +669,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
         try {
+            isEmptyFilter = true
             viewModelListReviewList?.positionSort = position
             chipsSortText = sortListItemUnify[position].listTitleText
+            tracking.eventClickSortBottomSheet(userSession.shopId.orEmpty(), chipsSortText.orEmpty())
             chipsSort?.chip_text?.text = chipsSortText
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             viewModelListReviewList?.sortBy =

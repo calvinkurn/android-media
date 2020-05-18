@@ -5,6 +5,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_review_rating_product">Rating Produk</string>
     <string name="title_review_inbox">Inbox Ulasan</string>
+    <string name="title_review_detail_page">Review Detail Page</string>
+    <string name="title_review_reply">Balas Ulasan</string>
     <string name="most_review">Ulasan Terbanyak</string>
     <string name="last_week">7 Hari Terakhir</string>
     <string name="period">Periode:</string>
@@ -17,8 +19,10 @@
     <string name="action_bottom_sheet_rating_product">Pilih</string>
     <string name="title_bottom_sheet_filter">Tampilkan periode ulasan dalam</string>
     <string name="date_summary_calculation_builder">%1s - Hari ini</string>
-    <string name="title_bottom_sheet_sort">Urutkan rating berdasarkan</string>
+    <string name="title_bottom_sheet_sort">Urutkan produk berdasarkan</string>
     <string name="error_message_load_more_review_product">Oops, halaman bermasalah. coba refresh atau cek koneksi</string>
+    <string name="empty_state_message_wrong_keyword">Oops, mungkin kata kuncimu salah atau kurang tepat. Coba lagi dengan kata kunci lain.</string>
+    <string name="empty_state_message_wrong_filter">Tidak ada ulasan berdasarkan filtermu. Coba lagi dengan filter lain, ya!</string>
     <string name="action_retry_toaster_review_product">Coba lagi</string>
     <string name="rating_overall_product">/ 5.0</string>
     <string name="full_summary_of_product_ratings">Rangkuman lengkap rating produk</string>
@@ -59,11 +63,12 @@
     <string name="label_by">Oleh</string>
     <string name="variant_feedback_label">Varian:</string>
     <string name="otomatis_reply">Balasan Otomatis</string>
+    <string name="user_reply">Balasan Kamu</string>
     <string name="review_not_found">Ulasan tidak terserdia.</string>
     <string name="user_reply_feedback">Balasan %s</string>
     <string name="label_read_more">Selengkapnya</string>
     <string name="label_ellipsis_read_more">...</string>
-    <string name="edit_review_label">Ubah Ulasan</string>
+    <string name="edit_review_label">Ubah Balasan</string>
     <string name="review_reply_label">Balas Ulasan</string>
     <string name="report_label">Laporkan</string>
     <string name="option_menu_label">Menu</string>
@@ -73,4 +78,7 @@
     <string name="change_product_desc">Sekarang kamu bisa ubah stok ataupun gambar produk langsung dari sini</string>
     <string name="popular_topic_label">Topik Populer</string>
     <string name="sort_label">Urutkan</string>
+    <string name="reply_editText_placeholder">Balas di sini...</string>
+    <string name="variant_label">Varian:</string>
+    <string name="label_edit">Ubah</string>
 </resources>

@@ -5,7 +5,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReview
 
 data class FeedbackUiModel(
         var attachments: List<Attachment> = mutableListOf(),
-        var autoReply: String? = "",
+        var autoReply: Boolean = false,
         var feedbackID: Int? = 0,
         var rating: Int? = 0,
         var replyText: String? = "",

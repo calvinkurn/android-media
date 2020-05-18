@@ -15,13 +15,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SellerReviewListViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val userSession: UserSessionInterface,
         private val getProductRatingOverallUseCase: GetProductRatingOverallUseCase,
         private val getReviewProductListUseCase: GetReviewProductListUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
@@ -64,8 +62,8 @@ class SellerReviewListViewModel @Inject constructor(
                     })
 
             productRatingOverall.await()?.let {
-                _productRatingOverall.postValue(Success(it))
                 reviewProductList.await()?.also { reviewProductData ->
+                    _productRatingOverall.postValue(Success(it))
                     _reviewProductList.postValue(Success(reviewProductData))
                 }
             }
@@ -98,7 +96,6 @@ class SellerReviewListViewModel @Inject constructor(
         )
 
         val productRatingListResponse = getReviewProductListUseCase.executeOnBackground()
-//        val isHastNextPage = ReviewSellerUtil.isHasNextPage(page, ReviewSellerConstant.DEFAULT_PER_PAGE, productRatingListResponse.data.size)
         return Pair(
                 productRatingListResponse.hasNext,
                 SellerReviewProductListMapper.mapToProductReviewListUiModel(productRatingListResponse)

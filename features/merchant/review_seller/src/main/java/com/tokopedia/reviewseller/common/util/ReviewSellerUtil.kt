@@ -1,12 +1,17 @@
 package com.tokopedia.reviewseller.common.util
 
+import android.text.Spanned
 import android.widget.ListView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.relativeDate
+import com.tokopedia.reviewseller.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import java.math.RoundingMode
-import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.round
 
 object ReviewSellerUtil {
 
@@ -19,6 +24,58 @@ object ReviewSellerUtil {
 
     fun getDateChipFilterPosition(data: Array<String>, dateKeyword: String): Int {
         return data.indexOf(dateKeyword)
+    }
+}
+
+fun getReviewStar(ratingCount: Int): Int {
+    return when (ratingCount) {
+        1 -> {
+            R.drawable.ic_rating_star_one
+        }
+        2 -> {
+            R.drawable.ic_rating_star_two
+        }
+        3 -> {
+            R.drawable.ic_rating_star_three
+        }
+        4 -> {
+            R.drawable.ic_rating_star_four
+        }
+        5 -> {
+            R.drawable.ic_rating_star_five
+        }
+        else -> {
+            R.drawable.ic_rating_star_zero
+        }
+    }
+}
+
+fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
+    return if (MethodChecker.fromHtml(this).toString().length > maxChar) {
+        val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar )
+        MethodChecker
+                .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
+                        + "<font color='#42b549'>Selengkapnya</font>")
+    } else {
+        MethodChecker.fromHtml(this)
+    }
+}
+
+infix fun String.toRelativeDate(format: String): String {
+    return if (this.isNotEmpty()) {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        val date: Date = sdf.parse(this)
+        val millis: Long = date.time
+
+        return try {
+            val cal = Calendar.getInstance()
+            cal.timeInMillis = millis
+            cal.time.relativeDate
+        } catch (t: Throwable) {
+            ""
+        }
+    } else {
+        ""
     }
 }
 
@@ -52,9 +109,8 @@ fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int)
 }
 
 fun Float?.roundDecimal(): String {
-    val df = DecimalFormat("#.#")
-    df.roundingMode = RoundingMode.CEILING
-    return df.format(this).isDecimalLengthOne()
+    val rounded = this?.times(10)?.let { round(it) }?.div(10).toString()
+    return rounded.isDecimalLengthOne()
 }
 
 fun String?.isDecimalLengthOne(): String {

@@ -24,7 +24,7 @@ class ReviewSummaryViewHolder(val view: View,
         tgFiveReview.text = getString(R.string.rating_overall_product)
         updatePeriod(element?.period ?: "")
 
-        listener.onAddedCoachMarkOverallRating(itemView)
+        listener.onAddedCoachMarkOverallRating(view)
     }
 
     override fun bind(element: ProductRatingOverallUiModel?, payloads: MutableList<Any>) {
@@ -35,7 +35,6 @@ class ReviewSummaryViewHolder(val view: View,
 
         when (payloads[0] as Int) {
             ReviewSellerAdapter.PAYLOAD_SUMMARY_PERIOD -> updatePeriod(element.period ?: "")
-
         }
 
     }

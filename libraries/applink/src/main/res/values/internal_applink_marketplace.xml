@@ -56,9 +56,7 @@
     <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
     <string name="path_review_report" translatable="false">/review-report</string>
 
-
     <string name="path_seller_review_page" translatable="false">/seller-review-page</string>
-
 
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>

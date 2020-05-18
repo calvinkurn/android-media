@@ -1,6 +1,7 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter
 
 import android.view.View
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.list.ListItemUnify
 
@@ -13,8 +14,9 @@ interface SellerReviewDetailListener {
 }
 
 interface ProductFeedbackDetailListener {
-    fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
-    fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, position: Int)
+    fun onOptionFeedbackClicked(view: View, title: String, data: FeedbackUiModel, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
+    fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int)
+    fun onFeedbackMoreReplyClicked(feedbackId: String)
 }
 
 interface OverallRatingDetailListener {
@@ -22,10 +24,14 @@ interface OverallRatingDetailListener {
 }
 
 interface SellerRatingAndTopicListener {
-    fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int)
+    fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, ratingSelected: Int, adapterPosition: Int)
 }
 
 interface TopicSortFilterListener {
-    fun onTopicClicked(chipType: String, adapterPosition: Int)
-    fun onSortClicked(chipType: String, adapterPosition: Int)
+    interface Topic {
+        fun onTopicClicked(chipType: String, adapterPosition: Int)
+    }
+    interface Sort {
+        fun onSortClicked(chipType: String, adapterPosition: Int)
+    }
 }

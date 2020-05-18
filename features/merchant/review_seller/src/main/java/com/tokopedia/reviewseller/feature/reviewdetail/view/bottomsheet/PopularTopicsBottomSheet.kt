@@ -2,130 +2,104 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
-import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.feature.reviewdetail.util.TopicItemDecoration
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.reviewseller.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SortListAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicListAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.TopicSortFilterListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.SortItemUiModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created by Yehezkiel on 27/04/20
  */
-class PopularTopicsBottomSheet(private val mActivity: FragmentActivity?,
-                               val listener: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit) :
-        BottomSheetUnify(), TopicSortFilterListener {
-
-    companion object {
-        const val BOTTOM_SHEET_TITLE = "Filter"
-        private val ACTION_TITLE = "Reset"
-    }
-
-    private var rvTopicFilter: RecyclerView? = null
-    private var rvSortFilter: RecyclerView? = null
-
-    private val sortAdapter by lazy { SortListAdapter(this) }
-    private val topicAdapter by lazy { TopicListAdapter(this) }
-
-    var filterTopicData: List<SortFilterItemWrapper> = mutableListOf()
-    var sortTopicData: List<SortItemUiModel> = mutableListOf()
+class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
+                               private val tracking: ProductReviewDetailTracking,
+                               private val userSession: UserSessionInterface,
+                               private val productID: Int,
+                               listenerTopics: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit) :
+        BaseTopicsBottomSheet(mActivity, listenerTopics), TopicSortFilterListener.Topic, TopicSortFilterListener.Sort {
 
     init {
-        val contentView = View.inflate(mActivity, R.layout.dialog_popular_topics, null)
-        rvTopicFilter = contentView.findViewById(R.id.rvTopicFilter)
-        rvSortFilter = contentView.findViewById(R.id.rvSortFilter)
-        isDragable = true
-        isFullpage = true
-        isHideable = true
-        setTitle(BOTTOM_SHEET_TITLE)
-        setChild(contentView)
         setAction(ACTION_TITLE) {
             resetFilterClicked()
         }
-    }
+        setCloseClickListener {
+            tracking.eventClickCloseBottomSheetSortFilter(userSession.shopId.orEmpty(), productID.toString())
+            dismiss()
+        }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        initLayoutManager()
-        super.onCreate(savedInstanceState)
+        setShowListener {
+            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(view: View, slideOffset: Float) {
+                }
+
+                override fun onStateChanged(view: View, state: Int) {
+                    if (state == BottomSheetBehavior.STATE_COLLAPSED || state == BottomSheetBehavior.STATE_HIDDEN) {
+                        //down
+                        if (state == BottomSheetBehavior.STATE_HIDDEN) {
+                            tracking.eventSwipeBottomSheetSortFilterTopics(
+                                    userSession.shopId.orEmpty(),
+                                    productID.toString(), "down")
+                            dismiss()
+                        }
+                    } else if (state == BottomSheetBehavior.STATE_EXPANDED || state == BottomSheetBehavior.STATE_DRAGGING) {
+                        //up
+                        if(state == BottomSheetBehavior.STATE_EXPANDED) {
+                            tracking.eventSwipeBottomSheetSortFilterTopics(
+                                    userSession.shopId.orEmpty(),
+                                    productID.toString(), "up")
+                        }
+                    }
+                }
+            })
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdapter()
+        topicAdapter = TopicListAdapter(this)
+        sortAdapter = SortListAdapter(this)
+        setAdapter()
+        showDialog()
     }
 
-    fun setFilterTopicListData(data: List<SortFilterItemWrapper>) {
-        this.filterTopicData = data
-    }
-
-    fun setSortTopic(data: List<SortItemUiModel>) {
-        this.sortTopicData = data
-    }
-
-    fun showDialog() {
-        mActivity?.supportFragmentManager?.run {
-            show(this, BOTTOM_SHEET_TITLE)
-        }
-    }
-
-    private fun initLayoutManager() {
-        val layoutManagerTopic = ChipsLayoutManager.newBuilder(mActivity)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
-
-        val layoutManagerSort = ChipsLayoutManager.newBuilder(mActivity)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
-
-        rvTopicFilter?.addItemDecoration(TopicItemDecoration())
-        rvSortFilter?.addItemDecoration(TopicItemDecoration())
-
-        rvTopicFilter?.layoutManager = layoutManagerTopic
-        rvSortFilter?.layoutManager = layoutManagerSort
-
-        rvTopicFilter?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
-        rvSortFilter?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
-    }
-
-    private fun initAdapter() {
-
-        sortAdapter.setSortFilter(sortTopicData)
-        topicAdapter.setTopicFilter(filterTopicData)
-        rvTopicFilter?.adapter = topicAdapter
+    override fun setAdapter() {
+        sortAdapter?.setSortFilter(sortTopicData)
         rvSortFilter?.adapter = sortAdapter
-    }
 
-    override fun dismiss() {
-        super.dismiss()
-        topicAdapter.sortFilterList?.toList()?.let { topic ->
-            sortAdapter.sortFilterListUiModel?.let { sort ->
-                listener.invoke(topic, sort)
-            }
+        if (filterTopicData.isEmpty()) {
+            tvTopicTitle?.hide()
         }
-
+        topicAdapter?.setTopicFilter(filterTopicData)
+        rvTopicFilter?.adapter = topicAdapter
     }
 
     private fun resetFilterClicked() {
-        topicAdapter.resetSortFilter()
-        sortAdapter.resetSortFilter()
+        tracking.eventClickResetOnBottomSheet(userSession.shopId.orEmpty(), productID.toString())
+        topicAdapter?.resetSortFilter()
+        sortAdapter?.resetSortFilter()
     }
 
     override fun onTopicClicked(chipType: String, adapterPosition: Int) {
         val isSelected = chipType == ChipsUnify.TYPE_SELECTED
-        topicAdapter.updateTopicFilter(isSelected, adapterPosition)
+        tracking.eventClickFilterOnBottomSheet(
+                userSession.shopId.orEmpty(),
+                productID.toString(),
+                topicAdapter?.sortFilterList?.getOrNull(adapterPosition)?.titleUnformated.orEmpty(),
+                isSelected.toString())
+        topicAdapter?.updateTopicFilter(isSelected, adapterPosition)
     }
 
     override fun onSortClicked(chipType: String, adapterPosition: Int) {
-        val isSelected = chipType == ChipsUnify.TYPE_SELECTED
-        sortAdapter.updatedSortFilter(adapterPosition)
+        tracking.eventClickSortOnBottomSheet(
+                userSession.shopId.orEmpty(),
+                productID.toString(),
+                sortAdapter?.sortFilterListUiModel?.getOrNull(adapterPosition)?.title.orEmpty())
+        sortAdapter?.updatedSortFilter(adapterPosition)
     }
 }

@@ -13,7 +13,8 @@ class ReviewSellerAdapter(
     companion object{
         const val PAYLOAD_SUMMARY_PERIOD = 512
     }
-    private var productReviewListViewModel: MutableList<ProductReviewUiModel> = mutableListOf()
+
+    var productReviewListViewModel: MutableList<ProductReviewUiModel> = mutableListOf()
 
     fun setProductListReviewData(productListReviewUiModel: List<ProductReviewUiModel>) {
         val lastIndex = visitables.size

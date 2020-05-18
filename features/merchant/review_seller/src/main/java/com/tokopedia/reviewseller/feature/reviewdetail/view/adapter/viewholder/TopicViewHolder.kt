@@ -25,18 +25,11 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     private val sortFilterTopics: SortFilter = view.findViewById(R.id.topicSortFilterTopic)
     private val resultFeedbackLabel: Typography = view.findViewById(R.id.resultFeedbackLabel)
 
-    private var countSortFilter = 0
-
     override fun bind(element: TopicUiModel) {
-
-        countSortFilter = element.sortFilterItemList.count {
-            it.isSelected
-        }
-
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
+            indicatorCounter = 0
             addItem(dataItemSortFilter(element.sortFilterItemList))
-            indicatorCounter = countSortFilter
             parentListener = {
                 fragmentListener.onParentTopicFilterClicked()
             }

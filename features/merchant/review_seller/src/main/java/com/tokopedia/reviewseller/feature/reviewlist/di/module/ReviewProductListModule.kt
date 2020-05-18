@@ -8,6 +8,7 @@ import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_RATING_OVERALL
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_LIST
+import com.tokopedia.reviewseller.feature.reviewlist.analytics.ProductReviewTracking
 import com.tokopedia.reviewseller.feature.reviewlist.di.scope.ReviewProductListScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,7 +17,7 @@ import dagger.Provides
 import javax.inject.Named
 
 @ReviewProductListScope
-@Module(includes = [ReviewProductListViewModelModule::class])
+@Module
 class ReviewProductListModule {
 
     @ReviewProductListScope
@@ -41,5 +42,11 @@ class ReviewProductListModule {
     @Named(GQL_GET_PRODUCT_REVIEW_LIST)
     fun getProductReviewList(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_review_list)
+    }
+
+    @ReviewProductListScope
+    @Provides
+    fun provideProductReviewTracking(): ProductReviewTracking {
+        return ProductReviewTracking()
     }
 }

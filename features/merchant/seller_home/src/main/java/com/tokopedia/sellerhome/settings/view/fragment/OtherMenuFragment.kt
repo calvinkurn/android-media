@@ -285,7 +285,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_review),
                         R.drawable.ic_star_setting,
-                        ApplinkConstInternalMarketplace.REVIEW_SELLER,
+                        ApplinkConst.REPUTATION,
                         eventActionSuffix = SettingTrackingConstant.REVIEW),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_complaint),
