@@ -1,8 +1,13 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Stats
 import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
@@ -17,8 +22,11 @@ import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
 import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.partial_product_detail_visibility.view.*
-import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
+import com.tokopedia.product.share.ekstensions.layoutInflater
+import kotlinx.android.synthetic.main.item_hierarchycal_social_proof.view.*
+import kotlinx.android.synthetic.main.item_social_proof_with_divider.view.*
+import java.lang.reflect.Method
+
 
 class ProductSocialProofViewHolder(val view: View, private val listener: DynamicProductDetailListener)
     : AbstractViewHolder<ProductSocialProofDataModel>(view) {
@@ -33,22 +41,31 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
     override fun bind(element: ProductSocialProofDataModel) {
         val stats = element.stats ?: Stats()
         val txStats = element.txStats ?: TxStatsDynamicPdp()
-        if (productStatsView == null) {
-            productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)
+        val availableData = element.getAvailableData()
+        if (!element.shouldRenderSocialProof) {
+            view.pdp_shimmering_social_proof?.show()
+        } else {
+            view.pdp_shimmering_social_proof?.hide()
+
+            val rootView = view.findViewById<ViewGroup>(R.id.root_socproof)
+            rootView.removeAllViews()
+
+            val inflater: LayoutInflater = view.context.layoutInflater
+            val key = availableData.first().first
+
+            if (availableData.size == 1 && (key == TALK || key == PAYMENT_VERIFIED || key == VIEW_COUNT)) {
+                val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
+                generateSingleTextSocialProof(availableData.first(), socProofView, element)
+                rootView.addView(socProofView, 0)
+            } else {
+                availableData.forEachIndexed { index, i ->
+                    val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
+                    renderSocialProofData(i, element.rating ?: 0F, element, socProofView, index)
+                    rootView.addView(socProofView, index)
+                }
+            }
         }
 
-        if (attributeInfoView == null) {
-            attributeInfoView = PartialAttributeInfoView.build(view.base_attribute)
-        }
-
-        view.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressComponent(getComponentTrackData(element))
-        }
-
-        element.rating?.run {
-            productStatsView?.renderRatingNew(this.toString())
-        }
-        attributeInfoView?.renderWishlistCount(element.wishListCount)
 
 //        if (productStatsView == null) {
 //            productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)

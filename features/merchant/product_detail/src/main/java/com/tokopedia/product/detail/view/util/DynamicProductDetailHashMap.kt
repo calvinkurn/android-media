@@ -227,11 +227,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
-                wishListCount = it.wishlistCount.count
+                wishlistCount = it.wishlistCount.count
+                shouldRenderSocialProof = true
             }
 
             productSocialProofPvDataModel?.run{
-                wishListCount = it.wishlistCount.count
+                wishlistCount = it.wishlistCount.count
             }
 
             productDiscussionMap?.run {

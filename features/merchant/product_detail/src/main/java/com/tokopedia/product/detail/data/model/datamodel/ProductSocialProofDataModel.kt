@@ -9,13 +9,29 @@ data class ProductSocialProofDataModel(
         val type: String = "",
         val name: String = "",
         //P2
-        var rating: Float? = null,
-        var wishListCount: Int = 0,
+//        var rating: Float? = null,
         var stats: Stats? = null,
         var txStats: TxStatsDynamicPdp? = null,
-        var isSocialProofPv: Boolean = false
+        var isSocialProofPv: Boolean = false,
+
+        var rating: Float? = 0F,
+        var ratingCount: Int = 0,
+        var viewCount: Int = 0,
+        var talkCount: Int = 0,
+        var wishlistCount: Int = 0,
+        var paymentVerifiedCount: Int = 0,
+        var shouldRenderSocialProof: Boolean = false
+
 ) : DynamicPdpDataModel {
-    override val impressHolder: ImpressHolder =  ImpressHolder()
+    companion object {
+        const val RATING = "rating"
+        const val TALK = "talk"
+        const val PAYMENT_VERIFIED = "paymentVerified"
+        const val WISHLIST = "wishlist"
+        const val VIEW_COUNT = "viewCount"
+    }
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
 
