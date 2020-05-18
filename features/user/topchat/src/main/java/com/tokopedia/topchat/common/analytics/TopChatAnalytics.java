@@ -102,7 +102,7 @@ public class TopChatAnalytics {
         public static final String CLICK_BANNED_PRODUCT = "click on lanjut browser";
         public static final String VIEW_BANNED_PRODUCT = "view banned product bubble";
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
-        String CLICK_HEADER = "click header-shop icon";
+        String CLICK_HEADER_SHOP = "click - shop - login";
         String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
         String CLICK_REPLY_BUTTON = "click on reply button";
@@ -160,9 +160,9 @@ public class TopChatAnalytics {
 
     public void trackHeaderClicked(int shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Name.INBOX_CHAT,
-                Category.MESSAGE_ROOM,
-                Action.CLICK_HEADER,
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_HEADER_SHOP,
                 String.valueOf(shopId)
         ));
     }
