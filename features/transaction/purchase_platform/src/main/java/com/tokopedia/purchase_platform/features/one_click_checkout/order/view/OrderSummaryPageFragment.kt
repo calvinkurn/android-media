@@ -513,6 +513,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
                 coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
             }
+            coachMark.overlayOnClickListener = ({
+                //do nothing
+            })
             coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
                 override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
                     if (nextStep == 0) {
