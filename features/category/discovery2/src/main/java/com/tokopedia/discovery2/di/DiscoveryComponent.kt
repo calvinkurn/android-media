@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.clai
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import dagger.Component
 
 
@@ -20,6 +21,7 @@ interface DiscoveryComponent {
     fun inject(mutliViewModel: MultiBannerViewModel)
     fun inject(tokopointsViewModel: TokopointsViewModel)
     fun inject(productCardCarouselViewModel: ProductCardCarouselViewModel)
+    fun inject(productCardSprintSaleCarouselViewModel: ProductCardSprintSaleCarouselViewModel )
     fun inject(productCardRevampViewModel: ProductCardRevampViewModel)
     fun inject(cpmTopAdsViewModel: CpmTopAdsViewModel)
     fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
