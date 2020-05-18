@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
-import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -34,8 +33,6 @@ class ProductCheckoutViewHolder(
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
-
-    private val productStockTracker by lazy { StockHandlerAnalytics() }
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
@@ -63,12 +60,11 @@ class ProductCheckoutViewHolder(
         if (element.products.size > SINGLE_PRODUCT) {
             cardContainer.hide()
             lstProduct.show()
-            listener.getAnalytic().trackProductListImpression(
+            listener.getAnalytic().trackMultiProductListImpression(
                     userId = element.userInfo.userId,
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
-            productStockTracker.productCardImpression(element, element.userInfo.userId)
             val factory = MultipleProductCardFactoryImpl(
                     sourceView = SourceMultipleProductView.NotificationCenter,
                     listener = listener
@@ -96,7 +92,6 @@ class ProductCheckoutViewHolder(
 
     override fun trackProduct(element: NotificationItemViewBean) {
         if (element.totalProduct == SINGLE_PRODUCT) {
-            productStockTracker.productCardClicked(element, element.userInfo.userId)
             listener.getAnalytic().trackSingleProductCheckoutCardClick(
                     notification = element
             )

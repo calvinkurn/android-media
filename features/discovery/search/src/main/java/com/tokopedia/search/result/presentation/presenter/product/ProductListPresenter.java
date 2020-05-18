@@ -47,15 +47,18 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -90,6 +93,7 @@ final class ProductListPresenter
     private boolean enableGlobalNavWidget = true;
     private boolean changeParamRow = false;
     private boolean isUsingBottomSheetFilter = true;
+    private boolean enableTrackingViewPort = true;
     private String additionalParams = "";
     private boolean isFirstTimeLoad = false;
     private boolean isTickerHasDismissed = false;
@@ -129,6 +133,7 @@ final class ProductListPresenter
         this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
         this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
         this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+        this.enableTrackingViewPort = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true);
     }
 
     @Override
@@ -583,9 +588,11 @@ final class ProductListPresenter
             enrichWithAdditionalParams(requestParams, additionalParams);
         }
 
+        getView().stopPreparePagePerformanceMonitoring();
+        getView().startNetworkRequestPerformanceMonitoring();
+
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
-
         searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter));
     }
 
@@ -642,6 +649,9 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
         if (isViewAttached()) {
+            getView().stopNetworkRequestPerformanceMonitoring();
+            getView().startRenderPerformanceMonitoring();
+
             if (isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
             } else {
@@ -803,7 +813,8 @@ final class ProductListPresenter
         if (!isTickerHasDismissed
                 && !textIsEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
-            getView().trackEventImpressionSortPriceMinTicker();
+            int typeId = productViewModel.getTickerModel().getTypeId();
+            getView().trackEventImpressionTicker(typeId);
         }
 
         if (!textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
@@ -942,7 +953,8 @@ final class ProductListPresenter
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
-        HashMap<String, String> gtmTrackingCategory = new HashMap<>();
+        Set<String> categoryIdMapping = new HashSet<>();
+        Set<String> categoryNameMapping = new HashSet<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -953,22 +965,24 @@ final class ProductListPresenter
                     moengageTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
                 }
 
-                gtmTrackingCategory.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
+                categoryIdMapping.add(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()));
+                categoryNameMapping.add(productViewModel.getProductList().get(i).getCategoryName());
             }
         }
 
         getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, productViewModel.getQuery(), prodIdArray);
         getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
-        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, gtmTrackingCategory));
+        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, categoryIdMapping, categoryNameMapping));
 
         isFirstTimeLoad = false;
     }
 
-    private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Map<String, String> category) {
+    private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
         return new GeneralSearchTrackingModel(
                 createGeneralSearchTrackingEventLabel(productViewModel),
                 !productViewModel.getProductList().isEmpty(),
-                category,
+                StringUtils.join(categoryIdMapping, ","),
+                StringUtils.join(categoryNameMapping, ","),
                 createGeneralSearchTrackingRelatedKeyword(productViewModel)
         );
     }
@@ -1212,7 +1226,14 @@ final class ProductListPresenter
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
             getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+        } else if (enableTrackingViewPort) {
+            getView().sendProductImpressionTrackingEvent(item);
         }
+    }
+
+    @Override
+    public boolean isTrackingViewPortEnabled() {
+        return enableTrackingViewPort;
     }
 
     @Override

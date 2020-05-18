@@ -10,10 +10,11 @@
     <View
         android:id="@+id/background"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@color/red_30"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="H,2:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_title_container" />
 
@@ -37,6 +38,8 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:textSize="@dimen/sp_18"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintBottom_toTopOf="@+id/banner_description"
         app:layout_constraintEnd_toStartOf="@+id/banner_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,14 +91,14 @@
         android:id="@+id/dc_banner_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_4"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/banner_description"
-        app:layout_goneMarginTop="@dimen/dp_10"
+        app:layout_goneMarginTop="@dimen/dp_4"
         tools:listitem="@layout/home_banner_item_carousel" />
 
 

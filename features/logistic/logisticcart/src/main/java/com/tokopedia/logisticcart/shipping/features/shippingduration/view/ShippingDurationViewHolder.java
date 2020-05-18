@@ -44,13 +44,10 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvOrderPrioritas;
 
     private int cartPosition;
-    private ShippingDurationAdapter adapter;
 
-    public ShippingDurationViewHolder(View itemView, ShippingDurationAdapter adapter,
-                                      int cartPosition) {
+    public ShippingDurationViewHolder(View itemView, int cartPosition) {
         super(itemView);
         this.cartPosition = cartPosition;
-        this.adapter = adapter;
 
         tvOrderPrioritas = itemView.findViewById(R.id.tv_order_prioritas);
         tvError = itemView.findViewById(R.id.tv_error);

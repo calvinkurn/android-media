@@ -1,8 +1,6 @@
 package com.tokopedia.flight.airport.view.adapter;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -10,14 +8,17 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportViewModel> {
+public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportModel> {
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_airport;
 
@@ -33,12 +34,13 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
         cityTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.city);
         airportTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.airport);
         this.filterTextListener = filterTextListener;
-        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),
+                com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
 
     }
 
     @Override
-    public void bind(final FlightAirportViewModel airport) {
+    public void bind(final FlightAirportModel airport) {
         Context context = itemView.getContext();
         String filterText = filterTextListener.getFilterText();
 
@@ -71,13 +73,9 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
         String strToPutLowerCase = strToPut.toLowerCase();
         String strToBoldLowerCase = stringToBold.toLowerCase();
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(strToPut);
-        indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase);
+        indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase) + strToBoldLowerCase.length();
         if (indexStartBold != -1) {
-            indexEndBold = indexStartBold + stringToBold.length();
-
-            if (indexEndBold >= strToPut.length()) {
-                indexEndBold = strToPut.length() - 1;
-            }
+            indexEndBold = strToPut.length() - 1;
         }
         if (indexStartBold == -1) {
             return spannableStringBuilder;

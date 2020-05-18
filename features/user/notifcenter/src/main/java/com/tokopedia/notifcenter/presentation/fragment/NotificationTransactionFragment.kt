@@ -22,7 +22,6 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
-import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.EmptySource
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -35,7 +34,6 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.No
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.viewModelProvider
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
@@ -89,6 +87,11 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getInfoStatusNotification()
+    }
+
     override fun updateFilter(filter: HashMap<String, Int>) {
         fetchUpdateFilter(filter)
     }
@@ -102,9 +105,6 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         viewModel.errorMessage.observe(viewLifecycleOwner, onViewError())
 
         viewModel.infoNotification.observe(viewLifecycleOwner, Observer {
-            if (NotificationMapper.isHasShop(it)) {
-                _adapter.addElement(sellerMenu())
-            }
             _adapter.updateValue(it.notifications)
         })
 
@@ -138,12 +138,6 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        fetchUpdateFilter(hashMapOf())
-        loadInitialData()
-    }
-
     private fun getNotification(position: String) {
         viewModel.setLastNotificationId(position)
     }
@@ -162,8 +156,17 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
 
     override fun loadData(page: Int) {
         swipeRefresh?.isRefreshing = false
+
+        // adding a static buyer notification
         renderList(buyerMenu(), false)
+
+        // adding a static seller notification if user has shop
+        if (userSession.hasShop()) {
+            _adapter.addElement(sellerMenu())
+        }
+
         viewModel.getInfoStatusNotification()
+        viewModel.getNotificationFilter()
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -259,6 +262,11 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         return NotificationTransactionAdapter(
                 adapterTypeFactory as NotificationTransactionFactoryImpl
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.cleared()
     }
 
     companion object {

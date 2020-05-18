@@ -3,6 +3,7 @@ package com.tokopedia.rechargegeneral.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
 import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
@@ -20,6 +21,8 @@ interface RechargeGeneralComponent {
     fun context(): Context
 
     fun userSessionInterface(): UserSessionInterface
+
+    fun topupBillsDispatchersProvider(): TopupBillsDispatchersProvider
 
     fun rechargeGeneralDispatchersProvider(): RechargeGeneralDispatchersProvider
 

@@ -39,6 +39,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 
 /**
  * @author : Steven 29/11/18
@@ -62,6 +63,7 @@ class TopChatViewStateImpl(
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: FrameLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
+    private var orderProgress: TransactionOrderProgressLayout? = view.findViewById(R.id.ll_transaction_progress)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -84,14 +86,6 @@ class TopChatViewStateImpl(
     override fun getAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRootViewId() = R.id.main
     override fun getAttachmentMenuContainer() = R.id.rv_attachment_menu_container
-
-    override fun getInterlocutorName(headerName: CharSequence): CharSequence {
-        var name = headerName
-        if (name.length > 12) {
-            name = name.substring(0, 12) + "..."
-        }
-        return name
-    }
 
     init {
         initView()
@@ -117,6 +111,19 @@ class TopChatViewStateImpl(
 
         initProductPreviewLayout()
         initHeaderLayout()
+    }
+
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        getAdapter().addHeaderDateIfDifferent(visitable)
+        super.onReceiveMessageEvent(visitable)
+    }
+
+    override fun onKeyboardOpened() {
+        super.onKeyboardOpened()
+    }
+
+    override fun onKeyboardClosed() {
+        super.onKeyboardClosed()
     }
 
     private fun initHeaderLayout() {
@@ -426,7 +433,7 @@ class TopChatViewStateImpl(
     private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
         myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
         myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
-        myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
+        myAlertDialog.setBtnOk(view.context.getString(R.string.topchat_chat_delete_confirm))
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
@@ -435,11 +442,11 @@ class TopChatViewStateImpl(
         myAlertDialog.show()
     }
 
-    override fun showErrorWebSocket(b: Boolean) {
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
         notifier.visibility = View.VISIBLE
         val title = notifier.findViewById<TextView>(R.id.title)
         val action = notifier.findViewById<View>(R.id.action)
-        if (b) {
+        if (isWebSocketError) {
             title.setText(R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 

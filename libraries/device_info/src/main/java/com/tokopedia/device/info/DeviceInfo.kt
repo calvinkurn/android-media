@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -139,17 +141,17 @@ object DeviceInfo {
                 try {
                     if (Build.VERSION.SDK_INT < 26) {
                         val deviceId = tm.deviceId
-                        deviceInfoCache.setImei(deviceId)
-                        return deviceId
+                        val hash = deviceInfoCache.setImei(deviceId)
+                        return hash
                     } else {
                         var imei = tm.imei
-                        if (imei.isNotEmpty()) {
+                        val hash = if (imei.isNotEmpty()) {
                             deviceInfoCache.setImei(imei)
                         } else {
                             imei = tm.meid
                             deviceInfoCache.setImei(imei)
                         }
-                        imei
+                        hash
                     }
                 } catch (e: Exception) {
                     deviceInfoCache.setImei("")
@@ -167,6 +169,5 @@ object DeviceInfo {
         val deviceInfoCache = DeviceInfoCache(context.applicationContext)
         return deviceInfoCache.getImei()
     }
-
 }
 

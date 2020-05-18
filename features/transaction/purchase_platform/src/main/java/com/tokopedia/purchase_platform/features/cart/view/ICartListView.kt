@@ -1,20 +1,13 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
-import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
@@ -115,6 +108,8 @@ interface ICartListView : CustomerView {
 
     fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel)
 
+    fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>)
+
     fun showPromoCheckoutStickyButtonInactive()
 
     fun showPromoCheckoutStickyButtonLoading()
@@ -126,4 +121,8 @@ interface ICartListView : CustomerView {
     fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean
 
     fun generateGeneralParamValidateUse() : ValidateUsePromoRequest
+
+    fun resetRecentViewList()
+
+    fun sendATCTrackingURL(clickUrl: String)
 }

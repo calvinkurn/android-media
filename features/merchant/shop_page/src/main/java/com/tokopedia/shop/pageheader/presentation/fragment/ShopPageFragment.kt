@@ -2,6 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
@@ -24,6 +25,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
@@ -147,6 +149,7 @@ class ShopPageFragment :
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
     private var isFirstLoading: Boolean = false
+    private var shouldOverrideTabToHome: Boolean = false
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -174,6 +177,7 @@ class ShopPageFragment :
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
 
+
     override fun onDestroy() {
         shopViewModel.shopInfoResp.removeObservers(this)
         shopViewModel.whiteListResp.removeObservers(this)
@@ -185,6 +189,7 @@ class ShopPageFragment :
     }
 
     private fun initViews(view: View) {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         errorTextView = view.findViewById(R.id.message_retry)
         errorButton = view.findViewById(R.id.button_retry)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)
@@ -253,6 +258,7 @@ class ShopPageFragment :
                     onErrorGetShopInfo(result.throwable)
                 }
             }
+            stopPerformanceMonitoring()
         })
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
@@ -266,6 +272,16 @@ class ShopPageFragment :
                 reputation?.let {
                     shopPageFragmentHeaderViewHolder.showShopReputationBadges(it.second)
                 }
+            }
+        })
+
+        shopViewModel.shopTickerData.observe(this, Observer { response ->
+            when(response){
+                is Success -> shopPageFragmentHeaderViewHolder.updateShopTicker(
+                        response.data.first,
+                        response.data.second,
+                        isMyShop
+                )
             }
         })
     }
@@ -294,8 +310,9 @@ class ShopPageFragment :
                     if (shopDomain.isNullOrEmpty()) {
                         shopDomain = getQueryParameter(SHOP_DOMAIN)
                     }
-                    if (lastPathSegment.orEmpty() == PATH_HOME)
-                        tabPosition = TAB_POSITION_HOME
+                    if (lastPathSegment.orEmpty() == PATH_HOME) {
+                        shouldOverrideTabToHome = true
+                    }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
@@ -496,8 +513,12 @@ class ShopPageFragment :
 
     private fun redirectToShopSettingsPage() {
         context?.let { context ->
-            shopId?.let { shopId ->
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                shopId?.let { shopId ->
+                    startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                }
             }
         }
     }
@@ -548,10 +569,10 @@ class ShopPageFragment :
                 }
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
-            shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
+
     }
 
     fun onBackPressed() {
@@ -572,9 +593,16 @@ class ShopPageFragment :
                 add(getString(R.string.shop_info_title_tab_feed))
             add(getString(R.string.shop_info_title_tab_review))
         }
-        val selectedPosition = tabPosition
         viewPagerAdapter.setTabData(generateTabData())
         viewPagerAdapter.notifyDataSetChanged()
+        var selectedPosition = getSelectedTabPosition()
+        if(shouldOverrideTabToHome){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
+            }else{
+                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            }
+        }
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
@@ -582,6 +610,18 @@ class ShopPageFragment :
         }
         setViewState(VIEW_CONTENT)
         viewPager.setCurrentItem(selectedPosition, false)
+    }
+
+    private fun getSelectedTabPosition(): Int {
+        return if (isShowHomeTab()) {
+            if (isShowNewHomeTab()) {
+                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            } else {
+                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+            }
+        } else {
+            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+        }
     }
 
     private fun isShowHomeTab(): Boolean {
@@ -655,11 +695,10 @@ class ShopPageFragment :
     }
 
     private fun onErrorGetShopInfo(e: Throwable?) {
-        stopPerformanceMonitoring()
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
-            errorButton.setOnClickListener { getShopInfo() }
+            errorButton.setOnClickListener { getShopInfo(true) }
             swipeToRefresh.isRefreshing = false
         }
     }
@@ -753,7 +792,7 @@ class ShopPageFragment :
     }
 
     private fun stopPerformanceMonitoring() {
-        (activity as? ShopPageActivity)?.stopPerformanceMonitor()
+        (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
     fun refreshData() {

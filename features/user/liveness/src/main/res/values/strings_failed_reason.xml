@@ -23,6 +23,4 @@
     <string name="liveness_failed_face_detection_title"> Verifikasi wajah gagal</string>
     <string name="liveness_failed_reason_prerecord">Verifikasi wajah tidak dapat mendeteksi video rekaman. Biar proses ini berhasil, scan wajahmu secara langsung, ya.</string>
     <string name="liveness_failed_reason_blurry">Gambar terlihat gelap. Saran kami, coba di tempat terang, biar scan wajah berhasil.</string>
-
-    <string name="liveness_failed_file_not_found">Terjadi kesalahan, silahkan coba lagi</string>
 </resources>

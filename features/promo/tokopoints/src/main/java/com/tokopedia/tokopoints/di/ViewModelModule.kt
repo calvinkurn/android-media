@@ -12,6 +12,7 @@ import com.tokopedia.tokopoints.view.couponlisting.CouponLisitingStackedViewMode
 import com.tokopedia.tokopoints.view.couponlisting.StackedCouponActivtyViewModel
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryViewModel
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
+import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -71,5 +72,11 @@ abstract class ViewModelModule {
     @TokoPointScope
     @ViewModelKey(AddPointViewModel::class)
     abstract fun getAddPoint(viewModel: AddPointViewModel) : ViewModel
+
+    @IntoMap
+    @Binds
+    @TokoPointScope
+    @ViewModelKey(ValidateMerchantPinViewModel::class)
+    abstract fun getValidatePin(viewModel: ValidateMerchantPinViewModel) : ViewModel
 
 }

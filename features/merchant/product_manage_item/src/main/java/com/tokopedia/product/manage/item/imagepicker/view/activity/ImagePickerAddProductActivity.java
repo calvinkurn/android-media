@@ -12,6 +12,8 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.product.manage.item.imagepicker.view.fragment.ImagePickerCatalogFragment;
 import com.tokopedia.product.manage.item.imagepicker.view.adapter.ImagePickerViewPageAddProductAdapter;
 
+import java.util.ArrayList;
+
 /**
  * Created by zulfikarrahman on 6/6/18.
  */

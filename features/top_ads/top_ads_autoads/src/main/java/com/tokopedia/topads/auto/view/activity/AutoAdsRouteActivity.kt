@@ -1,31 +1,27 @@
 package com.tokopedia.topads.auto.view.activity
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.config.GlobalConfig
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.AppUtil
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.design.component.ToasterError
-
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
-import com.tokopedia.topads.common.data.util.ApplinkUtil
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AutoAdsRouteActivity : AutoAdsBaseActivity() {
@@ -67,7 +63,8 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     private fun onFailShopInfo(t: Throwable) {
         let {
-            ToasterError.showClose(this, ErrorHandler.getErrorMessage(it, t))
+            Toaster.make(findViewById(android.R.id.content), ErrorHandler.getErrorMessage(it, t),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.close))
             finish()
         }
     }
@@ -95,7 +92,8 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun noAds() {
-        startActivity(Intent(this@AutoAdsRouteActivity, StartAutoAdsActivity::class.java))
+        startActivity(RouteManager.getIntent(this@AutoAdsRouteActivity, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS))
+
     }
 
     private fun manualAds() {

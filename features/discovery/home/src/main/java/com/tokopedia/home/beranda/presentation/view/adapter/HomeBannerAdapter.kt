@@ -17,9 +17,12 @@ class HomeBannerAdapter(itemList: List<CircularModel>, listener: CircularListene
 }
 
 class HomeBannerImageViewHolder(itemView: View): CircularViewHolder(itemView) {
+    companion object{
+        private const val FPM_HOMEPAGE_BANNER = "homepage_banner"
+    }
     override fun bind(item: CircularModel, listener: CircularListener) {
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).tag = item.url
-        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url)
+        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url, FPM_HOMEPAGE_BANNER)
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
     }
 }

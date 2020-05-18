@@ -47,7 +47,13 @@ public class FingerprintModelGenerator {
             fingerprintString = "";
         }
 
-        fingerprintModel.setAdsId(getGoogleAdId(context));
+        // temporary fix until moving this into fingerprint library, because some module do not need this ads id
+        // handle exception if called from main thread
+        try {
+            fingerprintModel.setAdsId(getGoogleAdId(context));
+        } catch (Exception e) {
+            fingerprintModel.setAdsId("");
+        }
         fingerprintModel.setFingerprintHash(fingerprintString);
         fingerprintModel.setRegistrarionId(FCMCacheManager.getRegistrationIdWithTemp(context));
 

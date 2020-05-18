@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -27,7 +28,6 @@ import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.IS_RESULT_FOUND;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.RELATED_KEYWORD;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
-import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -252,6 +252,15 @@ public class SearchTracking {
                 "search result",
                 "click - related keyword",
                 String.format("%s - %s", currentKeyword, relatedKeyword)
+        ));
+    }
+
+    public static void eventClickSuggestedSearch(String currentKeyword, String suggestion) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION,
+                String.format("%s - %s", currentKeyword, suggestion)
         ));
     }
 
@@ -583,21 +592,21 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventImpressionSortPriceMinTicker(String keyword) {
+    public static void trackEventImpressionTicker(String keyword, int typeId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
                 SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.IMPRESSION_SORT_PRICE_MIN_TICKER,
-                keyword
+                SearchEventTracking.Action.IMPRESSION_TICKER,
+                typeId + " - " + keyword
         );
     }
 
-    public static void trackEventClickSortPriceMinTicker(String keyword) {
+    public static void trackEventClickTicker(String keyword, int typeId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_SORT_PRICE_MIN_TICKER,
-                keyword
+                SearchEventTracking.Action.CLICK_TICKER,
+                typeId + " - " + keyword
         );
     }
 
@@ -631,8 +640,8 @@ public class SearchTracking {
                 EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 EVENT_LABEL, generalSearchTrackingModel.getEventLabel(),
                 IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
-                CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(generalSearchTrackingModel.getCategoryMapping().keySet().toArray())),
-                CATEGORY_NAME_MAPPING, new JSONArray(generalSearchTrackingModel.getCategoryMapping().values()),
+                CATEGORY_ID_MAPPING, generalSearchTrackingModel.getCategoryIdMapping(),
+                CATEGORY_NAME_MAPPING, generalSearchTrackingModel.getCategoryNameMapping(),
                 RELATED_KEYWORD, generalSearchTrackingModel.getRelatedKeyword()
         );
 

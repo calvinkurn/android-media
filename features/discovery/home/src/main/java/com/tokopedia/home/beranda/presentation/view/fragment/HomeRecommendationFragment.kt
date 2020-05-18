@@ -194,7 +194,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         recyclerView?.setRecycledViewPool(parentPool)
         createEndlessRecyclerViewListener()
         endlessRecyclerViewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
-        setJankyFramesRecyclerViewMonitoring(homeCategoryListener)
     }
 
     fun setListener(homeCategoryListener: HomeCategoryListener?,
@@ -203,17 +202,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         this.homeCategoryListener = homeCategoryListener
         this.homeEggListener = homeEggListener
         this.homeTabFeedListener = homeTabFeedListener
-    }
-
-    private fun setJankyFramesRecyclerViewMonitoring(homeCategoryListener: HomeCategoryListener?) {
-        if (homeCategoryListener?.getHomeJankyFramesUtil() != null && view != null) {
-            recyclerView?.let {
-                homeCategoryListener.getHomeJankyFramesUtil()!!.recordRecyclerViewScrollPerformance(
-                        it,
-                        HOME_JANKY_FRAMES_MONITORING_PAGE_NAME,
-                        HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME)
-            }
-        }
     }
 
     fun setParentPool(parentPool: RecyclerView.RecycledViewPool?) {

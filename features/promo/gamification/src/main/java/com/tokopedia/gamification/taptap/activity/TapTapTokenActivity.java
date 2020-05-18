@@ -2,6 +2,7 @@ package com.tokopedia.gamification.taptap.activity;
 
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import androidx.fragment.app.Fragment;
 
@@ -13,16 +14,18 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 
 public class TapTapTokenActivity extends BaseSimpleActivity {
 
+    FrameLayout fm;
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_token_crack;
+        return com.tokopedia.gamification.R.layout.activity_token_crack;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        fm = findViewById(R.id.parent_view);
     }
 
     @Override
@@ -31,7 +34,7 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
     }
 
     private TapTapTokenFragment getCrackFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.parent_view);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(fm.getId());
         if (fragment != null && fragment instanceof TapTapTokenFragment) {
             return (TapTapTokenFragment) fragment;
         }
@@ -63,5 +66,10 @@ public class TapTapTokenActivity extends BaseSimpleActivity {
     @Override
     public String getScreenName() {
         return TapTapTokenActivity.class.getName();
+    }
+
+    @Override
+    protected int getParentViewResourceID() {
+        return com.tokopedia.gamification.R.id.parent_view;
     }
 }

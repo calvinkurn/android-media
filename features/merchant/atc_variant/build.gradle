@@ -19,7 +19,7 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
 }
 

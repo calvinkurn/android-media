@@ -1,6 +1,7 @@
 package com.tokopedia.merchantvoucher.common.widget
 
 import android.content.Context
+import android.graphics.Matrix
 import android.util.AttributeSet
 import android.widget.ImageView
 
@@ -21,9 +22,10 @@ class MerchantVoucherImageType(context: Context, attrs: AttributeSet) : ImageVie
 
             val newImageHeight = originalImageHeight * usedScaleFactor
 
-            imageMatrix.apply {
-                setScale(usedScaleFactor, usedScaleFactor, 0f, 0f)
-                postTranslate(0f, frameHeight - newImageHeight)
+            imageMatrix = Matrix().apply {
+                reset()
+                postTranslate(0f, (frameHeight - newImageHeight) / 2f)
+                preScale(usedScaleFactor, usedScaleFactor, 0f, 0f)
             }
         }
 

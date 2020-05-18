@@ -19,8 +19,8 @@ class GamificationRoundImageView @JvmOverloads constructor(
     init {
         attrs?.let { attributes ->
             val typedArray =
-                    context.theme.obtainStyledAttributes(attributes, R.styleable.GamificationRoundImageView, 0, 0)
-            radius = typedArray.getDimension(R.styleable.GamificationRoundImageView_gfRoundImageRadius, dpToPx(8))
+                    context.theme.obtainStyledAttributes(attributes, com.tokopedia.gamification.R.styleable.GamificationRoundImageView, 0, 0)
+            radius = typedArray.getDimension(com.tokopedia.gamification.R.styleable.GamificationRoundImageView_gfRoundImageRadius, dpToPx(8))
         }
     }
 

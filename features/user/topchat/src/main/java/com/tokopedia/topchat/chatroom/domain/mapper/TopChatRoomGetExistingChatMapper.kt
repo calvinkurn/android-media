@@ -7,12 +7,14 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_A
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -30,7 +32,12 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
 
     override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
-        for (chatItemPojo in pojo.chatReplies.list) {
+        val replies = pojo.chatReplies.list
+        for ((index, chatItemPojo) in replies.withIndex()) {
+            listChat.add(createHeaderDate(chatItemPojo))
+            if (index == replies.lastIndex) {
+                latestHeaderDate = chatItemPojo.date
+            }
             for (chatItemPojoByDate in chatItemPojo.chats) {
                 var index = 0
                 while (index < chatItemPojoByDate.replies.size) {
@@ -54,6 +61,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
             }
         }
         return listChat
+    }
+
+    private fun createHeaderDate(chatItemPojo: ChatRepliesItem): Visitable<*> {
+        return HeaderDateUiModel(chatItemPojo.date)
     }
 
     private fun createCarouselProduct(chatDateTime: Reply, products: List<Visitable<*>>): ProductCarouselUiModel {

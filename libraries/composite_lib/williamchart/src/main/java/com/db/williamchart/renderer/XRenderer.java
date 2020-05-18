@@ -129,7 +129,7 @@ public class XRenderer extends AxisRenderer {
 							style.getLabelsPaint());
 				}
 
-				if(xDataGrid){
+				if (xDataGrid && i > 0) {
 					canvas.drawLine(labelsPos.get(i), topCanvas, labelsPos.get(i), getInnerChartBottom(),
 							style.getGridPaint());
 				}

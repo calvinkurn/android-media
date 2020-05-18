@@ -195,6 +195,10 @@ public class FavoritePresenter
         }
     }
 
+    boolean hasNextPage() {
+        return pagingHandler.CheckNextPage();
+    }
+
     private class InitialDataSubscriber extends Subscriber<DataFavorite> {
 
         @Override
@@ -329,6 +333,7 @@ public class FavoritePresenter
                 favoriteShopViewModel.setShopLocation(shopItem.getShopLocation());
                 favoriteShopViewModel.setFavoriteShop(shopItem.isFav());
                 getView().addFavoriteShop(favoriteShopViewModel);
+                getView().sendFavoriteShopImpression(shopItem.getShopClickUrl());
             }
         }
     }

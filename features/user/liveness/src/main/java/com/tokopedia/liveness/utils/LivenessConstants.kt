@@ -17,4 +17,6 @@ object LivenessConstants {
     const val FAILED_TIMEOUT = 2
 
     const val KYC_FILE_NOT_FOUND = -7
+    const val NOT_SUPPORT_LIVENESS = -9
+    const val KYC_LIVENESS_FILE_NOT_FOUND = -11
 }

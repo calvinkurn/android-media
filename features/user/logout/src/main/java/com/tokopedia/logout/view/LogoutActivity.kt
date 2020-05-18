@@ -2,6 +2,7 @@ package com.tokopedia.logout.view
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -163,9 +164,13 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
-                RouteManager.route(applicationContext, ApplinkConst.SellerApp.SELLER_APP_HOME)
+                val mIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+                startActivity(mIntent)
+                finish()
             } else {
-                RouteManager.route(applicationContext, ApplinkConst.HOME)
+                RouteManager.route(this, ApplinkConst.HOME)
             }
         } else {
             setResult(Activity.RESULT_OK)

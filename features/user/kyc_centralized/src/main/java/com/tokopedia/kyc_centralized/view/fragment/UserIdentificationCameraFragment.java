@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.view.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
@@ -36,7 +38,10 @@ import com.tokopedia.user_identification_common.analytics.UserIdentificationComm
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Objects;
 
+import static com.tokopedia.imagepicker.common.util.ImageUtils.JPG_EXT;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
 /**
@@ -394,8 +399,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         try {
             //rotate the bitmap using the library
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
-                File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
-                        .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                File cameraResultFile = writeImageToTkpdPath(bitmap);
                 onSuccessImageTakenFromCamera(cameraResultFile);
             });
         } catch (Throwable error) {
@@ -414,6 +418,26 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             Toast.makeText(getContext(), getString(R.string.error_upload_image_kyc), Toast
                     .LENGTH_LONG).show();
         }
+    }
+
+    private File writeImageToTkpdPath(Bitmap bitmap) {
+        File cacheDir = new File(Objects.requireNonNull(getContext()).getExternalCacheDir(), FileUtils.generateUniqueFileName() + JPG_EXT);
+        String cachePath = cacheDir.getAbsolutePath();
+
+        File file = new File(cachePath);
+
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     private void populateViewByViewMode() {

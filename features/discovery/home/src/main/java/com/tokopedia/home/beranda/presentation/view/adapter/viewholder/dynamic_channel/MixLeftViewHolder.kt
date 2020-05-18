@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.graphics.Color
+import android.annotation.SuppressLint
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
@@ -19,9 +20,13 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mixleft.model.MixLeftAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.EmptyDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.home.util.setGradientBackground
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -29,10 +34,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 /**
  * @author by yoasfs on 2020-03-05
  */
+
+@SuppressLint("SyntheticAccessor")
 class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
     : DynamicChannelViewHolder(itemView, homeCategoryListener), CoroutineScope, FlashSaleCardListener {
@@ -45,6 +53,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.rv_product)
     private val image: ImageView = itemView.findViewById(R.id.parallax_image)
+    private val loadingBackground: ImageView = itemView.findViewById(R.id.background_loader)
     private val parallaxBackground: View = itemView.findViewById(R.id.parallax_background)
     private val parallaxView: View = itemView.findViewById(R.id.parallax_view)
 
@@ -54,6 +63,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_dc_mix_left
+        private const val FPM_MIX_LEFT = "home_mix_left"
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -71,11 +81,13 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
-        HomePageTrackingV2.MixLeft.sendMixLeftClickLoadMore(channel)
+        RouteManager.route(itemView.context, applink)
+        HomePageTrackingV2.MixLeft.sendMixLeftSeeAllCardClick(channel)
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
-
+        homeCategoryListener.trackingQueue?.putEETracking(
+                HomePageTrackingV2.MixLeft.getMixLeftProductView(channel) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
@@ -84,9 +96,24 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
-        parallaxBackground.setGradientBackground(channel.banner.gradientColor)
         if (channel.banner.imageUrl.isNotEmpty()) {
-            image.loadImage(channel.banner.imageUrl)
+            loadingBackground.show()
+            image.addOnImpressionListener(channel){
+                homeCategoryListener.putEEToTrackingQueue(HomePageTrackingV2.MixLeft.getMixLeftBannerView(channel, adapterPosition) as java.util.HashMap<String, Any>)
+            }
+            image.loadImage(channel.banner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
+                override fun successLoad() {
+                    parallaxBackground.setGradientBackground(channel.banner.gradientColor)
+                    loadingBackground.hide()
+                }
+
+                override fun failedLoad() {
+                    parallaxBackground.setGradientBackground(channel.banner.gradientColor)
+                    loadingBackground.hide()
+                }
+            })
+        } else {
+            loadingBackground.hide()
         }
     }
 
@@ -97,9 +124,10 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(EmptyDataModel())
+        listData.add(EmptyDataModel(channel, adapterPosition))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
+        if(homeCategoryListener.isShowSeeAllCard() && channel.grids.size > 1 && channel.header.applink.isNotEmpty()) listData.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
 
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
@@ -133,7 +161,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
                         if (distanceFromLeft <= 0) {
                             val itemSize = it.width.toFloat()
-                            val alpha = (Math.abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                            val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
                             image.alpha = 1 - alpha
                         }
                     }

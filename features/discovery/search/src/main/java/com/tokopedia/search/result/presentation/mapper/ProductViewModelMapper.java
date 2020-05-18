@@ -263,6 +263,8 @@ public class ProductViewModelMapper {
         TickerViewModel tickerViewModel = new TickerViewModel();
         tickerViewModel.setText(tickerModel.getText());
         tickerViewModel.setQuery(tickerModel.getQuery());
+        tickerViewModel.setTypeId(tickerModel.getTypeId());
+
         return tickerViewModel;
     }
 

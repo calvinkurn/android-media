@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.transaction.R;
@@ -116,13 +117,14 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 quantity.setText(String.format(context.getResources().getString(R.string.quantity), items.getQuantity(), items.getWeight()));
                 if (!TextUtils.isEmpty(items.getPrice()))
                     productPrice.setText(items.getPrice());
+
+                if (!TextUtils.isEmpty(items.getDescription())) {
+                    productDescription.setText(MethodChecker.fromHtml(items.getDescription()));
+                }else {
+                    productDescription.setVisibility(View.GONE);
+                }
             }
 
-            if (!TextUtils.isEmpty(items.getDescription())) {
-                productDescription.setText(items.getDescription());
-            }else {
-                productDescription.setVisibility(View.GONE);
-            }
             if (!TextUtils.isEmpty(items.getTotalPrice())) {
                 totalPrice.setText(items.getTotalPrice());
             }
@@ -152,7 +154,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     } else if (actionButton.getKey().equalsIgnoreCase(BUY_AGAIN_ACTION_BUTTON_KEY)) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
-                        presenter.onBuyAgainItems(itemsList, " - product");
+                        presenter.onBuyAgainItems(itemsList, " - product", status.status());
                     }
                 });
             }

@@ -3,6 +3,7 @@ package com.tokopedia.applink.merchant
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.startsWithPattern
 
@@ -18,6 +19,8 @@ object DeeplinkMapperMerchant {
     private const val ACTION_REVIEW = "review"
     private const val SHOP_PAGE_SEGMENT_SIZE = 1
     private const val SHOP_REVIEW_SEGMENT_SIZE = 2
+
+    private const val PARAM_URL = "url"
 
     fun getRegisteredNavigationReputation(deeplink: String): String {
         if(deeplink.startsWith(ApplinkConst.REPUTATION)) {
@@ -177,6 +180,17 @@ object DeeplinkMapperMerchant {
                 val etalaseId = pathSegment[2]
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, shopId, etalaseId)
             } else it.toString()
+        } ?: ""
+    }
+
+    fun getSellerInfoDetailApplink(uri: Uri?): String {
+        return uri?.let {
+            val url = uri.getQueryParameter(PARAM_URL)
+            if (url.isNullOrEmpty()) {
+                return ApplinkConst.SELLER_INFO
+            } else {
+                return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
+            }
         } ?: ""
     }
 

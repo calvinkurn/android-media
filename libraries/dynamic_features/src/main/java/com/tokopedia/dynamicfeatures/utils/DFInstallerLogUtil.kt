@@ -21,7 +21,7 @@ object DFInstallerLogUtil {
                            moduleSize: Long = 0,
                            errorList: List<String> = emptyList(),
                            downloadTimes: Int = 1,
-                           isSuccess: Boolean = false,
+                           success: Boolean = false,
                            startDownloadTime: Long = 0L,
                            endDownloadTime: Long = 0L,
                            startDownloadPercentage: Float = -1f,
@@ -31,13 +31,17 @@ object DFInstallerLogUtil {
 
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }) {
             val messageBuilder = StringBuilder()
+            var successText = success.toString()
+            if (!success && errorList.isEmpty()) {
+                successText = "NA"
+            }
 
             //Success or error information
             messageBuilder.append(message)
             messageBuilder.append(";mod_name=$modulesName")
-            messageBuilder.append(";success=$isSuccess")
+            messageBuilder.append(";success=$successText")
             messageBuilder.append(";dl_times=$downloadTimes")
-            messageBuilder.append(";err='${Utils.getError(errorList)}'")
+            messageBuilder.append(";err='${Utils.getError(success, errorList)}'")
 
             //Size information
             messageBuilder.append(";mod_size=")

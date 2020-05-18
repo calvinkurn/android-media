@@ -44,7 +44,7 @@ public interface ProductListSectionContract {
 
         void trackEventImpressionBannedProducts(boolean isEmptySearch);
 
-        void trackEventImpressionSortPriceMinTicker();
+        void trackEventImpressionTicker(int typeId);
 
         void backToTop();
 
@@ -155,6 +155,16 @@ public interface ProductListSectionContract {
         void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
+
+        void stopPreparePagePerformanceMonitoring();
+
+        void startNetworkRequestPerformanceMonitoring();
+
+        void stopNetworkRequestPerformanceMonitoring();
+
+        void startRenderPerformanceMonitoring();
+
+        void sendProductImpressionTrackingEvent(ProductItemViewModel item);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -196,5 +206,7 @@ public interface ProductListSectionContract {
         void onProductImpressed(ProductItemViewModel item, int adapterPosition);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
+
+        boolean isTrackingViewPortEnabled();
     }
 }

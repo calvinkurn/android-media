@@ -273,15 +273,30 @@ open class BaseChatViewStateImpl(
         val heightDifference = screenHeight - windowHeight - statusBarHeight
 
         if (heightDifference > keyboardOffset) {
-            attachmentMenu.isKeyboardOpened = true
-            attachmentMenu.hideMenu()
+            onKeyboardOpened()
         } else {
-            attachmentMenu.isKeyboardOpened = false
-            if (attachmentMenu.showDelayed) {
-                attachmentMenu.showDelayed()
-            }
+            onKeyboardClosed()
         }
+    }
 
+    override fun onKeyboardOpened() {
+        showChatMenu()
+    }
+
+    override fun onKeyboardClosed() {
+        hideChatMenu()
+    }
+
+    private fun showChatMenu() {
+        attachmentMenu.isKeyboardOpened = true
+        attachmentMenu.hideMenu()
+    }
+
+    private fun hideChatMenu() {
+        attachmentMenu.isKeyboardOpened = false
+        if (attachmentMenu.showDelayed) {
+            attachmentMenu.showDelayed()
+        }
     }
 
     private fun getScreenHeight(): Int {
@@ -309,7 +324,9 @@ open class BaseChatViewStateImpl(
         return attachmentMenu.hideMenu()
     }
 
-    open fun getInterlocutorName(headerName: CharSequence): CharSequence = ""
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {}
+
+    open fun getInterlocutorName(headerName: CharSequence): CharSequence = headerName
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment

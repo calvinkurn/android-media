@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 
-import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
+import com.tokopedia.webview.TkpdWebView;
 
 public class NestedWebView extends TkpdWebView implements NestedScrollingChild {
     private int mLastY;

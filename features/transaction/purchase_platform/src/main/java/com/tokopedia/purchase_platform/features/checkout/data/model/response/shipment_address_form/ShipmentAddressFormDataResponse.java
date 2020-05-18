@@ -87,6 +87,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("donation_checkbox_status")
     @Expose
     private boolean donationCheckboxStatus;
+    @SerializedName("campaign_timer")
+    @Expose
+    private CampaignTimer campaignTimer;
     @SerializedName("addresses")
     @Expose
     private Addresses addresses;
@@ -189,6 +192,10 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isDonationCheckboxStatus() {
         return donationCheckboxStatus;
+    }
+
+    public CampaignTimer getCampaignTimer() {
+        return campaignTimer;
     }
 
     public Addresses getAddresses() {

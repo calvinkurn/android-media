@@ -41,17 +41,16 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.utils.getLatLng
-import com.tokopedia.logisticaddaddress.utils.rxPinPoint
-import com.tokopedia.logisticaddaddress.utils.toCompositeSubs
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.response.Data
+import com.tokopedia.logisticdata.util.getLatLng
+import com.tokopedia.logisticdata.util.rxPinPoint
+import com.tokopedia.logisticdata.util.toCompositeSubs
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
 import rx.Subscriber
-import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
@@ -85,6 +84,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var continueWithLocation: Boolean? = false
     private var isFullFlow: Boolean = true
+    private var isLogisticLabel: Boolean = true
 
     private var composite = CompositeSubscription()
 
@@ -125,6 +125,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(EXTRA_IS_CHANGES_REQUESTED, extra.getBoolean(EXTRA_IS_CHANGES_REQUESTED))
                     putBoolean(EXTRA_IS_FULL_FLOW, extra.getBoolean(EXTRA_IS_FULL_FLOW, true))
+                    putBoolean(EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true))
                 }
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
@@ -146,6 +147,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             districtId = saveAddressDataModel?.districtId
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
+            isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
         }
     }
 
@@ -183,7 +185,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
 
             map_view?.onPause()
-            AddNewAddressAnalytics.eventClickBackArrowOnPinPoint(isFullFlow)
+            AddNewAddressAnalytics.eventClickBackArrowOnPinPoint(isFullFlow, isLogisticLabel)
             activity?.finish()
         }
 
@@ -207,7 +209,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         }
 
         ic_current_location?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow)
+            AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
             doUseCurrentLocation(isFullFlow)
         }
     }
@@ -358,7 +360,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double, search: String) {
         val autocompleteGeocodeBottomSheetFragment =
-                AutocompleteBottomSheetFragment.newInstance(lat, long, search)
+                AutocompleteBottomSheetFragment.newInstance(lat, long, search, isLogisticLabel)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             autocompleteGeocodeBottomSheetFragment.show(this, "")
@@ -448,7 +450,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             if (autofillDataUiModel.districtId != districtId) {
                 continueWithLocation = false
                 view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
-                AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta(isFullFlow)
+                AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta(isFullFlow, isLogisticLabel)
             } else {
                 continueWithLocation = true
                 val saveAddress = saveAddressMapper.map(autofillDataUiModel, zipCodes)
@@ -505,7 +507,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         invalid_button?.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false)
+                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isLogisticLabel = isLogisticLabel, isFullFlow = isFullFlow)
             }
         }
 
@@ -525,8 +527,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         invalid_button?.apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickButtonUnnamedRoad(isFullFlow)
-                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
+                AddNewAddressAnalytics.eventClickButtonUnnamedRoad(isFullFlow, isLogisticLabel)
+                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel)
             }
         }
 
@@ -534,7 +536,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
         }
 
-        AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(isFullFlow)
+        AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(isFullFlow, isLogisticLabel)
     }
 
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
@@ -556,13 +558,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         getdistrict_container?.visibility = View.VISIBLE
 
         ic_search_btn?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickMagnifier(isFullFlow)
+            AddNewAddressAnalytics.eventClickMagnifier(isFullFlow, isLogisticLabel)
             showAutoCompleteBottomSheet("")
         }
 
         et_detail_address?.apply {
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldDetailAlamat(isFullFlow)
+                AddNewAddressAnalytics.eventClickFieldDetailAlamat(isFullFlow, isLogisticLabel)
             }
             setupClearButtonWithAction()
             addTextChangedListener(setDetailAlamatWatcher())
@@ -571,7 +573,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         tv_title_getdistrict?.apply {
             text = saveAddressDataModel.title
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow)
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
                 showAutoCompleteBottomSheet(saveAddressDataModel.title)
             }
         }
@@ -580,7 +582,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             visibility = View.VISIBLE
             text = saveAddressDataModel.formattedAddress
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow)
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow,isLogisticLabel)
                 showAutoCompleteBottomSheet(saveAddressDataModel.title)
             }
         }
@@ -590,10 +592,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 if (it) {
                     if (isFullFlow) {
                         doLoadAddEdit()
-                        AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow)
+                        AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
                     } else {
                         setResultPinpoint()
-                        AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow)
+                        AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
                     }
                 } else {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
@@ -627,19 +629,19 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         if (addressModel.districtId == 0 && addressModel.postalCode.isEmpty()) {
             showFailedDialog()
 
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(eventLabel = LOGISTIC_LABEL)
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(isFullFlow, isLogisticLabel)
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed(isFullFlow, isLogisticLabel)
         } else if (addressModel.postalCode.isEmpty()) {
-            goToAddEditActivity(true, isMismatchSolved, isUnnamedRoad = false, isZipCodeNull = true)
+            goToAddEditActivity(true, isMismatchSolved, false, true, isFullFlow, isLogisticLabel)
         } else {
             if (isChangesRequested) {
                 finishBackToAddEdit(false, isMismatchSolved)
             } else {
-                goToAddEditActivity(false, isMismatchSolved, false, false)
+                goToAddEditActivity(false, isMismatchSolved, false, false, isFullFlow, isLogisticLabel)
             }
 
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess(eventLabel = LOGISTIC_LABEL)
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess(isFullFlow, isLogisticLabel)
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(isFullFlow, isLogisticLabel)
         }
     }
 
@@ -650,13 +652,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel)
         }
         tkpdDialog.show()
-        AddNewAddressAnalytics.eventViewFailedPinPointNotification(isFullFlow)
+        AddNewAddressAnalytics.eventViewFailedPinPointNotification(isFullFlow, isLogisticLabel)
     }
 
-    private fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {
+    private fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean, isFullFlow: Boolean, isLogisticLabel: Boolean) {
         val saveModel = if (isUnnamedRoad) presenter.getUnnamedRoadModelFormat() else presenter.getSaveAddressDataModel()
         Intent(context, AddEditAddressActivity::class.java).apply {
             if (isMismatch && !isMismatchSolved) {
@@ -668,6 +670,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             putExtra(EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
             putExtra(EXTRA_IS_UNNAMED_ROAD, isUnnamedRoad)
             putExtra(EXTRA_IS_NULL_ZIPCODE, isZipCodeNull)
+            putExtra(EXTRA_IS_FULL_FLOW, isFullFlow)
+            putExtra(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
             startActivityForResult(this, FINISH_FLAG)
         }
     }
@@ -759,7 +763,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun showLocationInfoBottomSheet(isFullFlow: Boolean) {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow)
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow, isLogisticLabel)
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }

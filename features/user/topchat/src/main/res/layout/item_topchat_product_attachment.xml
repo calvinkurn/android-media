@@ -4,8 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/item_chatcommon_chat_header" />
-
     <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
         android:id="@+id/containerProductAttachment"
         android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -31,7 +32,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             itemView.layout_notify_me?.requestLayout()
             bindTitle(element)
             bindSubTitle(element)
-            bindButton(element)
+            bindButton(element, listener.isOwner())
             bindListener(element, ComponentTrackDataModel(element.type, element.name, adapterPosition + 1))
         } else {
             hideContainer()
@@ -105,18 +106,20 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
     }
 
-    private fun bindButton(data: ProductNotifyMeDataModel) {
+    private fun bindButton(data: ProductNotifyMeDataModel, isShopOwner: Boolean) = with(itemView) {
+        btn_notify_me?.showWithCondition(!isShopOwner)
+
         when (data.notifyMe) {
             true -> {
-                itemView.btn_notify_me?.buttonType = UnifyButton.Type.ALTERNATE
-                itemView.btn_notify_me?.text = getString(R.string.notify_me_active)
+                btn_notify_me?.buttonType = UnifyButton.Type.ALTERNATE
+                btn_notify_me?.text = getString(R.string.notify_me_active)
             }
             false -> {
-                itemView.btn_notify_me?.buttonType = UnifyButton.Type.MAIN
-                itemView.btn_notify_me?.text = getString(R.string.notify_me_inactive)
+                btn_notify_me?.buttonType = UnifyButton.Type.MAIN
+                btn_notify_me?.text = getString(R.string.notify_me_inactive)
             }
-
         }
+
     }
 
     private fun bindListener(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel) {
@@ -131,7 +134,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             return
         }
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_NOTIFY_ME -> bindButton(element)
+            ProductDetailConstant.PAYLOAD_NOTIFY_ME -> bindButton(element, listener.isOwner())
         }
     }
 }

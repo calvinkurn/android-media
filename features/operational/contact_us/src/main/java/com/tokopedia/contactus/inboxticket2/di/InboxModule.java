@@ -18,6 +18,9 @@ import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl;
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImpl;
 import com.tokopedia.contactus.inboxticket2.view.presenter.ProvideRatingFragmentPresenter;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.UserSession;
+
 
 import javax.inject.Named;
 
@@ -36,7 +39,7 @@ public class InboxModule {
     @InboxScope
     @Provides
     Context provideContext() {
-        return context.getApplicationContext();
+        return context;
     }
 
     @InboxScope
@@ -66,5 +69,11 @@ public class InboxModule {
     @Provides
     ProvideRatingContract.ProvideRatingPresenter provideRatingPresenter(SubmitRatingUseCase submitRatingUseCase) {
         return new ProvideRatingFragmentPresenter(submitRatingUseCase);
+    }
+
+    @InboxScope
+    @Provides
+    UserSessionInterface provideUserSession(Context context) {
+        return new UserSession(context);
     }
 }

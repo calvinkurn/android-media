@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -51,8 +52,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
@@ -87,8 +86,6 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -102,6 +99,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String ACTION_BUTTON_URL = "action_button_url";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
+    public static final String KEY_PAYMENT_ID = "PaymentId";
+    public static final String KEY_CART_STRING = "CartString";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
     public static final String NO_SALIN = "No. Resi";
@@ -125,6 +124,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
 
     public static final String SIMILAR_PRODUCTS_ACTION_BUTTON_KEY = "see_similar_products";
+    public static final String WAITING_INVOICE_STATUS_TEXT = "Menunggu Invoice";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
@@ -139,6 +139,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView statusValue;
     private TextView conditionalInfoText;
     private TextView invoiceView;
+    private ImageView invoiceCopy;
+    private View dividerInvoice;
+    private RelativeLayout invoiceLayout;
     private TextView lihat;
     private TextView detailLabel;
     private TextView additionalText;
@@ -160,6 +163,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private RecyclerView itemsRecyclerView;
     private TextView productInformationTitle;
     private TextView shopInformationTitle;
+    private RelativeLayout rlShopInfo;
+    private ImageView ivShopInfo;
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
     private CardView driverLayout, dropShipperLayout;
@@ -186,10 +191,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         getComponent(OrderDetailsComponent.class).inject(this);
     }
 
-    public static Fragment getInstance(String orderId, String orderCategory) {
+    public static Fragment getInstance(String orderId, String orderCategory, String paymentId, String cartString) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
         bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
+        bundle.putString(KEY_PAYMENT_ID, paymentId);
+        bundle.putString(KEY_CART_STRING, cartString);
         Fragment fragment = new MarketPlaceDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -207,6 +214,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
+        invoiceCopy = view.findViewById(R.id.iv_copy_invoice);
+        dividerInvoice = view.findViewById(R.id.divider_invoice);
+        invoiceLayout = view.findViewById(R.id.rl_invoice);
         statusLihat = view.findViewById(R.id.lihat_status);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
@@ -224,6 +234,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         itemsRecyclerView = view.findViewById(R.id.rv_items);
         productInformationTitle = view.findViewById(R.id.product_info_label);
         shopInformationTitle = view.findViewById(R.id.shop_info_label);
+        rlShopInfo = view.findViewById(R.id.rl_shop_info);
+        ivShopInfo = view.findViewById(R.id.iv_shop_info);
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
@@ -254,16 +266,21 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         statusValue.setText(status.statusText());
         if (!status.textColor().equals(""))
             statusValue.setTextColor(Color.parseColor(status.textColor()));
-        statusLihat.setVisibility(View.VISIBLE);
-        statusLihat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                orderListAnalytics.sendLihatStatusClick(status.status());
-                startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
-                        getActivity(), getArguments().getString(KEY_ORDER_ID)
-                ));
-            }
-        });
+
+        if (status.statusText().equalsIgnoreCase(WAITING_INVOICE_STATUS_TEXT)) {
+            statusLihat.setVisibility(View.GONE);
+        } else {
+            statusLihat.setVisibility(View.VISIBLE);
+            statusLihat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    orderListAnalytics.sendLihatStatusClick(status.status());
+                    startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
+                            getActivity(), getArguments().getString(KEY_ORDER_ID)
+                    ));
+                }
+            });
+        }
     }
 
     @Override
@@ -308,18 +325,31 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void setInvoice(final Invoice invoice) {
-        invoiceView.setText(invoice.invoiceRefNum());
-        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
-            lihat.setVisibility(View.GONE);
-        }
-        lihat.setOnClickListener(view -> {
-            orderListAnalytics.sendViewInvoiceClickEvent();
-            orderListAnalytics.sendLihatInvoiceClick(status.status());
+        if (!invoice.invoiceRefNum().isEmpty()) {
+            dividerInvoice.setVisibility(View.VISIBLE);
+            invoiceLayout.setVisibility(View.VISIBLE);
+            invoiceView.setText(invoice.invoiceRefNum());
+            invoiceCopy.setOnClickListener(view -> {
+                ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
+                clipboard.setPrimaryClip(clip);
+                Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+            });
+            if (!presenter.isValidUrl(invoice.invoiceUrl())) {
+                lihat.setVisibility(View.GONE);
+            }
+            lihat.setOnClickListener(view -> {
+                orderListAnalytics.sendViewInvoiceClickEvent();
+                orderListAnalytics.sendLihatInvoiceClick(status.status());
 
-            Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
-                    getString(R.string.title_invoice));
-            startActivity(intent);
-        });
+                Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                        getString(R.string.title_invoice));
+                startActivity(intent);
+            });
+        } else {
+            dividerInvoice.setVisibility(View.GONE);
+            invoiceLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -352,7 +382,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         try {
                             myClip = ClipData.newPlainText("text", detail.value());
                             myClipboard.setPrimaryClip(myClip);
-                            ToasterNormal.showClose(getActivity(), getContext().getResources().getString(R.string.awb_number_copied));
+                            Toaster.INSTANCE.make(getView(), getContext().getResources().getString(R.string.awb_number_copied),
+                                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.close), v->{});
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -517,17 +548,19 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void showSucessMessage(String message) {
-        ToasterNormal.show(getActivity(), message);
+        Toaster.INSTANCE.make(getView(), message,
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override
     public void showErrorMessage(String message) {
-        ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {});
     }
 
     @Override
@@ -577,20 +610,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order");
+                        presenter.onBuyAgainAllItems(" - order", status.status());
                     }
                 });
             } else {
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
-                    textView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            clickActionButton(actionButton);
-                            if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
-                                orderListAnalytics.sendTulisReviewEventData(status.status());
-                            }
-                        }
-                    });
+                    textView.setOnClickListener(clickActionButton(actionButton));
                 }
             }
             actionBtnLayout.addView(textView);
@@ -619,7 +644,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order");
+                            presenter.onBuyAgainAllItems(" - order", status.status());
                         }
                     });
                 } else {
@@ -648,7 +673,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         refreshHandler.startRefresh();
 //        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
-
 
     private View.OnClickListener clickActionButton(ActionButton actionButton) {
         if (!TextUtils.isEmpty(actionButton.getKey())) {
@@ -717,12 +741,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                             getArguments().getString(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya penjual")) {
-                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
-                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
-                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
                                 } else {
                                     if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
+                                        orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
                                         startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
                                     } else
                                         RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
@@ -739,6 +760,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri())) {
                                 RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(0).getUri());
                             } else {
+                                if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
+                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
+                                }
                                 dialog.dismiss();
                             }
                         }
@@ -754,6 +778,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
+                    RouteManager.route(getContext(), actionButton.getUri());
+                } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
+                    orderListAnalytics.sendTulisReviewEventData(status.status());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
@@ -948,7 +975,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @SuppressLint("SetTextI18n")
     @Override
     public void setItems(List<Items> items, boolean isTradeIn) {
-        shopInformationTitle.setVisibility(View.VISIBLE);
+        rlShopInfo.setVisibility(View.VISIBLE);
         String labelShop = shopInformationTitle.getContext().getResources().getString(R.string.label_shop_title) + " ";
         int startLabelShop = labelShop.length();
         String shopName = shopInfo.getShopName();
@@ -959,7 +986,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         shopInformationTitle.setText(completeLabelShop);
 
-        shopInformationTitle.setOnClickListener(v -> {
+        ivShopInfo.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right));
+
+        rlShopInfo.setOnClickListener(v -> {
             orderListAnalytics.sendClickShopName(status.status());
             String applink = ApplinkConst.SHOP.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
             RouteManager.route(getContext(), applink);
@@ -989,7 +1018,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void onRefresh(View view) {
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null);
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null, getArguments().getString(KEY_PAYMENT_ID), getArguments().getString(KEY_CART_STRING));
 
     }
 

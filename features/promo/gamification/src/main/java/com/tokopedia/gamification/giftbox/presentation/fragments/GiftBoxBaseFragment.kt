@@ -14,6 +14,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.audio.AudioManager
@@ -87,8 +88,8 @@ open class GiftBoxBaseFragment : Fragment() {
         imageSound = v.findViewById(R.id.imageSound)
 
         context?.let {
-            defaultErrorMessage = it.getString(R.string.gami_gift_default_error_msg)
-            val tabletRes = it.resources?.getBoolean(R.bool.gami_is_tablet)
+            defaultErrorMessage = it.getString(com.tokopedia.gamification.R.string.gami_gift_default_error_msg)
+            val tabletRes = it.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet)
             tabletRes?.let { tablet ->
                 isTablet = tablet
             }
@@ -122,7 +123,7 @@ open class GiftBoxBaseFragment : Fragment() {
         if (activity is AppCompatActivity) {
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
             (activity as AppCompatActivity).supportActionBar?.title = ""
-            tvToolbarTitle.text = activity?.getString(R.string.gami_gift_box_toolbar_title)
+            tvToolbarTitle.text = activity?.getString(com.tokopedia.gamification.R.string.gami_gift_box_toolbar_title)
         }
     }
 
@@ -169,7 +170,7 @@ open class GiftBoxBaseFragment : Fragment() {
             var shareText = ""
             context?.let {
                 userName = UserSession(it).name.trim()
-                shareText = String.format(it.getString(R.string.gami_gift_share), userName)
+                shareText = String.format(it.getString(com.tokopedia.gamification.R.string.gami_gift_share), userName)
             }
 
             val sendIntent: Intent = Intent().apply {
@@ -213,9 +214,9 @@ open class GiftBoxBaseFragment : Fragment() {
         editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
         editor?.apply()
         if (enable) {
-            imageSound.setImageResource(R.drawable.gf_ic_sound_on)
+            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_on)
         } else {
-            imageSound.setImageResource(R.drawable.gf_ic_sound_off)
+            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_off)
         }
     }
 
@@ -251,7 +252,7 @@ open class GiftBoxBaseFragment : Fragment() {
         if (isSoundEnabled()) {
             context?.let { it ->
                 bgSoundManager = AudioFactory.createAudio(it)
-                bgSoundManager?.playAudio(R.raw.gf_giftbox_bg, true)
+                bgSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_bg, true)
             }
         }
     }
@@ -262,7 +263,7 @@ open class GiftBoxBaseFragment : Fragment() {
                 if (mAudiosManager == null) {
                     mAudiosManager = AudioFactory.createAudio(soundIt)
                 }
-                mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
+                mAudiosManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_tap)
             }
         }
     }
@@ -273,7 +274,7 @@ open class GiftBoxBaseFragment : Fragment() {
                 if (rewardSoundManager == null) {
                     rewardSoundManager = AudioFactory.createAudio(soundIt)
                 }
-                rewardSoundManager?.playAudio(R.raw.gf_giftbox_prize)
+                rewardSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_prize)
             }
         }
     }
@@ -296,5 +297,12 @@ open class GiftBoxBaseFragment : Fragment() {
 
     fun fadeInSoundIcon() {
         imageSound.animate().alpha(1f).setDuration(300L).start()
+    }
+
+    fun isConnectedToInternet(): Boolean {
+        context?.let {
+            return DeviceConnectionInfo.isConnectCellular(it) || DeviceConnectionInfo.isConnectWifi(it)
+        }
+        return false
     }
 }
