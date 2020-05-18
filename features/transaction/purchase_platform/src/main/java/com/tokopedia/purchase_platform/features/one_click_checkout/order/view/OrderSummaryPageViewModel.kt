@@ -97,7 +97,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var hasSentViewOspEe = false
 
-    fun getOccCart(isFullRefresh: Boolean = true) {
+    fun getOccCart(isFullRefresh: Boolean, source: String) {
         globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
@@ -122,7 +122,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }, { throwable: Throwable ->
             _orderPreference = null
             orderPreference.value = OccState.Fail(false, throwable, "")
-        })
+        }, getOccCartUseCase.createRequestParams(source))
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
