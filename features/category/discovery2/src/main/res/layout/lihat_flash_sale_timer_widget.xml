@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -19,11 +20,12 @@
             style="@style/WrapContent"
             android:maxLines="1"
             android:textColor="@color/clr_f531353b"
-            android:textSize="@dimen/sp_18"
+            app:typographyType="heading_3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/hours_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Flash Sale Timer"/>
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -80,7 +82,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/clr_03AC0E"
-        android:textSize="@dimen/sp_14"
+        app:typographyType="heading_5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

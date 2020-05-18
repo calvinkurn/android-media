@@ -56,7 +56,7 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
     }
 
     fun getTimerData(): LiveData<TimerDataModel> {
-        return timeCounter?.mutableTimeDiffModel ?: MutableLiveData<TimerDataModel>()
+        return timeCounter?.mutableTimeDiffModel ?: MutableLiveData()
     }
 
     override fun initDaggerInject() {
