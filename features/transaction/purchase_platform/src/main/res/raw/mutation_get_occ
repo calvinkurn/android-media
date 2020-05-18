@@ -25,6 +25,7 @@ query get_occ_cart_page($dummy: String, $source: String) {
         onboarding_ticker {
             title
             message
+            image
             show_coachmark_link_text
             coachmark_link_text
         }

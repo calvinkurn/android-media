@@ -152,15 +152,21 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CREATE_PREFERENCE) {
-            source = SOURCE_ADD_PROFILE
-            onResultFromPreference(resultCode, data)
+            if (resultCode == Activity.RESULT_OK) {
+                source = SOURCE_ADD_PROFILE
+            }
+            onResultFromPreference(data)
+        } else if (requestCode == REQUEST_EDIT_PREFERENCE) {
+            if (resultCode == Activity.RESULT_OK) {
+                source = SOURCE_OTHERS
+            }
+            onResultFromPreference(data)
         } else {
             source = SOURCE_OTHERS
             when (requestCode) {
-                REQUEST_EDIT_PREFERENCE -> onResultFromPreference(resultCode, data)
                 REQUEST_CODE_COURIER_PINPOINT -> onResultFromCourierPinpoint(resultCode, data)
                 REQUEST_CODE_PROMO -> onResultFromPromo(resultCode, data)
-                PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode, data)
+                PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
             }
         }
     }
@@ -199,7 +205,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun onResultFromPayment(resultCode: Int, data: Intent?) {
+    private fun onResultFromPayment(resultCode: Int) {
         if (activity != null) {
             val lastOrderTotal = viewModel.orderTotal.value
             if (lastOrderTotal != null && !lastOrderTotal.isButtonChoosePayment) {
@@ -210,7 +216,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun onResultFromPreference(resultCode: Int, data: Intent?) {
+    private fun onResultFromPreference(data: Intent?) {
         val message = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE)
         if (message != null && message.isNotBlank()) {
             view?.let {
