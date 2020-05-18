@@ -57,7 +57,6 @@ import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.IncentiveOvoMapper
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity.ARGS_RATING
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet.Companion.TAG
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -197,7 +196,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             }
         })
 
-        createReviewViewModel.getIncentiveOvo.observe(this, Observer {
+        createReviewViewModel.incentiveOvo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is CoroutineSuccess -> onSuccessGetIncentiveOvo(it.data)
                 is CoroutineFail -> onErrorGetIncentiveOvo()

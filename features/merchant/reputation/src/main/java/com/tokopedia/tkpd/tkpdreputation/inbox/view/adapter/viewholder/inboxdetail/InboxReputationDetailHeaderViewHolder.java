@@ -327,16 +327,17 @@ public class InboxReputationDetailHeaderViewHolder extends
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
                     BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain);
                     bottomSheet.setFullpage(true);
-                    assert fragmentManager != null;
-                    bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
-                    bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
-                        @Override
-                        public Unit invoke(View view) {
-                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
-                            bottomSheet.dismiss();
-                            return Unit.INSTANCE;
-                        }
-                    });
+                    if(fragmentManager != null) {
+                        bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
+                        bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
+                            @Override
+                            public Unit invoke(View view) {
+                                reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
+                                bottomSheet.dismiss();
+                                return Unit.INSTANCE;
+                            }
+                        });
+                    }
                     reputationTracking.onClickReadSkIncentiveOvoTracker(title);
                 }
 

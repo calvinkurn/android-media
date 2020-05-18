@@ -63,6 +63,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     public final static String PARAM_TAB = "tab";
     private static final int REQUEST_OPEN_DETAIL = 101;
     private static final int REQUEST_FILTER = 102;
+    private static final int FIRST_TAB_INBOX_REPUTATION = 1;
     private static final String ARGS_TIME_FILTER = "ARGS_TIME_FILTER";
     private static final String ARGS_SCORE_FILTER = "ARGS_SCORE_FILTER";
     private static final String ARGS_QUERY = "ARGS_QUERY";
@@ -274,16 +275,17 @@ public class InboxReputationFragment extends BaseDaggerFragment
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
                 BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain);
                 bottomSheet.setFullpage(true);
-                assert getFragmentManager() != null;
-                bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
-                bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
-                    @Override
-                    public Unit invoke(View view) {
-                        reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
-                        bottomSheet.dismiss();
-                        return Unit.INSTANCE;
-                    }
-                });
+                if(getFragmentManager() != null) {
+                    bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
+                    bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
+                        @Override
+                        public Unit invoke(View view) {
+                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
+                            bottomSheet.dismiss();
+                            return Unit.INSTANCE;
+                        }
+                    });
+                }
                 reputationTracking.onClickReadSkIncentiveOvoTracker(title);
             }
 
@@ -293,7 +295,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             }
         });
         // hit tracking while first time success get gql incentive ovo
-        if(getTab() == 1) {
+        if(getTab() == FIRST_TAB_INBOX_REPUTATION) {
             reputationTracking.onSuccessGetIncentiveOvoTracker(title);
         }
         InboxReputationActivity.tickerTitle = title;
