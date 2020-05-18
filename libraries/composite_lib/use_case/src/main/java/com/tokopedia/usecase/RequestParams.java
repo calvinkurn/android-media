@@ -38,10 +38,6 @@ public class RequestParams {
         parameters.put(key, object);
     }
 
-    public void testAja(){
-        System.out.println("dont merge");
-    }
-
     public int getInt(String key, int defaultValue) {
         final Object object = parameters.get(key);
         if (object == null) {
