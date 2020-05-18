@@ -81,7 +81,6 @@
 
     </LinearLayout>
 
-
     <ImageView
         android:id="@+id/img_check"
         android:layout_width="wrap_content"
@@ -92,9 +91,10 @@
         app:srcCompat="@drawable/ic_check" />
 
     <View
+        android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/otdelivery"
+        android:layout_below="@id/tv_cod_availability"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/separator_color" />
 
