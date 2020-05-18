@@ -159,7 +159,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
-    implementation (project(rootProject.ext.features.discovery2))
     implementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
         exclude group: 'com.android.support', module: 'appcompat'
@@ -175,7 +174,7 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.libraries.analyticsDebugger)
+    implementation project(rootProject.ext.libraries.analyticsDebugger)
 }
 
 repositories {

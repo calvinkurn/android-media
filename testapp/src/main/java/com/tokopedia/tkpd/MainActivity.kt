@@ -10,6 +10,8 @@ import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -24,7 +26,6 @@ import rx.schedulers.Schedulers
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var applinkEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,12 +33,9 @@ class MainActivity : AppCompatActivity() {
 
         val editTextUser = findViewById<EditText>(R.id.editTextUser)
         val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
-        editTextUser.setText("elly.susilowati+089@tokopedia.com")
-        editTextPassword.setText("tokopedia2015")
+        editTextUser.setText("fauzanofami.luthfi+01@tokopedia.com")
+        editTextPassword.setText("toped12345")
         val loginButton = findViewById<Button>(R.id.loginButton)
-//        goTo()
-
-        applinkEditText = findViewById<EditText>(R.id.editTextApplink)
 
         // simplify login process without error handling/verify number/etc
         loginButton.setOnClickListener {
@@ -199,20 +197,6 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-
-
-        if (!applinkEditText.text.toString().isEmpty()) {
-            RouteManager.route(this, applinkEditText.text.toString())
-        } else {
-            //        RouteManager.route(this, "tokopedia://discovery/test-disco")
-//        RouteManager.route(this, "tokopedia://discovery/kopi-kenangan")
-//        RouteManager.route(this, "tokopedia://discovery/kawan-lama")
-//        RouteManager.route(this, "tokopedia://discovery/bebas-ongkir-6")
-//        RouteManager.route(this, "tokopedia://discovery/baku")
-//        RouteManager.route(this, "tokopedia://discovery/super-sale")
-            RouteManager.route(this, "tokopedia://discovery/pengguna-baru")
-        }
-
-
+        RouteManager.route(this, ApplinkConstInternalMarketplace.CART)
     }
 }
