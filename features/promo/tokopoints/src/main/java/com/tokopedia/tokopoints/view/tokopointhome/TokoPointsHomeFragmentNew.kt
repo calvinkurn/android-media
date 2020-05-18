@@ -740,9 +740,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         pager.adapter = SectionTickerPagerAdapter(context, content.layoutTickerAttr.tickerList)
         val pageIndicator: PageControl = view!!.findViewById(R.id.page_indicator_ticker)
         val hideTickerView = view!!.findViewById<View>(R.id.ic_close_ticker)
-        hideTickerView.setOnClickListener {
-            tickerContainer?.visibility = View.GONE
-        }
+        hideTickerView.visibility = View.GONE
         if (content.layoutTickerAttr.tickerList.size > 1) { //adding bottom dots(Page Indicator)
             pageIndicator.setIndicator(2)
             pageIndicator.visibility = View.VISIBLE

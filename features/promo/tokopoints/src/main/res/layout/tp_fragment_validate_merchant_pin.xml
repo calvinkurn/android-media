@@ -43,7 +43,7 @@
         tools:text="Masukan PIN untuk mengaktifkan kupon (hanya untuk merchant)"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.PinUnify
+    <com.tokopedia.pin.PinUnify
         android:id="@+id/et_input_otp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,7 +52,6 @@
         android:layout_marginRight="@dimen/dp_60"
         android:paddingBottom="@dimen/dp_10"
         android:visibility="visible"
-        app:has_clear_button="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_info"
