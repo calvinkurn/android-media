@@ -36,6 +36,7 @@ class MultipleProductCardViewHolder(
     private val productContainer: ConstraintLayout = itemView.findViewById(R.id.cl_product)
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
+    private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     override fun bind(element: MultipleProductCardViewBean?) {
         if (element == null) return

@@ -32,6 +32,7 @@ class ProductCheckoutViewHolder(
     private val lstProduct: RecyclerView = itemView.findViewById(R.id.lst_products)
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
+    private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
 
