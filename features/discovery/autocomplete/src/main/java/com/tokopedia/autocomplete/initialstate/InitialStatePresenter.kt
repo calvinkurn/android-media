@@ -36,10 +36,7 @@ class InitialStatePresenter @Inject constructor(
     private var searchParameter = HashMap<String, String>()
 
     override fun getQueryKey(): String {
-        return when {
-            searchParameter.contains(SearchApiConst.Q) -> searchParameter[SearchApiConst.Q] ?: ""
-            else -> ""
-        }
+        return searchParameter[SearchApiConst.Q] ?: ""
     }
 
     fun setSearchParameter(searchParameter: HashMap<String, String>) {
