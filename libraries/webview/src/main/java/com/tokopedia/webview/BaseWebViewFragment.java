@@ -517,8 +517,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         Uri uri = Uri.parse(url);
         if (goToLoginGoogle(uri)) return true;
-        String queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
-        String headerText = uri.getQueryParameter(CUST_HEADER);
+
+        String queryParam = null;
+        String headerText = null;
+        try {
+            if(uri.isHierarchical()) {
+                queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+                headerText = uri.getQueryParameter(CUST_HEADER);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
