@@ -130,7 +130,6 @@ open class ScanProjectTask : DefaultTask() {
 
     fun getCommitId (projectName:String):String {
         val gitLog = "git log -1 --pretty=format:\'%h\' ${projectName}"
-        println(projectName + " - " + gitLog)
         return gitLog.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
     }
 
