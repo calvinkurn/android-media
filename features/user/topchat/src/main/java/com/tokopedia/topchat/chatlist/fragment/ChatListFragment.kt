@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
@@ -76,7 +77,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         ChatListItemListener, LifecycleOwner {
 
     @Inject
@@ -180,11 +181,11 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun setupTicker() {
-        if( !isTabSeller()) return
+        if (!isTabSeller() || !isSellerMigrationEnabled(context)) return
         topChatSellerMigrationTicker?.apply {
             tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
             setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
-            setDescriptionClickEvent(object: TickerCallback {
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDismiss() {}
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openSellerMigrationBottomSheet()
@@ -325,7 +326,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 if (this is ItemChatListPojo) {
                     if (
                             attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                            readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
                     ) {
                         increaseNotificationCounter()
                     }
@@ -636,6 +637,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
         const val TAG = "ChatListFragment"
 
+        @JvmStatic
         fun createFragment(title: String): ChatListFragment {
             val bundle = Bundle()
             bundle.putString(CHAT_TAB_TITLE, title)

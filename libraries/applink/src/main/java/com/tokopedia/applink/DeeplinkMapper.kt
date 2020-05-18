@@ -126,8 +126,8 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.EVENTS,true) -> getRegisteredNavigationEvents(deeplink, context)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
-                    deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
-                    deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
+                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
+                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_FINISHED, true) -> AppLinkMapperSellerHome.getSomDoneAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_CANCELED, true) -> AppLinkMapperSellerHome.getSomCancelledAppLink()
                     deeplink.startsWithPattern(ApplinkConst.FEED_DETAILS) ->
