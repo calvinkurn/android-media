@@ -46,27 +46,27 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             view.pdp_shimmering_social_proof?.show()
         } else {
             view.pdp_shimmering_social_proof?.hide()
+        }
 
-            val rootView = view.findViewById<ViewGroup>(R.id.root_socproof)
-            rootView.removeAllViews()
+        val rootView = view.findViewById<ViewGroup>(R.id.root_socproof)
+        rootView.removeAllViews()
 
-            val inflater: LayoutInflater = view.context.layoutInflater
-            val key = availableData.first().first
+        val inflater: LayoutInflater = view.context.layoutInflater
+        val key = availableData.first().first
 
-            if (availableData.size == 1 && (key == TALK || key == PAYMENT_VERIFIED || key == VIEW_COUNT)) {
+        if (availableData.size == 1 && (key == TALK || key == PAYMENT_VERIFIED || key == VIEW_COUNT)) {
+            val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
+            generateSingleTextSocialProof(availableData.first(), socProofView, element)
+            rootView.addView(socProofView, 0)
+        } else {
+            availableData.forEachIndexed { index, i ->
                 val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
-                generateSingleTextSocialProof(availableData.first(), socProofView, element)
-                rootView.addView(socProofView, 0)
-            } else {
-                availableData.forEachIndexed { index, i ->
-                    val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
-                    renderSocialProofData(i, element.rating ?: 0F, element, socProofView, index)
-                    rootView.addView(socProofView, index)
-                }
+                renderSocialProofData(i, element.rating ?: 0F, element, socProofView, index)
+                rootView.addView(socProofView, index)
             }
         }
 
-
+//
 //        if (productStatsView == null) {
 //            productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)
 //        }
@@ -75,11 +75,13 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
 //            attributeInfoView = PartialAttributeInfoView.build(view.base_attribute)
 //        }
 //
-//        view.addOnImpressionListener(element.impressHolder) {
+//        view.addOnImpressionListener(element.impressHolder)
+//        {
 //            listener.onImpressComponent(getComponentTrackData(element))
 //        }
 //
-//        element.rating?.run {
+//        element.rating?.run
+//        {
 //            productStatsView?.renderRatingNew(this.toString())
 //        }
 //        attributeInfoView?.renderWishlistCount(element.wishListCount)
@@ -87,9 +89,11 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
 //        productStatsView?.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
 //        attributeInfoView?.renderDataDynamicPdp(stats.countView, txStats, element.isSocialProofPv)
 //
-//        productStatsView?.renderClickShipping {
+//        productStatsView?.renderClickShipping
+//        {
 //            listener.onShipmentSocialProofClicked(getComponentTrackData(element))
 //        }
+
     }
 
     private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View, data: ProductSocialProofDataModel) {
