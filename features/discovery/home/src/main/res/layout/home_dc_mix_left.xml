@@ -58,6 +58,8 @@
                 android:layout_marginLeft="@dimen/dp_48"
                 android:layout_height="match_parent"
                 android:layout_width="@dimen/product_card_flashsale_width"
+                android:clickable="true"
+                android:focusable="true"
                 android:scaleType="centerCrop"/>
 
         </FrameLayout>

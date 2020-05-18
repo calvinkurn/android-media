@@ -185,6 +185,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_UTM_SOURCE = "home_notif"
+        private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
         var HIDE_TICKER = false
@@ -250,6 +251,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
+    private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
@@ -289,6 +291,7 @@ open class HomeFragment : BaseDaggerFragment(),
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
+        injectCouponTimeBased()
         stickyContent
     }
 
@@ -365,6 +368,7 @@ open class HomeFragment : BaseDaggerFragment(),
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
             mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
+            showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
 
@@ -815,6 +819,10 @@ open class HomeFragment : BaseDaggerFragment(),
         floatingEggButtonFragment?.hideOnScrolling()
     }
 
+    override fun isShowSeeAllCard(): Boolean {
+        return showSeeAllCard
+    }
+
     private fun initEggTokenScrollListener() {
         onEggScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -1093,6 +1101,10 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isShowSticky && !getUserSession().isLoggedIn) viewModel.getStickyContent()
         return true
     }
+
+    private fun injectCouponTimeBased() {
+         if(userSession.isLoggedIn()) viewModel.injectCouponTimeBased();
+     }
 
     private fun hideLoading() {
         refreshLayout.isRefreshing = false
