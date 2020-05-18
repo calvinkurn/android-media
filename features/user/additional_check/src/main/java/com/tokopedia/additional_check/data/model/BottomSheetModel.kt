@@ -1,4 +1,4 @@
-package com.tokopedia.additional_check.data.pojo
+package com.tokopedia.additional_check.data.pojo.model
 
 data class BottomSheetModel(
         @SerializedName("image")

@@ -154,6 +154,7 @@ ext {
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
             seamlesslogin                   : ":features:user:seamless_login",
+            additional_check                : ":features:user:additional_check",
             tokopoints                      : ":features:promo:tokopoints",
 //            tokopoints             : ":features:promo:tokopoints_no_op",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
