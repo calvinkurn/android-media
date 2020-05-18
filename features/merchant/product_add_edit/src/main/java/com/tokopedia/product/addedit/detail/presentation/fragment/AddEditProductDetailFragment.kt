@@ -360,13 +360,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // new condition
         val newCondition = ListItemUnify(getString(R.string.label_new), "")
-        newCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        newCondition?.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
+        newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+        newCondition.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
         val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
-        secondHandCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
-        secondHandCondition?.run { productConditions.add(USED_PRODUCT_INDEX, this) }
+        secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
+        secondHandCondition.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
         // add new and secondhand condition to the view
         productConditionListView?.setData(productConditions)
@@ -445,6 +445,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
                 val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
                 if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+                if (viewModel.isAdding && viewModel.hasVariants) {
+                    showVariantWholesalePriceToast()
+                }
             }
         }
 
@@ -643,12 +646,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         activity?.finish()
                         return
                     }
-                    val shipmentInputModel =
-                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
-                    val descriptionInputModel =
-                            data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
-                    val variantInputModel =
-                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    val shipmentInputModel = data.getParcelableExtra(EXTRA_SHIPMENT_INPUT) ?: ShipmentInputModel()
+                    val descriptionInputModel = data.getParcelableExtra(EXTRA_DESCRIPTION_INPUT) ?: DescriptionInputModel()
+                    val variantInputModel = data.getParcelableExtra(EXTRA_VARIANT_INPUT) ?: ProductVariantInputModel()
                     submitInput(shipmentInputModel, descriptionInputModel, variantInputModel)
                 }
             }
@@ -861,7 +861,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val wholesalePriceExist = detailInputModel.wholesaleList.isNotEmpty()
         if (wholesalePriceExist) {
             productWholeSaleSwitch?.isChecked = true
-            detailInputModel.wholesaleList = viewModel.recalculateWholeSaleMinOrder(detailInputModel.wholesaleList)
             wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
             viewModel.isWholeSalePriceActivated.value = true
         }
@@ -1046,6 +1045,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun showMaxProductImageErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun showVariantWholesalePriceToast() {
+        view?.let {
+            Toaster.make(it, getString(R.string.message_variant_price_wholesale))
         }
     }
 
