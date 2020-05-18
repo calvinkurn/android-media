@@ -35,12 +35,16 @@ class TopAdsDebuggerPresenter(private val getTopAdsLogUseCase: GetTopAdsLogUseCa
     }
 
     override fun search(text: String) {
-        setRequestParams(page = 0, keyword = text)
+        page = 0
+        keyword = text
+        setRequestParams(page, keyword)
         getTopAdsLogUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun reloadData() {
-        setRequestParams(page = 0, keyword = "")
+        page = 0
+        keyword = ""
+        setRequestParams(page, keyword)
         getTopAdsLogUseCase.execute(requestParams, reloadSubscriber())
     }
 
