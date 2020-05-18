@@ -286,6 +286,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     ) {
         adapter?.let { adapter ->
             when {
+                index >= adapter.list.size -> { return }
                 //not found on list
                 index == -1 -> {
                     if (adapter.hasEmptyModel()) {

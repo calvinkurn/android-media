@@ -3,6 +3,7 @@ package com.tokopedia.applink.category
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
@@ -41,5 +42,9 @@ object DeeplinkMapperCategory {
                 deeplink
             }
         }
+    }
+
+    fun getRegisteredNavigationCatalog(deeplink: String): String {
+        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 }
