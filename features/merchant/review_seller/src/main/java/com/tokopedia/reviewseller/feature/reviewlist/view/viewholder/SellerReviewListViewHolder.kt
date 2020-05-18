@@ -3,6 +3,8 @@ package com.tokopedia.reviewseller.feature.reviewlist.view.viewholder
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
@@ -24,6 +26,7 @@ class SellerReviewListViewHolder(val view: View,
     private val tgTitleProduct: Typography = view.findViewById(R.id.tgTitleProduct)
     private val tgRatingCount: Typography = view.findViewById(R.id.tgRatingCount)
     private val tgReviewCount: Typography = view.findViewById(R.id.tgReviewCount)
+    private val ivRating: AppCompatImageView = view.findViewById(R.id.ivRating)
 
     override fun bind(element: ProductReviewUiModel) {
         view.itemRatingProduct.setBackgroundColor(Color.WHITE)
@@ -33,6 +36,16 @@ class SellerReviewListViewHolder(val view: View,
 
         tgRatingCount.text = element.rating?.roundDecimal()
         tgReviewCount.text = String.format(getString(R.string.period_seller_review), element.reviewCount.toString())
+
+        element.rating?.roundDecimal()?.toFloatOrNull().let {
+            if (it != null) {
+                if(it >= 3.5) {
+                    ivRating.setImageDrawable(ContextCompat.getDrawable(view.context, R.drawable.ic_rating_star_item))
+                } else {
+                    ivRating.setImageDrawable(ContextCompat.getDrawable(view.context, R.drawable.ic_rating_star_red))
+                }
+            }
+        }
 
         itemView.setOnClickListener {
             sellerReviewListener.onItemProductReviewClicked(element.productID.orZero(), adapterPosition, element.productImageUrl.orEmpty())

@@ -173,8 +173,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         when (requestCode) {
             ReviewSellerConstant.RESULT_INTENT_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val stringData = data?.getStringExtra("selectedDateChip")
-                    val updatedPosition = data?.getIntExtra("selectedDatePosition", 0) ?: 0
+                    val stringData = data?.getStringExtra(SellerReviewDetailFragment.SELECTED_DATE_CHIP)
+                    val updatedPosition = data?.getIntExtra(SellerReviewDetailFragment.SELECTED_DATE_POSITION, 0) ?: 0
 
                     if (chipsFilterText == stringData) return
 

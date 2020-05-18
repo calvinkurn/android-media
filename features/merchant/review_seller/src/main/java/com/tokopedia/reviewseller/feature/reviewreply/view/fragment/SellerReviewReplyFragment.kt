@@ -136,8 +136,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, it.throwable.message.orEmpty(), Toaster.TYPE_ERROR,
-                                actionText = context?.getString(R.string.retry_label).orEmpty(),
+                        Toaster.make(it1, context?.getString(R.string.error_message_load_more_review_product).orEmpty(), type = Toaster.TYPE_ERROR,
+                                actionText = context?.getString(R.string.action_retry_toaster_review_product).orEmpty(),
                                 clickListener = View.OnClickListener {
                                     getReviewTemplate()
                                 })
