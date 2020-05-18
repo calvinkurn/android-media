@@ -44,11 +44,13 @@ class TokopointsViewModel(val application: Application, components: ComponentsIt
     fun getTokopointsItemsListData() = tokopointsList
 
     fun fetchTokopointsListData(pageEndPoint: String) {
-        launchCatchError(block = {
-            tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParameterMap(), pageEndPoint)
-        }, onError = {
-            it.printStackTrace()
-        })
+        if(tokopointsList.value.isNullOrEmpty()) {
+            launchCatchError(block = {
+                tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id!!, getQueryParameterMap(), pageEndPoint)
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
     }
 
     private fun getQueryParameterMap(): MutableMap<String, Any> {

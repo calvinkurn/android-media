@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -23,6 +23,7 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +36,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     var pageEndPoint = ""
 
 
@@ -60,6 +62,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     }
 
     private fun initView(view: View) {
+        permissionCheckerHelper = PermissionCheckerHelper()
         mDiscoveryFab = view.findViewById(R.id.fab)
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
@@ -128,7 +131,9 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         if (data?.share?.enabled == true) {
             ivShare.show()
             ivShare.setOnClickListener {
-                Utils.shareData(activity, data.share.description, data.share.url, mDiscoveryViewModel.getBitmapFromURL(data.share.image))
+                permissionHelper {
+                    Utils.shareData(activity, data.share.description, data.share.url, mDiscoveryViewModel.getBitmapFromURL(data.share.image))
+                }
             }
             ivSearch.setOnClickListener {
                 if (data.searchApplink?.isNotEmpty() == true) {
@@ -170,6 +175,37 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
             if (appLinks.isNotEmpty() && shopId != 0) {
                 activity?.let { it1 -> mDiscoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
+        }
+    }
+
+    private fun permissionHelper(grantedPermission: () -> Unit) {
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
+            override fun onPermissionDenied(permissionText: String) {
+                context?.let {
+                    permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                }
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                context?.let {
+                    permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                }
+            }
+
+
+            override fun onPermissionGranted() {
+                grantedPermission()
+            }
+
+        })
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(context!!,
+                    requestCode, permissions,
+                    grantResults)
         }
     }
 

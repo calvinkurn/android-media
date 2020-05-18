@@ -15,19 +15,12 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class TokopointsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private lateinit var mTokopointsRecyclerView: RecyclerView
-    private lateinit var mTokopointsTitleTextView: TextView
-    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var mTokopointsRecyclerView: RecyclerView
+    private var mTokopointsTitleTextView: TextView
+    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mTokopointsComponentViewModel: TokopointsViewModel
 
-    override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        mTokopointsComponentViewModel = discoveryBaseViewModel as TokopointsViewModel
-        initView()
-        setUpDataObserver(fragment.viewLifecycleOwner)
-        mTokopointsComponentViewModel.fetchTokopointsListData((fragment as DiscoveryFragment).pageEndPoint)
-    }
-
-    private fun initView() {
+    init {
         mTokopointsRecyclerView = itemView.findViewById(R.id.tokopoints_rv)
         mTokopointsTitleTextView = itemView.findViewById(R.id.tokopoints_title_tv)
         mTokopointsRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -35,7 +28,22 @@ class TokopointsViewHolder(itemView: View, private val fragment: Fragment) : Abs
         mTokopointsRecyclerView.adapter = mDiscoveryRecycleAdapter
     }
 
-    private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
+    override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
+        mTokopointsComponentViewModel = discoveryBaseViewModel as TokopointsViewModel
+        init()
+    }
+
+    private fun init() {
+        setUpDataObserver()
+        fetchTokopointsData()
+    }
+
+    private fun fetchTokopointsData() {
+        mTokopointsComponentViewModel.fetchTokopointsListData((fragment as DiscoveryFragment).pageEndPoint)
+    }
+
+    private fun setUpDataObserver() {
+        val lifecycleOwner = fragment.viewLifecycleOwner
         mTokopointsComponentViewModel.getTokopointsItemsListData().observe(lifecycleOwner, Observer { item ->
             mDiscoveryRecycleAdapter.setDataList(item)
         })
