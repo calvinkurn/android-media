@@ -35,18 +35,24 @@
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/talkReadingRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <include
-                android:id="@+id/pageEmpty"
-                layout="@layout/partial_talk_reading_empty"
-                android:visibility="gone"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"/>
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/talkReadingRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/pageEmpty"
+                    layout="@layout/partial_talk_reading_empty"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

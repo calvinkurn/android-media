@@ -78,7 +78,7 @@
         android:paddingTop="@dimen/layout_lvl1"
         android:paddingBottom="@dimen/layout_lvl1"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/replyMessage"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/replyMessage"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

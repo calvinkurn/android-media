@@ -22,15 +22,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
+import com.tokopedia.talk.common.constants.TalkConstants.READING_SOURCE
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.*
@@ -371,6 +369,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     } else {
                         showPageError()
                     }
+                    hideLoading()
                     pageEmpty.hide()
                     pageLoading.hide()
                 }
@@ -378,14 +377,15 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     if(it.isEmpty && it.page == DEFAULT_INITIAL_PAGE) {
                         isLoadingInitialData = false
                         showPageEmpty()
-                        pageLoading.hide()
-                        hidePageError()
+                        talkReadingRecyclerView.hide()
                     } else {
+                        talkReadingRecyclerView.show()
                         pageEmpty.hide()
-                        pageLoading.hide()
                         addFloatingActionButton.show()
-                        hidePageError()
                     }
+                    pageLoading.hide()
+                    hideLoading()
+                    hidePageError()
                 }
             }
         })
@@ -395,11 +395,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         context?.let { context ->
             val sortOptionsBottomSheet = viewModel.sortOptions.value?.let { TalkReadingSortBottomSheet.createInstance(context,it , this) }
             sortOptionsBottomSheet?.setShowListener {
-                val headerMargin = 16.toPx()
-                sortOptionsBottomSheet.bottomSheetWrapper.setPadding(0,0,0,0)
+                val headerMargin = resources.getDimension(R.dimen.layout_lvl2).toPx().toInt()
+                resources.getDimension(R.dimen.layout_lvl0).toInt().let {
+                    sortOptionsBottomSheet.bottomSheetWrapper.setPadding(it,it,it,it)
+                }
                 (sortOptionsBottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin,headerMargin,headerMargin,headerMargin)
             }
-            this.childFragmentManager.let { sortOptionsBottomSheet?.show(it,"BottomSheetTag") }
+            this.childFragmentManager.let { sortOptionsBottomSheet?.show(it,"") }
         }
     }
 
@@ -413,7 +415,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun onSuccessCreateQuestion() {
         showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        clearAllData()
+        adapter.clearAllElements()
+        viewModel.updateSelectedSort(SortOption.SortByTime())
         getDiscussionData(withDelay = true)
     }
 
@@ -423,7 +426,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         }
         showSuccessToaster(getString(R.string.delete_question_toaster_success))
         if(adapter.data.isEmpty()) {
-            viewModel.setSuccess(true, 0)
+            viewModel.setSuccess(true, DEFAULT_INITIAL_PAGE)
         }
     }
 
@@ -455,7 +458,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity() {
-        val intent = context?.let { AddTalkActivity.createIntent(it, productId) }
+        val intent = context?.let { AddTalkActivity.createIntent(it, productId, READING_SOURCE) }
         startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
     }
 

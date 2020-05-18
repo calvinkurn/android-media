@@ -87,7 +87,12 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
             itemView.productDiscussionMostHelpfulSingleQuestionLayout.apply {
                 show()
                 with(questionData) {
-                    productDetailDiscussionSingleQuestion.text = question.content
+                    productDetailDiscussionSingleQuestion.apply {
+                        text = question.content
+                        setOnClickListener {
+                            listener.goToTalkReply(questionID, ComponentTrackDataModel(type, name, adapterPosition + 1), SINGLE_QUESTION_TRACKING)
+                        }
+                    }
                     productDetailDiscussionSingleQuestionChevron.setOnClickListener {
                         listener.goToTalkReply(questionID, ComponentTrackDataModel(type, name, adapterPosition + 1), SINGLE_QUESTION_TRACKING)
                     }

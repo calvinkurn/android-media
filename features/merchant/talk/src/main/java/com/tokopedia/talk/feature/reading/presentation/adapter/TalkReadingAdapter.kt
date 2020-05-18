@@ -11,7 +11,7 @@ class TalkReadingAdapter(
         visitables.forEachIndexed { index, visitable ->
             if((visitable as TalkReadingUiModel).question.questionID == questionId) {
                 visitables.remove(visitable)
-                notifyItemChanged(index)
+                notifyItemRemoved(index)
                 return
             }
         }

@@ -105,6 +105,7 @@ class TalkReplyViewHolder(view: View,
     private fun showAttachedProducts(attachedProducts: List<AttachedProduct>) {
         val adapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
         itemView.replyAttachedProductsRecyclerView.adapter = adapter
+        attachedProducts.toMutableList().add(0, AttachedProduct())
         adapter.setData(attachedProducts)
         itemView.replyAttachedProductsRecyclerView.show()
     }

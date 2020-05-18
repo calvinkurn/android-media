@@ -2837,7 +2837,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun goToReadingActivity() {
         viewModel.getDynamicProductInfoP1?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PRODUCT_TALK, it.basic.productID, it.basic.shopID)
+            val intent = RouteManager.getIntent(context,
+                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, it.basic.productID))
+                            .buildUpon()
+                            .appendQueryParameter(PARAM_APPLINK_SHOP_ID,it.basic.shopID)
+                            .build().toString()
+            )
             startActivity(intent)
         }
     }

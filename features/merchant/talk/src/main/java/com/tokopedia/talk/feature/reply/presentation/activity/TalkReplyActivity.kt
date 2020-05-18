@@ -61,7 +61,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
             this.shopId = shopId
         }
         with(TalkDetailsActivity) {
-            val source = uri.getQueryParameter(SOURCE) ?: ""
+            val source = uri.getQueryParameter(TalkConstants.PARAM_SOURCE) ?: ""
             if (source.isNotEmpty()) {
                 isFromInbox = source == SOURCE_INBOX
             }

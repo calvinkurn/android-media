@@ -29,7 +29,7 @@ class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessi
             override fun onNext(t: TalkThreadViewModel?) {
                 isRequesting = false
                 t?.let {
-                    view.onSuccessCreateTalk(productId, it.headThread.talkId)
+                    view.onSuccessCreateTalk(productId)
                 }
 
             }

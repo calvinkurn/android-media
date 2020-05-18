@@ -3,6 +3,7 @@ package com.tokopedia.talk_old.addtalk.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +14,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.di.DaggerAddTalkComponent
 import com.tokopedia.talk_old.addtalk.presenter.AddTalkPresenter
@@ -45,6 +48,7 @@ class AddTalkFragment : BaseDaggerFragment(),
     lateinit var adapter: QuickReplyAdapter
 
     var productId: String = ""
+    var source: String = ""
 
     override fun initInjector() {
         val addTalkComponent = DaggerAddTalkComponent.builder()
@@ -74,7 +78,8 @@ class AddTalkFragment : BaseDaggerFragment(),
 
         fun newInstance(extras: Bundle): AddTalkFragment {
             val fragment = AddTalkFragment()
-            fragment.productId = extras.getString(AddTalkActivity.EXTRA_PRODUCT_ID)
+            fragment.productId = extras.getString(AddTalkActivity.EXTRA_PRODUCT_ID) ?: ""
+            fragment.source = extras.getString(TalkConstants.PARAM_SOURCE) ?: ""
             return fragment
         }
 
@@ -131,24 +136,22 @@ class AddTalkFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessCreateTalk(productId: String, talkId: String) {
+    override fun onSuccessCreateTalk(productId: String) {
         send_progress.visibility = View.GONE
-        goToReply(productId, talkId)
+        goToReading(productId)
     }
 
-    private fun goToReply(productId: String, talkId: String) {
-//        val intent = context?.let {
-//            if(talkId.isNotEmpty()) {
-//                RouteManager.getIntent(it, ApplinkConstInternalGlobal.TALK_REPLY, talkId)
-//            } else {
-//                RouteManager.getIntent(it, ApplinkConstInternalGlobal.PRODUCT_TALK, productId)
-//            }
-//        }
-        activity?.run {
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+    private fun goToReading(productId: String) {
+        if(source == TalkConstants.READING_SOURCE) {
+            activity?.run {
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
+        } else {
+            context?.let {
+                startActivity(RouteManager.getIntent(it, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, productId)).toString()))
+            }
         }
-//        startActivity(intent)
     }
 
     override fun onDestroyView() {
