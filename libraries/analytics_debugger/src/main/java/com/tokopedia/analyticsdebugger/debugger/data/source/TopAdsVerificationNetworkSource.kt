@@ -55,7 +55,7 @@ internal constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
                 .getData<TopAdsVerificationData>(TopAdsVerificationData::class.java)
         val resultList = response.topadsVerifyClicksViews.data
         for (result in resultList) {
-            val item = urlCheckMap[result.url]
+            val item = urlCheckMap[result.url.trim()]
             item?.let {
                 if (result.status) {
                     if (result.type == it.eventType) {
