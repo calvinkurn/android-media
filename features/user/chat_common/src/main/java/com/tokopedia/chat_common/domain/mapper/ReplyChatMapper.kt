@@ -36,7 +36,7 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
     fun map(pojo: ReplyChatItemPojo): ReplyChatViewModel {
 
         return when (pojo.chatItemPojo.attachment?.attributes) {
-            null -> ReplyChatViewModel(generateMessage(pojo.chatItemPojo), pojo.isSuccess)
+            null, "" -> ReplyChatViewModel(generateMessage(pojo.chatItemPojo), pojo.isSuccess)
             else -> ReplyChatViewModel(generateImageMessage(pojo.chatItemPojo), pojo.isSuccess)
         }
     }

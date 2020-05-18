@@ -298,8 +298,35 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getMixLeftClickLoadMore(channel))
         }
 
-        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
-                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position:Int) = getBasicProductChannelView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_MIX_LEFT,
+                eventLabel = channel.header.name,
+                products =  listOf(Product(
+                        name = grid.name,
+                        id = grid.id,
+                        productPrice = convertRupiahToInt(
+                                grid.price
+                        ).toString(),
+                        brand = Value.NONE_OTHER,
+                        category = Value.NONE_OTHER,
+                        variant = Value.NONE_OTHER,
+                        productPosition = (position + 1).toString(),
+                        channelId = channel.id,
+                        isFreeOngkir = grid.freeOngkir.isActive,
+                        persoType = channel.persoType,
+                        categoryId = channel.categoryID,
+                        isTopAds = grid.isTopads
+                )),
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
+                ),
+                channelId = channel.id
+        )
+
+        fun getMixLeftIrisProductView(channel: DynamicHomeChannel.Channels) = getBasicProductChannelView(
+                event = Event.PRODUCT_VIEW_IRIS,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT,
                 eventLabel = channel.header.name,

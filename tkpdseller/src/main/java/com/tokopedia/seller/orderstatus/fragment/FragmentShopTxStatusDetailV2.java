@@ -3,6 +3,7 @@ package com.tokopedia.seller.orderstatus.fragment;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,29 +24,28 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.tracking.activity.TrackingActivity;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.OrderHistoryView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenter;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenterImpl;
+import com.tokopedia.seller.orderstatus.widget.OrderStatusView;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderPayment;
@@ -60,6 +60,8 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
 import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
 
 /**
  * Created by kris on 2/14/17. Tokopedia
@@ -333,11 +335,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
-                    startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
-                            .getTopProfileIntent(getActivity(),
-                                    presenter.getInvoiceData().getUserId()));
-                }
+                startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, presenter.getInvoiceData().getUserId()));
             }
         };
     }
@@ -353,14 +351,11 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
     }
 
     private View.OnClickListener onInvoiceClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppUtils.InvoiceDialog(getActivity(),
-                        presenter.getInvoiceData().getInvoiceUrl(),
-                        presenter.getInvoiceData().getInvoicePdf(),
-                        holder.Invoice.getText().toString());
-            }
+        return v -> {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INVOICE);
+            intent.putExtra(KEY_URL, presenter.getInvoiceData().getInvoiceUrl());
+            intent.putExtra(KEY_TITLE, "Invoice");
+            startActivity(intent);
         };
     }
 
@@ -383,11 +378,12 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
     }
 
     private void openTracking() {
-        Intent intent = new Intent(getActivity(), TrackingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("OrderID", presenter.getInvoiceData().getOrderId());
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+        String routingAppLink;
+        routingAppLink = ApplinkConst.ORDER_TRACKING;
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, presenter.getInvoiceData().getOrderId());
+        routingAppLink += uriBuilder.toString();
+        RouteManager.route(getActivity(), routingAppLink);
     }
 
     private void createEditRefDialog() {

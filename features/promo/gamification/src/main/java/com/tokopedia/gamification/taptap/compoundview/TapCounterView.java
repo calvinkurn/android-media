@@ -42,10 +42,10 @@ public class TapCounterView extends FrameLayout {
     }
 
     private void initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.widget_tap_view, null);
+        View view = LayoutInflater.from(mContext).inflate(com.tokopedia.gamification.R.layout.widget_tap_view, null);
         this.addView(view);
         tapCountTextView = view.findViewById(R.id.tv_tapCount);
-        view.findViewById(R.id.parent_tv_tapCount).setBackground(MethodChecker.getDrawable(tapCountTextView.getContext(), R.drawable.bg_tap_widget));
+        view.findViewById(R.id.parent_tv_tapCount).setBackground(MethodChecker.getDrawable(tapCountTextView.getContext(), com.tokopedia.gamification.R.drawable.gf_bg_tap_widget));
         setVisibility(INVISIBLE);
     }
 

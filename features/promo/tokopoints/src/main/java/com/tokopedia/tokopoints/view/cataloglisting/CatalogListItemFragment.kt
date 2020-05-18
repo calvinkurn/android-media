@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ViewFlipper
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -29,6 +32,11 @@ import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CataloglistItemPlt.Companion.CATALOGLISTITEM_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
@@ -38,7 +46,7 @@ import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
-class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.View, View.OnClickListener, AdapterCallback {
+class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.View, View.OnClickListener, AdapterCallback, TokopointPerformanceMonitoringListener {
     private var mContainer: ViewFlipper? = null
     private var serverErrorView: ServerErrorView? = null
     private var mRecyclerViewCatalog: RecyclerView? = null
@@ -63,6 +71,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     lateinit var viewModel: CatalogListItemViewModel
     private var mSwipeToRefresh: SwipeToRefresh? = null
     private var showFirstTimeLoader = true
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         fetchRemoteConfig()
@@ -84,6 +99,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         view.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
         view.findViewById<View>(R.id.text_empty_action).setOnClickListener(this)
         mSwipeToRefresh!!.setOnRefreshListener { getCatalog(currentCategoryId, currentSubCategoryId, false) }
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         initObserver()
     }
 
@@ -95,7 +112,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { refreshCatalog(it) }
+      it?.let {
+            stopNetworkRequestPerformanceMonitoring()
+            startRenderPerformanceMonitoring()
+            refreshCatalog(it)
+            stopRenderPerformanceMonitoring()
+            stopPerformanceMonitoring()
+        }
     })
 
     private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
@@ -456,6 +479,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                     activityContext.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)))
         }
         mRecyclerViewCatalog!!.adapter = mAdapter
+        //   setOnRecyclerViewLayoutReady()
         mAdapter!!.startDataLoading()
     }
 
@@ -513,5 +537,46 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                CATALOGLISTITEM_TOKOPOINT_PLT_PREPARE_METRICS,
+                CATALOGLISTITEM_TOKOPOINT_PLT_NETWORK_METRICS,
+                CATALOGLISTITEM_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATALOGLISTITEM_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

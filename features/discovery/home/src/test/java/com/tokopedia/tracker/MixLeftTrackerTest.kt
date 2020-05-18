@@ -130,6 +130,7 @@ class MixLeftTrackerTest : Spek({
     }
 
     Feature("View product tracker"){
+        val pos = 0
         Scenario("View on product"){
             Given("the real tracker data"){
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
@@ -185,7 +186,7 @@ class MixLeftTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftProductView(channel,false))
+                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftProductView(channel, channel.grids[pos], pos))
                 Assert.assertEquals(result, true)
             }
         }
