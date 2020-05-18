@@ -106,7 +106,7 @@
     <string name="toaster_follow_fail">Gagal follow Q&amp;A ini. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="toaster_unfollow_fail">Gagal unfollow Q&amp;A ini. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
-    <string name="reply_header_tnc">Q&amp;A adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa baca <b>S&amp;K.</b></string>
+    <string name="reply_header_tnc">Q&amp;A adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa &lt;a href = "https://www.tokopedia.com/help/article/a-2480">baca S&amp;K.&lt;/a></string>
     <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
     <string name="reply_toaster_message_too_long">Jawabanmu sudah melebihi maks. karakter.</string>
     <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>

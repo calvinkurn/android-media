@@ -76,7 +76,6 @@
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:text="@string/reply_header_tnc"
         app:typographyType="small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

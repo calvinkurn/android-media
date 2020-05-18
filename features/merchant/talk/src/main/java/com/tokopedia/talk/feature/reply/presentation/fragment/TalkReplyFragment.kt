@@ -112,10 +112,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
-    override fun onTermsAndConditionsClicked() {
-        goToTermsAndConditionsPage()
-    }
-
     override fun onFollowUnfollowButtonClicked() {
         followUnfollowTalk()
     }
@@ -258,10 +254,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
     }
 
-    private fun goToTermsAndConditionsPage() {
-        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
-    }
-
     private fun goToPdp(productId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         startActivity(intent)
@@ -402,7 +394,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onSuccessReport() {
-        showSuccessToaster(getString(R.string.toaster_report_success), true)
+        showSuccessToaster(getString(R.string.toaster_report_success), false)
     }
 
     private fun observeFollowUnfollowResponse() {

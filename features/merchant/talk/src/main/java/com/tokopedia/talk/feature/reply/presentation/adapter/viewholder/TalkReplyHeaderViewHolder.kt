@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
+import android.text.method.LinkMovementMethod
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.show
@@ -7,6 +8,7 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHe
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 
@@ -26,9 +28,8 @@ class TalkReplyHeaderViewHolder(view: View,
             showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
             itemView.apply {
                 replyHeaderDate.text = date
-                replyHeaderTNC.setOnClickListener {
-                    talkReplyHeaderListener.onTermsAndConditionsClicked()
-                }
+                replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
+                replyHeaderTNC.movementMethod = LinkMovementMethod()
             }
         }
     }
