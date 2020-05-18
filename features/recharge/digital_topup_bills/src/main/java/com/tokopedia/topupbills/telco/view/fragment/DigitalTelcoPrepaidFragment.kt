@@ -35,8 +35,8 @@ import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
-import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
-import com.tokopedia.topupbills.telco.data.TelcoCustomData
+import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
+import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -65,8 +65,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var traceStop = false
 
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
-    private var operatorData: TelcoCustomComponentData =
-            TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
+    private var operatorData: TelcoCatalogPrefixSelect =
+            TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     override var menuId = TelcoComponentType.TELCO_PREPAID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,16 +145,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getInputFilterDataCollections()
+        getPrefixOperatorSelect()
         renderInputNumber()
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
     }
 
-    fun getInputFilterDataCollections() {
+    fun getPrefixOperatorSelect() {
         customViewModel.getCustomDataPrepaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_custom_digital_telco),
+                R.raw.query_prefix_select_telco), menuId,
                 this::onSuccessCustomData, this::onErrorCustomData)
     }
 
@@ -193,7 +193,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         showOnBoarding()
     }
 
-    override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
+    override fun onSuccessCustomData(telcoData: TelcoCatalogPrefixSelect) {
         this.operatorData = telcoData
         renderProductFromCustomData()
     }
@@ -201,7 +201,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     fun renderProductFromCustomData() {
         try {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
-                val selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.single {
+                val selectedOperator = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                     telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
                 operatorName = selectedOperator.operator.attributes.name
@@ -266,9 +266,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onRenderOperator() {
-                operatorData.rechargeCustomData.customDataCollections.isEmpty()?.let {
+                operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                     if (it) {
-                        getInputFilterDataCollections()
+                        getPrefixOperatorSelect()
                     } else {
                         renderProductFromCustomData()
                     }

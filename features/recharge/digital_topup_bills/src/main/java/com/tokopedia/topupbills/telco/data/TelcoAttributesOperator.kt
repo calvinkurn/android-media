@@ -10,22 +10,10 @@ class TelcoAttributesOperator(
         @SerializedName("name")
         @Expose
         val name: String,
-        @SerializedName("image")
-        @Expose
-        val image: String,
         @SerializedName("image_url")
         @Expose
         val imageUrl: String,
-        @SerializedName("lastorder_url")
-        @Expose
-        val lastOrderUrl: String,
         @SerializedName("default_product_id")
         @Expose
-        val defaultProductId: Int,
-        @SerializedName("ussd")
-        @Expose
-        val ussd: String,
-        @SerializedName("description")
-        @Expose
-        val description: String
+        val defaultProductId: Int
 )

@@ -25,9 +25,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
-import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
-import com.tokopedia.topupbills.telco.data.TelcoCustomData
-import com.tokopedia.topupbills.telco.data.TelcoCustomDataCollection
+import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
+import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
+import com.tokopedia.topupbills.telco.data.RechargePrefix
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
@@ -52,7 +52,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private var traceStop = false
 
-    private var operatorSelected: TelcoCustomDataCollection? = null
+    private var operatorSelected: RechargePrefix? = null
         set(value) {
             field = value
             value?.run {
@@ -60,8 +60,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
         }
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
-    private var operatorData: TelcoCustomComponentData =
-            TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
+    private var operatorData: TelcoCatalogPrefixSelect =
+            TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     override var menuId = TelcoComponentType.TELCO_POSTPAID
     override var categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
 
@@ -148,7 +148,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getInputFilterDataCollections() {
         customViewModel.getCustomDataPostpaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_custom_digital_telco),
+                R.raw.query_prefix_select_telco),
                 this::onSuccessCustomData, this::onErrorCustomData)
     }
 
@@ -189,7 +189,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onRenderOperator() {
-                operatorData.rechargeCustomData.customDataCollections.isEmpty()?.let {
+                operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                     if (it) {
                         getInputFilterDataCollections()
                     } else {
@@ -239,7 +239,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
+    override fun onSuccessCustomData(telcoData: TelcoCatalogPrefixSelect) {
         this.operatorData = telcoData
         renderProductFromCustomData()
     }
@@ -247,7 +247,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
-                operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.single {
+                operatorSelected = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                     postpaidClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
                 operatorSelected?.run {

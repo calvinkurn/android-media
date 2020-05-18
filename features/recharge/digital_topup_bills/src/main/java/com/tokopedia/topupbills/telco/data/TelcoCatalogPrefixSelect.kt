@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoCustomData(
-        @SerializedName("data_collections")
+class TelcoCatalogPrefixSelect(
+        @SerializedName("rechargeCatalogPrefixSelect")
         @Expose
-        val customDataCollections: List<TelcoCustomDataCollection>
+        val rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect
 )
