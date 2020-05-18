@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
+import com.tokopedia.sellerhome.analytic.SellerHomeTracking
+import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
@@ -108,7 +110,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private var performanceMonitoringSellerHomeCarousel: PerformanceMonitoring? = null
 
 
-    override fun getScreenName(): String = this::class.java.simpleName
+    override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
@@ -143,6 +145,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         super.onResume()
         if (!isFirstLoad)
             reloadPage()
+        if (userVisibleHint)
+            SellerHomeTracking.sendScreen(screenName)
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (userVisibleHint)
+            SellerHomeTracking.sendScreen(screenName)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

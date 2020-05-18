@@ -87,6 +87,7 @@
     <string name="kata_kunci_count">Kata Kunci (%d)</string>
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
     <string name="max_bid_error">Biaya maximum %d rupiah</string>
+    <string name="error_multiple_50">Biaya harus kelipatan %d</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
     <string name="_0_produk">0 produk dipilih</string>
     <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
