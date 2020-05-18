@@ -254,9 +254,8 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                 gratificationData: GratificationData) {
 
         val targetPromotionsDialog = TargetPromotionsDialog(this)
-        if (weakActivity.get() != null) {
+        weakActivity.get()?.let { activity ->
 
-            val activity = weakActivity.get()!!
             val dialog = targetPromotionsDialog.showAutoClaimLoggedIn(activity,
                     TargetPromotionsDialog.TargetPromotionsCouponType.MULTIPLE_COUPON,
                     popGratificationResponse,
@@ -271,8 +270,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     private fun showNonLoggedIn(weakActivity: WeakReference<Activity>, data: GetPopGratificationResponse, couponDetailResponse: GetCouponDetailResponse, gratificationData: GratificationData) {
         val targetPromotionsDialog = TargetPromotionsDialog(this)
-        if (weakActivity.get() != null) {
-            val activity = weakActivity.get()!!
+        weakActivity.get()?.let { activity ->
             val dialog = targetPromotionsDialog.showNonLoggedInUi(activity, data, couponDetailResponse, gratificationData)
             if (dialog != null) {
                 mapOfDialogs[activity] = Pair(targetPromotionsDialog, dialog)
@@ -282,8 +280,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     private fun showNonLoggedInDestroyedActivity(weakActivity: WeakReference<Activity>, gratificationData: GratificationData) {
         val targetPromotionsDialog = TargetPromotionsDialog(this)
-        if (weakActivity.get() != null) {
-            val activity = weakActivity.get()!!
+        weakActivity.get()?.let { activity ->
             val dialog = targetPromotionsDialog.showNonLoggedInDestroyedActivity(activity, gratificationData)
             if (dialog != null) {
                 mapOfDialogs[activity] = Pair(targetPromotionsDialog, dialog)
@@ -297,8 +294,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                         gratificationData: GratificationData,
                         intent: Intent) {
         val dialog = TargetPromotionsDialog(this)
-        if (weakActivity.get() != null) {
-            val activity = weakActivity.get()!!
+        weakActivity.get()?.let { activity ->
             val autoHitActionButton = intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
 
             var claimApi: ClaimCouponApi? = null

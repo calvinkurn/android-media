@@ -2,7 +2,6 @@ package com.tokopedia.promotionstarget.data.claim
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.promotionstarget.data.GratificationDataContract
-import com.tokopedia.promotionstarget.data.pop.PopGratificationBenefitsItem
 
 class ClaimPopGratificationResponse(@SerializedName("popGratificationClaim")
                                     val popGratificationClaim: PopGratificationClaim? = null) : GratificationDataContract

@@ -132,7 +132,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             when (it) {
                 is Success -> {
                     setUiForSuccessClaimGratification(it.data)
-                    TargetedPromotionAnalytics.viewClaimSuccess(it.data.popGratificationClaim?.title)
+
+                    val userSession = UserSession(btnAction.context)
+                    TargetedPromotionAnalytics.viewClaimSuccess(it.data.popGratificationClaim?.title, userSession.userId)
                 }
                 is Error,
                 is Fail -> {
@@ -187,7 +189,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         setNonLoggedInListeners()
 
         prePareCatalogId(getPopGratificationResponse)
-        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), false)
+        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), false, "")
         return pair.second
     }
 
@@ -235,7 +237,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         observeLiveData(activityContext as AppCompatActivity, errorUi = { showErrorUIForClaimGratificationLoggedIn() })
         setListenersLoggedIn(activityContext as AppCompatActivity)
         prePareCatalogId(popGratificationResponse)
-        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), true)
+        TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), true, UserSession(btnAction.context).userId)
         return bottomSheet
     }
 
@@ -260,19 +262,21 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
 
     private fun setListenersLoggedIn(activity: AppCompatActivity) {
+        val userSession = UserSession(btnAction.context)
 
         btnAction.setOnClickListener {
             val btnActionText = btnAction.text.toString()
-
             if (!skipBtnAction) {
                 val retryAvailable = retryCount < MAX_RETRY_COUNT
                 if (retryAvailable) {
                     if (data == null) {
                         viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
-                        TargetedPromotionAnalytics.tryAgain()
+                        TargetedPromotionAnalytics.tryAgain(userSession.userId)
                     } else {
                         performActionBasedOnClaim(popGratificationActionBtn)
-                        TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), UserSession(btnAction.context).isLoggedIn, btnActionText)
+
+
+                        TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                     }
 
                 } else {
@@ -318,7 +322,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         if (data is GetPopGratificationResponse) {
             prePareCatalogId(data)
-            TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), UserSession(activityContext).isLoggedIn)
+            val userSession = UserSession(activityContext)
+            TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), userSession.isLoggedIn, userSession.userId)
         }
 
         return bottomSheet
@@ -434,7 +439,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     }
                     val label = couponDetail.popGratification?.title
                     if (!TextUtils.isEmpty(label)) {
-                        TargetedPromotionAnalytics.couponClaimedLastOccasion(label!!)
+                        val userSession = UserSession(imageView.context)
+                        TargetedPromotionAnalytics.couponClaimedLastOccasion(label!!, userSession.userId)
                     }
                 }
                 viewFlipper.displayedChild = CONTAINER_IMAGE
@@ -562,26 +568,27 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     val retryAvailable = retryCount < MAX_RETRY_COUNT
                     if (retryAvailable) {
 
-                        if (UserSession(activity).isLoggedIn) {
+                        val userSession = UserSession(activity)
+                        if (userSession.isLoggedIn) {
 
                             //coupon is yet to be claimed
                             if (data == null && referenceIds.isNotEmpty()) {
                                 //activity was destroyed - case
                                 viewModel.claimGratification(gratificationData.popSlug, gratificationData.page, referenceIds)
-                                TargetedPromotionAnalytics.tryAgain()
+                                TargetedPromotionAnalytics.tryAgain(userSession.userId)
                             } else if (data is GetPopGratificationResponse) {
                                 viewModel.claimGratification(gratificationData.popSlug,
                                         gratificationData.page,
                                         (data as GetPopGratificationResponse).popGratification?.popGratificationBenefits?.map { benefit -> benefit?.referenceID })
-                                TargetedPromotionAnalytics.tryAgain()
+                                TargetedPromotionAnalytics.tryAgain(userSession.userId)
                             } else {
                                 //coupon is claimed
                                 performActionBasedOnClaim(popGratificationActionBtn)
-                                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), true, btnActionText)
+                                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                             }
                         } else {
                             routeToLogin(activity)
-                            TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), true, btnActionText)
+                            TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                         }
 
                     } else {
@@ -641,7 +648,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         RouteManager.route(btnAction.context, ApplinkConst.HOME)
         bottomSheetDialog.dismiss()
 
-        TargetedPromotionAnalytics.performButtonAction(btnActionText)
+        val userSession = UserSession(btnAction.context)
+        TargetedPromotionAnalytics.performButtonAction(btnActionText, userSession.userId)
     }
 
     private fun showErrorUIForClaimGratification(useLeftView: Boolean = true) {
@@ -755,7 +763,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
         shouldCallAutoApply = true
         bottomSheetDialog.dismiss()
-        TargetedPromotionAnalytics.userClickCheckMyCoupon(buttonText)
+
+        val userSession = UserSession(btnAction.context)
+        TargetedPromotionAnalytics.userClickCheckMyCoupon(buttonText, userSession.userId)
     }
 
     private fun performActionToClaimCoupon(data: GetPopGratificationResponse, activityContext: Activity, btnActionText: String) {
@@ -780,11 +790,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             routeToLogin(activityContext)
             val applink = data.popGratification?.popGratificationActionButton?.appLink
             if (retryCount > 0) {
-                TargetedPromotionAnalytics.tryAgain()
+                TargetedPromotionAnalytics.tryAgain(userSession.userId)
             } else if (TextUtils.isEmpty(applink)) {
-                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText)
+                TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
             } else {
-                TargetedPromotionAnalytics.performButtonAction(btnActionText)
+                TargetedPromotionAnalytics.performButtonAction(btnActionText, userSession.userId)
             }
         }
     }

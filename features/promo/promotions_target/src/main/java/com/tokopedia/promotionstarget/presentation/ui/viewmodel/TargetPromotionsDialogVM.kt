@@ -14,6 +14,7 @@ import com.tokopedia.promotionstarget.presentation.SingleLiveEvent
 import com.tokopedia.promotionstarget.presentation.TargetedPromotionAnalytics
 import com.tokopedia.promotionstarget.presentation.launchCatchError
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -63,15 +64,19 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
     fun showToast(it: LiveDataResult<AutoApplyResponse>) {
         when (it.status) {
             LiveDataResult.STATUS.SUCCESS -> {
-                val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
-                if (messageList != null && messageList.isNotEmpty()) {
-                    CustomToast.show(app, messageList[0].toString())
-                    TargetedPromotionAnalytics.claimSucceedPopup(messageList[0].toString())
-                }
+                performShowToast(it)
             }
         }
     }
 
+    fun performShowToast(it:LiveDataResult<AutoApplyResponse>){
+        val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
+        if (messageList != null && messageList.isNotEmpty()) {
+            CustomToast.show(app, messageList[0].toString())
+            val userSession = UserSession(app)
+            TargetedPromotionAnalytics.claimSucceedPopup(messageList[0].toString(), userSession.userId)
+        }
+    }
 
     suspend fun composeApi(listIds: List<Int?>?): GetCouponDetailResponse {
         val idsString = arrayListOf<String>()

@@ -10,6 +10,7 @@ object TargetedPromotionAnalytics {
     private const val KEY_EVENT_CATEGORY = "eventCategory"
     private const val KEY_EVENT_ACTION = "eventAction"
     private const val KEY_EVENT_LABEL = "eventLabel"
+    private const val KEY_USER_ID = "userId"
 
 
     private const val TARGETED_PROMOTION = "targeted promotion"
@@ -22,7 +23,7 @@ object TargetedPromotionAnalytics {
     }
 
     //3, 17
-    fun viewCoupon(catalogId: String, isLoogedIn: Boolean) {
+    fun viewCoupon(catalogId: String, isLoogedIn: Boolean, userId:String) {
         val map = mutableMapOf<String, Any>()
 
         val isLoggedInText = if (isLoogedIn) "login" else "nonlogin"
@@ -30,11 +31,12 @@ object TargetedPromotionAnalytics {
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "view coupon - $isLoggedInText"
         map[KEY_EVENT_LABEL] = catalogId
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
     //4,18
-    fun clickClaimCoupon(catalogId: String, isLoogedIn: Boolean, buttonText: String) {
+    fun clickClaimCoupon(catalogId: String, isLoogedIn: Boolean, buttonText: String, userId: String) {
         val map = mutableMapOf<String, Any>()
 
         val isLoggedInText = if (isLoogedIn) "login" else "nonlogin"
@@ -42,11 +44,12 @@ object TargetedPromotionAnalytics {
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "click $buttonText - $isLoggedInText"
         map[KEY_EVENT_LABEL] = catalogId
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
     //5
-    fun viewClaimSuccess(screenTitle: String?) {
+    fun viewClaimSuccess(screenTitle: String?, userId: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = VIEW_TARGETED_PROMO_IRIS
@@ -55,60 +58,66 @@ object TargetedPromotionAnalytics {
         screenTitle?.let {
             map[KEY_EVENT_LABEL] = it
         }
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
     //6
-    fun userClickCheckMyCoupon(buttonText: String) {
+    fun userClickCheckMyCoupon(buttonText: String, userId: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "click cek Kupon saya"
         map[KEY_EVENT_LABEL] = buttonText
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
     //7
-    fun claimSucceedPopup(label: String) {
+    fun claimSucceedPopup(label: String, userId: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = VIEW_TARGETED_PROMO_IRIS
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "auto-apply case, when user has dismissed the dialog/pop-up after claiming coupon"
         map[KEY_EVENT_LABEL] = label
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
     //9
-    fun couponClaimedLastOccasion(label: String) {
+    fun couponClaimedLastOccasion(label: String, userId: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = VIEW_TARGETED_PROMO_IRIS
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "view error"
         map[KEY_EVENT_LABEL] = label
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
     //13
-    fun performButtonAction(label: String) {
+    fun performButtonAction(label: String, userId: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "click"
         map[KEY_EVENT_LABEL] = label
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
     //15
-    fun tryAgain() {
+    fun tryAgain(userId: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "click try again"
+        map[KEY_USER_ID] = userId
         getTracker().sendGeneralEvent(map)
     }
 
