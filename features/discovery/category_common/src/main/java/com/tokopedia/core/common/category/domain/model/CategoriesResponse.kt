@@ -3,7 +3,7 @@ package com.tokopedia.core.common.category.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class CategoriesResponse(
-        @SerializedName("getCategoryListLite")
+        @SerializedName("categoryAllListLite")
         val categories: Categories =  Categories()
 )
 

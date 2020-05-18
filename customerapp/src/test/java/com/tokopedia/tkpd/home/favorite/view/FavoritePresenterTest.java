@@ -16,8 +16,6 @@ import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseC
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil;
-import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.DataFavoriteMapper;
@@ -106,8 +104,6 @@ public class FavoritePresenterTest {
     @Mock
     private RequestParams requestParams;
     @Mock
-    private DomainWishlist mockDomainWishlist;
-    @Mock
     private FavoriteShop mockFavoriteShop;
     @Mock
     private TopAdsShop mockTopAdsShop;
@@ -144,31 +140,6 @@ public class FavoritePresenterTest {
         favoritePresenter.attachView(view);
     }
 
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void shouldShowMessageFailedWhenWishlistErrorOnInitialData() throws Exception {
-
-        when(mockDomainWishlist.isNetworkError()).thenReturn(true);
-        when(mockFavoriteShop.isNetworkError()).thenReturn(false);
-        when(mockTopAdsShop.isNetworkError()).thenReturn(false);
-
-        Observable mockWishlistObservableError = Observable.just(mockDomainWishlist);
-        Observable mockFavObservable = Observable.just(mockFavoriteShop);
-        Observable mocTopAdsObservable = Observable.just(mockTopAdsShop);
-
-        when(repository.getWishlist(any(TKPDMapParam.class))).thenReturn(mockWishlistObservableError);
-        when(repository.getFirstPageFavoriteShop(any(TKPDMapParam.class))).thenReturn(mockFavObservable);
-        when(repository.getTopAdsShop(any(TKPDMapParam.class))).thenReturn(mocTopAdsObservable);
-
-        favoritePresenter.loadInitialData();
-
-        verify(view).hideRefreshLoading();
-        verify(view).showWishlistFailedMessage();
-        verify(view).showInitialDataPage(anyList());
-    }
-
-
     private void initializeMock() {
         MockitoAnnotations.initMocks(this);
         when(postExecutionThread.getScheduler()).thenReturn(Schedulers.immediate());
@@ -177,9 +148,6 @@ public class FavoritePresenterTest {
         getTopAdsShopUseCase
                 = new GetTopAdsShopUseCase(jobExecutor, postExecutionThread, repository);
 
-        GetWishlistUtil getWishlistUtil
-                = new GetWishlistUtil(repository);
-
         toggleFavouriteShopUseCase
                 = new ToggleFavouriteShopUseCase(new GraphqlUseCase(), resources);
 
@@ -187,14 +155,14 @@ public class FavoritePresenterTest {
                 = new GetFavoriteShopUsecase(jobExecutor, postExecutionThread, repository);
 
         getAllDataFavoriteUseCase = new GetAllDataFavoriteUseCase(context,
-                jobExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUtil,
+                jobExecutor, postExecutionThread, getFavoriteShopUsecase,
                 getTopAdsShopUseCase);
 
         getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
-                getFavoriteShopUsecase, getWishlistUtil, getTopAdsShopUseCase);
+                getFavoriteShopUsecase, getTopAdsShopUseCase);
 
         getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
-                getFavoriteShopUsecase, getWishlistUtil, getTopAdsShopUseCase);
+                getFavoriteShopUsecase, getTopAdsShopUseCase);
     }
 
 }

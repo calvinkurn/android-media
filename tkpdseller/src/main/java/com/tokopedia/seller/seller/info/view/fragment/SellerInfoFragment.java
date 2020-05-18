@@ -7,6 +7,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
@@ -94,7 +96,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
         SellerInfoTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
         if(!sellerInfoModel.isRead())
             sellerInfoPresenter.markReadNotification(sellerInfoModel.getInfoId());
-        RouteManager.route(getContext(), sellerInfoModel.getExternalLink());
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, sellerInfoModel.getExternalLink());
     }
 
 

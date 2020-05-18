@@ -4,8 +4,8 @@ import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ChildSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 
 class ChildSettingViewHolder(
         itemView: View?,
@@ -18,7 +18,6 @@ class ChildSettingViewHolder(
 
     override fun bind(element: ChildSetting?) {
         super.bind(element)
-
         settingSwitch?.text = element?.name
     }
 
@@ -46,15 +45,15 @@ class ChildSettingViewHolder(
         settingListener.updateSettingView(arrayListOf(parentSettingIndex))
     }
 
-    override fun getUpdatedSettingIds(element: ChildSetting, checked: Boolean): List<Map<String, Any>> {
-        return listOf(
-                getMapSettingToChange(element, checked)
-        )
+    override fun getUpdatedSettingIds(
+            element: ChildSetting,
+            checked: Boolean
+    ): List<Map<String, Any>> {
+        return listOf(getMapSettingToChange(element, checked))
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_child_setting
+        @LayoutRes val LAYOUT = R.layout.item_child_setting
     }
 
 }

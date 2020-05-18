@@ -33,10 +33,9 @@ class GetAddressUseCaseTest {
     var rule = InstantTaskExecutorRule()
 
     val tradeInRepository: TradeInRepository = mockk(relaxed = true)
-    val context: Context = mockk()
     val resources: Resources = mockk()
 
-    var getAddressUseCase = spyk(GetAddressUseCase(context, tradeInRepository))
+    var getAddressUseCase = spyk(GetAddressUseCase(tradeInRepository))
 
     @Before
     @Throws(Exception::class)
@@ -74,17 +73,16 @@ class GetAddressUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any()) } returns address
 
-            val addressResult = getAddressUseCase.getAddress()
+            val addressResult = getAddressUseCase.getAddress(resources)
 
             assertEquals(addressResult, AddressResult(address.keroGetAddress.data.firstOrNull { it.isPrimary }, address.keroGetAddress.token))
 
             /**Empty Address case**/
             (address.keroGetAddress.data as MutableList).clear()
 
-            val emptyAddressResult = getAddressUseCase.getAddress()
+            val emptyAddressResult = getAddressUseCase.getAddress(resources)
 
             assertEquals(emptyAddressResult, AddressResult(address.keroGetAddress.data.firstOrNull { it.isPrimary }, address.keroGetAddress.token))
         }

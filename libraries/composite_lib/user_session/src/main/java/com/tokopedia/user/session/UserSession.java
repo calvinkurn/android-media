@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.inject.Inject;
 
 import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
 import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
@@ -60,6 +61,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     private static final String DEFAULT_EMPTY_SHOP_ID = "0";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
 
+    @Inject
     public UserSession(Context context) {
         super(context);
     }

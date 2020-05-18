@@ -19,13 +19,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductPromoViewModel
 import com.tokopedia.shop.product.view.widget.NestedWebView
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_shop_product_limited_promo.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class HomeProductFragment : BaseDaggerFragment() {
@@ -46,7 +48,7 @@ class HomeProductFragment : BaseDaggerFragment() {
     private var shopProductPromoViewModel: ShopProductPromoViewModel = ShopProductPromoViewModel()
 
     companion object {
-        private const val MIN_SHOW_WEB_VIEW_PROGRESS = 100
+        private const val MIN_SHOW_WEB_VIEW_PROGRESS = 80
         private const val REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101
         private const val SHOP_STATIC_URL = "shop-static"
         fun createInstance() = HomeProductFragment()
@@ -78,9 +80,7 @@ class HomeProductFragment : BaseDaggerFragment() {
         }
         clearCache(shopPageNestedWebView)
         if (shopProductPromoViewModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url,
-                    shopProductPromoViewModel.userId,
-                    shopProductPromoViewModel.accessToken)
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url, userSession)
         } else {
             shopPageNestedWebView.loadUrl(shopProductPromoViewModel.url)
         }
@@ -165,9 +165,15 @@ class HomeProductFragment : BaseDaggerFragment() {
             if (newProgress >= MIN_SHOW_WEB_VIEW_PROGRESS) {
                 view.visibility = View.VISIBLE
                 finishLoading()
+                stopPerformanceMonitoring()
             }
             super.onProgressChanged(view, newProgress)
         }
+
+    }
+
+    private fun stopPerformanceMonitoring(){
+        (activity as? ShopPageActivity)?.stopShopHomeWebViewTabPerformanceMonitoring()
     }
 
     private inner class OfficialStoreWebViewClient : WebViewClient() {
@@ -181,6 +187,7 @@ class HomeProductFragment : BaseDaggerFragment() {
             super.onReceivedSslError(view, handler, error)
             handler.cancel()
             finishLoading()
+            stopPerformanceMonitoring()
         }
 
         override fun onLoadResource(view: WebView, url: String) {
@@ -189,6 +196,8 @@ class HomeProductFragment : BaseDaggerFragment() {
         override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
             super.onReceivedError(view, errorCode, description, failingUrl)
             finishLoading()
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description)
+            stopPerformanceMonitoring()
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {

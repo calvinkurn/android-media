@@ -53,14 +53,21 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
                     val updateCartGqlResponse = it.getData<UpdateCartGqlResponse>(UpdateCartGqlResponse::class.java)
+
                     val updateCartData = UpdateCartData()
-                    updateCartData.isSuccess = updateCartGqlResponse.updateCartDataResponse.status == "OK" &&
-                            updateCartGqlResponse.updateCartDataResponse.data?.status == true
-                    updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty()) {
-                        updateCartGqlResponse.updateCartDataResponse.error[0]
-                    } else {
-                        ""
+
+                    if (updateCartGqlResponse != null) {
+                        updateCartData.isSuccess = !(updateCartGqlResponse.updateCartDataResponse.status != "OK" ||
+                                updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty() ||
+                                updateCartGqlResponse.updateCartDataResponse.data == null || !updateCartGqlResponse.updateCartDataResponse.data?.status)
+
+                        updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty()) {
+                            updateCartGqlResponse.updateCartDataResponse.error[0]
+                        } else {
+                            ""
+                        }
                     }
+
                     updateCartData
                 }
                 .subscribeOn(schedulers.io)

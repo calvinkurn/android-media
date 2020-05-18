@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.FreeReturns;
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice;
-import com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.variant.ProductVariantData;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.FreeShipping;
 
 import java.util.ArrayList;
@@ -134,6 +133,9 @@ public class Product {
     private TradeInInfo tradeInInfo;
     @SerializedName("free_shipping")
     private FreeShipping freeShipping;
+    @SerializedName("product_ticker")
+    @Expose
+    private ProductTicker productTicker;
 
     public String getProductCategory() {
         return productCategory;
@@ -293,5 +295,13 @@ public class Product {
 
     public FreeShipping getFreeShipping() {
         return freeShipping;
+    }
+
+    public ProductTicker getProductTicker() {
+        return productTicker;
+    }
+
+    public void setProductTicker(ProductTicker productTicker) {
+        this.productTicker = productTicker;
     }
 }

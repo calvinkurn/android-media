@@ -23,6 +23,7 @@ import com.tokopedia.notifcenter.data.consts.Resources.Green_G200
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G500
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N50
+import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.BUYER_TYPE
@@ -47,12 +48,12 @@ abstract class BaseNotificationItemViewHolder(
     protected val body: TextView = itemView.findViewById(R.id.body)
 
     override fun bind(element: NotificationItemViewBean) {
+        trackImpression(element)
         bindNotificationBackgroundColor(element)
         bindNotificationHeader(element)
         bindNotificationContent(element)
         bindNotificationPayload(element)
         bindOnNotificationClick(element)
-        trackImpression(element)
     }
 
     private fun trackImpression(element: NotificationItemViewBean) {
@@ -84,7 +85,7 @@ abstract class BaseNotificationItemViewHolder(
 
     protected open fun bindNotificationContent(element: NotificationItemViewBean) {
         title.text = element.title
-        if (element.body.length > element.options.contentMaxLonger) {
+        if (element.isLongerContent) {
             var shorten = element.body.take(element.options.contentMaxLonger)
             val inFull = getStringResource(R.string.in_full)
             shorten = "$shorten... $inFull"
@@ -113,12 +114,16 @@ abstract class BaseNotificationItemViewHolder(
 
     abstract fun bindNotificationPayload(element: NotificationItemViewBean)
 
+    protected open fun notificationItemMarkedClick(element: NotificationItemViewBean) {
+        listener.itemClicked(element, adapterPosition)
+        element.isRead = true
+    }
+
     protected open fun bindOnNotificationClick(element: NotificationItemViewBean) {
         container.setOnClickListener {
-            listener.itemClicked(element, adapterPosition)
-            element.isRead = true
-            if (element.body.length > element.options.contentMaxLonger) {
-                listener.showTextLonger(element)
+            notificationItemMarkedClick(element)
+            if (element.isLongerContent) {
+                listener.showNotificationDetail(BottomSheetType.LongerContent, element)
             } else {
                 RouteManager.route(itemView.context, element.appLink)
             }
@@ -162,10 +167,6 @@ abstract class BaseNotificationItemViewHolder(
 
     private fun getColorResource(colorId: Int): Int {
         return MethodChecker.getColor(itemView.context, colorId)
-    }
-
-    protected fun getAnalytic(): NotificationUpdateAnalytics {
-        return listener.getAnalytic()
     }
 
     companion object {

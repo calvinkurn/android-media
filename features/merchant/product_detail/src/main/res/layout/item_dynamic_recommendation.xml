@@ -6,16 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
     android:background="@color/white"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
+    android:paddingBottom="@dimen/dp_16"
     tools:visibility="visible">
+
+    <View
+        android:id="@+id/recom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/grey_separator" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
@@ -48,6 +54,7 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/recom_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -74,5 +81,4 @@
             tools:visibility="visible" />
 
     </FrameLayout>
-
 </LinearLayout>

@@ -35,15 +35,17 @@ public class ShippingDurationConverter {
 
         // Check response not null
         if (ratesData != null && ratesData.getRatesDetailData() != null) {
+
+            // Check if has error
+            if (ratesData.getRatesDetailData().getError() != null &&
+                    !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
+                shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
+                shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
+            }
+
             // Check has service / duration list
             if (ratesData.getRatesDetailData().getServices() != null &&
                     ratesData.getRatesDetailData().getServices().size() > 0) {
-                // Check if has error
-                if (ratesData.getRatesDetailData().getError() != null &&
-                        !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
-                    shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
-                    shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
-                }
 
                 // Setting up for Logistic Promo
                 shippingRecommendationData.setLogisticPromo(

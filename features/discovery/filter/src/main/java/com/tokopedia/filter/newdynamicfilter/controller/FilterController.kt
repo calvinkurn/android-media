@@ -8,8 +8,6 @@ import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import java.util.*
-import kotlin.collections.ArrayList
 
 open class FilterController {
 
@@ -182,6 +180,15 @@ open class FilterController {
                 action(filter, option)
     }
 
+    fun appendFilterList(parameter: Map<String, String>, filterList: List<Filter>) {
+        nonFilterParameter.clear()
+        filterViewState.clear()
+
+        loadFilterList(filterList)
+        loadParameter(parameter)
+        loadFilterViewState(parameter)
+    }
+
     fun saveSliderValueStates(minValue: Int, maxValue: Int) {
         pressedSliderMinValueState = minValue
         pressedSliderMaxValueState = maxValue
@@ -189,6 +196,14 @@ open class FilterController {
 
     fun isSliderValueHasChanged(minValue: Int, maxValue: Int): Boolean {
         return minValue != pressedSliderMinValueState || maxValue != pressedSliderMaxValueState
+    }
+
+    fun isSliderMinValueHasChanged(minValue: Int): Boolean {
+        return minValue != pressedSliderMinValueState
+    }
+
+    fun isSliderMaxValueHasChanged(maxValue: Int): Boolean {
+        return maxValue != pressedSliderMaxValueState
     }
 
     fun resetAllFilters() {

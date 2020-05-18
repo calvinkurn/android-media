@@ -1,17 +1,11 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import androidx.cardview.widget.CardView
-import android.util.DisplayMetrics
 import android.view.View
-import android.view.ViewTreeObserver
-import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -20,7 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
@@ -115,7 +109,7 @@ class ProductPostTagViewHolder(val mainView: View,
         }
     }
 
-    private fun renderTag(textView: TextView, tag: PostTagItemTag) {
+    private fun renderTag(textView: TextView, tag: TagsItem) {
         textView.text = tag.text
         if (tag.bgColor.hex.isEmpty() || tag.bgColor.opacity.isEmpty()) {
             tag.bgColor = getDefaultBackgroundColor()

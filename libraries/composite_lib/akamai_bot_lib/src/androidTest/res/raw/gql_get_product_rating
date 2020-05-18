@@ -1,0 +1,11 @@
+query getProductRating($productID:Int!){
+    ProductRatingQuery(productId: $productID){
+        ratingScore
+        totalRating
+        detail {
+            rate
+            totalReviews
+            percentage
+        }
+    }
+}

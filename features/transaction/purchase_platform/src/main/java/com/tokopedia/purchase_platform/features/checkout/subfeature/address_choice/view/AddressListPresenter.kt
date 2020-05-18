@@ -43,7 +43,7 @@ class AddressListPresenter @Inject constructor(
     }
 
     override fun searchAddress(query: String) {
-        usecase.execute(query)
+         usecase.execute(query)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
                     mView?.hideLoading()

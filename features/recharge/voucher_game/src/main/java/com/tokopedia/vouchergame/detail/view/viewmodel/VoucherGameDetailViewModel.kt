@@ -9,10 +9,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchergame.common.util.VoucherGameDispatchersProvider
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
-import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,22 +18,21 @@ import javax.inject.Inject
  * Created by resakemal on 16/08/19.
  */
 class VoucherGameDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                     dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                                     private val dispatcher: VoucherGameDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
     val voucherGameProducts = MutableLiveData<Result<VoucherGameDetailData>>()
 
     fun getVoucherGameProducts(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, VoucherGameDetailData.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<VoucherGameDetailData.Response>()
+            }.getSuccessData<VoucherGameDetailData.Response>().response
 
             // Add product initial position for tracking
-            val productList = data.response
             var productCount = 0
-            productList.product.dataCollections = productList.product.dataCollections.map {
+            data.product.dataCollections = data.product.dataCollections.map {
                 it.products = it.products.mapIndexed { index, item ->
                     item.position = index + productCount
                     return@mapIndexed item
@@ -44,7 +41,7 @@ class VoucherGameDetailViewModel @Inject constructor(private val graphqlReposito
                 return@map it
             }
 
-            voucherGameProducts.value = Success(productList)
+            voucherGameProducts.value = Success(data)
         }) {
             voucherGameProducts.value = Fail(it)
         }

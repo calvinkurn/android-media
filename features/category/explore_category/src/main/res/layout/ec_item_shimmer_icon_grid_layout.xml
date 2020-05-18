@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include
+        android:id="@+id/ec_layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/ec_item_shimmer_icon_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ec_layout2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/ec_layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/ec_item_shimmer_icon_layout"
+        app:layout_constraintLeft_toRightOf="@id/ec_layout1"
+        app:layout_constraintRight_toLeftOf="@id/ec_layout3"
+        app:layout_constraintTop_toTopOf="parent" />
+    <include
+        android:id="@+id/ec_layout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/ec_item_shimmer_icon_layout"
+        app:layout_constraintLeft_toRightOf="@id/ec_layout2"
+        app:layout_constraintRight_toLeftOf="@id/ec_layout4"
+        app:layout_constraintTop_toTopOf="parent" />
+    <include
+        android:id="@+id/ec_layout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/ec_item_shimmer_icon_layout"
+        app:layout_constraintLeft_toRightOf="@id/ec_layout3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

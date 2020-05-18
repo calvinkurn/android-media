@@ -6,6 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 
 import java.util.List;
 
@@ -14,10 +15,6 @@ import java.util.List;
  */
 
 public interface ShipmentAdapterActionListener {
-
-    void onVoucherMerchantPromoClicked(Object object);
-
-    void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse);
 
     void onCancelVoucherLogisticClicked(String pslCode, int position);
 
@@ -49,8 +46,6 @@ public interface ShipmentAdapterActionListener {
     void onFinishChoosingShipment();
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
-
-    void onRemovePromoCode(String promoCode);
 
     void resetTotalPrice();
 
@@ -125,4 +120,10 @@ public interface ShipmentAdapterActionListener {
     boolean isTradeInByDropOff();
 
     void onTradeInAddressTabChanged(int position);
+
+    void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel);
+
+    void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes);
+
+    void onSendAnalyticsViewPromoCheckoutApplied();
 }
