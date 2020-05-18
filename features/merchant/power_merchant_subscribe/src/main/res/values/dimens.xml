@@ -5,4 +5,7 @@
     <dimen name="power_merchant_feature_card_width">248dp</dimen>
     <dimen name="power_merchant_image_icon_large">36dp</dimen>
     <dimen name="power_merchant_feature_description_height">58dp</dimen>
+    <dimen name="power_merchant_horizontal_spacing_small">12dp</dimen>
+    <dimen name="power_merchant_divider_height">1dp</dimen>
+    <dimen name="power_merchant_label_height">20dp</dimen>
 </resources>
