@@ -105,6 +105,7 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             "        ticker {\n" +
             "            text\n" +
             "            query\n" +
+            "            type_id\n" +
             "        }\n" +
             "        suggestion {\n" +
             "            currentKeyword\n" +
