@@ -2,6 +2,8 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,7 +37,7 @@ class TalkReplyViewHolder(view: View,
             showSellerLabelWithCondition(isSeller)
             showAnswer(content, state.isMasked, maskedContent)
             if(attachedProductCount > 0) {
-                showAttachedProducts(attachedProducts)
+                showAttachedProducts(attachedProducts.toMutableList())
             }
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
             showTickerWithCondition(state.isMasked, state.allowUnmask)
@@ -102,12 +104,14 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showAttachedProducts(attachedProducts: List<AttachedProduct>) {
-        val adapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
-        itemView.replyAttachedProductsRecyclerView.adapter = adapter
-        attachedProducts.toMutableList().add(0, AttachedProduct())
-        adapter.setData(attachedProducts)
-        itemView.replyAttachedProductsRecyclerView.show()
+    private fun showAttachedProducts(attachedProducts: MutableList<AttachedProduct>) {
+        val attachedProductAdapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
+        attachedProducts.add(0, AttachedProduct())
+        attachedProductAdapter.setData(attachedProducts)
+        itemView.replyAttachedProductsRecyclerView.apply {
+            adapter = attachedProductAdapter
+            show()
+        }
     }
 
     private fun showKebabWithConditions(commentId: String, allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
@@ -124,7 +128,6 @@ class TalkReplyViewHolder(view: View,
             itemView.replyReportedTicker.show()
         }
     }
-
 
 
 }

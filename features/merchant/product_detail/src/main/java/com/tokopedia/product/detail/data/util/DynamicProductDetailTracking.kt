@@ -752,13 +752,13 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
         }
 
-        fun eventDiscussionSeeAll(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, userId: String) {
+        fun eventDiscussionSeeAll(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, userId: String, talkId: String, numberOfThreadsShown: String) {
             val mapEvent = TrackingUtil.addDiscussionParams(
                     TrackAppUtils.gtmData(
                             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                             ProductTrackingConstant.Category.PDP,
                             ProductTrackingConstant.Action.CLICK_DISCUSSION_SEE_ALL,
-                            ProductTrackingConstant.Label.DISCUSSION_DETAIL),
+                            String.format(ProductTrackingConstant.Label.DISCUSSION_DETAIL, talkId, numberOfThreadsShown)),
                     userId
             )
 

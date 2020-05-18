@@ -14,10 +14,15 @@ class TalkReplyAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(v
 
     fun bind(attachedProduct: AttachedProduct, attachedProductCardListener: AttachedProductCardListener, isInViewHolder: Boolean) {
         if(attachedProduct.productId.isEmpty()) {
-            itemView.attachedProductContainer.alpha = 0F
+            itemView.apply {
+                blankSpace.show()
+                attachedProductCard.hide()
+            }
             return
         }
         itemView.apply {
+            blankSpace.hide()
+            attachedProductCard.show()
             replyAttachedProductImage.loadImage(attachedProduct.thumbnail)
             replyAttachedProductName.text = attachedProduct.name
             replyAttachedProductPrice.text = attachedProduct.priceFormatted
