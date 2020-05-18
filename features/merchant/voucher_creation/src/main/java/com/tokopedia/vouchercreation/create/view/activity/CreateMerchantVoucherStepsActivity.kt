@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.coroutines.Fail
@@ -216,6 +217,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             voucherBitmap = bitmap
         })
         viewModel.initiateVoucherLiveData.observe(this, Observer { result ->
+            createMerchantVoucherLoader?.gone()
             when(result) {
                 is Success -> {
                     result.data.run {

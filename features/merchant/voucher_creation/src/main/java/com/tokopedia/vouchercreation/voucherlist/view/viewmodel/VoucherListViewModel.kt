@@ -11,7 +11,6 @@ import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUs
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -31,7 +30,6 @@ class VoucherListViewModel @Inject constructor(
 
     fun getVoucherList() {
         launchCatchError(block = {
-            delay(1000L)
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
             })

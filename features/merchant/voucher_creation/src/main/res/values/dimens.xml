@@ -39,6 +39,7 @@
     <dimen name="mvc_create_voucher_cashback_into_divider_margin_top">6dp</dimen>
     <dimen name="mvc_create_voucher_cashback_value_margin_top">12dp</dimen>
     <dimen name="mvc_create_voucher_cashback_discount_title_margin_top">15dp</dimen>
+    <dimen name="mvc_create_voucher_loader_size">100dp</dimen>
     <dimen name="mvc_textfield_margin_vertical">20dp</dimen>
     <dimen name="mvc_double_line_info_padding_vertical">10dp</dimen>
     <dimen name="mvc_double_line_info_padding_horizontal">12dp</dimen>

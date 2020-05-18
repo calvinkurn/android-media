@@ -155,7 +155,7 @@
     <string name="mvc_jt">Jt</string>
     <string name="mvc_rp_value">Rp%s</string>
     <string name="mvc_percent">&#37;</string>
-    <string name="mvc_percent_value">%s&#37;</string>
+    <string name="mvc_percent_value">%s%&#37;</string>
     <string name="mvc_start_date">Tanggal Mulai</string>
     <string name="mvc_end_date">Tanggal Berakhir</string>
     <string name="mvc_spending_so_far">Pengeluaran hingga saat ini</string>

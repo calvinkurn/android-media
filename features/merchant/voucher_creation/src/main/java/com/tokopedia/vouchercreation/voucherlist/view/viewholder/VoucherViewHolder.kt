@@ -56,16 +56,18 @@ class VoucherViewHolder(
         val isActiveVoucher = element.status == VoucherStatusConst.ONGOING || element.status == VoucherStatusConst.NOT_STARTED
         val oldFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         val newFormat = "dd MMM yyyy"
+
+
         if (isActiveVoucher) {
-            val startTime = DateTimeUtils.reformatDateTime(element.startTime, oldFormat, newFormat)
-            val finishTime = DateTimeUtils.reformatDateTime(element.finishTime, oldFormat, newFormat)
+            val startTime = DateTimeUtils.reformatUnsafeDateTime(element.startTime, newFormat)
+            val finishTime = DateTimeUtils.reformatUnsafeDateTime(element.finishTime, newFormat)
             itemView.tvMvcVoucherDuration.text = String.format("%s - %s", startTime, finishTime)
         } else {
             /**
              * this is not fix, need to confirm which date(create/update/start/finish)
              * must be shown for voucher type deleted, ended, progress and stopped
              * */
-            val createdTime = DateTimeUtils.reformatDateTime(element.createdTime, oldFormat, newFormat)
+            val createdTime = DateTimeUtils.reformatUnsafeDateTime(element.createdTime, newFormat)
             itemView.tvMvcVoucherDuration.text = createdTime
         }
     }

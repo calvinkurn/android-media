@@ -1,7 +1,8 @@
 package com.tokopedia.vouchercreation.voucherlist.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
 import com.tokopedia.vouchercreation.voucherlist.model.remote.GetMerchantVoucherListResponse
@@ -18,69 +19,67 @@ class GetVoucherListUseCase @Inject constructor(
 ) : BaseGqlUseCase<List<VoucherUiModel>>() {
 
     override suspend fun executeOnBackground(): List<VoucherUiModel> {
-        /*val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(GetMerchantVoucherListResponse::class.java)
-        if (errors.isEmpty()) {
+        if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetMerchantVoucherListResponse>()
             return mapper.mapRemoteModelToUiModel(data.result.data.vouchers)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
-        }*/
-        val gqlResponse = Gson().fromJson(DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
-        return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+        }
+//        val gqlResponse = Gson().fromJson(DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
+//        return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
     }
 
     companion object {
-        private const val QUERY = """
-            query (${'$'}Filter: MVFilter!) {
-              MerchantPromotionGetMVList(Filter: ${'$'}Filter) {
-                data {
-                  paging {
-                    per_page
-                    page
-                    has_prev
-                    has_next
-                  }
-                  vouchers {
-                    voucher_id
-                    shop_id
-                    voucher_name
-                    voucher_type
-                    voucher_type_formatted
-                    voucher_image
-                    voucher_image_square
-                    voucher_status
-                    voucher_status_formatted
-                    voucher_discount_type
-                    voucher_discount_type_formatted
-                    voucher_discount_amt
-                    voucher_discount_amt_formatted
-                    voucher_discount_amt_max
-                    voucher_discount_amt_max_formatted
-                    voucher_minimum_amt
-                    voucher_minimum_amt_formatted
-                    voucher_quota
-                    remaning_quota
-                    booked_global_quota
-                    voucher_start_time
-                    voucher_finish_time
-                    voucher_code
-                    galadriel_voucher_id
-                    galadriel_catalog_id
-                    create_time
-                    create_by
-                    update_time
-                    update_by
-                    is_public
-                    is_quota_avaiable
-                    tnc
-                  }
-                }
-              }
-            }
-        """
+        private const val QUERY = "query getAllMerchantPromotion {\n" +
+                "              MerchantPromotionGetMVList(Filter: {}) {\n" +
+                "                data {\n" +
+                "                  paging {\n" +
+                "                    per_page\n" +
+                "                    page\n" +
+                "                    has_prev\n" +
+                "                    has_next\n" +
+                "                  }\n" +
+                "                  vouchers {\n" +
+                "                    voucher_id\n" +
+                "                    shop_id\n" +
+                "                    voucher_name\n" +
+                "                    voucher_type\n" +
+                "                    voucher_type_formatted\n" +
+                "                    voucher_image\n" +
+                "                    voucher_image_square\n" +
+                "                    voucher_status\n" +
+                "                    voucher_status_formatted\n" +
+                "                    voucher_discount_type\n" +
+                "                    voucher_discount_type_formatted\n" +
+                "                    voucher_discount_amt\n" +
+                "                    voucher_discount_amt_formatted\n" +
+                "                    voucher_discount_amt_max\n" +
+                "                    voucher_discount_amt_max_formatted\n" +
+                "                    voucher_minimum_amt\n" +
+                "                    voucher_minimum_amt_formatted\n" +
+                "                    voucher_quota\n" +
+                "                    remaining_quota\n" +
+                "                    booked_global_quota\n" +
+                "                    voucher_start_time\n" +
+                "                    voucher_finish_time\n" +
+                "                    voucher_code\n" +
+                "                    galadriel_voucher_id\n" +
+                "                    galadriel_catalog_id\n" +
+                "                    create_time\n" +
+                "                    create_by\n" +
+                "                    update_time\n" +
+                "                    update_by\n" +
+                "                    is_public\n" +
+                "                    is_quota_avaiable\n" +
+                "                    tnc\n" +
+                "                  }\n" +
+                "                }\n" +
+                "              }\n" +
+                "            }"
 
         private const val DUMMY_ACTIVE_VOUCHER = """
             {
