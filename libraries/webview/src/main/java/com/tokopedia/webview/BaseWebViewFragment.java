@@ -557,10 +557,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
             return true;
-        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
-            Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
-            if (intent != null) {
-                startActivity(intent);
+        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
+            //Avoid crash in app that doesn't support branch IO
+            try {
+                Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+                if (intent != null) {
+                    startActivity(intent);
+                }
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
             }
         }
         if (url.contains(PARAM_EXTERNAL)) {
