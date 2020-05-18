@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
@@ -39,6 +41,8 @@ class LoaderFragment : BaseDaggerFragment() {
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
+    private val handler = Handler()
+
     var callback: ThankYouPageDataLoadCallback? = null
 
     override fun getScreenName(): String = ""
@@ -64,11 +68,20 @@ class LoaderFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
+        showLoaderView()
+        handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
+    }
+
+    override fun onDestroyView() {
+        handler.removeCallbacks(delayLoadingRunnable)
+        super.onDestroyView()
+    }
+
+    private val delayLoadingRunnable = Runnable {
         loadThankPageData()
     }
 
     private fun loadThankPageData() {
-        loading_layout.visible()
         globalError.gone()
         arguments?.let {
             if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
@@ -87,6 +100,16 @@ class LoaderFragment : BaseDaggerFragment() {
         })
     }
 
+    override fun onStart() {
+        super.onStart()
+        loading_layout.startAnimation()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        loading_layout.stopAnimation()
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ThankYouPageDataLoadCallback)
@@ -99,7 +122,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
-        loading_layout.gone()
+        hideLoaderView()
         when (throwable) {
             is MessageErrorException -> {
                 if (throwable.message?.startsWith("rpc error:") == true) {
@@ -119,6 +142,7 @@ class LoaderFragment : BaseDaggerFragment() {
         globalError.setType(GlobalError.NO_CONNECTION)
         globalError.errorAction.visible()
         globalError.errorAction.setOnClickListener {
+            showLoaderView()
             loadThankPageData()
         }
     }
@@ -130,7 +154,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
-        loading_layout.gone()
+        hideLoaderView()
         if (PaymentStatusMapper.getPaymentStatusByInt(data.paymentStatus) == Invalid) {
             callback?.onInvalidThankYouPage()
             return
@@ -146,14 +170,30 @@ class LoaderFragment : BaseDaggerFragment() {
     private fun sendThankYouPageAnalytics(thanksPageData: ThanksPageData) {
         if (thanksPageData.pushGtm)
             thankYouPageAnalytics.sendThankYouPageData(thanksPageData)
-        thankYouPageAnalytics.appsFlyerPurchaseEvent(thanksPageData,"MarketPlace")
+        thankYouPageAnalytics.appsFlyerPurchaseEvent(thanksPageData, "MarketPlace")
         thankYouPageAnalytics.sendBranchIOEvent(thanksPageData)
     }
 
     companion object {
+        const val DELAY_MILLIS = 2000L
+
         fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
             arguments = bundle
         }
+    }
+
+    private fun showLoaderView() {
+        tvWaitForMinute.visible()
+        tvProcessingPayment.visible()
+        loading_layout.visible()
+        loading_layout.startAnimation()
+    }
+
+    private fun hideLoaderView() {
+        loading_layout.stopAnimation()
+        tvWaitForMinute.hide()
+        tvProcessingPayment.hide()
+        loading_layout.hide()
     }
 
 }
