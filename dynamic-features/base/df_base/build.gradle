@@ -99,7 +99,7 @@ dependencies {
     implementation project(rootProject.ext.features.hotel)
     //User
     implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
