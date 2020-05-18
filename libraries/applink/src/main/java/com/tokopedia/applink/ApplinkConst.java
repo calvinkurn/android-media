@@ -104,8 +104,6 @@ public interface ApplinkConst {
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
     String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
-    String PROMO_SALE = "tokopedia://sale/{slug}/";
-    String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
     String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
     String WALLET_HOME = "tokopedia://wallet";
     String WALLET_ACTIVATION = "tokopedia://wallet/activation";

@@ -254,9 +254,6 @@
             android:name=".home.ReactNativeDiscoveryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.ReactNativePromoSaleActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".home.ReactNativeSubPromoPageActivity"
