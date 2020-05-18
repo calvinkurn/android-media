@@ -1,5 +1,6 @@
 package com.tokopedia.centralizedpromo.view.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
@@ -8,14 +9,12 @@ import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.R
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockkObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -28,6 +27,9 @@ import kotlin.reflect.jvm.isAccessible
 
 @ExperimentalCoroutinesApi
 class CentralizedPromoViewModelTest {
+
+    @RelaxedMockK
+    lateinit var context: Context
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -59,12 +61,28 @@ class CentralizedPromoViewModelTest {
             it?.isAccessible = true
             it?.get(viewModel)
         }
+
+        every {
+            context.getString(R.string.centralized_promo_promo_creation_topads_title)
+        } returns "TopAds"
+
+        every {
+            context.getString(R.string.centralized_promo_promo_creation_topads_description)
+        } returns "Iklankan produkmu untuk menjangkau lebih banyak pembeli"
+
+        every {
+            context.getString(R.string.centralized_promo_promo_creation_broadcast_chat_title)
+        } returns "Broadcast Chat"
+
+        every {
+            context.getString(R.string.centralized_promo_promo_creation_broadcast_chat_description)
+        } returns "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli"
     }
 
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     private val viewModel : CentralizedPromoViewModel by lazy {
-        CentralizedPromoViewModel(userSession, getOnGoingPromotionUseCase, getPostUseCase, getChatBlastSellerMetadataUseCase, testCoroutineDispatcher)
+        CentralizedPromoViewModel(context, userSession, getOnGoingPromotionUseCase, getPostUseCase, getChatBlastSellerMetadataUseCase, testCoroutineDispatcher)
     }
 
     @Test
@@ -188,7 +206,15 @@ class CentralizedPromoViewModelTest {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         } returns ChatBlastSellerMetadataUiModel(200, 2)
 
+        every {
+            context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, any<Integer>())
+        } returns String.format("%d kuota gratis", 200)
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        coVerify {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        }
 
         delay(100)
 
