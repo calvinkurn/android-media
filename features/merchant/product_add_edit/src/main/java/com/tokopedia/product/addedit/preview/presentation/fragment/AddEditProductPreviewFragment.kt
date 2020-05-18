@@ -229,7 +229,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         return viewModel.isEditing.value ?: false
     }
 
-    fun dataBackPressedMissing(): Boolean {
+    fun dataBackPressedLoss(): Boolean {
+        // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
+        // dataBackPressed is a sign of activity where data is obtained
         if(dataBackPressed == null) {
             return true
         }

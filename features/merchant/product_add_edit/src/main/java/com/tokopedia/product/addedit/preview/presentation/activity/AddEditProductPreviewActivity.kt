@@ -91,7 +91,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             setTitle(getString(R.string.label_title_on_dialog))
             setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
             setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-            if(isEditing()  || dataBackPressedMissing()) {
+            if(isEditing()  || dataBackPressedLoss()) {
                 setDescription(getString(R.string.label_description_on_dialog_edit))
                 setSecondaryCTAClickListener {
                     super.onBackPressed()
@@ -135,10 +135,10 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun dataBackPressedMissing(): Boolean {
+    private fun dataBackPressedLoss(): Boolean {
         val f = fragment
         if (f != null && f is AddEditProductPreviewFragment) {
-            return f.dataBackPressedMissing()
+            return f.dataBackPressedLoss()
         }
         return false
     }
