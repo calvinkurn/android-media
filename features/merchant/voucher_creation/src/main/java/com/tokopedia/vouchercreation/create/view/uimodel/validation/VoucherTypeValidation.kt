@@ -14,6 +14,6 @@ open class VoucherTypeValidation (
 ) : Validation {
 
         fun getIsVoucherError() =
-                benefitTypeError.isNotBlank() || couponTypeError.isNotBlank() || minPurchaseError.isNotBlank() || quotaError.isNotBlank()
+                !(benefitTypeError.isBlank() && couponTypeError.isBlank() && minPurchaseError.isBlank() && quotaError.isBlank())
 
 }

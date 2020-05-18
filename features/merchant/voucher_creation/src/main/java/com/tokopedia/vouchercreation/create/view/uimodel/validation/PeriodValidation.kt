@@ -2,7 +2,7 @@ package com.tokopedia.vouchercreation.create.view.uimodel.validation
 
 import com.google.gson.annotations.SerializedName
 
-data class PeriodValidation (
+class PeriodValidation (
         @SerializedName("date_start")
         val dateStartError: String = "",
         @SerializedName("date_end")
@@ -11,4 +11,9 @@ data class PeriodValidation (
         val hourStartError: String = "",
         @SerializedName("hour_end")
         val hourEndError: String = ""
-) : Validation
+) : Validation {
+
+        fun getIsHaveError() =
+                !(dateStartError.isBlank() && dateEndError.isBlank() && hourStartError.isBlank() && hourEndError.isBlank())
+
+}

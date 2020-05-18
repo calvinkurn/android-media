@@ -53,4 +53,9 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(CreatePromoCodeViewModel::class)
     abstract fun provideCreatePromoCodeViewModel(createPromoCodeViewModel: CreatePromoCodeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SetVoucherPeriodViewModel::class)
+    abstract fun provideSetVoucherPeriodViewModel(setVoucherPeriodViewModel: SetVoucherPeriodViewModel): ViewModel
 }
