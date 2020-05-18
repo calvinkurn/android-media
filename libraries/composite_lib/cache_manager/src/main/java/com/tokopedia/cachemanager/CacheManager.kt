@@ -14,6 +14,8 @@ abstract class CacheManager(val context: Context) {
         createRepository(context)
     }
 
+    // test
+
     /**
      * Generally, no need generate Id, so put false
      * Only put generateId = true, if we want to generate to ID, so the id can be passed to another activity
