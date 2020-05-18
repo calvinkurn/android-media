@@ -55,7 +55,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/promo_checkout_label"
                 app:typographyWeight="bold"
-                android:textColor="@color/gr_700"
+                app:typographyType="heading_5"
+                android:textColor="@color/clr_f531353b"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:visibility="gone"/>
