@@ -121,11 +121,11 @@ class ContainerFragment : Fragment() {
     }
 
     private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
-        if (null == fragment || !isAdded) {
-            return
-        }
-
         handler.post {
+            if (null == fragment || !isAdded) {
+                return@post
+            }
+
             val fragmentName = fragment.javaClass.name
             val manager = childFragmentManager
             val transaction = manager.beginTransaction()
