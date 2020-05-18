@@ -97,6 +97,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
         initSettingProfileData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshProfile()
+    }
+
     private fun showChangeEmailDialog() {
         val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
         dialog.setTitle(getString(R.string.add_and_verify_phone))
@@ -215,28 +220,24 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessChangeName(data: Intent?) {
-        refreshProfile()
         view?.run {
             Toaster.make(this, getString(R.string.change_name_change_success), Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessAddBOD(data: Intent?) {
-        refreshProfile()
         view?.run {
             Toaster.showNormal(this, getString(R.string.success_add_bod), Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessChangeBOD(data: Intent?) {
-        refreshProfile()
         view?.run {
             Toaster.showNormal(this, getString(R.string.success_change_bod), Snackbar.LENGTH_LONG)
         }
     }
 
     private fun onSuccessEditPhone(data: Intent?) {
-        refreshProfile()
         view?.run {
             Toaster.showNormal(this, getString(R.string.success_change_phone_number), Snackbar.LENGTH_LONG)
         }
@@ -273,7 +274,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     Toaster.showNormal(this, getString(R.string.success_add_phone), Snackbar.LENGTH_LONG)
                 }
             }
-            refreshProfile()
             AddPhoneNumberTracker().viewPersonalDataPage(true)
         }
     }
@@ -286,7 +286,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     Toaster.showNormal(this, getString(R.string.success_add_email), Snackbar.LENGTH_LONG)
                 }
             }
-            refreshProfile()
         }
     }
 
