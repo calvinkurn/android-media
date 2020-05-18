@@ -28,11 +28,9 @@ class PowerMerchantRegistrationView : ConstraintLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    init {
+    fun show(powerMerchantStatus: PowerMerchantStatus, tracker: PowerMerchantTracking) {
         inflate(context, R.layout.layout_power_merchant_registration, this)
-    }
 
-    fun bind(powerMerchantStatus: PowerMerchantStatus, tracker: PowerMerchantTracking) {
         val shopStatus = powerMerchantStatus.kycUserProjectInfoPojo.kycProjectInfo.status
         val shopScore = powerMerchantStatus.shopScore.data.value
 
@@ -56,7 +54,9 @@ class PowerMerchantRegistrationView : ConstraintLayout {
                 val clickableText = context.getString(R.string.power_merchant_register_text)
                 val clickableTextColor = ContextCompat.getColor(context, R.color.light_N700)
 
-                createSpannableString(text, clickableText, clickableTextColor, true) { goToTermsAndConditionPage() }
+                createSpannableString(text, clickableText, clickableTextColor, true) {
+                    goToTermsAndConditionPage()
+                }
             }
             shopScoreEligible -> {
                 context.getString(R.string.power_merchant_kyc_verified_description)

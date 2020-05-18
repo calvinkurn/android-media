@@ -5,6 +5,11 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PowerMerchantViewAdapter
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
@@ -21,13 +26,14 @@ class PowerMerchantFeatureView: LinearLayout {
 
     private val adapter by lazy { PowerMerchantViewAdapter() }
 
-    init {
-        initView()
-    }
-
-    private fun initView() {
+    fun show(powerMerchantStatus: PowerMerchantStatus) {
         inflate(context, R.layout.layout_power_merchant_feature, this)
 
+        setupFeatureList()
+        setupLearnMoreBtn(powerMerchantStatus)
+    }
+
+    private fun setupFeatureList() {
         val features = listOf(
             PowerMerchantFeature(
                 R.string.power_merchant_bebas_ongkir,
@@ -51,5 +57,24 @@ class PowerMerchantFeatureView: LinearLayout {
         }
 
         adapter.items = features
+    }
+
+    private fun setupLearnMoreBtn(powerMerchantStatus: PowerMerchantStatus) {
+        val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
+        val shouldShow = shopStatus.isPowerMerchantActive() || shopStatus.isPowerMerchantIdle()
+
+        if(shouldShow) {
+            btnLearnMore.show()
+            btnLearnMore.setOnClickListener {
+                goToLearnMorePage()
+            }
+        } else {
+            btnLearnMore.hide()
+        }
+    }
+
+    private fun goToLearnMorePage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
+            PowerMerchantUrl.URL_LEARN_MORE_BENEFIT)
     }
 }
