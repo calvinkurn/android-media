@@ -208,7 +208,7 @@ open class PublishCompositeTask : DefaultTask() {
     private fun deleteBackup() {
         val backupFile = File(LIBRARIES_BACKUP_PATH)
         if (backupFile.exists()) {
-            backup.delete()
+            backupFile.delete()
         }
         changedModuleList.forEach {
             val backup = File("${it}/.build_backup")
