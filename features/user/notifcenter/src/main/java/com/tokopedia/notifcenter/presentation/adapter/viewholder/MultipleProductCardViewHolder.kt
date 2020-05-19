@@ -126,6 +126,22 @@ class MultipleProductCardViewHolder(
             listener.itemClicked(notification, adapterPosition)
             listener.addProductToCheckout(element.userInfo, Mapper.map(element))
         }
+
+        btnAtc.setOnClickListener {
+            notification.getAtcProduct()?.let { product ->
+                listener.addProductToCart(product) {
+                    listener.onSuccessAddToCart(it.message.first())
+
+                    // add tracker
+                    listener.getAnalytic().trackAddToCartClicked(
+                            templateKey = element.templateKey,
+                            notificationId = element.notificationId,
+                            product = product,
+                            atc = it
+                    )
+                }
+            }
+        }
     }
 
     companion object {

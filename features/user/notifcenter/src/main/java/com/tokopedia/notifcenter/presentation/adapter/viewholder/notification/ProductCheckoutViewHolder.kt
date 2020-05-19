@@ -114,6 +114,20 @@ class ProductCheckoutViewHolder(
                 listener.addProductToCheckout(element.userInfo, element)
             }
         }
+
+        btnAtc.setOnClickListener {
+            listener.addProductToCart(product) {
+                listener.onSuccessAddToCart(it.message.first())
+
+                // add tracker
+                listener.getAnalytic().trackAddToCartClicked(
+                        templateKey = element.templateKey,
+                        notificationId = element.notificationId,
+                        product = product,
+                        atc = it
+                )
+            }
+        }
     }
 
     private fun checkoutButtonValidation(type: Int) {
