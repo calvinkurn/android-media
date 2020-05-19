@@ -170,7 +170,7 @@
             android:text="@string/label_back"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/power_merchant_back_btn_margin"
             android:layout_marginBottom="@dimen/spacing_lvl5"
             app:layout_constraintTop_toBottomOf="@id/btnCancel"
             app:unifyButtonSize="medium" />

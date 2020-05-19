@@ -9,4 +9,5 @@
     <dimen name="power_merchant_horizontal_spacing_small">12dp</dimen>
     <dimen name="power_merchant_divider_height">1dp</dimen>
     <dimen name="power_merchant_label_height">20dp</dimen>
+    <dimen name="power_merchant_back_btn_margin">10dp</dimen>
 </resources>
