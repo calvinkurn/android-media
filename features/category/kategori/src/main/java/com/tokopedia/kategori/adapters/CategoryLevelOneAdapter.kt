@@ -55,7 +55,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
 
     private fun initShimmerViewHolder(shimmerViewHolder: ShimmerViewHolder, position: Int) {
         if (position == 0) {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(shimmerViewHolder.itemView.context.getColor(R.color.white))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(shimmerViewHolder.itemView.context.resources.getColor(R.color.white))
         } else {
             shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.category_unselected_background))
         }
