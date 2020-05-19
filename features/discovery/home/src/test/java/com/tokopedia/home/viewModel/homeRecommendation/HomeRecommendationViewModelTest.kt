@@ -416,7 +416,7 @@ class HomeRecommendationViewModelTest : Spek({
             }
 
             Given("set return impression"){
-                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), any()) } answers {
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl)) } answers {
                     url = slotUrl.captured
                 }
             }
@@ -448,7 +448,7 @@ class HomeRecommendationViewModelTest : Spek({
             }
 
             When("View rendered and impression triggered"){
-                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl, "HomeRecommendation")
+                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl)
             }
 
             Then("Verify impression"){
@@ -476,7 +476,7 @@ class HomeRecommendationViewModelTest : Spek({
             }
 
             Given("set return impression"){
-                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), any()) } answers {
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl)) } answers {
                     url = slotUrl.captured
                 }
             }
@@ -508,7 +508,7 @@ class HomeRecommendationViewModelTest : Spek({
             }
 
             When("View rendered and impression triggered"){
-                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl, "HomeRecommendation")
+                topAdsUrlHitter.hitImpressionUrl(context, item.product.trackerImageUrl)
             }
 
             Then("Verify impression"){
@@ -517,7 +517,7 @@ class HomeRecommendationViewModelTest : Spek({
 
 
             When("View clicked"){
-                topAdsUrlHitter.hitClickUrl(context, item.product.clickUrl, "HomeRecommendation")
+                topAdsUrlHitter.hitClickUrl(context, item.product.clickUrl)
             }
 
             Then("Verify click"){

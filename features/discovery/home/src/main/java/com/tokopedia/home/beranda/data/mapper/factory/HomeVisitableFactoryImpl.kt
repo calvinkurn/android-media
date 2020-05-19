@@ -220,8 +220,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
-                        channel = channel,
-                        trackingData = HomePageTrackingV2.MixLeft.getMixLeftProductView(channel)
+                        channel = channel
                 )}
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createDynamicChannel(
@@ -232,9 +231,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
-                        channel,
-                        trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
-                        isCombined = false
+                        channel
                 ) }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
             }

@@ -164,7 +164,7 @@ class HomeViewModelBannerHomepageTest : Spek({
             }
 
             Given("set return impression"){
-                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), any()) } answers {
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl)) } answers {
                     url = slotUrl.captured
                 }
             }
@@ -185,7 +185,7 @@ class HomeViewModelBannerHomepageTest : Spek({
             }
 
             When("Impression topads called"){
-                topAdsUrlHitter.hitImpressionUrl(context,"coba topads", "HomepageBanner")
+                topAdsUrlHitter.hitImpressionUrl(context,"coba topads")
             }
 
             Then("Check the url is same"){
