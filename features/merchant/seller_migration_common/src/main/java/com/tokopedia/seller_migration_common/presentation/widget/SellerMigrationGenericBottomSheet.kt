@@ -20,8 +20,8 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initView()
         super.onViewCreated(view, savedInstanceState)
+        initView()
     }
 
     private fun initView() {
