@@ -72,11 +72,9 @@ foundDuplicateImages (){
 
     #duplicate file found check in output
     if [[ $output == *"command not found"* ]]; then
-        echo "#############################################################"
-        echo "####   Please install python/ update env path variable   ####"
-        echo "#############################################################"
+        echo -e "$output"
         echo -e "\n"
-        echo -e "After installing please run following commands:"
+        echo -e "After configuring python, please run following commands:"
         echo -e "\n"
         echo -e "pip install fnmatch"
         echo -e "\n"
