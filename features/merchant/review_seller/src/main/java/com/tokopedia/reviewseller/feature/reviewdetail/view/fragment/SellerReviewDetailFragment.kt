@@ -98,6 +98,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     var filterBy: String = "time=all"
     var toolbarTitle = ""
 
+    var positionFilterPeriod = 1
+
     private var filterPeriodDetailUnify: ListUnify? = null
     private var optionFeedbackDetailUnify: ListUnify? = null
     private var optionMenuDetailUnify: ListUnify? = null
@@ -136,7 +138,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun initFilterData() {
         val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
         viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterBundle)
-        viewModelProductReviewDetail?.positionFilterPeriod = ReviewSellerUtil.getDateChipFilterPosition(filterDetailList, chipFilterBundle)
+        positionFilterPeriod = ReviewSellerUtil.getDateChipFilterPosition(filterDetailList, chipFilterBundle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -399,7 +401,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         filterPeriodDetailUnify?.let { it ->
             it.onLoadFinish {
-                it.setSelectedFilterOrSort(filterPeriodItemUnify, viewModelProductReviewDetail?.positionFilterPeriod.orZero())
+                it.setSelectedFilterOrSort(filterPeriodItemUnify, positionFilterPeriod.orZero())
 
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemFilterClickedBottomSheet(position, filterPeriodItemUnify, it)
@@ -425,9 +427,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     productID.toString(),
                     filterListItemUnify[position].listTitleText)
 
-            if (position == viewModelProductReviewDetail?.positionFilterPeriod) return
+            if (position == positionFilterPeriod) return
             setIntentResultChipDate(filterListItemUnify[position].listTitleText, position)
-            viewModelProductReviewDetail?.positionFilterPeriod = position
+            positionFilterPeriod = position
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelProductReviewDetail?.setChipFilterDateText(filterListItemUnify[position].listTitleText)
             bottomSheetPeriodDetail?.dismiss()

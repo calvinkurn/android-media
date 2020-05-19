@@ -10,7 +10,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockkObject
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -31,15 +30,8 @@ abstract class SellerReviewListViewModelTextFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mockkObject(GetProductRatingOverallUseCase)
-        mockkObject(GetReviewProductListUseCase)
         viewModel = SellerReviewListViewModel(TestCoroutineDispatchers,
                 getProductRatingOverallUse, getReviewProductListUseCase)
-    }
-
-    protected fun LiveData<*>.verifyValueEquals(expected: Any) {
-        val actual = value
-        assertEquals(expected, actual)
     }
 
     protected fun LiveData<*>.verifySuccessEquals(expected: Success<*>) {

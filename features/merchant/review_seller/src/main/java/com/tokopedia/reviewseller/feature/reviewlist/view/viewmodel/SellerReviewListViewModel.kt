@@ -32,16 +32,6 @@ class SellerReviewListViewModel @Inject constructor(
     val productRatingOverall: LiveData<Result<ProductRatingOverallUiModel>>
         get() = _productRatingOverall
 
-    var sortBy: String? = ""
-    var filterBy: String? = ""
-
-    var filterAllText: String? = ""
-
-    var positionFilter = 0
-    var positionSort = 0
-
-    var isCompletedCoachMark = false
-
     fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
 
