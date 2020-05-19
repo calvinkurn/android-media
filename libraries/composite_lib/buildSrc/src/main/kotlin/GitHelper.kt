@@ -13,7 +13,7 @@ fun getCommitId(rootProject: Project, projectName: String): String {
     println(gitLogCommitIdResult.toString())
     try {
         if (gitLogEmailResult.isNotEmpty()) {
-            val userIndex = getUserIndex(gitLogCommitIdResult)
+            val userIndex = getUserIndex(gitLogEmailResult)
             if (userIndex == -1) {
                 return ""
             } else {
