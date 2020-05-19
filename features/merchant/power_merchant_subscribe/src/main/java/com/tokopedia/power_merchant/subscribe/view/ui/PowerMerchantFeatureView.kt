@@ -26,6 +26,10 @@ class PowerMerchantFeatureView: LinearLayout {
 
     private val adapter by lazy { PowerMerchantViewAdapter() }
 
+    init {
+        inflate(context, R.layout.layout_power_merchant_feature, this)
+    }
+
     fun show(powerMerchantStatus: PowerMerchantStatus) {
         inflate(context, R.layout.layout_power_merchant_feature, this)
 

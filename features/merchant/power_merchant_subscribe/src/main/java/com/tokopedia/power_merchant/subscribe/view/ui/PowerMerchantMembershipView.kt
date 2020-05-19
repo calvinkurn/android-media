@@ -23,8 +23,11 @@ class PowerMerchantMembershipView: ConstraintLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
 
-    fun show(powerMerchantStatus: PowerMerchantStatus) {
+    init {
         inflate(context, R.layout.layout_power_merchant_membership, this)
+    }
+
+    fun show(powerMerchantStatus: PowerMerchantStatus, onClickUpgradeBtn: () -> Unit) {
         val shopScore = powerMerchantStatus.shopScore.data.value
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 

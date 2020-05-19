@@ -28,9 +28,11 @@ class PowerMerchantRegistrationView : ConstraintLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    fun show(powerMerchantStatus: PowerMerchantStatus, tracker: PowerMerchantTracking) {
+    init {
         inflate(context, R.layout.layout_power_merchant_registration, this)
+    }
 
+    fun show(powerMerchantStatus: PowerMerchantStatus, tracker: PowerMerchantTracking) {
         val shopStatus = powerMerchantStatus.kycUserProjectInfoPojo.kycProjectInfo.status
         val shopScore = powerMerchantStatus.shopScore.data.value
 

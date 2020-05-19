@@ -23,8 +23,9 @@ class PowerMerchantBenefitView: ConstraintLayout {
 
     private val adapter by lazy { PowerMerchantViewAdapter() }
 
-    fun show() {
+    init {
         inflate(context, R.layout.layout_power_merchant_benefit, this)
+    }
 
         setupBenefitList()
         setOnClickTextLearnMore()
