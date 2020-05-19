@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/iv_payment_success"
-                android:layout_width="@dimen/dp_192"
-                android:layout_height="@dimen/dp_144"
+                android:layout_width="@dimen/thank_dp_192"
+                android:layout_height="@dimen/thank_dp_144"
                 android:layout_marginTop="@dimen/dp_24"
                 android:src="@drawable/thank_instant_payment_banner"
                 app:layout_constraintEnd_toEndOf="parent"

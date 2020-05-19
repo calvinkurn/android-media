@@ -6,11 +6,10 @@
     android:background="@color/Neutral_N0"
     android:orientation="vertical">
 
-    <com.tokopedia.thankyou_native.presentation.views.ThankYouLoadingView
-        android:id="@+id/loading_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_300"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,27 +18,27 @@
         android:id="@+id/tvWaitForMinute"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyType="heading_3"
-        android:textColor="@color/Neutral_N700_96"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/loading_layout"
+        android:gravity="center"
+        android:text="@string/thank_wait_for_minute"
+        android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:gravity="center"
-        android:text="@string/thank_wait_for_minute"/>
+        app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView"
+        app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvProcessingPayment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_68"
         android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintTop_toBottomOf="@+id/tvWaitForMinute"
+        android:gravity="center"
+        android:text="@string/thank_processing_payment"
+        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:gravity="center"
-        android:text="@string/thank_processing_payment"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvWaitForMinute"
+        app:typographyType="body_3" />
 
 
     <com.tokopedia.globalerror.GlobalError
@@ -52,4 +51,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

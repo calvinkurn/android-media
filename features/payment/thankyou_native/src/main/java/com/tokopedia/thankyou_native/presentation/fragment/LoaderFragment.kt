@@ -9,8 +9,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.LottieTask
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
@@ -27,11 +32,20 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.zip.ZipInputStream
 import javax.inject.Inject
 
 class LoaderFragment : BaseDaggerFragment() {
+
+    val job = Job()
+    val mainDispatcher = Dispatchers.Main + job
+    val ioDispatcher = Dispatchers.IO
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -100,16 +114,6 @@ class LoaderFragment : BaseDaggerFragment() {
         })
     }
 
-    override fun onStart() {
-        super.onStart()
-        loading_layout.startAnimation()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        loading_layout.stopAnimation()
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ThankYouPageDataLoadCallback)
@@ -174,26 +178,50 @@ class LoaderFragment : BaseDaggerFragment() {
         thankYouPageAnalytics.sendBranchIOEvent(thanksPageData)
     }
 
-    companion object {
-        const val DELAY_MILLIS = 2000L
-
-        fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
-            arguments = bundle
-        }
-    }
-
     private fun showLoaderView() {
         tvWaitForMinute.visible()
         tvProcessingPayment.visible()
-        loading_layout.visible()
-        loading_layout.startAnimation()
+        lottieAnimationView.visible()
+        loadLoaderInputStream()
     }
 
     private fun hideLoaderView() {
-        loading_layout.stopAnimation()
+        lottieAnimationView.gone()
         tvWaitForMinute.hide()
         tvProcessingPayment.hide()
-        loading_layout.hide()
+    }
+
+    private fun loadLoaderInputStream() {
+        CoroutineScope(mainDispatcher).launchCatchError(
+                block = {
+                    val task = getLottieTask()
+                    addLottieAnimationToView(task)
+                }, onError = {
+            it.printStackTrace()
+        })
+
+    }
+
+    private fun addLottieAnimationToView(task: LottieTask<LottieComposition>) {
+        task.addListener { result: LottieComposition? ->
+            lottieAnimationView?.setComposition(result!!)
+            lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+            lottieAnimationView?.repeatMode = LottieDrawable.RESTART
+            lottieAnimationView.playAnimation()
+        }
+    }
+
+    private suspend fun getLottieTask(): LottieTask<LottieComposition> = withContext(ioDispatcher) {
+        val lottieFileZipStream = ZipInputStream(context!!.assets.open(LOADER_JSON_ZIP_FILE))
+        return@withContext LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+    }
+
+    companion object {
+        const val DELAY_MILLIS = 2000L
+        const val LOADER_JSON_ZIP_FILE = "thanks_payment_data_loader.zip"
+        fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
+            arguments = bundle
+        }
     }
 
 }

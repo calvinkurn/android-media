@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dp_192">192dp</dimen>
-    <dimen name="dp_144">144dp</dimen>
-    <dimen name="thank_you_product_card_size">155dp</dimen>
-    <dimen name="thank_dp_189">189</dimen>
-    <dimen name="thank_dp_123">123</dimen>
+    <dimen name="thank_dp_192">192dp</dimen>
+    <dimen name="thank_dp_144">144dp</dimen>
+    <dimen name="thank_product_card_size">155dp</dimen>
+
 </resources>
