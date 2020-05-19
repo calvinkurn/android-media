@@ -2,59 +2,54 @@ package com.tokopedia.analyticsdebugger.debugger.ui.presenter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
-import com.tokopedia.analyticsdebugger.debugger.domain.DeleteGtmLogUseCase
-import com.tokopedia.analyticsdebugger.debugger.domain.GetGtmLogUseCase
-import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
+import com.tokopedia.analyticsdebugger.debugger.domain.DeleteTopAdsLogUseCase
+import com.tokopedia.analyticsdebugger.debugger.domain.GetTopAdsLogUseCase
 import com.tokopedia.usecase.RequestParams
-
 import rx.Subscriber
 
-/**
- * @author okasurya on 5/16/18.
- */
-class AnalyticsDebuggerPresenter(private val getGtmLogUseCase: GetGtmLogUseCase,
-                                 private val deleteGtmLogUseCase: DeleteGtmLogUseCase) : AnalyticsDebugger.Presenter {
-    private var view: AnalyticsDebugger.View? = null
+class TopAdsDebuggerPresenter(private val getTopAdsLogUseCase: GetTopAdsLogUseCase,
+                              private val deleteTopAdsLogUseCase: DeleteTopAdsLogUseCase) : TopAdsDebugger.Presenter {
+    private var view: TopAdsDebugger.View? = null
 
     private var keyword = ""
     private var page = 0
     private val requestParams: RequestParams
-
+    
     init {
         requestParams = RequestParams.create()
     }
 
-    override fun attachView(view: AnalyticsDebugger.View) {
+    override fun attachView(view: TopAdsDebugger.View) {
         this.view = view
     }
 
     override fun detachView() {
-        getGtmLogUseCase.unsubscribe()
-        deleteGtmLogUseCase.unsubscribe()
+        getTopAdsLogUseCase.unsubscribe()
+        deleteTopAdsLogUseCase.unsubscribe()
         view = null
     }
 
     override fun loadMore() {
         setRequestParams(++page, keyword)
-        getGtmLogUseCase.execute(requestParams, loadMoreSubscriber())
+        getTopAdsLogUseCase.execute(requestParams, loadMoreSubscriber())
     }
 
     override fun search(text: String) {
         page = 0
         keyword = text
         setRequestParams(page, keyword)
-        getGtmLogUseCase.execute(requestParams, reloadSubscriber())
+        getTopAdsLogUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun reloadData() {
         page = 0
         keyword = ""
         setRequestParams(page, keyword)
-        getGtmLogUseCase.execute(requestParams, reloadSubscriber())
+        getTopAdsLogUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun deleteAll() {
-        deleteGtmLogUseCase.execute(object : Subscriber<Boolean>() {
+        deleteTopAdsLogUseCase.execute(object : Subscriber<Boolean>() {
             override fun onCompleted() {
 
             }
@@ -64,7 +59,7 @@ class AnalyticsDebuggerPresenter(private val getGtmLogUseCase: GetGtmLogUseCase,
             }
 
             override fun onNext(aBoolean: Boolean?) {
-                view!!.onDeleteCompleted()
+                view?.onDeleteCompleted()
             }
         })
     }
@@ -85,7 +80,7 @@ class AnalyticsDebuggerPresenter(private val getGtmLogUseCase: GetGtmLogUseCase,
             }
 
             override fun onNext(visitables: List<Visitable<*>>) {
-                view!!.onLoadMoreCompleted(visitables)
+                view?.onLoadMoreCompleted(visitables)
             }
         }
     }
@@ -101,7 +96,7 @@ class AnalyticsDebuggerPresenter(private val getGtmLogUseCase: GetGtmLogUseCase,
             }
 
             override fun onNext(visitables: List<Visitable<*>>) {
-                view!!.onReloadCompleted(visitables)
+                view?.onReloadCompleted(visitables)
             }
         }
     }
