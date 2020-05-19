@@ -121,7 +121,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 setTextFieldStatus(textField, isShowErrorValidate, ERROR_MAX_CHAR)
             }
             else -> {
-                setTextFieldStatus(textField, isShowErrorValidate, "")
+                setTextFieldStatus(textField, false, "")
             }
         }
         checkIsValidForm()
