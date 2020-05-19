@@ -60,6 +60,8 @@ dependencies {
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
+
+    implementation project(rootProject.ext.libraries.track)
 }
 
 project.ext {
