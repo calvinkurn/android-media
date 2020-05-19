@@ -9,6 +9,7 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.detail.model.*
@@ -29,6 +30,16 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         private const val PERIOD_DATA_KEY = "period"
     }
 
+    private val termsAndConditionBottomSheet by lazy {
+        context?.run {
+            TermsAndConditionBottomSheetFragment.createInstance(this).apply {
+                setCloseClickListener {
+                    this.dismiss()
+                }
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_list, container, false)
     }
@@ -47,6 +58,10 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     override fun loadData(page: Int) {}
 
     override fun showDownloadBottomSheet() {}
+
+    override fun onFooterCtaTextClickListener() {
+        termsAndConditionBottomSheet?.show(childFragmentManager, TermsAndConditionBottomSheetFragment.TAG)
+    }
 
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
         voucherReviewUiModel.run {

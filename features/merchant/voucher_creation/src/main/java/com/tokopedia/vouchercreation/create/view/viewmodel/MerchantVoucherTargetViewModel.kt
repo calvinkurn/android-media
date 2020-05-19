@@ -42,6 +42,8 @@ class MerchantVoucherTargetViewModel @Inject constructor(
         get() = mVoucherTargetValidationLiveData
 
     private val mVoucherTargetTypeLiveData = NonNullLiveData(VoucherTargetType.PUBLIC)
+    val voucherTargetTypeLiveData : LiveData<Int>
+        get() = mVoucherTargetTypeLiveData
 
     fun setDefaultVoucherTargetListData() {
         mVoucherTargetListData.value = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList()

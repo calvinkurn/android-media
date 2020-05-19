@@ -55,6 +55,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         private const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
 
         private const val FIRST_STEP_INDEX = 0
+        private const val LAST_STEP_INDEX = 3
 
     }
 
@@ -164,7 +165,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             FIRST_STEP_INDEX -> {
                 cancelDialog.show()
             }
-            fragmentStepsHashMap.size - 1 -> {
+            LAST_STEP_INDEX -> {
                 backPromptBottomSheet.show(supportFragmentManager, ChangeDetailPromptBottomSheetFragment.TAG)
             }
             else -> {

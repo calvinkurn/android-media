@@ -72,6 +72,7 @@ class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) ->
     private var couponName = ""
 
     private var lastClickedVoucherDisplayType = VoucherTargetCardType.PUBLIC
+    private var currentTargetType = VoucherTargetType.PUBLIC
 
     override var layoutRes: Int = R.layout.fragment_merchant_voucher_target
 
@@ -160,7 +161,7 @@ class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) ->
                     is Success -> {
                         val validation = result.data
                         if (!validation.checkHasError()) {
-                            onNext(lastClickedVoucherDisplayType.targetType, couponName, promoCodeText)
+                            onNext(currentTargetType, couponName, promoCodeText)
                         } else {
                             validation.couponNameError.run {
                                 if (isNotBlank()) {
@@ -189,7 +190,9 @@ class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) ->
                     }
                 }
             })
-
+            voucherTargetTypeLiveData.observe(viewLifecycleOwner, Observer { type ->
+                currentTargetType = type
+            })
         }
     }
 
