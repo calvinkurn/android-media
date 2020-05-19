@@ -81,9 +81,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             } else {
                 lblMainPreference?.gone()
             }
+            tvChoosePreference?.text = view.context.getString(R.string.label_choose_other_preference)
         } else {
             tvCardHeader?.text = preference.profileRecommendation
             lblMainPreference?.gone()
+            tvChoosePreference?.text = view.context.getString(R.string.label_create_other_preference)
         }
 
         ivEditPreference?.setOnClickListener {

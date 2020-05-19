@@ -480,6 +480,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (orderPreference.onboarding.onboardingTicker.showActionButton) {
                 btnOnboardingAction?.text = orderPreference.onboarding.onboardingTicker.actionText
                 btnOnboardingAction?.setOnClickListener {
+                    orderSummaryAnalytics.eventClickYukCobaLagiInOnboardingTicker()
                     showOnboarding(orderPreference.onboarding)
                 }
                 btnOnboardingAction?.visible()
@@ -487,7 +488,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 btnOnboardingAction?.gone()
             }
             onboardingCard?.visible()
-            orderSummaryAnalytics.eventViewOnboardingTicker()
         } else {
             onboardingCard?.gone()
         }
@@ -527,7 +527,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             })
             coachMark.show(activity, COACH_MARK_TAG, coachMarkItems)
-            orderSummaryAnalytics.eventClickYukCobaLagiInOnboardingTicker()
+            orderSummaryAnalytics.eventViewOnboardingTicker()
         }
     }
 
