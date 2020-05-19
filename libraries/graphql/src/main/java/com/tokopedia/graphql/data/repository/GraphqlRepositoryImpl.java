@@ -98,7 +98,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         }
                     } catch (JsonSyntaxException jse) {
                         jse.printStackTrace();
-                        Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
+                        Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -149,7 +149,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 requests.remove(requests.get(i));
             }
         } catch (JsonSyntaxException jse) {
-            Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
+            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
         } catch (Exception e) {
             e.printStackTrace();
         }

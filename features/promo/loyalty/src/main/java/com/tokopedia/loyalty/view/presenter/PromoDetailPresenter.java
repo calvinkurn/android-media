@@ -64,7 +64,7 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
             @Override
             public void onError(Throwable e) {
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
                 }
 
                 if (isViewAttached()) {

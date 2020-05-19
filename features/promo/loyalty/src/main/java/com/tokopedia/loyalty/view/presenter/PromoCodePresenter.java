@@ -97,7 +97,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
                 }
 
                 view.hideProgressLoading();
@@ -158,7 +158,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     @Override
                     public void onError(Throwable e) {
                         if (e instanceof JsonSyntaxException) {
-                            Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
                         }
 
                         view.hideProgressLoading();
@@ -221,7 +221,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
                 }
 
                 e.printStackTrace();
@@ -252,7 +252,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
                 }
 
                 e.printStackTrace();
@@ -282,7 +282,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
                 }
 
                 view.hideProgressLoading();

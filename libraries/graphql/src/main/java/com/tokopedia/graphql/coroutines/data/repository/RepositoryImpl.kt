@@ -1,7 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import android.util.Log
-import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
@@ -90,7 +89,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                     errors.put(typeOfT, CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList())
                 }
             } catch (jse: JsonSyntaxException) {
-                Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+                Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
                 jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -139,7 +138,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 requests.remove(requests[i])
             }
         } catch (jse: JsonSyntaxException) {
-            Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
             jse.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()

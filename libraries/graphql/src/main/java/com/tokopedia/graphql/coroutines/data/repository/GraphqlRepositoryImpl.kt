@@ -1,16 +1,19 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import android.util.Log
-import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.AnalyticsUtils
-import com.tokopedia.graphql.util.CacheHelper
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.data.model.GraphqlResponseInternal
+import com.tokopedia.graphql.data.model.GraphqlError
 import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -84,7 +87,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                     errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
             } catch (jse: JsonSyntaxException) {
-                Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+                Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
                 jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -134,7 +137,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 requests.remove(requests[i])
             }
         } catch (jse: JsonSyntaxException) {
-            Timber.w(GraphqlConstant.TIMBE_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
+            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests)
             jse.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()
