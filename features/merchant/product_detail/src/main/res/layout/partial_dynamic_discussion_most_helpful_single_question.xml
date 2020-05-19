@@ -115,7 +115,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:paddingBottom="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_68"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
