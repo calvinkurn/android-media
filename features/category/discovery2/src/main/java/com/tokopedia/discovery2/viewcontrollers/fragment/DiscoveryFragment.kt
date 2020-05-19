@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -70,7 +71,10 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
-        view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
+        view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
+            DiscoveryAnalytics.trackBackClick()
+            activity?.onBackPressed()
+        }
         mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
         mPageComponentRecyclerView.layoutManager = LinearLayoutManager(activity)
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)

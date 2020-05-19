@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigation
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -89,11 +90,13 @@ class DiscoveryModule {
         return ProductCardsRestRepository()
     }
 
-
-
     @DiscoveryScope
     @Provides
     fun provideGetStringMethod(@ApplicationContext context: Context): (Int) -> String {
         return { id -> GraphqlHelper.loadRawString(context.resources, id) }
     }
+
+    @DiscoveryScope
+    @Provides
+    fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }

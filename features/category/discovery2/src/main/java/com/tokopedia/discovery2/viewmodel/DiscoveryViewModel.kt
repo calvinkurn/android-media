@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,7 +27,8 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
-                                             private val userSession: UserSessionInterface) : BaseViewModel(), CoroutineScope {
+                                             private val userSession: UserSessionInterface,
+                                             private val trackingQueue: TrackingQueue) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
@@ -129,5 +131,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         } else {
             fetchTopChatMessageId(context, appLinks, shopId)
         }
+    }
+
+    override fun doOnPause() {
+        super.doOnPause()
+        trackingQueue.sendAll()
     }
 }
