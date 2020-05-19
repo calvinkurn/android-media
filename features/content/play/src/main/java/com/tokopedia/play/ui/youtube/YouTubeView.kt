@@ -36,6 +36,8 @@ class YouTubeView(
     private var youTubePlayer: YouTubePlayer? = null
     private var videoId: String? = null
 
+    private var isFullscreen = false
+
     private val playerStateChangedListener = object : YouTubePlayer.PlayerStateChangeListener {
         override fun onAdStarted() {
         }
@@ -47,6 +49,7 @@ class YouTubeView(
         }
 
         override fun onLoaded(videoId: String?) {
+            youTubePlayer?.setOnFullscreenListener(onFullscreenListener)
         }
 
         override fun onVideoEnded() {
@@ -118,9 +121,11 @@ class YouTubeView(
 
     internal fun release() {
         youTubePlayer?.release()
+        youTubePlayer = null
     }
 
     internal fun setFullScreenButton(isFullscreen: Boolean) {
+        this.isFullscreen = isFullscreen
         youTubePlayer?.setFullscreen(isFullscreen)
     }
 
@@ -142,7 +147,7 @@ class YouTubeView(
         player.setPlayerStateChangeListener(playerStateChangedListener)
         player.setPlaybackEventListener(playbackEventListener)
         player.fullscreenControlFlags = YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT
-        player.setOnFullscreenListener(onFullscreenListener)
+        player.setFullscreen(isFullscreen)
         return player
     }
 

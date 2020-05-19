@@ -414,7 +414,7 @@ class PlayUserInteractionFragment :
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
-            requireView().hide()
+            if (!playViewModel.isFreezeOrBanned) requireView().hide()
 
             scope.launch {
                 val keyboardState = map[BottomInsetsType.Keyboard]
