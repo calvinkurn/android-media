@@ -135,4 +135,5 @@
     <string name="power_merchant_inactive">Tidak Aktif</string>
     <string name="power_merchant_shop_score_description_good">“Bagus!”</string>
     <string name="power_merchant_shop_score_description_not_eligible">“Kurang, tingkatkan lagi!”</string>
+    <string name="power_merchant_upgrade_text">Upgrade Power Merchant</string>
 </resources>
