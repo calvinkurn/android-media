@@ -35,7 +35,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        app:unifyButtonSize="large"
+        app:unifyButtonSize="medium"
         app:unifyButtonVariant="ghost"
         tools:visibility="visible" />
 </com.tokopedia.unifycomponents.ContainerUnify>
