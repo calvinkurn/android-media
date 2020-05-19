@@ -222,12 +222,12 @@
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 
     <!--Social Proof-->
-    <string name="terjual_template_builder">Terjual %1s</string>
-    <string name="rating_template_builder"><![CDATA[<b>%1s</b> (%2s)]]></string>
+    <string name="bracket_formated">(%1s)</string>
+    <string name="label_terjual">Terjual</string>
     <string name="terjual_single_text_template_builder">%1s orang sudah membeli barang ini.</string>
-    <string name="product_view_template_builder">Dilihat %1s</string>
     <string name="product_view_single_text__template_builder">%1s orang sudah melihat barang ini.</string>
-    <string name="wishlist_template_builder">Wishlist %1s</string>
+    <string name="label_wishlist">Wishlist</string>
+    <string name="label_qna"><![CDATA[Q&A]]></string>
     <string name="qna_template_builder"><![CDATA[<b>Q&A</b> %1s]]></string>
     <string name="qna_single_text_template_builder"><![CDATA[%1s Q&A tentang barang ini.]]></string>
 

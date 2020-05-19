@@ -121,6 +121,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 ratingCount = it.basic.stats.countReview
                 viewCount = it.basic.stats.countView
                 talkCount = it.basic.stats.countTalk
+                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
 
                 txStats = it.basic.txStats
                 stats = it.basic.stats

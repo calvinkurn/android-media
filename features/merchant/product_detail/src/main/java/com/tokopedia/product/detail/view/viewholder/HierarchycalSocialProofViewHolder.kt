@@ -42,34 +42,34 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
                 } else {
                     socProofView.social_proof_horizontal_separator?.show()
                 }
-                socProofView.txt_soc_proof?.text = generateTextSocialProof(element)
+//                socProofView.txt_soc_proof?.text = generateTextSocialProof(element)
                 rootView.addView(socProofView, i)
             }
         }
     }
 
     private fun getComponentTrackData(element: ProductSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
-
-    private fun generateTextSocialProof(element: ProductSocialProofDataModel): String = with(view) {
-        return when {
-            element.ratingCount > 0 -> {
-                view.context.getString(R.string.template_success_rate, element.rating.toString(), element.ratingCount.toString())
-            }
-            element.talkCount > 0 -> {
-                view.context.getString(R.string.qna_template_builder, element.talkCount.toString())
-            }
-            element.paymentVerifiedCount > 0 -> {
-                view.context.getString(R.string.terjual_template_builder, element.paymentVerifiedCount.toString())
-            }
-            element.wishlistCount > 0 -> {
-                view.context.getString(R.string.wishlist_template_builder, element.wishlistCount.toString())
-            }
-            element.viewCount > 0 -> {
-                view.context.getString(R.string.product_view_template_builder, element.viewCount.toString())
-            }
-            else -> {
-                ""
-            }
-        }
-    }
+//
+//    private fun generateTextSocialProof(element: ProductSocialProofDataModel): String = with(view) {
+//        return when {
+//            element.ratingCount > 0 -> {
+//                view.context.getString(R.string.template_success_rate, element.rating.toString(), element.ratingCount.toString())
+//            }
+//            element.talkCount > 0 -> {
+//                view.context.getString(R.string.qna_template_builder, element.talkCount.toString())
+//            }
+//            element.paymentVerifiedCount > 0 -> {
+//                view.context.getString(R.string.terjual_template_builder, element.paymentVerifiedCount.toString())
+//            }
+//            element.wishlistCount > 0 -> {
+//                view.context.getString(R.string.wishlist_template_builder, element.wishlistCount.toString())
+//            }
+//            element.viewCount > 0 -> {
+//                view.context.getString(R.string.product_view_template_builder, element.viewCount.toString())
+//            }
+//            else -> {
+//                ""
+//            }
+//        }
+//    }
 }

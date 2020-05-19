@@ -25,6 +25,8 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import kotlinx.android.synthetic.main.item_hierarchycal_social_proof.view.*
 import kotlinx.android.synthetic.main.item_social_proof_with_divider.view.*
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
 import java.lang.reflect.Method
 
 
@@ -42,27 +44,28 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         val stats = element.stats ?: Stats()
         val txStats = element.txStats ?: TxStatsDynamicPdp()
         val availableData = element.getAvailableData()
+
+
         if (!element.shouldRenderSocialProof) {
             view.pdp_shimmering_social_proof?.show()
         } else {
             view.pdp_shimmering_social_proof?.hide()
-        }
+            val rootView = view.findViewById<ViewGroup>(R.id.root_socproof)
+            rootView.removeAllViews()
 
-        val rootView = view.findViewById<ViewGroup>(R.id.root_socproof)
-        rootView.removeAllViews()
+            val inflater: LayoutInflater = view.context.layoutInflater
+            val key = availableData.first().first
 
-        val inflater: LayoutInflater = view.context.layoutInflater
-        val key = availableData.first().first
-
-        if (availableData.size == 1 && (key == TALK || key == PAYMENT_VERIFIED || key == VIEW_COUNT)) {
-            val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
-            generateSingleTextSocialProof(availableData.first(), socProofView, element)
-            rootView.addView(socProofView, 0)
-        } else {
-            availableData.forEachIndexed { index, i ->
+            if (availableData.size == 1 && (key == TALK || key == PAYMENT_VERIFIED || key == VIEW_COUNT)) {
                 val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
-                renderSocialProofData(i, element.rating ?: 0F, element, socProofView, index)
-                rootView.addView(socProofView, index)
+                generateSingleTextSocialProof(availableData.first(), socProofView, element)
+                rootView.addView(socProofView, 0)
+            } else {
+                availableData.forEachIndexed { index, i ->
+                    val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
+                    renderSocialProofData(i, element.rating ?: 0F, element, socProofView, index)
+                    rootView.addView(socProofView, index)
+                }
             }
         }
 
@@ -97,55 +100,71 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
     }
 
     private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View, data: ProductSocialProofDataModel) {
-        val textSocialProof = view.txt_soc_proof
+        val textSocialProofValue = view.txt_soc_proof_value
         val socProofDivider = view.social_proof_horizontal_separator
+        val socProofTitle = view.txt_soc_proof_title
         socProofDivider?.hide()
+        socProofTitle?.hide()
 
         when (element.first) {
             TALK -> {
                 view.setOnClickListener { listener.onReviewClick() }
-                textSocialProof?.text = view.context.getString(R.string.qna_single_text_template_builder, element.second.productThousandFormatted())
+                textSocialProofValue?.text = view.context.getString(R.string.qna_single_text_template_builder, element.second.productThousandFormatted())
             }
             PAYMENT_VERIFIED -> {
-                textSocialProof?.text = view.context.getString(R.string.terjual_single_text_template_builder, element.second.productThousandFormatted())
+                textSocialProofValue?.text = view.context.getString(R.string.terjual_single_text_template_builder, element.second.productThousandFormatted())
             }
             VIEW_COUNT -> {
-                textSocialProof?.text = view.context.getString(R.string.product_view_single_text__template_builder, element.second.productThousandFormatted())
+                textSocialProofValue?.text = view.context.getString(R.string.product_view_single_text__template_builder, element.second.productThousandFormatted())
             }
         }
     }
 
     private fun renderSocialProofData(element: Pair<String, Int>, rating: Float, data: ProductSocialProofDataModel, view: View, index: Int) {
-        val textSocialProofView = view.txt_soc_proof
+        val textSocialProofValueView = view.txt_soc_proof_value
+        val textSocialProofTitleView = view.txt_soc_proof_title
         val socProofDivider = view.social_proof_horizontal_separator
-        var textSocialProof = ""
+        var textSocialProofValue = ""
+        var textSocialProofTitle = ""
         socProofDivider.showWithCondition(index != 0)
 
         when (element.first) {
             RATING -> {
+                view.isClickable = true
                 view.setOnClickListener { listener.onReviewClick() }
-                textSocialProofView?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_rating_gold), null, null, null)
-                textSocialProof = view.context.getString(R.string.rating_template_builder, rating.toString(), element.second.productThousandFormatted())
+                textSocialProofTitleView?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_review_one_small), null, null, null)
+                textSocialProofTitle = rating.toString()
+                textSocialProofTitleView.setWeight(BOLD)
+                textSocialProofTitleView.setTextColor(MethodChecker.getColor(view.context, R.color.light_N700_96))
+                textSocialProofValue = view.context.getString(R.string.bracket_formated, element.second.productThousandFormatted())
             }
             TALK -> {
+                view.isClickable = true
                 view.setOnClickListener { listener.onDiscussionClicked(getComponentTrackData(data)) }
-                textSocialProof = view.context.getString(R.string.qna_template_builder, element.second.productThousandFormatted())
+                textSocialProofTitleView.setWeight(BOLD)
+                textSocialProofTitleView.setTextColor(MethodChecker.getColor(view.context, R.color.light_N700_96))
+                textSocialProofTitle = view.context.getString(R.string.label_qna)
+                textSocialProofValue = element.second.productThousandFormatted()
             }
             PAYMENT_VERIFIED -> {
-                view.setOnClickListener { }
-                textSocialProof = view.context.getString(R.string.terjual_template_builder, element.second.productThousandFormatted())
+                view.isClickable = false
+                textSocialProofTitle = view.context.getString(R.string.label_terjual)
+                textSocialProofValue = element.second.productThousandFormatted()
             }
             WISHLIST -> {
-                view.setOnClickListener { }
-                textSocialProof = view.context.getString(R.string.wishlist_template_builder, element.second.productThousandFormatted())
+                view.isClickable = false
+                textSocialProofTitle = view.context.getString(R.string.label_wishlist)
+                textSocialProofValue = element.second.productThousandFormatted()
             }
             VIEW_COUNT -> {
-                view.setOnClickListener { }
-                textSocialProof = view.context.getString(R.string.product_view_template_builder, element.second.productThousandFormatted())
+                view.isClickable = false
+                textSocialProofTitle = view.context.getString(R.string.label_seen)
+                textSocialProofValue = element.second.productThousandFormatted()
             }
         }
 
-        textSocialProofView?.text = MethodChecker.fromHtml(textSocialProof)
+        textSocialProofValueView?.text = MethodChecker.fromHtml(textSocialProofValue)
+        textSocialProofTitleView?.text = MethodChecker.fromHtml(textSocialProofTitle)
     }
 
     private fun getComponentTrackData(element: ProductSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
