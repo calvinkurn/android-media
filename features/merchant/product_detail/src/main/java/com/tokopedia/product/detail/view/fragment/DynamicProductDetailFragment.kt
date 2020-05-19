@@ -953,11 +953,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         goToLogin()
     }
 
-    override fun goToTalkReading(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String, track: Boolean) {
-        if(track) {
-            viewModel.getDynamicProductInfoP1?.let {
-                DynamicProductDetailTracking.Click.eventDiscussionSeeAll(it, componentTrackDataModel, viewModel.userId, questionId, numberOfThreadsShown)
-            }
+    override fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String) {
+        viewModel.getDynamicProductInfoP1?.let {
+            DynamicProductDetailTracking.Click.eventDiscussionSeeAll(it, componentTrackDataModel, viewModel.userId, numberOfThreadsShown)
         }
         goToReadingActivity()
     }

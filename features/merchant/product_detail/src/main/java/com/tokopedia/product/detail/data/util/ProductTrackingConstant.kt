@@ -163,6 +163,7 @@ object ProductTrackingConstant {
         const val CLICK = "click"
         const val PDP = "pdp"
         const val DISCUSSION_EMPTY_QUESTION = "count thread:{{0}};"
+        const val DISCUSSION_SEE_ALL ="count thread:{{%s}};"
         const val DISCUSSION_DETAIL = "talk id:{{%s}};count thread:{{%s}};"
     }
 

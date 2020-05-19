@@ -21,8 +21,6 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
 
     companion object {
         const val SINGLE_QUESTION_TRACKING = "1"
-        const val TRACK =  true
-        const val DONT_TRACK = false
         private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_product_detail_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
@@ -55,7 +53,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideMultipleQuestion()
                 }
                 questions?.size == 1 -> {
-                    showTitle(questions?.first()?.questionID ?: "", totalQuestion, type, name, SINGLE_QUESTION_TRACKING)
+                    showTitle(totalQuestion, type, name, SINGLE_QUESTION_TRACKING)
                     showSingleQuestion(questions?.first(), type, name)
                     hideEmptyState()
                     hideShimmer()
@@ -63,7 +61,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     hideMultipleQuestion()
                 }
                 else -> {
-                    showTitle(questions?.first()?.questionID ?: "", totalQuestion, type, name, questions?.size.toString())
+                    showTitle(totalQuestion, type, name, questions?.size.toString())
                     showMultipleQuestions(questions, type, name)
                     hideSingleQuestionLayout()
                     hideEmptyState()
@@ -108,7 +106,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
                     showDate(answer.createTimeFormatted)
                     showAnswer(answer.content, questionID, type, name)
                     showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
-                    showNumberOfOtherAnswersWithCondition(questionID, totalAnswer, type, name, SINGLE_QUESTION_TRACKING)
+                    showNumberOfOtherAnswersWithCondition(totalAnswer, type, name, SINGLE_QUESTION_TRACKING)
                 }
             }
         }
@@ -124,12 +122,13 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showTitle(questionId: String, totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
+    private fun showTitle(totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
         itemView.apply {
             productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
             productDiscussionMostHelpfulTitle.show()
+            productDetailDiscussionNewLabel.show()
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
-                listener.goToTalkReading(questionId, ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown, TRACK)
+                listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown)
             }
             productDiscussionMostHelpfulSeeAll.show()
         }
@@ -196,13 +195,13 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         }
     }
 
-    private fun showNumberOfOtherAnswersWithCondition(questionId: String, otherAnswers: Int, type: String, name: String, numberOfThreadsShown: String) {
+    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, type: String, name: String, numberOfThreadsShown: String) {
         val answersToShow = otherAnswers - 1
         if(answersToShow > 0) {
             itemView.productDetailDiscussionSingleQuestionAttachedSeeOtherAnswers?.apply {
                 text = String.format(context.getString(R.string.product_detail_discussion_other_answers), answersToShow)
                 setOnClickListener {
-                    listener.goToTalkReading(questionId, ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown, DONT_TRACK)
+                    listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown)
                 }
                 show()
             }

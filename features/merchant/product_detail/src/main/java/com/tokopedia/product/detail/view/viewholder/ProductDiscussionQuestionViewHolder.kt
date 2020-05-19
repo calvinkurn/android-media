@@ -22,7 +22,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
                 return
             }
             showAnswerThumbnail(answer.userThumbnail)
-            showAnswersCount(totalAnswer)
+            showAnswersCount(questionID, totalAnswer, dynamicProductDetailListener, adapterPosition, type, name, itemCount)
         }
     }
 
@@ -49,9 +49,12 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
         }
     }
 
-    private fun showAnswersCount(answer: Int) {
+    private fun showAnswersCount(questionId: String, answer: Int, dynamicProductDetailListener: DynamicProductDetailListener, adapterPosition: Int, type: String, name: String, itemCount: Int) {
         itemView.productDetailDiscussionTotalAnswer.apply {
             text = itemView.context.getString(R.string.product_detail_discussion_total_answers, answer)
+            setOnClickListener {
+                dynamicProductDetailListener.goToTalkReply(questionId, ComponentTrackDataModel(type, name, adapterPosition), itemCount.toString())
+            }
             setTextColor(context.getResColor(R.color.Neutral_N700_68))
             show()
         }
