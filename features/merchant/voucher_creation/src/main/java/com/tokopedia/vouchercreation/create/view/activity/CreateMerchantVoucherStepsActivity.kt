@@ -25,6 +25,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
+import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
@@ -104,6 +105,12 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         }
     }
 
+    private val cancelDialog by lazy {
+        CreateVoucherCancelDialog(this) {
+            finish()
+        }
+    }
+
     private var currentStepPosition = 0
 
     private var currentProgress = 0
@@ -143,7 +150,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     override fun onBackPressed() {
         if (currentStepPosition == 0) {
-            super.onBackPressed()
+            cancelDialog.show()
         } else {
             onBackStep()
         }

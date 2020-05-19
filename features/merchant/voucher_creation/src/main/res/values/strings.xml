@@ -28,6 +28,12 @@
     <string name="mvc_create_step_desc_promo_type">Jenis dan budget promosi</string>
     <string name="mvc_create_step_desc_voucher_period">Periode voucher</string>
     <string name="mvc_create_step_desc_voucher_review">Review voucher</string>
+
+    <string name="mvc_create_prompt_back_title">Yakin mau batalkan tambah voucher?</string>
+    <string name="mvc_create_prompt_back_desc">Voucher toko dapat bantu meningkatkan performa kamu, loh.</string>
+
+
+    <!--Step 1-->
     <string name="mvc_create_target_public">Publik</string>
     <string name="mvc_create_target_private">Khusus</string>
     <string name="mvc_create_target_public_desc">Voucher akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
@@ -53,6 +59,8 @@
     <string name="mvc_create_private_voucher_display_download_voucher">Download voucher</string>
     <string name="mvc_create_private_voucher_display_socmed_post">Post di medsos tokomu</string>
     <string name="mvc_create_private_voucher_display_chat_share">Sebarkan melalui chat</string>
+
+    <!--Tips and trick-->
     <string name="mvc_create_tips_bottomsheet_title">Tips &amp; trik Voucher Toko</string>
     <string name="mvc_create_tips_title_voucher_name">NAMA VOUCHER</string>
     <string name="mvc_create_tips_title_voucher_type">JENIS VOUCHER</string>
@@ -72,6 +80,8 @@
     <string name="mvc_create_tips_desc_max_estimation_1">Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam pembelian.</string>
     <string name="mvc_create_tips_desc_max_estimation_2">Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
     <string name="mvc_create_tips_desc_max_estimation_3">Kamu tidak perlu bayar di muka.</string>
+
+    <!--Step 2-->
     <string name="mvc_create_tips_calculation">Cara perhitungan estimasi pengeluaran</string>
     <string name="mvc_create_tips_estimation">Estimasi = Nominal Diskon x Kuota Voucher</string>
     <string name="mvc_create_voucher_name_alert_minimum">Min. 5 huruf</string>
@@ -102,6 +112,8 @@
     <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; Rp%s</string>
     <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga &lt;b>lebih besar dari Rp%s&lt;/b> untuk menarik lebih banyak calon pembeli.</string>
     <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
+
+    <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
     <string name="mvc_no_active_voucher">Gak ada voucher aktif</string>
     <string name="mvc_list_empty_state_description">Yuk, gunakan Voucher Toko untuk meningkatkan peluang penjualan tokomu.</string>
