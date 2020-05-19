@@ -2,11 +2,13 @@ package com.tokopedia.power_merchant.subscribe.view.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.PowerMerchantViewAdapter
 import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl
@@ -14,6 +16,8 @@ import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantItemView.*
 import kotlinx.android.synthetic.main.layout_power_merchant_benefit.view.*
 
 class PowerMerchantBenefitView: ConstraintLayout {
+
+    private var powerMerchantTracking: PowerMerchantTracking? = null
 
     constructor (context: Context): super(context)
 
@@ -27,8 +31,11 @@ class PowerMerchantBenefitView: ConstraintLayout {
         inflate(context, R.layout.layout_power_merchant_benefit, this)
     }
 
+    fun show(powerMerchantTracking: PowerMerchantTracking) {
         setupBenefitList()
         setOnClickTextLearnMore()
+        setTracker(powerMerchantTracking)
+        showLayout()
     }
 
     private fun setupBenefitList() {
@@ -67,11 +74,26 @@ class PowerMerchantBenefitView: ConstraintLayout {
     }
 
     private fun setOnClickTextLearnMore() {
-        textLearnMore.setOnClickListener { goToLearnMorePage() }
+        textLearnMore.setOnClickListener {
+            trackClickLearnMore()
+            goToLearnMorePage()
+        }
+    }
+
+    private fun setTracker(powerMerchantTracking: PowerMerchantTracking) {
+        this.powerMerchantTracking = powerMerchantTracking
+    }
+
+    private fun trackClickLearnMore() {
+        powerMerchantTracking?.eventLearnMorePm()
     }
 
     private fun goToLearnMorePage() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
             PowerMerchantUrl.URL_LEARN_MORE_BENEFIT)
+    }
+
+    private fun showLayout() {
+        visibility = View.VISIBLE
     }
 }
