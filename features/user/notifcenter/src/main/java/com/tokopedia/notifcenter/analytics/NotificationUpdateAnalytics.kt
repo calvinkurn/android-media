@@ -1,7 +1,5 @@
 package com.tokopedia.notifcenter.analytics
 
-import android.util.Log
-import com.google.gson.Gson
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.data.entity.ProductData
@@ -61,6 +59,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         const val LABEL_LOCATION_UPDATE = "tab notif center page"
         const val LABEL_LOCATION = "lonceng"
         const val LABEL_BOTTOM_SHEET_LOCATION = "bottom_sheet"
+        const val LABEL_NOTIF_LIST_LOCATION = "notif_list"
 
         // Other
         const val ECOMMERCE = "ecommerce"
@@ -581,6 +580,46 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 )
             )
         )
+    }
+
+    fun trackAddToCartClicked(
+            templateKey: String,
+            notificationId: String,
+            product: ProductData,
+            atc: DataModel) {
+
+        val eventLabel = getImpressionTrackLabel(
+                location = LABEL_NOTIF_LIST_LOCATION,
+                templateKey = templateKey,
+                notificationId = notificationId
+        )
+
+        val data = mapOf(
+                EVENT_CATEGORY to CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION to ACTION_CLICK_ATC_BUTTON,
+                EVENT_LABEL to eventLabel,
+                ECOMMERCE to mapOf(
+                        "currencyCode" to "IDR",
+                        "add" to mapOf(
+                                "products" to listOf(mapOf(
+                                        "name" to product.name,
+                                        "id" to product.productId,
+                                        "price" to product.price,
+                                        "brand" to "",
+                                        "category" to "",
+                                        "variant" to product.variant,
+                                        "quantity" to "1",
+                                        "dimension79" to product.shop?.id.toString(),
+                                        "dimension81" to "",
+                                        "dimension80" to product.shop?.name,
+                                        "dimension82" to "",
+                                        "dimension45" to atc.cartId,
+                                        "dimension40" to "/notifcenter"
+                                ))
+                        )
+                )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
     // #NC7
