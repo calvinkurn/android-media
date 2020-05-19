@@ -1,6 +1,7 @@
 package com.tokopedia.flight.homepage.presentation.viewmodel
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 
 /**
  * @author by furqan on 08/05/2020
@@ -31,4 +32,17 @@ val BANNER_DATA = TravelCollectiveBannerModel(
                         )
                 )
         )
+)
+
+val TICKER_DATA = TravelTickerModel(
+        "Dummy Ticker Title",
+        "Dummy Ticker Message",
+        "www.dummyticker.com",
+        1,
+        1,
+        "",
+        "",
+        1,
+        "Dummy Page",
+        false
 )

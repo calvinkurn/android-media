@@ -13,14 +13,14 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
  */
 
 data class HeaderDataModel(
-        var homeHeaderWalletActionData: HomeHeaderWalletAction? = null,
-        var tokoPointDrawerData: TokopointHomeDrawerData? = null,
-        var tokopointsDrawerHomeData: TokopointsDrawer? = null,
-        var cashBackData: CashBackData? = null,
-        var isPendingTokocashChecked: Boolean = false,
-        var isWalletDataError: Boolean = false,
-        var isTokoPointDataError: Boolean = false,
-        var isUserLogin: Boolean = false
+      val homeHeaderWalletActionData: HomeHeaderWalletAction? = null,
+      val tokoPointDrawerData: TokopointHomeDrawerData? = null,
+      val tokopointsDrawerHomeData: TokopointsDrawer? = null,
+      val cashBackData: CashBackData? = null,
+      var isPendingTokocashChecked: Boolean = false,
+      val isWalletDataError: Boolean = false,
+      val isTokoPointDataError: Boolean = false,
+      var isUserLogin: Boolean = false
 ) : HomeVisitable {
 
     fun setCache(cache: Boolean) {
@@ -30,6 +30,7 @@ data class HeaderDataModel(
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
     }
+
 
     override fun setTrackingData(trackingData: Map<String, Any>) {
 

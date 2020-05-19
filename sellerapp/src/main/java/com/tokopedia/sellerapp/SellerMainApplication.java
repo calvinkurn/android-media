@@ -13,6 +13,7 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -41,7 +42,6 @@ import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.tokofix.TokoFix;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.github.moduth.blockcanary.BlockCanary;
@@ -49,6 +49,7 @@ import com.github.moduth.blockcanary.BlockCanaryContext;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
 import timber.log.Timber;
 
 /**
@@ -117,6 +118,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public void onCreate() {
+        Bugsnag.init(this);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();
@@ -152,7 +154,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         TimberWrapper.init(this);
         super.onCreate();
-        TokoFix.init(this, BuildConfig.VERSION_NAME);
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
