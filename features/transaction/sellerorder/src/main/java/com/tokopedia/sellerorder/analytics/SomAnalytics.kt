@@ -11,6 +11,7 @@ object SomAnalytics {
 
     private const val CATEGORY_SOM = "som"
     private const val CLICK_SOM = "clickSOM"
+    private const val CLICK = "Click"
     private const val CLICK_QUICK_FILTER = "click quick filter"
     private const val CLICK_ORDER_CARD_ORDER_LIST = "click order card order list"
     private const val SUBMIT_SEARCH = "submit search"
@@ -38,6 +39,9 @@ object SomAnalytics {
     private const val CLICK_BUTTON_CHAT_PEMBELI_POPUP = "click button chat pembeli - popup"
     private const val CLICK_SEARCH_RECENT_SEARCH = "top nav - click search - search box"
     private const val CLICK_BUTTON_DOWNLOAD_INVOICE = "click button download invoice"
+    private const val TO_APP_ORDER = "To App - Order"
+    private const val SELLER_WIDGET = "sellerWidget"
+    private const val SELLER_APP_WIDGET = "Seller App Widget"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -161,5 +165,9 @@ object SomAnalytics {
 
     fun eventClickChatIconOnOrderList(orderName: String) {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST, orderName)
+    }
+
+    fun eventClickWidgetNewOrder() {
+        sendEventCategoryActionLabel(SELLER_WIDGET, SELLER_APP_WIDGET,  CLICK, TO_APP_ORDER)
     }
 }
