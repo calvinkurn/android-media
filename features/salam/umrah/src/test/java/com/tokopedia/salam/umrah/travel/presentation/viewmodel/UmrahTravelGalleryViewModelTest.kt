@@ -20,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 @RunWith(JUnit4::class)
 class UmrahTravelGalleryViewModelTest{
@@ -42,9 +43,11 @@ class UmrahTravelGalleryViewModelTest{
     @Test
     fun getListGallery_shouldReturnData(){
         //given
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(UmrahGalleriesEntity::class.java to UmrahGalleriesEntity(umrahGalleries)),
-                        mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = UmrahGalleriesEntity::class.java
+        result[objectType] = UmrahGalleriesEntity(umrahGalleries)
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
         coEvery {
             mGraphqlRepository.getReseponse(any(),any())
@@ -61,9 +64,14 @@ class UmrahTravelGalleryViewModelTest{
     @Test
     fun getListGallery_shouldReturnError(){
         //given
-        val gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(UmrahGalleriesEntity::class.java to listOf(GraphqlError())), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = UmrahGalleriesEntity::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+
+        val gqlResponseFail = GraphqlResponse(result, errors, false)
 
         coEvery {
             mGraphqlRepository.getReseponse(any(),any())
