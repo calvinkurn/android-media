@@ -9,6 +9,8 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
+import com.tokopedia.graphql.util.AnalyticsUtils
+import com.tokopedia.graphql.util.CacheHelper
 import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -120,6 +122,12 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
 
                 //Lookup for data
                 mResults[requests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, requests[i].typeOfT)
+
+                AnalyticsUtils.sendEvent(AnalyticsUtils.GtmKeys.EVENT_NAME,
+                        AnalyticsUtils.GtmKeys.EVENT_CATEGORY,
+                        AnalyticsUtils.GtmKeys.EVENT_ACTION,
+                        AnalyticsUtils.getLabel(requests[i].query, cachesResponse));
+
                 mIsCachedData[requests[i].typeOfT] = true
                 requests[i].isNoCache = true
                 mRefreshRequests.add(requests[i])

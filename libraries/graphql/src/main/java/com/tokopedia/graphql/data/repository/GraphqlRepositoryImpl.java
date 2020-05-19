@@ -18,6 +18,7 @@ import com.tokopedia.graphql.data.source.cache.GraphqlCacheDataStore;
 import com.tokopedia.graphql.data.source.cloud.GraphqlCloudDataStore;
 import com.tokopedia.graphql.domain.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.graphql.util.AnalyticsUtils;
 import com.tokopedia.graphql.util.NullCheckerKt;
 
 import java.lang.reflect.Type;
@@ -136,6 +137,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 checkForNull(object, requests.get(i).getQuery(), requests.get(i).isShouldThrow());
                 //Lookup for data
                 mResults.put(requests.get(i).getTypeOfT(), object);
+
+                AnalyticsUtils.sendEvent(AnalyticsUtils.GtmKeys.EVENT_NAME,
+                        AnalyticsUtils.GtmKeys.EVENT_CATEGORY,
+                        AnalyticsUtils.GtmKeys.EVENT_ACTION,
+                        AnalyticsUtils.getLabel(requests.get(i).getQuery(), cachesResponse));
+
                 mIsCachedData.put(requests.get(i).getTypeOfT(), true);
                 requests.get(i).setNoCache(true);
                 mRefreshRequests.add(requests.get(i));
