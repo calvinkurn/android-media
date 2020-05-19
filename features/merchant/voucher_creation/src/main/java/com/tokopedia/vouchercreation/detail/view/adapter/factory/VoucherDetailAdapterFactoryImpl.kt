@@ -68,7 +68,7 @@ class VoucherDetailAdapterFactoryImpl(
             }
             VoucherPreviewViewHolder.RES_LAYOUT -> VoucherPreviewViewHolder(parent)
             VoucherTickerViewHolder.RES_LAYOUT -> VoucherTickerViewHolder(parent) {
-
+                voucherDetailListener.onTickerClicked()
             }
             WarningPeriodViewHolder.RES_LAYOUT -> WarningPeriodViewHolder(parent) {
                 voucherDetailListener.onInfoContainerCtaClick(it)

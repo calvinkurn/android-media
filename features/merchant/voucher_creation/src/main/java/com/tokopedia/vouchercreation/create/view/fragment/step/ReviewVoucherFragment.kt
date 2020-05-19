@@ -10,6 +10,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
@@ -40,6 +41,12 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
                     this.dismiss()
                 }
             }
+        }
+    }
+
+    private val generalExpenseBottomSheet by lazy {
+        GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
+            setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
         }
     }
 
@@ -74,6 +81,10 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     override fun onFooterCtaTextClickListener() {
         termsAndConditionBottomSheet?.show(childFragmentManager, TermsAndConditionBottomSheetFragment.TAG)
+    }
+
+    override fun onTickerClicked() {
+        generalExpenseBottomSheet.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
 
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {

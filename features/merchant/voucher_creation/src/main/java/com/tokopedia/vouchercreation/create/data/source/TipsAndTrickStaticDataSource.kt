@@ -76,7 +76,7 @@ object TipsAndTrickStaticDataSource {
                             ))
             )
 
-    fun getFreeDeliveryExpenseUiModelList(): List<Visitable<VoucherTipsItemTypeFactory>> =
+    fun getGeneralExpenseUiModelList(): List<Visitable<VoucherTipsItemTypeFactory>> =
             arrayListOf(
                     DottedVoucherTipsItemUiModel(
                             descRes = R.string.mvc_create_tips_desc_max_estimation_1

@@ -17,4 +17,6 @@ interface VoucherDetailListener {
     fun onInfoContainerCtaClick(dataKey: String)
 
     fun showDownloadBottomSheet()
+
+    fun onTickerClicked()
 }

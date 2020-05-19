@@ -26,6 +26,8 @@ class GeneralExpensesInfoBottomSheetFragment(bottomSheetContext: Context?) : Bot
                 }
             }
         }
+
+        val TAG = GeneralExpensesInfoBottomSheetFragment::javaClass.name
     }
 
     override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString()
@@ -43,7 +45,7 @@ class GeneralExpensesInfoBottomSheetFragment(bottomSheetContext: Context?) : Bot
     }
 
     private val uiModelList by lazy {
-        TipsAndTrickStaticDataSource.getFreeDeliveryExpenseUiModelList()
+        TipsAndTrickStaticDataSource.getGeneralExpenseUiModelList()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
