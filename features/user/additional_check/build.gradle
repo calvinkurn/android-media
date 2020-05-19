@@ -59,7 +59,7 @@ project.ext {
     artifactId = 'additional-check'
     groupId = 'com.tokopedia.user'
     versionName = "0.0.2"
-    artifactName ="additional-check-release"
+    artifactName ="additional_check-release"
 }
 
 apply from: '../../../publish_local.gradle'
