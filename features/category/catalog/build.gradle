@@ -18,7 +18,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonCategory)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.tkpdtransaction)
+    // implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
 
