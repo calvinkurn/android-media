@@ -190,6 +190,13 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         prePareCatalogId(getPopGratificationResponse)
         TargetedPromotionAnalytics.viewCoupon(catalogId.toString(), false, "")
+
+        pair.second.setOnDismissListener {
+            shouldCallAutoApply = true
+            autoApplyApi()
+            IS_DISMISSED = true
+        }
+
         return pair.second
     }
 
@@ -215,6 +222,12 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         val pair = prepareBottomSheet(activityContext, couponUiType)
         val bottomSheet = pair.second
         val view = pair.first
+
+        bottomSheet.setOnDismissListener {
+            shouldCallAutoApply = true
+            autoApplyApi()
+            IS_DISMISSED = true
+        }
 
         initViews(view, activityContext, claimPopGratificationResponse, couponDetailResponse, gratificationData)
 
@@ -275,7 +288,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     } else {
                         performActionBasedOnClaim(popGratificationActionBtn)
 
-
                         TargetedPromotionAnalytics.clickClaimCoupon(catalogId.toString(), userSession.isLoggedIn, btnActionText, userSession.userId)
                     }
 
@@ -302,12 +314,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         val bottomSheet = pair.second
 
         bottomSheet.setOnDismissListener {
-            val canHitAutoApply = !TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply
-            if (canHitAutoApply) {
-                viewModel.autoApply(couponCodeAfterClaim!!)
-            } else {
-                removeAutoApplyLiveDataObserver()
-            }
+            autoApplyApi()
             IS_DISMISSED = true
         }
 
@@ -327,6 +334,15 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
 
         return bottomSheet
+    }
+
+    private fun autoApplyApi(){
+        val canHitAutoApply = !TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply
+        if (canHitAutoApply) {
+            viewModel.autoApply(couponCodeAfterClaim!!)
+        } else {
+            removeAutoApplyLiveDataObserver()
+        }
     }
 
     private fun prepareBottomSheet(activityContext: Context, couponUiType: TargetPromotionsCouponType): Pair<View, BottomSheetDialog> {
@@ -530,6 +546,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 expandBottomSheet()
             }
         }
+
+        couponCodeAfterClaim = data.popGratificationClaim?.dummyCouponCode
     }
 
     private fun setUiForSuccessClaimGratification(data: ClaimPopGratificationResponse) {
@@ -610,6 +628,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     toggleBtnText(true)
                     if (it.data != null && it.data.first.popGratificationClaim?.resultStatus?.code == "200") {
                         setUiForSuccessClaimGratificationVersionAutoClaim(it.data.first, it.data.second)
+                        couponCodeAfterClaim = it.data.first.popGratificationClaim?.dummyCouponCode
+                        shouldCallAutoApply = true
                     } else {
                         errorUi?.invoke()
                     }

@@ -13,6 +13,7 @@ import com.tokopedia.promotionstarget.domain.usecase.GetCouponDetailUseCase
 import com.tokopedia.promotionstarget.presentation.SingleLiveEvent
 import com.tokopedia.promotionstarget.presentation.TargetedPromotionAnalytics
 import com.tokopedia.promotionstarget.presentation.launchCatchError
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,6 +35,8 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
 
     val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
     val claimApiLiveData = MutableLiveData<LiveDataResult<Pair<ClaimPopGratificationResponse, GetCouponDetailResponse>>>()
+    var gratificationData:GratificationData?=null
+
     fun claimGratification(campaignSlug: String, page: String, benefitIds: List<Int?>?) {
         claimApiLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
@@ -74,7 +77,8 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
         if (messageList != null && messageList.isNotEmpty()) {
             CustomToast.show(app, messageList[0].toString())
             val userSession = UserSession(app)
-            TargetedPromotionAnalytics.claimSucceedPopup(messageList[0].toString(), userSession.userId)
+            val label = "${gratificationData?.popSlug} - ${messageList[0].toString()}"
+            TargetedPromotionAnalytics.claimSucceedPopup(label, userSession.userId)
         }
     }
 
