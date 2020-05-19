@@ -49,9 +49,8 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Override
     protected void initView(View view) {
         super.initView(view);
-        if (stepperModel != null) {
-            loadAd(stepperModel.getDetailAd());
-        }
+        initiateDetailAd();
+        if (stepperModel != null) loadAd(stepperModel.getDetailAd());
     }
 
     @Override

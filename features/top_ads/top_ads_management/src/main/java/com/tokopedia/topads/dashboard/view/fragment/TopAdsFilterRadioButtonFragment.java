@@ -100,6 +100,8 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        selectedAdapterPosition = savedInstanceState.getInt(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION);
+        if(savedInstanceState != null) {
+            selectedAdapterPosition = savedInstanceState.getInt(TopAdsFilterListFragment.EXTRA_ITEM_SELECTED_POSITION);
+        }
     }
 }

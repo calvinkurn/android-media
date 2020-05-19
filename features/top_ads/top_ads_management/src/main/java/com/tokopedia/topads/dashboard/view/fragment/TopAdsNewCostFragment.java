@@ -16,6 +16,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
+import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -24,8 +26,6 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
-import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
@@ -93,6 +93,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                 onSuggestionBidClicked();
             }
         });
+
+        if (getContext() instanceof StepperListener) {
+            this.stepperListener = (StepperListener) getContext();
+        }
     }
 
     @Override
@@ -277,13 +281,5 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected void setupArguments(Bundle arguments) {
         super.setupArguments(arguments);
         stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-    }
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if (context instanceof StepperListener) {
-            this.stepperListener = (StepperListener) context;
-        }
     }
 }
