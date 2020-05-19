@@ -836,7 +836,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
-            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
+            rechargeAnalytics.eventOpenScreen(
+                    userSession.isLoggedIn,
+                    categoryName.toLowerCase(),
+                    categoryId.toString())
         }
         renderTickers(data.tickers)
         // Set recommendation data if available
