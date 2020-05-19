@@ -11,7 +11,7 @@ class VariantValueAdapter : RecyclerView.Adapter<VariantValueViewHolder>() {
     private var items: List<String> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantValueViewHolder {
-        val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_variant_type, parent, false)
+        val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_variant_value, parent, false)
         return VariantValueViewHolder(rootView)
     }
 
