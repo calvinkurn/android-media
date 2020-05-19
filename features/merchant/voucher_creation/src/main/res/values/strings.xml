@@ -220,6 +220,8 @@
     <string name="mvc_review_terms">syarat dan ketentuan</string>
     <string name="mvc_estimation_title">Estimasi Maks. Pengeluaran</string>
     <string name="mvc_estimation_description">Dipotong dari transaksi selesai</string>
+
+    <!-- voucher detail -->
     <string name="mvc_detail_voucher_info">Info voucher</string>
     <string name="mvc_detail_voucher_name">Nama Voucher</string>
     <string name="mvc_detail_promo_code">Kode Promo</string>
@@ -230,4 +232,6 @@
     <string name="mvc_detail_terms">Syarat Pembelian</string>
     <string name="mvc_detail_period">Periode</string>
     <string name="mvc_detail_purchase_terms">"Min. pembelian Rp%s - &lt;br>Max. potongan Rp%s"</string>
+    <string name="mvc_detail_tips">&lt;b>Voucher kamu akan tampil&lt;/b> di halaman detail produk dan halaman toko. Lihat Tampilan</string>
+    <string name="mvc_detail_tips_clickable">Lihat Tampilan</string>
 </resources>

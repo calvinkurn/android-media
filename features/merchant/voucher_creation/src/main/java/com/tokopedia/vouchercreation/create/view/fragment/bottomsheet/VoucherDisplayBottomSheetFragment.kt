@@ -29,6 +29,8 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
                 }
             }
         }
+
+        val TAG = VoucherDisplayBottomSheetFragment::javaClass.name
     }
 
     private val pagerSnapHelper by lazy {

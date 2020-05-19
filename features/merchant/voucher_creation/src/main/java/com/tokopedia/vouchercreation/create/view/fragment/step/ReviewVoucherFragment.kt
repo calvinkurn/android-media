@@ -10,8 +10,10 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDisplayBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.detail.model.*
@@ -32,6 +34,8 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         private const val VOUCHER_INFO_DATA_KEY = "voucher_info"
         private const val VOUCHER_BENEFIT_DATA_KEY = "voucher_benefit"
         private const val PERIOD_DATA_KEY = "period"
+
+        private const val VOUCHER_TIPS_INDEX = 1
     }
 
     private val termsAndConditionBottomSheet by lazy {
@@ -48,6 +52,10 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
             setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
         }
+    }
+
+    private val publicVoucherTipsAndTrickBottomSheet by lazy {
+        VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDiplay)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,6 +77,10 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     override fun showDownloadBottomSheet() {}
 
+    override fun showTipsAndTrickBottomSheet() {
+        publicVoucherTipsAndTrickBottomSheet.show(childFragmentManager, VoucherDisplayBottomSheetFragment.TAG)
+    }
+
     override fun onInfoContainerCtaClick(dataKey: String) {
         val step = when(dataKey) {
             VOUCHER_INFO_DATA_KEY -> VoucherCreationStep.TARGET
@@ -89,7 +101,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
         voucherReviewUiModel.run {
-            val reviewInfoList = listOf(
+            val reviewInfoList = mutableListOf(
                     getVoucherPreviewSection(),
                     getVoucherInfoSection(targetType, voucherName, promoCode),
                     DividerUiModel(DividerUiModel.THIN),
@@ -103,6 +115,14 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
                             context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
                             context?.getString(R.string.mvc_review_terms).toBlankOrString())
             )
+
+            if (targetType == VoucherTargetType.PUBLIC) {
+                context?.run {
+                    val tipsUiModel = TipsUiModel(getString(R.string.mvc_detail_tips), getString(R.string.mvc_detail_tips_clickable))
+                    reviewInfoList.add(VOUCHER_TIPS_INDEX, tipsUiModel)
+                }
+            }
+
             renderList(reviewInfoList)
         }
     }
@@ -204,5 +224,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
                 hasCta = true
         )
     }
+
+    private fun getPublicVoucherDiplay() = VoucherTargetCardType.PUBLIC
 
 }
