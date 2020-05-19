@@ -1,6 +1,6 @@
-package com.tokopedia.home.beranda.data.query
+package com.tokopedia.home.benchmark.network_request.request
 
-object HomeQuery{
+object HomeQueryReduceQuery{
     fun getQuery() = """
         {
         status

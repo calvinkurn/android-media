@@ -36,6 +36,7 @@ abstract class BaseWidgetUiTest{
     val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
     val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
     val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
+    val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
     val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
 
     fun reInitViewModel() = HomeViewModel(
@@ -60,7 +61,8 @@ abstract class BaseWidgetUiTest{
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
