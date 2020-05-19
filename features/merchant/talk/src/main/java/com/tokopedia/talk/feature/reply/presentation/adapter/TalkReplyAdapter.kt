@@ -36,14 +36,4 @@ class TalkReplyAdapter(talkReplyAdapterTypeFactory: TalkReplyAdapterTypeFactory)
             }
         }
     }
-
-    fun deleteAnswer(answerId: String) {
-        visitables.forEachIndexed { index, visitable ->
-            if((visitable as? TalkReplyUiModel)?.answer?.answerID == answerId)  {
-                visitables.removeAt(index)
-                notifyItemRemoved(index)
-                return
-            }
-        }
-    }
 }

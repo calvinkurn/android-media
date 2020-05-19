@@ -1,6 +1,8 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.graphics.Color
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +16,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedPr
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 
@@ -98,7 +101,8 @@ class TalkReplyViewHolder(view: View,
         }
         if(answer.isNotEmpty()) {
             itemView.replyMessage.apply {
-                text = answer
+                text = HtmlLinkHelper(context, answer).spannedString
+                movementMethod = LinkMovementMethod.getInstance()
                 show()
             }
         }

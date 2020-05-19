@@ -1,13 +1,13 @@
 package com.tokopedia.talk.feature.reply.presentation.widget
 
 import android.content.Context
-import android.graphics.Rect
 import android.text.InputFilter
 import android.util.AttributeSet
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.talk.feature.reply.presentation.util.textwatcher.TalkReplyTextWatcher
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyTextboxListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView

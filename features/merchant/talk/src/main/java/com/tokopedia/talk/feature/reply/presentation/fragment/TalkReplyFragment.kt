@@ -345,9 +345,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showErrorToaster(getString(R.string.toaster_unfollow_fail))
     }
 
-    private fun onSuccessDeleteComment(answerId: String) {
+    private fun onSuccessDeleteComment() {
         showSuccessToaster(getString(R.string.delete_toaster_success), true)
-        adapter?.deleteAnswer(answerId)
+        adapter?.clearAllElements()
+        getDiscussionData()
     }
 
     private fun onFailDeleteComment() {
@@ -452,7 +453,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun observeDeleteCommentResponse() {
         viewModel.deleteCommentResult.observe(this, Observer {
             when(it) {
-                is Success -> onSuccessDeleteComment(it.data.talkDeleteComment.data.commentId.toString())
+                is Success -> onSuccessDeleteComment()
                 else -> onFailDeleteComment()
             }
         })
@@ -623,7 +624,21 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showEmpty(userId: Int) {
         adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
-        replyTextBox.replyEditText.requestFocus()
+        replyTextBox.replyEditText.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    activity.let {
+                        KeyboardHandler.showSoftKeyboard(it)
+                    }
+                } else {
+                    activity.let {
+                        KeyboardHandler.hideSoftKeyboard(it)
+                    }
+
+                }
+            }
+            requestFocus()
+        }
     }
 
 

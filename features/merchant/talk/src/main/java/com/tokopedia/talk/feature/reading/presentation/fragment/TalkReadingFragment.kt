@@ -395,10 +395,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         context?.let { context ->
             val sortOptionsBottomSheet = viewModel.sortOptions.value?.let { TalkReadingSortBottomSheet.createInstance(context,it , this) }
             sortOptionsBottomSheet?.setShowListener {
-                val headerMargin = resources.getDimension(R.dimen.layout_lvl2).toPx().toInt()
-                resources.getDimension(R.dimen.layout_lvl0).toInt().let {
-                    sortOptionsBottomSheet.bottomSheetWrapper.setPadding(it,it,it,it)
-                }
+                val headerMargin = 16.toPx()
+                sortOptionsBottomSheet.bottomSheetWrapper.setPadding(0,0,0,0)
                 (sortOptionsBottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin,headerMargin,headerMargin,headerMargin)
             }
             this.childFragmentManager.let { sortOptionsBottomSheet?.show(it,"") }
