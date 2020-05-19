@@ -211,5 +211,5 @@
     <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
     <string name="label_variant_photo">Foto Varian</string>
     <string name="label_variant_sizechart">Paduan Ukuran</string>
-    <string name="label_variant_sizechart_description">Panduan bisa berupa tabel ukuran atau dimensi dari varian produkmu.</string>
+    <string name="label_variant_sizechart_description">Tambah panduan ukuran produk dalam format JPG atau PNG.</string>
 </resources>

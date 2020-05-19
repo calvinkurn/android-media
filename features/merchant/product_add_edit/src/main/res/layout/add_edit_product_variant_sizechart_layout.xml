@@ -27,17 +27,19 @@
         app:layout_constraintTop_toBottomOf="@+id/typographySizechartTitle">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_10"
-            app:cardCornerRadius="@dimen/layout_lvl1"
-            app:cardElevation="@dimen/spacing_lvl2">
+            android:layout_margin="@dimen/spacing_lvl2"
+            app:cardBackgroundColor="@color/Neutral_N50"
+            app:cardCornerRadius="@dimen/spacing_lvl2"
+            app:cardElevation="@dimen/layout_lvl0">
 
             <ImageView
+                android:layout_gravity="center"
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="@dimen/layout_lvl2"
-                app:srcCompat="@drawable/ic_system_action_plus_normal_24" />
+                app:srcCompat="@drawable/ic_plus_gray" />
 
         </androidx.cardview.widget.CardView>
 
