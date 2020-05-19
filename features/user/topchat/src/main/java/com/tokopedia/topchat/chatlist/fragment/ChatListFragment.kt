@@ -26,12 +26,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.goToFirst
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationChatBottomSheet
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
@@ -61,9 +65,11 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_chat_list.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -71,7 +77,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         ChatListItemListener, LifecycleOwner {
 
     @Inject
@@ -111,9 +117,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
         sightTag = getParamString(CHAT_TAB_TITLE, arguments, null, "")
         setHasOptionsMenu(true)
+    }
+
+    private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
+        TopChatAnalytics.FPM_CHAT_LIST_SELLERAPP
+    } else {
+        TopChatAnalytics.FPM_CHAT_LIST
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -128,8 +140,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 true
             }
             R.id.menu_chat_setting -> {
-                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
-                startActivity(intent)
+                if (GlobalConfig.isSellerApp()) {
+                    context?.let {
+                        RouteManager.route(it, ApplinkConstInternalGlobal.MANAGE_NOTIFICATION)
+                    }
+                } else {
+                    val intent = ChatSettingActivity.getIntent(context, isTabSeller())
+                    startActivity(intent)
+                }
                 true
             }
             R.id.menu_chat_search -> {
@@ -153,12 +171,34 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         initView(view)
         setObserver()
         setupSellerBroadcast()
+        setupTicker()
     }
 
     private fun setupSellerBroadcast() {
         if (!isTabSeller() || !isSellerBroadcastRemoteConfigOn()) return
         setupSellerBroadcastButton()
         chatItemListViewModel.loadChatBlastSellerMetaData()
+    }
+
+    private fun setupTicker() {
+        if (!isTabSeller() || !isSellerMigrationEnabled(context)) return
+        topChatSellerMigrationTicker?.apply {
+            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_title)
+            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_chat_ticker_description))
+            setDescriptionClickEvent(object : TickerCallback {
+                override fun onDismiss() {}
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    openSellerMigrationBottomSheet()
+                }
+            })
+            show()
+        }
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            SellerMigrationChatBottomSheet.createNewInstance(it).show(this.childFragmentManager, "")
+        }
     }
 
     private fun isSellerBroadcastRemoteConfigOn(): Boolean {
@@ -286,7 +326,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 if (this is ItemChatListPojo) {
                     if (
                             attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
-                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                            readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
                     ) {
                         increaseNotificationCounter()
                     }
@@ -336,11 +376,20 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
+        fpmStopTrace()
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
-
+        fpmStopTrace()
     }
+
+    private fun fpmStopTrace() {
+        if (::performanceMonitoring.isInitialized && isFirstPage()) {
+            performanceMonitoring.stopTrace()
+        }
+    }
+
+    private fun isFirstPage(): Boolean = currentPage == 1
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
@@ -588,6 +637,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
         const val TAG = "ChatListFragment"
 
+        @JvmStatic
         fun createFragment(title: String): ChatListFragment {
             val bundle = Bundle()
             bundle.putString(CHAT_TAB_TITLE, title)

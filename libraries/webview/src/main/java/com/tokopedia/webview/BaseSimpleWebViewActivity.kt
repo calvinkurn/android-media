@@ -5,21 +5,24 @@ import android.content.Intent
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.app.TaskStackBuilder
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import androidx.core.app.TaskStackBuilder
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.uri.DeeplinkUtils.getDataUri
+import com.tokopedia.utils.uri.DeeplinkUtils.getExtraReferrer
+import com.tokopedia.utils.uri.DeeplinkUtils.getReferrerCompatible
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import java.lang.Exception
+import timber.log.Timber
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -92,7 +95,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        if (::url.isInitialized) {
+            return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        } else {
+            this.finish()
+            return Fragment()
+        }
     }
 
     override fun onResume() {
@@ -209,7 +217,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return taskStackBuilder
         }
 
-        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW)
+        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(

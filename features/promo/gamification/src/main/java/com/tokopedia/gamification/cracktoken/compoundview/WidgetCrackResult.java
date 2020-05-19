@@ -118,7 +118,7 @@ public class WidgetCrackResult extends RelativeLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_crack_result, this, true);
+        View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.widget_crack_result, this, true);
         imageViewBgCrackResult = view.findViewById(R.id.image_bg_reward);
         imageViewCrackResult = view.findViewById(R.id.image_reward);
         backgroundViewCrackResult = view.findViewById(R.id.background_view_reward);
@@ -156,7 +156,7 @@ public class WidgetCrackResult extends RelativeLayout {
         screenHeightQuarter = screenHeightQuarter - actionBarHeight;
 
         final AnimationSet animationCrackResult = new AnimationSet(true);
-        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_crack_result);
+        Animation scaleAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), com.tokopedia.gamification.R.anim.animation_scale_crack_result);
         animationCrackResult.addAnimation(scaleAnimationCrackResult);
         TranslateAnimation translateAnimationCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
         animationCrackResult.addAnimation(translateAnimationCrackResult);
@@ -190,11 +190,11 @@ public class WidgetCrackResult extends RelativeLayout {
 
         AnimationSet animationBgCrackResult = new AnimationSet(true);
 
-        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), com.tokopedia.gamification.R.anim.animation_rotate_bg_crack_result);
         rotateAnimationCrackResult.setDuration(DURATION_ROTATION_CRACK_RESULT);
         animationBgCrackResult.addAnimation(rotateAnimationCrackResult);
 
-        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_scale_bg_crack_result);
+        Animation scaleAnimationBgCrackResult = AnimationUtils.loadAnimation(getContext(), com.tokopedia.gamification.R.anim.animation_scale_bg_crack_result);
         animationBgCrackResult.addAnimation(scaleAnimationBgCrackResult);
 
         TranslateAnimation translateAnimationBgCrackResult = new TranslateAnimation(0f, 0f, 0f, -screenHeightQuarter);
@@ -221,7 +221,7 @@ public class WidgetCrackResult extends RelativeLayout {
         alphaAnimation.setDuration(DURATION_ALPHA_ANIM);
 
         backgroundViewCrackResult.setAnimation(alphaAnimation);
-        backgroundViewCrackResult.setBackgroundColor(getResources().getColor(R.color.font_black_primary_70));
+        backgroundViewCrackResult.setBackgroundColor(getResources().getColor(com.tokopedia.design.R.color.font_black_primary_70));
         backgroundViewCrackResult.setVisibility(View.VISIBLE);
     }
 
@@ -292,14 +292,14 @@ public class WidgetCrackResult extends RelativeLayout {
         TextView textView = new TextView(getContext());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
-        int margin = getContext().getResources().getDimensionPixelOffset(R.dimen.dp_20);
+        int margin = getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_20);
         layoutParams.setMargins(margin, 0, margin, 0);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
         textView.setMaxLines(2);
         textView.setLayoutParams(layoutParams);
 
-        float textSizeInPx = getContext().getResources().getDimension(R.dimen.gami_text_size_reward);
+        float textSizeInPx = getContext().getResources().getDimension(com.tokopedia.gamification.R.dimen.gami_text_size_reward);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx);
 
 
@@ -321,9 +321,9 @@ public class WidgetCrackResult extends RelativeLayout {
                         rewardStr = rewardText.getTemplateText().substring(index + 1);
                     }
                 }
-                tempRewardInitialStrBuilder.append(String.format(getContext().getString(R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
+                tempRewardInitialStrBuilder.append(String.format(getContext().getString(com.tokopedia.gamification.R.string.rewards_increased_points), String.valueOf(rewardText.getValueBefore()), rewardStr));
 
-                tempRewardPlaceHolderStrBuilder.append(getContext().getString(R.string.gf_placeholder_text));
+                tempRewardPlaceHolderStrBuilder.append(getContext().getString(com.tokopedia.gamification.R.string.gf_placeholder_text));
                 tempRewardPlaceHolderStrBuilder.append(" ");
                 tempRewardPlaceHolderStrBuilder.append(rewardStr);
             } else {
@@ -334,7 +334,7 @@ public class WidgetCrackResult extends RelativeLayout {
             if (HexValidator.validate(rewardText.getColor())) {
                 textView.setTextColor(Color.parseColor(rewardText.getColor()));
             } else {
-                textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
+                textView.setTextColor(getContext().getResources().getColor(com.tokopedia.gamification.R.color.default_text_reward_color));
             }
         }
         textView.setText(tempRewardInitialStrBuilder);
@@ -363,7 +363,7 @@ public class WidgetCrackResult extends RelativeLayout {
         if (HexValidator.validate(rewardText.getColor())) {
             multiplierColor = Color.parseColor(rewardText.getColor());
         } else {
-            multiplierColor = getContext().getResources().getColor(R.color.default_text_reward_color);
+            multiplierColor = getContext().getResources().getColor(com.tokopedia.gamification.R.color.default_text_reward_color);
         }
         String infoString = rewardText.getTierInformation() + " " + rewardText.getMultiplier() + "X";
         Spannable wordtoSpan = new SpannableString(infoString);
@@ -491,13 +491,13 @@ public class WidgetCrackResult extends RelativeLayout {
     private int convertSize(String size) {
         switch (size) {
             case TEXT_SIZE_REWARD_LARGE:
-                return R.dimen.text_size_reward_large;
+                return com.tokopedia.gamification.R.dimen.text_size_reward_large;
             case TEXT_SIZE_REWARD_MEDIUM:
-                return R.dimen.text_size_reward_medium;
+                return com.tokopedia.gamification.R.dimen.text_size_reward_medium;
             case TEXT_SIZE_REWARD_SMALL:
-                return R.dimen.text_size_reward_small;
+                return com.tokopedia.gamification.R.dimen.text_size_reward_small;
             default:
-                return R.dimen.text_size_reward_medium;
+                return com.tokopedia.gamification.R.dimen.text_size_reward_medium;
         }
     }
 

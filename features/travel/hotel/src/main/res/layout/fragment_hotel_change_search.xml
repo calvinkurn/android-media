@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Neutral_N0"
     android:orientation="vertical">
 
     <LinearLayout
@@ -28,15 +28,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/hotel_3dp"
                 android:layout_marginLeft="@dimen/hotel_3dp"
                 android:text="@string/hotel_homepage_destination"
-                app:fontSize="micro" />
+                app:typographyType="body_3"
+                android:textColor="@color/Neutral_N700_44"/>
 
-            <com.tokopedia.design.component.EditTextCompat
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/tv_hotel_homepage_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

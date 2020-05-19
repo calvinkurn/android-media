@@ -4,6 +4,7 @@
     <!-- ACTIVITY TITLE -->
     <string name="title_product_discussion">Diskusi Produk</string>
     <string name="title_report_talk">Laporkan</string>
+    <string name="title_talk_discuss">Diskusi</string>
 
     <!-- INBOX TALK -->
     <string name="title_tab_talk_all">Semua</string>
@@ -54,6 +55,7 @@
     <string name="discuss_seller">Diskusikan dengan penjual atau pengguna lain</string>
     <string name="write_question">Tulis Pertanyaan</string>
     <string name="write_new_talk">Tulis Diskusi Baru</string>
+    <string name="talk_discuss">Diskusi</string>
     <string name="contact_seller">Atau hubungi langsung penjual</string>
     <string name="chat_seller">Chat Penjual</string>
     <string name="label_talk_seller">Penjual</string>

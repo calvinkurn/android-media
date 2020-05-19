@@ -5,8 +5,8 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListFilterParam
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
+import com.tokopedia.shop.common.data.source.cloud.model.oldproductlist.ProductListFilterParam
+import com.tokopedia.shop.common.data.source.cloud.model.oldproductlist.ProductListResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
