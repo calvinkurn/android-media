@@ -121,8 +121,8 @@ abstract class BaseTracking {
         private const val KEY_DIMENSION_96 = "dimension96"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
-            return DataLayer.mapOf(
-                    PROMO_VIEW, getPromotionsMap(promotions))
+            return mapOf(
+                    PROMO_VIEW to getPromotionsMap(promotions))
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
@@ -131,7 +131,7 @@ abstract class BaseTracking {
         }
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
-            return DataLayer.mapOf(PROMOTIONS, getPromotions(promotions))
+            return mapOf(PROMOTIONS to getPromotions(promotions))
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String): Map<String, Any> {
@@ -193,6 +193,7 @@ abstract class BaseTracking {
             map[KEY_ID] = promotion.id
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
+            map[KEY_CREATIVE_URL] = promotion.creativeUrl
             map[KEY_POSITION] = promotion.position
             map[KEY_PROMO_ID] = promotion.promoIds
             map[KEY_PROMO_CODE] = promotion.promoCodes
@@ -219,7 +220,7 @@ abstract class BaseTracking {
         }
     }
 
-    class Promotion(val id: String, val name: String, val creative: String, val position: String, val promoIds: String = "", val promoCodes: String = "")
+    class Promotion(val id: String, val name: String, val creative: String, val position: String, val promoIds: String = "", val promoCodes: String = "", val creativeUrl: String = "")
     open class  Product(
             val name: String,
             val id: String,
@@ -244,13 +245,13 @@ abstract class BaseTracking {
         promotions: List<Promotion>,
         userId: String = ""
     ): Map<String, Any>{
-        return DataLayer.mapOf(
-                Event.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                UserId.KEY, userId,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)
+        return mapOf(
+                Event.KEY to event,
+                Category.KEY to eventCategory,
+                Action.KEY to eventAction,
+                Label.KEY to eventLabel,
+                UserId.KEY to userId,
+                Ecommerce.KEY to Ecommerce.getEcommercePromoView(promotions)
         )
     }
 

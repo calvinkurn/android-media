@@ -27,6 +27,4 @@ class HomeUseCase @Inject constructor(
     }
 
     fun updateHomeData() = homeRepository.updateHomeData()
-
-    fun sendGeolocationInfo() = homeRepository.sendGeolocationInfo()
 }

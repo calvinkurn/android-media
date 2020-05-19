@@ -4,9 +4,14 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-import java.util.ArrayList
-
-class DynamicIconSectionDataModel : HomeVisitable {
+data class DynamicIconSectionDataModel (
+        val itemList: List<HomeIconItem> = listOf(),
+        val dynamicIconWrap: Boolean = false,
+        private var trackingData: Map<String, Any>? = null,
+        private var isCombined: Boolean = false,
+        private var trackingDataForCombination: List<Any> = emptyList(),
+        private var isCache: Boolean = false
+): HomeVisitable {
     override fun equalsWith(b: Any?): Boolean {
         if (b is DynamicIconSectionDataModel) {
             return itemList == b.itemList
@@ -22,27 +27,12 @@ class DynamicIconSectionDataModel : HomeVisitable {
         return null
     }
 
-    private var trackingData: Map<String, Any>? = null
-    private var isCombined: Boolean = false
-    private var trackingDataForCombination: List<Any> = emptyList()
-    var itemList: MutableList<HomeIconItem>
-    private var isCache: Boolean = false
-    var dynamicIconWrap: Boolean = false
-
     override fun isCache(): Boolean {
         return isCache
     }
 
     fun setCache(cache: Boolean) {
         isCache = cache
-    }
-
-    init {
-        itemList = ArrayList()
-    }
-
-    fun addItem(item: HomeIconItem) {
-        this.itemList.add(item)
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int {

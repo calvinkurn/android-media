@@ -23,8 +23,7 @@ import javax.inject.Inject
 class HomeRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
-        private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>
+        private val homeDefaultDataSource: HomeDefaultDataSource
 ): HomeRepository {
 
     override fun getHomeData() = homeCachedDataSource.getCachedHomeData()
@@ -46,7 +45,4 @@ class HomeRepositoryImpl @Inject constructor(
         }
         emit(Result.success(null))
     }
-
-    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.get().sendGeolocationInfo()
-
 }
