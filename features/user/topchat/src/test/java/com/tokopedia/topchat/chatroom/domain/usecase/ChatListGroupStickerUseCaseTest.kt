@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.TopchatCacheManagerStub
@@ -15,9 +16,13 @@ import io.mockk.spyk
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class ChatListGroupStickerUseCaseTest {
+
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
     private lateinit var gqlUseCase: GraphqlUseCase<ChatListGroupStickerResponse>
@@ -42,7 +47,7 @@ class ChatListGroupStickerUseCaseTest {
                 ChatListGroupStickerResponse::class.java
         )
         val successResponseSize2: ChatListGroupStickerResponse = FileUtil.parse(
-                "/success_size_2_chat_list_group_sticker.json",
+                "/success_chat_list_group_sticker_size_2.json",
                 ChatListGroupStickerResponse::class.java
         )
         var isSeller: Boolean = true
