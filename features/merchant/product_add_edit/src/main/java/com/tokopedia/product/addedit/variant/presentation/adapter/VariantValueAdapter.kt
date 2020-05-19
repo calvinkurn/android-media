@@ -20,8 +20,7 @@ class VariantValueAdapter : RecyclerView.Adapter<VariantValueViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: VariantValueViewHolder, position: Int) {
-        val productNameRecommendation = items[position]
-        holder.bindData(productNameRecommendation)
+        holder.bindData(items[position])
     }
 
     fun setData(items: List<String>) {

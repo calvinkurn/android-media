@@ -4,10 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_variant_value.view.*
 
-class VariantValueViewHolder(itemView: View)
-    : RecyclerView.ViewHolder(itemView) {
-
-    var isSelected = false
+class VariantValueViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     init {
         itemView.chipsVariantValueName.setOnRemoveListener {
@@ -15,7 +12,7 @@ class VariantValueViewHolder(itemView: View)
         }
     }
 
-    fun bindData(nameRecommendation: String) {
-        itemView.chipsVariantValueName.chip_text.text = nameRecommendation
+    fun bindData(text: String) {
+        itemView.chipsVariantValueName.chip_text.text = text
     }
 }
