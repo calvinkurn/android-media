@@ -145,7 +145,7 @@ class BrandlistPageFragment :
         observeAllBrandHeader()
         observeAllBrands()
 
-        // swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
+        swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
 
         if (parentFragment is RecyclerViewScrollListener) {
             val scrollListener = parentFragment as RecyclerViewScrollListener
@@ -153,6 +153,15 @@ class BrandlistPageFragment :
                 recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
+
+//                        val pastVisibleItems: Int? = layoutManager?.findFirstCompletelyVisibleItemPosition()
+//                        if (pastVisibleItems == 0) {
+//                            swipeRefreshLayout?.isEnabled = true
+//                        } else {
+//                            swipeRefreshLayout?.isEnabled = false
+//                        }
+
+                        swipeRefreshLayout?.isEnabled = layoutManager?.findFirstCompletelyVisibleItemPosition() == 0
 
                         if (!isScrolling) {
                             isScrolling = true
