@@ -1,6 +1,5 @@
 package com.tokopedia.chatbot.analytics
 
-import com.tokopedia.analyticconstant.DataLayer.mapOf
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -23,20 +22,20 @@ class ChatbotAnalytics {
 
     fun eventClick(eventAction: String, eventLabel: String = "") {
         val map = mapOf(
-                KEY_EVENT, EVENT_VALUE_CLICK,
-                KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
-                KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, eventLabel
+                KEY_EVENT to EVENT_VALUE_CLICK,
+                KEY_EVENT_CATEGORY to EVENT_CATEGORY_VALUE,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel
         )
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     fun eventShowView(eventAction: String, eventLabel: String = "") {
         val map = mapOf(
-                KEY_EVENT, EVENT_VALUE_SHOW,
-                KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
-                KEY_EVENT_ACTION, eventAction,
-                KEY_EVENT_LABEL, eventLabel
+                KEY_EVENT to EVENT_VALUE_SHOW,
+                KEY_EVENT_CATEGORY to EVENT_CATEGORY_VALUE,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel
         )
         getTracker().sendEnhanceEcommerceEvent(map)
     }

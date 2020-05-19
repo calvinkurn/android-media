@@ -36,7 +36,6 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * @author by nisie on 07/12/18.
  */
-private const val ACTION_IMRESSION_QUICK_REPLIES = "impression quick reply"
 private const val ACTION_IMRESSION_ACTION_BUTTON = "impression action button"
 private const val ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN = "impression thumbs up and thumbs down"
 
@@ -178,14 +177,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(list: List<QuickReplyViewModel>) {
-        if (list.isNotEmpty()){
             if (::quickReplyAdapter.isInitialized) {
-                chatbotAnalytics.eventShowView(ACTION_IMRESSION_QUICK_REPLIES)
                 quickReplyAdapter.setList(list)
-                quickReplyAdapter.notifyDataSetChanged()
             }
             rvQuickReply.visibility = View.VISIBLE
-        }
     }
 
     private fun hasQuickReply(): Boolean {

@@ -146,23 +146,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onEmojiClick(view: View?) {
         when (view?.id) {
             R.id.btn_inactive_1 -> {
-                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "1")
                 onClickEmoji(1)
             }
             R.id.btn_inactive_2 -> {
-                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "2")
                 onClickEmoji(2)
             }
             R.id.btn_inactive_3 -> {
-                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "3")
                 onClickEmoji(3)
             }
             R.id.btn_inactive_4 -> {
-                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "4")
                 onClickEmoji(4)
             }
             R.id.btn_inactive_5 -> {
-                chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, "5")
                 onClickEmoji(5)
             }
         }
@@ -191,6 +186,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun onClickEmoji(number: Int) {
+        chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
         startActivityForResult(context?.let {
             ChatBotProvideRatingActivity
                 .getInstance(it, number,mCsatResponse)
