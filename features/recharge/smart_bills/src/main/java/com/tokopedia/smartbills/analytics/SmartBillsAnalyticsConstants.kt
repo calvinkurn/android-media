@@ -63,7 +63,7 @@ interface SmartBillsAnalyticConstants {
             const val VARIANT = "variant"
             const val POSITION = "position"
             const val QUANTITY = "quantity"
-            const val NONE = "none"
+            const val NONE = "none/other"
         }
     }
 }
