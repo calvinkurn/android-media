@@ -6,4 +6,5 @@ object PowerMerchantUrl {
     const val URL_BROADCAST_CHAT_TERMS_AND_CONDITION = "https://seller.tokopedia.com/edu/gratis-broadcast-chat/"
     const val URL_LEARN_MORE_BENEFIT = "https://seller.tokopedia.com/edu/power-merchant/"
     const val URL_SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/?s=tingkatkan+performa"
+    const val URL_PREMIUM_ACCOUNT = "https://m.tokopedia.com/payment/rekening-premium"
 }
