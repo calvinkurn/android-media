@@ -188,6 +188,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         }
 
         view?.let {
+            val toasterPosition = resources.getInteger(R.integer.toaster_y_position)
+            Toaster.toasterCustomBottomHeight = toasterPosition
             Toaster.make(
                     it,
                     message,

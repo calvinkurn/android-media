@@ -5,11 +5,13 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -117,30 +119,21 @@ class ProductCheckoutViewHolder(
 
         btnAtc.setOnClickListener {
             listener.addProductToCart(product) {
-                listener.onSuccessAddToCart(it.message.first())
-
-                // add tracker
-                listener.getAnalytic().trackAddToCartClicked(
-                        templateKey = element.templateKey,
-                        notificationId = element.notificationId,
-                        product = product,
-                        atc = it
-                )
+                trackAddToCartClicked(element, product, it)
             }
         }
     }
 
-    private fun checkoutButtonValidation(type: Int) {
-        when(type) {
-            TYPE_BUY_BUTTON -> {
-                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_buy)
-                btnCheckout.buttonType = UnifyButton.Type.TRANSACTION
-            }
-            TYPE_OUT_OF_STOCK_BUTTON -> {
-                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_out_of_stock)
-                btnCheckout.isEnabled = false
-            }
-        }
+    private fun trackAddToCartClicked(
+            element: NotificationItemViewBean,
+            product: ProductData,
+            data: DataModel) {
+        listener.getAnalytic().trackAddToCartClicked(
+                templateKey = element.templateKey,
+                notificationId = element.notificationId,
+                product = product,
+                atc = data
+        )
     }
 
     companion object {

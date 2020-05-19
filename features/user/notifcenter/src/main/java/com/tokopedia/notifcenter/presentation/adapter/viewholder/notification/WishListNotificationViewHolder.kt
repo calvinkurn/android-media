@@ -53,8 +53,6 @@ class WishListNotificationViewHolder(
                     R.drawable.notifcenter_ic_add_to_cart_check_grey
             )
             btnCart.setImageDrawable(checkDrawable)
-
-            listener.onSuccessAddToCart(it.message.first())
         }
     }
 
