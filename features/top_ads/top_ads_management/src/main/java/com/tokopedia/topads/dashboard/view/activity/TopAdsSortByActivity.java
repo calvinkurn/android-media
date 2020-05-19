@@ -3,10 +3,7 @@ package com.tokopedia.topads.dashboard.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsSortByFragment;

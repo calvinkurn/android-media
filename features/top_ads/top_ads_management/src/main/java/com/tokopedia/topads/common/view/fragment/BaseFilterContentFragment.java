@@ -1,6 +1,6 @@
 package com.tokopedia.topads.common.view.fragment;
 
-import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.topads.common.view.listener.BaseFilterContentViewListener;
 
 /**
@@ -8,7 +8,7 @@ import com.tokopedia.topads.common.view.listener.BaseFilterContentViewListener;
  *         <p>
  *         {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsFilterContentFragment}
  */
-public abstract class BaseFilterContentFragment<P> extends BasePresenterFragment<P> implements BaseFilterContentViewListener {
+public abstract class BaseFilterContentFragment<P> extends BaseDaggerFragment implements BaseFilterContentViewListener {
     protected BaseFilterContentFragment.Callback callback;
     /**
      * Sign for title filter list
