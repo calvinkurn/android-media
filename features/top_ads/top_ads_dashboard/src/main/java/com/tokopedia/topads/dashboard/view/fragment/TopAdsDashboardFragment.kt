@@ -190,11 +190,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     activity?.finish()
 
                 } else {
-                    if (isShowAutoAddPromo) {
-                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, TopAdsDashboardConstant.URL_ONECLICKPROMO);
-                    } else {
-                        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-                    }
+                   openDashboard()
                 }
             }
         }

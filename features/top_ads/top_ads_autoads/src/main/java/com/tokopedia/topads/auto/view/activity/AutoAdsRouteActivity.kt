@@ -14,6 +14,7 @@ import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
@@ -49,14 +50,19 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
             adsInfoViewModel = ViewModelProviders.of(this, factory).get(TopAdsInfoViewModel::class.java)
             adsInfoViewModel.getShopAdsInfo(userSession.shopId.toInt(), this::onFailShopInfo)
             adsInfoViewModel.shopInfoData.observe(this, Observer {
-                when(it!!.category){
-                    1 -> noProduct()
-                    2 -> noAds()
-                    3 -> manualAds()
-                    4 -> autoAds()
-                    else -> finish()
+                if (GlobalConfig.isSellerApp()) {
+                    when (it!!.category) {
+                        1 -> noProduct()
+                        2 -> noAds()
+                        3 -> manualAds()
+                        4 -> autoAds()
+                        else -> finish()
+                    }
+                } else {
+                    openDashboard()
                 }
                 finish()
+
             })
         }
     }
