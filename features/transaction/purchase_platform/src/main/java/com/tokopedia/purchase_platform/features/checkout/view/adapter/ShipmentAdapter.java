@@ -628,14 +628,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentDataList.get(cartPosition) instanceof ShipmentCartItemModel) {
             ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(cartPosition);
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedShipment(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setUsePartialOrder(false);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setOrderPriority(null);
+                shipmentCartItemModel.setSelectedShipmentDetailData(null);
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                 updateShipmentCostModel();
                 updateInsuranceTncVisibility();

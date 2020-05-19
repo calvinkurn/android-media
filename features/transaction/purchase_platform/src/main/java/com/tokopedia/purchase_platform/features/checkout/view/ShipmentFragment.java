@@ -479,11 +479,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         StringBuilder cartIdsStringBuilder = new StringBuilder();
-        boolean isEligibleNewShippingExperience = false;
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
-            if (!isEligibleNewShippingExperience) {
-                isEligibleNewShippingExperience = shipmentCartItemModelList.get(i).isEligibleNewShippingExperience();
-            }
             if (shipmentCartItemModelList.get(i).getCartItemModels() != null &&
                     shipmentCartItemModelList.get(i).getCartItemModels().size() > 0) {
                 for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
@@ -535,8 +531,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         shipmentAdapter.addShipmentButtonPaymentModel(shipmentButtonPaymentModel);
-        if (isEligibleNewShippingExperience) {
-            shipmentAdapter.updateShippingCompletionTickerVisibility();
+        if (shipmentCartItemModelList.size() > 0) {
+            addShippingCompletionTicker(shipmentCartItemModelList.get(0).isEligibleNewShippingExperience());
         }
 
         if (isInitialRender) {
@@ -545,6 +541,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
+        }
+    }
+
+    private void addShippingCompletionTicker(boolean isEligibleNewShippingExperience) {
+        if (isEligibleNewShippingExperience) {
+            shipmentAdapter.updateShippingCompletionTickerVisibility();
         }
     }
 
@@ -2738,6 +2740,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void resetCourier(int position) {
         shipmentAdapter.resetCourier(position);
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
+        if (shipmentCartItemModel != null) {
+            addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
+        }
     }
 
     @Override
@@ -3097,6 +3103,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         int index = shipmentAdapter.getShipmentDataList().indexOf(shipmentCartItemModel);
         if (index != -1) {
             shipmentAdapter.resetCourier(index);
+            addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
         }
     }
 
