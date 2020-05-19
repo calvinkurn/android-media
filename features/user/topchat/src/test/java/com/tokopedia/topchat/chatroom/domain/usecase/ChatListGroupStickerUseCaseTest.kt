@@ -1,14 +1,19 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.TopchatCacheManagerStub
 import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.spyk
+import kotlinx.coroutines.runBlocking
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 
@@ -22,14 +27,25 @@ class ChatListGroupStickerUseCaseTest {
     lateinit var onSuccess: (ChatListGroupStickerResponse, List<StickerGroup>) -> Unit
     @RelaxedMockK
     lateinit var onError: (Throwable) -> Unit
-    private val cacheManager: TopchatCacheManagerStub = TopchatCacheManagerStub(Dummy.response)
+    private val cacheManager: TopchatCacheManagerStub = spyk(TopchatCacheManagerStub(Dummy.cacheResponse))
     private val dispatchers: TopchatCoroutineContextProvider = TopchatTestCoroutineContextDispatcher()
 
     private lateinit var useCase: ChatListGroupStickerUseCase
 
     object Dummy {
-        val response = ChatListGroupStickerResponse()
-        val isSeller: Boolean = true
+        val successResponse: ChatListGroupStickerResponse = FileUtil.parse(
+                "/success_chat_list_group_sticker.json",
+                ChatListGroupStickerResponse::class.java
+        )
+        val cacheResponse: ChatListGroupStickerResponse = FileUtil.parse(
+                "/cache_chat_list_group_sticker.json",
+                ChatListGroupStickerResponse::class.java
+        )
+        val successResponseSize2: ChatListGroupStickerResponse = FileUtil.parse(
+                "/success_size_2_chat_list_group_sticker.json",
+                ChatListGroupStickerResponse::class.java
+        )
+        var isSeller: Boolean = true
     }
 
     @Before
@@ -46,7 +62,7 @@ class ChatListGroupStickerUseCaseTest {
         // When
         useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
         // Then
-        coVerify(exactly = 1) { onLoading.invoke(Dummy.response) }
+        coVerify(exactly = 1) { onLoading.invoke(Dummy.cacheResponse) }
     }
 
     @Test
@@ -56,6 +72,80 @@ class ChatListGroupStickerUseCaseTest {
         // When
         useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
         // Then
-        coVerify(exactly = 0) { onLoading.invoke(Dummy.response) }
+        coVerify(exactly = 0) { onLoading.invoke(Dummy.cacheResponse) }
+    }
+
+    @Test
+    fun `save cache when network response has different size for seller`() = runBlocking {
+        // Given
+        cacheManager.throwError = false
+        cacheManager.cache = Dummy.cacheResponse
+        coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponseSize2
+        // When
+        useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
+        // Then
+        coVerify(exactly = 1) { cacheManager.saveCache("ChatListGroupStickerUseCase - true", Dummy.successResponseSize2) }
+    }
+
+    @Test
+    fun `save cache when network response has different size for buyer`() = runBlocking {
+        // Given
+        Dummy.isSeller = false
+        cacheManager.throwError = false
+        cacheManager.cache = Dummy.cacheResponse
+        coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponseSize2
+        // When
+        useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
+        // Then
+        coVerify(exactly = 1) { cacheManager.saveCache("ChatListGroupStickerUseCase - false", Dummy.successResponseSize2) }
+    }
+
+    @Test
+    fun `save cache when network response has different lastUpdate for seller`() = runBlocking {
+        // Given
+        cacheManager.throwError = false
+        cacheManager.cache = Dummy.cacheResponse
+        coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
+        // When
+        useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
+        // Then
+        coVerify(exactly = 1) { cacheManager.saveCache("ChatListGroupStickerUseCase - true", Dummy.successResponse) }
+    }
+
+    @Test
+    fun `network response is the same with the cache`() = runBlocking {
+        // Given
+        cacheManager.throwError = false
+        cacheManager.cache = Dummy.successResponse
+        coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
+        // When
+        useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
+        // Then
+        coVerify(exactly = 0) { cacheManager.saveCache("ChatListGroupStickerUseCase - true", Dummy.successResponse) }
+    }
+
+    @Test
+    fun `Need update onSuccess is not empty`() = runBlocking {
+        // Given
+        cacheManager.throwError = false
+        cacheManager.cache = Dummy.cacheResponse
+        coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
+        // When
+        useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
+        // Then
+        assertThat(Dummy.successResponse.stickerGroups.size == 1)
+        coVerify(exactly = 1) { onSuccess.invoke(Dummy.successResponse, Dummy.successResponse.stickerGroups) }
+    }
+
+    @Test
+    fun `Need update onSuccess is empty`() = runBlocking {
+        // Given
+        cacheManager.throwError = false
+        cacheManager.cache = Dummy.successResponse
+        coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
+        // When
+        useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
+        // Then
+        coVerify(exactly = 1) { onSuccess.invoke(Dummy.successResponse, emptyList()) }
     }
 }
