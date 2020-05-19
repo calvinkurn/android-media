@@ -10,6 +10,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,7 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     val initiateVoucherLiveData: LiveData<Result<InitiateVoucherUiModel>>
         get() = mInitiateVoucherLiveData
 
-    fun setStepPosition(@IntRange(from = 0) stepPosition: Int) {
+    fun setStepPosition(@VoucherCreationStep stepPosition: Int) {
         val max = maxPosition
         val canSetStepPosition = mStepPositionLiveData.value != stepPosition || max == null
         if (!canSetStepPosition) {

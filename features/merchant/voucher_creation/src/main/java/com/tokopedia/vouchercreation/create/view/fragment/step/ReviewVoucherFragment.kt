@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
@@ -17,13 +18,15 @@ import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
 
 class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                             private val getToken: () -> String,
-                            private val getIgPostVoucherUrl: () -> String) : BaseDetailFragment() {
+                            private val getIgPostVoucherUrl: () -> String,
+                            private val onReturnToStep: (Int) -> Unit) : BaseDetailFragment() {
 
     companion object {
         @JvmStatic
         fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                            getToken: () -> String,
-                           getIgPostVoucherUrl: () -> String): ReviewVoucherFragment = ReviewVoucherFragment(getVoucherReviewUiModel, getToken, getIgPostVoucherUrl)
+                           getIgPostVoucherUrl: () -> String,
+                           onReturnToStep: (Int) -> Unit): ReviewVoucherFragment = ReviewVoucherFragment(getVoucherReviewUiModel, getToken, getIgPostVoucherUrl, onReturnToStep)
 
         private const val VOUCHER_INFO_DATA_KEY = "voucher_info"
         private const val VOUCHER_BENEFIT_DATA_KEY = "voucher_benefit"
@@ -58,6 +61,16 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     override fun loadData(page: Int) {}
 
     override fun showDownloadBottomSheet() {}
+
+    override fun onInfoContainerCtaClick(dataKey: String) {
+        val step = when(dataKey) {
+            VOUCHER_INFO_DATA_KEY -> VoucherCreationStep.TARGET
+            VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationStep.BENEFIT
+            PERIOD_DATA_KEY -> VoucherCreationStep.PERIOD
+            else -> VoucherCreationStep.REVIEW
+        }
+        onReturnToStep(step)
+    }
 
     override fun onFooterCtaTextClickListener() {
         termsAndConditionBottomSheet?.show(childFragmentManager, TermsAndConditionBottomSheetFragment.TAG)

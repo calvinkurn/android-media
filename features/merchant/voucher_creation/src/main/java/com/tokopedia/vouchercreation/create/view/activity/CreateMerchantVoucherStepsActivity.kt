@@ -26,6 +26,7 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.ChangeDetailPromptBottomSheetFragment
@@ -53,10 +54,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         private const val CASHBACK_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
         private const val CASHBACK_UNTIL_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
         private const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
-
-        private const val FIRST_STEP_INDEX = 0
-        private const val LAST_STEP_INDEX = 3
-
     }
 
     @Inject
@@ -79,7 +76,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onSetVoucherName, ::getPromoCodePrefix))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, ::getBannerBaseUiModel))
-            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getIgPostVoucherUrl))
+            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getIgPostVoucherUrl, ::onReturnToStep))
         }
     }
 
@@ -162,10 +159,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     override fun onBackPressed() {
         when(currentStepPosition) {
-            FIRST_STEP_INDEX -> {
+            VoucherCreationStep.TARGET -> {
                 cancelDialog.show()
             }
-            LAST_STEP_INDEX -> {
+            VoucherCreationStep.REVIEW -> {
                 backPromptBottomSheet.show(supportFragmentManager, ChangeDetailPromptBottomSheetFragment.TAG)
             }
             else -> {
@@ -341,5 +338,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun onCancelVoucher() {
         cancelDialog.show()
+    }
+
+    private fun onReturnToStep(@VoucherCreationStep step: Int) {
+        viewModel.setStepPosition(step)
     }
 }
