@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -227,6 +228,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         else {
             presenter.getFirstTimeInboxReputation(getTab());
         }
+        ViewCompat.setNestedScrollingEnabled(mainList, false);
     }
 
     public int getTab() {
