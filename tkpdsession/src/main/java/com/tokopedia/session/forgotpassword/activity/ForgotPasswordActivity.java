@@ -15,6 +15,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.session.forgotpassword.fragment.ForgotPasswordFragment;
@@ -36,10 +38,10 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
 
     private static final String URL_FORGOT_PASSWORD = "https://accounts.tokopedia.com/reset-password/islogin?theme=mobile";
-//    private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW = "android_forgot_password_webview";
     private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url";
     private static final String AB_TEST_RESET_PASSWORD = "Reset Password AND";
 
+    private RemoteConfig remoteConfig;
     private RemoteConfigInstance remoteConfigInstance;
 
     public static Intent createInstance(Context context) {
@@ -79,6 +81,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         getAbTestPlatform().fetch(null);
 
         if (isDirectToWebView()) {
@@ -100,7 +103,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     }
 
     private String getUrlResetPassword() {
-        String url = getAbTestPlatform().getString(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL);
+        String url = remoteConfig.getString(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL, "");
         if(url.isEmpty()) {
             return URL_FORGOT_PASSWORD;
         } else {
