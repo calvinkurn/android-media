@@ -16,7 +16,7 @@ public class AddPasswordPresenter
         extends BaseDaggerPresenter<AddPasswordListener.View>
         implements AddPasswordListener.Presenter {
 
-    private final static int MIN_COUNT = 10;
+    private final static int MIN_COUNT = 8;
     private final static int MAX_COUNT = 32;
     private final static String ERROR_FIELD_REQUIRED = "Harus diisi";
     private final static String ERROR_MIN_CHAR = "minimum 8 karakter";
