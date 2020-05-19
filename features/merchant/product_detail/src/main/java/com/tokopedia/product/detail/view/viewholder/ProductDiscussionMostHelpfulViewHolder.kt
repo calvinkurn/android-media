@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,10 +19,11 @@ import kotlinx.android.synthetic.main.partial_dynamic_discussion_local_load.view
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_empty_state.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_single_question.view.*
 
-class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
+class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicProductDetailListener, val userId: String) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
         const val SINGLE_QUESTION_TRACKING = "1"
+        const val SHOW_LABEL_SHARED_PREFERENCE_KEY = "discussion_show_new_%s"
         private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_product_detail_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
@@ -125,8 +128,12 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     private fun showTitle(totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
         itemView.apply {
             productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
+            val sharedPreferences = itemView.context.getSharedPreferences("${this.javaClass.simpleName}.pref", Context.MODE_PRIVATE)
+            if(isFirstTimeSeeDiscussion(sharedPreferences)) {
+                productDetailDiscussionNewLabel.show()
+                setFirstTimeSeeDiscussion(sharedPreferences)
+            }
             productDiscussionMostHelpfulTitle.show()
-            productDetailDiscussionNewLabel.show()
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
                 listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown)
             }
@@ -268,6 +275,14 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
 
     private fun hideLocalLoad() {
         itemView.productDiscussionLocalLoadLayout.hide()
+    }
+
+    private fun isFirstTimeSeeDiscussion(sharedPrefs: SharedPreferences): Boolean {
+        return sharedPrefs.getBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), true)
+    }
+
+    private fun setFirstTimeSeeDiscussion(sharedPrefs: SharedPreferences) {
+        sharedPrefs.edit().putBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), false).apply()
     }
 
 }

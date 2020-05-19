@@ -11,7 +11,9 @@ import com.tokopedia.product.detail.view.viewholder.*
 import com.tokopedia.variant_common.view.ProductVariantListener
 
 class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
-                                             private val variantListener: ProductVariantListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+                                             private val variantListener: ProductVariantListener,
+                                             private val userId: String)
+    : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductLastSeenDataModel): Int {
         return ProductLastSeenViewHolder.LAYOUT
     }
@@ -91,7 +93,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
-            ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener)
+            ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener, userId)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
