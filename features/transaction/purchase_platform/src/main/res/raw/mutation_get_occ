@@ -1,5 +1,5 @@
-query get_occ_cart_page($dummy: String, $source: String) {
-  get_occ_cart_page(dummy: $dummy, source: $source) {
+query get_occ_cart_page($source: String) {
+  get_occ_cart_page(source: $source) {
     error_message
     status
     data {

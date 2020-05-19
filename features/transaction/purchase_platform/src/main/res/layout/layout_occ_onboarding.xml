@@ -29,8 +29,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_close_occ"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                tools:srcCompat="@drawable/ic_close_occ" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_occ_onboarding_header"
@@ -39,13 +39,13 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:text="Baru!"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_occ_onboarding"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="Baru!" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_occ_onboarding_message"
@@ -54,13 +54,13 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:text="Cara lain balbal asdf 123123 aosdk utk halan lksd lksdjf lkjsdf"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_occ_onboarding"
                 app:layout_constraintTop_toBottomOf="@+id/lbl_occ_onboarding_header"
                 app:typographyType="body_3"
-                app:typographyWeight="reguler" />
+                app:typographyWeight="reguler"
+                tools:text="Cara lain balbal asdf 123123 aosdk utk halan lksd lksdjf lkjsdf" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_occ_onboarding_action"
@@ -70,13 +70,13 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:text="@string/lbl_osp_onboarding_action"
                 android:textColor="@color/Green_G500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_occ_onboarding"
                 app:layout_constraintTop_toBottomOf="@+id/lbl_occ_onboarding_message"
-                app:typographyType="body_3" />
+                app:typographyType="body_3"
+                tools:text="Yuk Mulai Coba" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
