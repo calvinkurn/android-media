@@ -13,7 +13,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -240,7 +239,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             element.tokopointsDrawerHomeData?.sectionContent?.let { sectionContent ->
-                if (sectionContent.size > 0) {
+                if (sectionContent.isNotEmpty()) {
                     setTokopointHeaderData(sectionContent[0], tvBalanceTokoPoint)
                     if (sectionContent.size >= 2) {
                         setTokopointHeaderData(sectionContent[1], mTextCouponCount)
@@ -267,7 +266,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                         )
 
                         if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes.text.isNotEmpty()) {
+                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes?.text?.isNotEmpty() == true) {
                             HomePageTracking.sendClickOnTokopointsNewCouponTracker()
                         } else {
                             HomePageTracking.sendTokopointTrackerClick()
@@ -311,7 +310,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 } else {
                     tokopointsTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
                 }
-                if (sectionContentItem.textAttributes.isIsBold) {
+                if (sectionContentItem.textAttributes.isBold) {
                     tokopointsTextView.setTypeface(null, Typeface.BOLD)
                 } else {
                     tokopointsTextView.setTypeface(null, Typeface.NORMAL)

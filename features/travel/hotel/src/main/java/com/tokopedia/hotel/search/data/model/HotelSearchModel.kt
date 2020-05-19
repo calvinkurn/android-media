@@ -15,9 +15,7 @@ data class HotelSearchModel(
         var room: Int = 1,
         var adult: Int = 1,
         var lat: Float = 0f,
-        var long: Float = 0f,
-        var searchType: String = "",
-        var searchId: String = ""
+        var long: Float = 0f
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -28,9 +26,7 @@ data class HotelSearchModel(
             parcel.readInt(),
             parcel.readInt(),
             parcel.readFloat(),
-            parcel.readFloat(),
-            parcel.readString(),
-            parcel.readString()) {
+            parcel.readFloat()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -43,8 +39,6 @@ data class HotelSearchModel(
         parcel.writeInt(adult)
         parcel.writeFloat(lat)
         parcel.writeFloat(long)
-        parcel.writeString(searchType)
-        parcel.writeString(searchId)
     }
 
     override fun describeContents(): Int {

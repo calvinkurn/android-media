@@ -3093,6 +3093,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void resetCourier(ShipmentCartItemModel shipmentCartItemModel) {
+        int index = shipmentAdapter.getShipmentDataList().indexOf(shipmentCartItemModel);
+        if (index != -1) {
+            shipmentAdapter.resetCourier(index);
+        }
+    }
+
+    @Override
     public void onCheckShippingCompletionClicked() {
         checkShippingCompletion(false);
     }

@@ -227,4 +227,6 @@ public class RemoteConfigKey {
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
+
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
 }
