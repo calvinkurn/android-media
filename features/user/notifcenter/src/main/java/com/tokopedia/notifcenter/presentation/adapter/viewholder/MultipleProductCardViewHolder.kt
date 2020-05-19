@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
@@ -128,20 +129,22 @@ class MultipleProductCardViewHolder(
         }
 
         btnAtc.setOnClickListener {
-            notification.getAtcProduct()?.let { product ->
-                listener.addProductToCart(product) {
-                    listener.onSuccessAddToCart(it.message.first())
-
-                    // add tracker
-                    listener.getAnalytic().trackAddToCartClicked(
-                            templateKey = element.templateKey,
-                            notificationId = element.notificationId,
-                            product = product,
-                            atc = it
-                    )
-                }
+            listener.addProductToCart(element.product) {
+                trackAddToCartClicked(element, element.product, it)
             }
         }
+    }
+
+    private fun trackAddToCartClicked(
+            element: MultipleProductCardViewBean,
+            product: ProductData,
+            data: DataModel) {
+        listener.getAnalytic().trackAddToCartClicked(
+                templateKey = element.templateKey,
+                notificationId = element.notificationId,
+                product = product,
+                atc = data
+        )
     }
 
     companion object {

@@ -25,8 +25,8 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
+import com.tokopedia.notifcenter.presentation.fragment.ProductCardListDialog
 import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog
-import com.tokopedia.notifcenter.presentation.fragment.NotificationProductCardDialog
 import com.tokopedia.notifcenter.presentation.fragment.ProductStockHandlerDialog
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
@@ -152,11 +152,10 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
     private fun showProductCheckout(element: NotificationItemViewBean) {
         context?.let {
-            NotificationProductCardDialog(
-                    context = it,
-                    fragmentManager = childFragmentManager,
+            ProductCardListDialog(
+                    element = element,
                     listener = this
-            ).show(element)
+            ).show(childFragmentManager, TAG_PRODUCT_LIST)
         }
     }
 
@@ -251,6 +250,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
     companion object {
         private const val TAG_PRODUCT_STOCK = "Product Stock Handler"
+        private const val TAG_PRODUCT_LIST = "Product List Card"
         private const val TAG_LONGER_TEXT = "Longer Text Bottom Sheet"
 
         const val PARAM_CONTENT_TITLE = "content title"
