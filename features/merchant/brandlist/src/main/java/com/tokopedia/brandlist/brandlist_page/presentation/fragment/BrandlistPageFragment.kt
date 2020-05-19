@@ -153,15 +153,7 @@ class BrandlistPageFragment :
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
 
-//                        val pastVisibleItems: Int? = layoutManager?.findFirstCompletelyVisibleItemPosition()
-//                        if (pastVisibleItems == 0) {
-//                            swipeRefreshLayout?.isEnabled = true
-//                        } else {
-//                            swipeRefreshLayout?.isEnabled = false
-//                        }
-
                         swipeRefreshLayout?.isEnabled = layoutManager?.findFirstCompletelyVisibleItemPosition() == 0
-
                         if (!isScrolling) {
                             isScrolling = true
                             scrollListener.onContentScrolled(dy)
