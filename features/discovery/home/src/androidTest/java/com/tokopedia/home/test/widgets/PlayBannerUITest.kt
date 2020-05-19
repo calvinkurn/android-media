@@ -64,7 +64,6 @@ class PlayBannerUITest{
     private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
     private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
-    private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
     private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
     private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
     private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
@@ -74,14 +73,14 @@ class PlayBannerUITest{
 
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
-    
+
     companion object{
         private val CONTAINER = R.id.play_frame_layout
         private val TITLE = R.id.title
         private val TITLE_CONTENT = R.id.title_play
-        
+
     }
-    
+
 //    @Before
 //    fun setup(){
 //        every { userSessionInterface.isLoggedIn } returns false
@@ -360,7 +359,6 @@ class PlayBannerUITest{
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
             getAtcUseCase = getAtcUseCase,
-            sendTopAdsUseCase = sendTopAdsUseCase,
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,

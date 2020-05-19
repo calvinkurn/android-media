@@ -31,7 +31,6 @@ abstract class BaseWidgetUiTest{
     val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
     val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
     val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
-    val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
     val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
     val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
     val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
@@ -57,7 +56,6 @@ abstract class BaseWidgetUiTest{
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
-            sendTopAdsUseCase = sendTopAdsUseCase,
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,

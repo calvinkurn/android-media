@@ -694,7 +694,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         });
     }
 
-    public void setOrderDetails(String orderId, String orderCategory, String buttonLabel, String paymentId, String cartString) {
+    public void setOrderDetails(String orderId, String orderCategory, String buttonLabel) {
         if (getView() == null || getView().getAppContext() == null)
             return;
         getView().displayLoadMore(true);
@@ -702,8 +702,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         Map<String, Object> variables = new HashMap<>();
         if (orderCategory.equalsIgnoreCase("marketplace")) {
             variables.put("orderCategory", orderCategory);
-            variables.put(PAYMENT_ID, paymentId);
-            variables.put(CART_STRING, cartString);
+            variables.put(ORDER_ID, orderId);
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderdetail_marketplace), DetailsData.class, variables, false);

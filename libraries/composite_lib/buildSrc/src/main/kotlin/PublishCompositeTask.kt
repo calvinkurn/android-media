@@ -35,7 +35,8 @@ open class PublishCompositeTask : DefaultTask() {
         println("Dep Hash Set: $dependenciesProjectNameHashSet")
         println("Project to Artifact: ${projectToArtifactInfoList.map {
             it.key + "-" + it.value.groupId + ":" + it.value.artifactId +
-                ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName
+                ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName+ 
+                "/" + it.value.increaseVersionString
         }}")
         println("Artifact to Project: $artifactIdToProjectNameList")
         println("Module to Publish: $moduleToPublishList")
