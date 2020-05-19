@@ -8,12 +8,12 @@ import javax.inject.Inject
 class CashbackRupiahValidationUseCase @Inject constructor(gqlRepository: GraphqlRepository): BaseValidationUseCase<CashbackRupiahValidation>(gqlRepository) {
 
     companion object {
-        const val QUERY = "query ValidateCashbackIdr (\$benefit_max: Int!, \$min_purchase: Int!, \$quota: Int!, \$source: String!) {\n" +
+        const val QUERY = "query ValidateCashbackIdr (\$benefit_idr: Int!, \$min_purchase: Int!, \$quota: Int!, \$source: String!) {\n" +
                 "  VoucherValidationPartial(VoucherValidationPartialInput: \n" +
                 "    {\n" +
                 "      benefit_type: \"idr\",\n" +
                 "      coupon_type: \"cashback\",\n" +
-                "      benefit_max: \$benefit_max,\n" +
+                "      benefit_idr: \$benefit_idr,\n" +
                 "      min_purchase: \$min_purchase,\n" +
                 "      quota: \$quota,\n" +
                 "      source : \$source\n" +
@@ -28,7 +28,7 @@ class CashbackRupiahValidationUseCase @Inject constructor(gqlRepository: Graphql
                 "      validation_error{\n" +
                 "        benefit_type\n" +
                 "        coupon_type\n" +
-                "        benefit_max\n" +
+                "        benefit_idr\n" +
                 "        min_purchase\n" +
                 "        quota\n" +
                 "      }\n" +
@@ -36,7 +36,7 @@ class CashbackRupiahValidationUseCase @Inject constructor(gqlRepository: Graphql
                 "  }\n" +
                 "}"
 
-        private const val BENEFIT_MAX = "benefit_max"
+        private const val BENEFIT_IDR = "benefit_idr"
         private const val MIN_PURCHASE = "min_purchase"
         private const val QUOTA = "quota"
 
@@ -45,7 +45,7 @@ class CashbackRupiahValidationUseCase @Inject constructor(gqlRepository: Graphql
                                minPurchase: Int,
                                quota: Int) =
                 VoucherSource.getVoucherRequestParams().apply {
-                    putInt(BENEFIT_MAX, benefitMax)
+                    putInt(BENEFIT_IDR, benefitMax)
                     putInt(MIN_PURCHASE, minPurchase)
                     putInt(QUOTA, quota)
                 }

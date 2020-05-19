@@ -79,7 +79,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
         CashbackExpenseInfoBottomSheetFragment.createInstance(viewContext, ::getCashbackInfo).apply {
             setOnDismissListener {
                 adapter.run {
-                    notifyItemChanged(dataSize)
+                    notifyItemChanged(dataSize - 1)
                 }
             }
         }
