@@ -19,7 +19,7 @@ class ChatListStickerUseCaseTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val gqlUseCase: GraphqlUseCase<StickerResponse> = mockk(relaxed = true)
-    private val cacheManager: TopchatCacheManager = TopchatCacheManagerStub()
+    private val cacheManager: TopchatCacheManager = TopchatCacheManagerStub(StickerResponse())
     private val testDispatcher: TopchatTestCoroutineContextDispatcher = TopchatTestCoroutineContextDispatcher()
 
     private lateinit var chatListStickerUseCase: ChatListStickerUseCase
