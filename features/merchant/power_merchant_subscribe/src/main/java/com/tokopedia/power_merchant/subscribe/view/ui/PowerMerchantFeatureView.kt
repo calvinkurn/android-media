@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,10 +32,9 @@ class PowerMerchantFeatureView: LinearLayout {
     }
 
     fun show(powerMerchantStatus: PowerMerchantStatus) {
-        inflate(context, R.layout.layout_power_merchant_feature, this)
-
         setupFeatureList()
         setupLearnMoreBtn(powerMerchantStatus)
+        showLayout()
     }
 
     private fun setupFeatureList() {
@@ -80,5 +80,9 @@ class PowerMerchantFeatureView: LinearLayout {
     private fun goToLearnMorePage() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
             PowerMerchantUrl.URL_LEARN_MORE_BENEFIT)
+    }
+
+    private fun showLayout() {
+        visibility = View.VISIBLE
     }
 }
