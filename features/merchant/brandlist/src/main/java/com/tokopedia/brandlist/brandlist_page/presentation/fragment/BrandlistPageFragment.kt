@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,16 +16,20 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.brandlist.BrandlistInstance
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.analytic.BrandlistTracking
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper
+import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.di.BrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.di.BrandlistPageModule
 import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandNotFoundViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
@@ -39,16 +44,18 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_brandlist_page.*
 import javax.inject.Inject
 
 class BrandlistPageFragment :
         BaseDaggerFragment(),
-        HasComponent<BrandlistPageComponent>, BrandlistPageTrackingListener, BrandlistHeaderBrandInterface {
+        HasComponent<BrandlistPageComponent>, BrandlistPageTrackingListener, BrandlistHeaderBrandInterface, AllBrandNotFoundViewHolder.Listener {
 
     companion object {
         const val BRANDLIST_GRID_SPAN_COUNT = 3
         const val ALL_BRAND_GRID_SPAN_COUNT = 1
         const val KEY_CATEGORY = "BRAND_LIST_CATEGORY"
+        const val CATEGORY_INTENT = "category"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = BrandlistPageFragment().apply { arguments = bundle }
@@ -66,7 +73,6 @@ class BrandlistPageFragment :
     private var layoutManager: GridLayoutManager? = null
     private var category: Category? = null
     private var adapter: BrandlistPageAdapter? = null
-    private var isInitialDataLoaded: Boolean = false
     private var isLoadedOnce: Boolean = false
     private var isScrolling: Boolean = false
     private var categoryName = ""
@@ -74,14 +80,16 @@ class BrandlistPageFragment :
     private var selectedChip: Int = DEFAULT_SELECTED_CHIPS
     private var stateLoadBrands: String = LoadAllBrandState.LOAD_INITIAL_ALL_BRAND
     private var isLoadMore: Boolean = false
+    private val defaultBrandLetter: String = ""
     private var selectedBrandLetter: String = "A"
     private var recyclerViewLastState: Parcelable? = null
+    private var recyclerViewTopPadding = 0
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else ""
+                    val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else defaultBrandLetter
                     viewModel.loadMoreAllBrands(category, brandFirstLetter)
                     isLoadMore = true
 
@@ -113,7 +121,7 @@ class BrandlistPageFragment :
         layoutManager = GridLayoutManager(context, BRANDLIST_GRID_SPAN_COUNT)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = BrandlistPageAdapterTypeFactory(this)
+        val adapterTypeFactory = BrandlistPageAdapterTypeFactory(this, this)
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
@@ -122,6 +130,8 @@ class BrandlistPageFragment :
 
         recyclerView?.addOnScrollListener(endlessScrollListener)
         recyclerView?.isNestedScrollingEnabled = true
+        recyclerViewTopPadding = recyclerView?.paddingTop ?: 0
+
         return rootView
     }
 
@@ -135,8 +145,7 @@ class BrandlistPageFragment :
         observeAllBrandHeader()
         observeAllBrands()
 
-//        swipeRefreshLayout?.visibility = View.GONE
-//        swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
+        // swipeRefreshLayout?.setOnRefreshListener(createOnRefreshListener())
 
         if (parentFragment is RecyclerViewScrollListener) {
             val scrollListener = parentFragment as RecyclerViewScrollListener
@@ -193,6 +202,7 @@ class BrandlistPageFragment :
                         || it is NewBrandViewModel
                         || it is AllBrandHeaderViewModel
                         || it is AllBrandGroupHeaderViewModel
+                        || it is AllbrandNotFoundViewModel
                         || it is AllBrandViewModel
             }
 
@@ -261,9 +271,7 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    // val title = getString(R.string.brandlist_all_brand)
                     totalBrandsNumber = it.data.totalBrands
-                    // BrandlistPageMapper.mappingAllBrandHeader(title, it.data.totalBrands, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -277,28 +285,28 @@ class BrandlistPageFragment :
         viewModel.getAllBrandResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    val totalBrandPerCharacter = it.data.totalBrands
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
                     adapter?.hideLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     endlessScrollListener.updateStateAfterGetData()
 
-//                    val currentOffset = viewModel.getCurrentOffset()
-//                    val groupHeader = viewModel.getCurrentLetter().toUpperCase()
-
-//                    if (currentOffset == 0 && groupHeader == "A") {
-//                    if (currentOffset == 0) {
-//                        // Show header for sticky only once
-//                        BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip)
-//                    }
-
                     BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
-                    BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+
+                    // if (selectedBrandLetter == "C") {     // ==== Testing brands not found ==== //
+                    if (totalBrandPerCharacter == 0) {
+                        val emptyList = OfficialStoreAllBrands()
+                        BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
+                    } else {
+                        BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+                    }
+
+                    // recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+                    // layoutManager?.scrollToPosition(BrandlistPageMapper.ALL_BRAND_POSITION)
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
-//                    viewModel.updateCurrentLetter()
-//                    viewModel.updateAllBrandRequestParameter()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -387,30 +395,13 @@ class BrandlistPageFragment :
                 imgUrl, false, "")
     }
 
-//    override fun onClickedChip(position: Int, chipName: String) {
-//        println("position: Int, chipName: String $position $chipName")
-//        selectedChip = position
-//
-//        if (position > 0 && position < 2) {     // Load Semua Brand
-//            isLoadMore = false
-//            setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
-//            viewModel.resetAllBrandRequestParameter()
-//            viewModel.loadAllBrands(category)
-//        } else if (position >= 2) {     // Load per alphabet
-//            isLoadMore = false
-//            selectedBrandLetter = chipName
-//            setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
-//            viewModel.resetAllBrandRequestParameter()
-//            viewModel.loadBrandsPerAlphabet(category, chipName)
-//        }
-//    }
-
     override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
         selectedChip = position
         recyclerViewLastState = recyclerViewState
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false
+            selectedBrandLetter = defaultBrandLetter
             setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
             viewModel.resetAllBrandRequestParameter()
             viewModel.loadAllBrands(category)
@@ -420,6 +411,27 @@ class BrandlistPageFragment :
             setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
             viewModel.resetAllBrandRequestParameter()
             viewModel.loadBrandsPerAlphabet(category, chipName)
+        }
+
+//        if (recyclerView?.hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH) != true) {
+//            recyclerView?.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH);
+//        }
+
+        // multiply with 2 to make first dy value on onScroll function greater than rv top padding
+//        recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+//        adapter?.refreshSticky()
+//        layoutManager?.scrollToPositionWithOffset(
+//                BrandlistPageMapper.ALL_BRAND_GROUP_HEADER_POSITION,
+//                stickySingleHeaderView.containerHeight
+//        )
+    }
+
+    override fun onClickSearchButton() {
+        category?.let {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.BRANDLIST_SEARCH)
+            intent.putExtra(CATEGORY_INTENT, it)
+            startActivity(intent)
+            activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(R.anim.slide_up, R.anim.no_change)?.commit()
         }
     }
 

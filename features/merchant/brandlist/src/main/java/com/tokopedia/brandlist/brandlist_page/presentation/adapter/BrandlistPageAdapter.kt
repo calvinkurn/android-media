@@ -27,8 +27,6 @@ class BrandlistPageAdapter(
 
     private var recyclerView: RecyclerView? = null
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
-//    var selectedChipsId: Int = 1
-//    var selectedEtalaseId: String = ""
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
@@ -45,12 +43,17 @@ class BrandlistPageAdapter(
         visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(mutableListOf(), null, brandlistPageFragment))
         visitables.add(POPULAR_BRAND_POSITION, PopularBrandViewModel(mutableListOf(), null, brandlistPageFragment))
         visitables.add(NEW_BRAND_POSITION, NewBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-//        visitables.add(ALL_BRAND_HEADER_POSITION, AllBrandHeaderViewModel("", 0, brandlistPageFragment))
         visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(brandlistPageFragment, 0, 1, recyclerViewLastState))
     }
 
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
+    }
+
+    fun refreshSticky() {
+        if (onStickySingleHeaderViewListener != null) {
+            recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
+        }
     }
 
     override fun showLoading() {

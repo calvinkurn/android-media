@@ -50,15 +50,7 @@ class BrandlistPageViewModel @Inject constructor(
     private var firstLetterChanged = false
     private var totalBrandSize = 0
     private var currentOffset = INITIAL_OFFSET
-//    private var currentLetter = INITIAL_LETTER
 
-//    fun getCurrentOffset(): Int {
-//        return currentOffset
-//    }
-
-//    fun getCurrentLetter(): String {
-//        return currentLetter.toString()
-//    }
 
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
@@ -68,22 +60,6 @@ class BrandlistPageViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
-//    fun updateCurrentLetter() {
-//        val firstLetter = getTheFirstLetter(totalBrandSize, currentOffset)
-//        if (firstLetter != currentLetter) {
-//            currentLetter = firstLetter
-//            firstLetterChanged = true
-//        }
-//    }
-
-//    fun updateAllBrandRequestParameter() {
-//        if (firstLetterChanged) {
-//            totalBrandSize = 0
-//            currentOffset = 0
-//            firstLetterChanged = false
-//        }
-//    }
-
     fun resetAllBrandRequestParameter() {
         firstLetterChanged = false
         totalBrandSize = 0
@@ -91,12 +67,9 @@ class BrandlistPageViewModel @Inject constructor(
 //        currentLetter = INITIAL_LETTER
     }
 
-//    private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-//        return if (totalBrandSize == currentOffset) {
-//            val newLetter = currentLetter + 1
-//            newLetter
-//        } else currentLetter
-//    }
+    fun setOffset() {
+        currentOffset = 100
+    }
 
     fun loadInitialData(category: Category?, userId: String?) {
         launchCatchError(block = {

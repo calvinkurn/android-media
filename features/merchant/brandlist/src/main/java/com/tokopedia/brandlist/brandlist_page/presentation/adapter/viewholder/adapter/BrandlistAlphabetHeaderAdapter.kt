@@ -21,18 +21,6 @@ class BrandlistAlphabetHeaderAdapter (
     var recyclerViewState: Parcelable? = null
     private val startPosition = 0
 
-
-//    private val DEFAULT_SELECTED_POSITION = 1
-//    var headerList: MutableList<String> = mutableListOf()
-//    var selectedPosition: Int = DEFAULT_SELECTED_POSITION
-//    var recyclerViewState: Parcelable? = null
-//    private val startPosition = 0
-
-//    fun updateDataHeaderList(headerList: MutableList<String>) {
-//        this.headerList = headerList
-//        notifyDataSetChanged()
-//    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandlistAlphabetHeaderViewHolder {
         return BrandlistAlphabetHeaderViewHolder(parent.inflateLayout(R.layout.brandlist_item_alphabet_header_chip))
     }
