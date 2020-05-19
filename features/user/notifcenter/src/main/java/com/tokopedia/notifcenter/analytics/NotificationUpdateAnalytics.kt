@@ -572,7 +572,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                                     "shop_type", "",
                                     "shop_name", product.shop?.name,
                                     "category_id", "",
-                                    "dimension82", atc.cartId.toString(),
+                                    "dimension82", atc.cartId,
                                     "dimension45", ""
                                 )
                             )
