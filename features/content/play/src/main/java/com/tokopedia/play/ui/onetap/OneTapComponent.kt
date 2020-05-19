@@ -31,7 +31,11 @@ open class OneTapComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.hide()
-                            ScreenStateEvent.ShowOneTapOnboarding -> uiView.showAnimated()
+                            is ScreenStateEvent.ShowOneTapOnboarding -> {
+                                val screenOrientation = it.stateHelper.screenOrientation
+                                val videoOrientation = it.stateHelper.videoOrientation
+                                if (!screenOrientation.isLandscape && !videoOrientation.isHorizontal) uiView.showAnimated()
+                            }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                         }
                     }
