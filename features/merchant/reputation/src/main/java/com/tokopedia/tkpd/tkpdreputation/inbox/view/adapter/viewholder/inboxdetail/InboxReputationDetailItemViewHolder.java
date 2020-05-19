@@ -1,10 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -16,9 +12,15 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
@@ -119,6 +121,10 @@ public class InboxReputationDetailItemViewHolder extends
         sellerAddReplyLayout = itemView.findViewById(R.id.seller_add_reply_layout);
         sellerAddReplyEditText = (EditText) itemView.findViewById(R.id.seller_reply_edit_text);
         sendReplyButton = (ImageView) itemView.findViewById(R.id.send_button);
+
+        if(GlobalConfig.isSellerApp()) {
+            sellerReplyLayout.setVisibility(View.GONE);
+        }
 
         sellerAddReplyEditText.addTextChangedListener(new TextWatcher() {
             @Override

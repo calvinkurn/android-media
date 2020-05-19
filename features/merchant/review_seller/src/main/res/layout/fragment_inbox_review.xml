@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feature.reviewlist.view.fragment.InboxReviewFragment">
+    tools:context=".feature.com.tokopedia.reviewseller.reviewlist.view.fragment.InboxReviewFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

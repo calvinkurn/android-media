@@ -8,6 +8,6 @@ data class ReviewReplyInsertResponse(
 ) {
     data class InboxReviewInsertReviewResponse(
             @SerializedName("isSuccesss")
-            val isSuccesss: Int = -1
+            val isSuccesss: Int = 0
     )
 }
