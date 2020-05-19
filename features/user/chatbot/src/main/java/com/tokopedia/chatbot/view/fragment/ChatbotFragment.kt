@@ -186,11 +186,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun onClickEmoji(number: Int) {
-        chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
         startActivityForResult(context?.let {
             ChatBotProvideRatingActivity
                 .getInstance(it, number,mCsatResponse)
         }, REQUEST_SUBMIT_FEEDBACK)
+        chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
     }
 
     override fun getUserSession(): UserSessionInterface {
