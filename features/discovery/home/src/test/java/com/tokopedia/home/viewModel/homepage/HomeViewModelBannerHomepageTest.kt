@@ -1,5 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
+import android.content.Context
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -7,6 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -87,10 +89,6 @@ class HomeViewModelBannerHomepageTest : Spek({
                 }
                 confirmVerified(observerHome)
             }
-
-            When("Topads clicked"){
-                homeViewModel.onBannerClicked(slidesModel)
-            }
         }
     }
 
@@ -146,7 +144,9 @@ class HomeViewModelBannerHomepageTest : Spek({
         createHomeViewModelTestInstance()
         var url = ""
         val slotUrl = slot<String>()
+        val topAdsUrlHitter by memoized<TopAdsUrlHitter>()
         val getHomeUseCase by memoized<HomeUseCase>()
+        val context by memoized<Context>()
         Scenario("User doesn't have cache, and must get data from network. And should available on view"){
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             Given("Banner data "){
@@ -163,6 +163,12 @@ class HomeViewModelBannerHomepageTest : Spek({
                 )
             }
 
+            Given("set return impression"){
+                every { topAdsUrlHitter.hitImpressionUrl(any(), capture(slotUrl), any()) } answers {
+                    url = slotUrl.captured
+                }
+            }
+
             Given("home viewmodel") {
                 homeViewModel = createHomeViewModel()
                 homeViewModel.homeLiveData.observeForever(observerHome)
@@ -176,6 +182,14 @@ class HomeViewModelBannerHomepageTest : Spek({
                     })
                 }
                 confirmVerified(observerHome)
+            }
+
+            When("Impression topads called"){
+                topAdsUrlHitter.hitImpressionUrl(context,"coba topads", "HomepageBanner")
+            }
+
+            Then("Check the url is same"){
+                Assert.assertTrue(url == "coba topads")
             }
         }
     }
