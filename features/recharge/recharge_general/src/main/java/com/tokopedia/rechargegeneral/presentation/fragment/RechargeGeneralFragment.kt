@@ -838,7 +838,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             (activity as? BaseSimpleActivity)?.updateTitle(label)
             rechargeAnalytics.eventOpenScreen(
                     userSession.isLoggedIn,
-                    categoryName.toLowerCase(),
+                    categoryName,
                     categoryId.toString())
         }
         renderTickers(data.tickers)

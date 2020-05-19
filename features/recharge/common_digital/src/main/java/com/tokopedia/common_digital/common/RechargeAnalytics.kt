@@ -26,7 +26,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         val mapOpenScreen = HashMap<String, String>()
         mapOpenScreen[EVENT_NAME] = OPEN_SCREEN_EVENT
         mapOpenScreen[IS_LOGIN_STATUS] = if (isLoginStatus) "true" else "false"
-        mapOpenScreen[CATEGORY] = categoryName
+        mapOpenScreen[CATEGORY] = categoryName.toLowerCase()
         mapOpenScreen[CATEGORY_ID] = categoryId
         mapOpenScreen[BUSINESS_UNIT] = BUSINESS_UNIT_RECHARGE
 

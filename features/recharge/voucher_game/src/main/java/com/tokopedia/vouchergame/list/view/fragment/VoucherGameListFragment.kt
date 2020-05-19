@@ -110,7 +110,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                                             id.toString())
                                     rechargeAnalytics.eventOpenScreen(
                                             userSession.isLoggedIn,
-                                            categoryName.toLowerCase(),
+                                            categoryName,
                                             id.toString())
                                 }
                             }
