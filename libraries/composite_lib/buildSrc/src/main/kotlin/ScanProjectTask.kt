@@ -1,5 +1,6 @@
 package com.tokopedia.plugin
 
+import getCommitId
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
@@ -117,7 +118,8 @@ open class ScanProjectTask : DefaultTask() {
     fun checkCommitModuleToPublishAndUpdate() {
         val moduleToPublishEligible = mutableSetOf<String>()
         for (key in moduleToPublishList) {
-            val currentCommitId = getCommitId(key)
+            val currentCommitId = getCommitId(project, key)
+            println("$key - $currentCommitId")
             val artifactId = projectToArtifactInfoList[key]?.artifactId ?: ""
             val commitIdInServer = moduleLatestVersionMap[artifactId]?.commidId ?: ""
             if (currentCommitId != commitIdInServer) {
@@ -128,11 +130,6 @@ open class ScanProjectTask : DefaultTask() {
             }
         }
         moduleToPublishList = moduleToPublishEligible
-    }
-
-    fun getCommitId(projectName: String): String {
-        val gitLog = "git log -1 --pretty=format:\'%h\' ${projectName}"
-        return gitLog.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
     }
 
     fun Int.toVersion(configMap: Map<String, Int>): String {
