@@ -112,23 +112,24 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     private fun processInput(input: String, textField: TextFieldUnify, isShowErrorValidate: Boolean) {
         when {
             input.isEmpty() && isShowErrorValidate -> {
-                textField.setError(true)
-                textField.setMessage(ERROR_FIELD_REQUIRED)
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_FIELD_REQUIRED)
             }
             input.length < MIN_COUNT && isShowErrorValidate -> {
-                textField.setError(true)
-                textField.setMessage(ERROR_MIN_CHAR)
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_MIN_CHAR)
             }
             input.length > MAX_COUNT && isShowErrorValidate -> {
-                textField.setError(true)
-                textField.setMessage(ERROR_MAX_CHAR)
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_MAX_CHAR)
             }
             else -> {
-                textField.setError(false)
-                textField.setMessage("")
+                setTextFieldStatus(textField, isShowErrorValidate, "")
             }
         }
         checkIsValidForm()
+    }
+
+    private fun setTextFieldStatus(textField: TextFieldUnify, isShowErrorValidate: Boolean, message: String) {
+        textField.setError(isShowErrorValidate)
+        textField.setMessage(message)
     }
 
     private fun onGoToForgotPass() {
