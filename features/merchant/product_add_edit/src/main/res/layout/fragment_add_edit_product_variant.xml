@@ -32,14 +32,16 @@
             <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginLeft="@dimen/spacing_lvl4"/>
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4" />
 
             <include layout="@layout/add_edit_product_variant_value_level2_layout" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginLeft="@dimen/spacing_lvl4"/>
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4" />
 
             <include layout="@layout/add_edit_product_variant_photo_layout" />
 
