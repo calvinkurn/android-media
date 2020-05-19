@@ -249,7 +249,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         private const val REQUEST_LOGOUT = 1000
         private const val REQUEST_LOGIN = 2000
 
-        private const val MIN_COUNT = 10
+        private const val MIN_COUNT = 8
         private const val MAX_COUNT = 32
         private const val ERROR_FIELD_REQUIRED = "Harus diisi"
         private const val ERROR_MIN_CHAR = "Minimum $MIN_COUNT karakter"

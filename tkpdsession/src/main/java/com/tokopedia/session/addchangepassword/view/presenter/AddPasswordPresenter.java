@@ -19,7 +19,7 @@ public class AddPasswordPresenter
     private final static int MIN_COUNT = 10;
     private final static int MAX_COUNT = 32;
     private final static String ERROR_FIELD_REQUIRED = "Harus diisi";
-    private final static String ERROR_MIN_CHAR = "Minimum 10 karakter";
+    private final static String ERROR_MIN_CHAR = "minimum 8 karakter";
     private final static String ERROR_MAX_CHAR = "Maksimum 32 karakter";
 
     private AddPasswordUseCase addPasswordUseCase;

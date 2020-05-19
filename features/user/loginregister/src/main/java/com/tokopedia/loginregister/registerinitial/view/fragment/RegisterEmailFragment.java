@@ -568,7 +568,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     }
 
     public void showPasswordHint() {
-        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_10_character));
+        setWrapperHint(wrapperPassword, getResources().getString(R.string.minimal_8_character));
     }
 
     public void showNameHint() {
