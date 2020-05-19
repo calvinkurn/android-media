@@ -1,0 +1,38 @@
+query Filter2($slugCategory: String, $slugSubCategory: String) {
+  filter: tokopointsCatalogFilterV2(slugCategory: $slugCategory, slugSubCategory: $slugSubCategory) {
+    categories {
+      id
+      parentID
+      name
+      slug
+      timeRemainingSeconds
+      imageID
+      imageURL
+      isSelected
+      isHideSubCategory
+      subCategory {
+        id
+        parentID
+        name
+        slug
+        timeRemainingSeconds
+        imageID
+        imageURL
+        isSelected
+      }
+    }
+    pointRanges {
+      id
+      text
+      index
+      minPoint
+      maxPoint
+      myPoint
+    }
+    sortType {
+      id
+      text
+    }
+  }
+}
+

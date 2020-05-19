@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import android.net.Uri
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -65,7 +64,7 @@ class AddProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                ProductEtalase(), // TODO product etalase not implemented yet
+                ProductEtalase(),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
@@ -78,8 +77,7 @@ class AddProductInputMapper @Inject constructor() {
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String,
                                 variantOptionUploadId: List<String>): Variant? {
-        if (variantInputModel.variantOptionParent.size == 0 &&
-                variantInputModel.productVariant.size == 0) {
+        if (variantInputModel.productVariant.size == 0) {
             return null
         }
 
@@ -110,7 +108,7 @@ class AddProductInputMapper @Inject constructor() {
             val levelIndex = it.opt.firstOrNull()
             val product = Product(
                     mapProductCombination(it.opt),
-                    it.priceVar,
+                    it.priceVar.toBigDecimal().toBigInteger(),
                     it.sku,
                     getActiveStatus(it.st),
                     it.stock,
@@ -166,7 +164,8 @@ class AddProductInputMapper @Inject constructor() {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
-            val price = it.price.replace(".", "").toFloatOrZero()
+            val price = it.price.replace(".", "")
+                    .toBigIntegerOrNull() ?: 0.toBigInteger()
             if (quantity > 1) {
                 data.add(Wholesale(
                         quantity,

@@ -25,6 +25,7 @@ object PlayLiveDynamicChannelQuery {
                 title
                 description
                 cover_url
+                is_show_total_view
                 total_view_formatted
                 moderator_id
                 moderator_name

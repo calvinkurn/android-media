@@ -8,12 +8,8 @@ import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_POPULAR_SEARCH
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_POPULAR_SEARCH_CATEGORY
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
 
 /**
@@ -21,9 +17,8 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.v
  */
 
 class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionModel.Item>,
-                                   private var type: Int,
-                                   private var categoryType: String,
-                                   var listener: OnItemClickListener) :
+                                   var layoutData: TravelLayoutSubhomepage.Data,
+                                   var listener: TravelHomepageActionListener) :
         RecyclerView.Adapter<TravelHomepageSectionAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
@@ -33,7 +28,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position], position, listener, type, categoryType)
+        holder.bind(list[position], position, listener, layoutData)
     }
 
     fun updateList(newList: List<TravelHomepageSectionModel.Item>) {
@@ -43,16 +38,12 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
 
     override fun getItemViewType(position: Int): Int {
         val item = list[position]
-        return if (type == TYPE_ORDER_LIST) {
-            if (item.subtitle.isBlank()) ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE else ViewHolder.ORDER_LAYOUT
-        } else {
-            if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT
-        }
+        return if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: TravelHomepageSectionModel.Item, position: Int, listener: OnItemClickListener, type: Int, categoryType: String) {
+        fun bind(item: TravelHomepageSectionModel.Item, position: Int, listener: TravelHomepageActionListener, layoutData: TravelLayoutSubhomepage.Data) {
             with(itemView) {
                 image.loadImage(item.imageUrl)
                 title.text = item.title
@@ -65,11 +56,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
                 }
             }
             if (listener != null) itemView.setOnClickListener {
-                if (type == TYPE_RECOMMENDATION) listener.onTrackDealsClick(item, position + 1)
-                else if (type == TYPE_ORDER_LIST) listener.onTrackEventClick(type, position + 1, item.product)
-                else if (type == TYPE_RECENT_SEARCH && categoryType == TYPE_POPULAR_SEARCH_CATEGORY) listener.onTrackEventClick(TYPE_POPULAR_SEARCH, position + 1, item.product)
-                else if (type == TYPE_RECENT_SEARCH && categoryType != TYPE_POPULAR_SEARCH_CATEGORY) listener.onTrackEventClick(TYPE_RECENT_SEARCH, position + 1, item.product)
-
+                listener.onClickProductSliderItem(item, position, layoutData.position, layoutData.title)
                 listener.onItemClick(item.appUrl)
             }
         }
@@ -77,8 +64,6 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
         companion object {
             val LAYOUT = R.layout.travel_homepage_section_list_item
             val LAYOUT_WITHOUT_SUBTITLE = R.layout.travel_homepage_section_list_item_without_subtitle
-            val ORDER_LAYOUT = R.layout.travel_homepage_order_section_list_item
-            val ORDER_LAYOUT_WITHOUT_SUBTITLE = R.layout.travel_homepage_order_section_list_without_subtitle_item
         }
     }
 }

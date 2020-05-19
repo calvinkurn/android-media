@@ -1,0 +1,18 @@
+query pdpFinancingRecommendation($price: Float!, $quantity: Int!){
+  ft_installment_recommendation(price: $price, quantity: $quantity) {
+    data {
+      term
+      mdr_value
+      mdr_type
+      interest_rate
+      minimum_amount
+      maximum_amount
+      monthly_price
+      os_monthly_price
+      partner_code
+      partner_name
+      partner_icon
+    }
+    message
+  }
+}

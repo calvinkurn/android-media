@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.description.presentation.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
@@ -30,25 +31,52 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
-    var categoryId: String = ""
     var variantCountList: ArrayList<Int> = arrayListOf(0, 0)
     var variantNameList: ArrayList<String> = arrayListOf("", "")
-    var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
-    var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
+    var productInputModel: ProductInputModel = ProductInputModel()
+        set(value) {
+            field = value
+            setVariantNamesAndCount()
+        }
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
+    val categoryId: String get() {
+        return productInputModel.detailInputModel.categoryId
+    }
+    val descriptionInputModel: DescriptionInputModel get() {
+        return productInputModel.descriptionInputModel
+    }
+    val variantInputModel: ProductVariantInputModel get() {
+        return productInputModel.variantInputModel
+    }
+    val hasWholesale: Boolean get() {
+        return productInputModel.detailInputModel.wholesaleList.isNotEmpty()
+    }
+    var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
+    var urlToFetch: MutableMap<Int, String> = mutableMapOf()
+    var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>> = _productVariant
-    val productVariantData get() = _productVariant.value.let {
+    val productVariantData: List<ProductVariantByCatModel>? get() = _productVariant.value.let {
         when(it) {
             is Success -> it.data
             else -> null
         }
     }
 
-    private val _videoYoutube = MutableLiveData<Result<YoutubeVideoDetailModel>>()
-    val videoYoutube: LiveData<Result<YoutubeVideoDetailModel>> = _videoYoutube
+    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>>()
+    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoDetailModel>>> = MediatorLiveData()
+
+    init {
+        videoYoutube.addSource(_videoYoutubeNew) { pair ->
+            val position = pair.first
+            when (val result = pair.second) {
+                is Success -> videoYoutube.value = Pair(position, result)
+                is Fail -> videoYoutube.value = Pair(position, result)
+            }
+        }
+    }
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -62,17 +90,17 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         })
     }
 
-    fun getVideoYoutube(videoUrl: String) {
+    fun getVideoYoutube(videoUrl: String, position: Int) {
         launchCatchError( block = {
             getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
                 getYoutubeVideoUseCase.setVideoId(youtubeId)
                 val result = withContext(Dispatchers.IO) {
                     convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
                 }
-                _videoYoutube.value = Success(result)
+                _videoYoutubeNew.value = Pair(position, Success(result))
             }
         }, onError = {
-            _videoYoutube.value = Fail(it)
+            _videoYoutubeNew.value = Pair(position, Fail(it))
         })
     }
 
@@ -116,23 +144,20 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                         variantOptionParent: ArrayList<ProductVariantOptionParent>,
                         productPictureViewModel: PictureViewModel?) {
-        if (productVariant.isNotEmpty()) {
-            variantInputModel.variantOptionParent = mapVariantOption(variantOptionParent)
-            variantInputModel.productVariant = mapProductVariant(productVariant, variantOptionParent)
-            variantInputModel.productSizeChart = productPictureViewModel
-            setVariantNamesAndCount(productVariant, variantOptionParent)
-        } else {
-            variantInputModel.variantOptionParent.clear()
-            variantInputModel.productVariant.clear()
-            variantCountList.fill(0)
-            variantNameList.fill("")
-            variantInputModel.productSizeChart = null
+        productInputModel.variantInputModel.let {
+            if (productVariant.isNotEmpty()) {
+                it.variantOptionParent = mapVariantOption(variantOptionParent)
+                it.productVariant = mapProductVariant(productVariant, variantOptionParent)
+                it.productSizeChart = productPictureViewModel
+                setVariantNamesAndCount(productVariant, variantOptionParent)
+            } else {
+                it.variantOptionParent.clear()
+                it.productVariant.clear()
+                it.productSizeChart = null
+                variantCountList.fill(0)
+                variantNameList.fill("")
+            }
         }
-    }
-
-    fun setVariantInput(variantInputModel: ProductVariantInputModel) {
-        this.variantInputModel = variantInputModel
-        setVariantNamesAndCount()
     }
 
     private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
@@ -258,10 +283,36 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         } ?: ""
     }
 
+    fun getStatusStockViewVariant(): Int {
+        val isActive: Boolean = productInputModel.detailInputModel.status == 1
+        val stockCount: Int = productInputModel.detailInputModel.stock
+        return if (!isActive) {
+            TYPE_WAREHOUSE
+        } else if (isActive && stockCount > 0) {
+            TYPE_ACTIVE_LIMITED
+        } else {
+            TYPE_ACTIVE
+        }
+    }
+
+    // disable removing variant when in edit mode and if product have a variant
+    fun checkOriginalVariantLevel(): Boolean {
+        // you must compare isEditMode and isAddMode to obtain actual editing status
+        if (isEditMode && !isAddMode) {
+            if (variantInputModel.productVariant.size > 0) {
+                return variantInputModel.variantOptionParent.getOrNull(0) != null
+            }
+        }
+        return false
+    }
+
     companion object {
         const val KEY_YOUTUBE_VIDEO_ID = "v"
         const val WEB_PREFIX_HTTP = "http://"
         const val WEB_PREFIX_HTTPS = "https://"
         const val WEB_YOUTUBE_PREFIX = "https://"
+        const val TYPE_ACTIVE = 1 // from api
+        const val TYPE_ACTIVE_LIMITED = 2 // only for view
+        const val TYPE_WAREHOUSE = 3 // from api
     }
 }

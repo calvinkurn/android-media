@@ -13,6 +13,7 @@ import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
+import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
@@ -33,7 +34,6 @@ import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseC
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
-import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -102,12 +102,12 @@ class ProductManageViewModel @Inject constructor(
         get() = _multiEditProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
-    val productFiltersTab: LiveData<Result<GetFilterTabResult>>
-        get() = _productFiltersTab
     val editVariantPriceResult: LiveData<Result<EditVariantResult>>
         get() = _editVariantPriceResult
     val editVariantStockResult: LiveData<Result<EditVariantResult>>
         get() = _editVariantStockResult
+    val productFiltersTab: LiveData<Result<GetFilterTabResult>>
+        get() = _productFiltersTab
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -122,9 +122,9 @@ class ProductManageViewModel @Inject constructor(
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
-    private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
+    private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -238,17 +238,16 @@ class ProductManageViewModel @Inject constructor(
         getFilterTabJob?.cancel()
 
         launchCatchError(block = {
-            val selectedFilter = selectedFilterAndSort.value
-            val selectedFilterCount = selectedFilter?.selectedFilterCount ?: 0
-
             val response = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
                 getProductListMetaUseCase.setParams(userSessionInterface.shopId)
                 getProductListMetaUseCase.executeOnBackground()
+                    .productListMetaWrapper
+                    .productListMetaData
+                    .tabs
             }
 
-            val result = mapToFilterTabResult(response, selectedFilterCount)
-            _productFiltersTab.value = Success(result)
+            _productFiltersTab.apply { value = Success(mapToFilterTabResult(response)) }
         }, onError = {
             if(it is CancellationException) {
                 return@launchCatchError
@@ -472,7 +471,7 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun getTotalProductCount(): Int {
-       return (productFiltersTab.value as? Success<GetFilterTabResult>)
+       return (_productFiltersTab.value as? Success<GetFilterTabResult>)
            ?.data?.totalProductCount.orZero()
     }
 

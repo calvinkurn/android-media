@@ -1,0 +1,10 @@
+query {
+    wallet {
+        cash_balance
+        raw_cash_balance
+        errors {
+          name
+          message
+        }
+    }
+}

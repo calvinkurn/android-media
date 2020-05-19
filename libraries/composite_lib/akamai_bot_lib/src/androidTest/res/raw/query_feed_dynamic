@@ -1,0 +1,571 @@
+query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: String, $sourceID: String, $detailID: String, $refreshCursor: String) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID, refreshCursor: $refreshCursor) {
+    data {
+      id
+      createTime
+      type
+      activity
+      content {
+        cardrecom {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+            action {
+              event
+              action
+              appLink
+              webLink
+            }
+          }
+          items {
+            header {
+              avatar
+              avatarTitle
+              avatarDate
+              avatarWeblink
+              avatarApplink
+              avatarBadgeImage
+              avatarDescription
+              followCta {
+                isFollow
+                textTrue
+                textFalse
+                authorID
+                authorType
+              }
+            }
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+            }
+            tracking {
+              clickURL
+              viewURL
+              type
+              source
+              viewType
+              recomID
+            }
+          }
+        }
+        cardbanner {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+            action {
+              event
+              action
+              appLink
+              webLink
+            }
+          }
+          body {
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              tracking {
+                clickURL
+                viewURL
+                type
+                source
+                viewType
+                recomID
+              }
+            }
+          }
+        }
+        cardpost {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+            action {
+              event
+              action
+              appLink
+              webLink
+            }
+          }
+          header {
+            avatar
+            avatarTitle
+            avatarDate
+            avatarWeblink
+            avatarApplink
+            avatarBadgeImage
+            avatarDescription
+            cardSummary
+            reportable
+            editable
+            deletable
+            followCta {
+              textTrue
+              textFalse
+              isFollow
+              authorID
+              authorType
+            }
+          }
+          body {
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              totalItems
+              items {
+                id
+                text
+                price
+                type
+                appLink
+                webLink
+                thumbnail
+                thumbnailLarge
+                percentage
+                isSelected
+                position
+                videos {
+                    url
+                }
+                tracking {
+                	clickURL
+                	viewURL
+                	type
+                	source
+                    viewType
+                    recomID
+              	}
+              }
+              isVoted
+              totalVoter
+              text
+              tags {
+                linkType
+              }
+              tracking {
+                clickURL
+                viewURL
+                type
+                source
+                viewType
+                recomID
+              }
+              videos {
+                url
+              }
+            }
+            postTag {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              totalItems
+              items {
+                id
+                text
+                price
+                type
+                appLink
+                webLink
+                thumbnail
+                thumbnailLarge
+                percentage
+                isSelected
+                position
+                isWishlisted
+                rating
+                tracking {
+                  clickURL
+                  viewURL
+                  type
+                  source
+                  viewType
+                  recomID
+                }
+                tags {
+                  linkType
+                  text
+                  textColor {
+                    hex
+                    opacity
+                  }
+                  bgColor {
+                    hex
+                    opacity
+                  }
+                }
+                buttonCTA {
+                  text
+                  textDisabled
+                  isDisabled
+                }
+                shop {
+                    shopID
+                }
+              }
+              isVoted
+              totalVoter
+              text
+              tags {
+                linkType
+              }
+              tracking {
+                clickURL
+                viewURL
+                type
+                source
+                viewType
+                recomID
+              }
+            }
+            caption {
+              text
+              buttonName
+              appLink
+              webLink
+            }
+          }
+          footer {
+            like {
+              fmt
+              value
+              checked
+            }
+            comment {
+              fmt
+              value
+            }
+            buttonCta {
+              text
+              appLink
+              webLink
+            }
+            share {
+              text
+              url
+              title
+              imageURL
+              description
+            }
+            stats {
+              text
+              productIDs
+            }
+          }
+          tracking {
+            clickURL
+            viewURL
+            type
+            source
+            viewType
+            recomID
+          }
+        }
+        cardhighlight {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+          }
+          items {
+            header {
+              avatar
+              avatarTitle
+              avatarWeblink
+              avatarApplink
+              avatarBadgeImage
+            }
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              videos {
+                url
+                durationFmt
+                durationVal
+              }
+            }
+            footer {
+              like {
+                fmt
+                value
+                checked
+              }
+              comment {
+                fmt
+                value
+              }
+              buttonCta {
+                text
+                textDisabled
+                isDisabled
+                badge
+                appLink
+                webLink
+              }
+              share {
+                text
+                url
+                title
+                imageURL
+                description
+              }
+            }
+            tracking {
+              clickURL
+              viewURL
+              type
+              source
+              viewType
+              recomID
+            }
+          }
+        }
+      }
+      tracking {
+        id
+        type
+        topadsEp
+        topads {
+          id
+          ad_ref_key
+          redirect
+          sticker_id
+          sticker_image
+          product_click_url
+          shop_click_url
+          ad_click_url
+          product {
+            id
+            name
+            image {
+              m_url
+              s_url
+              xs_url
+              m_ecs
+              s_ecs
+              xs_ecs
+              __typename
+            }
+            uri
+            relative_uri
+            price_format
+            count_talk_format
+            count_review_format
+            category {
+              id
+              __typename
+            }
+            product_preorder
+            product_wholesale
+            free_return
+            product_cashback
+            product_cashback_rate
+            product_rating
+            __typename
+          }
+          shop {
+            id
+            name
+            domain
+            tagline
+            location
+            city
+            image_product {
+              product_id
+              product_name
+              image_url
+              __typename
+            }
+            image_shop {
+              cover_ecs
+              s_ecs
+              xs_ecs
+              s_url
+              xs_url
+              __typename
+            }
+            gold_shop
+            lucky_shop
+            shop_is_official
+            owner_id
+            is_owner
+            badges {
+              title
+              image_url
+              __typename
+            }
+            uri
+            gold_shop_badge
+            __typename
+          }
+          headline {
+            button_text
+            description
+            name
+            promoted_text
+            template_id
+            uri
+            shop {
+              id
+              city
+              domain
+              gold_shop
+              gold_shop_badge
+              image_shop {
+                cover
+              }
+              location
+              product {
+                id
+                image_product {
+                  image_click_url
+                  image_url
+                  product_id
+                  product_name
+                }
+                name
+                applinks
+                price_format
+              }
+              name
+              shop_is_official
+              slogan
+              tagline
+            }
+            badges {
+              show
+              title
+              image_url
+            }
+            image {
+              full_ecs
+              full_url
+              illustration_url
+              vertical_illustration_url
+            }
+          }
+          applinks
+          __typename
+        }
+      }
+      template
+    }
+    meta {
+      totalData
+      lastCursor
+      firstPageCursor
+      hasNextPage
+      linkSelf
+    }
+    included {
+      template {
+        id
+        type
+        template {
+          cardbanner {
+            title {
+              text
+              textBadge
+              ctaLink
+            }
+          }
+          cardrecom {
+            title {
+              text
+              textBadge
+              ctaLink
+            }
+            item {
+              ctaLink
+            }
+          }
+          cardpost {
+            title {
+              text
+              textBadge
+              ctaLink
+            }
+            header {
+              avatar
+              avatarTitle
+              avatarDate
+              avatarBadge
+              followCta
+              report
+            }
+            body {
+              media
+              postTag
+              caption
+              mediaGridButton
+            }
+            footer {
+              like
+              comment
+              share
+              ctaLink
+              stats
+            }
+          }
+          cardhighlight {
+              title {
+                  text
+                  ctaLink
+              }
+              header {
+                  avatar
+                  avatarTitle
+                  avatarBadge
+              }
+              body {
+                  media
+              }
+              footer {
+                  like
+                  comment
+              }
+          }
+        }
+      }
+    }
+  }
+}

@@ -30,8 +30,8 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: CoroutineDisp
     val confirmReqPickupResult: LiveData<Result<SomConfirmReqPickup.Data>>
         get() = _confirmReqPickupResult
 
-    private val _processReqPickupResult = MutableLiveData<Result<SomProcessReqPickup>>()
-    val processReqPickupResult: LiveData<Result<SomProcessReqPickup>>
+    private val _processReqPickupResult = MutableLiveData<Result<SomProcessReqPickup.Data>>()
+    val processReqPickupResult: LiveData<Result<SomProcessReqPickup.Data>>
         get() = _processReqPickupResult
 
     fun loadConfirmRequestPickup(detailQuery: String, reqPickupParam: SomConfirmReqPickupParam) {
@@ -61,9 +61,9 @@ class SomConfirmReqPickupViewModel @Inject constructor(dispatcher: CoroutineDisp
 
         launchCatchError(block = {
             val processReqPickupData = withContext(Dispatchers.IO) {
-                val reqPickupRequest = GraphqlRequest(reqPickupQuery, SomProcessReqPickup::class.java, reqPickupParamInput as Map<String, Any>?)
+                val reqPickupRequest = GraphqlRequest(reqPickupQuery, SomProcessReqPickup.Data::class.java, reqPickupParamInput as Map<String, Any>?)
                 graphqlRepository.getReseponse(listOf(reqPickupRequest))
-                        .getSuccessData<SomProcessReqPickup>()
+                        .getSuccessData<SomProcessReqPickup.Data>()
             }
             _processReqPickupResult.postValue(Success(processReqPickupData))
         }, onError = {

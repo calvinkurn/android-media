@@ -2,8 +2,8 @@ package com.tokopedia.logisticaddaddress.data.query
 
 object GetDistrictQuery {
     val keroPlacesGetDistrict = """
-        query KeroPlacesGetDistrict(${'$'}param: String!) {
-          kero_places_get_district(placeid: ${'$'}param) {
+        query KeroPlacesGetDistrict(${'$'}param: String!, ${'$'}err: Boolean) {
+          kero_places_get_district(placeid: ${'$'}param, error_data: ${'$'}err) {
             data {
               title
               formatted_address
@@ -20,6 +20,8 @@ object GetDistrictQuery {
                 types
               }
             }
+            status
+            message_error
           }
         }
     """.trimIndent()

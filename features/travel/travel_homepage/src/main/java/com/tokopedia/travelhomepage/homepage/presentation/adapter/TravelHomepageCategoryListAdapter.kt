@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import kotlinx.android.synthetic.main.travel_homepage_category_list_item.view.*
 
 /**
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.travel_homepage_category_list_item.view.*
  */
 
 class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCategoryListModel.Category>,
-                                        var onItemClickListener: OnItemClickListener):
+                                        var travelHomepageActionListener: TravelHomepageActionListener):
         RecyclerView.Adapter<TravelHomepageCategoryListAdapter.CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CategoryViewHolder {
@@ -23,22 +23,27 @@ class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCat
         return CategoryViewHolder(view)
     }
 
+    fun updateData(updatedList: List<TravelHomepageCategoryListModel.Category>) {
+        this.list = updatedList
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(list[position], position, onItemClickListener)
+        holder.bind(list[position], position, travelHomepageActionListener)
     }
 
 
     class CategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bind(category: TravelHomepageCategoryListModel.Category, position: Int, listener: OnItemClickListener) {
+        fun bind(category: TravelHomepageCategoryListModel.Category, position: Int, listener: TravelHomepageActionListener) {
             with(itemView) {
                 category_image.loadImage(category.attributes.imageUrl)
                 category_name.text = category.attributes.title
             }
             itemView.setOnClickListener {
-                listener.onTrackCategoryClick(category, position+1)
+                listener.onClickDynamicIcon(category, position + 1)
                 listener.onItemClick(category.attributes.appUrl)
             }
         }

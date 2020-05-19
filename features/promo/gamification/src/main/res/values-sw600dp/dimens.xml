@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <bool name="gami_is_tablet">true</bool>
+   <dimen name="gami_rv_coupons_height">193dp</dimen>
+   <dimen name="gami_rv_coupons_width">390dp</dimen>
+</resources>

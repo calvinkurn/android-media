@@ -16,5 +16,6 @@ data class ChannelInfoUiModel(
         val moderatorName: String,
         val contentId: Int,
         val contentType: Int,
-        val likeType: Int
+        val likeType: Int,
+        val isShowCart: Boolean
 )

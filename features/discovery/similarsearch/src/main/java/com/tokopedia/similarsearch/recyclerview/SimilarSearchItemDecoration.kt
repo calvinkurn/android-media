@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.productcard.v2.ProductCardView
+import com.tokopedia.productcard.IProductCardView
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -86,9 +86,9 @@ internal class SimilarSearchItemDecoration(
     }
 
     private fun getHorizontalCardViewOffset(view: View): Int {
-        if (view is ProductCardView) {
-            val maxElevation = view.getCardViewMaxElevation()
-            val radius = view.getCardViewRadius()
+        if (view is IProductCardView) {
+            val maxElevation = view.getCardMaxElevation()
+            val radius = view.getCardRadius()
 
             return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
         }
@@ -97,9 +97,9 @@ internal class SimilarSearchItemDecoration(
     }
 
     private fun getVerticalCardViewOffset(view: View): Int {
-        if (view is ProductCardView) {
-            val maxElevation = view.getCardViewMaxElevation()
-            val radius = view.getCardViewRadius()
+        if (view is IProductCardView) {
+            val maxElevation = view.getCardMaxElevation()
+            val radius = view.getCardRadius()
 
             return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
         }

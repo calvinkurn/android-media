@@ -1,0 +1,16 @@
+query getShopScore($shopId: String!) {
+  shopScore(input: {shopID: $shopId}) {
+    result {
+      shopID
+      shopScore
+      shopScoreSummary {
+        title
+        value
+        maxValue
+        color
+        description
+      }
+      badgeScore
+    }
+  }
+}
