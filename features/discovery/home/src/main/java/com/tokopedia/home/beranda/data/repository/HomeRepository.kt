@@ -9,5 +9,6 @@ import rx.Observable
 interface HomeRepository {
     fun getHomeData(): Flow<HomeData?>
     fun updateHomeData(): Flow<Result<Any>>
+    fun sendGeolocationInfo(): Observable<Response<String>>
 }
 

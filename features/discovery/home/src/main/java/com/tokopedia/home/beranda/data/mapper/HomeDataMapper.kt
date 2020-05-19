@@ -15,18 +15,18 @@ class HomeDataMapper(
         private val trackingQueue: TrackingQueue
 ) {
     fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeDataModel{
-//        BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
+        BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         val list: List<Visitable<*>> = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context)
-//                .addBannerVisitable()
-//                .addTickerVisitable()
-//                .addUserWalletVisitable()
-//                .addDynamicIconVisitable()
-//                .addGeolocationVisitable()
+                .addBannerVisitable()
+                .addTickerVisitable()
+                .addUserWalletVisitable()
+                .addDynamicIconVisitable()
+                .addGeolocationVisitable()
                 .addDynamicChannelVisitable()
                 .build()
-//        BenchmarkHelper.endSystraceSection()
+        BenchmarkHelper.endSystraceSection()
         return HomeDataModel(homeData.homeFlag, list, isCache)
     }
 }
