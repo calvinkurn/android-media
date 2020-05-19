@@ -52,9 +52,9 @@ class PopularUITest : BaseWidgetUiTest(){
     fun test_when_detail_data_not_available_the_widget_must_loading(){
         val json = GraphqlHelper.loadRawString(context.resources, R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
         coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
             newList.add(4, PopularKeywordListDataModel(
@@ -77,8 +77,8 @@ class PopularUITest : BaseWidgetUiTest(){
     fun test_when_data_fully_complete_the_widget_must_show_with_list(){
         val json = GraphqlHelper.loadRawString(context.resources, R.raw.popular_keyword_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             emit(data)
         }
@@ -95,8 +95,8 @@ class PopularUITest : BaseWidgetUiTest(){
     fun test_when_no_data_available_the_widget_not_showing(){
         val json = GraphqlHelper.loadRawString(context.resources, R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             emit(data)
         }
@@ -118,8 +118,8 @@ class PopularUITest : BaseWidgetUiTest(){
             delay(2000)
             Gson().fromJson<HomeWidget.PopularKeywordQuery>(popularData, HomeWidget.PopularKeywordQuery::class.java)
         }
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             emit(data)
         }

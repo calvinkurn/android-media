@@ -68,7 +68,7 @@ class RewardContainer : FrameLayout {
     }
 
     fun init(attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(R.layout.view_reward_container, this, true)
+        LayoutInflater.from(context).inflate(com.tokopedia.gamification.R.layout.view_reward_container, this, true)
 
         tvSmallReward = findViewById(R.id.tv_small_reward)
         imageSmallReward = findViewById(R.id.image_small_reward)
@@ -84,8 +84,8 @@ class RewardContainer : FrameLayout {
 
         rvCoupons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        var isTablet = context?.resources?.getBoolean(R.bool.gami_is_tablet)
-        var listItemWidthInTablet = context?.resources?.getDimension(R.dimen.gami_rv_coupons_width)
+        var isTablet = context?.resources?.getBoolean(com.tokopedia.gamification.R.bool.gami_is_tablet)
+        var listItemWidthInTablet = context?.resources?.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_width)
         if (isTablet == null) {
             isTablet = false
         }

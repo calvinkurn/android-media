@@ -142,7 +142,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     }
 
     private void init() {
-        rootView = LayoutInflater.from(getContext()).inflate(R.layout.widget_token_tap_tap, this, true);
+        rootView = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.widget_token_tap_tap, this, true);
         imageViewFull = rootView.findViewById(R.id.imagefull);
         imageViewCracked = rootView.findViewById(R.id.imagecracked);
         imageViewLeft = rootView.findViewById(R.id.imageleft);
@@ -431,23 +431,23 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     }
 
     private void playCrack() {
-        playSound(R.raw.crack_egg_tap_tap);
+        playSound(com.tokopedia.gamification.R.raw.crack_egg_tap_tap);
     }
 
     private void playRewardSound() {
-        playSound(R.raw.reward_tap_tap);
+        playSound(com.tokopedia.gamification.R.raw.reward_tap_tap);
     }
 
     private void playEggBounce() {
-        playSound(R.raw.egg_bounce_tap_tap);
+        playSound(com.tokopedia.gamification.R.raw.egg_bounce_tap_tap);
     }
 
     private void playTapSound() {
-        playSound(R.raw.egg_tap_response_tap_tap);
+        playSound(com.tokopedia.gamification.R.raw.egg_tap_response_tap_tap);
     }
 
     private void playReverseEggSound() {
-        playSound(R.raw.reverse_egg_tap_tap);
+        playSound(com.tokopedia.gamification.R.raw.reverse_egg_tap_tap);
     }
 
     public void playSound(int resId) {
@@ -638,7 +638,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         final PropertyValuesHolder pvhRotateLeft =
                 PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_LEFT_FROM_ANGLE, ROTATE_LEFT_TO_ANGLE);
         final PropertyValuesHolder pvhRotateLeftTranslateY =
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getInteger(R.integer.translate_egg_to_y_delta));
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getInteger(com.tokopedia.gamification.R.integer.translate_egg_to_y_delta));
         ObjectAnimator rotateLeftAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, pvhRotateLeft);
         ObjectAnimator rotateLeftTranslateY = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, pvhRotateLeftTranslateY);
         rotateLeft.playTogether(rotateLeftAnimator, rotateLeftTranslateY);
@@ -649,7 +649,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         final PropertyValuesHolder pvhRotateRight =
                 PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_RIGHT_FROM_ANGLE, ROTATE_RIGHT_TO_ANGLE);
         final PropertyValuesHolder pvhRotateRightTranslateY =
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getInteger(R.integer.translate_egg_to_y_delta));
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getInteger(com.tokopedia.gamification.R.integer.translate_egg_to_y_delta));
 
 
         ObjectAnimator rotateRightAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, pvhRotateRight);
@@ -681,7 +681,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         final PropertyValuesHolder pvhRotateLeftBack =
                 PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_LEFT_BACK_FROM_ANGLE, ROTATE_LEFT_BACK_TO_ANGLE);
         final PropertyValuesHolder pvhRotateLeftTranslateYBack =
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getInteger(R.integer.translate_egg_to_y_delta), 0);
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getInteger(com.tokopedia.gamification.R.integer.translate_egg_to_y_delta), 0);
 
 
         ObjectAnimator rotateLeftAnimatorBack = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, pvhRotateLeftBack);
@@ -694,7 +694,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         final PropertyValuesHolder pvhRotateRightBack =
                 PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_RIGHT_BACK_FROM_ANGLE, ROTATE_RIGHT_BACK_TO_ANGLE);
         final PropertyValuesHolder pvhRotateRightTranslateYBack =
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getInteger(R.integer.translate_egg_to_y_delta), 0);
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getInteger(com.tokopedia.gamification.R.integer.translate_egg_to_y_delta), 0);
 
 
         ObjectAnimator rotateRightAnimatorBack = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, pvhRotateRightBack);
@@ -824,7 +824,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
             Random rand = new Random();
             tapCount = rand.nextInt((MAX_TAP_COUNT - MIN_TAP_COUNT) + 1) + MIN_TAP_COUNT;
             widgetTapCounter.setVisibility(View.VISIBLE);
-            widgetTapCounter.initialize(tapCount, R.string.tap_arg_text, this);
+            widgetTapCounter.initialize(tapCount, com.tokopedia.gamification.R.string.tap_arg_text, this);
 
         }
 

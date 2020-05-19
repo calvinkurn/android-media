@@ -8,8 +8,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
+import com.tokopedia.unifycomponents.BaseCustomView
 
 /**
  * @author by jessica on 16/04/19

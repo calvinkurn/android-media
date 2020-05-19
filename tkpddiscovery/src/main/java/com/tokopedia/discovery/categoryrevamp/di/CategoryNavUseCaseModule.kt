@@ -66,20 +66,6 @@ class CategoryNavUseCaseModule {
 
     @CategoryNavScope
     @Provides
-    fun provideSubCategoryList(context: Context, @Named("subCategoryGqlUseCaseObject") graphqlUseCase
-    : GraphqlUseCase): SubCategoryUseCase {
-        return SubCategoryUseCase(context, graphqlUseCase)
-    }
-
-    /*@CategoryNavScope
-    @Provides
-    fun provideCatatlogUseCase(context: Context, @Named("catalogGqlUseCase") graphqlUseCase
-    : GraphqlUseCase): CatalogUseCase {
-        return CatalogUseCase(context, graphqlUseCase)
-    }*/
-
-    @CategoryNavScope
-    @Provides
     fun provideDynamicFilterUseCase(context: Context): DynamicFilterUseCase {
         return DynamicFilterUseCase(context)
     }
