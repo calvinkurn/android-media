@@ -269,7 +269,10 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+    override fun addProductToCart(
+            product: ProductData,
+            onSuccessAddToCart: (DataModel) -> Unit
+    ) {
         presenter.addProductToCart(product, onSuccessAddToCart)
     }
 

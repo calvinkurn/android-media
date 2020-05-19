@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
@@ -238,7 +239,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
     //unused method
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName(): String = ""
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: (DataModel) -> Unit) {}
 
     override fun initInjector() {
         (activity as NotificationActivity)
