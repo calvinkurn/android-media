@@ -81,8 +81,8 @@ private fun testProductCardWithNameAndPdpView(): ProductCardModelMatcher {
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.tvPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.ivPdpView] = isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.imageViewPdpView] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -99,7 +99,7 @@ private fun testProductCardWithNameAndStockBar(): ProductCardModelMatcher {
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.tvLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
         it[R.id.progressBar] = isDisplayed()
     }
 
@@ -132,8 +132,8 @@ private fun testProductCardWithSpoilerPriceAndViewCount(): ProductCardModelMatch
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.ivPdpView] = isDisplayed()
-        it[R.id.tvPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.imageViewPdpView] = isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
         it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
     }
@@ -154,7 +154,7 @@ private fun testProductCardWithSpoilerPriceAndStockBar(): ProductCardModelMatche
         it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.tvLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
         it[R.id.progressBar] = isDisplayed()
     }
 

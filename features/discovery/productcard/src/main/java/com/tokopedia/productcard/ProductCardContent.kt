@@ -37,10 +37,10 @@ private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
-    ivPdpView.hide()
-    tvPdpView?.shouldShowWithAction(productCardModel.pdpViewCount.isNotEmpty()) {
+    imageViewPdpView.hide()
+    textViewPdpView?.shouldShowWithAction(productCardModel.pdpViewCount.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(productCardModel.pdpViewCount)
-        ivPdpView.show()
+        imageViewPdpView.show()
     }
 }
 
@@ -161,7 +161,7 @@ private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-    tvLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+    textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
         it.text = productCardModel.stockBarLabel
     }
 }

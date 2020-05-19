@@ -21,7 +21,7 @@
         tools:visibility="visible" />
 
     <ImageView
-        android:id="@+id/ivPdpView"
+        android:id="@+id/imageViewPdpView"
         android:layout_width="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_height="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_marginTop="@dimen/product_card_flashsale_pdpcount_margintop"
@@ -33,15 +33,15 @@
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPdpView"
+        android:id="@+id/textViewPdpView"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_marginLeft="@dimen/dp_2"
         android:visibility="gone"
         android:gravity="center"
-        app:layout_constraintStart_toEndOf="@+id/ivPdpView"
-        app:layout_constraintTop_toTopOf="@+id/ivPdpView"
-        app:layout_constraintBottom_toBottomOf="@+id/ivPdpView"
+        app:layout_constraintStart_toEndOf="@+id/imageViewPdpView"
+        app:layout_constraintTop_toTopOf="@+id/imageViewPdpView"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewPdpView"
         app:typographyType="small"
         android:textColor="@color/charcoal_grey_68"
         tools:text="989jt orang"
@@ -58,7 +58,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivPdpView"
+        app:layout_constraintTop_toBottomOf="@id/imageViewPdpView"
         app:layout_goneMarginTop="@dimen/product_card_text_view_product_name_gone_margin_top"
         app:typographyType="body_3"
         tools:text="Product Name"
@@ -337,7 +337,7 @@
         android:max="100"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvLabel"
+        android:id="@+id/textViewStockLabel"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_flashsale_label_height"
         android:src="@drawable/ic_pdp_view"

@@ -91,7 +91,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
         if (productCardModel.isOutOfStock) {
             labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
-            tvLabel.visibility = View.GONE
+            textViewStockLabel.visibility = View.GONE
             progressBar.visibility = View.GONE
             outOfStockOverlay.visibility = View.VISIBLE
         } else {

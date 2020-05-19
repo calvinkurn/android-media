@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
-import com.tokopedia.productcard.ProductCardFlashSaleView
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
