@@ -136,7 +136,6 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
         recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
-        // recyclerView?.addItemDecoration(StickyHeaderItemDecoration(adapterBrandSearch as StickyHeaderInterface))
         return view
     }
 
@@ -288,7 +287,6 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         viewModel.brandlistAllBrandTotal.observe(this, Observer {
             when (it) {
                 is Success -> {
-//                    adapterBrandSearch?.updateAllBrandsValue(it.data)
                     totalBrandsNumber = it.data
                     loadInitialData()
                 }
@@ -306,8 +304,6 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     adapterBrandSearch?.hideLoading()
                     val response = it.data
                     endlessScrollListener.updateStateAfterGetData()
-//                    val currentOffset = viewModel.currentOffset
-//                    val groupHeader = viewModel.currentLetter.toUpperCase()
 
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
@@ -325,8 +321,6 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     viewModel.updateTotalBrandSizeForChipHeader(response.totalBrands)
                     viewModel.updateTotalBrandSize(response.totalBrands)
                     viewModel.updateCurrentOffset(response.brands.size)
-//                    viewModel.updateCurrentLetter()
-//                    viewModel.updateEndlessRequestParameter()
                 }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
@@ -373,31 +367,6 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 imgUrl, true, keywordSearch)
     }
 
-//    override fun onClickedChip(position: Int, chipName: String) {
-//        selectedChip = position
-//
-//        if (position > 0 && position < 2) {     // Load Semua Brand
-//            isLoadMore = false
-//            setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
-//            viewModel.resetParams()
-//            isInitialDataLoaded = false
-//            loadInitialData()
-//        } else if (position >= 2) {     // Load per alphabet
-//            isLoadMore = false
-//            selectedBrandLetter = chipName
-//            setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
-//            viewModel.resetParams()
-//            viewModel.searchAllBrands(
-//                    INITIAL_OFFSET, "",
-//                    ALL_BRANDS_REQUEST_SIZE,
-//                    ALPHABETIC_ASC_SORT, chipName)
-//            adapterBrandSearch?.refreshSticky()
-////            layoutManager?.scrollToPositionWithOffset(
-////                    adapterBrandSearch
-////            )
-//        }
-//    }
-
     override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
         selectedChip = position
         recyclerViewLastState = recyclerViewState
@@ -418,9 +387,6 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     ALL_BRANDS_REQUEST_SIZE,
                     ALPHABETIC_ASC_SORT, chipName)
             adapterBrandSearch?.refreshSticky()
-//            layoutManager?.scrollToPositionWithOffset(
-//                    adapterBrandSearch
-//            )
         }
     }
 

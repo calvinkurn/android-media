@@ -6,16 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
-import com.tokopedia.brandlist.brandlist_page.data.model.Brand
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchGroupHeaderViewHolder
-//import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.AllBrandGroupHeaderViewHolder
-//import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
-//import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchAllBrandLabelViewHolder
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.common.LoadAllBrandState
-import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
 import com.tokopedia.brandlist.common.widget.OnStickySingleHeaderListener
 import com.tokopedia.brandlist.common.widget.StickySingleHeaderView
 
@@ -65,9 +59,6 @@ class BrandlistSearchResultAdapter(
         } else if (filteredList.size > 0) {
             visitables.set(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
-
-//            BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip)
-//            notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         }
     }
 
@@ -76,10 +67,6 @@ class BrandlistSearchResultAdapter(
             stateLoadBrands: String,
             isLoadMore: Boolean
     ) {
-//        val totalData: Int = getVisitables().size ?: 0
-//        val _list = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>()
-//        val _startIndex = getVisitables().indexOf(list.first())
-//        val _lastIndex = getVisitables().indexOf(list.last())
         val _totalUnusedData = getVisitables().size - 1
         val _startIndex = 1
 
@@ -149,8 +136,6 @@ class BrandlistSearchResultAdapter(
         this.recyclerView = null
         super.onDetachedFromRecyclerView(recyclerView)
     }
-
-//    val loadingModelPosition = this.visitables.indexOf(loadingMoreModel as Visitable<CatalogTypeFactory>)
 
     override val stickyHeaderPosition: Int
         get() = visitables.indexOf(visitables.get(ALL_BRAND_GROUP_HEADER_POSITION))

@@ -15,8 +15,6 @@ interface BrandlistSearchTypeFactory {
 
     fun type(brandlistSearchShimmeringViewModel: BrandlistSearchShimmeringViewModel): Int
 
-//    fun type(brandlistSearchAllBrandHeaderViewModel: BrandlistSearchAllBrandLabelViewModel): Int
-
     fun type(brandlistSearchAllBrandGroupHeaderViewModel: BrandlistSearchAllBrandGroupHeaderViewModel): Int
 
 }

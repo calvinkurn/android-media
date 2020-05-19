@@ -112,24 +112,7 @@ class BrandlistSearchViewModel @Inject constructor(
         firstLetterChanged = false
         totalBrandSize = 0
         currentOffset = INITIAL_OFFSET
-//        currentLetter = INITIAL_LETTER
     }
-
-//    fun updateCurrentLetter() {
-//        val firstLetter = getFirstLetter(totalBrandSize, currentOffset)
-//        if (firstLetter != currentLetter) {
-//            currentLetter = firstLetter
-//            firstLetterChanged = true
-//        }
-//    }
-
-//    fun updateEndlessRequestParameter() {
-//        if (firstLetterChanged) {
-//            totalBrandSize = 0
-//            currentOffset = 0
-//            firstLetterChanged = false
-//        }
-//    }
 
     fun searchBrand(
             offset: Int,
@@ -150,18 +133,6 @@ class BrandlistSearchViewModel @Inject constructor(
             _brandlistSearchResponse.value = Fail(it)
         }
     }
-
-//    fun loadBrandsPerAlphabet(category: Category?, brandFirstLetter: String) {
-//        launchCatchError(block = {
-//            _getAllBrandResult.postValue(Success(getAllBrandAsync(
-//                    category?.categoryId,
-//                    INITIAL_OFFSET,
-//                    ALL_BRANDS_QUERY,
-//                    ALL_BRANDS_REQUEST_SIZE,
-//                    ALPHABETIC_ASC_SORT,
-//                    brandFirstLetter).await()))
-//        }, onError = {})
-//    }
 
     fun searchRecommendation(
             userId: String,
@@ -221,11 +192,4 @@ class BrandlistSearchViewModel @Inject constructor(
             _brandlistAllBrandTotal.value = Fail(it)
         }
     }
-
-//    private fun getFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-//        return if (totalBrandSize == currentOffset) {
-//            val newLetter = currentLetter + 1
-//            newLetter
-//        } else currentLetter
-//    }
 }

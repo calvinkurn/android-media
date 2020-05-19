@@ -52,9 +52,6 @@ class BrandlistSearchGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<
         element.recyclerViewLastState?.let {
             recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
         }
-//        element.recyclerViewState?.let {
-//            recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
-//        }
 
         adapter = BrandlistSearchAlphabetHeaderAdapter(element.listener)
         adapter?.headerList = headerList
