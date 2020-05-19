@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.ui
 import android.content.Context
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.applink.RouteManager
@@ -43,6 +44,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
         showDescription(kycVerified, shopScoreEligible)
         showVerificationCheckList(kycVerified)
         showShopScoreCheckList(shopScoreEligible)
+        showLayout()
     }
 
     private fun setTracker(tracker: PowerMerchantTracking) {
@@ -102,5 +104,9 @@ class PowerMerchantRegistrationView : ConstraintLayout {
     private fun goToLearMorePage() {
         tracker?.eventLearnMorePm()
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT)
+    }
+
+    private fun showLayout() {
+        visibility = View.VISIBLE
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.ui
 
 import android.content.Context
+import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -76,8 +77,9 @@ class PowerMerchantMembershipView: ConstraintLayout {
         val clickableText = context.getString(R.string.power_merchant_premium_account_clickable_text)
         val clickableTextColor = ContextCompat.getColor(context, R.color.pm_main_color)
 
+        textPremiumAccountDescription.movementMethod = LinkMovementMethod.getInstance()
         textPremiumAccountDescription.text = createSpannableString(description, clickableText, clickableTextColor) {
-            // TO-DO
+            goToWebViewPage(PowerMerchantUrl.URL_PREMIUM_ACCOUNT)
         }
     }
 
