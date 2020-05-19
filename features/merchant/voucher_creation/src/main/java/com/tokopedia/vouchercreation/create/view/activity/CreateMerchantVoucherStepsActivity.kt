@@ -28,6 +28,7 @@ import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherSt
 import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.ChangeDetailPromptBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
@@ -52,6 +53,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         private const val CASHBACK_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
         private const val CASHBACK_UNTIL_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
         private const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
+
+        private const val FIRST_STEP_INDEX = 0
 
     }
 
@@ -105,6 +108,14 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         }
     }
 
+    private val backPromptBottomSheet by lazy {
+        ChangeDetailPromptBottomSheetFragment.createInstance(this, ::onCancelVoucher).apply {
+            setCloseClickListener {
+                this.dismiss()
+            }
+        }
+    }
+
     private val cancelDialog by lazy {
         CreateVoucherCancelDialog(this) {
             finish()
@@ -149,10 +160,16 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     override fun onBackPressed() {
-        if (currentStepPosition == 0) {
-            cancelDialog.show()
-        } else {
-            onBackStep()
+        when(currentStepPosition) {
+            FIRST_STEP_INDEX -> {
+                cancelDialog.show()
+            }
+            fragmentStepsHashMap.size - 1 -> {
+                backPromptBottomSheet.show(supportFragmentManager, ChangeDetailPromptBottomSheetFragment.TAG)
+            }
+            else -> {
+                onBackPressed()
+            }
         }
     }
 
@@ -320,4 +337,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun getToken() = token
 
     private fun getIgPostVoucherUrl() = igPostVoucherUrl
+
+    private fun onCancelVoucher() {
+        cancelDialog.show()
+    }
 }
