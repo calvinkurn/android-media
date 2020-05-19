@@ -16,13 +16,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
-import com.tokopedia.flight.airport.di.FlightAirportModule;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportClickListener;
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerContract;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
+import com.tokopedia.flight.airportv2.di.DaggerFlightAirportComponent;
+import com.tokopedia.flight.airportv2.di.FlightAirportModule;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
 import java.util.List;

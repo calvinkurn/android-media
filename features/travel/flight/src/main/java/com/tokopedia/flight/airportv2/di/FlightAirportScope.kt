@@ -1,4 +1,4 @@
-package com.tokopedia.flight.airport.di
+package com.tokopedia.flight.airportv2.di
 
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy

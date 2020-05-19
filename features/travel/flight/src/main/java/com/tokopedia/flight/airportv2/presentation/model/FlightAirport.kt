@@ -1,4 +1,4 @@
-package com.tokopedia.flight.airport.domain
+package com.tokopedia.flight.airportv2.presentation.model
 
 /**
  * Created by nabillasabbaha on 05/03/19.

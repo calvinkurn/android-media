@@ -1,4 +1,4 @@
-package com.tokopedia.flight.airport.di
+package com.tokopedia.flight.airportv2.di
 
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
 import com.tokopedia.flight.common.di.component.FlightComponent
