@@ -120,6 +120,8 @@
     <!-- Step 4 -->
     <string name="mvc_terms_and_condition_desc">Syarat dan Ketentuan Voucher Toko merupakan bagian dari Syarat dan Ketentuan Situs/Aplikasi Tokopedia. Penggunaan Voucher Toko  tunduk pada Syarat dan Ketentuan Situs/Aplikasi, Kebijakan Privasi, dan Syarat dan Ketentuan yang tertulis dibawah ini. Pengguna disarankan membaca dengan seksama karena dapat berdampak kepada hak dan kewajiban pengguna secara hukum.\n\nDengan mendaftar dan/atau menggunakan situs www.tokopedia.com, maka Pengguna dianggap telah membaca, mengerti, memahami dan menyetujui semua isi dalam Syarat dan Ketentuan. Syarat dan Ketentuan ini merupakan bentuk kesepakatan yang dituangkan dalam sebuah perjanjian yang sah antara Pengguna dengan PT Tokopedia. Jika pengguna tidak menyetujui salah satu, sebagian, atau seluruh isi Syarat dan Ketentuan, maka pengguna tidak diperkenankan menggunakan layanan di www.tokopedia.com.</string>
     <string name="mvc_terms_and_condition_title">Syarat &amp; Ketentuan</string>
+    <string name="mvc_create_fail_title">Yaah, gagal menambahkan Voucher Toko</string>
+    <string name="mvc_create_fail_desc">Voucher kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
 
     <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
@@ -220,6 +222,8 @@
     <string name="mvc_review_terms">syarat dan ketentuan</string>
     <string name="mvc_estimation_title">Estimasi Maks. Pengeluaran</string>
     <string name="mvc_estimation_description">Dipotong dari transaksi selesai</string>
+    <string name="mvc_try_again">Coba Lagi</string>
+    <string name="mvc_help">Bantuan</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_voucher_info">Info voucher</string>

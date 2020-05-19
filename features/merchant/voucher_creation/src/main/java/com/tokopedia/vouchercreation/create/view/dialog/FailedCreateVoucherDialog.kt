@@ -1,0 +1,30 @@
+package com.tokopedia.vouchercreation.create.view.dialog
+
+import android.content.Context
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.vouchercreation.R
+
+class FailedCreateVoucherDialog(context: Context,
+                                private val onTryAgain: () -> Unit,
+                                private val onRequestHelp: () -> Unit) {
+
+    private val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
+
+    fun show() = with(dialog) {
+        setImageDrawable(R.drawable.ic_create_voucher_fail)
+        setTitle(context.getString(R.string.mvc_create_fail_title))
+        setDescription(context.getString(R.string.mvc_create_fail_desc))
+        setPrimaryCTAText(context.getString(R.string.mvc_try_again))
+        setPrimaryCTAClickListener {
+            onTryAgain()
+            dismiss()
+        }
+        setSecondaryCTAText(context.getString(R.string.mvc_help))
+        setSecondaryCTAClickListener {
+            onRequestHelp()
+            dismiss()
+        }
+        show()
+    }
+
+}
