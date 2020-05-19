@@ -14,18 +14,18 @@ object PowerMerchantSpannableUtil {
 
     fun createSpannableString(
         text: String,
-        clickableText: String,
+        highlightText: String,
         @ColorInt colorId: Int,
         isBold: Boolean = false,
-        onClick: () -> Unit
+        onClick: (() -> Unit)? = null
     ): SpannableString {
         val spannableString = SpannableString(text)
-        val startIndex = text.indexOf(clickableText)
+        val startIndex = text.indexOf(highlightText)
         val endIndex = text.length
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
-                onClick.invoke()
+                onClick?.invoke()
             }
 
             override fun updateDrawState(ds: TextPaint) {
