@@ -30,7 +30,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewGimmick"
         app:srcCompat="@drawable/ic_pdp_view"
-        app:layout_constraintBottom_toTopOf="@+id/tvPdpView"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography

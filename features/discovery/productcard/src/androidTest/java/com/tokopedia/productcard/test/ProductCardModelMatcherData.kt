@@ -14,7 +14,12 @@ import org.hamcrest.Matcher
 
 internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutableListOf<ProductCardModelMatcher>().also {
     it.add(testOneLineProductName())
+    it.add(testProductCardWithNameAndPdpView())
+    it.add(testProductCardWithNameAndStockBar())
     it.add(testSlashPrice())
+    it.add(testProductCardWithSpoilerPrice())
+    it.add(testProductCardWithSpoilerPriceAndViewCount())
+    it.add(testProductCardWithSpoilerPriceAndStockBar())
     it.add(testTwoLinesProductName())
     it.add(testMaximumInfoAndLabel())
     it.add(testLabelGimmickNumberOfStock())
@@ -61,6 +66,96 @@ private fun testOneLineProductName(): ProductCardModelMatcher {
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndPdpView(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With Pdp View Gaes",
+            productImageUrl = productImageUrl,
+            pdpViewCount = "17.9k view gaes"
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.tvPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.ivPdpView] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBar(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With Stock Bar Gaes",
+            productImageUrl = productImageUrl,
+            stockBarLabel = "Banyak Sisa",
+            stockBarPercentage = 20
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.tvLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBar] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithSpoilerPrice(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productImageUrl = productImageUrl,
+            slashedPrice = "Rp 1.000.000",
+            formattedPrice = "Rp ???.??0"
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithSpoilerPriceAndViewCount(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productImageUrl = productImageUrl,
+            pdpViewCount = "171k View Gaes",
+            slashedPrice = "Rp 1.000.000",
+            formattedPrice = "Rp ???.??0"
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.ivPdpView] = isDisplayed()
+        it[R.id.tvPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithSpoilerPriceAndStockBar(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productImageUrl = productImageUrl,
+            slashedPrice = "Rp 1.000.000",
+            formattedPrice = "Rp ???.??0",
+            stockBarLabel = "Banyak Sisa",
+            stockBarPercentage = 20
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.tvLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBar] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

@@ -40,6 +40,9 @@ private class ProductCardInPositionMatcher(
 
     private fun ViewGroup.checkChildrenInMatchers(): Boolean {
         return itemMatcherList.all {
+//            val viewToMatch = this.findViewById<View>(it.key)
+//                    ?: throw AssertionError("View with id ${resources.getResourceEntryName(it.key)} not found")
+//            it.value.matchProductCardComponent(viewToMatch)
             it.value.matchProductCardComponent(this.findViewById(it.key))
         }
     }
