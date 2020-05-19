@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
@@ -21,14 +21,14 @@ import kotlinx.android.synthetic.main.item_social_proof_with_divider.view.*
 /**
  * Created by Yehezkiel on 18/05/20
  */
-class HierarchycalSocialProofViewHolder(private val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductSocialProofDataModel>(view) {
+class ProductMiniSocialProofViewHolder(private val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductMiniSocialProofDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_hierarchycal_social_proof
     }
 
-    override fun bind(element: ProductSocialProofDataModel) {
-        val availableData = element.getAvailableData()
+    override fun bind(element: ProductMiniSocialProofDataModel) {
+        val availableData = element.getLastThreeHirarchyData()
 
         if (!element.shouldRenderSocialProof) {
             view.pdp_shimmering_social_proof?.show()
@@ -40,7 +40,7 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
             val inflater: LayoutInflater = view.context.layoutInflater
             val key = availableData.first().first
 
-            if (availableData.size == 1 && (key == ProductSocialProofDataModel.TALK || key == ProductSocialProofDataModel.PAYMENT_VERIFIED || key == ProductSocialProofDataModel.VIEW_COUNT)) {
+            if (availableData.size == 1 && (key == ProductMiniSocialProofDataModel.TALK || key == ProductMiniSocialProofDataModel.PAYMENT_VERIFIED || key == ProductMiniSocialProofDataModel.VIEW_COUNT)) {
                 val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
                 generateSingleTextSocialProof(availableData.first(), socProofView, element)
                 rootView.addView(socProofView, 0)
@@ -54,7 +54,7 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
         }
     }
 
-    private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View, data: ProductSocialProofDataModel) {
+    private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View, data: ProductMiniSocialProofDataModel) {
         val textSocialProofValue = view.txt_soc_proof_value
         val socProofDivider = view.social_proof_horizontal_separator
         val socProofTitle = view.txt_soc_proof_title
@@ -62,20 +62,20 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
         socProofTitle?.hide()
 
         when (element.first) {
-            ProductSocialProofDataModel.TALK -> {
+            ProductMiniSocialProofDataModel.TALK -> {
                 view.setOnClickListener { listener.onReviewClick() }
                 textSocialProofValue?.text = view.context.getString(R.string.qna_single_text_template_builder, element.second.productThousandFormatted())
             }
-            ProductSocialProofDataModel.PAYMENT_VERIFIED -> {
+            ProductMiniSocialProofDataModel.PAYMENT_VERIFIED -> {
                 textSocialProofValue?.text = view.context.getString(R.string.terjual_single_text_template_builder, element.second.productThousandFormatted())
             }
-            ProductSocialProofDataModel.VIEW_COUNT -> {
+            ProductMiniSocialProofDataModel.VIEW_COUNT -> {
                 textSocialProofValue?.text = view.context.getString(R.string.product_view_single_text__template_builder, element.second.productThousandFormatted())
             }
         }
     }
 
-    private fun renderSocialProofData(element: Pair<String, Int>, rating: Float, data: ProductSocialProofDataModel, view: View, index: Int) {
+    private fun renderSocialProofData(element: Pair<String, Int>, rating: Float, data: ProductMiniSocialProofDataModel, view: View, index: Int) {
         val textSocialProofValueView = view.txt_soc_proof_value
         val textSocialProofTitleView = view.txt_soc_proof_title
         val socProofDivider = view.social_proof_horizontal_separator
@@ -84,7 +84,7 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
         socProofDivider.showWithCondition(index != 0)
 
         when (element.first) {
-            ProductSocialProofDataModel.RATING -> {
+            ProductMiniSocialProofDataModel.RATING -> {
                 view.isClickable = true
                 view.setOnClickListener { listener.onReviewClick() }
                 textSocialProofTitleView?.run {
@@ -96,7 +96,7 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
                 textSocialProofTitle = rating.toString()
                 textSocialProofValue = view.context.getString(R.string.bracket_formated, element.second.productThousandFormatted())
             }
-            ProductSocialProofDataModel.TALK -> {
+            ProductMiniSocialProofDataModel.TALK -> {
                 view.isClickable = true
                 view.setOnClickListener { listener.onDiscussionClicked(getComponentTrackData(data)) }
                 textSocialProofTitleView.setWeight(Typography.BOLD)
@@ -104,17 +104,17 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
                 textSocialProofTitle = view.context.getString(R.string.label_qna)
                 textSocialProofValue = element.second.productThousandFormatted()
             }
-            ProductSocialProofDataModel.PAYMENT_VERIFIED -> {
+            ProductMiniSocialProofDataModel.PAYMENT_VERIFIED -> {
                 view.isClickable = false
                 textSocialProofTitle = view.context.getString(R.string.label_terjual)
                 textSocialProofValue = element.second.productThousandFormatted()
             }
-            ProductSocialProofDataModel.WISHLIST -> {
+            ProductMiniSocialProofDataModel.WISHLIST -> {
                 view.isClickable = false
                 textSocialProofTitle = view.context.getString(R.string.label_wishlist)
                 textSocialProofValue = element.second.productThousandFormatted()
             }
-            ProductSocialProofDataModel.VIEW_COUNT -> {
+            ProductMiniSocialProofDataModel.VIEW_COUNT -> {
                 view.isClickable = false
                 textSocialProofTitle = view.context.getString(R.string.label_seen)
                 textSocialProofValue = element.second.productThousandFormatted()
@@ -125,5 +125,5 @@ class HierarchycalSocialProofViewHolder(private val view: View, private val list
         textSocialProofTitleView?.text = MethodChecker.fromHtml(textSocialProofTitle)
     }
 
-    private fun getComponentTrackData(element: ProductSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
+    private fun getComponentTrackData(element: ProductMiniSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

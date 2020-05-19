@@ -26,6 +26,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
 
+    val miniSocialProofMap: ProductMiniSocialProofDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
+
     val snapShotMap: ProductSnapshotDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as? ProductSnapshotDataModel
 
@@ -74,9 +77,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
-    val productSocialProofPvDataModel: ProductSocialProofDataModel?
-        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofDataModel
-
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
 
@@ -116,22 +116,17 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 talkCount = it.basic.stats.countTalk
             }
 
-            socialProofMap?.run {
+            miniSocialProofMap?.run {
                 rating = it.basic.stats.rating
                 ratingCount = it.basic.stats.countReview
                 viewCount = it.basic.stats.countView
                 talkCount = it.basic.stats.countTalk
                 paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
-
-                txStats = it.basic.txStats
-                stats = it.basic.stats
-                rating = it.basic.stats.rating
             }
 
-             productSocialProofPvDataModel?.run {
+            socialProofMap?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
-                rating = it.basic.stats.rating
             }
 
             productInfoMap?.run {
@@ -227,12 +222,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                         ?: ""
             }
 
-            socialProofMap?.run {
+            miniSocialProofMap?.run {
                 wishlistCount = it.wishlistCount.count
                 shouldRenderSocialProof = true
             }
 
-            productSocialProofPvDataModel?.run{
+            socialProofMap?.run {
                 wishlistCount = it.wishlistCount.count
             }
 

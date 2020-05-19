@@ -34,13 +34,6 @@ class PartialProductStatisticView private constructor(private val view: View) {
         }
     }
 
-    fun renderRating(rating: Rating) {
-        with(view) {
-            tv_rating.text = rating.ratingScore
-            visible()
-        }
-    }
-
     fun renderClickShipping(activity: Activity? = null, onShipmentClicked: (() -> Unit)? = null) {
         with(view) {
             icon_courier.setOnClickListener {

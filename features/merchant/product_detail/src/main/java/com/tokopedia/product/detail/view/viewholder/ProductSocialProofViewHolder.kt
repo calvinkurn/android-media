@@ -41,7 +41,7 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             listener.onImpressComponent(getComponentTrackData(element))
         }
 
-        element.rating?.run {
+        element.stats?.rating?.run {
             productStatsView?.renderRatingNew(this.toString())
         }
         attributeInfoView?.renderWishlistCount(element.wishlistCount)
