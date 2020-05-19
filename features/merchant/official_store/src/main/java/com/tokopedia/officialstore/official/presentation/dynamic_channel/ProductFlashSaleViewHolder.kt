@@ -18,6 +18,7 @@ class ProductFlashSaleViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_product_card_carousel_item
+        private const val className: String = "com.tokopedia.officialstore.official.presentation.dynamic_channel.ProductFlashSaleViewHolder"
     }
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
@@ -37,7 +38,7 @@ class ProductFlashSaleViewHolder(
                 }
                 addOnImpressionListener(impressHolder) {
                     if (element.productModel.isTopAds) {
-                        ImpresionTask().execute(element.grid.impression)
+                        ImpresionTask(className).execute(element.grid.impression)
                     }
                     dcEventHandler.onFlashSaleCardImpressed(adapterPosition, element.grid, channel)
                     grid.isImpressed = true

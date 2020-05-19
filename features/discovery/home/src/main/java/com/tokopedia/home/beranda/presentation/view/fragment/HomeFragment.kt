@@ -130,6 +130,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -229,7 +230,6 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
-    private lateinit var homeRecyclerView: NestedRecyclerView
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
     private lateinit var floatingTextButton: FloatingTextButton
@@ -240,6 +240,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var statusBarBackground: View
     private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
+    private var homeRecyclerView: NestedRecyclerView? = null
     private var homeMainToolbar: HomeMainToolbar? = null
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
@@ -286,12 +287,25 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.let {
+            userSession = UserSession(it)
+            irisAnalytics = getInstance(it)
+            irisSession = IrisSession(it)
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+            trackingQueue = TrackingQueue(it)
+        }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
         injectCouponTimeBased()
+        stickyContent
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
+        startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
+        initViewModel()
+        setGeolocationPermission()
+        needToShowGeolocationComponent()
         stickyContent
     }
 
@@ -394,7 +408,7 @@ open class HomeFragment : BaseDaggerFragment(),
         homeMainToolbar?.setAfterInflationCallable(afterInflationCallable)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
-        homeRecyclerView.setHasFixedSize(true)
+        homeRecyclerView?.setHasFixedSize(true)
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         floatingTextButton = view.findViewById(R.id.recom_action_button)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -420,12 +434,12 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setupHomeRecyclerView() { //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
 //is finite
-        homeRecyclerView.setItemViewCacheSize(20)
-        homeRecyclerView.itemAnimator = null
-        if (homeRecyclerView.itemDecorationCount == 0) {
-            homeRecyclerView.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
+        homeRecyclerView?.setItemViewCacheSize(20)
+        homeRecyclerView?.itemAnimator = null
+        if (homeRecyclerView?.itemDecorationCount == 0) {
+            homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
         }
-        homeRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 evaluateHomeComponentOnScroll(recyclerView)
@@ -470,13 +484,13 @@ open class HomeFragment : BaseDaggerFragment(),
                 homeMainToolbar?.showShadow()
             }
             showFeedSectionViewHolderShadow(false)
-            homeRecyclerView.setNestedCanScroll(false)
+            homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
             if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
                 homeMainToolbar?.hideShadow()
             }
             showFeedSectionViewHolderShadow(true)
-            homeRecyclerView.setNestedCanScroll(true)
+            homeRecyclerView?.setNestedCanScroll(true)
         }
     }
 
@@ -514,7 +528,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToRecommendList() {
-        homeRecyclerView.smoothScrollToPosition(viewModel.getRecommendationFeedSectionPosition())
+        homeRecyclerView?.smoothScrollToPosition(viewModel.getRecommendationFeedSectionPosition())
         scrollToRecommendList = false
     }
 
@@ -542,8 +556,8 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun adjustStatusBarColor() {
-        if (::homeRecyclerView.isInitialized) {
-            calculateSearchbarView(homeRecyclerView.computeVerticalScrollOffset())
+        if (homeRecyclerView != null) {
+            calculateSearchbarView(homeRecyclerView!!.computeVerticalScrollOffset())
         } else {
             calculateSearchbarView(0)
         }
@@ -570,9 +584,9 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         adapter?.onDestroy()
-        homeRecyclerView.adapter = null
+        homeRecyclerView?.adapter = null
         adapter = null
-        homeRecyclerView.layoutManager = null
+        homeRecyclerView?.layoutManager = null
         layoutManager = null
         unRegisterBroadcastReceiverTokoCash()
     }
@@ -837,8 +851,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 }
             }
         }
-        homeRecyclerView.removeOnScrollListener(onEggScrollListener)
-        homeRecyclerView.addOnScrollListener(onEggScrollListener)
+        homeRecyclerView?.removeOnScrollListener(onEggScrollListener)
+        homeRecyclerView?.addOnScrollListener(onEggScrollListener)
     }
 
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
@@ -850,7 +864,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
-        homeRecyclerView.layoutManager = layoutManager
+        homeRecyclerView?.layoutManager = layoutManager
         val adapterFactory = HomeAdapterFactory(
                 childsFragmentManager,
                 this,
@@ -858,7 +872,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 this,
-                homeRecyclerView.recycledViewPool,
+                homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
                 this
         )
@@ -866,7 +880,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
         adapter = HomeRecycleAdapter(asyncDifferConfig, adapterFactory, ArrayList<HomeVisitable>())
-        homeRecyclerView.adapter = adapter
+        homeRecyclerView?.adapter = adapter
     }
 
     override fun onSectionItemClicked(actionLink: String) {
@@ -984,7 +998,9 @@ open class HomeFragment : BaseDaggerFragment(),
         } else {
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
-        viewModel.onBannerClicked(slidesModel)
+        if (slidesModel.redirectUrl.isNotEmpty()) {
+            TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitClickUrl(getContext(), slidesModel.redirectUrl)
+        }
     }
 
     override fun onPromoAllClick() {
@@ -1058,10 +1074,10 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        homeRecyclerView.itemAnimator = null
+        homeRecyclerView?.itemAnimator = null
         resetFeedState()
         removeNetworkError()
-        homeRecyclerView.isEnabled = false
+        homeRecyclerView?.isEnabled = false
         if (viewModel != null) {
             viewModel.refresh(isFirstInstall())
             stickyContent
@@ -1108,12 +1124,12 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun hideLoading() {
         refreshLayout.isRefreshing = false
-        homeRecyclerView.isEnabled = true
+        homeRecyclerView?.isEnabled = true
     }
 
     private fun setOnRecyclerViewLayoutReady(isCache: Boolean) {
         isOnRecylerViewLayoutAdded = true
-        homeRecyclerView.addOneTimeGlobalLayoutListener {
+        homeRecyclerView?.addOneTimeGlobalLayoutListener {
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
             homePerformanceMonitoringListener = null;
         }
@@ -1400,8 +1416,8 @@ open class HomeFragment : BaseDaggerFragment(),
         if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
-            if (!bannerSlidesModel.topadsViewUrl.isEmpty()) {
-                viewModel.sendTopAds(bannerSlidesModel.topadsViewUrl)
+            if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
+                TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
@@ -1439,7 +1455,7 @@ open class HomeFragment : BaseDaggerFragment(),
         get() = userVisibleHint
 
     override val parentPool: RecyclerView.RecycledViewPool
-        get() = homeRecyclerView.recycledViewPool
+        get() = homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool()
 
     override val isHomeFragment: Boolean
         get() {
@@ -1455,9 +1471,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onScrollToTop() {
-        if (homeRecyclerView != null) {
-            homeRecyclerView.smoothScrollToPosition(0)
-        }
+        homeRecyclerView?.smoothScrollToPosition(0)
     }
 
     override fun isLightThemeStatusBar(): Boolean {
@@ -1577,7 +1591,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
 
     private fun showFeedSectionViewHolderShadow(show: Boolean) {
-        val feedViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(
+        val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
                 viewModel.getRecommendationFeedSectionPosition()
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
@@ -1586,7 +1600,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun inheritScrollVelocityToRecommendation(velocity: Int) {
-        val feedViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(
+        val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
                 viewModel.getRecommendationFeedSectionPosition()
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
@@ -1735,9 +1749,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun resetImpressionListener() {
         for ((_, value) in impressionScrollListeners) {
-            if (homeRecyclerView != null) {
-                homeRecyclerView.removeOnScrollListener(value)
-            }
+            homeRecyclerView?.removeOnScrollListener(value)
         }
         impressionScrollListeners.clear()
     }
@@ -1786,12 +1798,12 @@ open class HomeFragment : BaseDaggerFragment(),
                         sendIrisTracker(DynamicChannelViewHolder.Companion.getLayoutType(dynamicChannelDataModel.channel!!),
                                 dynamicChannelDataModel.channel!!,
                                 adapterPosition);
-                        homeRecyclerView.removeOnScrollListener(this);
+                        homeRecyclerView?.removeOnScrollListener(this);
                     }
                 }
             }
             impressionScrollListeners.put(dynamicChannelDataModel.channel?.id!!, listener);
-            homeRecyclerView.addOnScrollListener(listener);
+            homeRecyclerView?.addOnScrollListener(listener);
         }
     }
 

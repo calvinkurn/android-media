@@ -1,4 +1,4 @@
-package com.tokopedia.gm.resource;
+package com.tokopedia.officialstore.resource;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
