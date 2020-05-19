@@ -2,6 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
@@ -188,6 +189,7 @@ class ShopPageFragment :
     }
 
     private fun initViews(view: View) {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         errorTextView = view.findViewById(R.id.message_retry)
         errorButton = view.findViewById(R.id.button_retry)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)

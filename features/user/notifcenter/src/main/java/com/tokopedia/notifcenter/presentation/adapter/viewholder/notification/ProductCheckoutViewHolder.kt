@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
-import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -35,8 +34,6 @@ class ProductCheckoutViewHolder(
     private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
-
-    private val productStockTracker by lazy { StockHandlerAnalytics() }
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
@@ -66,7 +63,7 @@ class ProductCheckoutViewHolder(
             lstProduct.show()
             listener.getAnalytic().trackMultiProductListImpression(
                     userId = element.userInfo.userId,
-                    location = LABEL_BOTTOM_SHEET_LOCATION,
+                    productNumber = element.indexId,
                     notification = element
             )
             val factory = MultipleProductCardFactoryImpl(

@@ -37,6 +37,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -202,8 +203,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun initFireBase() {
-        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        fpm = PerformanceMonitoring.start(getFpmKey())
         remoteConfig = FirebaseRemoteConfigImpl(activity)
+    }
+
+    private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
+        TopChatAnalytics.FPM_DETAIL_CHAT_SELLERAPP
+    } else {
+        TopChatAnalytics.FPM_DETAIL_CHAT
     }
 
     private fun setupPresenter(savedInstanceState: Bundle?) {

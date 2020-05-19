@@ -14,5 +14,6 @@ interface NotificationItemListener {
     fun addProductToCheckout(userInfo: UserInfo, element: NotificationItemViewBean)
     fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean)
     fun trackNotificationImpression(element: NotificationItemViewBean)
-    fun onSuccessReminderStock()
+    fun onSuccessAddToCart(message: String)
+    fun showMessageError(e: Throwable?)
 }
