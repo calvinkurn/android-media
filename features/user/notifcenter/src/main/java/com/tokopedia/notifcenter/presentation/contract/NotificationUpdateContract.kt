@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 
 interface NotificationUpdateContract {
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
@@ -25,7 +25,7 @@ interface NotificationUpdateContract {
         fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit)
         fun resetFilter()
         fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit)
-        fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)
+        fun addProductToCart(product: ProductData, onSuccessAddToCart: (DataModel) -> Unit)
         fun updateFilter(filter: HashMap<String, Int>)
     }
 }
