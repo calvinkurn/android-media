@@ -8,7 +8,7 @@ import com.tokopedia.play.broadcaster.R
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcasterActivity: BaseActivity() {
+class PlayBroadcastActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
