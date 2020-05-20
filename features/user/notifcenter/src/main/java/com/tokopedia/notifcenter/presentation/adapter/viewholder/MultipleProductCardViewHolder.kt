@@ -39,6 +39,8 @@ class MultipleProductCardViewHolder(
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
     private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
+    private val context by lazy { itemView.context }
+
     override fun bind(element: MultipleProductCardViewBean?) {
         if (element == null) return
         val product = element.product
@@ -125,12 +127,17 @@ class MultipleProductCardViewHolder(
                 }
             }
             listener.itemClicked(notification, adapterPosition)
-            listener.addProductToCheckout(element.userInfo, Mapper.map(element))
+            routeCartPage()
         }
 
         btnAtc.setOnClickListener {
             listener.addProductToCart(element.product) {
+                // tracker
                 trackAddToCartClicked(element, element.product, it)
+
+                // show toaster
+                val message = it.message.first()
+                listener.onSuccessAddToCart(message)
             }
         }
     }
@@ -146,6 +153,10 @@ class MultipleProductCardViewHolder(
                 product = product,
                 atc = data
         )
+    }
+
+    private fun routeCartPage() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
     }
 
     companion object {

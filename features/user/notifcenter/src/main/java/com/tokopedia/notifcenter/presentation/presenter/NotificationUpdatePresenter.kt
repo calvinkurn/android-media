@@ -104,10 +104,7 @@ class NotificationUpdatePresenter @Inject constructor(
     ): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(data: AddToCartDataModel) {
-                if (data.status.equals(STATUS_OK, true)
-                    && data.data.success == 1) {
-                    val message = data.data.message.first()
-                    view.showMessageAtcSuccess(message)
+                if (data.status.equals(STATUS_OK, true) && data.data.success == 1) {
                     view.onTrackerAddToCart(product, data.data)
                     onSuccessAddToCart(data.data)
                 } else {

@@ -112,13 +112,20 @@ class ProductCheckoutViewHolder(
             if (product.stock < SINGLE_PRODUCT) {
                 listener.onItemStockHandlerClick(element)
             } else {
-                listener.addProductToCheckout(element.userInfo, element)
+                listener.addProductToCart(product) {
+                    //GOTO cart page
+                }
             }
         }
 
         btnAtc.setOnClickListener {
             listener.addProductToCart(product) {
+                // tracker
                 trackAddToCartClicked(element, product, it)
+
+                // show toaster
+                val message = it.message.first()
+                listener.onSuccessAddToCart(message)
             }
         }
     }

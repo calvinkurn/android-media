@@ -13,7 +13,6 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 interface NotificationUpdateContract {
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
         fun showToastMessageError(e: Throwable?)
-        fun showMessageAtcSuccess(message: String)
         fun onTrackerAddToCart(product: ProductData, atc: DataModel /* is add to cart data */)
     }
 

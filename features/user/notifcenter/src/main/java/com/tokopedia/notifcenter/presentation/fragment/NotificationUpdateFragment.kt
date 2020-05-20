@@ -280,10 +280,6 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         analytics.trackAtcOnClick(product, atc)
     }
 
-    override fun showMessageAtcSuccess(message: String) {
-        onSuccessAddToCart(message)
-    }
-
     override fun trackOnClickCtaButton(templateKey: String) {
         analytics.trackOnClickLongerContentBtn(templateKey)
     }
