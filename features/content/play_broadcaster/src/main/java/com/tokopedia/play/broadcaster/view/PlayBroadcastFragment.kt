@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.play.broadcaster.view.PlayBroadcastActivity.Companion.PLAY_KEY_CHANNEL_ID
 
 
 /**
@@ -10,8 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 class PlayBroadcastFragment: BaseDaggerFragment() {
 
     companion object {
-
-        const val PLAY_KEY_CHANNEL_ID = "channelId"
 
         fun newInstance(channelId: String?): PlayBroadcastFragment {
             return PlayBroadcastFragment().apply {

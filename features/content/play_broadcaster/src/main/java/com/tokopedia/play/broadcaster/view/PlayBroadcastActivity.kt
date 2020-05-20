@@ -19,6 +19,8 @@ class PlayBroadcastActivity: BaseActivity() {
 
     companion object {
 
+        const val PLAY_KEY_CHANNEL_ID = "channelId"
+
         @TestOnly
         fun newIntent(context: Context, channelId: String): Intent {
             return Intent(context, PlayBroadcastActivity::class.java)
