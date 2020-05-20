@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -48,20 +50,9 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
 
-    androidTestImplementation rootProject.ext.miscDependencies.multiDex
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.playServicesDependencies.core
-    androidTestImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
-        exclude group: "com.google.android.gms"
-        exclude group: "com.google.firebase", module: "firebase-iid"
-    }
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
-    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+
 }
 
 project.ext {
@@ -72,3 +63,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

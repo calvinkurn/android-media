@@ -13,8 +13,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.ResolutionRouter;
@@ -107,8 +107,8 @@ public class DetailResChatActivity extends BasePresenterActivity<DetailResChatAc
             bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
-        if (context.getApplicationContext() instanceof TkpdInboxRouter) {
-            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
             taskStackBuilder.addNextIntent(intent);
         }
         taskStackBuilder.addNextIntent(parentIntent);

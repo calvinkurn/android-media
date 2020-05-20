@@ -42,7 +42,8 @@ public class AddProductImagePickerBuilder {
                 imageList,
                 placeholderDrawableRes,
                 R.string.primary,
-                MAX_IMAGE_LIMIT, true));
+                MAX_IMAGE_LIMIT, true,
+                ImagePickerMultipleSelectionBuilder.PreviewExtension.createPreview()));
     }
 
     public static ImagePickerBuilder createInstagramImportBuilder(Context context) {

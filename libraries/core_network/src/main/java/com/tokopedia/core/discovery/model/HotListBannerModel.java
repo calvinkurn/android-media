@@ -183,23 +183,6 @@ public class HotListBannerModel implements Parcelable {
         };
     }
 
-    public static final class HotListBannerContainer implements ObjContainer<HotListBannerModel> {
-        HotListBannerModel hotListBannerModel;
-
-        public HotListBannerContainer(HotListBannerModel hotListBannerModel) {
-            this.hotListBannerModel = hotListBannerModel;
-        }
-
-        @Override
-        public HotListBannerModel body() {
-            return hotListBannerModel;
-        }
-    }
-
-
-    public HotListBannerModel() {
-    }
-
     @Override
     public int describeContents() {
         return 0;

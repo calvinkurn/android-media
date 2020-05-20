@@ -56,14 +56,12 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -128,8 +126,6 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
-import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -138,6 +134,7 @@ import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
@@ -159,6 +156,8 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -191,7 +190,6 @@ import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.C
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
         SellerModuleRouter,
-        IDigitalModuleRouter,
         TransactionRouter,
         ReactApplication,
         TkpdInboxRouter,
@@ -349,15 +347,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new Intent(this, DeeplinkHandlerActivity.class);
     }
 
-    /**
-     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
-     */
-    @Deprecated
-    @Override
-    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        goToApplinkActivity(activity, applinks, bundle);
-    }
-
     @Override
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
@@ -461,7 +450,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
-        return OrderHistoryActivity.createInstance(context, orderId, 1);
+        return RouteManager.getIntent(context, ApplinkConst.ORDER_TRACKING, orderId);
     }
 
     @Override
@@ -488,14 +477,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+    public Class<?> getHomeClass() {
         return MainParentActivity.class;
     }
 
     @Override
     public Intent goToOrderDetail(Context context, String orderId) {
-        return OrderDetailActivity.createSellerInstance(context, orderId);
-
+        return RouteManager.getIntent(context, ApplinkConst.SELLER_ORDER_DETAIL, orderId);
     }
 
     @Override
@@ -560,7 +548,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
-        Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
+        Intent intent = ((TkpdCoreRouter) getBaseContext().getApplicationContext()).getSplashScreenIntent(getBaseContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -859,8 +847,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendOpenHomeEvent() {
+        UserSessionInterface userSession = new UserSession(context);
         Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.LOGIN_STATUS, legacySessionHandler().isV4Login()
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }
@@ -880,12 +869,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         notif.dismissAllActivedNotifications();
         NotificationModHandler.clearCacheAllNotification(activity);
 
-        Intent intent;
-        if (GlobalConfig.isSellerApp()) {
-            intent = getHomeIntent(activity);
-        } else {
-            intent = HomeRouter.getHomeActivity(activity);
-        }
+        Intent intent = getHomeIntent(activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
@@ -1030,6 +1014,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
+    }
+
+    @Override
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return new AppNotificationReceiver();
+    }
+
+    @Override
+    public Intent getInboxTalkCallingIntent(Context mContext){
+        return null;
     }
 
     @Override

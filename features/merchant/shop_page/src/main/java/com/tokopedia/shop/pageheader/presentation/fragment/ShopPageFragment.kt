@@ -2,6 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
@@ -188,6 +189,7 @@ class ShopPageFragment :
     }
 
     private fun initViews(view: View) {
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         errorTextView = view.findViewById(R.id.message_retry)
         errorButton = view.findViewById(R.id.button_retry)
         shopPageFragmentHeaderViewHolder = ShopPageFragmentHeaderViewHolder(view, this, shopPageTracking, view.context)
@@ -270,6 +272,16 @@ class ShopPageFragment :
                 reputation?.let {
                     shopPageFragmentHeaderViewHolder.showShopReputationBadges(it.second)
                 }
+            }
+        })
+
+        shopViewModel.shopTickerData.observe(this, Observer { response ->
+            when(response){
+                is Success -> shopPageFragmentHeaderViewHolder.updateShopTicker(
+                        response.data.first,
+                        response.data.second,
+                        isMyShop
+                )
             }
         })
     }
@@ -557,8 +569,6 @@ class ShopPageFragment :
                 }
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
-            shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
-
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
@@ -688,7 +698,7 @@ class ShopPageFragment :
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
-            errorButton.setOnClickListener { getShopInfo() }
+            errorButton.setOnClickListener { getShopInfo(true) }
             swipeToRefresh.isRefreshing = false
         }
     }

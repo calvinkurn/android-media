@@ -35,8 +35,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.datepicker.DatePickerUnify;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
@@ -59,6 +57,7 @@ import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDat
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseListener;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory;
@@ -78,8 +77,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -210,6 +207,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
     private CloseableBottomSheetDialog changeDateBottomSheetDialog;
+
+    private boolean isPulledToRefresh = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -416,6 +415,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
         filterDate.setOnClickListener(this);
+
+        swipeToRefresh.setOnRefreshListener(() -> {
+            isPulledToRefresh = true;
+            doRefresh();
+        });
     }
 
     private void addRecyclerListener() {
@@ -455,6 +459,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onRefresh(View view) {
+        doRefresh();
+    }
+
+    private void doRefresh() {
         page_num = 1;
         isLoading = true;
         presenter.onRefresh();
@@ -464,6 +472,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
             quickSingleFilterView.setVisibility(View.VISIBLE);
             simpleSearchView.setVisibility(View.VISIBLE);
+        }
+        if (isPulledToRefresh && getActivity() != null) {
+            ((OrderListActivity)getActivity()).getInitialData();
+            isPulledToRefresh = false;
         }
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
@@ -621,12 +633,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessage(String message) {
-        ToasterNormal.showClose(getActivity(), message);
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.close), v->{});
     }
 
     @Override
     public void showFailureMessage(String message) {
-        ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
     }
 
     @Override

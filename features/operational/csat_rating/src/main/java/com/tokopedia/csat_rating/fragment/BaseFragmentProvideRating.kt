@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,10 +21,10 @@ import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.CsatComponent
 import com.tokopedia.csat_rating.di.CsatModule
 import com.tokopedia.csat_rating.di.DaggerCsatComponent
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.QuickSingleFilterView
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import java.util.*
@@ -134,7 +135,10 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     }
 
     override fun showErrorMessage(errorMessage: String) {
-        ToasterError.make(view, errorMessage).show()
+        view?.let {
+            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+
     }
 
 

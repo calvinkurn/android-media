@@ -1,9 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply from: 'buildconfig/dependencies/dependencies.gradle'
 apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
-//apply from: 'buildconfig/dependencies/dependency-libraries-no-op.gradle'
 apply from: 'buildconfig/dependencies/dependency-features.gradle'
-//apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
 
@@ -50,6 +48,7 @@ buildscript {
         classpath "com.tokopedia.plugin:appstatistics:0.0.3"
         classpath 'com.meituan.robust:gradle-plugin:0.4.95'
         classpath 'com.meituan.robust:auto-patch-plugin:0.4.95'
+        classpath 'com.bugsnag:bugsnag-android-gradle-plugin:4.7.3'
     }
 }
 

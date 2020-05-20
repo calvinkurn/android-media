@@ -5,8 +5,9 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -22,11 +23,11 @@ import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
@@ -43,6 +44,8 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -144,7 +147,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     );
                     break;
                 case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
-                    if (SessionHandler.isUserHasShop(mContext)) {
+                    UserSessionInterface userSession = new UserSession(mContext);
+                    if (userSession.hasShop()) {
                         buildNotifByData(data);
                     }
                     break;
@@ -178,7 +182,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
 
     public void handleDedicatedNotification(Bundle data) {
-        if (SessionHandler.isV4Login(mContext)
+        UserSessionInterface userSession = new UserSession(mContext);
+        if (userSession.isLoggedIn()
                 && SessionHandler.getLoginID(mContext).equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
 
             resetNotificationStatus(data);

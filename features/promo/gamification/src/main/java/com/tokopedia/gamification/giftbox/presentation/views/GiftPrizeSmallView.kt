@@ -38,7 +38,7 @@ class GiftPrizeSmallView : FrameLayout {
         init(null)
     }
 
-    fun getLayout() = R.layout.view_gift_benefits_small
+    fun getLayout() = com.tokopedia.gamification.R.layout.view_gift_benefits_small
 
     fun init(attrs: AttributeSet?) {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
@@ -48,7 +48,7 @@ class GiftPrizeSmallView : FrameLayout {
     }
 
     fun setShadows() {
-        val shadowColor = ContextCompat.getColor(context, R.color.gf_box_text_shadow)
+        val shadowColor = ContextCompat.getColor(context, com.tokopedia.gamification.R.color.gf_box_text_shadow)
         val shadowRadius = tvTitle.dpToPx(5)
         val shadowOffset = tvTitle.dpToPx(4)
         tvTitle.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)

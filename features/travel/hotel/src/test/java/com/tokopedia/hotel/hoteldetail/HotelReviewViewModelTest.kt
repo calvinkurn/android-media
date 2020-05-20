@@ -18,6 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 27/03/20
@@ -44,8 +45,8 @@ class HotelReviewViewModelTest {
         //given
         val hotelReviewData = HotelReview.ReviewData(listOf(HotelReview(), HotelReview()))
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(HotelReview.Response::class.java to HotelReview.Response(hotelReviewData)),
-                mapOf(),
+                mapOf<Type, Any>(HotelReview.Response::class.java to HotelReview.Response(hotelReviewData)),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -63,8 +64,8 @@ class HotelReviewViewModelTest {
     fun getReview_shouldReturnFailed() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(HotelReview.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(HotelReview.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())

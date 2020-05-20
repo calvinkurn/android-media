@@ -9,18 +9,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper as Mapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.MultipleProductCardViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.notifcenter.widget.ProductVariantLayout
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper as Mapper
 
 class MultipleProductCardViewHolder(
         itemView: View,
@@ -36,6 +37,7 @@ class MultipleProductCardViewHolder(
     private val productContainer: ConstraintLayout = itemView.findViewById(R.id.cl_product)
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
+    private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     override fun bind(element: MultipleProductCardViewBean?) {
         if (element == null) return
@@ -58,14 +60,17 @@ class MultipleProductCardViewHolder(
             is SourceMultipleProductView.NotificationCenter -> {
                 listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
+                        productNumber = element.indexId,
                         notification = element
                 )
             }
             is SourceMultipleProductView.BottomSheetDetail -> {
-                listener.getAnalytic().trackMultiProductListImpression(
+                listener.getAnalytic().trackMultiProductListBottomSheetImpression(
                         userId = element.userInfo.userId,
-                        location = LABEL_BOTTOM_SHEET_LOCATION,
-                        notification = element
+                        shopId = element.userInfo.shopId,
+                        productNumber = element.indexId,
+                        notificationId = element.notificationId,
+                        product = element.product
                 )
             }
         }
@@ -91,6 +96,7 @@ class MultipleProductCardViewHolder(
                 is SourceMultipleProductView.BottomSheetDetail -> {
                     listener.getAnalytic().trackMultiProductCheckoutCardClick(
                             eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
+                            productNumber = adapterPosition,
                             notification = element
                     )
                 }
@@ -106,19 +112,40 @@ class MultipleProductCardViewHolder(
             when(sourceView) {
                 is SourceMultipleProductView.NotificationCenter -> {
                     listener.getAnalytic().trackAtcOnMultiProductClick(
-                            notification = element
+                            notification = element,
+                            productNumber = adapterPosition
                     )
                 }
                 is SourceMultipleProductView.BottomSheetDetail -> {
                     listener.getAnalytic().trackAtcOnMultiProductClick(
                             eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
-                            notification = element
+                            notification = element,
+                            productNumber = adapterPosition
                     )
                 }
             }
             listener.itemClicked(notification, adapterPosition)
             listener.addProductToCheckout(element.userInfo, Mapper.map(element))
         }
+
+        btnAtc.setOnClickListener {
+            listener.addProductToCart(element.product) {
+                trackAddToCartClicked(element, element.product, it)
+            }
+        }
+    }
+
+    private fun trackAddToCartClicked(
+            element: MultipleProductCardViewBean,
+            product: ProductData,
+            data: DataModel) {
+        listener.getAnalytic().trackAtcOnClick(
+                templateKey = element.templateKey,
+                notificationId = element.notificationId,
+                userId = element.userInfo.userId,
+                product = product,
+                atc = data
+        )
     }
 
     companion object {
