@@ -62,6 +62,7 @@
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_32"
         app:typographyType="small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

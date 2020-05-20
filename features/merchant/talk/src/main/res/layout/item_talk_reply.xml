@@ -114,8 +114,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/likeIcon"
+        app:layout_goneMarginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/replyAttachedProductsRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/talk_ic_kebab" />
 
