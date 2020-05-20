@@ -1,7 +1,13 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -107,10 +113,49 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         if(answer.isNotEmpty()) {
             itemView.readingMessage.apply {
                 text = HtmlLinkHelper(context, answer).spannedString
-                movementMethod = LinkMovementMethod.getInstance()
+                movementMethod = object : LinkMovementMethod() {
+                    override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
+                        val action = event.action
+
+                        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                            var x = event.x
+                            var y = event.y.toInt()
+
+                            x -= widget.totalPaddingLeft
+                            y -= widget.totalPaddingTop
+
+                            x += widget.scrollX
+                            y += widget.scrollY
+
+                            val layout = widget.layout
+                            val line = layout.getLineForVertical(y)
+                            val off = layout.getOffsetForHorizontal(line, x)
+
+                            val link = buffer.getSpans(off, off, URLSpan::class.java)
+                            if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                                return threadListener.onLinkClicked(link.first().url.toString())
+                            }
+                        }
+                        return super.onTouchEvent(widget, buffer, event);
+                    }
+                }
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
+                val viewTreeObserver = readingMessage.viewTreeObserver
+                val maxLines = resources.getInteger(R.integer.talk_reading_max_lines)
+                viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        val secondViewTreeObserver = readingMessage.viewTreeObserver
+                        secondViewTreeObserver.removeOnGlobalLayoutListener(this)
+                        if (lineCount > maxLines) {
+                            val endOfLastLine = layout.getLineEnd(maxLines - 1)
+                            val spannableStringBuilder = SpannableStringBuilder()
+                            spannableStringBuilder.append(text.subSequence(0, endOfLastLine - resources.getInteger(R.integer.talk_reading_length_of_ellipsis))).append(resources.getString(R.string.reading_ellipsis))
+                            text = spannableStringBuilder
+                        }
+                    }
+                })
                 show()
             }
         } else {

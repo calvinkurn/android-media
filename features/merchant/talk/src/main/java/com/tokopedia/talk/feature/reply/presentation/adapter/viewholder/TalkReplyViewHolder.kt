@@ -1,12 +1,17 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.graphics.Color
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
+import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
@@ -43,7 +48,6 @@ class TalkReplyViewHolder(view: View,
                 showAttachedProducts(attachedProducts.toMutableList())
             }
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
-            showTickerWithCondition(state.isMasked, state.allowUnmask)
         }
     }
 
@@ -56,6 +60,8 @@ class TalkReplyViewHolder(view: View,
                 }
                 show()
             }
+        } else {
+            itemView.replyProfilePicture.hide()
         }
     }
 
@@ -68,6 +74,8 @@ class TalkReplyViewHolder(view: View,
                 }
                 show()
             }
+        } else {
+            itemView.replyDisplayName.hide()
         }
     }
 
@@ -77,12 +85,16 @@ class TalkReplyViewHolder(view: View,
                 text = addBulletPointToDate(date)
                 show()
             }
+        } else {
+            itemView.replyDate.hide()
         }
     }
 
     private fun showSellerLabelWithCondition(isSeller: Boolean) {
         if(isSeller) {
             itemView.replySellerLabel.show()
+        } else {
+            itemView.replySellerLabel.hide()
         }
     }
 
@@ -102,34 +114,61 @@ class TalkReplyViewHolder(view: View,
         if(answer.isNotEmpty()) {
             itemView.replyMessage.apply {
                 text = HtmlLinkHelper(context, answer).spannedString
-                movementMethod = LinkMovementMethod.getInstance()
+                movementMethod = object : LinkMovementMethod() {
+                    override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
+                        val action = event.action
+
+                        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                            var x = event.x
+                            var y = event.y.toInt()
+
+                            x -= widget.totalPaddingLeft
+                            y -= widget.totalPaddingTop
+
+                            x += widget.scrollX
+                            y += widget.scrollY
+
+                            val layout = widget.layout
+                            val line = layout.getLineForVertical(y)
+                            val off = layout.getOffsetForHorizontal(line, x)
+
+                            val link = buffer.getSpans(off, off, URLSpan::class.java)
+                            if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                                return threadListener.onUrlClicked(link.first().url.toString())
+                            }
+                        }
+                        return super.onTouchEvent(widget, buffer, event);
+                    }
+                }
                 show()
             }
         }
     }
 
     private fun showAttachedProducts(attachedProducts: MutableList<AttachedProduct>) {
-        val attachedProductAdapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
-        attachedProducts.add(0, AttachedProduct())
-        attachedProductAdapter.setData(attachedProducts)
-        itemView.replyAttachedProductsRecyclerView.apply {
-            adapter = attachedProductAdapter
-            show()
+        if(attachedProducts.isNotEmpty()) {
+            val attachedProductAdapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
+            attachedProducts.add(0, AttachedProduct())
+            attachedProductAdapter.setData(attachedProducts)
+            itemView.replyAttachedProductsRecyclerView.apply {
+                adapter = attachedProductAdapter
+                show()
+            }
+        } else {
+            itemView.replyAttachedProductsRecyclerView.hide()
         }
     }
 
     private fun showKebabWithConditions(commentId: String, allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
         if(allowReport || allowDelete){
-            itemView.replyKebab.setOnClickListener {
-                onKebabClickedListener.onKebabClicked(commentId, allowReport, allowDelete)
+            itemView.replyKebab.apply {
+                setOnClickListener {
+                    onKebabClickedListener.onKebabClicked(commentId, allowReport, allowDelete)
+                }
+                show()
             }
-            itemView.replyKebab.show()
-        }
-    }
-
-    private fun showTickerWithCondition(isMasked: Boolean, allowUnmask: Boolean) {
-        if(isMasked && allowUnmask) {
-            itemView.replyReportedTicker.show()
+        } else {
+            itemView.replyKebab.hide()
         }
     }
 

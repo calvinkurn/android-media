@@ -70,7 +70,7 @@
         android:id="@+id/replyAttachedProductsRecyclerView"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingStart="@dimen/layout_lvl2"

@@ -245,6 +245,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToProfileActivity(userId)
     }
 
+    override fun onUrlClicked(link: String): Boolean {
+        return RouteManager.route(context, link)
+    }
+
     override fun onProductClicked() {
         goToPdp(productId)
     }

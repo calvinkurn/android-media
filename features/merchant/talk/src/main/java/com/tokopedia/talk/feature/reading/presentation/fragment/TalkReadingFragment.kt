@@ -187,6 +187,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         goToProfileActivity(userId)
     }
 
+    override fun onLinkClicked(link: String): Boolean {
+        return RouteManager.route(context, link)
+    }
+
     override fun onDestroy() {
         removeObservers(viewModel.discussionData)
         removeObservers(viewModel.discussionAggregate)
