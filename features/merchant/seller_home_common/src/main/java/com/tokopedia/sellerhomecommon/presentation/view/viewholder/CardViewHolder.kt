@@ -2,15 +2,15 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.util.TypedValue
 import android.view.View
-import com.dompetia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
-import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import kotlinx.android.synthetic.main.shc_card_widget.view.*
 
 /**

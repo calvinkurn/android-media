@@ -1,14 +1,14 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
-import com.dompetia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
-import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
+import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import kotlinx.android.synthetic.main.shc_description_widget.view.*
 
 /**

@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.dompetia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
-import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import kotlinx.android.synthetic.main.shc_banner_item_layout.view.*
 
 /**

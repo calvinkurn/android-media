@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.presentation.adapter
 
-import com.dompetia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 
 /**
