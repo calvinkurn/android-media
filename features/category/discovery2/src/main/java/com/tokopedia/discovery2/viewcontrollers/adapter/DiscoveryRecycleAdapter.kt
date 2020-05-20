@@ -12,6 +12,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 class DiscoveryRecycleAdapter(private val fragment: Fragment)
     : RecyclerView.Adapter<AbstractViewHolder>() {
 
+    private val viewPool = RecyclerView.RecycledViewPool()
+
     companion object {
         private var noOfObject = 0
     }
@@ -22,12 +24,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     private val componentList: ArrayList<ComponentsItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return DiscoveryHomeFactory.createViewHolder(parent, viewType,fragment) as AbstractViewHolder
+        return DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         holder.bindView(viewHolderListModel.getViewHolderModel(
                 DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position))
+        holder.getInnerRecycleView()?.setRecycledViewPool(viewPool)
     }
 
     override fun getItemCount(): Int {
@@ -48,6 +51,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
             componentList.clear()
             componentList.addAll(dataList)
         }
+        // TODO : Remove notify for horizontal adapter
         notifyDataSetChanged()
     }
 }

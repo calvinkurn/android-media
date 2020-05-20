@@ -5,20 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
+import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.MergeAdapters
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -30,17 +31,19 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener {
+class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener, AddChildAdapterCallback {
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
-    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+
+    //    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private lateinit var mergeAdapters: MergeAdapters
     private lateinit var mPageComponentRecyclerView: RecyclerView
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     var pageEndPoint = ""
-    var last = false
+    private lateinit var layoutManager: StaggeredGridLayoutManager
 
 
     companion object {
@@ -72,9 +75,13 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         ivSearch = view.findViewById(R.id.iv_search)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
-        mPageComponentRecyclerView.layoutManager = LinearLayoutManager(activity)
-        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
-        mPageComponentRecyclerView.adapter = mDiscoveryRecycleAdapter
+        layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+        mPageComponentRecyclerView.layoutManager = layoutManager
+
+//        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
+        mergeAdapters = MergeAdapters()
+        mergeAdapters.addAdapter(DiscoveryRecycleAdapter(this))
+        mPageComponentRecyclerView.adapter = mergeAdapters
         mPageComponentRecyclerView.addOnChildAttachStateChangeListener(this)
     }
 
@@ -87,24 +94,15 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mDiscoveryViewModel.getDiscoveryData()
 
         setUpObserver()
-        mPageComponentRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                if (!recyclerView.canScrollVertically(1)) {
-                    // Toast.makeText(context, "Last", Toast.LENGTH_LONG).show()
-                    last = true
-
-                }
-            }
-        })
     }
 
     private fun setUpObserver() {
         mDiscoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    mDiscoveryRecycleAdapter.setDataList(it.data)
+//                    mDiscoveryRecycleAdapter.setDataList(it.data)
+                    mergeAdapters.setDataList(it.data)
+                    mergeAdapters.notifyDataSetChanged()
                 }
             }
         })
@@ -227,4 +225,15 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mPageComponentRecyclerView.removeOnChildAttachStateChangeListener(this)
         super.onDetach()
     }
+
+    override fun addChildAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
+        mergeAdapters.addAdapter(discoveryRecycleAdapter)
+    }
+
+    override fun notifyMergeAdapter() {
+        if (!mPageComponentRecyclerView.isComputingLayout) {
+            mergeAdapters.notifyDataSetChanged()
+        }
+    }
+
 }

@@ -17,10 +17,14 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
     private var mProductCarouselRecyclerView: RecyclerView
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
+    private var linearLayoutManager: LinearLayoutManager
+
 
     init {
         mProductCarouselRecyclerView = itemView.findViewById(R.id.tokopoints_rv)
-        mProductCarouselRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        linearLayoutManager.initialPrefetchItemCount = 4
+        mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
     }
@@ -39,5 +43,9 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
         mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
             mDiscoveryRecycleAdapter.setDataList(item)
         })
+    }
+
+    override fun getInnerRecycleView(): RecyclerView? {
+        return mProductCarouselRecyclerView
     }
 }
