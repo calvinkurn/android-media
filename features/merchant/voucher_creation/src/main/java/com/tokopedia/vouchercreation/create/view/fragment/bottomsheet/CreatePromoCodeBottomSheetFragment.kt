@@ -1,18 +1,19 @@
 package com.tokopedia.vouchercreation.create.view.fragment.bottomsheet
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -136,11 +137,11 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
             textFieldInput.run {
                 filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
                 setOnFocusChangeListener { _, hasFocus ->
-                    activity?.let {
+                    activity?.run {
                         if (hasFocus) {
-                            KeyboardHandler.showSoftKeyboard(it)
+                            showKeyboard()
                         } else {
-                            KeyboardHandler.hideSoftKeyboard(it)
+                            hideKeyboard()
                         }
                     }
                 }
@@ -198,6 +199,16 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     Snackbar.LENGTH_SHORT,
                     Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun View.showKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
+    fun Context.hideKeyboard() {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
 }

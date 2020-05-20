@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.view.fragment.bottomsheet
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -27,6 +28,7 @@ class VoucherDisplayBottomSheetFragment(private val bottomSheetContext: Context?
                     // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
                     view?.setupItemDecoration()
                     setChild(view)
+                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 }
             }
         }

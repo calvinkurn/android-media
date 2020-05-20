@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.view.fragment.bottomsheet
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -24,6 +25,7 @@ class GeneralExpensesInfoBottomSheetFragment(bottomSheetContext: Context?) : Bot
                     val view = View.inflate(this, R.layout.mvc_voucher_bottom_sheet_view, null)
                     setChild(view)
                     setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
+                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 }
             }
         }

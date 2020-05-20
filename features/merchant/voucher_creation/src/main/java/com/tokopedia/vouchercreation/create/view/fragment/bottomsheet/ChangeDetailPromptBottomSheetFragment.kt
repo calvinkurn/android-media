@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -21,6 +22,7 @@ class ChangeDetailPromptBottomSheetFragment(context: Context,
             return ChangeDetailPromptBottomSheetFragment(context, onCancelVoucher).apply {
                 val view = View.inflate(context, R.layout.bottomsheet_mvc_review_back, null)
                 setChild(view)
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
             }
         }
 

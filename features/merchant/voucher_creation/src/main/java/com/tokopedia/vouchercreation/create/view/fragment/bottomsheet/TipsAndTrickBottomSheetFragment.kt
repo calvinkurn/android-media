@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.view.fragment.bottomsheet
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -19,6 +20,7 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
                 context.run {
                     val view = View.inflate(this, R.layout.mvc_voucher_bottom_sheet_view, null)
                     setChild(view)
+                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 }
             }
         }

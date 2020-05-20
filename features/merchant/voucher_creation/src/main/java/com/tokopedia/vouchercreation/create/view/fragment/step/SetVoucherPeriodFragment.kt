@@ -7,6 +7,7 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -80,6 +81,7 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
                 setTitle("Pilih Tanggal Mulai")
                 setInfo("Pilihan tolong ini test doang")
                 setInfoVisible(true)
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
             }
         }
     }

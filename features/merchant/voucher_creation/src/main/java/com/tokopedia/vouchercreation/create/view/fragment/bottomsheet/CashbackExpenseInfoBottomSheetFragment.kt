@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.create.view.fragment.bottomsheet
 
 import android.content.Context
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -22,6 +23,7 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
             return CashbackExpenseInfoBottomSheetFragment(context, getCashbackInfo).apply {
                 val view = View.inflate(context, R.layout.mvc_cashback_expense_info, null)
                 setChild(view)
+                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
             }
         }
     }
