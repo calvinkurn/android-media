@@ -33,7 +33,11 @@ class ThanksPageDataViewModel @Inject constructor(
 
     private fun onThanksPageDataError(throwable: Throwable) {
         thanksPageDataResultLiveData.value = Fail(throwable)
+    }
 
+    override fun onCleared() {
+        thanksPageDataUseCase.cancelJobs()
+        super.onCleared()
     }
 
 

@@ -39,6 +39,11 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
         component.inject(this)
+        addThankPageAnalyticFragment()
+    }
+
+    private fun addThankPageAnalyticFragment() {
+        ThanksPageAnalyticsFragment.addFragmentToActivity(supportFragmentManager)
     }
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
@@ -56,10 +61,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 bundle.putAll(intent.extras)
             }
         }
+        thank_header.isShowBackButton = false
         return LoaderFragment.getLoaderFragmentInstance(bundle)
     }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
+        postEventOnThankPageDataLoaded(thanksPageData)
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
         fragment?.let {
             supportFragmentManager.beginTransaction()
@@ -67,6 +74,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     .commit()
         } ?: run { gotoHomePage() }
     }
+
+    private fun postEventOnThankPageDataLoaded(thanksPageData: ThanksPageData) {
+        ThanksPageAnalyticsFragment.postThanksPageLoadEvent(supportFragmentManager,
+                thanksPageData)
+    }
+
 
     override fun onInvalidThankYouPage() {
         gotoHomePage()
@@ -82,6 +95,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): Fragment? {
+        thank_header.isShowBackButton = true
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -96,16 +110,16 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 InstantPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             is WaitingPaymentPage -> {
-                return when(PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)){
-                    is PaymentWaitingCOD ->{
+                return when (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)) {
+                    is PaymentWaitingCOD -> {
                         updateHeaderTitle(CashOnDeliveryFragment.SCREEN_NAME)
                         CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData)
                     }
-                    is PaymentWaiting ->{
+                    is PaymentWaiting -> {
                         updateHeaderTitle(DeferredPaymentFragment.SCREEN_NAME)
                         DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
                     }
-                    else-> null
+                    else -> null
                 }
             }
             else -> null
@@ -133,6 +147,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
         fragment?.let {
             return when (it) {
+                is LoaderFragment -> true
                 is DeferredPaymentFragment -> {
                     it.onBackPressed()
                 }
@@ -162,7 +177,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         const val ARG_PAYMENT_ID = "payment_id"
         const val ARG_MERCHANT = "merchant"
 
-        fun createIntent(context: Context, paymentID: String, merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {
+        fun createIntent(context: Context, paymentID: String,
+                         merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {
             putExtra(ARG_MERCHANT, merchant)
             putExtra(ARG_PAYMENT_ID, paymentID)
         }

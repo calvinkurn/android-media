@@ -43,9 +43,9 @@ import javax.inject.Inject
 
 class LoaderFragment : BaseDaggerFragment() {
 
-    val job = Job()
-    val mainDispatcher = Dispatchers.Main + job
-    val ioDispatcher = Dispatchers.IO
+    private val job = Job()
+    private val mainDispatcher = Dispatchers.Main + job
+    private val ioDispatcher = Dispatchers.IO
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,6 +54,8 @@ class LoaderFragment : BaseDaggerFragment() {
     lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
+
+    lateinit var thanksPageData: ThanksPageData
 
     private val handler = Handler()
 
@@ -114,6 +116,7 @@ class LoaderFragment : BaseDaggerFragment() {
         })
     }
 
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ThankYouPageDataLoadCallback)
@@ -129,53 +132,47 @@ class LoaderFragment : BaseDaggerFragment() {
         hideLoaderView()
         when (throwable) {
             is MessageErrorException -> {
-                if (throwable.message?.startsWith("rpc error:") == true) {
+                if (throwable.message?.startsWith(RPC_ERROR_STR) == true) {
                     callback?.onInvalidThankYouPage()
                 } else {
-                    showServerError()
+                    showServerError(::loadThankPageData)
                 }
             }
-            is UnknownHostException -> showNoConnectionError()
-            is SocketTimeoutException -> showNoConnectionError()
-            else -> showServerError()
+            is UnknownHostException -> showNoConnectionError(::loadThankPageData)
+            is SocketTimeoutException -> showNoConnectionError(::loadThankPageData)
+            else -> showServerError(::loadThankPageData)
         }
     }
 
-    private fun showNoConnectionError() {
+    private fun showNoConnectionError(retryAction: () -> Unit) {
         globalError.visible()
         globalError.setType(GlobalError.NO_CONNECTION)
         globalError.errorAction.visible()
         globalError.errorAction.setOnClickListener {
             showLoaderView()
-            loadThankPageData()
+            retryAction.invoke()
         }
     }
 
-    private fun showServerError() {
+    private fun showServerError(retryAction: () -> Unit) {
         globalError.visible()
         globalError.setType(GlobalError.SERVER_ERROR)
-        globalError.errorAction.gone()
+        globalError.errorAction.visible()
+        globalError.errorAction.setOnClickListener {
+            showLoaderView()
+            retryAction.invoke()
+        }
     }
 
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
+        thanksPageData = data
         hideLoaderView()
-        if (PaymentStatusMapper.getPaymentStatusByInt(data.paymentStatus) == Invalid) {
+        if (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus) == Invalid) {
             callback?.onInvalidThankYouPage()
             return
         } else {
-            sendThankYouPageAnalytics(data)
-            callback?.onThankYouPageDataLoaded(data)
+            callback?.onThankYouPageDataLoaded(thanksPageData)
         }
-    }
-
-    /**
-     *ThanksPageData.pushGtm is used to prevent duplicate firing of event...
-     * */
-    private fun sendThankYouPageAnalytics(thanksPageData: ThanksPageData) {
-        if (thanksPageData.pushGtm)
-            thankYouPageAnalytics.sendThankYouPageData(thanksPageData)
-        thankYouPageAnalytics.appsFlyerPurchaseEvent(thanksPageData, "MarketPlace")
-        thankYouPageAnalytics.sendBranchIOEvent(thanksPageData)
     }
 
     private fun showLoaderView() {
@@ -217,6 +214,7 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        const val RPC_ERROR_STR = "rpc error:"
         const val DELAY_MILLIS = 2000L
         const val LOADER_JSON_ZIP_FILE = "thanks_payment_data_loader.zip"
         fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {

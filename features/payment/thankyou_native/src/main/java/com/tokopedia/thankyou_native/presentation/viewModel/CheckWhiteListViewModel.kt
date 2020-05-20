@@ -28,9 +28,13 @@ class CheckWhiteListViewModel @Inject constructor(
         whiteListResultLiveData.value = Success(status)
     }
 
-    private fun  onCheckWhiteListError(throwable: Throwable) {
+    private fun onCheckWhiteListError(throwable: Throwable) {
         whiteListResultLiveData.value = Fail(throwable)
+    }
 
+    override fun onCleared() {
+        checkWhiteListStatusUseCase.cancelJobs()
+        super.onCleared()
     }
 
 }

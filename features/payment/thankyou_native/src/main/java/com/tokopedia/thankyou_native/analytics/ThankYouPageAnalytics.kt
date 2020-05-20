@@ -1,21 +1,17 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.util.Log
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerCommerceData
-import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.thankyou_native.domain.model.MonthlyNewBuyer
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.InstantPaymentPage
-import com.tokopedia.thankyou_native.helper.PageType
-import com.tokopedia.thankyou_native.helper.ProcessingPaymentPage
-import com.tokopedia.thankyou_native.helper.WaitingPaymentPage
+import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -24,9 +20,7 @@ import kotlinx.coroutines.*
 import org.json.JSONArray
 import javax.inject.Inject
 
-class ThankYouPageAnalytics @Inject constructor(
-        @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
-        @CoroutineBackgroundDispatcher val backgroundDispatcher: CoroutineDispatcher) {
+class ThankYouPageAnalytics @Inject constructor() {
 
     private val IDR = "IDR"
 
@@ -35,22 +29,17 @@ class ThankYouPageAnalytics @Inject constructor(
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
-    fun sendThankYouPageData(thanksPageData: ThanksPageData) {
+    fun sendThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        CoroutineScope(mainDispatcher).launchCatchError(block = {
-            withContext(backgroundDispatcher) {
-                thanksPageData.shopOrder.forEach { shopOrder ->
-                    val data = getParentTrackingNode(thanksPageData, shopOrder)
-                    data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
-                    data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
-                    data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
-                    data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
-                    analyticTracker.sendEnhanceEcommerceEvent(data)
-                }
-            }
-        }, onError = {
-            it.printStackTrace()
-        })
+        thanksPageData.shopOrder.forEach { shopOrder ->
+            val data = getParentTrackingNode(thanksPageData, shopOrder)
+            data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
+            data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
+            data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
+            data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
+            analyticTracker.sendEnhanceEcommerceEvent(data)
+            Log.d("ThankYouPageAnalytics","GTM DONE")
+        }
     }
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
@@ -165,17 +154,7 @@ class ThankYouPageAnalytics @Inject constructor(
                 ))
     }
 
-    fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData, productType: String) {
-        CoroutineScope(mainDispatcher).launchCatchError(block = {
-            sendAppsflyerPurchaseOnBackground(thanksPageData, productType)
-        }, onError = {
-            it.printStackTrace()
-        })
-    }
-
-
-    private suspend fun sendAppsflyerPurchaseOnBackground(thanksPageData: ThanksPageData,
-                                                          productType: String) = withContext(backgroundDispatcher) {
+    fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData) {
         val orderIds: MutableList<String> = arrayListOf()
 
         val afValue: MutableMap<String, Any> = mutableMapOf()
@@ -208,7 +187,7 @@ class ThankYouPageAnalytics @Inject constructor(
         afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
         afValue[AFInAppEventType.ORDER_ID] = orderIds
         afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-        afValue[ParentTrackingKey.AF_PURCHASE_SITE] = productType
+        afValue[ParentTrackingKey.AF_PURCHASE_SITE] = ThankPageTypeMapper.getThankPageType(thanksPageData)
         afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
         afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
         afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
@@ -221,17 +200,13 @@ class ThankYouPageAnalytics @Inject constructor(
         }
         TrackApp.getInstance().appsFlyer.sendTrackEvent(AFInAppEventType.PURCHASE, afValue)
         TrackApp.getInstance().appsFlyer.sendTrackEvent(ParentTrackingKey.AF_KEY_CRITEO, criteoAfValue)
+        Log.d("ThankYouPageAnalytics","APPSF DONE")
+
     }
 
-    fun sendBranchIOEvent(thanksPageData: ThanksPageData) {
-        CoroutineScope(mainDispatcher).launchCatchError(block = {
-            sendBranchIOPurchaseEventOnBackground(thanksPageData)
-        }, onError = {
-            it.printStackTrace()
-        })
-    }
+    fun sendBranchIOEvent(thanksPageData: ThanksPageData, monthlyNewBuyer: MonthlyNewBuyer) {
+        Log.d("ThankYouPageAnalytics", "APPSF DONE$monthlyNewBuyer")
 
-    private suspend fun sendBranchIOPurchaseEventOnBackground(thanksPageData: ThanksPageData) = withContext(backgroundDispatcher) {
         thanksPageData.shopOrder.forEach { shopOrder ->
             val linkerCommerceData = LinkerCommerceData()
             val userSession = UserSession(LinkerManager.getInstance().context)
@@ -248,7 +223,7 @@ class ThankYouPageAnalytics @Inject constructor(
             branchIOPayment.setRevenue(thanksPageData.amountStr)
             branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE)
             //todo  branchIOPayment.setNewBuyer(orderData.isNewBuyer())--- waiting for BE
-            //todo branchIOPayment.setMonthlyNewBuyer(monthlyNewBuyerFlag)--- waiting for BE
+            branchIOPayment.isMonthlyNewBuyer = monthlyNewBuyer.isMonthlyFirstTransaction != 0
             var price = 0F
             shopOrder.purchaseItemList.forEach { productItem ->
                 val product = HashMap<String, String>()
@@ -266,6 +241,8 @@ class ThankYouPageAnalytics @Inject constructor(
             LinkerManager.getInstance()
                     .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                             linkerCommerceData))
+            Log.d("ThankYouPageAnalytics","BRANCH DONE")
+
         }
     }
 

@@ -28,4 +28,5 @@ interface ThankYouPageComponent {
     fun inject(processingPaymentFragment: ProcessingPaymentFragment)
     fun inject(invoiceFragment: InvoiceFragment)
     fun inject(cashOnDeliveryFragment: CashOnDeliveryFragment)
+    fun inject(thanksPageAnalyticsFragment: ThanksPageAnalyticsFragment)
 }
