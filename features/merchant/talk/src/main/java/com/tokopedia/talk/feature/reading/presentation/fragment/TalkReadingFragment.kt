@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +52,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
@@ -432,7 +430,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showSuccessToaster(message: String) {
-        view?.let { Toaster.make(talkReadingContainer, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok)) }
+        view?.let {
+            Toaster.build(it,message,Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        }
     }
 
     private fun showErrorToaster() {

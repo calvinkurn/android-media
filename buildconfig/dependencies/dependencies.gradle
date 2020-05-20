@@ -87,11 +87,11 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.8'
-    unifyComponentsVersion = '1.1.36'
+    unifyComponentsVersion = '1.1.38'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
-    unifyDialogVersion = '1.0.0'
+    unifyDialogVersion = '1.0.3'
     unifyDatePickerVersion = '1.0.3'
     unifyPinVersion = '1.0.1'
     unifyEmptyStateVersion = '1.0.2'
@@ -100,7 +100,7 @@ ext {
     unifySortFilterVersion = '1.0.2'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
-    unifyListVersion = '1.0.3'
+    unifyListVersion = '1.0.5'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
