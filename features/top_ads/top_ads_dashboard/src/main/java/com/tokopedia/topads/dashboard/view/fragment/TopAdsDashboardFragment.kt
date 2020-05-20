@@ -180,7 +180,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         initSummaryComponent()
         initStatisticComponent()
         initEmptyStateView()
-        button_topads_add_promo.button.setOnClickListener {
+        button_topads_add_promo?.button?.setOnClickListener {
             activity?.let {
                 if (GlobalConfig.isSellerApp()) {
                     when (adStatus) {
