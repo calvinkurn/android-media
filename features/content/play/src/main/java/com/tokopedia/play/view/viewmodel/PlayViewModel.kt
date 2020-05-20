@@ -118,6 +118,11 @@ class PlayViewModel @Inject constructor(
             val value = _observableBottomInsetsState.value
             return value ?: getDefaultBottomInsetsMapState()
         }
+    val isFreezeOrBanned: Boolean
+        get() {
+            val event = _observableEvent.value
+            return event?.isFreeze == true || event?.isBanned == true
+        }
     val partnerId: Long?
         get() = _observablePartnerInfo.value?.id
     val totalView: String?

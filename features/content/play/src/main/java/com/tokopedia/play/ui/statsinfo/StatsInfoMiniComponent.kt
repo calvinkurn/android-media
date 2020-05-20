@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 26/02/20
+ * Created by jegul on 19/05/20
  */
-open class StatsInfoComponent(
+open class StatsInfoMiniComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         scope: CoroutineScope,
@@ -30,14 +30,13 @@ open class StatsInfoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged ->
                                 uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
                                 uiView.show()
                             }
-                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown) uiView.show() else uiView.hide()
                         }
                     }
         }
