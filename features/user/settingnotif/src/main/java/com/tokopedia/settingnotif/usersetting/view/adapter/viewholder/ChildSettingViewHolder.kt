@@ -4,8 +4,8 @@ import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ChildSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 
 class ChildSettingViewHolder(
         itemView: View?,

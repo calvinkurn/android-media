@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -18,11 +19,15 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.util.PriceUtil;
+import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,10 +58,16 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_TYPE = "shopType";
     public static final String OPEN_SCREEN = "openScreen";
     public static final String CAMPAIGN_TRACK = "campaignTrack";
+    public static final String CLIENT_ID = "clientId";
+    public static final String SESSION_IRIS = "sessionIris";
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
+    private UserSessionInterface userSession;
+    private String connectionTypeString = "";
+    private Long lastGetConnectionTimeStamp = 0L;
+    private final Long DELAY_GET_CONN = 120000L; //2 minutes
 
     // have status that describe pending.
 
@@ -67,6 +78,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        userSession = new UserSession(context);
     }
 
     @Override
@@ -112,6 +124,19 @@ public class GTMAnalytics extends ContextAnalytics {
                 Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
             }
         }
+    }
+
+    public Bundle addWrapperValue(Bundle bundle) {
+        bundle.putString(CLIENT_ID, getClientIDString());
+        bundle.putString(USER_ID, userSession.getUserId());
+        if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS)))
+            bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+        return bundle;
+    }
+
+    @Override
+    public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
+        pushEventV5(eventName, addWrapperValue(value), context);
     }
 
     @SuppressWarnings("unchecked")
@@ -742,6 +767,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void sendScreen(String screenName, Map<String, String> customDimension) {
 
+        UserSessionInterface userSession = new UserSession(context);
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
@@ -755,13 +781,14 @@ public class GTMAnalytics extends ContextAnalytics {
         }else{
             bundle.putString("userId", "");
         }
-        bundle.putString("clientId", getClientIDString());
-        bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
-        if(!TextUtils.isEmpty(sessionHandler.getShopId())) {
-            bundle.putString("shopId", sessionHandler.getShopId());
+        bundle.putString(CLIENT_ID, getClientIDString());
+        bundle.putBoolean("isLoggedInStatus", userSession.isLoggedIn());
+        if(!TextUtils.isEmpty(userSession.getShopId())) {
+            bundle.putString("shopId", userSession.getShopId());
         }else{
             bundle.putString("shopId", "");
         }
+        putNetworkSpeed(bundle);
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
@@ -772,6 +799,15 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", bundle, context);
+    }
+
+    public void putNetworkSpeed(Bundle bundle) {
+        if (TextUtils.isEmpty(connectionTypeString) ||
+                (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)){
+            connectionTypeString = DeviceConnectionInfo.getConnectionType(context);
+            lastGetConnectionTimeStamp = System.currentTimeMillis();
+        }
+        bundle.putString("networkSpeed", connectionTypeString);
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
@@ -883,14 +919,15 @@ public class GTMAnalytics extends ContextAnalytics {
     public void eventAuthenticate(Map<String, String> customDimension) {
         String afUniqueId = getAfUniqueId(context);
         final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        UserSessionInterface userSession = new UserSession(context);
         Map<String, Object> map = DataLayer.mapOf(
                 Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
-                        Authenticated.KEY_USER_SELLER, (sessionHandler.isUserHasShop() ? 1 : 0),
-                        Authenticated.KEY_USER_FULLNAME, sessionHandler.getLoginName(),
+                        Authenticated.KEY_USER_SELLER, (userSession.hasShop() ? 1 : 0),
+                        Authenticated.KEY_USER_FULLNAME, userSession.getName(),
                         Authenticated.KEY_USER_ID, sessionHandler.getGTMLoginID(),
-                        Authenticated.KEY_SHOP_ID, sessionHandler.getShopID(),
+                        Authenticated.KEY_SHOP_ID, userSession.getShopId(),
                         Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
-                        Authenticated.KEY_USER_EMAIL, sessionHandler.getEmail()
+                        Authenticated.KEY_USER_EMAIL, userSession.getEmail()
                 ),
                 Authenticated.ANDROID_ID, sessionHandler.getAndroidId(),
                 Authenticated.ADS_ID, sessionHandler.getAdsId(),
@@ -960,7 +997,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         bundle.putString("appsflyerId", afUniqueId);
         bundle.putString("userId", sessionHandler.getLoginID());
-        bundle.putString("clientId", getClientIDString());
+        bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putString(KEY_EVENT, CAMPAIGN_TRACK);
         bundle.putString("screenName", (String) param.get("screenName"));
 

@@ -23,8 +23,8 @@ import com.tokopedia.track.TrackApp
  */
 
 class OldDynamicLegoBannerViewHolder(legoBannerView: View,
-                                     private val homeCategoryListener: HomeCategoryListener,
-                                     private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
+                                     private val homeCategoryListener: HomeCategoryListener?,
+                                     private val parentRecycledViewPool: RecyclerView.RecycledViewPool?) :
         DynamicChannelViewHolder(
                 legoBannerView, homeCategoryListener
         ) {
@@ -44,13 +44,10 @@ class OldDynamicLegoBannerViewHolder(legoBannerView: View,
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         when(getLayoutType(channel)) {
             TYPE_SIX_GRID_LEGO -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
-                    context, applink, channel.id)
-            TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(context, channel.header.name, channel.id)
-            TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(
-                    channel.header.name, channel.id
-            ))
-            else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
-                    context, applink, channel.id)
+                    channel.header.name, channel.id)
+            TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(channel.header.name, channel.id)
+            TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channel))
+            else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(channel.header.name, channel.id)
         }
     }
 
@@ -85,7 +82,7 @@ class OldDynamicLegoBannerViewHolder(legoBannerView: View,
     }
 
     class LegoItemAdapter(private val context: Context,
-                             private val listener: HomeCategoryListener,
+                             private val listener: HomeCategoryListener?,
                              private val channels: DynamicHomeChannel.Channels,
                              private val legoBannerType: Int,
                              private val parentPosition: Int) : RecyclerView.Adapter<LegoItemViewHolder>() {
@@ -139,7 +136,7 @@ class OldDynamicLegoBannerViewHolder(legoBannerView: View,
                         }
                     }
 
-                    listener.onLegoBannerClicked(
+                    listener?.onLegoBannerClicked(
                             if (grid.applink.isNotEmpty()) grid.applink else grid.url,
                             channels.getHomeAttribution(position + 1, grid.attribution))
                     HomeTrackingUtils.homeDiscoveryWidgetClick(context,

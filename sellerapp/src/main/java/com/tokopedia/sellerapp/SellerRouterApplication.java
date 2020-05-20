@@ -31,14 +31,13 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
@@ -57,6 +56,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
@@ -64,7 +65,6 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
@@ -86,11 +86,13 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -110,6 +112,8 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -122,6 +126,7 @@ import java.util.Map;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
@@ -131,14 +136,12 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
+        TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter,
         ShopModuleRouter,
         ApplinkRouter,
-        NetworkRouter, TopChatRouter,
-        ContactUsModuleRouter, WithdrawRouter,
-        TopAdsWebViewRouter,
+        NetworkRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -146,8 +149,9 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter {
-        SellerHomeRouter {
+        ResolutionRouter,
+        SellerHomeRouter,
+        LoginRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerGMComponent.Builder daggerGMBuilder;
@@ -248,9 +252,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
+        UserSessionInterface userSession = new UserSession(context);
         Intent intent = new Intent(context, WelcomeActivity.class);
-        if (SessionHandler.isV4Login(context)) {
-            if (SessionHandler.isUserHasShop(context)) {
+        if (userSession.isLoggedIn()) {
+            if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
             } else {
                 return intent;
@@ -266,8 +271,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
-        if (SessionHandler.isV4Login(context)) {
+    public Class<?> getHomeClass() {
+        UserSessionInterface userSession = new UserSession(context);
+        if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
             return WelcomeActivity.class;
@@ -297,66 +303,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public boolean isSupportedDelegateDeepLink(String appLinks) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLinks);
-    }
-
-    @Override
-    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.putExtras(bundle);
-        intent.setData(Uri.parse(applinks));
-        deepLinkDelegate.dispatchFrom(activity, intent);
-    }
-
-    @Override
-    public String getBaseUrlDomainPayment() {
-        return SellerAppBaseUrl.BASE_PAYMENT_URL_DOMAIN;
-    }
-
-    @Override
-    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
-        Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-            );
-        }
-        return uriBuilder.build().toString().trim();
-    }
-
-    @Override
-    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
-        String urlQuery = Uri.parse(originUrl).getQuery();
-        return AuthUtil.generateWebviewHeaders(
-                Uri.parse(originUrl).getPath(),
-                urlQuery != null ? urlQuery : "",
-                "GET",
-                AuthUtil.KEY.KEY_WSV4);
-    }
-
-    @Override
-    public boolean getEnableFingerprintPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_SELLERAPP);
     }
 
     @Override
@@ -487,7 +433,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
-        Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
+        Intent intent = getSplashScreenIntent(this);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -506,6 +452,15 @@ public abstract class SellerRouterApplication extends MainApplication
     public void showForceLogoutTokenDialog(String response) {
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
+        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
+                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
+                ";response=" + response + ";request=" + request);
     }
 
     @Override
@@ -630,9 +585,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
     }
@@ -750,5 +702,16 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getChatListFragment() {
         return ChatTabListFragment.create();
+    }
+
+    @Override
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return new AppNotificationReceiver();
+    }
+
+    @Override
+    public void setOnboardingStatus(boolean status) {
+        OnboardingPreference preference = new OnboardingPreference(this);
+        preference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 }

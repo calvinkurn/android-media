@@ -59,6 +59,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
     private String etalaseId;
     private String sort;
     private String attribution;
+    private Boolean isNeedToReloadData = false;
 
     private ShopInfo shopInfo;
     private OldShopPageTrackingBuyer shopPageTracking;
@@ -92,6 +93,9 @@ public class ShopProductListActivity extends BaseSimpleActivity
         return intent;
     }
 
+    //TODO milhamj
+//                .putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, extras.getBoolean(ShopParamConstant.KEY_RELOAD_STATE))
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
@@ -100,6 +104,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null ? "" : getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
+        isNeedToReloadData = getIntent().getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false);
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
             if (null == keyword) {
@@ -199,7 +204,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution);
+        return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution, isNeedToReloadData);
     }
 
     @Override

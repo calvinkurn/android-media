@@ -28,7 +28,7 @@
 
     <string name="settingnotif_title">Notifikasi</string>
     <string name="settingnotif_dialog_info_title">Push Notification</string>
-    <string name="settingnotif_email">Email</string>
+    <string name="settingnotif_email">E-mail</string>
     <string name="settingnotif_sms">SMS</string>
     <string name="settingnotif_seller">Seller</string>
 

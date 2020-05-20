@@ -7,7 +7,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 abstract class BaseBottomSheetDialog<T>(context: Context, fragmentManager: FragmentManager) {
 
-    protected var bottomSheet: BottomSheetUnify = BottomSheetUnify()
+    private var bottomSheet: BottomSheetUnify = BottomSheetUnify()
     protected var container: View? = null
 
     abstract fun resourceId(): Int

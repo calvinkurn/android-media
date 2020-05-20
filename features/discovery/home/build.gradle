@@ -24,9 +24,17 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     flavorDimensions "tier", "client"
     productFlavors {
+        benchmark {
+            dimension "client"
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+            testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD'
+        }
         prod {
             dimension "client"
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -139,7 +147,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
@@ -184,6 +192,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
 
     implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
+    implementation rootProject.ext.supportLibDependencies.kotlinReflection
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -195,6 +204,8 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -205,6 +216,10 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
+
+    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
+        exclude group: 'androidx.test', module: 'core'
+    })
 }
 
 project.ext {

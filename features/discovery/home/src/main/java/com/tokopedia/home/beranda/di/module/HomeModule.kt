@@ -25,6 +25,7 @@ import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
@@ -50,7 +51,7 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homeRepository(geolocationRemoteDataSource: GeolocationRemoteDataSource,
+    fun homeRepository(geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
                        homeDefaultDataSource: HomeDefaultDataSource
