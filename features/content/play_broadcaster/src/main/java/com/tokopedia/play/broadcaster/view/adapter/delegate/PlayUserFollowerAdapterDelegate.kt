@@ -1,0 +1,22 @@
+package com.tokopedia.play.broadcaster.view.adapter.delegate
+
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.broadcaster.ui.viewholder.PlayUserFollowerViewHolder
+import com.tokopedia.play.broadcaster.view.uimodel.FollowerUiModel
+
+/**
+ * Created by jegul on 20/05/20
+ */
+class PlayUserFollowerAdapterDelegate :
+        TypedAdapterDelegate<FollowerUiModel.User, FollowerUiModel, PlayUserFollowerViewHolder>(0) {
+
+    override fun onBindViewHolder(item: FollowerUiModel.User, holder: PlayUserFollowerViewHolder) {
+        holder.bind(item)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayUserFollowerViewHolder {
+        return PlayUserFollowerViewHolder(basicView)
+    }
+}

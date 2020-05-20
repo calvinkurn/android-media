@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import javax.inject.Inject
 
@@ -19,8 +22,11 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
     private lateinit var parentViewModel: PlayPrepareBroadcastViewModel
+
+    private lateinit var rvFollowers: RecyclerView
+
+    private val followersAdapter = PlayFollowersAdapter()
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -37,6 +43,40 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_prepare_broadcast, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
+        setupView(view)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        observeFollowers()
+    }
+
+    private fun initView(view: View) {
+        with (view) {
+            rvFollowers = findViewById(R.id.rv_followers)
+        }
+    }
+
+    private fun setupView(view: View) {
+        rvFollowers.adapter = followersAdapter
+    }
+
+    //region observe
+    /**
+     * Observe
+     */
+
+    private fun observeFollowers() {
+        parentViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
+            followersAdapter.setItemsAndAnimateChanges(it)
+        })
+    }
+    //endregion
 
     companion object {
 

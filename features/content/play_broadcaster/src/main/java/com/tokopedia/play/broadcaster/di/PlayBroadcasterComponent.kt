@@ -8,7 +8,8 @@ import dagger.Component
 /**
  * Created by jegul on 20/05/20
  */
-@Component(modules = [PlayBroadcasterViewModelModule::class])
+@Component(modules = [PlayBroadcasterViewModelModule::class, PlayBroadcasterModule::class])
+@PlayBroadcasterScope
 interface PlayBroadcasterComponent {
 
     fun inject(prepareBroadcastActivity: PlayPrepareBroadcastActivity)

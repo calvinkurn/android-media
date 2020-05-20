@@ -20,6 +20,7 @@ abstract class PlayBroadcasterViewModelModule {
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
+    @PlayBroadcasterScope
     @IntoMap
     @ViewModelKey(PlayPrepareBroadcastViewModel::class)
     abstract fun getPlayViewModel(viewModel: PlayPrepareBroadcastViewModel): ViewModel
