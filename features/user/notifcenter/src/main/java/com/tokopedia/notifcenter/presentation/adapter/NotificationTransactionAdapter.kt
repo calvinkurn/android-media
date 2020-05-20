@@ -4,7 +4,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.navigation_common.model.NotificationsModel
-import com.tokopedia.notifcenter.GlobalNavConstant.*
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_KONFIRMASI
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_PEMBAYARAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PEMBELIAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PENJUALAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PESANAN_BARU
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PESANAN_DIPROSES
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SAMPAI_TUJUAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SEDANG_DIKIRIM
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SIAP_DIKIRIM
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean

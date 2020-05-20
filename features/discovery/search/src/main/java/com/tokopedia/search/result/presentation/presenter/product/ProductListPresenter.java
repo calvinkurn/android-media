@@ -813,7 +813,8 @@ final class ProductListPresenter
         if (!isTickerHasDismissed
                 && !textIsEmpty(productViewModel.getTickerModel().getText())) {
             list.add(productViewModel.getTickerModel());
-            getView().trackEventImpressionSortPriceMinTicker();
+            int typeId = productViewModel.getTickerModel().getTypeId();
+            getView().trackEventImpressionTicker(typeId);
         }
 
         if (!textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {

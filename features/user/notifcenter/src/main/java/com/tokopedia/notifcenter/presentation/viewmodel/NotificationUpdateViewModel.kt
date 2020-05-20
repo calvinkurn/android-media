@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.notifcenter.data.entity.ProductStockHandler
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
 import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
@@ -17,6 +17,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMap
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase.Companion.params as stockHandlerParam
 import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase.Companion.params as singleNotificationParams
 
@@ -24,6 +25,7 @@ interface NotificationUpdateContract {
     fun isProductStockHandler(notificationId: String)
     fun getSingleNotification(notificationId: String)
     fun onErrorMessage(throwable: Throwable)
+    fun cleared()
 }
 
 class NotificationUpdateViewModel @Inject constructor(
@@ -33,8 +35,8 @@ class NotificationUpdateViewModel @Inject constructor(
         dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), NotificationUpdateContract {
 
-    private val _productStockHandler = MutableLiveData<ProductStockHandler>()
-    val productStockHandler: LiveData<ProductStockHandler>
+    private val _productStockHandler = MutableLiveData<NotificationItemViewBean>()
+    val productStockHandler: LiveData<NotificationItemViewBean>
         get() = _productStockHandler
 
     private val _singleNotification = MutableLiveData<NotificationViewData>()
@@ -55,7 +57,7 @@ class NotificationUpdateViewModel @Inject constructor(
     override fun isProductStockHandler(notificationId: String) {
         val params = stockHandlerParam(notificationId)
         productStockHandlerUseCase.get(params, {
-            _productStockHandler.postValue(it)
+            _productStockHandler.value = stockHandlerMap(it)
         }, ::onErrorMessage)
     }
 
@@ -77,6 +79,10 @@ class NotificationUpdateViewModel @Inject constructor(
                 _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         }
+    }
+
+    override fun cleared() {
+        onCleared()
     }
 
 }
