@@ -21,6 +21,7 @@ import java.util.regex.Pattern
 const val CLOSED = "closed"
 const val OPEN = "open"
 const val SOLVED = "solved"
+const val NEW = "new"
 
 class Utils {
 

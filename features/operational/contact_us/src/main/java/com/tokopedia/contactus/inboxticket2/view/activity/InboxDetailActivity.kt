@@ -38,6 +38,7 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment.Co
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
+import com.tokopedia.contactus.inboxticket2.view.utils.NEW
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.orderquery.data.ImageUpload
@@ -122,9 +123,10 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         viewHelpRate.hide()
         textToolbar.show()
         val textSizeLabel = 11
+        tvTicketTitle.text = ticketDetail.subject
         if (ticketDetail.status.equals(SOLVED, ignoreCase = true)
-                || ticketDetail.status.equals(OPEN, ignoreCase = true)) {
-            tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.on_going),
+                || ticketDetail.status.equals(OPEN, ignoreCase = true) || ticketDetail.status.equals(NEW, ignoreCase = true)) {
+            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.on_going),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.y_200),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_500), textSizeLabel, this)
             rvMessageList.setPadding(0, 0, 0,
@@ -139,12 +141,12 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
             }
         } else if (ticketDetail.status.equals(CLOSED, ignoreCase = true)
                 && !ticketDetail.isShowRating) {
-            tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.closed),
+            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.closed),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
             showIssueClosed()
         } else if (ticketDetail.isShowRating) {
-            tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.need_rating),
+            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.need_rating),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.r_100),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.r_400), textSizeLabel, this)
             toggleTextToolbar(View.GONE)
@@ -498,7 +500,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     override fun updateClosedStatus(subject: String?) {
         val textSizeLabel = 11
         val utils = (mPresenter as InboxDetailPresenter).getUtils()
-        tvTicketTitle.text = utils?.getStatusTitle(subject + ".   " + getString(R.string.closed),
+        tvTicketTitle.text = utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
                 ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
                 ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
     }
