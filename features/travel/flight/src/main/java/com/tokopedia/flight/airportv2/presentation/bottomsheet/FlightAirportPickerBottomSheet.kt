@@ -22,6 +22,7 @@ import com.tokopedia.flight.airportv2.di.FlightAirportComponent
 import com.tokopedia.flight.airportv2.presentation.adapter.FlightAirportAdapterTypeFactory
 import com.tokopedia.flight.airportv2.presentation.viewmodel.FlightAirportPickerViewModel
 import com.tokopedia.flight.common.view.model.EmptyResultModel
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -58,6 +59,21 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
                 emptyModel.iconRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
                 emptyModel.title = getString(R.string.flight_airport_not_found_title_error)
                 emptyModel.content = getString(R.string.flight_airport_not_found_description_error)
+            }
+            return emptyModel
+        }
+
+    private val errorResultModel: EmptyResultModel
+        get() {
+            val emptyModel = EmptyResultModel()
+            emptyModel.iconRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+            emptyModel.title = getString(R.string.flight_airport_connection_title_error)
+            emptyModel.content = getString(R.string.flight_airport_connection_description_error)
+            emptyModel.buttonTitle = getString(R.string.flight_booking_action_retry)
+            emptyModel.callback = object : EmptyResultViewHolder.Callback {
+                override fun onEmptyButtonClicked() {
+                    onSearchAirportTextChanged(filterText)
+                }
             }
             return emptyModel
         }
@@ -177,7 +193,7 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
 
     private fun showError() {
         flightAirportAdapter.clearAllElements()
-        flightAirportAdapter.addElement(flightAirportAdapter.errorNetworkModel)
+        flightAirportAdapter.addElement(errorResultModel)
     }
 
     private fun onSearchAirportTextChanged(airportKeyword: String) {
@@ -188,14 +204,6 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
     private fun createAdapterInstance() {
         val adapterTypeFactory = FlightAirportAdapterTypeFactory(this)
         flightAirportAdapter = BaseAdapter(adapterTypeFactory)
-
-        val errorNetworkModel = flightAirportAdapter.errorNetworkModel
-        errorNetworkModel.iconDrawableRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        errorNetworkModel.errorMessage = getString(R.string.flight_airport_connection_title_error)
-        errorNetworkModel.subErrorMessage = getString(R.string.flight_airport_connection_description_error)
-        errorNetworkModel.setOnRetryListener { onSearchAirportTextChanged(filterText) }
-
-        flightAirportAdapter.errorNetworkModel = errorNetworkModel
     }
 
     private fun getSearchTextWatcher(): TextWatcher =
