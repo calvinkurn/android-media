@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by fwidjaja on 2019-11-12.
@@ -17,6 +18,7 @@ data class SomConfirmReqPickup (
                 @Expose
                 val mpLogisticPreShipInfo: MpLogisticPreShipInfo = MpLogisticPreShipInfo()) {
 
+                @Parcelize
                 data class MpLogisticPreShipInfo (
                     @SerializedName("status")
                     @Expose
@@ -30,11 +32,7 @@ data class SomConfirmReqPickup (
                     @Expose
                     val dataSuccess: DataSuccess = DataSuccess()) : Parcelable {
 
-                    constructor(parcel: Parcel) : this(
-                            parcel.readString() ?: "",
-                            parcel.createStringArrayList() ?: listOf(),
-                            TODO("dataSuccess"))
-
+                    @Parcelize
                     data class DataSuccess(
                             @SerializedName("pickup_location")
                             @Expose
@@ -46,8 +44,9 @@ data class SomConfirmReqPickup (
 
                             @SerializedName("notes")
                             @Expose
-                            val notes: Notes = Notes()) {
+                            val notes: Notes = Notes()) : Parcelable {
 
+                            @Parcelize
                             data class PickupLocation(
                                     @SerializedName("title")
                                     @Expose
@@ -60,17 +59,19 @@ data class SomConfirmReqPickup (
                                     @SerializedName("phone")
                                     @Expose
                                     val phone: String = ""
-                            )
+                            ) : Parcelable
 
-                            data class Detail(
+                        @Parcelize
+                        data class Detail(
                                     @SerializedName("title")
                                     @Expose
                                     val title: String = "",
 
                                     @SerializedName("shippers")
                                     @Expose
-                                    val listShippers: List<Shipper> = listOf()) {
+                                    val listShippers: List<Shipper> = listOf()) : Parcelable {
 
+                                @Parcelize
                                 data class Shipper(
                                         @SerializedName("name")
                                         @Expose
@@ -94,9 +95,10 @@ data class SomConfirmReqPickup (
 
                                         @SerializedName("count")
                                         @Expose
-                                        val count: String = "")
-                            }
+                                        val count: String = "") : Parcelable
+                        }
 
+                            @Parcelize
                             data class Notes(
                                     @SerializedName("title")
                                     @Expose
@@ -104,26 +106,7 @@ data class SomConfirmReqPickup (
 
                                     @SerializedName("list")
                                     @Expose
-                                    val listNotes: List<String> = listOf())
-                        }
-
-                    override fun writeToParcel(parcel: Parcel, flags: Int) {
-                        parcel.writeString(status)
-                        parcel.writeStringList(listErrorMsg)
-                    }
-
-                    override fun describeContents(): Int {
-                        return 0
-                    }
-
-                    companion object CREATOR : Parcelable.Creator<MpLogisticPreShipInfo> {
-                        override fun createFromParcel(parcel: Parcel): MpLogisticPreShipInfo {
-                            return MpLogisticPreShipInfo(parcel)
-                        }
-
-                        override fun newArray(size: Int): Array<MpLogisticPreShipInfo?> {
-                            return arrayOfNulls(size)
-                        }
+                                    val listNotes: List<String> = listOf()) : Parcelable
                     }
                 }
         }

@@ -1,7 +1,5 @@
 package com.tokopedia.notifcenter.analytics
 
-import android.util.Log
-import com.google.gson.Gson
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.data.entity.ProductData
@@ -61,6 +59,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         const val LABEL_LOCATION_UPDATE = "tab notif center page"
         const val LABEL_LOCATION = "lonceng"
         const val LABEL_BOTTOM_SHEET_LOCATION = "bottom_sheet"
+        const val LABEL_NOTIF_LIST_LOCATION = "notif_list"
 
         // Other
         const val ECOMMERCE = "ecommerce"
@@ -573,7 +572,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                                     "shop_type", "",
                                     "shop_name", product.shop?.name,
                                     "category_id", "",
-                                    "dimension82", atc.cartId.toString(),
+                                    "dimension82", atc.cartId,
                                     "dimension45", ""
                                 )
                             )
@@ -581,6 +580,48 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 )
             )
         )
+    }
+
+    fun trackAtcOnClick(
+            templateKey: String,
+            notificationId: String,
+            userId: String,
+            product: ProductData,
+            atc: DataModel
+    ) {
+        val eventLabel = getImpressionTrackLabel(
+                location = LABEL_NOTIF_LIST_LOCATION,
+                templateKey = templateKey,
+                notificationId = notificationId
+        )
+
+        val data = mapOf(
+                EVENT_CATEGORY to CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION to ACTION_CLICK_ATC_BUTTON,
+                EVENT_LABEL to eventLabel,
+                EVENT_USER_ID to userId,
+                ECOMMERCE to mapOf(
+                        "currencyCode" to "IDR",
+                        "add" to mapOf(
+                                "products" to listOf(mapOf(
+                                        "name" to product.name,
+                                        "id" to product.productId,
+                                        "price" to product.price,
+                                        "brand" to "",
+                                        "category" to "",
+                                        "variant" to product.variant,
+                                        "quantity" to "1",
+                                        "dimension69" to product.shop?.id.toString(),
+                                        "dimension71" to "",
+                                        "dimension70" to product.shop?.name,
+                                        "category_id" to "",
+                                        "dimension42" to atc.cartId,
+                                        "dimension39" to "/notifcenter"
+                                ))
+                        )
+                )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
     // #NC7

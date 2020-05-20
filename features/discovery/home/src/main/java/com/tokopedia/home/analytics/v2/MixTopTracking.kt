@@ -12,6 +12,7 @@ object MixTopTracking : BaseTracking() {
             val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel top carousel")
             val CLICK_ON_CAROUSEL_PRODUCT = Action.CLICK_ON.format("product dynamic channel top carousel")
             const val CLICK_VIEW_ALL_CAROUSEL = "click view all on dynamic channel top carousel"
+            const val CLICK_VIEW_ALL_CAROUSEL_CARD = "click view all card on dynamic channel top carousel"
             const val CLICK_BUTTON_CAROUSEL = "click %s on dynamic channel top carousel"
         }
     }
@@ -57,6 +58,13 @@ object MixTopTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
+            Label.KEY, headerName
+    )
+
+    fun getMixTopSeeAllCardClick(headerName: String) = DataLayer.mapOf(
+            Event.KEY, Event.CLICK_HOMEPAGE,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL_CARD,
             Label.KEY, headerName
     )
 

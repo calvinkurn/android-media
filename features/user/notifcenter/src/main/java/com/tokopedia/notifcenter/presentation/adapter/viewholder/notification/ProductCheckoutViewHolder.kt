@@ -5,10 +5,12 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -30,6 +32,7 @@ class ProductCheckoutViewHolder(
     private val lstProduct: RecyclerView = itemView.findViewById(R.id.lst_products)
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
+    private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
 
@@ -112,19 +115,25 @@ class ProductCheckoutViewHolder(
                 listener.addProductToCheckout(element.userInfo, element)
             }
         }
-    }
 
-    private fun checkoutButtonValidation(type: Int) {
-        when(type) {
-            TYPE_BUY_BUTTON -> {
-                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_buy)
-                btnCheckout.buttonType = UnifyButton.Type.TRANSACTION
-            }
-            TYPE_OUT_OF_STOCK_BUTTON -> {
-                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_out_of_stock)
-                btnCheckout.isEnabled = false
+        btnAtc.setOnClickListener {
+            listener.addProductToCart(product) {
+                trackAddToCartClicked(element, product, it)
             }
         }
+    }
+
+    private fun trackAddToCartClicked(
+            element: NotificationItemViewBean,
+            product: ProductData,
+            data: DataModel) {
+        listener.getAnalytic().trackAtcOnClick(
+                templateKey = element.templateKey,
+                notificationId = element.notificationId,
+                userId = element.userInfo.userId,
+                product = product,
+                atc = data
+        )
     }
 
     companion object {

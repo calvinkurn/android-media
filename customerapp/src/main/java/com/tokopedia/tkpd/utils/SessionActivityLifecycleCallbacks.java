@@ -29,7 +29,7 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
     private long lastSumTx = 0;
     private long lastSumRx = 0;
 
-    private Thread threadSession;
+    private boolean running;
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -44,11 +44,11 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
 
     @Override
     public void onActivityResumed(Activity activity) {
-        if (threadSession != null && threadSession.isAlive()) {
+        if (running) {
             return;
         }
-        threadSession = new Thread(() -> checkSession(activity.getClass().getSimpleName()));
-        threadSession.start();
+        running = true;
+        new Thread(() -> checkSession(activity.getClass().getSimpleName())).start();
     }
 
     @Override
@@ -72,6 +72,7 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
     }
 
     private void checkSession(String activityName) {
+        running = true;
         long currentMillis = System.currentTimeMillis();
         long minSessionTimeMillis = currentMillis - INTERVAL_SESSION;
         if (lastSessionMillis < minSessionTimeMillis) {
@@ -81,6 +82,7 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
             lastSessionMillis = System.currentTimeMillis();
             openedPageCount = 0;
         }
+        running = false;
     }
 
     private void logSession(String activityName, long currentMillis) {
