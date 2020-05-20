@@ -11,7 +11,7 @@ import com.tokopedia.webview.KEY_URL
 class TopAdsPaymentCreditFragment : BaseWebViewFragment() {
 
     override fun getUrl(): String {
-        return arguments?.getString(KEY_URL)!!
+        return arguments?.getString(KEY_URL) ?: ""
 
     }
 
