@@ -1173,15 +1173,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void validateBBO(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-        int bboCount = getBBOCount(validateUsePromoRevampUiModel);
-        if (bboCount > 1) {
-            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic") && voucherOrdersItemUiModel.getMessageUiModel().getState().equalsIgnoreCase("red")) {
-                    for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                        if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
-                            if (getView() != null) {
-                                getView().resetCourier(shipmentCartItemModel);
-                            }
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+            if (voucherOrdersItemUiModel.getType().equalsIgnoreCase("logistic") && voucherOrdersItemUiModel.getMessageUiModel().getState().equalsIgnoreCase("red")) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                    if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
+                        if (getView() != null) {
+                            getView().resetCourier(shipmentCartItemModel);
                         }
                     }
                 }
