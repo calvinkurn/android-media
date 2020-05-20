@@ -282,9 +282,12 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun loadDetail() {
-        activity?.let { SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId) }
-        somDetailViewModel.loadDetailOrder(
-            GraphqlHelper.loadRawString(resources, R.raw.gql_som_detail), orderId)
+        activity?.let {
+            SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
+            it.resources?.let { r ->
+                somDetailViewModel.loadDetailOrder(GraphqlHelper.loadRawString(r, R.raw.gql_som_detail), orderId)
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -1278,7 +1281,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun doRejectOrder(orderRejectRequest: SomRejectRequest) {
-        somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+        activity?.resources?.let {
+            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(it, R.raw.gql_som_reject_order), orderRejectRequest)
+        }
         SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequest.reason)
     }
 
