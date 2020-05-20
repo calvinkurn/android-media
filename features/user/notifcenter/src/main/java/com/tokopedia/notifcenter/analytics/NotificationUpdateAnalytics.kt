@@ -487,7 +487,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 ACTION_CLICK_BUY_BUTTON,
                 eventLabel,
                 notification.getAtcProduct(),
-                notification.userInfo,
                 cartId
         )
     }
@@ -507,7 +506,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 ACTION_CLICK_MP_BUY_BUTTON,
                 eventLabel,
                 notification.product,
-                notification.userInfo,
                 cartId
         )
     }
@@ -517,7 +515,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
             eventAction: String,
             eventLabel: String,
             product: ProductData?,
-            userInfo: UserInfo,
             cartId: String = ""
     ) {
         val products = DataLayer.mapOf(
@@ -528,12 +525,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 "category", "",
                 "variant", "",
                 "quantity", "1",
-                "dimension69", userInfo.shopId,
-                "dimension71", "", //shop type
-                "dimension70", product?.shop?.name, //shop name
-                "dimension72", "", //category child id
-                "dimension42", cartId, //cart_id
-                "dimension39", "/notifcenter" //list name
+                "dimension79", product?.shop?.id.toString(),
+                "dimension81", "", //shop type
+                "dimension80", product?.shop?.name, //shop name
+                "dimension82", "", //category child id
+                "dimension45", cartId, //cart_id
+                "dimension40", "/notifcenter" //list name
         )
 
         val ecommerce = DataLayer.mapOf(
@@ -616,12 +613,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                                         "category" to "",
                                         "variant" to product.variant,
                                         "quantity" to "1",
-                                        "dimension69" to product.shop?.id.toString(),
-                                        "dimension71" to "",
-                                        "dimension70" to product.shop?.name,
-                                        "category_id" to "",
-                                        "dimension42" to atc.cartId,
-                                        "dimension39" to "/notifcenter"
+                                        "dimension79" to product.shop?.id.toString(),
+                                        "dimension81" to "",
+                                        "dimension80" to product.shop?.name,
+                                        "dimension82" to "",
+                                        "dimension45" to atc.cartId,
+                                        "dimension40" to "/notifcenter"
                                 ))
                         )
                 )
