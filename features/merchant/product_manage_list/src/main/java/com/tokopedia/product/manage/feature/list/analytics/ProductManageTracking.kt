@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.analytics
 
-import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.CLICK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.track.TrackApp
 
 object ProductManageTracking {
@@ -214,4 +214,7 @@ object ProductManageTracking {
         eventEditProduct(action, shopId)
     }
 
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 }
