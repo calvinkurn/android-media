@@ -40,7 +40,7 @@ class SellerReviewListViewHolder(val view: View,
         element.rating?.roundDecimal()?.toFloatOrNull().let {
             if (it != null) {
                 if(it >= 3.5) {
-                    ivRating.setImageDrawable(ContextCompat.getDrawable(view.context, R.drawable.ic_rating_star_item))
+                    ivRating.setImageDrawable(ContextCompat.getDrawable(view.context, R.drawable.ic_rating_star_yellow))
                 } else {
                     ivRating.setImageDrawable(ContextCompat.getDrawable(view.context, R.drawable.ic_rating_star_red))
                 }

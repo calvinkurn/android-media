@@ -3,16 +3,16 @@ package com.tokopedia.core.drawer2.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -21,12 +21,10 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.track.TrackApp;
 
@@ -105,17 +103,14 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
-                //TODO change applink
-                RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_SELLER);
-//                if (context.getApplication() instanceof TkpdCoreRouter) {
-//                    intent = ((TkpdCoreRouter) context.getApplication())
-//                            .getInboxReputationIntent(context);
-//                    context.startActivity(intent);
-//                    sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
-//                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
-//
-//                }
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    intent = ((TkpdCoreRouter) context.getApplication())
+                            .getInboxReputationIntent(context);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(context, intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
 
+                }
                 break;
             case TkpdState.DrawerPosition.INBOX_TICKET:
                 intent = InboxRouter.getInboxTicketActivityIntent(context);
