@@ -474,7 +474,8 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackAtcOnSingleProductClick(
             eventLocation: String = LABEL_LOCATION,
-            notification: NotificationItemViewBean
+            notification: NotificationItemViewBean,
+            cartId: String
     ) {
         val eventLabel = getImpressionTrackLabel(
                 location = eventLocation,
@@ -486,14 +487,16 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 ACTION_CLICK_BUY_BUTTON,
                 eventLabel,
                 notification.getAtcProduct(),
-                notification.userInfo
+                notification.userInfo,
+                cartId
         )
     }
 
     fun trackAtcOnMultiProductClick(
             eventLocation: String = "notif_list",
             productNumber: Int = 0,
-            notification: MultipleProductCardViewBean
+            notification: MultipleProductCardViewBean,
+            cartId: String
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
@@ -504,7 +507,8 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 ACTION_CLICK_MP_BUY_BUTTON,
                 eventLabel,
                 notification.product,
-                notification.userInfo
+                notification.userInfo,
+                cartId
         )
     }
 
@@ -513,7 +517,8 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
             eventAction: String,
             eventLabel: String,
             product: ProductData?,
-            userInfo: UserInfo
+            userInfo: UserInfo,
+            cartId: String = ""
     ) {
         val products = DataLayer.mapOf(
                 "name", product?.name,
@@ -523,12 +528,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 "category", "",
                 "variant", "",
                 "quantity", "1",
-                "dimension79", userInfo.shopId,
-                "dimension81", "", //shop type
-                "dimension80", product?.shop?.name, //shop name
-                "dimension82", "", //category child id
-                "dimension45", "", //cart_id
-                "dimension40", "/notifcenter" //list name
+                "dimension69", userInfo.shopId,
+                "dimension71", "", //shop type
+                "dimension70", product?.shop?.name, //shop name
+                "dimension72", "", //category child id
+                "dimension42", cartId, //cart_id
+                "dimension39", "/notifcenter" //list name
         )
 
         val ecommerce = DataLayer.mapOf(

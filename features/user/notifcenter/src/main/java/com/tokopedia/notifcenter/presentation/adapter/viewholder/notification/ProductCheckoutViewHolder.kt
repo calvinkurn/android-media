@@ -111,18 +111,24 @@ class ProductCheckoutViewHolder(
         val product = element.getAtcProduct() ?: return
         btnCheckout.setOnClickListener {
             notificationItemMarkedClick(element)
-            listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
             if (product.stock < SINGLE_PRODUCT) {
                 listener.onItemStockHandlerClick(element)
             } else {
                 listener.addProductToCart(product) {
                     // goto cart page
                     routeCartPage()
+
+                    listener.getAnalytic().trackAtcOnSingleProductClick(
+                            notification = element,
+                            cartId = it.cartId
+                    )
                 }
             }
         }
 
         btnAtc.setOnClickListener {
+            notificationItemMarkedClick(element)
+
             listener.addProductToCart(product) {
                 // tracker
                 trackAddToCartClicked(element, product, it)

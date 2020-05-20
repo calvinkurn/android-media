@@ -111,28 +111,38 @@ class MultipleProductCardViewHolder(
         }
 
         btnCheckout.setOnClickListener {
-            when(sourceView) {
-                is SourceMultipleProductView.NotificationCenter -> {
-                    listener.getAnalytic().trackAtcOnMultiProductClick(
-                            notification = element,
-                            productNumber = adapterPosition
-                    )
-                }
-                is SourceMultipleProductView.BottomSheetDetail -> {
-                    listener.getAnalytic().trackAtcOnMultiProductClick(
-                            eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
-                            notification = element,
-                            productNumber = adapterPosition
-                    )
+            listener.itemClicked(notification, adapterPosition)
+
+            listener.addProductToCart(element.product) {
+                // goto cart page
+                routeCartPage()
+
+                when(sourceView) {
+                    is SourceMultipleProductView.NotificationCenter -> {
+                        listener.getAnalytic().trackAtcOnMultiProductClick(
+                                notification = element,
+                                productNumber = adapterPosition,
+                                cartId = it.cartId
+                        )
+                    }
+                    is SourceMultipleProductView.BottomSheetDetail -> {
+                        listener.getAnalytic().trackAtcOnMultiProductClick(
+                                eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
+                                notification = element,
+                                productNumber = adapterPosition,
+                                cartId = it.cartId
+                        )
+                    }
                 }
             }
-            listener.itemClicked(notification, adapterPosition)
 
             // goto cart page
             routeCartPage()
         }
 
         btnAtc.setOnClickListener {
+            listener.itemClicked(notification, adapterPosition)
+
             listener.addProductToCart(element.product) {
                 // tracker
                 trackAddToCartClicked(element, element.product, it)
