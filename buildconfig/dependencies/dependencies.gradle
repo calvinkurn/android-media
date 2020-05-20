@@ -83,12 +83,12 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.5'
-    unifyComponentsVersion = '1.1.33'
+    unifyComponentsVersion = '1.1.38'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
-    unifyDatePickerVersion = '1.0.3'
+    unifyDatePickerVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.5'
     unifyGlobalErrorVersion = '1.0.6'
     unifyListVersion = "1.0.1"

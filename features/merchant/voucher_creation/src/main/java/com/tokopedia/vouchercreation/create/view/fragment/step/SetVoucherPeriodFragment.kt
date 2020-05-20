@@ -17,6 +17,8 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -30,6 +32,7 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVouc
 import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.viewmodel.SetVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
+import java.util.*
 import javax.inject.Inject
 
 class SetVoucherPeriodFragment(private val onNext: (String, String, String, String) -> Unit,
@@ -54,6 +57,31 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
     private val viewModel by lazy {
         viewModelProvider.get(SetVoucherPeriodViewModel::class.java)
+    }
+
+    var minDate = GregorianCalendar(2020, 1, 10).apply {
+        set(Calendar.HOUR, 3)
+        set(Calendar.MINUTE, 19)
+    }
+    var maxDate = GregorianCalendar(2025, 5, 5).apply {
+        set(Calendar.HOUR, 6)
+        set(Calendar.MINUTE, 20)
+    }
+
+    private val startDateTimePicker by lazy {
+        context?.run {
+            DateTimePickerUnify(
+                    this,
+                    minDate,
+                    GregorianCalendar(LocaleUtils.getCurrentLocale(this)),
+                    maxDate,
+                    null,
+                    DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
+                setTitle("Pilih Tanggal Mulai")
+                setInfo("Pilihan tolong ini test doang")
+                setInfoVisible(true)
+            }
+        }
     }
 
     private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherBanner()
@@ -95,6 +123,9 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
     }
 
     private fun setupView() {
+        startDateTextField?.setOnClickListener {
+            startDateTimePicker?.show(childFragmentManager, "startDateTimePicker")
+        }
         observeLiveData()
         disableTextFieldEdit()
         setDateNextButton?.run {
