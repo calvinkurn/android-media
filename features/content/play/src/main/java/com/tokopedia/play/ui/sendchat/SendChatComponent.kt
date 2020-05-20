@@ -48,7 +48,10 @@ open class SendChatComponent(
 
                                 uiView.focusChatForm(it.stateHelper.channelType.isLive && it.insetsViewMap[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
                             }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
+                                uiView.focusChatForm(false)
+                                uiView.hide()
+                            }
                         }
                     }
         }
