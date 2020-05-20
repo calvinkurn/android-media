@@ -13,13 +13,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
-import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.datepicker.range.view.widget.DatePickerLabelView;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.dialog.DatePickerDialog;
@@ -203,6 +203,13 @@ public abstract class TopAdsNewScheduleFragment<T extends StepperModel, V extend
         progressDialog.dismiss();
     }
 
+    @Override
+    protected void onAttachListener(Context context) {
+        super.onAttachListener(context);
+        if(context instanceof StepperListener){
+            this.stepperListener = (StepperListener)context;
+        }
+    }
 
     @Override
     protected void initialVar() {

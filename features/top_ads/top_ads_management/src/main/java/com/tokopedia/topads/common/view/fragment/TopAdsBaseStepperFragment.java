@@ -5,9 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.listener.StepperListener;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
 
 /**

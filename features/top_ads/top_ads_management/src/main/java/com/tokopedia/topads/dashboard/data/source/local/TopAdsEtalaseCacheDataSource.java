@@ -8,12 +8,15 @@ import com.tokopedia.topads.dashboard.data.source.TopAdsEtalaseDataSource;
 import com.tokopedia.topads.dashboard.data.model.data.Etalase;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 /**
  * Created by hendry on 2/20/17.
  */
 public class TopAdsEtalaseCacheDataSource implements TopAdsEtalaseDataSource {
+
+    private static final long EXPIRED_TIME = TimeUnit.MINUTES.toMillis(60);
     public TopAdsEtalaseCacheDataSource() {
 
     }
@@ -47,7 +50,7 @@ public class TopAdsEtalaseCacheDataSource implements TopAdsEtalaseDataSource {
                 etalaseList,
                 new TypeToken<List<Etalase>>() {
                 }.getType());
-        PersistentCacheManager.instance.put(TkpdCache.Key.ETALASE_ADD_PROD, jsonString);
+        PersistentCacheManager.instance.put(TkpdCache.Key.ETALASE_ADD_PROD, jsonString, EXPIRED_TIME);
         /*final DatabaseWrapper database = FlowManager.getDatabase(TkpdSellerDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         try {

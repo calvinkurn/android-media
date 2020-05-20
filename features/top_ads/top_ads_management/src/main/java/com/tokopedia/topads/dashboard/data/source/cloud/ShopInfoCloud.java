@@ -31,9 +31,10 @@ public class ShopInfoCloud {
     }
 
     public Observable<Response<DataResponse<ShopModel>>> getShopInfo() {
-        String userId = new UserSession(context).getUserId();
-        String deviceId = new UserSession(context).getDeviceId();
-        String shopId = new UserSession(context).getShopId();
+        UserSession userSession = new UserSession(context);
+        String userId = userSession.getUserId();
+        String deviceId = userSession.getDeviceId();
+        String shopId = userSession.getShopId();
 
         Map<String, String> params = new HashMap<>();
         params.put(SHOP_ID, shopId);

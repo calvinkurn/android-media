@@ -9,10 +9,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -49,7 +49,7 @@ public class TopAdsCreatePromoShopActivity extends BaseStepperActivity implement
         createNewStepperModel();
     }
 
-    private StepperModel createNewStepperModel() {
+    public StepperModel createNewStepperModel() {
         if (getIntent() != null && getIntent().getExtras() != null) {
             shopAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_AD);
         }
