@@ -28,6 +28,8 @@ class SellerReviewReplyViewModel @Inject constructor(
     : BaseViewModel(dispatcherProvider.main()) {
 
     private val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    val replyTime: String
+        get() = SimpleDateFormat(DATE_REVIEW_FORMAT, Locale.getDefault()).format(Calendar.getInstance().time)
 
     private val _updateReviewReply = MutableLiveData<Result<UpdateReplyResponseUiModel>>()
     val updateReviewReply: LiveData<Result<UpdateReplyResponseUiModel>>
@@ -85,9 +87,5 @@ class SellerReviewReplyViewModel @Inject constructor(
     private suspend fun getTemplateList(shopId: Int): List<ReplyTemplateUiModel> {
         getReviewTemplateListUseCase.params = GetReviewTemplateListUseCase.createParams(shopId)
         return SellerReviewReplyMapper.mapToItemTemplateUiModel(getReviewTemplateListUseCase.executeOnBackground())
-    }
-
-    fun getReplyTime(): String {
-        return SimpleDateFormat(DATE_REVIEW_FORMAT, Locale.getDefault()).format(Calendar.getInstance().time)
     }
 }

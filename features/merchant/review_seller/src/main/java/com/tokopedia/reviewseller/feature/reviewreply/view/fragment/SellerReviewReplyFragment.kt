@@ -213,7 +213,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             reviewReplyTextBoxWidget?.hide()
             groupReply?.show()
             tvReplyUser?.text = context?.getString(R.string.user_reply)
-            tvReplyDate.text = viewModelReviewReply?.getReplyTime().orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
+            tvReplyDate.text = viewModelReviewReply?.replyTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
             feedbackUiModel?.replyText = replyEditText.text.toString()
             tvReplyComment.text = feedbackUiModel?.replyText
             replyEditText.text?.clear()
@@ -227,7 +227,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             replyEditText.text?.clear()
             tvReplyUser?.text = context?.getString(R.string.user_reply)
             feedbackUiModel?.replyText = data.responseMessage
-            tvReplyDate.text = viewModelReviewReply?.getReplyTime().orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
+            tvReplyDate.text = viewModelReviewReply?.replyTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
             tvReplyComment.text = feedbackUiModel?.replyText
         }
     }
@@ -278,21 +278,21 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         } else {
             groupReply?.show()
             reviewReplyTextBoxWidget?.hide()
-            tvReplyEdit?.setOnClickListener {
-                tracking.eventClickEditReviewResponse(userSession.shopId.orEmpty(),
-                        productReplyUiModel?.productID.orZero().toString(),
-                        feedbackUiModel?.feedbackID.orZero().toString()
-                )
-                reviewReplyTextBoxWidget?.show()
-                showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
-            }
+        }
+        tvReplyEdit?.setOnClickListener {
+            tracking.eventClickEditReviewResponse(userSession.shopId.orEmpty(),
+                    productReplyUiModel?.productID.orZero().toString(),
+                    feedbackUiModel?.feedbackID.orZero().toString()
+            )
+            reviewReplyTextBoxWidget?.show()
+            showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
+        }
 
-            replyEditText?.setOnFocusChangeListener { _, hasFocus ->
-                if(hasFocus) tracking.eventClickResponseReview(
-                        userSession.shopId.orEmpty(),
-                        productReplyUiModel?.productID.orZero().toString(),
-                        feedbackUiModel?.feedbackID.orZero().toString())
-            }
+        replyEditText?.setOnFocusChangeListener { _, hasFocus ->
+            if(hasFocus) tracking.eventClickResponseReview(
+                    userSession.shopId.orEmpty(),
+                    productReplyUiModel?.productID.orZero().toString(),
+                    feedbackUiModel?.feedbackID.orZero().toString())
         }
     }
 

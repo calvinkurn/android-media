@@ -3,19 +3,21 @@ package com.tokopedia.reviewseller.reviewreply
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyInsertResponse
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyTemplateListResponse
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyUpdateResponse
+import com.tokopedia.reviewseller.feature.reviewreply.view.fragment.SellerReviewReplyFragment.Companion.DATE_REVIEW_FORMAT
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import junit.framework.TestCase.assertNotNull
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
+import java.text.SimpleDateFormat
+import java.util.*
 
-class SellerReviewReplyViewModelTest: SellerReviewReplyViewModelTestFixture() {
+class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
 
     @Test
     fun `when get reply template list should return success`() {
@@ -92,6 +94,11 @@ class SellerReviewReplyViewModelTest: SellerReviewReplyViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when reply time equals with expected result return success`() {
+        val expectedResult = SimpleDateFormat(DATE_REVIEW_FORMAT, Locale.getDefault()).format(Calendar.getInstance().time)
+        assertEquals(viewModel.replyTime, expectedResult)
+    }
 
     private fun onReplyTemplateList_thenError(exception: NullPointerException) {
         coEvery { getReviewTemplateListUseCase.executeOnBackground() } coAnswers { throw exception }
