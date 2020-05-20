@@ -1,2 +1,0 @@
-package com.dompetia.seller_home_common
-
