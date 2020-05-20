@@ -1,12 +1,15 @@
 package com.tokopedia.discovery2.analytics
 
+import com.tokopedia.discovery2.ClaimCouponConstant
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class DiscoveryAnalytics(pageType: String = "",
-                         pagePath: String = "") {
+                         pagePath: String = "",
+                         val trackingQueue: TrackingQueue) {
 
     private var eventDiscoveryCategory: String = "$VALUE_DISCOVERY_PAGE - $pageType - $pagePath"
 
@@ -68,7 +71,7 @@ class DiscoveryAnalytics(pageType: String = "",
     }
 
     //42  done
-    fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem, trackingQueue: TrackingQueue) {
+    fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem) {
         val headerName = icon.title
         val map = createGeneralClickEvent(eventName = EVENT_PROMO_CLICK, eventAction = "$CLICK_ICON_DYNAMIC_COMPONENT - $headerName")
         val list = ArrayList<Map<String, Any>>()
@@ -108,21 +111,27 @@ class DiscoveryAnalytics(pageType: String = "",
 
 
     //55
-    fun trackEventImpressionCoupon(trackingQueue: TrackingQueue, coupons: ArrayList<DataItem>?) {
-        if (!coupons.isNullOrEmpty()) {
+    fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
+        if (!componentsItems.isNullOrEmpty()) {
             val list = ArrayList<Map<String, Any>>()
-            for (coupon in coupons) {
-                val map = HashMap<String, Any>()
-                coupon.let {
-                    map[KEY_ID] = it.id.toString()
-                    map[KEY_NAME] = "${it.minUsageLabel} - p(x) - promo list - mini coupon"
-                    map[KEY_CREATIVE] = it.minUsageLabel.toString()
-                    map[KEY_CREATIVE_URL] = it.imageUrlMobile ?: NONE_OTHER
-                    map[KEY_POSITION] = coupons.indexOf(it) + 1
-                    map[KEY_PROMO_ID] = it.promoId.toString()
-                    map[KEY_PROMO_CODE] = it.couponCode.toString()
+            if (!componentsItems.isNullOrEmpty()) {
+                for (coupon in componentsItems) {
+                    val data: ArrayList<DataItem> = ArrayList()
+                    coupon.data?.let {
+                        data.addAll(it)
+                    }
+                    val map = HashMap<String, Any>()
+                    data[0].let {
+                        map[KEY_ID] = it.id.toString()
+                        map[KEY_CREATIVE_URL] = if (coupon.properties?.columns?.equals(ClaimCouponConstant.DOUBLE_COLUMNS) == true)
+                            it.smallImageUrlMobile
+                                    ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER
+                        map[KEY_POSITION] = componentsItems.indexOf(coupon) + 1
+                        map[KEY_PROMO_ID] = it.promoId.toString()
+                        map[KEY_PROMO_CODE] = it.slug.toString()
+                    }
+                    list.add(map)
                 }
-                list.add(map)
             }
 
             val ecommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -135,30 +144,29 @@ class DiscoveryAnalytics(pageType: String = "",
     }
 
     //56
-    fun trackClickClaimCoupon(couponName: String, promoCode: String) {
+    fun trackClickClaimCoupon(couponName: String?, promoCode: String?) {
         val map = createGeneralClickEvent(eventAction = CLICK_BUTTON_CLAIM_COUPON_ACTION, eventLabel = "$couponName - $promoCode")
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     //57
-    fun trackEventClickCoupon(trackingQueue: TrackingQueue, coupon: DataItem, position: Int) {
+    fun trackEventClickCoupon(coupon: DataItem?, position: Int, isDouble: Boolean) {
         val list = ArrayList<Map<String, Any>>()
-        coupon.let {
+        coupon?.let {
             list.add(mapOf(
                     KEY_ID to it.id.toString(),
-                    KEY_NAME to "${it.minUsageLabel} - p(x) - promo list - mini coupon",
-                    KEY_CREATIVE to it.minUsageLabel.toString(),
-                    KEY_CREATIVE_URL to (it.imageUrlMobile ?: NONE_OTHER),
+                    KEY_CREATIVE_URL to if (isDouble) it.smallImageUrlMobile
+                            ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
                     KEY_POSITION to position.toString(),
                     KEY_PROMO_ID to it.promoId.toString(),
-                    KEY_PROMO_CODE to it.couponCode.toString()
+                    KEY_PROMO_CODE to it.slug.toString()
             ))
         }
         val promotions: Map<String, ArrayList<Map<String, Any>>> = mapOf(
                 KEY_PROMOTIONS to list)
         val map = createGeneralClickEvent(eventName = EVENT_CLICK_COUPON, eventAction = CLAIM_COUPON_CLICK,
-                eventLabel = "${coupon.name} - ${coupon.couponCode}")
+                eventLabel = "${coupon?.name} - ${coupon?.couponCode}")
         map[KEY_E_COMMERCE] = promotions
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 }

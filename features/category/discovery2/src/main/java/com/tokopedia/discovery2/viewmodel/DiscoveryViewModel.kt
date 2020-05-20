@@ -34,6 +34,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
     var pageIdentifier: String = ""
+    var pageType: String = ""
+    var pagePath: String = ""
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -62,8 +64,11 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
-        if(pageInfo!=null)
+        if (pageInfo != null) {
+            pageType = pageInfo.type ?: ""
+            pagePath = pageInfo.path ?: ""
             discoveryPageInfo.value = Success(pageInfo)
+        }
     }
 
     private fun findCustomTopChatComponentsIfAny(components: List<ComponentsItem>?) {

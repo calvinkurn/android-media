@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.clai
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import dagger.Component
 
 
@@ -17,6 +18,7 @@ import dagger.Component
 @Component(modules = [DiscoveryModule::class,DiscoveryViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
+    fun inject(discoveryFragment: DiscoveryFragment)
     fun inject(mutliViewModel: MultiBannerViewModel)
     fun inject(tokopointsViewModel: TokopointsViewModel)
     fun inject(productCardCarouselViewModel: ProductCardCarouselViewModel)

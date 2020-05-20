@@ -297,6 +297,8 @@ data class DataItem(
         @SerializedName("free_ongkir")
         val freeOngkir: FreeOngkir? = null,
 
+        var status: String? = null,
+
         var positionForParentItem:Int = 0
 
         ) {

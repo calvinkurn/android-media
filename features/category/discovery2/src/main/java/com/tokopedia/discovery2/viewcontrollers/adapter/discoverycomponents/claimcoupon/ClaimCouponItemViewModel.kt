@@ -24,7 +24,6 @@ import kotlin.coroutines.CoroutineContext
 
 class ClaimCouponItemViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val claimStatus = MutableLiveData<String>()
     private val couponCode = MutableLiveData<String>()
     private val componentData = MutableLiveData<DataItem>()
 
@@ -38,18 +37,14 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
     fun getComponentData(): LiveData<DataItem> {
+        val status = checkClaimStatus(components.data?.getOrElse(0) { DataItem() })
+        components.data?.get(0)?.status = status
         componentData.value = components.data?.get(0)
         return componentData
     }
 
     fun getIsDouble(): Boolean {
         return components.properties?.columns?.equals(DOUBLE_COLUMNS) ?: false
-    }
-
-    fun getClaimStatus(): LiveData<String> {
-        val status = checkClaimStatus(components.data?.getOrElse(0) { DataItem() })
-        claimStatus.value = status
-        return claimStatus
     }
 
     fun getRedeemCouponCode(): LiveData<String> {
@@ -97,12 +92,6 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         }
         navigate(context, applink)
     }
-
-//    fun navigate(context: Context, applink: String) {
-//        if (applink.isNotEmpty()) {
-//            RouteManager.route(context, applink)
-//        }
-//    }
 
     private fun getQueryMap(): Map<String, Any> {
         return mapOf("catalogId" to (try {

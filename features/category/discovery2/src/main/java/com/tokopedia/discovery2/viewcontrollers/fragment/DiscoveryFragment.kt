@@ -9,12 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -25,11 +28,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
-class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener {
+class DiscoveryFragment : BaseDaggerFragment(), RecyclerView.OnChildAttachStateChangeListener {
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
     private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
@@ -41,6 +46,8 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     var pageEndPoint = ""
     var last = false
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     companion object {
         fun getInstance(endPoint: String?): Fragment {
@@ -56,6 +63,17 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_discovery, container, false)
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        DaggerDiscoveryComponent.builder()
+                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -147,6 +165,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         if (data?.share?.enabled == true) {
             ivShare.show()
             ivShare.setOnClickListener {
+                getDiscoveryAnalytics().trackShareClick()
                 permissionHelper {
                     Utils.shareData(activity, data.share.description, data.share.url, mDiscoveryViewModel.getBitmapFromURL(data.share.image))
                 }
@@ -234,7 +253,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     fun getDiscoveryRecyclerViewAdapter() = mDiscoveryRecycleAdapter
 
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
-        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(pagePath = pageEndPoint) }
+        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = mDiscoveryViewModel.pagePath, pageType = mDiscoveryViewModel.pageType) }
         return discoveryAnalytics
     }
 }

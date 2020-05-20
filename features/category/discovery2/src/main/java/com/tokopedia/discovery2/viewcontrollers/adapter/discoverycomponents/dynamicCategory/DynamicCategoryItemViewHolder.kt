@@ -46,8 +46,6 @@ class DynamicCategoryItemViewHolder(itemView: View, private val fragment: Fragme
     }
 
     private fun sentGtmEvent(dataItem: DataItem) {
-        fragment.activity?.let { it1 ->
-            TrackingQueue(it1) }?.let { it2 ->
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickIconDynamicComponent(adapterPosition, dataItem, it2) }
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickIconDynamicComponent(adapterPosition, dataItem)
     }
 }
