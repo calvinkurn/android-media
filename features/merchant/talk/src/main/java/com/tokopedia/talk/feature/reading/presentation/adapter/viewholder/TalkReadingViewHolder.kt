@@ -1,8 +1,10 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.method.LinkMovementMethod
+import android.text.Spanned
+import android.text.style.ClickableSpan
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
@@ -113,32 +115,33 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         if(answer.isNotEmpty()) {
             itemView.readingMessage.apply {
                 text = HtmlLinkHelper(context, answer).spannedString
-                movementMethod = object : LinkMovementMethod() {
-                    override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
-                        val action = event.action
-
-                        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
-                            var x = event.x
-                            var y = event.y.toInt()
-
-                            x -= widget.totalPaddingLeft
-                            y -= widget.totalPaddingTop
-
-                            x += widget.scrollX
-                            y += widget.scrollY
-
-                            val layout = widget.layout
-                            val line = layout.getLineForVertical(y)
-                            val off = layout.getOffsetForHorizontal(line, x)
-
-                            val link = buffer.getSpans(off, off, URLSpan::class.java)
-                            if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                                return threadListener.onLinkClicked(link.first().url.toString())
+                setOnTouchListener(object : View.OnTouchListener {
+                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                        val widget = v as TextView
+                        val text: Any = widget.text
+                        if (text is Spanned) {
+                            val buffer: Spanned = text as Spanned
+                            val action = event!!.action
+                            if (action == MotionEvent.ACTION_UP
+                                    || action == MotionEvent.ACTION_DOWN) {
+                                var x = event.x.toInt()
+                                var y = event.y.toInt()
+                                x -= widget.totalPaddingLeft
+                                y -= widget.totalPaddingTop
+                                x += widget.scrollX
+                                y += widget.scrollY
+                                val layout: Layout = widget.layout
+                                val line: Int = layout.getLineForVertical(y)
+                                val off: Int = layout.getOffsetForHorizontal(line, x.toFloat())
+                                val link = buffer.getSpans(off, off, URLSpan::class.java)
+                                if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                                    return threadListener.onLinkClicked(link.first().url.toString())
+                                }
                             }
                         }
-                        return super.onTouchEvent(widget, buffer, event);
+                        return false
                     }
-                }
+                })
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
