@@ -4,12 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
@@ -91,12 +89,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
         if (productCardModel.isOutOfStock) {
             labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
-            textViewStockLabel.visibility = View.GONE
-            progressBar.visibility = View.GONE
-            outOfStockOverlay.visibility = View.VISIBLE
-        } else {
-            outOfStockOverlay.visibility = View.GONE
-            labelProductStatus?.hide()
+            textViewStockLabel?.hide()
+            progressBarStock?.hide()
+            outOfStockOverlay?.visible()
         }
     }
 }

@@ -14,12 +14,7 @@ import org.hamcrest.Matcher
 
 internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutableListOf<ProductCardModelMatcher>().also {
     it.add(testOneLineProductName())
-    it.add(testProductCardWithNameAndPdpView())
-    it.add(testProductCardWithNameAndStockBar())
     it.add(testSlashPrice())
-    it.add(testProductCardWithSpoilerPrice())
-    it.add(testProductCardWithSpoilerPriceAndViewCount())
-    it.add(testProductCardWithSpoilerPriceAndStockBar())
     it.add(testTwoLinesProductName())
     it.add(testMaximumInfoAndLabel())
     it.add(testLabelGimmickNumberOfStock())
@@ -38,6 +33,15 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testPriceRange())
     it.add(testAddToCartButton())
     it.add(testAddToCartButtonAndShortContent())
+    it.add(testProductCardWithNameAndPdpView())
+    it.add(testProductCardWithNameAndStockBar())
+    it.add(testProductCardWithNameAndStockBarTwoLine())
+    it.add(testProductCardWithNameAndStockBarTwoLineEmptyStock())
+    it.add(testProductCardWithNameAndStockBarPdpView())
+    it.add(testProductCardWithNameAndStockBarPdpViewBebasOngkir())
+    it.add(testProductCardWithSpoilerPrice())
+    it.add(testProductCardWithSpoilerPriceAndViewCount())
+    it.add(testProductCardWithSpoilerPriceAndStockBar())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -90,7 +94,7 @@ private fun testProductCardWithNameAndPdpView(): ProductCardModelMatcher {
 
 private fun testProductCardWithNameAndStockBar(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-            productName = "Product Card With Stock Bar Gaes",
+            productName = "Product Card With Stock",
             productImageUrl = productImageUrl,
             stockBarLabel = "Banyak Sisa",
             stockBarPercentage = 20
@@ -101,6 +105,87 @@ private fun testProductCardWithNameAndStockBar(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
         it[R.id.progressBar] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBarTwoLine(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With Stock 2 Line Yang Pasti",
+            productImageUrl = productImageUrl,
+            stockBarLabel = "Banyak Sisa",
+            stockBarPercentage = 20
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBar] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBarTwoLineEmptyStock(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With 2 Line Empty Stock",
+            productImageUrl = productImageUrl,
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 0
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBar] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBarPdpView(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With 2 Line Empty Stock",
+            productImageUrl = productImageUrl,
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 0,
+            pdpViewCount = "17.7k View"
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBar] = isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.imageViewPdpView]= isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBarPdpViewBebasOngkir(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Product Card With 2 Line Empty Stock",
+            productImageUrl = productImageUrl,
+            stockBarLabel = "Tersedia",
+            stockBarPercentage = 0,
+            pdpViewCount = "17.7k View",
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBar] = isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.imageViewPdpView]= isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

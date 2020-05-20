@@ -37,7 +37,7 @@ private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
-    imageViewPdpView.hide()
+    imageViewPdpView?.hide()
     textViewPdpView?.shouldShowWithAction(productCardModel.pdpViewCount.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(productCardModel.pdpViewCount)
         imageViewPdpView.show()
@@ -155,7 +155,7 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-    progressBar?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+    progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
         it.progress = productCardModel.stockBarPercentage
     }
 }

@@ -53,26 +53,24 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
 
 private fun ProductCardModel.getContentHeight(context: Context): Int {
     val gimmickSectionHeight = getGimmickSectionHeight(context)
+    val pdpViewCountHeight = getPdpViewCountSectionHeight(context)
     val productNameSectionHeight = getProductNameSectionHeight(context)
     val promoSectionHeight = getPromoSectionHeight(context)
     val priceSectionHeight = getPriceSectionHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
     val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
-    val stockBarHeight = getStockBarSectionHeight(context)
-    val stockLabelHeight = getStockLabelHeight(context)
-    val pdpViewCountHeight = getPdpViewCountSectionHeight(context)
+    val stockBarHeight = getStockBarAndLabelSectionHeight(context)
 
     return gimmickSectionHeight +
+            pdpViewCountHeight+
             productNameSectionHeight +
             promoSectionHeight +
             priceSectionHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
             shippingInfoSectionHeight +
-            stockBarHeight +
-            stockLabelHeight +
-            pdpViewCountHeight
+            stockBarHeight
 }
 
 private fun ProductCardModel.getGimmickSectionHeight(context: Context): Int {
@@ -259,22 +257,15 @@ private fun ProductCardModel.getPdpViewCountSectionHeight(context: Context): Int
     else 0
 }
 
-private fun ProductCardModel.getStockBarSectionHeight(context: Context): Int {
+private fun ProductCardModel.getStockBarAndLabelSectionHeight(context: Context): Int {
     return if (stockBarLabel.isNotEmpty()) {
         val stockBarMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_margintop)
         val stockBarHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_height)
 
-        return stockBarMarginTop + stockBarHeight
-    }
-    else 0
-}
-
-private fun ProductCardModel.getStockLabelHeight(context: Context): Int {
-    return if (stockBarLabel.isNotEmpty()) {
         val labelHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_height)
         val labelMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_margintop)
 
-        return labelHeight + labelMarginTop
+        return stockBarMarginTop + stockBarHeight +  labelHeight + labelMarginTop
     }
     else 0
 }
