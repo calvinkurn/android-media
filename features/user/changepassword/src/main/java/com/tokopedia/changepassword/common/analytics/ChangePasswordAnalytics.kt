@@ -46,7 +46,7 @@ class ChangePasswordAnalytics{
     }
 
     companion object {
-        private const val SCREEN_NAME: String = "Change Password Page"
+        const val SCREEN_NAME: String = "Change Password Page"
 
         private object EVENT {
             const val CLICK_ACCOUNT = "clickAccount"
