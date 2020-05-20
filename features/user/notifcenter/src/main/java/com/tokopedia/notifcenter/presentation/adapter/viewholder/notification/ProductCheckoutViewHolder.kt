@@ -147,7 +147,6 @@ class ProductCheckoutViewHolder(
         listener.getAnalytic().trackAtcOnClick(
                 templateKey = element.templateKey,
                 notificationId = element.notificationId,
-                userId = element.userInfo.userId,
                 product = product,
                 atc = data
         )

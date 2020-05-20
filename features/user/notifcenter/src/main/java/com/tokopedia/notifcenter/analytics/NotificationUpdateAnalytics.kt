@@ -587,7 +587,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     fun trackAtcOnClick(
             templateKey: String,
             notificationId: String,
-            userId: String,
             product: ProductData,
             atc: DataModel
     ) {
@@ -598,10 +597,10 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         )
 
         val data = mapOf(
+                EVENT_NAME to NAME_EVENT_ATC,
                 EVENT_CATEGORY to CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION to ACTION_CLICK_ATC_BUTTON,
                 EVENT_LABEL to eventLabel,
-                EVENT_USER_ID to userId,
                 ECOMMERCE to mapOf(
                         "currencyCode" to "IDR",
                         "add" to mapOf(
