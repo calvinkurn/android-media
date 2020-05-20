@@ -15,12 +15,4 @@ class SellerReviewListActivity : BaseSimpleActivity() {
     override fun getLayoutRes(): Int {
         return R.layout.activity_seller_review_list
     }
-
-//    override fun getComponent(): ReviewProductListComponent {
-//        return DaggerReviewProductListComponent
-//                .builder()
-//                .reviewSellerComponent(ReviewSellerComponentBuilder.getComponent(application))
-//                .reviewProductListModule(ReviewProductListModule())
-//                .build()
-//    }
 }
