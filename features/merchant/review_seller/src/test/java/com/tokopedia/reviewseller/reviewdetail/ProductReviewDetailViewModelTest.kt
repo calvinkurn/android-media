@@ -74,7 +74,7 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
     @Test
     fun `when set value sort and topic filter data should return not null`() {
 
-        val sortFilterItemList = mutableListOf<SortFilterItemWrapper>().apply { 
+        val sortFilterItemList = mutableListOf<SortFilterItemWrapper>().apply {
             add(SortFilterItemWrapper(ArgumentMatchers.any(), anyBoolean(), anyInt(), anyString()))
         }
 
@@ -132,6 +132,22 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
             val expectedResult = Fail(error)
             viewModel.productFeedbackDetail.verifyErrorEquals(expectedResult)
         }
+    }
+
+    @Test
+    fun `when set period filter should return equal expected and not empty`() {
+        viewModel.filterPeriod = "create_time desc"
+        val expectedResult = "create_time desc"
+        assertEquals(viewModel.filterPeriod, expectedResult)
+        assertNotNull(viewModel.filterPeriod)
+    }
+
+    @Test
+    fun `when set sort by should return equal expected and not empty`() {
+        viewModel.sortBy = "time=7d"
+        val expectedResult = "time=7d"
+        assertEquals(viewModel.sortBy, expectedResult)
+        assertNotNull(viewModel.sortBy)
     }
 
     private fun onProductReviewInitial_thenError(exception: NullPointerException) {
