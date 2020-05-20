@@ -5,6 +5,8 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -35,6 +37,7 @@ class ProductCheckoutViewHolder(
     private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
+    private val context by lazy { itemView.context }
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
@@ -113,7 +116,8 @@ class ProductCheckoutViewHolder(
                 listener.onItemStockHandlerClick(element)
             } else {
                 listener.addProductToCart(product) {
-                    //GOTO cart page
+                    // goto cart page
+                    routeCartPage()
                 }
             }
         }
@@ -141,6 +145,10 @@ class ProductCheckoutViewHolder(
                 product = product,
                 atc = data
         )
+    }
+
+    private fun routeCartPage() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
     }
 
     companion object {

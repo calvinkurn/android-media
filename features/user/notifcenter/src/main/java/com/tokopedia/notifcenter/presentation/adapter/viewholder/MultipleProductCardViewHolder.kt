@@ -127,6 +127,8 @@ class MultipleProductCardViewHolder(
                 }
             }
             listener.itemClicked(notification, adapterPosition)
+
+            // goto cart page
             routeCartPage()
         }
 
