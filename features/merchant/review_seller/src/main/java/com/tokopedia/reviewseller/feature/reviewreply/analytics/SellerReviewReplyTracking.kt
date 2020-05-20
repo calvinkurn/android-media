@@ -29,7 +29,6 @@ class SellerReviewReplyTracking {
     private val FIELD_FEEDBACK_ID = "feedbackId"
     private val FIELD_MESSAGE = "message"
 
-
     fun eventClickResponseReview(shopId: String, productId: String, feedbackId: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, EVENT_CLICK_REVIEW,

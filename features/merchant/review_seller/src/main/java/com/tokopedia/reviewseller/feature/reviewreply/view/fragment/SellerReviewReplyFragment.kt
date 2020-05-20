@@ -1,6 +1,7 @@
 package com.tokopedia.reviewseller.feature.reviewreply.view.fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -93,6 +94,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         initToolbar()
         initViewBottomSheet()
         initWidgetView()
