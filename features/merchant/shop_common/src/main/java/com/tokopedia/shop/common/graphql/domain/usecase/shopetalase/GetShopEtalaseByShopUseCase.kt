@@ -21,23 +21,23 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
 
     fun getQueryString():String{
         return """
-            query shopShowcasesByShopID(${'$'}shopId:String!,${'$'}hideNoCount:Boolean,${'$'}hideShowcaseGroup:Boolean,${'$'}isOwner:Boolean) {
-              shopShowcasesByShopID(shopId:${'$'}shopId, hideNoCount:${'$'}hideNoCount, hideShowcaseGroup:${'$'}hideShowcaseGroup, isOwner:${'$'}isOwner) {
-                  result {
-                      id
-                      name
-                      count
-                      type
-                      highlighted
-                      alias
-                      useAce
-                      badge
-                  }
-                  error {
-                      message
-                  }
-              }
+        query shopShowcasesByShopID(${'$'}shopId:String!,${'$'}hideNoCount:Boolean,${'$'}hideShowcaseGroup:Boolean,${'$'}isOwner:Boolean) {
+          shopShowcasesByShopID(shopId:${'$'}shopId, hideNoCount:${'$'}hideNoCount, hideShowcaseGroup:${'$'}hideShowcaseGroup, isOwner:${'$'}isOwner) {
+            result {
+              id
+              name
+              count
+              type
+              highlighted
+              alias
+              useAce
+              badge
             }
+            error {
+              message
+            }
+          }
+        }
         """.trimIndent()
     }
     init {

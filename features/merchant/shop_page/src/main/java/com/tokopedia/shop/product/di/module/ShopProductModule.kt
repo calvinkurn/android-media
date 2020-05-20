@@ -73,41 +73,41 @@ class ShopProductModule {
     fun getShopFeaturedProductQuery(@ApplicationContext context: Context): String {
         return """
             query getShopFeaturedProduct(${'$'}shopId: Int!,${'$'}userID: Int!){
-                shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID){
-                    data{
-                        parent_id
-                        product_id
-                        name
-                        uri
-                        image_uri
-                        price
-                        preorder
-                        returnable
-                        wholesale
-                        cashback
-                        isWishlist
-                        is_rated
-                        original_price
-                        percentage_amount
-                        cashback_detail{
-                            cashback_status
-                            cashback_percent
-                            is_cashback_expired
-                            cashback_value
-                        }
-                        free_ongkir {
-                            is_active
-                            img_url
-                        }
-                        label_groups {
-                          position
-                          type
-                          title
-                        }
-                        total_review
-                        rating
-                    }
+              shop_featured_product(shopID:${'$'}shopId, userID:${'$'}userID){
+                data{
+                  parent_id
+                  product_id
+                  name
+                  uri
+                  image_uri
+                  price
+                  preorder
+                  returnable
+                  wholesale
+                  cashback
+                  isWishlist
+                  is_rated
+                  original_price
+                  percentage_amount
+                  cashback_detail{
+                    cashback_status
+                    cashback_percent
+                    is_cashback_expired
+                    cashback_value
+                  }
+                  free_ongkir {
+                    is_active
+                    img_url
+                  }
+                  label_groups {
+                    position
+                    type
+                    title
+                  }
+                  total_review
+                  rating
                 }
+              }
             }
         """.trimIndent()
     }
@@ -118,62 +118,62 @@ class ShopProductModule {
     fun getShopProductQuery(@ApplicationContext context: Context): String {
         return """
             query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
-                GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
-                    status
-                    errors
-                    data {
-                        product_id
-                        name
-                        product_url
-                        stock
-                        status
-                        price{
-                            text_idr
-                        }
-                        flags{
-                            isFeatured
-                            isPreorder
-                            isFreereturn
-                            isVariant
-                            isWholesale
-                            isWishlist
-                            isSold
-                            supportFreereturn
-                            mustInsurance
-                            withStock
-                        }
-                        stats{
-                            reviewCount
-                            rating
-                        }
-                        campaign{
-                            original_price
-                            original_price_fmt
-                            discounted_price_fmt
-                            discounted_percentage
-                            discounted_price
-                        }
-                        primary_image{
-                            original
-                            thumbnail
-                            resize300
-                        }
-                        cashback{
-                            cashback
-                            cashback_amount
-                        }
-                        freeOngkir {
-                            isActive
-                            imgURL
-                        }
-                        label_groups {
-                            position
-                            type
-                            title
-                        }
-                    }
-                    totalData
+              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
+                status
+                errors
+                data {
+                  product_id
+                  name
+                  product_url
+                  stock
+                  status
+                  price{
+                    text_idr
+                  }
+                  flags{
+                    isFeatured
+                    isPreorder
+                    isFreereturn
+                    isVariant
+                    isWholesale
+                    isWishlist
+                    isSold
+                    supportFreereturn
+                    mustInsurance
+                    withStock
+                  }
+                  stats{
+                    reviewCount
+                    rating
+                  }
+                  campaign{
+                    original_price
+                    original_price_fmt
+                    discounted_price_fmt
+                    discounted_percentage
+                    discounted_price
+                  }
+                  primary_image{
+                    original
+                    thumbnail
+                    resize300
+                  }
+                  cashback{
+                    cashback
+                    cashback_amount
+                  }
+                  freeOngkir {
+                    isActive
+                    imgURL
+                  }
+                  label_groups {
+                    position
+                    type
+                    title
+                  }
                 }
+                totalData
+              }
             }
         """.trimIndent()
     }

@@ -54,56 +54,56 @@ class ShopPageHomeModule {
                   }
                   data {
                     ... on DisplayWidget {
-                        imageUrl
-                        videoUrl
-                        appLink
-                        webLink
+                      imageUrl
+                      videoUrl
+                      appLink
+                      webLink
                     }
                     ... on ProductWidget {
-                            productID
-                            name
-                            imageUrl
-                            productUrl
-                            displayPrice
-                            originalPrice
-                            discountPercentage
-                            isShowFreeOngkir
-                            freeOngkirPromoIcon
-                            isSoldOut
-                            rating
-                            totalReview
-                            isPO
-                            cashback
+                      productID
+                      name
+                      imageUrl
+                      productUrl
+                      displayPrice
+                      originalPrice
+                      discountPercentage
+                      isShowFreeOngkir
+                      freeOngkirPromoIcon
+                      isSoldOut
+                      rating
+                      totalReview
+                      isPO
+                      cashback
                     }
                     ... on PromoWidget {
-                        voucherID
-                        imageUrl
-                        name
-                        voucherType {
-                            voucherType
-                            identifier
-                        }
-                        voucherCode
-                        amount {
-                            amountType
-                            amount
-                            amountFormatted
-                        }
-                        minimumSpend
-                        minimumSpendFormatted
-                        owner {
-                            ownerID
-                            identifier
-                        }
-                        validThru
-                        tnc
-                        inUseExpiry
-                        status {
-                            status
-                            identifier
-                        }
+                      voucherID
+                      imageUrl
+                      name
+                      voucherType {
+                          voucherType
+                          identifier
+                      }
+                      voucherCode
+                      amount {
+                        amountType
+                        amount
+                        amountFormatted
+                      }
+                      minimumSpend
+                      minimumSpendFormatted
+                      owner {
+                        ownerID
+                        identifier
+                      }
+                      validThru
+                      tnc
+                      inUseExpiry
+                      status {
+                        status
+                        identifier
+                      }
                     }
-                }
+                  }
                 }
               }
             }
@@ -116,62 +116,62 @@ class ShopPageHomeModule {
     fun getShopProductQuery(@ApplicationContext context: Context): String {
         return """
             query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
-                GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
-                    status
-                    errors
-                    data {
-                        product_id
-                        name
-                        product_url
-                        stock
-                        status
-                        price{
-                            text_idr
-                        }
-                        flags{
-                            isFeatured
-                            isPreorder
-                            isFreereturn
-                            isVariant
-                            isWholesale
-                            isWishlist
-                            isSold
-                            supportFreereturn
-                            mustInsurance
-                            withStock
-                        }
-                        stats{
-                            reviewCount
-                            rating
-                        }
-                        campaign{
-                            original_price
-                            original_price_fmt
-                            discounted_price_fmt
-                            discounted_percentage
-                            discounted_price
-                        }
-                        primary_image{
-                            original
-                            thumbnail
-                            resize300
-                        }
-                        cashback{
-                            cashback
-                            cashback_amount
-                        }
-                        freeOngkir {
-                            isActive
-                            imgURL
-                        }
-                        label_groups {
-                            position
-                            type
-                            title
-                        }
-                    }
-                    totalData
+              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
+                status
+                errors
+                data {
+                  product_id
+                  name
+                  product_url
+                  stock
+                  status
+                  price{
+                    text_idr
+                  }
+                  flags{
+                    isFeatured
+                    isPreorder
+                    isFreereturn
+                    isVariant
+                    isWholesale
+                    isWishlist
+                    isSold
+                    supportFreereturn
+                    mustInsurance
+                    withStock
+                  }
+                  stats{
+                    reviewCount
+                    rating
+                  }
+                  campaign{
+                    original_price
+                    original_price_fmt
+                    discounted_price_fmt
+                    discounted_percentage
+                    discounted_price
+                  }
+                  primary_image{
+                    original
+                    thumbnail
+                    resize300
+                  }
+                  cashback{
+                    cashback
+                    cashback_amount
+                  }
+                  freeOngkir {
+                    isActive
+                    imgURL
+                  }
+                  label_groups {
+                    position
+                    type
+                    title
+                  }
                 }
+                totalData
+              }
             }
         """.trimIndent()
     }
