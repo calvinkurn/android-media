@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantModule
@@ -29,7 +30,7 @@ class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditP
     override fun getComponent(): AddEditProductVariantComponent {
         return DaggerAddEditProductVariantComponent
                 .builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(application))
                 .addEditProductVariantModule(AddEditProductVariantModule())
                 .build()
     }

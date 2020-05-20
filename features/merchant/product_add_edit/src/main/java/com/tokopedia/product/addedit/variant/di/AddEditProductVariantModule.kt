@@ -17,8 +17,4 @@ class AddEditProductVariantModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
-    @AddEditProductVariantScope
-    @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
 }
