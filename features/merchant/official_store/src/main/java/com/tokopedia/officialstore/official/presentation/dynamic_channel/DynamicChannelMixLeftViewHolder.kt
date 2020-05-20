@@ -159,9 +159,9 @@ class DynamicChannelMixLeftViewHolder(
                     val firstNonTransparentView = layoutManager?.findViewByPosition(1)
                     firstNonTransparentView?.let { it ->
                         val distanceFromLeft = it.left
-                        val translateX = (recyclerViewProductList.paddingLeft + firstTransparentView?.width.orZero() - distanceFromLeft) * -0.1f
+                        val translateX = (firstTransparentView?.width.orZero() - distanceFromLeft) * -0.1f
                         image.translationX = translateX
-                        val alpha = distanceFromLeft.toFloat() / (recyclerViewProductList.paddingLeft + firstTransparentView?.width.orZero()).toFloat()
+                        val alpha = distanceFromLeft.toFloat() / (firstTransparentView?.width.orZero()).toFloat()
                         image.alpha = alpha
                     }
                 }else{
