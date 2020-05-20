@@ -31,8 +31,9 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
         val availableData = element.getLastThreeHirarchyData()
 
         if (!element.shouldRenderSocialProof) {
-            view.pdp_shimmering_social_proof?.show()
+            showLoading()
         } else {
+            hideLoading()
             view.pdp_shimmering_social_proof?.hide()
             val rootView = view.findViewById<ViewGroup>(R.id.root_socproof)
             rootView.removeAllViews()
@@ -52,6 +53,16 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
                 }
             }
         }
+    }
+
+    private fun showLoading() = with(view) {
+        root_socproof.hide()
+        pdp_shimmering_social_proof.show()
+    }
+
+    private fun hideLoading() = with(view) {
+        root_socproof.show()
+        pdp_shimmering_social_proof.hide()
     }
 
     private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View, data: ProductMiniSocialProofDataModel) {

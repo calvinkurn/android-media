@@ -43,23 +43,24 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
                 view.setPadding(0, 0, 0, 0)
                 view.layoutParams.height = 0
             } else {
+                hideLoading()
                 view.setOnClickListener { listener.onMiniShopInfoClicked() }
-                view.setPadding(16.toPx(), 16.toPx(), 16.toPx(), 16.toPx())
+                view.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
                 view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 showOfficialStore(element.isGoldMerchant, element.isOS, element.shopName)
-                hideLoading()
             }
         }
     }
 
     private fun showOfficialStore(isGoldMerchant: Boolean, isOfficialStore: Boolean, shopname: String) = with(view) {
         val imageIc: ImageSpan
-        val drawableSize = context.resources.getDimension(R.dimen.dp_16).toInt()
+        val drawableSize = context.resources.getDimension(R.dimen.dp_15).toInt()
 
         if (isGoldMerchant && !isOfficialStore) {
             txt_mini_shop_desc.hide()
 
             val drawablePm = MethodChecker.getDrawable(context, R.drawable.ic_power_merchant)
+            /* https://stackoverflow.com/questions/36714640/how-setbounds-of-drawable-works-in-android */
             drawablePm?.setBounds(0, 0, drawableSize, drawableSize)
             imageIc = ImageSpan(drawablePm, ImageSpan.ALIGN_BOTTOM)
             renderTxtIcon(shopname, imageIc)
@@ -74,9 +75,9 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
     }
 
     private fun renderTxtIcon(labelIc: String, imageIc: ImageSpan) = with(view.txt_mini_shop_title) {
-        val blackString = context.getString(R.string.label_dijual) + " "
+        val blackString = context.getString(R.string.label_dijual) + "  "
         val startSpan = blackString.length
-        val spanText = android.text.SpannableString(blackString + "  " +
+        val spanText = android.text.SpannableString(blackString + "   " +
                 labelIc)
         val boldTypeface = com.tokopedia.unifyprinciples.getTypeface(context, "RobotoBold.ttf")
 
