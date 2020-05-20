@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
@@ -128,9 +127,10 @@ class ProductCheckoutViewHolder(
             element: NotificationItemViewBean,
             product: ProductData,
             data: DataModel) {
-        listener.getAnalytic().trackAddToCartClicked(
+        listener.getAnalytic().trackAtcOnClick(
                 templateKey = element.templateKey,
                 notificationId = element.notificationId,
+                userId = element.userInfo.userId,
                 product = product,
                 atc = data
         )

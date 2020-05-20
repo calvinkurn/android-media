@@ -582,12 +582,13 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         )
     }
 
-    fun trackAddToCartClicked(
+    fun trackAtcOnClick(
             templateKey: String,
             notificationId: String,
+            userId: String,
             product: ProductData,
-            atc: DataModel) {
-
+            atc: DataModel
+    ) {
         val eventLabel = getImpressionTrackLabel(
                 location = LABEL_NOTIF_LIST_LOCATION,
                 templateKey = templateKey,
@@ -598,6 +599,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 EVENT_CATEGORY to CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION to ACTION_CLICK_ATC_BUTTON,
                 EVENT_LABEL to eventLabel,
+                EVENT_USER_ID to userId,
                 ECOMMERCE to mapOf(
                         "currencyCode" to "IDR",
                         "add" to mapOf(
@@ -609,12 +611,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                                         "category" to "",
                                         "variant" to product.variant,
                                         "quantity" to "1",
-                                        "dimension79" to product.shop?.id.toString(),
-                                        "dimension81" to "",
-                                        "dimension80" to product.shop?.name,
-                                        "dimension82" to "",
-                                        "dimension45" to atc.cartId,
-                                        "dimension40" to "/notifcenter"
+                                        "dimension69" to product.shop?.id.toString(),
+                                        "dimension71" to "",
+                                        "dimension70" to product.shop?.name,
+                                        "category_id" to "",
+                                        "dimension42" to atc.cartId,
+                                        "dimension39" to "/notifcenter"
                                 ))
                         )
                 )

@@ -139,9 +139,10 @@ class MultipleProductCardViewHolder(
             element: MultipleProductCardViewBean,
             product: ProductData,
             data: DataModel) {
-        listener.getAnalytic().trackAddToCartClicked(
+        listener.getAnalytic().trackAtcOnClick(
                 templateKey = element.templateKey,
                 notificationId = element.notificationId,
+                userId = element.userInfo.userId,
                 product = product,
                 atc = data
         )
