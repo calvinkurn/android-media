@@ -49,6 +49,7 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(isEnableSeamlessLogin() && GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_CHOOSE_ACCOUNT)
+            arguments?.run { intent.putExtras(this) }
             startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
         }else {
             RouteManager.route(context, ApplinkConst.LOGIN)

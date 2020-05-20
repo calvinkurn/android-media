@@ -49,6 +49,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private var service: RemoteApi? = null
     private var serviceConnection: RemoteServiceConnection? = null
 
+    private var autoLogin = false
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -78,6 +80,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val KEY_AUTO_LOGIN = "is_auto_login"
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = SellerSeamlessLoginFragment()
             fragment.arguments = bundle
@@ -89,8 +92,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if ((intent?.action == getUserTaskId && getUserTaskId.isNotEmpty())
                     || (intent?.action == getKeyTaskId && getKeyTaskId.isNotEmpty())){
-                handleIntentReceive(intent?.action, intent.extras)
                 activity?.unregisterReceiver(this)
+                handleIntentReceive(intent?.action, intent.extras)
             }
         }
     }
@@ -106,6 +109,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
                             seamless_fragment_name.text = bundle.getString(SeamlessSellerConstant.KEY_NAME)
                             seamless_fragment_email.text = maskEmail(bundle.getString(SeamlessSellerConstant.KEY_EMAIL))
                             hideProgressBar()
+                            if(autoLogin) { onPositiveBtnClick() }
                 } else if (taskId == getKeyTaskId) {
                     seamlessViewModel.loginSeamless(bundle.getString(SeamlessSellerConstant.KEY_TOKEN))
                 } else moveToNormalLogin()
@@ -141,6 +145,13 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         seller_seamless_main_view?.show()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.run {
+            autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_seller_seamless_login, container, false)
@@ -160,21 +171,25 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
         showFullProgressBar()
 
-        view?.seller_seamless_positive_btn.setOnClickListener {
-            if(service != null){
-                analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_CLICK)
-                showProgressBar()
-                getKeyTaskId = UUID.randomUUID().toString()
-                getKey(getKeyTaskId)
-            }
-        }
+        view?.seller_seamless_positive_btn.setOnClickListener { onPositiveBtnClick() }
 
-        view?.seller_seamless_negative_btn.setOnClickListener {
-            analytics.eventClickLoginWithOtherAcc()
-            RouteManager.route(activity, ApplinkConst.LOGIN)
-        }
+        view?.seller_seamless_negative_btn.setOnClickListener { onNegativeBtnClick() }
 
         initObserver()
+    }
+
+    private fun onNegativeBtnClick(){
+        analytics.eventClickLoginWithOtherAcc()
+        RouteManager.route(activity, ApplinkConst.LOGIN)
+    }
+
+    private fun onPositiveBtnClick(){
+        if(service != null){
+            analytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_CLICK)
+            showProgressBar()
+            getKeyTaskId = UUID.randomUUID().toString()
+            getKey(getKeyTaskId)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
