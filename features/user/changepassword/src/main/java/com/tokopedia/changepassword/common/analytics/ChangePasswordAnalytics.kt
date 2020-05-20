@@ -46,26 +46,26 @@ class ChangePasswordAnalytics{
     }
 
     companion object {
-        const val SCREEN_NAME: String = "Change Password Page"
+        private const val SCREEN_NAME: String = "Change Password Page"
 
         object EVENT {
-            const val CLICK_ACCOUNT = "clickAccount"
+            private const val CLICK_ACCOUNT = "clickAccount"
         }
 
         object CATEGORY {
-            const val ACCOUNT_SETTING = "account setting - password"
+            private const val ACCOUNT_SETTING = "account setting - password"
         }
 
         object ACTION {
-            const val CLICK_ON_BUTTON_SUBMIT = "click on button simpan change password"
-            const val CLICK_ON_BUTTON_FORGOT_PASSWORD = "click lupa kata sandi - change password"
+            private const val CLICK_ON_BUTTON_SUBMIT = "click on button simpan change password"
+            private const val CLICK_ON_BUTTON_FORGOT_PASSWORD = "click lupa kata sandi - change password"
         }
 
         object LABEL {
-            const val EMPTY = ""
-            const val CLICK = "click"
-            const val CLICK_SUCCESS = "success"
-            const val CLICK_FAILED = "failed"
+            private const val EMPTY = ""
+            private const val CLICK = "click"
+            private const val CLICK_SUCCESS = "success"
+            private const val CLICK_FAILED = "failed"
         }
     }
 }
