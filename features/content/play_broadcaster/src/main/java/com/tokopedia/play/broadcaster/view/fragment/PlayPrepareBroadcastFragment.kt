@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import javax.inject.Inject
@@ -64,6 +65,12 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
 
     private fun setupView(view: View) {
         rvFollowers.adapter = followersAdapter
+        rvFollowers.viewTreeObserver.addOnPreDrawListener {
+            if (rvFollowers.itemDecorationCount == 0)
+                rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
+
+            true
+        }
     }
 
     //region observe

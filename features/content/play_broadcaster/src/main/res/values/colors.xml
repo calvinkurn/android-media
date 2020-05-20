@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="play_follower_yellow">@color/Yellow_Y300</color>
+    <color name="play_follower_blue">@color/Blue_B600</color>
+    <color name="play_follower_orange">@color/Yellow_Y500</color>
+</resources>

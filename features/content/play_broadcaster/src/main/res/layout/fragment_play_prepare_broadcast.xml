@@ -22,13 +22,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_followers"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="@id/btn_setup"
-        app:layout_constraintEnd_toStartOf="@id/tv_followers_count"
         app:layout_constraintStart_toStartOf="@id/tv_share_title"
         app:layout_constraintTop_toBottomOf="@id/tv_share_title"
         />
@@ -41,6 +40,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:text="@string/play_your_followers"
         android:textColor="@color/Neutral_N0"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintBottom_toBottomOf="@id/rv_followers"
         app:layout_constraintEnd_toEndOf="@id/tv_share_title"
         app:layout_constraintStart_toEndOf="@id/rv_followers"

@@ -2,5 +2,5 @@
 <resources>
     <string name="play_auto_share_title">Otomatis dibagikan ke:</string>
     <string name="play_begin_setup">Mulai Persiapannya</string>
-    <string name="play_your_followers">Followers Anda</string>
+    <string name="play_your_followers">Followers \nAnda</string>
 </resources>
