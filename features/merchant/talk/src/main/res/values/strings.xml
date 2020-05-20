@@ -110,6 +110,7 @@
     <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
     <string name="reply_toaster_message_too_long">Jawabanmu sudah melebihi maks. karakter.</string>
     <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="reply_toaster_length_too_short_error">Anda harus memasukan minimum 5 karakter</string>
     <string name="delete_toaster_success">Jawabanmu berhasil dihapus.</string>
     <string name="delete_toaster_network_error">Jawaban belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="delete_dialog_title">Beneran mau dihapus?</string>

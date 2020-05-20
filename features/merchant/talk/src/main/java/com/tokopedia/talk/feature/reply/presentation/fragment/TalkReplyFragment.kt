@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
@@ -69,6 +70,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val TOASTER_ERROR_DEFAULT_HEIGHT = 50
         const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
         const val NOT_IN_VIEWHOLDER = false
+        const val MINIMUM_TEXT_LENGTH = 5
 
         @JvmStatic
         fun createNewInstance(questionId: String, shopId: String, productId: String, isFromInbox: Boolean): TalkReplyFragment =
@@ -109,6 +111,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     .talkComponent(TalkInstance.getComponent(application))
                     .build()
         }
+    }
+
+    override fun onTermsAndConditionsClicked() : Boolean {
+        return goToTermsAndConditionsPage()
     }
 
     override fun onFollowUnfollowButtonClicked() {
@@ -194,8 +200,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onSendButtonClicked(text: String) {
-        TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId)
-        sendComment(text)
+        if(text.length > MINIMUM_TEXT_LENGTH) {
+            TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId)
+            sendComment(text)
+        } else {
+            showErrorToaster(getString(R.string.reply_toaster_length_too_short_error))
+        }
     }
 
     override fun stopPreparePerfomancePageMonitoring() {
@@ -251,6 +261,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun goToAttachProductActivity() {
         val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", viewModel.isMyShop, AttachProductActivity.SOURCE_TALK) }
         startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
+    }
+
+    private fun goToTermsAndConditionsPage() : Boolean {
+        return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
     }
 
     private fun goToPdp(productId: String) {
@@ -318,8 +332,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
-    private fun showErrorToaster(errorMessage: String) {
-        adjustToasterHeight()
+    private fun showErrorToaster(errorMessage: String, adjustHeight: Boolean = false) {
+        if(adjustHeight) {
+            adjustToasterHeight()
+        }
         view?.let {
             Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
         }

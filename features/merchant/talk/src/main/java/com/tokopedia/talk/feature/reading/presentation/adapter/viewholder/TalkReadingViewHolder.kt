@@ -84,6 +84,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 }
                 show()
             }
+        } else {
+            itemView.readingProfilePicture.hide()
         }
     }
 
@@ -96,6 +98,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 }
                 show()
             }
+        } else {
+            itemView.readingDisplayName.hide()
         }
     }
 
@@ -109,6 +113,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 }
                 show()
             }
+        } else {
+            itemView.readingMessage.hide()
         }
     }
 
@@ -118,12 +124,16 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 text = addBulletPointToDate(date)
                 show()
             }
+        } else {
+            itemView.readingDate.hide()
         }
     }
 
     private fun showSellerLabelWithCondition(isSeller: Boolean) {
         if(isSeller) {
             itemView.readingSellerLabel.show()
+        } else {
+            itemView.readingSellerLabel.hide()
         }
     }
 
@@ -137,6 +147,11 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 attachedProductIcon.show()
                 attachedProductCount.text = String.format(context.getString(R.string.reading_attached_product), attachedProducts)
                 attachedProductCount.show()
+            }
+        } else {
+            itemView.apply {
+                attachedProductIcon.hide()
+                attachedProductCount.hide()
             }
         }
     }
