@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
@@ -96,7 +97,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
         boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
 
-        if (enableInAppReview && !hasShownInAppReviewBefore) {
+        if (enableInAppReview && !hasShownInAppReviewBefore && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             requestInAppReviewFlow();
         }
     }
@@ -202,7 +203,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
         if (isDigital() && manager != null) {
-            if (inAppReviewManager != null && inAppReviewRequest != null) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && inAppReviewManager != null && inAppReviewRequest != null) {
                 inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
                     @Override
                     public void onComplete(Task<Integer> task) {

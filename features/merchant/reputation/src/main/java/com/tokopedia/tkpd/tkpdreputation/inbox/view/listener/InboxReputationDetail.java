@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
@@ -27,6 +28,10 @@ public interface InboxReputationDetail {
 
         void onSuccessGetInboxDetail(InboxReputationItemViewModel inboxReputationItemViewModel,
                                      List<Visitable> visitables);
+
+        void onErrorGetProductRevIncentiveOvo(Throwable throwable);
+
+        void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain);
 
         void finishLoading();
 
