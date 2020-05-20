@@ -2,6 +2,7 @@ package com.dompetia.sellerhomecommon.presentation.adapter
 
 import com.dompetia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.dompetia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.dompetia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.dompetia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 
 /**
@@ -16,9 +17,9 @@ interface WidgetAdapterFactory {
 
     fun type(lineGraphWidget: LineGraphWidgetUiModel): Int
 
-    /*fun type(descriptionWidget: DescriptionWidgetUiModel): Int
+    fun type(descriptionWidget: DescriptionWidgetUiModel): Int
 
-    fun type(sectionWidget: SectionWidgetUiModel): Int
+    /*fun type(sectionWidget: SectionWidgetUiModel): Int
 
     fun type(progressWidgetWidget: ProgressWidgetUiModel): Int
 

@@ -2,9 +2,11 @@ package com.dompetia.sellerhomecommon.presentation.adapter
 
 import com.dompetia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.dompetia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.dompetia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.dompetia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.dompetia.sellerhomecommon.presentation.view.viewholder.CardViewHolder
 import com.dompetia.sellerhomecommon.presentation.view.viewholder.CarouselViewHolder
+import com.dompetia.sellerhomecommon.presentation.view.viewholder.DescriptionViewHolder
 import com.dompetia.sellerhomecommon.presentation.view.viewholder.LineGraphViewHolder
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 
@@ -19,4 +21,6 @@ class WidgetAdapterFactoryImpl : BaseAdapterTypeFactory(), WidgetAdapterFactory 
     override fun type(carouselWidgetUiModel: CarouselWidgetUiModel): Int = CarouselViewHolder.RES_LAYOUT
 
     override fun type(lineGraphWidget: LineGraphWidgetUiModel): Int = LineGraphViewHolder.RES_LAYOUT
+
+    override fun type(descriptionWidget: DescriptionWidgetUiModel): Int = DescriptionViewHolder.RES_LAYOUT
 }

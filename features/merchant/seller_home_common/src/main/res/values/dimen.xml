@@ -27,4 +27,6 @@
     <dimen name="shc_dimen_156dp">156dp</dimen>
     <dimen name="shc_dimen_190dp">190dp</dimen>
     <dimen name="shc_dimen_210dp">210dp</dimen>
+
+    <dimen category="font-size" name="shc_line_spacing_6">6sp</dimen>
 </resources>
