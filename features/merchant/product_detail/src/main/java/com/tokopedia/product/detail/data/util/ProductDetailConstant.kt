@@ -74,6 +74,11 @@ object ProductDetailConstant {
     const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
     const val PDP_P3_TRACE = "mp_pdp_p3"
 
+    const val PDP_RESULT_PLT_PREPARE_METRICS = "pdp_result_plt_prepare_metrics"
+    const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
+    const val PDP_RESULT_PLT_RENDER_METRICS = "pdp_result_plt_render_metrics"
+    const val PDP_RESULT_TRACE = "pdp_result_trace"
+
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
     const val PAYLOAD_P3 = 2

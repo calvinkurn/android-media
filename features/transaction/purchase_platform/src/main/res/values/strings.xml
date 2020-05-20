@@ -32,6 +32,7 @@
     <string name="label_hardcoded_order_prioritas_info">Pesanan diproses dalam 1 jam</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
     <string name="label_action_snackbar_close">Tutup</string>
+    <string name="label_action_snackbar_retry">Coba lagi</string>
     <string name="label_dropshipper_info">Anda dapat mengirimkan barang ke alamat lain dengan data Anda sebagai pengirim</string>
     <string name="message_error_dropshipper_name_min_length">Nama terlalu pendek</string>
     <string name="message_error_dropshipper_name_max_length">Nama terlalu panjang</string>

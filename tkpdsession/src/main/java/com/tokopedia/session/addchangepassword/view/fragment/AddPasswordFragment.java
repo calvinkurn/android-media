@@ -20,6 +20,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerUserComponent;
 import com.tokopedia.di.UserComponent;
 import com.tokopedia.session.R;
+import com.tokopedia.session.addchangepassword.data.analytics.AddPasswordAnalytics;
 import com.tokopedia.session.addchangepassword.di.DaggerAddChangePasswordComponent;
 import com.tokopedia.session.addchangepassword.view.listener.AddPasswordListener;
 import com.tokopedia.session.addchangepassword.view.presenter.AddPasswordPresenter;
@@ -47,7 +48,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
     private TextView btnContinue;
 
     private TkpdProgressDialog progressDialog;
-
+    private AddPasswordAnalytics tracker = new AddPasswordAnalytics();
 
     @Override
     protected String getScreenName() {
@@ -108,6 +109,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                tracker.onClickSubmit();
                 presenter.submitPassword(etPassword.getTextFieldInput().getText().toString());
             }
         });
@@ -136,6 +138,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
 
     @Override
     public void onErrorSubmitPassword(String error) {
+        tracker.onFailedAddPassword(error);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -146,6 +149,7 @@ public class AddPasswordFragment extends BaseDaggerFragment implements AddPasswo
 
     @Override
     public void onSuccessSubmitPassword() {
+        tracker.onSuccessAddPassword();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
