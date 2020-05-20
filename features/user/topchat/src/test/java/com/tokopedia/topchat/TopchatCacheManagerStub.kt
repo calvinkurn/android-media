@@ -4,7 +4,7 @@ import com.tokopedia.topchat.common.network.TopchatCacheManager
 import java.lang.reflect.Type
 
 class TopchatCacheManagerStub(
-        var cache: Any
+        var cache: Any?
 ) : TopchatCacheManager {
 
     var throwError: Boolean = false

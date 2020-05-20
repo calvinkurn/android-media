@@ -63,7 +63,6 @@ class ChatListGroupStickerUseCaseTest {
     @Test
     fun `onLoading called with the previous cache`() {
         // Given
-        cacheManager.throwError = false
         // When
         useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
         // Then
@@ -73,7 +72,7 @@ class ChatListGroupStickerUseCaseTest {
     @Test
     fun `onLoading is not called when cache is null`() {
         // Given
-        cacheManager.throwError = true
+        cacheManager.cache = null
         // When
         useCase.getStickerGroup(Dummy.isSeller, onLoading, onSuccess, onError)
         // Then
@@ -83,7 +82,6 @@ class ChatListGroupStickerUseCaseTest {
     @Test
     fun `save cache when network response has different size for seller`() = runBlocking {
         // Given
-        cacheManager.throwError = false
         cacheManager.cache = Dummy.cacheResponse
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponseSize2
         // When
@@ -96,7 +94,6 @@ class ChatListGroupStickerUseCaseTest {
     fun `save cache when network response has different size for buyer`() = runBlocking {
         // Given
         Dummy.isSeller = false
-        cacheManager.throwError = false
         cacheManager.cache = Dummy.cacheResponse
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponseSize2
         // When
@@ -108,7 +105,6 @@ class ChatListGroupStickerUseCaseTest {
     @Test
     fun `save cache when network response has different lastUpdate for seller`() = runBlocking {
         // Given
-        cacheManager.throwError = false
         cacheManager.cache = Dummy.cacheResponse
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
         // When
@@ -120,7 +116,6 @@ class ChatListGroupStickerUseCaseTest {
     @Test
     fun `network response is the same with the cache`() = runBlocking {
         // Given
-        cacheManager.throwError = false
         cacheManager.cache = Dummy.successResponse
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
         // When
@@ -132,7 +127,6 @@ class ChatListGroupStickerUseCaseTest {
     @Test
     fun `Need update onSuccess is not empty`() = runBlocking {
         // Given
-        cacheManager.throwError = false
         cacheManager.cache = Dummy.cacheResponse
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
         // When
@@ -145,7 +139,6 @@ class ChatListGroupStickerUseCaseTest {
     @Test
     fun `Need update onSuccess is empty`() = runBlocking {
         // Given
-        cacheManager.throwError = false
         cacheManager.cache = Dummy.successResponse
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
         // When
