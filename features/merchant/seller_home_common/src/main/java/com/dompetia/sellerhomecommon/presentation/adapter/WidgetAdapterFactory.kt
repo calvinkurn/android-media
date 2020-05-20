@@ -1,9 +1,6 @@
 package com.dompetia.sellerhomecommon.presentation.adapter
 
-import com.dompetia.sellerhomecommon.presentation.model.CardWidgetUiModel
-import com.dompetia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
-import com.dompetia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
-import com.dompetia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.dompetia.sellerhomecommon.presentation.model.*
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -19,9 +16,9 @@ interface WidgetAdapterFactory {
 
     fun type(descriptionWidget: DescriptionWidgetUiModel): Int
 
-    /*fun type(sectionWidget: SectionWidgetUiModel): Int
+    fun type(sectionWidget: SectionWidgetUiModel): Int
 
-    fun type(progressWidgetWidget: ProgressWidgetUiModel): Int
+    /*fun type(progressWidgetWidget: ProgressWidgetUiModel): Int
 
     fun type(postListWidget: PostListWidgetUiModel): Int*/
 }
