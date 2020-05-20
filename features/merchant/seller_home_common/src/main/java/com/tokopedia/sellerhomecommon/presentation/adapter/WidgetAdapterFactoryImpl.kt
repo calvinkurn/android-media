@@ -1,6 +1,10 @@
 package com.tokopedia.sellerhomecommon.presentation.adapter
 
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.sellerhomecommon.base.WidgetListener
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
 
@@ -8,7 +12,9 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
  * Created By @ilhamsuaib on 19/05/20
  */
 
-class WidgetAdapterFactoryImpl : BaseAdapterTypeFactory(), WidgetAdapterFactory {
+class WidgetAdapterFactoryImpl(
+        private val listener: WidgetListener
+) : BaseAdapterTypeFactory(), WidgetAdapterFactory {
 
     override fun type(cardWidget: CardWidgetUiModel): Int = CardViewHolder.RES_LAYOUT
 
@@ -21,4 +27,19 @@ class WidgetAdapterFactoryImpl : BaseAdapterTypeFactory(), WidgetAdapterFactory 
     override fun type(sectionWidget: SectionWidgetUiModel): Int = SectionViewHolder.RES_LAYOUT
 
     override fun type(postListWidget: PostListWidgetUiModel): Int = PostListViewHolder.RES_LAYOUT
+
+    override fun type(progressWidgetWidget: ProgressWidgetUiModel): Int = ProgressViewHolder.RES_LAYOUT
+
+    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return when (type) {
+            SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
+            CardViewHolder.RES_LAYOUT -> CardViewHolder(parent, listener)
+            LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, listener)
+            CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent, listener)
+            DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
+            ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, listener)
+            PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, listener)
+            else -> super.createViewHolder(parent, type)
+        }
+    }
 }

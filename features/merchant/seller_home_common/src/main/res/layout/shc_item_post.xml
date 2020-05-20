@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:maxHeight="@dimen/sah_dimen_74dp"
-    android:paddingTop="@dimen/sah_dimen_6dp"
-    android:paddingBottom="@dimen/sah_dimen_6dp">
+    android:maxHeight="@dimen/shc_dimen_74dp"
+    android:paddingTop="@dimen/shc_dimen_6dp"
+    android:paddingBottom="@dimen/shc_dimen_6dp">
 
     <ImageView
         android:id="@+id/imgPost"
-        android:layout_width="@dimen/sah_dimen_56dp"
-        android:layout_height="@dimen/sah_dimen_56dp"
+        android:layout_width="@dimen/shc_dimen_56dp"
+        android:layout_height="@dimen/shc_dimen_56dp"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +22,8 @@
         android:id="@+id/tvPostTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/sah_dimen_12dp"
-        android:layout_marginLeft="@dimen/sah_dimen_12dp"
+        android:layout_marginStart="@dimen/shc_dimen_12dp"
+        android:layout_marginLeft="@dimen/shc_dimen_12dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Neutral_N700_96"

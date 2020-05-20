@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/sah_medium_widget_height"
+        android:layout_height="@dimen/shc_medium_widget_height"
         android:padding="@dimen/layout_lvl2">
 
         <com.tokopedia.unifyprinciples.Typography

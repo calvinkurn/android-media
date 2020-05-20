@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/sah_large_widget_height">
+        android:layout_height="@dimen/shc_large_widget_height">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvLineGraphTitle"
