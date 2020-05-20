@@ -80,6 +80,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
 
+    val miniShopInfo: ProductMiniShopInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_SHOP_INFO] as? ProductMiniShopInfoDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -105,6 +108,11 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 endDate = it.data.endDate
                 startDate = it.data.startDate
                 notifyMe = it.data.notifyMe
+            }
+
+            miniShopInfo?.run {
+                isOS = it.data.isOS
+                isGoldMerchant = it.data.isPowerMerchant
             }
 
             valuePropositionDataModel?.run {
@@ -178,13 +186,17 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 shopInfo = it.shopInfo
             }
 
+            miniShopInfo?.run {
+                shopName = it.shopInfo?.shopCore?.name ?: ""
+            }
+
             snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
                 statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
                 nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(multiOriginNearestWarehouse.warehouseInfo.id,
-                        multiOriginNearestWarehouse.price,multiOriginNearestWarehouse.stockWording)
+                        multiOriginNearestWarehouse.price, multiOriginNearestWarehouse.stockWording)
             }
 
             productInfoMap?.run {

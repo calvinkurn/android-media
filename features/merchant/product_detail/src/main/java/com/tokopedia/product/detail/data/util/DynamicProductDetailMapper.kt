@@ -72,6 +72,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.MINI_SHOP_INFO -> {
+                    listOfComponent.add(ProductMiniShopInfoDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent

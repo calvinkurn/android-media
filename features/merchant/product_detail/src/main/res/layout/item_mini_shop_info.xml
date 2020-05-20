@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_mini_shop_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Dijual oleh BMW Tunas Mandiri" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_mini_shop_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/label_desc_os"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/light_N700_68"
+        app:layout_constraintStart_toStartOf="@+id/txt_mini_shop_title"
+        app:layout_constraintTop_toBottomOf="@+id/txt_mini_shop_title"
+        app:typographyType="body_3" />
+
+    <include
+        android:id="@+id/mini_shop_shimmering"
+        layout="@layout/mini_shop_shimmering" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

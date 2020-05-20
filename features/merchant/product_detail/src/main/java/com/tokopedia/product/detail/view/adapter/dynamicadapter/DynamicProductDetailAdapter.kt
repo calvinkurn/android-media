@@ -109,6 +109,14 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun getShopInfoPosition(data: ProductShopInfoDataModel?): Int {
+        return if (data != null) {
+            list.indexOf(data)
+        } else {
+            0
+        }
+    }
+
     fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
 
     fun notifyVariantSection(data: VariantDataModel?, payload: Int?) {
@@ -123,7 +131,7 @@ class DynamicProductDetailAdapter(
     }
 
     fun notifyNotifyMe(notifyMeData: ProductNotifyMeDataModel?, payload: Int?) {
-        notifyMeData?.let{
+        notifyMeData?.let {
             val indexOfNotifyMe = list.indexOf(notifyMeData)
             if (payload != null) {
                 notifyItemChanged(indexOfNotifyMe, payload)

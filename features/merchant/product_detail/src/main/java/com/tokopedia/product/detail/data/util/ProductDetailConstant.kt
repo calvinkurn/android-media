@@ -107,6 +107,7 @@ object ProductDetailConstant {
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
     const val PRODUCT_SNAPSHOT = "product_snapshot"
     const val SHOP_INFO = "shop_info"
+    const val MINI_SHOP_INFO = "shop_info_mini"
     const val PRODUCT_INFO = "product_info"
     const val DISCUSSION = "discussion"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
