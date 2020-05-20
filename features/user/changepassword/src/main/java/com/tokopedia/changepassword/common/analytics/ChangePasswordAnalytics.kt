@@ -7,7 +7,7 @@ import com.tokopedia.track.TrackApp
  */
 class ChangePasswordAnalytics{
 
-    internal  val tracker = TrackApp.getInstance().gtm
+     val tracker = TrackApp.getInstance().gtm
 
     fun onClickSubmit() {
         tracker.sendGeneralEvent(
@@ -46,26 +46,26 @@ class ChangePasswordAnalytics{
     }
 
     companion object {
-        internal  const val SCREEN_NAME: String = "Change Password Page"
+        private const val SCREEN_NAME: String = "Change Password Page"
 
-        object EVENT {
-            internal const val CLICK_ACCOUNT = "clickAccount"
+        private object EVENT {
+            const val CLICK_ACCOUNT = "clickAccount"
         }
 
-        object CATEGORY {
-            internal const val ACCOUNT_SETTING = "account setting - password"
+        private object CATEGORY {
+            const val ACCOUNT_SETTING = "account setting - password"
         }
 
-        object ACTION {
-            internal const val CLICK_ON_BUTTON_SUBMIT = "click on button simpan change password"
-            internal const val CLICK_ON_BUTTON_FORGOT_PASSWORD = "click lupa kata sandi - change password"
+        private object ACTION {
+            const val CLICK_ON_BUTTON_SUBMIT = "click on button simpan change password"
+            const val CLICK_ON_BUTTON_FORGOT_PASSWORD = "click lupa kata sandi - change password"
         }
 
-        object LABEL {
-            internal const val EMPTY = ""
-            internal const val CLICK = "click"
-            internal const val CLICK_SUCCESS = "success"
-            internal const val CLICK_FAILED = "failed"
+        private object LABEL {
+            const val EMPTY = ""
+            const val CLICK = "click"
+            const val CLICK_SUCCESS = "success"
+            const val CLICK_FAILED = "failed"
         }
     }
 }

@@ -35,22 +35,22 @@ class ForgotPasswordAnalytics {
     }
 
     companion object {
-        const val RESET_PASSWORD = "reset password"
+        private const val RESET_PASSWORD = "reset password"
 
-        object EVENT {
+        private object EVENT {
             const val CLICK_LOGIN = "clickAccount"
         }
 
-        object CATEGORY {
+        private object CATEGORY {
             const val ACCOUNT_SETTING = "account setting - password"
         }
 
-        object ACTION {
+        private object ACTION {
             const val CLICK_ON_BUTTON_SUBMIT = "click on button ganti kata sandi"
             const val CLICK_ON_BUTTON_REGISTER = "click on button daftar sekarang"
         }
 
-        object LABEL {
+        private object LABEL {
             const val CLICK = "click"
             const val CLICK_SUCCESS = "click - email - success - $RESET_PASSWORD"
             const val CLICK_FAILED = "click - email - failed"
