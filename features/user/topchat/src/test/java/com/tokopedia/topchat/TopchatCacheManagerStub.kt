@@ -8,6 +8,7 @@ class TopchatCacheManagerStub(
 ) : TopchatCacheManager {
 
     var throwError: Boolean = false
+    var isPreviousLoadSuccess: Boolean = true
 
     override fun saveCache(key: String, obj: Any) {
 
@@ -25,6 +26,6 @@ class TopchatCacheManagerStub(
     }
 
     override fun getPreviousState(stateCacheKey: String): Boolean {
-        return true
+        return isPreviousLoadSuccess
     }
 }
