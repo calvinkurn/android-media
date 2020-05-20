@@ -121,9 +121,9 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
     override fun onDestroy() {}
 
-    override fun getBottomFragment(resID: Int): BottomSheetDialogFragment {
+    override fun getBottomFragment(resID: Int): InboxBottomSheetFragment? {
         val bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID)
-        bottomFragment.setPresenter(this)
+        bottomFragment?.setPresenter(this)
         return bottomFragment
     }
 

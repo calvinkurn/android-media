@@ -190,9 +190,9 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         return InboxFilterAdapter(filterList, this)
     }
 
-    override fun getBottomFragment(resID: Int): BottomSheetDialogFragment {
+    override fun getBottomFragment(resID: Int): BottomSheetDialogFragment? {
         val bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID)
-        bottomFragment.setAdapter(getFilterAdapter())
+        bottomFragment?.setAdapter(getFilterAdapter())
         return bottomFragment
     }
 

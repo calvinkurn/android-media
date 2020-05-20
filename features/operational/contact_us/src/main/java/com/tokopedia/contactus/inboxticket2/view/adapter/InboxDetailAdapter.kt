@@ -38,7 +38,7 @@ class InboxDetailAdapter(private val mContext: Context,
     private val indexExpanded: Int = -1
     private var searchMode = false
     private var searchText: String? = null
-    private val utils: Utils = Utils()
+    private val utils: Utils by lazy { Utils() }
     private val hintAttachmentString: SpannableString
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val inflater = LayoutInflater.from(

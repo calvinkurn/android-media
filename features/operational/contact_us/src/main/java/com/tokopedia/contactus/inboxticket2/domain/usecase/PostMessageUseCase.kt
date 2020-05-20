@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
-import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 import javax.inject.Named

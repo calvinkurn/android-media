@@ -37,7 +37,7 @@ interface InboxBaseContract {
     interface InboxBasePresenter : CustomerPresenter<InboxBaseView> {
         fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
         fun onDestroy()
-        fun getBottomFragment(resID: Int): BottomSheetDialogFragment
+        fun getBottomFragment(resID: Int): BottomSheetDialogFragment?
         fun onOptionsItemSelected(item: MenuItem): Boolean
         fun reAttachView()
         fun clickCloseSearch()

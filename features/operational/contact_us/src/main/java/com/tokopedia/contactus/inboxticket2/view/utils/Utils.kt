@@ -61,11 +61,11 @@ class Utils {
         return spannableString
     }
 
-    fun getStatusTitle(src: String, background: Int, textColor: Int, textSizeSp: Int, mContext:Context): SpannableString {
+    fun getStatusTitle(src: String, background: Int, textColor: Int, textSizeSp: Int, mContext: Context): SpannableString {
         val spannableString = SpannableString(src)
         val start = src.lastIndexOf(".") + 4
-        val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, convertSpToPx(textSizeSp,mContext),
-                convertDpToPx(8,mContext), convertDpToPx(4,mContext), convertDpToPx(2,mContext), convertDpToPx(2,mContext))
+        val roundedBackgroundSpan = RoundedBackgroundSpan(background, textColor, convertSpToPx(textSizeSp, mContext),
+                convertDpToPx(8, mContext), convertDpToPx(4, mContext), convertDpToPx(2, mContext), convertDpToPx(2, mContext))
         spannableString.setSpan(roundedBackgroundSpan, start, src.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         return spannableString
     }
@@ -85,10 +85,11 @@ class Utils {
 
     val dateTimeCurrent: String
         get() {
-            val dateFormat = SimpleDateFormat("d MMM 'pukul' HH:mm", locale)
             dateFormat.timeZone = TimeZone.getDefault()
             return dateFormat.format(Date(System.currentTimeMillis()))
         }
+
+    private val dateFormat:SimpleDateFormat by lazy { SimpleDateFormat("d MMM 'pukul' HH:mm", locale) }
 
     fun getDateTimeYear(isoTime: String?): String {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale)
@@ -161,17 +162,15 @@ class Utils {
         return reviewPhotos.toString()
     }
 
-    private fun convertDpToPx(dp: Int, mContext:Context): Float {
+    private fun convertDpToPx(dp: Int, mContext: Context): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), mContext.resources.displayMetrics)
     }
 
-    private fun convertSpToPx(dp: Int, mContext:Context): Float {
+    private fun convertSpToPx(dp: Int, mContext: Context): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, dp.toFloat(), mContext.resources.displayMetrics)
     }
 
-    private val locale: Locale
-         get() = Locale("in", "ID", "")
-
+    private val locale: Locale by lazy { Locale("in", "ID", "") }
 
     private fun isYesterday(time: Long): Boolean {
         val mTime = Time()
