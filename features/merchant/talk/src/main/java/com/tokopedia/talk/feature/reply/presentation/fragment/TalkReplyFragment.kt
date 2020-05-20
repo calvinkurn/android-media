@@ -204,7 +204,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId)
             sendComment(text)
         } else {
-            showErrorToaster(getString(R.string.reply_toaster_length_too_short_error))
+            adjustToasterHeight()
+            view?.let { Toaster.make(it, getString(R.string.reply_toaster_length_too_short_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
         }
     }
 
@@ -347,13 +348,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessFollowThread() {
         adapter?.setIsFollowingButton(FOLLOWING)
-        showSuccessToaster(getString(R.string.toaster_follow_success), true)
+        showSuccessToaster(getString(R.string.toaster_follow_success), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         viewModel.setIsFollowing(FOLLOWING)
     }
 
     private fun onSuccessUnfollowThread() {
         adapter?.setIsFollowingButton(NOT_FOLLOWING)
-        showSuccessToaster(getString(R.string.toaster_unfollow_success), true)
+        showSuccessToaster(getString(R.string.toaster_unfollow_success), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         viewModel.setIsFollowing(NOT_FOLLOWING)
     }
 
@@ -366,7 +367,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onSuccessDeleteComment() {
-        showSuccessToaster(getString(R.string.delete_toaster_success), true)
+        showSuccessToaster(getString(R.string.delete_toaster_success), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         adapter?.clearAllElements()
         getDiscussionData()
     }
