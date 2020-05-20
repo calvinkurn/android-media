@@ -33,6 +33,7 @@ abstract class BaseWidgetUiTest{
     val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
     val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
     val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
     val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
     val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
     val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
@@ -60,7 +61,8 @@ abstract class BaseWidgetUiTest{
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {

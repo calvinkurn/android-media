@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class DynamicHomeIcon (
     @Expose
@@ -66,5 +67,5 @@ data class DynamicHomeIcon (
 
         @SerializedName("category_persona")
         val categoryPersona: String = ""
-    )
+    ) : ImpressHolder()
 }

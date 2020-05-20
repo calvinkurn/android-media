@@ -5,15 +5,17 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
-import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
-import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.HomeFlag
+import com.tokopedia.home.beranda.domain.model.Spotlight
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -121,10 +123,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     override fun addUserWalletVisitable(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
         if (needToShowUserWallet) {
-            val headerViewModel = HeaderDataModel(
-                    isPendingTokocashChecked = false,
-                    isUserLogin = userSessionInterface?.isLoggedIn?:false
-            )
+            val headerViewModel = HeaderDataModel()
             visitableList.add(headerViewModel)
         }
         return this
@@ -138,25 +137,9 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     override fun addDynamicIconVisitable(): HomeVisitableFactory {
         val isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
         val iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
-
-        val list = mutableListOf<HomeIconItem>()
-        for (icon in iconList) {
-            list.add(HomeIconItem(
-                    icon.id,
-                    icon.name,
-                    icon.imageUrl,
-                    icon.applinks,
-                    icon.url,
-                    icon.bu_identifier,
-                    icon.galaxyAttribution,
-                    icon.persona,
-                    icon.brandId,
-                    icon.categoryPersona
-            ))
-        }
         val viewModelDynamicIcon = DynamicIconSectionDataModel(
                 dynamicIconWrap = isDynamicIconWrapType,
-                itemList = list
+                itemList = iconList
         )
 
         if (!isCache) {

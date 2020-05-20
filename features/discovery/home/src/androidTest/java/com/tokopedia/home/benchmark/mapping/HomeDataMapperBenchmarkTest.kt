@@ -23,17 +23,17 @@ class HomeDataMapperBenchmarkTest {
     @get:Rule
     val benchmarkRule = BenchmarkRule()
 
-    val context = ApplicationProvider.getApplicationContext<Context>()
-    val userSessionInterface: UserSessionInterface = UserSession(context)
-    val visitableFactory: HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface)
-    val trackingQueue = TrackingQueue(context)
-    val dataMapper = HomeDataMapper(context, visitableFactory, trackingQueue)
-    val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.full_json_home)
-    val homeData = Gson().fromJson(json, HomeData::class.java)
     @Test
     fun benchmark_homedatamapper() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val userSessionInterface: UserSessionInterface = UserSession(context)
+        val visitableFactory: HomeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface)
+        val trackingQueue = TrackingQueue(context)
+        val dataMapper = HomeDataMapper(context, visitableFactory, trackingQueue)
+        val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.full_json_home)
+        val homeData = Gson().fromJson(json, HomeData::class.java)
         benchmarkRule.measureRepeated {
-            dataMapper.mapToHomeViewModel(homeData, false)
+            dataMapper.mapToHomeViewModel(homeData, true)
         }
     }
 
