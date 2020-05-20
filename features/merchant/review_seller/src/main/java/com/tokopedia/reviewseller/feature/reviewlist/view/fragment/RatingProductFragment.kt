@@ -684,8 +684,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             tracking.eventClickSortBottomSheet(userSession.shopId.orEmpty(), chipsSortText.orEmpty())
             chipsSort?.chip_text?.text = chipsSortText
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
-            sortBy =
-                    ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(chipsSortText)
+            sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
             bottomSheetSort?.dismiss()
         } catch (e: Exception) {

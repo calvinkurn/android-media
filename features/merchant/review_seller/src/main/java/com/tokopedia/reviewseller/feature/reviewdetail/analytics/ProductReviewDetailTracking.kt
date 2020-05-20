@@ -4,6 +4,12 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
+/*
+Review Seller Revamp
+Data layer docs
+https://docs.google.com/spreadsheets/d/1V8oaqxfu7A-rUq9BtZKxqP0Gy2WHFumiGNzh5piX9TI/edit#gid=1022075175
+ */
+
 class ProductReviewDetailTracking {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
