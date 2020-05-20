@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -92,31 +93,35 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         tracking.addShowcaseProductCardClick(shopId, shopType, isActionEdit)
     }
 
-    /**
-     * Setup Grid layout manager for mutliple item view type
-     * the span count will change to 1 if the item view is loading
-     */
-    private val gridLayoutManager by lazy {
-        GridLayoutManager(context, 2).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return try {
-                        val isShowcaseProductItem = showcaseProductListAdapter?.isShowCaseProductItem(position)
-                        if (isShowcaseProductItem == false) {
-                            spanCount
-                        } else {
-                            // Change span count to 1 if type of view is loading
-                            1
-                        }
-                    } catch (e: IndexOutOfBoundsException) {
-                        spanCount
-                    }
-                }
-            }
-        }
+//    /**
+//     * Setup Grid layout manager for mutliple item view type
+//     * the span count will change to 1 if the item view is loading
+//     */
+//    private val gridLayoutManager by lazy {
+//        GridLayoutManager(context, 2).apply {
+//            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+//                override fun getSpanSize(position: Int): Int {
+//                    return try {
+//                        val isShowcaseProductItem = showcaseProductListAdapter?.isShowCaseProductItem(position)
+//                        if (isShowcaseProductItem == false) {
+//                            spanCount
+//                        } else {
+//                            // Change span count to 1 if type of view is loading
+//                            1
+//                        }
+//                    } catch (e: IndexOutOfBoundsException) {
+//                        spanCount
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    private val linearLayoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    private var productListFirstItem: Int = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
+    private var productListFirstItem: Int = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
 
     private val buttonBackToTop: FloatingButtonUnify? by lazy {
         view?.findViewById<FloatingButtonUnify>(R.id.btn_back_to_top)?.apply {
@@ -150,7 +155,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
      * Setup Scroll Listener for endless recycler view load.
      */
     private val scrollListener by lazy {
-        object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
+        object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 productListFilter.page = (page+1)
@@ -159,7 +164,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
-                if(gridLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     buttonBackToTop?.hide()
                     headerLayout?.cardElevation = 0f
                 }
@@ -176,7 +181,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                     }, 1800)
                 }
                 if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    val currentFirstVisible = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    val currentFirstVisible = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
                     if(currentFirstVisible > productListFirstItem)
                         slideDownCounter()
                     else
@@ -304,7 +309,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         view?.run {
             recyclerViewProductList?.apply {
                 setHasFixedSize(true)
-                layoutManager = gridLayoutManager
+                layoutManager = linearLayoutManager
                 showcaseProductListAdapter = ShowcaseProductListAdapter(context, view, listener)
                 adapter = showcaseProductListAdapter
                 addOnScrollListener(scrollListener)
@@ -411,7 +416,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private fun slideUpCounter() {
         productSelectedCounter?.animate()?.translationY(0f)
-        if(gridLayoutManager.findFirstCompletelyVisibleItemPosition() != 0)
+        if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() != 0)
             buttonBackToTop?.circleMainMenu?.show()
     }
 

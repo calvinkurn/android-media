@@ -14,6 +14,7 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewholder.ShowcaseProductItemViewHolder
 import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
 import kotlinx.android.synthetic.main.item_add_product_showcase_grid.view.*
+import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
 
 /**
  * @author by Rafli Syam on 2020-03-09
@@ -40,11 +41,12 @@ class ShowcaseProductListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowcaseProductItemViewHolder {
         val view = if (viewType == VIEW_SHOW_CASE) {
-            LayoutInflater.from(context).inflate(R.layout.item_add_product_showcase_grid, parent, false)
+            LayoutInflater.from(context).inflate(R.layout.item_product_card_horizontal, parent, false)
         }
         else {
             LayoutInflater.from(context).inflate(R.layout.item_showcase_product_loading, parent, false)
         }
+//        val view = LayoutInflater.from(context).inflate(R.layout.item_product_card_horizontal, parent, false)
         return ShowcaseProductItemViewHolder(view, context)
     }
 
@@ -63,7 +65,7 @@ class ShowcaseProductListAdapter(
         val item = shopProductList[position]
         holder.bind(item)
         if (item is ShowcaseProduct) {
-            holder.itemView.parent_card_view.setOnClickListener {
+            holder.itemView.parent_item_product_card.setOnClickListener {
                 val cardState = !item.ishighlighted
                 if (cardState) {
                     val targetExcluded = excludedProduct.singleOrNull {
