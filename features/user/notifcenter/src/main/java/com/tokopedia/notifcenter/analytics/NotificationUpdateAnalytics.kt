@@ -603,11 +603,11 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                         "price", product.price,
                         "brand", "",
                         "category", "",
-                        "variant", product.variant,
+                        "variant", "",
                         "quantity", "1",
                         "dimension79", product.shop?.id.toString(),
                         "dimension81", "",
-                        "dimension80", product.shop?.name,
+                        "dimension80", product.shop?.name.toString(),
                         "dimension82", "",
                         "dimension45", atc.cartId,
                         "dimension40", "/notifcenter"
