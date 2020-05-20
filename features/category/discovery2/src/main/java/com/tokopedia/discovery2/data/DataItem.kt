@@ -121,7 +121,7 @@ data class DataItem(
         var creativeName: String? = "",
 
         @SerializedName("title")
-        val title: String? = "",
+        var title: String? = "",
 
         @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
         val thumbnailUrlMobile: String? = "",

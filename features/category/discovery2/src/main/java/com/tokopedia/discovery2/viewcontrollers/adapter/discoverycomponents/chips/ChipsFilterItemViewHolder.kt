@@ -48,6 +48,7 @@ class ChipsFilterItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     private fun setClick(chipData: DataItem) {
         chipsFilterItem.setOnClickListener {
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickChipsFilter(chipData.title?:"")
             if (chipData.chipSelectionType != SELECTED) {
                 (it as ChipsUnify).apply {
                     chipData.chipSelectionType = if (isSelected(this)) {

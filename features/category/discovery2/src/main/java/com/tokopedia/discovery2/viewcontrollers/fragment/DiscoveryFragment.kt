@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +15,6 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -72,7 +70,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
-            DiscoveryAnalytics.trackBackClick()
+            getDiscoveryAnalytics().trackBackClick()
             activity?.onBackPressed()
         }
         mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
@@ -190,6 +188,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
     private fun setClick(appLinks: String, shopId: Int) {
         mDiscoveryFab.getFabButton().setOnClickListener {
+            getDiscoveryAnalytics().trackClickCustomTopChat()
             if (appLinks.isNotEmpty() && shopId != 0) {
                 activity?.let { it1 -> mDiscoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
@@ -233,4 +232,9 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     }
 
     fun getDiscoveryRecyclerViewAdapter() = mDiscoveryRecycleAdapter
+
+    fun getDiscoveryAnalytics(): DiscoveryAnalytics {
+        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(pagePath = pageEndPoint) }
+        return discoveryAnalytics
+    }
 }
