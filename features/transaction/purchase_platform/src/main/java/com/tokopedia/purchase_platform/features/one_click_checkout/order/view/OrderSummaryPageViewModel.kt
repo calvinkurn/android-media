@@ -1483,6 +1483,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         return ""
     }
 
+    fun consumeForceShowOnboarding() {
+        val onboarding = _orderPreference?.onboarding
+        if (onboarding?.isForceShowCoachMark == true) {
+            _orderPreference = _orderPreference?.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
+            orderPreference.value = OccState.Success(_orderPreference!!)
+        }
+    }
+
     companion object {
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
         const val NO_EXACT_DURATION_MESSAGE = "Durasi tergantung kurir"
