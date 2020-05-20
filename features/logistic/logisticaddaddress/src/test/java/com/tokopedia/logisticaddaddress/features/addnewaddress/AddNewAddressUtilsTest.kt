@@ -5,7 +5,7 @@ import org.junit.Assert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-object AddNewAddressUtilsTes: Spek ({
+object AddNewAddressUtilsTest: Spek ({
 
     Feature("execute given value") {
 
