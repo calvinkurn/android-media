@@ -56,6 +56,7 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new TopAdsBasicRadioButtonAdapter();
+        initialPresenter();
     }
 
     protected void initView(View view) {
