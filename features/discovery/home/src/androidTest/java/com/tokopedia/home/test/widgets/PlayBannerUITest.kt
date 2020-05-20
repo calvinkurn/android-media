@@ -39,12 +39,12 @@ class PlayBannerUITest : BaseWidgetUiTest(){
 
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
-    
+
     companion object{
         private val CONTAINER = R.id.play_frame_layout
         private val TITLE = R.id.title
         private val TITLE_CONTENT = R.id.title_play
-        
+
     }
 
     @Test

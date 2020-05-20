@@ -31,13 +31,12 @@ abstract class BaseWidgetUiTest{
     val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
     val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
     val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
-    val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
     val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
-    val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
     val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
     val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
     val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
+    val injectCouponTimeUseCase = mockk<InjectCouponTimeBasedUseCase>()
 
     fun reInitViewModel() = HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
@@ -57,12 +56,11 @@ abstract class BaseWidgetUiTest{
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
-            sendTopAdsUseCase = sendTopAdsUseCase,
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
             declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
-            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
+            injectCouponTimeBasedUseCase = injectCouponTimeUseCase
     )
 
     fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {

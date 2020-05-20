@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
@@ -36,6 +37,7 @@ class MultipleProductCardViewHolder(
     private val productContainer: ConstraintLayout = itemView.findViewById(R.id.cl_product)
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
+    private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     override fun bind(element: MultipleProductCardViewBean?) {
         if (element == null) return
@@ -125,6 +127,25 @@ class MultipleProductCardViewHolder(
             listener.itemClicked(notification, adapterPosition)
             listener.addProductToCheckout(element.userInfo, Mapper.map(element))
         }
+
+        btnAtc.setOnClickListener {
+            listener.addProductToCart(element.product) {
+                trackAddToCartClicked(element, element.product, it)
+            }
+        }
+    }
+
+    private fun trackAddToCartClicked(
+            element: MultipleProductCardViewBean,
+            product: ProductData,
+            data: DataModel) {
+        listener.getAnalytic().trackAtcOnClick(
+                templateKey = element.templateKey,
+                notificationId = element.notificationId,
+                userId = element.userInfo.userId,
+                product = product,
+                atc = data
+        )
     }
 
     companion object {

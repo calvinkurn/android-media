@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder
 
+import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
@@ -7,7 +8,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardFlashSaleView
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class FlashSaleViewHolder (view: View,
                            private val channels: DynamicHomeChannel.Channels):
@@ -21,22 +22,22 @@ class FlashSaleViewHolder (view: View,
     private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
 
     override fun bind(element: FlashSaleDataModel) {
-        setLayout(element)
+        setLayout(itemView.context, element)
     }
 
-    private fun setLayout(element: FlashSaleDataModel){
+    private fun setLayout(context: Context, element: FlashSaleDataModel){
         productCardView?.run{
             applyCarousel()
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
                 if(element.grid.isTopads){
-                    ImpresionTask(className).execute(element.grid.impression)
+                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.grid.impression)
                 }
                 element.listener.onFlashSaleCardImpressed(adapterPosition, channels, element.grid)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    ImpresionTask(className).execute(element.grid.productClickUrl)
+                    TopAdsUrlHitter(className).hitClickUrl(context, element.grid.productClickUrl)
                 }
                 element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }
