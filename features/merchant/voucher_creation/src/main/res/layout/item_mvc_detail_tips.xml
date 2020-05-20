@@ -12,7 +12,7 @@
     android:paddingRight="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/mvc_dimen_12dp">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icMvcTips"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"

@@ -1,13 +1,16 @@
 package com.tokopedia.vouchercreation.create.view.enums
 
 import androidx.annotation.DimenRes
+import androidx.annotation.StringDef
 import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.R
 
-sealed class VoucherImageType(val value: Int) {
-    class FreeDelivery(value: Int) : VoucherImageType(value)
-    class Rupiah(value: Int) : VoucherImageType(value)
-    class Percentage(value: Int, val percentage: Int) : VoucherImageType(value)
+sealed class VoucherImageType(val value: Int,
+                              @BenefitType val benefitType: String,
+                              @CouponType val couponType: String) {
+    class FreeDelivery(value: Int) : VoucherImageType(value, BenefitType.IDR, CouponType.SHIPPING)
+    class Rupiah(value: Int) : VoucherImageType(value, BenefitType.IDR, CouponType.CASHBACK)
+    class Percentage(value: Int, val percentage: Int) : VoucherImageType(value, BenefitType.PERCENT, CouponType.CASHBACK)
 }
 
 enum class VoucherImageTextType(@DimenRes val dimenRes: Int) {
@@ -25,4 +28,22 @@ object CurrencyScale {
     internal const val THOUSAND = 1000
     internal const val MILLION = 1000000
     internal const val BILLION = 1000000000
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(BenefitType.IDR, BenefitType.PERCENT)
+annotation class BenefitType {
+    companion object {
+        const val IDR = "idr"
+        const val PERCENT = "percent"
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(CouponType.SHIPPING, CouponType.CASHBACK)
+annotation class CouponType {
+    companion object {
+        const val SHIPPING = "shipping"
+        const val CASHBACK = "cashback"
+    }
 }

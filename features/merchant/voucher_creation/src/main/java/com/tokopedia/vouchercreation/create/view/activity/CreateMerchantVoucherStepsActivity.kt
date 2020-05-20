@@ -166,7 +166,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                 backPromptBottomSheet.show(supportFragmentManager, ChangeDetailPromptBottomSheetFragment.TAG)
             }
             else -> {
-                onBackPressed()
+                onBackStep()
             }
         }
     }

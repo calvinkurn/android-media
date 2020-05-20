@@ -23,9 +23,12 @@ class FooterButtonViewHolder(
 
     override fun bind(element: FooterButtonUiModel) {
         with(itemView) {
-            btnMvcFooterCta.text = element.ctaText
-            btnMvcFooterCta.setOnClickListener {
-                onCtaClick()
+            btnMvcFooterCta.run {
+                text = element.ctaText
+                btnMvcFooterCta.setOnClickListener {
+                    onCtaClick()
+                    isLoading = true
+                }
             }
         }
     }

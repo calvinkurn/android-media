@@ -19,4 +19,5 @@ class LoadingDialog(context: Context) : Dialog(context) {
         window?.attributes?.width = LinearLayout.LayoutParams.MATCH_PARENT
         window?.attributes?.height = LinearLayout.LayoutParams.MATCH_PARENT
     }
+
 }

@@ -5,7 +5,7 @@ import com.tokopedia.usecase.RequestParams
 object VoucherSource {
 
     private const val SOURCE_KEY = "source"
-    private const val SELLERAPP = "android-sellerapp"
+    const val SELLERAPP = "android-sellerapp"
 
     @JvmStatic
     internal fun getVoucherRequestParams() =

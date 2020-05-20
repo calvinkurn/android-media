@@ -23,6 +23,7 @@ class GeneralExpensesInfoBottomSheetFragment(bottomSheetContext: Context?) : Bot
                 context.run {
                     val view = View.inflate(this, R.layout.mvc_voucher_bottom_sheet_view, null)
                     setChild(view)
+                    setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
                 }
             }
         }

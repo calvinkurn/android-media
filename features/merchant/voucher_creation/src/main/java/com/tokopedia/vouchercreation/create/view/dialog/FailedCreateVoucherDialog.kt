@@ -27,4 +27,8 @@ class FailedCreateVoucherDialog(context: Context,
         show()
     }
 
+    fun dismiss() {
+        dialog.dismiss()
+    }
+
 }

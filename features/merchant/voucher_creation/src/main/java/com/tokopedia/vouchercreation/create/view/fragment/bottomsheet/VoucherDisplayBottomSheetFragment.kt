@@ -15,12 +15,13 @@ import com.tokopedia.vouchercreation.create.view.listener.VoucherDisplayScrollLi
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.*
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.view.*
 
-class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> VoucherTargetCardType) : BottomSheetUnify(), VoucherBottomView {
+class VoucherDisplayBottomSheetFragment(private val bottomSheetContext: Context?,
+                                        private val getVoucherType: () -> VoucherTargetCardType) : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
         fun createInstance(context: Context?,
                         getVoucherType: () -> VoucherTargetCardType) : VoucherDisplayBottomSheetFragment {
-            return VoucherDisplayBottomSheetFragment(getVoucherType).apply {
+            return VoucherDisplayBottomSheetFragment(context, getVoucherType).apply {
                 context?.run {
                     val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
                     // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
@@ -48,8 +49,8 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
     override fun onAttach(context: Context) {
         super.onAttach(context)
         bottomSheetViewTitle = when(getVoucherType()) {
-            VoucherTargetCardType.PUBLIC -> context.resources?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString()
-            VoucherTargetCardType.PRIVATE -> context.resources?.getString(R.string.mvc_create_private_voucher_display_title).toBlankOrString()
+            VoucherTargetCardType.PUBLIC -> bottomSheetContext?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString()
+            VoucherTargetCardType.PRIVATE -> bottomSheetContext?.getString(R.string.mvc_create_private_voucher_display_title).toBlankOrString()
         }
     }
 

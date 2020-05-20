@@ -4,10 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
+import com.tokopedia.vouchercreation.create.domain.usecase.CreateVoucherUseCase
+import com.tokopedia.vouchercreation.create.view.dialog.FailedCreateVoucherDialog
+import com.tokopedia.vouchercreation.create.view.dialog.LoadingDialog
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
@@ -16,8 +27,10 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndCo
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDisplayBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
+import com.tokopedia.vouchercreation.create.view.viewmodel.ReviewVoucherViewModel
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
+import javax.inject.Inject
 
 class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                             private val getToken: () -> String,
@@ -38,6 +51,17 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         private const val VOUCHER_TIPS_INDEX = 1
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+
+    private val viewModel by lazy {
+        viewModelProvider.get(ReviewVoucherViewModel::class.java)
+    }
+
     private val termsAndConditionBottomSheet by lazy {
         context?.run {
             TermsAndConditionBottomSheetFragment.createInstance(this).apply {
@@ -49,17 +73,38 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private val generalExpenseBottomSheet by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
-            setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
-        }
+        GeneralExpensesInfoBottomSheetFragment.createInstance(context)
     }
 
     private val publicVoucherTipsAndTrickBottomSheet by lazy {
         VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDiplay)
     }
 
+    private val failedCreateVoucherDialog by lazy {
+        context?.run {
+            FailedCreateVoucherDialog(this, ::onDialogTryAgain, ::onDialogRequestHelp)
+        }
+    }
+
+    private val loadingDialog by lazy {
+        context?.run {
+            LoadingDialog(this)
+        }
+    }
+
+    private val buttonUiModel by lazy {
+        FooterButtonUiModel(context?.getString(R.string.mvc_add_voucher).toBlankOrString(), "")
+    }
+
+    private var isWaitingForResult = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_list, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeLiveData()
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
@@ -71,7 +116,12 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
+    }
 
     override fun loadData(page: Int) {}
 
@@ -99,6 +149,34 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         generalExpenseBottomSheet.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
 
+    override fun onFooterButtonClickListener() {
+        createVoucher()
+    }
+
+    private fun observeLiveData() {
+        viewLifecycleOwner.observe(viewModel.createVoucherResponseLiveData) { result ->
+            if (isWaitingForResult) {
+                when(result) {
+                    is Success -> {
+                        if (result.data.status != CreateVoucherUseCase.STATUS_SUCCESS) {
+                            failedCreateVoucherDialog?.show()
+                        } else {
+                            //Todo: Prompt to list page
+                        }
+                    }
+                    is Fail -> {
+                        failedCreateVoucherDialog?.show()
+                    }
+                }
+                with(adapter) {
+                    notifyItemChanged(data.indexOf(buttonUiModel))
+                }
+                loadingDialog?.dismiss()
+            }
+            isWaitingForResult = false
+        }
+    }
+
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
         voucherReviewUiModel.run {
             val reviewInfoList = mutableListOf(
@@ -110,7 +188,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
                     DividerUiModel(DividerUiModel.THIN),
                     getPeriodSection(),
                     DividerUiModel(DividerUiModel.THICK),
-                    FooterButtonUiModel(context?.getString(R.string.mvc_add_voucher).toBlankOrString(), ""),
+                    buttonUiModel,
                     FooterUiModel(
                             context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
                             context?.getString(R.string.mvc_review_terms).toBlankOrString())
@@ -122,7 +200,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
                     reviewInfoList.add(VOUCHER_TIPS_INDEX, tipsUiModel)
                 }
             }
-
+            adapter.data.clear()
             renderList(reviewInfoList)
         }
     }
@@ -226,5 +304,28 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private fun getPublicVoucherDiplay() = VoucherTargetCardType.PUBLIC
+
+    private fun createVoucher() {
+        isWaitingForResult = true
+        viewModel.createVoucher(
+                CreateVoucherParam.mapToParam(
+                        getVoucherReviewUiModel(), getToken()
+                ))
+    }
+
+    private fun onDialogTryAgain() {
+        failedCreateVoucherDialog?.dismiss()
+        loadingDialog?.show()
+        isWaitingForResult = true
+        viewModel.createVoucher(
+                CreateVoucherParam.mapToParam(
+                        getVoucherReviewUiModel(), getToken()
+                )
+        )
+    }
+
+    private fun onDialogRequestHelp() {
+        failedCreateVoucherDialog?.dismiss()
+    }
 
 }
