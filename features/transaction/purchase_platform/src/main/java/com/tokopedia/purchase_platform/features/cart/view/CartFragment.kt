@@ -2080,7 +2080,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun showSnackbarRetry(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     activity?.getString(R.string.label_action_snackbar_retry) ?: "", View.OnClickListener {
                 dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
             })
@@ -2225,7 +2225,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         view?.let {
-            Toaster.make(it, tmpMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, activity?.getString(R.string.label_action_snackbar_close)
+            Toaster.make(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, activity?.getString(R.string.label_action_snackbar_close)
                     ?: "", View.OnClickListener { })
         }
     }
@@ -2241,7 +2241,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageGreen(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
                     ?: "", View.OnClickListener { })
         }
     }

@@ -641,7 +641,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
-            Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
+            Toaster.INSTANCE.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
         }
     }
 
@@ -655,7 +655,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
             } else {
-                Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
+                Toaster.INSTANCE.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
             }
         }
     }
@@ -2753,7 +2753,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setCouponStateChanged(true);
         if (!ignoreAPIResponse) {
             Toaster.INSTANCE.make(getView(), "Terjadi kesalahan. Ulangi beberapa saat lagi",
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,"", v->{});
+                    Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,"", v->{});
         }
     }
 
