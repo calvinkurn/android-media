@@ -27,10 +27,7 @@ import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchModule
 import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponent
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchNotFoundViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchRecommendationViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchResultViewHolder
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchShimmeringViewHolder
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.Constant
@@ -47,7 +44,9 @@ import javax.inject.Inject
 class BrandlistSearchFragment : BaseDaggerFragment(),
         HasComponent<BrandlistSearchComponent>,
         BrandlistSearchTrackingListener,
-        BrandlistSearchNotFoundViewHolder.Listener, BrandlistHeaderBrandInterface {
+        BrandlistSearchNotFoundViewHolder.Listener,
+        BrandlistSearchRecommendationNotFoundViewHolder.Listener,
+        BrandlistHeaderBrandInterface {
 
     companion object {
         const val BRANDLIST_SEARCH_GRID_SPAN_COUNT = 3
@@ -83,6 +82,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     private var isLoadMore: Boolean = false
     private var stateLoadBrands: String = LoadAllBrandState.LOAD_INITIAL_ALL_BRAND
     private var selectedBrandLetter: String = "A"
+    private val defaultBrandLetter: String = ""
     private var totalBrandsNumber: Int = 0
     private var recyclerViewLastState: Parcelable? = null
 
@@ -126,7 +126,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 }
             }
         }
-        val adapterTypeFactory = BrandlistSearchAdapterTypeFactory(this)
+        val adapterTypeFactory = BrandlistSearchAdapterTypeFactory(this, this)
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
@@ -300,6 +300,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     val response = it.data
                     endlessScrollListener.updateStateAfterGetData()
 
+                    val totalBrandPerCharacter = it.data.totalBrands
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
 
@@ -308,10 +309,22 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                         adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
                     }
 
-                    val brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
-                            response.brands, "", this)
-
-                    adapterBrandSearch?.updateBrands(brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
+                    var _brandlistSearchMapperResult: List<BrandlistSearchResultViewModel> = listOf()
+                    if (totalBrandPerCharacter == 0) {
+//                    if (selectedBrandLetter == "C") {
+                        adapterBrandSearch?.mappingBrandSearchNotFound(
+                                _brandlistSearchMapperResult,
+                                isLoadMore)
+//                        _brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
+//                                response.brands, "", this)
+                    } else {
+                        _brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
+                                response.brands, "", this)
+                        adapterBrandSearch?.updateBrands(_brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
+                    }
+//                    val brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
+//                            response.brands, "", this)
+//                    adapterBrandSearch?.updateBrands(brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
 
                     viewModel.updateTotalBrandSizeForChipHeader(response.totalBrands)
                     viewModel.updateTotalBrandSize(response.totalBrands)
@@ -368,6 +381,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false
+            selectedBrandLetter = defaultBrandLetter
             setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
             viewModel.resetParams()
             isInitialDataLoaded = false
@@ -383,6 +397,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                     ALPHABETIC_ASC_SORT, chipName)
             adapterBrandSearch?.refreshSticky()
         }
+    }
+
+    override fun onClickSearchButton() {
+
     }
 
 }

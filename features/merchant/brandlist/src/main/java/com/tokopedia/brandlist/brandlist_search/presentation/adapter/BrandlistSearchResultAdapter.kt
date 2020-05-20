@@ -62,6 +62,24 @@ class BrandlistSearchResultAdapter(
         }
     }
 
+    fun mappingBrandSearchNotFound(
+            searchResultList: List<BrandlistSearchResultViewModel>,
+            isLoadMore: Boolean
+    ) {
+        val totalBrands: Int = searchResultList.size
+        val _totalUnusedData = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>().size // getVisitables().size - 1
+        val _startIndex = 1
+
+        if (!isLoadMore && totalBrands == 0) {
+            getVisitables().removeAll(getVisitables().filterIsInstance<BrandlistSearchResultViewModel>())
+            notifyItemRangeRemoved(_startIndex, _totalUnusedData)
+//            getVisitables().subList(_startIndex, _totalUnusedData).clear()
+//            notifyItemRangeRemoved(_startIndex, _totalUnusedData)
+            getVisitables().add(_startIndex, BrandlistSearchRecommendationNotFoundViewModel())
+            notifyItemChanged(_startIndex)
+        }
+    }
+
     fun updateBrands(
             searchResultList: List<BrandlistSearchResultViewModel>,
             stateLoadBrands: String,
@@ -69,6 +87,18 @@ class BrandlistSearchResultAdapter(
     ) {
         val _totalUnusedData = getVisitables().size - 1
         val _startIndex = 1
+
+        val _totalUnusedViewModel = getVisitables().filterIsInstance<BrandlistSearchRecommendationNotFoundViewModel>().size
+//        val _totalUnusedData = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>().size // getVisitables().size - 1
+        if (_totalUnusedViewModel != 0) {
+            getVisitables().let {
+                getVisitables().removeAll(getVisitables().filterIsInstance<BrandlistSearchRecommendationNotFoundViewModel>())
+                notifyItemRangeRemoved(_startIndex, _totalUnusedViewModel)
+//                val _itemPosition = it.indexOf(BrandlistSearchRecommendationNotFoundViewModel())
+//                it.remove(BrandlistSearchRecommendationNotFoundViewModel())
+//                notifyItemRemoved(_itemPosition)
+            }
+        }
 
         if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
             if (!isLoadMore) {

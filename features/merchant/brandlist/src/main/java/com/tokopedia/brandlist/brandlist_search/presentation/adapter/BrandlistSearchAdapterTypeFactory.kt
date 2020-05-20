@@ -10,7 +10,8 @@ import com.tokopedia.brandlist.brandlist_search.presentation.fragment.BrandlistS
 
 
 class BrandlistSearchAdapterTypeFactory(
-        private val brandlistSearchFragment: BrandlistSearchFragment
+        private val brandlistSearchFragment: BrandlistSearchFragment,
+        private val searchListener: BrandlistSearchRecommendationNotFoundViewHolder.Listener
 ) : BaseAdapterTypeFactory(), BrandlistSearchTypeFactory {
 
     override fun type(brandlistSearchResultViewModel: BrandlistSearchResultViewModel): Int {
@@ -37,6 +38,10 @@ class BrandlistSearchAdapterTypeFactory(
         return BrandlistSearchGroupHeaderViewHolder.LAYOUT
     }
 
+    override fun type(brandlistSearchRecommendationNotFoundViewModel: BrandlistSearchRecommendationNotFoundViewModel): Int {
+        return BrandlistSearchRecommendationNotFoundViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             BrandlistSearchResultViewHolder.LAYOUT -> BrandlistSearchResultViewHolder(parent)
@@ -45,6 +50,7 @@ class BrandlistSearchAdapterTypeFactory(
             BrandlistSearchHeaderViewHolder.LAYOUT -> BrandlistSearchHeaderViewHolder(parent)
             BrandlistSearchShimmeringViewHolder.LAYOUT -> BrandlistSearchShimmeringViewHolder(parent)
             BrandlistSearchGroupHeaderViewHolder.LAYOUT -> BrandlistSearchGroupHeaderViewHolder(parent)
+            BrandlistSearchRecommendationNotFoundViewHolder.LAYOUT -> BrandlistSearchRecommendationNotFoundViewHolder(parent, searchListener)
             else -> super.createViewHolder(parent, type)
         }
     }
