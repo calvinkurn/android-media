@@ -221,9 +221,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation, isTilting: Boolean) {
-        val event = playViewModel.observableEvent.value
-        val isFreezeOrBanned = (event?.isFreeze ?: false) || (event?.isBanned ?: false)
-        if (requestedOrientation != screenOrientation.requestedOrientation && !isFreezeOrBanned && !onInterceptOrientationChangedEvent(screenOrientation))
+        if (requestedOrientation != screenOrientation.requestedOrientation && !onInterceptOrientationChangedEvent(screenOrientation))
             requestedOrientation = screenOrientation.requestedOrientation
 
         sendTrackerWhenRotateScreen(screenOrientation, isTilting)
@@ -250,6 +248,7 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
+        if (orientation.isLandscape) return
         layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
@@ -278,10 +277,6 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
         val isHandled = playViewModel.onBackPressed()
         return when {
             isHandled -> isHandled
-            orientation.isLandscape -> {
-                requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
-                true
-            }
             else -> false
         }
     }
@@ -489,15 +484,16 @@ class PlayFragment : BaseDaggerFragment(), PlayOrientationListener, PlayFragment
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
-            if (orientation.isLandscape && (it.isFreeze || it.isBanned)) {
-                requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
-            }
             if (it.isFreeze) {
                 sendEventFreeze(it)
                 try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
             } else if (it.isBanned) {
                 sendEventBanned(it)
                 showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+            }
+            if (it.isFreeze || it.isBanned) {
+                unregisterKeyboardListener(requireView())
+                onBottomInsetsViewHidden()
             }
         })
     }

@@ -26,6 +26,8 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.hasAlpha
 import com.tokopedia.play.extensions.isFullSolid
 import com.tokopedia.play.gesture.PlayClickTouchListener
+import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
+import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
 import com.tokopedia.play.ui.gradientbg.GradientBackgroundComponent
 import com.tokopedia.play.ui.immersivebox.ImmersiveBoxComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
@@ -34,10 +36,16 @@ import com.tokopedia.play.ui.like.interaction.LikeInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.sizecontainer.SizeContainerComponent
+import com.tokopedia.play.ui.statsinfo.StatsInfoMiniComponent
+import com.tokopedia.play.ui.toolbar.ToolbarMiniComponent
+import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
+import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlMiniComponent
 import com.tokopedia.play.ui.videocontrol.interaction.VideoControlInteractionEvent
 import com.tokopedia.play.ui.videosettings.VideoSettingsMiniComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -47,15 +55,15 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
 import com.tokopedia.play.view.layout.interaction.miniinteraction.PlayMiniInteractionLayoutManager
+import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.uimodel.LikeStateUiModel
-import com.tokopedia.play.view.uimodel.TotalLikeUiModel
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -172,11 +180,19 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
         observeTotalLikes()
         observeVideoProperty()
         observeVideoStream()
+        observeEventUserInfo()
+        observeTitleChannel()
+        observeToolbarInfo()
+        observeTotalViews()
+        observeCartInfo()
     }
 
     private fun setupView(view: View) {
         container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
         container.setOnClickListener {
+            val event = playViewModel.observableEvent.value
+            if (event?.isFreeze == true || event?.isBanned == true) return@setOnClickListener
+
             if (container.hasAlpha) triggerImmersive(it.isFullSolid)
         }
     }
@@ -224,7 +240,21 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
     }
 
     override fun onInitToolbar(container: ViewGroup): Int {
-        throw IllegalStateException("Component is not created for this fragment")
+        val toolbarComponent = ToolbarMiniComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+
+        scope.launch {
+            toolbarComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            PlayToolbarInteractionEvent.BackButtonClicked -> doLeaveRoom()
+                            is PlayToolbarInteractionEvent.FollowButtonClicked -> doClickFollow(it.partnerId, it.action)
+                            is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
+                            PlayToolbarInteractionEvent.CartButtonClicked -> shouldOpenCartPage()
+                        }
+                    }
+        }
+
+        return toolbarComponent.getContainerId()
     }
 
     override fun onInitVideoControl(container: ViewGroup): Int {
@@ -320,11 +350,28 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
     }
 
     override fun onInitEndLiveComponent(container: ViewGroup): Int {
-        throw IllegalStateException("Component is not created for this fragment")
+        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+
+        scope.launch {
+            endLiveInfoComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is EndLiveInfoInteractionEvent.ButtonActionClicked -> {
+                                openPageByApplink(
+                                        applink = it.buttonUrl,
+                                        shouldFinish = true
+                                )
+                            }
+                        }
+                    }
+        }
+
+        return endLiveInfoComponent.getContainerId()
     }
 
     override fun onInitStatsInfo(container: ViewGroup): Int {
-        throw IllegalStateException("Component is not created for this fragment")
+        return StatsInfoMiniComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+                .getContainerId()
     }
 
     override fun onInitVideoSettings(container: ViewGroup): Int {
@@ -356,13 +403,18 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
     }
 
     override fun onInterceptSystemUiVisibilityChanged(): Boolean {
-        return false
+        return if (playViewModel.isFreezeOrBanned && orientation.isLandscape) {
+            systemUiVisibility = PlayFullScreenHelper.getHideNavigationBarVisibility()
+            true
+        }
+        else false
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
-        if (orientation.isLandscape) triggerImmersive(false)
+        if (orientation.isLandscape && !playViewModel.isFreezeOrBanned) triggerImmersive(false)
+        onInterceptSystemUiVisibilityChanged()
     }
 
     override fun onDestroyView() {
@@ -428,6 +480,38 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
             setVideoStream(it)
         })
     }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+            onInterceptSystemUiVisibilityChanged()
+            if (it.isFreeze || it.isBanned) {
+                cancelAllAnimations()
+                container.alpha = VISIBLE_ALPHA
+            }
+            scope.launch {
+                if (it.isBanned) sendEventBanned(it)
+                else if(it.isFreeze) sendEventFreeze(it)
+            }
+        })
+    }
+
+    private fun observeTitleChannel() {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
+            if (it is Success) setChannelTitle(it.data.title)
+        })
+    }
+
+    private fun observeToolbarInfo() {
+        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver(::setPartnerInfo))
+    }
+
+    private fun observeTotalViews() {
+        playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver(::setTotalView))
+    }
+
+    private fun observeCartInfo() {
+        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, DistinctObserver(::setCartInfo))
+    }
     //endregion
 
     private fun enterFullscreen() {
@@ -481,8 +565,108 @@ class PlayMiniInteractionFragment : BaseDaggerFragment(), PlayInteractionViewIni
         }
     }
 
+    private fun sendEventBanned(eventUiModel: EventUiModel) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Banned(
+                                            title = eventUiModel.bannedTitle,
+                                            message = eventUiModel.bannedMessage,
+                                            btnTitle = eventUiModel.bannedButtonTitle
+                                    )
+                            )
+                    )
+        }
+    }
+
+    private fun sendEventFreeze(eventUiModel: EventUiModel) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.OnNewPlayRoomEvent(
+                                    PlayRoomEvent.Freeze(
+                                            title = eventUiModel.freezeTitle,
+                                            message = eventUiModel.freezeMessage,
+                                            btnTitle = eventUiModel.freezeButtonTitle,
+                                            btnUrl = eventUiModel.freezeButtonUrl
+                                    )
+                            )
+                    )
+        }
+    }
+
+    private fun setChannelTitle(title: String) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetChannelTitle(title)
+                    )
+        }
+    }
+
+    private fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetPartnerInfo(partnerInfo)
+                    )
+        }
+    }
+
+    private fun setTotalView(totalView: TotalViewUiModel) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetTotalViews(totalView)
+                    )
+        }
+    }
+
+    private fun setCartInfo(cartUiModel: CartUiModel) {
+        scope.launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetTotalCart(cartUiModel)
+                    )
+        }
+    }
+
     private fun doClickLike(shouldLike: Boolean) {
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
+    }
+
+    private fun doClickFollow(partnerId: Long, followAction: PartnerFollowAction) {
+        viewModel.doInteractionEvent(InteractionEvent.Follow(partnerId, followAction))
+    }
+
+    private fun doLeaveRoom() {
+        activity?.onBackPressed()
+    }
+
+    private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
+        if (partnerType == PartnerType.Shop) openShopPage(partnerId)
+        else if (partnerType == PartnerType.Influencer) openProfilePage(partnerId)
+    }
+
+    private fun openShopPage(partnerId: Long) {
+        PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.channelType)
+        openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
+    }
+
+    private fun openProfilePage(partnerId: Long) {
+        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString())
+    }
+
+    private fun shouldOpenCartPage() {
+        PlayAnalytics.clickCartIcon(channelId, playViewModel.channelType)
+        viewModel.doInteractionEvent(InteractionEvent.CartPage)
     }
 
     private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {

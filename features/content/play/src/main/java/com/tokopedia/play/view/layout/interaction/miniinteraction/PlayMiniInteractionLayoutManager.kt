@@ -27,10 +27,14 @@ class PlayMiniInteractionLayoutManager(
     @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
     @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
     @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
+    @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
+    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
+    @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
     //play button should be on top of other component so it can be clicked
     @IdRes private val playButtonComponentId: Int = viewInitializer.onInitPlayButton(container)
 
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private val offset12 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12)
     private val offset8 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     override fun onEnterImmersive(): Int {
@@ -63,6 +67,9 @@ class PlayMiniInteractionLayoutManager(
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutImmersiveBox(container = view, id = immersiveBoxComponentId, likeComponentId = likeComponentId, videoControlComponentId = videoControlComponentId)
         layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
+        layoutToolbar(container = view, id = toolbarComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = sizeContainerComponentId, toolbarComponentId = toolbarComponentId)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
@@ -137,6 +144,30 @@ class PlayMiniInteractionLayoutManager(
         container.changeConstraint {
             connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
             connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
+        }
+    }
+
+    private fun layoutEndLiveComponent(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+        }
+    }
+
+    private fun layoutToolbar(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
+            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP, offset16)
+        }
+    }
+
+    private fun layoutStatsInfo(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes toolbarComponentId: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
+            connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM, offset12)
         }
     }
 }

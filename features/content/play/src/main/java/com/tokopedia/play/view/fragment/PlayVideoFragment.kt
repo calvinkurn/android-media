@@ -292,7 +292,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer, PlayFr
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.ShowOneTapOnboarding
+                            ScreenStateEvent.ShowOneTapOnboarding(playViewModel.getStateHelper(orientation))
                     )
         }
     }
