@@ -100,7 +100,6 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
     private fun chooseCredit() {
         if (selectedCreditPos > -1) {
             val selected = adapter.data[selectedCreditPos]
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, resources.getString(R.string.title_top_ads_add_credit), getUrl(selected))
             activity?.let {
                 it.setResult(Activity.RESULT_OK)
                 val intent = Intent(activity, TopAdsPaymentCreditActivity::class.java).apply {
@@ -114,7 +113,7 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
 
     }
 
-    fun getUrl(selected: DataCredit): String {
+    private fun getUrl(selected: DataCredit): String {
         userSession = UserSession(activity)
         return URLGenerator.generateURLSessionLogin(
                 Uri.encode(selected.productUrl),
