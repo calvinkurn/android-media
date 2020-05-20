@@ -90,7 +90,7 @@ class NotificationUpdatePresenter @Inject constructor(
             onSuccessAddToCart: (data: DataModel) -> Unit
     ) {
         val requestParams = getCartRequestParams(product)
-        val atcSubscriber = getAtcSubscriber(product, onSuccessAddToCart)
+        val atcSubscriber = getAtcSubscriber(onSuccessAddToCart)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -99,13 +99,11 @@ class NotificationUpdatePresenter @Inject constructor(
     }
 
     private fun getAtcSubscriber(
-            product: ProductData,
             onSuccessAddToCart: (data: DataModel) -> Unit
     ): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(data: AddToCartDataModel) {
                 if (data.status.equals(STATUS_OK, true) && data.data.success == 1) {
-                    view.onTrackerAddToCart(product, data.data)
                     onSuccessAddToCart(data.data)
                 } else {
                     val errorException = MessageErrorException(data.errorMessage[0])

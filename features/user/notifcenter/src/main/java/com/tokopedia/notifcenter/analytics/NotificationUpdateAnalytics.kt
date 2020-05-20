@@ -596,33 +596,36 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 notificationId = notificationId
         )
 
-        val data = mapOf(
-                EVENT_NAME to NAME_EVENT_ATC,
-                EVENT_CATEGORY to CATEGORY_NOTIF_CENTER,
-                EVENT_ACTION to ACTION_CLICK_ATC_BUTTON,
-                EVENT_LABEL to eventLabel,
-                ECOMMERCE to mapOf(
-                        "currencyCode" to "IDR",
-                        "add" to mapOf(
-                                "products" to listOf(mapOf(
-                                        "name" to product.name,
-                                        "id" to product.productId,
-                                        "price" to product.price,
-                                        "brand" to "",
-                                        "category" to "",
-                                        "variant" to product.variant,
-                                        "quantity" to "1",
-                                        "dimension79" to product.shop?.id.toString(),
-                                        "dimension81" to "",
-                                        "dimension80" to product.shop?.name,
-                                        "dimension82" to "",
-                                        "dimension45" to atc.cartId,
-                                        "dimension40" to "/notifcenter"
-                                ))
-                        )
-                )
+        val products = DataLayer.mapOf(
+                "products", listOf(DataLayer.mapOf(
+                        "name", product.name,
+                        "id", product.productId,
+                        "price", product.price,
+                        "brand", "",
+                        "category", "",
+                        "variant", product.variant,
+                        "quantity", "1",
+                        "dimension79", product.shop?.id.toString(),
+                        "dimension81", "",
+                        "dimension80", product.shop?.name,
+                        "dimension82", "",
+                        "dimension45", atc.cartId,
+                        "dimension40", "/notifcenter"
+                ))
         )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
+
+        val ecommerce = DataLayer.mapOf(
+                "currencyCode", "IDR",
+                "add", products
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_NAME, NAME_EVENT_ATC,
+                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION, ACTION_CLICK_ATC_BUTTON,
+                EVENT_LABEL, eventLabel,
+                ECOMMERCE, ecommerce
+        ))
     }
 
     // #NC7

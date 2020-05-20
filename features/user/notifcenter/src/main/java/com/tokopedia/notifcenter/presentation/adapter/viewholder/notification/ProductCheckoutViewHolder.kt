@@ -118,6 +118,7 @@ class ProductCheckoutViewHolder(
                     // goto cart page
                     routeCartPage()
 
+                    // tracker
                     listener.getAnalytic().trackAtcOnSingleProductClick(
                             notification = element,
                             cartId = it.cartId
@@ -130,12 +131,12 @@ class ProductCheckoutViewHolder(
             notificationItemMarkedClick(element)
 
             listener.addProductToCart(product) {
-                // tracker
-                trackAddToCartClicked(element, product, it)
-
                 // show toaster
                 val message = it.message.first()
                 listener.onSuccessAddToCart(message)
+
+                // tracker
+                trackAddToCartClicked(element, product, it)
             }
         }
     }

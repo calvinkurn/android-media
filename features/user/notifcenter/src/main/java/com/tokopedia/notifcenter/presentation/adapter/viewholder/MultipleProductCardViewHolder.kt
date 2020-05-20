@@ -144,12 +144,12 @@ class MultipleProductCardViewHolder(
             listener.itemClicked(notification, adapterPosition)
 
             listener.addProductToCart(element.product) {
-                // tracker
-                trackAddToCartClicked(element, element.product, it)
-
                 // show toaster
                 val message = it.message.first()
                 listener.onSuccessAddToCart(message)
+
+                // tracker
+                trackAddToCartClicked(element, element.product, it)
             }
         }
     }
