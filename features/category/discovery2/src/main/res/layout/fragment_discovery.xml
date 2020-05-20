@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:background="@color/white"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <include
             android:id="@+id/item_toolbar"

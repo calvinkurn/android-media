@@ -12,5 +12,6 @@
     <color name="clr_ff5722">#ff5722</color>
     <color name="clr_ea212d">#ea212d</color>
     <color name="clr_ffeaef">#ffeaef</color>
+    <color name="voucher_text_color_disable">#abadb1</color>
 
 </resources>

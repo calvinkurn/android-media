@@ -19,7 +19,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -45,27 +44,24 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         launchCatchError(
                 block = {
                     val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
-                    data.let {
-                        withContext(Dispatchers.Default) {
-                            checkLoginAndUpdateList(it.components)
-                            findCustomTopChatComponentsIfAny(it.components)
+                        data.let {
+                            withContext(Dispatchers.Default) {
+                                checkLoginAndUpdateList(it.components)
+                                findCustomTopChatComponentsIfAny(it.components)
+                            }
+                            setPageInfo(it.pageInfo)
                         }
-                        setPageInfo(it.pageInfo)
-                    }
                 },
                 onError = {
-                    //   withContext(Dispatchers.Main){
-                    it.printStackTrace()
-                    discoveryPageInfo.postValue(Fail(it))
-                    //   }
+                    discoveryPageInfo.value = Fail(it)
                 }
         )
 
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
-        if (pageInfo != null)
-            discoveryPageInfo.postValue(Success(pageInfo))
+        if(pageInfo!=null)
+            discoveryPageInfo.value = Success(pageInfo)
     }
 
     private fun findCustomTopChatComponentsIfAny(components: List<ComponentsItem>?) {

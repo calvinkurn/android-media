@@ -21,6 +21,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.libraries.youtubeutil)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

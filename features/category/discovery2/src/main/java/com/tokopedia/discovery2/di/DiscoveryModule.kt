@@ -3,6 +3,10 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
+import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
+import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
+import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponRepository
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
@@ -54,8 +58,21 @@ class DiscoveryModule {
 
     @DiscoveryScope
     @Provides
+    fun provideRedeemCouponRepository(@ApplicationContext context: Context): IClaimCouponGqlRepository {
+        return ClaimCouponGQLRepository(provideGetStringMethod(context))
+    }
+
+
+    @DiscoveryScope
+    @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @DiscoveryScope
+    @Provides
+    fun provideClaimCouponRestRepository(): IClaimCouponRepository {
+        return ClaimCouponRestRepository()
     }
 
     @DiscoveryScope
