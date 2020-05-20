@@ -25,12 +25,12 @@ class GetProductIncentiveOvoUseCaseTest {
         val params = RequestParams.EMPTY
 
         every {
-            getProductIncentiveOvoUseCase.createObservable(params)
+            getProductIncentiveOvoUseCase.createObservable(any())
         } returns Observable.just(ProductRevIncentiveOvoDomain())
 
         val testSubscriber = getProductIncentiveOvoUseCase.createObservable(params).test()
         verify {
-            getProductIncentiveOvoUseCase.createObservable(params)
+            getProductIncentiveOvoUseCase.createObservable(any())
         }
         testSubscriber.assertCompleted()
         testSubscriber.assertNoErrors()
