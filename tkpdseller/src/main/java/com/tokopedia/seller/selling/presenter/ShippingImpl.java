@@ -70,11 +70,6 @@ public class ShippingImpl extends Shipping {
     }
 
     @Override
-    public String getMessageTAG() {
-        return null;
-    }
-
-    @Override
     public void initData(@NonNull Context context) {
         view.setAdapter();
         view.setListener();

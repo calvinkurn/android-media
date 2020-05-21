@@ -176,11 +176,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     }
 
     @Override
-    public String getMessageTAG() {
-        return null;
-    }
-
-    @Override
     public void initData(@NonNull Context context) {
         view.initListener();
         if (!isAfterRotate) {

@@ -350,9 +350,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 intent.putExtra(accoutHandleKey, DeviceUtil.getPhoneHandle(getView().getActivity(), simPosition));
             }
         }
-//        if (RequestPermissionUtil.checkHasPermission(getView().getActivity(), Manifest.permission.CALL_PHONE)) {
-//            getView().getActivity().startActivity(intent);
-//        }
         ussdTimeOut = false;
         startUssdCheckBalanceTimer();
     }

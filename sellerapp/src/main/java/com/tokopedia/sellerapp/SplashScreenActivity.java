@@ -1,28 +1,26 @@
 package com.tokopedia.sellerapp;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-
-import org.json.JSONObject;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
+import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -60,8 +58,8 @@ public class SplashScreenActivity extends SplashScreen {
         if (isApkTempered) {
             return;
         }
-
-        if (SessionHandler.isUserHasShop(this)) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.hasShop()) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
                 DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
@@ -73,11 +71,11 @@ public class SplashScreenActivity extends SplashScreen {
                     intent.putExtras(bundle);
                     delegate.dispatchFrom(this, intent);
                 } else {
-                    startActivity(DashboardActivity.createInstance(this));
+                    startActivity(SellerHomeActivity.createIntent(this));
                 }
             } else {
                 // Means it is a Seller
-                startActivity(DashboardActivity.createInstance(this));
+                startActivity(SellerHomeActivity.createIntent(this));
             }
         } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(this))) {
             Intent intent = moveToCreateShop(this);
@@ -102,7 +100,7 @@ public class SplashScreenActivity extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
             }
 
             @Override
