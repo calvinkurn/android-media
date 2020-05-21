@@ -117,7 +117,7 @@ class DiscoveryAnalytics(pageType: String = "",
                     }
                     val map = HashMap<String, Any>()
                     data[0].let {
-                        map[KEY_ID] = it.dynamicComponentId.toString()
+                        map[KEY_ID] = it.claimCouponid.toString()
                         map[KEY_CREATIVE_URL] = if (coupon.properties?.columns?.equals(ClaimCouponConstant.DOUBLE_COLUMNS) == true)
                             it.smallImageUrlMobile
                                     ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER
@@ -149,7 +149,7 @@ class DiscoveryAnalytics(pageType: String = "",
         val list = ArrayList<Map<String, Any>>()
         coupon?.let {
             list.add(mapOf(
-                    KEY_ID to it.dynamicComponentId.toString(),
+                    KEY_ID to it.claimCouponid.toString(),
                     KEY_CREATIVE_URL to if (isDouble) it.smallImageUrlMobile
                             ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
                     KEY_POSITION to position.toString(),
