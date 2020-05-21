@@ -65,7 +65,6 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        Log.d("ItembindView", this.toString() + discoveryBaseViewModel.toString())
         productCardItemViewModel = discoveryBaseViewModel as ProductCardItemViewModel
         init()
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -9,13 +8,11 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
 
     private val adapterList: ArrayList<DiscoveryRecycleAdapter> = ArrayList()
-    private var currentActiveAdapter: DiscoveryRecycleAdapter? = null
-    var index = 0
-    var lastListCount = 0
+    private var initialChildAdapter: DiscoveryRecycleAdapter? = null
 
     fun addAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
         if (adapterList.isEmpty()) {
-            currentActiveAdapter = discoveryRecycleAdapter
+            initialChildAdapter = discoveryRecycleAdapter
         }
         adapterList.add(discoveryRecycleAdapter)
 
@@ -23,69 +20,48 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return currentActiveAdapter?.onCreateViewHolder(parent, viewType)!!
+        return initialChildAdapter?.onCreateViewHolder(parent, viewType)!!
     }
 
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-//        Log.d("onBindViewHolder ", position.toString())
-//        currentActiveAdapter?.onBindViewHolder(holder, position - lastListCount)
-
-        Log.d("onBindViewHolder", position.toString())
-
-        val pair = getActiveAdapter(position)
-        pair.first.onBindViewHolder(holder, position - pair.second)
+        val adapterPositionPair = getActiveAdapter(position)
+        adapterPositionPair.first.onBindViewHolder(holder, position - adapterPositionPair.second)
     }
 
 
     override fun getItemViewType(position: Int): Int {
+        val adapterPositionPair = getActiveAdapter(position)
 
-        val pair = getActiveAdapter(position)
+        return if (position >= adapterPositionPair.second) {
+            adapterPositionPair.first.getItemViewType(position - adapterPositionPair.second)
+        } else {
+            0
+        }
+    }
 
-
-//        Log.d("getItemViewType ", position.toString())
-//        val x = lastListCount + currentActiveAdapter?.itemCount!!
-//
-//        if (position >= x) {
-//            currentActiveAdapter = adapterList[++index]
-//            lastListCount = lastListCount + currentActiveAdapter?.itemCount!!
-//        } else if (position < lastListCount) {
-//            lastListCount = lastListCount - currentActiveAdapter?.itemCount!!
-//            currentActiveAdapter = adapterList[--index]
-//        }
-
-
-        val id = pair.first.getItemViewType(position - pair.second)
-        return id ?: 0
+    override fun getItemCount(): Int {
+        return adapterList.sumBy { it.itemCount }
     }
 
 
-    fun getActiveAdapter(position: Int): Pair<DiscoveryRecycleAdapter, Int> {
-        var xCount = 0
-        var xAdapter = adapterList[0]
+    private fun getActiveAdapter(position: Int): Pair<DiscoveryRecycleAdapter, Int> {
+        var listDataCount = 0
+        var currentChildAdapter = adapterList[0]
         for (it in adapterList) {
-            if (xCount + it.itemCount > position) {
-                xAdapter = it
+            if (listDataCount + it.itemCount > position) {
+                currentChildAdapter = it
                 break
             } else {
-                xCount += it.itemCount
+                listDataCount += it.itemCount
             }
         }
-
-//        adapterList.forEach {
-//
-//            if (xCount + it.itemCount > position) {
-//                xAdapter = it
-//
-//            } else {
-//                xCount += it.itemCount
-//            }
-//        }
-
-        Log.d("getActiveAdapter", xAdapter.toString() + " postion " + position.toString() + "xCount" + xCount)
-        return Pair(xAdapter, xCount)
+        return Pair(currentChildAdapter, listDataCount)
     }
 
+    fun setDataList(dataList: ArrayList<ComponentsItem>?) {
+        initialChildAdapter?.setDataList(dataList)
+    }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
@@ -96,15 +72,5 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
         holder.onViewDetachedToWindow()
         super.onViewDetachedFromWindow(holder)
-    }
-
-
-    override fun getItemCount(): Int {
-        return adapterList.sumBy { it.itemCount }
-    }
-
-
-    fun setDataList(dataList: ArrayList<ComponentsItem>?) {
-        currentActiveAdapter?.setDataList(dataList)
     }
 }

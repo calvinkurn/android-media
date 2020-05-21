@@ -31,11 +31,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener, AddChildAdapterCallback {
+class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
+
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
-
-    //    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mergeAdapters: MergeAdapters
     private lateinit var mPageComponentRecyclerView: RecyclerView
     private lateinit var typographyHeader: Typography
@@ -78,11 +77,9 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         mPageComponentRecyclerView.layoutManager = layoutManager
 
-//        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
         mergeAdapters = MergeAdapters()
         mergeAdapters.addAdapter(DiscoveryRecycleAdapter(this))
         mPageComponentRecyclerView.adapter = mergeAdapters
-        mPageComponentRecyclerView.addOnChildAttachStateChangeListener(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -164,14 +161,6 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mPageComponentRecyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
 
-    override fun onChildViewAttachedToWindow(view: View) {
-//        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewAttachedToWindow()
-    }
-
-    override fun onChildViewDetachedFromWindow(view: View) {
-//        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewDetachedToWindow()
-    }
-
     private fun setFloatingActionButton(data: DataItem) {
         mDiscoveryFab.apply {
             show()
@@ -219,11 +208,6 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                     requestCode, permissions,
                     grantResults)
         }
-    }
-
-    override fun onDetach() {
-        mPageComponentRecyclerView.removeOnChildAttachStateChangeListener(this)
-        super.onDetach()
     }
 
     override fun addChildAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {

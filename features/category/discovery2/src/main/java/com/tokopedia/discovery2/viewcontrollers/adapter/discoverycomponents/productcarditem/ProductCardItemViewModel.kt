@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,7 +33,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
 
     fun getDataItemValue(): LiveData<DataItem> {
-        Log.d("getDataItemValue", this.toString() + components.data?.get(0).toString())
         dataItem.value = components.data?.get(0)
         return dataItem
     }
