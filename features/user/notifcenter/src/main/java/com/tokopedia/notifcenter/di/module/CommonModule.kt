@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -44,13 +43,13 @@ import dagger.Provides
 
     @Provides
     @NotificationScope
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(@NotificationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
     @NotificationScope
-    fun provideCacheManager(@ApplicationContext context: Context): CacheManager {
+    fun provideCacheManager(@NotificationContext context: Context): CacheManager {
         return CacheManager(context)
     }
 

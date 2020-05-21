@@ -39,7 +39,7 @@ class CpmTopadsProductItemViewHolder(itemView: View, private val fragment: Fragm
         if (!applinks.isNullOrEmpty()) {
             itemView.setOnClickListener {
                 RouteManager.route(itemView.context, applinks)
-                ImpresionTask().execute(imageClickUrl)
+//                ImpresionTask().execute(imageClickUrl)
             }
         }
     }

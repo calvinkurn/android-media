@@ -1,60 +1,64 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase;
 
-import com.google.gson.reflect.TypeToken;
-import com.tokopedia.network.data.model.response.DataResponse;
-import com.tokopedia.common.network.data.model.CacheType;
-import com.tokopedia.common.network.data.model.RequestType;
-import com.tokopedia.common.network.data.model.RestCacheStrategy;
-import com.tokopedia.common.network.data.model.RestRequest;
-import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint;
-import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse;
-import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.usecase.RequestParams;
+import android.content.Context;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.functions.Func1;
 
-public class PostMessageUseCase extends RestRequestUseCase {
 
-    private Map<String, Object> queryMap;
+public class PostMessageUseCase extends UseCase<TicketReplyResponse.TicketReply> {
+
+    Context context;
+    GraphqlUseCase graphqlUseCase;
+    UserSessionInterface userSession;
+    RequestParams requestParams;
 
     @Inject
-    PostMessageUseCase() {
-        queryMap = new HashMap<>();
+    PostMessageUseCase(Context context, GraphqlUseCase graphqlUseCase, UserSessionInterface userSession) {
+        this.context = context;
+        this.graphqlUseCase = graphqlUseCase;
+        this.userSession = userSession;
     }
 
     @Override
-    protected List<RestRequest> buildRequest(RequestParams requestParams) {
-        List<RestRequest> tempRequest = new ArrayList<>();
-        RestRequest restRequest1 = new RestRequest.Builder(getUrl(), new TypeToken<InboxDataResponse<CreateTicketResult>>() {
-        }.getType())
-                .setRequestType(RequestType.POST)
-                .setBody(queryMap)
-                .setCacheStrategy(new RestCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-                .build();
-        tempRequest.add(restRequest1);
-
-        return tempRequest;
+    public Observable<TicketReplyResponse.TicketReply> createObservable(RequestParams requestParams) {
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.reply_ticket_query), TicketReplyResponse.class, this.requestParams.getParameters(), false);
+        graphqlUseCase.addRequest(graphqlRequest);
+        return graphqlUseCase.createObservable(requestParams).map(new Func1<GraphqlResponse, TicketReplyResponse.TicketReply>() {
+            @Override
+            public TicketReplyResponse.TicketReply call(GraphqlResponse graphqlResponse) {
+                TicketReplyResponse ticketReplyResponse = ((TicketReplyResponse) (graphqlResponse.getData(TicketReplyResponse.class)));
+                if (ticketReplyResponse != null) {
+                    return ticketReplyResponse.getTicketReply();
+                } else {
+                    return null;
+                }
+            }
+        });
     }
 
-    private String getUrl() {
-        return TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.SEND_MESSAGE;
-    }
 
-    public void setQueryMap(String id, String message, int photo, String photoall) {
-        queryMap.clear();
-        queryMap.put("ticket_id", id);
-        queryMap.put("message", message);
-        if (photo == 1)
-            queryMap.put("p_photo", 1);
-        if (photoall.length() > 0)
-            queryMap.put("p_photo_all", photoall);
+    public void createRequestParams(String id, String message, int photo, String photoall, String agentReply) {
+        requestParams = RequestParams.create();
+        requestParams.putString("ticketID", id);
+        requestParams.putString("message", message);
+        requestParams.putString("agentReply", agentReply);
+        requestParams.putString("userID", userSession.getUserId());
+        requestParams.putInt("pPhoto", photo);
+        requestParams.putString("pPhotoAll", photoall);
     }
 }

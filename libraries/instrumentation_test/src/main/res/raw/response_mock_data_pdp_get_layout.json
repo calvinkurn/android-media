@@ -1,0 +1,452 @@
+[
+  {
+    "data": {
+      "pdpGetLayout": {
+        "basicInfo": {
+          "alias": "samsung-galaxy-a71-8-128-ram-8gb-rom-128gb-garansi-resmi-silver-7cba",
+          "blacklistMessage": {
+            "button": "",
+            "description": "",
+            "title": "",
+            "url": ""
+          },
+          "catalogID": "66108",
+          "category": {
+            "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet/handphone/android-os",
+            "detail": [
+              {
+                "id": "65",
+                "name": "Handphone & Tablet"
+              },
+              {
+                "id": "24",
+                "name": "Handphone"
+              },
+              {
+                "id": "3054",
+                "name": "Android OS"
+              }
+            ],
+            "id": "3054",
+            "isAdult": false,
+            "name": "Android OS",
+            "title": "Android OS"
+          },
+          "condition": "NEW",
+          "defaultOngkirEstimation": "30000",
+          "gtin": "",
+          "isBlacklisted": false,
+          "isLeasing": false,
+          "isMustInsurance": true,
+          "maxOrder": 0,
+          "menu": {
+            "id": "870064",
+            "name": "Samsung",
+            "url": "https://www.tokopedia.com/h2cell/etalase/samsung-1"
+          },
+          "minOrder": 1,
+          "needPrescription": false,
+          "productID": "682309622",
+          "shopID": "256223",
+          "sku": "",
+          "stats": {
+            "countReview": "162",
+            "countTalk": "117",
+            "countView": "44973",
+            "rating": 5
+          },
+          "status": "ACTIVE",
+          "txStats": {
+            "countSold": "333",
+            "itemSoldPaymentVerified": "0",
+            "paymentVerified": "0",
+            "transactionReject": "0",
+            "transactionSuccess": "321"
+          },
+          "url": "https://www.tokopedia.com/h2cell/samsung-galaxy-a71-8-128-ram-8gb-rom-128gb-garansi-resmi-silver-7cba",
+          "weight": 700,
+          "weightUnit": "GRAM"
+        },
+        "components": [
+          {
+            "data": [
+              {
+                "campaign": {
+                  "appLinks": "",
+                  "campaignID": "0",
+                  "campaignType": "0",
+                  "campaignTypeName": "",
+                  "discountedPrice": 0,
+                  "endDate": "",
+                  "endDateUnix": "0",
+                  "hideGimmick": false,
+                  "isActive": false,
+                  "isAppsOnly": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "originalPrice": 0,
+                  "percentageAmount": 0,
+                  "startDate": "",
+                  "stock": 0,
+                  "stockSoldPercentage": 0
+                },
+                "isCOD": false,
+                "isCashback": {
+                  "percentage": 0
+                },
+                "isFreeOngkir": {
+                  "imageURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+                  "isActive": true
+                },
+                "isOS": true,
+                "isPowerMerchant": true,
+                "isTradeIn": true,
+                "media": [
+                  {
+                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_3b8b6ebc-3a00-4fc6-bc85-81218ae085d3_800_800",
+                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_3b8b6ebc-3a00-4fc6-bc85-81218ae085d3_800_800",
+                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/31/1762132/1762132_3b8b6ebc-3a00-4fc6-bc85-81218ae085d3_800_800",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": "",
+                    "videoURLIOS": ""
+                  },
+                  {
+                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_5d744a67-be13-4be7-a35c-c83813bb153f_800_800",
+                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_5d744a67-be13-4be7-a35c-c83813bb153f_800_800",
+                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/31/1762132/1762132_5d744a67-be13-4be7-a35c-c83813bb153f_800_800",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": "",
+                    "videoURLIOS": ""
+                  },
+                  {
+                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_765692c2-824e-475a-ad42-cf57726ccee6_800_800",
+                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_765692c2-824e-475a-ad42-cf57726ccee6_800_800",
+                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/31/1762132/1762132_765692c2-824e-475a-ad42-cf57726ccee6_800_800",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": "",
+                    "videoURLIOS": ""
+                  },
+                  {
+                    "URL300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_f63a45d2-feea-4f00-b938-9e84906e40dd_800_800",
+                    "URLOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_f63a45d2-feea-4f00-b938-9e84906e40dd_800_800",
+                    "URLThumbnail": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/31/1762132/1762132_f63a45d2-feea-4f00-b938-9e84906e40dd_800_800",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": "",
+                    "videoURLIOS": ""
+                  }
+                ],
+                "name": "Samsung Galaxy A71 8/128 - RAM 8GB / ROM 128GB - Garansi Resmi - Silver",
+                "pictures": [
+                  {
+                    "Status": 2,
+                    "description": "",
+                    "fileName": "1762132_3b8b6ebc-3a00-4fc6-bc85-81218ae085d3_800_800",
+                    "filePath": "product-1/2020/1/31/1762132",
+                    "height": 800,
+                    "isFromIG": false,
+                    "picID": "1916313643",
+                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_3b8b6ebc-3a00-4fc6-bc85-81218ae085d3_800_800",
+                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_3b8b6ebc-3a00-4fc6-bc85-81218ae085d3_800_800",
+                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_3b8b6ebc-3a00-4fc6-bc85-81218ae085d3_800_800",
+                    "width": 800
+                  },
+                  {
+                    "Status": 1,
+                    "description": "",
+                    "fileName": "1762132_5d744a67-be13-4be7-a35c-c83813bb153f_800_800",
+                    "filePath": "product-1/2020/1/31/1762132",
+                    "height": 800,
+                    "isFromIG": false,
+                    "picID": "1916313641",
+                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_5d744a67-be13-4be7-a35c-c83813bb153f_800_800",
+                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_5d744a67-be13-4be7-a35c-c83813bb153f_800_800",
+                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_5d744a67-be13-4be7-a35c-c83813bb153f_800_800",
+                    "width": 800
+                  },
+                  {
+                    "Status": 1,
+                    "description": "",
+                    "fileName": "1762132_765692c2-824e-475a-ad42-cf57726ccee6_800_800",
+                    "filePath": "product-1/2020/1/31/1762132",
+                    "height": 800,
+                    "isFromIG": false,
+                    "picID": "1916313642",
+                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_765692c2-824e-475a-ad42-cf57726ccee6_800_800",
+                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_765692c2-824e-475a-ad42-cf57726ccee6_800_800",
+                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_765692c2-824e-475a-ad42-cf57726ccee6_800_800",
+                    "width": 800
+                  },
+                  {
+                    "Status": 1,
+                    "description": "",
+                    "fileName": "1762132_f63a45d2-feea-4f00-b938-9e84906e40dd_800_800",
+                    "filePath": "product-1/2020/1/31/1762132",
+                    "height": 800,
+                    "isFromIG": false,
+                    "picID": "1916313644",
+                    "url300": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/1/31/1762132/1762132_f63a45d2-feea-4f00-b938-9e84906e40dd_800_800",
+                    "urlOriginal": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_f63a45d2-feea-4f00-b938-9e84906e40dd_800_800",
+                    "urlThumbnail": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/31/1762132/1762132_f63a45d2-feea-4f00-b938-9e84906e40dd_800_800",
+                    "width": 800
+                  }
+                ],
+                "preorder": {
+                  "duration": 0,
+                  "isActive": false,
+                  "timeUnit": "UNKNOWN"
+                },
+                "price": {
+                  "currency": "IDR",
+                  "lastUpdateUnix": "1589261761",
+                  "value": 6189000
+                },
+                "stock": {
+                  "stockWording": "<b style='color:red'>Stok terakhir,</b> beli sekarang!",
+                  "useStock": true,
+                  "value": "1"
+                },
+                "variant": {
+                  "isVariant": true,
+                  "parentID": "682309616"
+                },
+                "videos": [],
+                "wholesale": []
+              }
+            ],
+            "name": "product_snapshot",
+            "type": "product_snapshot"
+          },
+          {
+            "data": [],
+            "name": "variant_options",
+            "type": "variant"
+          },
+          {
+            "data": [],
+            "name": "upcoming_deals",
+            "type": "teaser"
+          },
+          {
+            "data": [],
+            "name": "social_proof",
+            "type": "social_proof"
+          },
+          {
+            "data": [],
+            "name": "value_prop",
+            "type": "value_prop"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "shop_voucher",
+            "type": "shop_voucher"
+          },
+          {
+            "data": [
+              {
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Varian Produk"
+              }
+            ],
+            "name": "variant",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Harga Grosir"
+              }
+            ],
+            "name": "wholesale",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Cicilan"
+              }
+            ],
+            "name": "installment",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icTradeinBlue_3x.png",
+                "isApplink": true,
+                "title": "Beli dengan Tukar Tambah"
+              }
+            ],
+            "name": "tradein",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icFulfillment_3x.png",
+                "isApplink": false,
+                "title": "Dilayani oleh Tokopedia"
+              }
+            ],
+            "name": "fulfillment",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icProtection_3x.png",
+                "isApplink": false,
+                "title": "Proteksi Gadget"
+              }
+            ],
+            "name": "protection",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icOrderprio_3x.png",
+                "isApplink": false,
+                "title": "Order Prioritas"
+              }
+            ],
+            "name": "order_prio",
+            "type": "info"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [
+              {
+                "content": [
+                  {
+                    "applink": "",
+                    "subtitle": "700 Gram",
+                    "title": "Berat"
+                  },
+                  {
+                    "applink": "",
+                    "subtitle": "Baru",
+                    "title": "Kondisi"
+                  },
+                  {
+                    "applink": "",
+                    "subtitle": "Ya",
+                    "title": "Asuransi"
+                  },
+                  {
+                    "applink": "",
+                    "subtitle": "1 Buah",
+                    "title": "Pemesanan Min"
+                  },
+                  {
+                    "applink": "https://www.tokopedia.com/p/handphone-tablet/handphone/android-os",
+                    "subtitle": "Android OS",
+                    "title": "Kategori"
+                  },
+                  {
+                    "applink": "https://www.tokopedia.com/h2cell/etalase/samsung-1",
+                    "subtitle": "Samsung",
+                    "title": "Etalase"
+                  }
+                ],
+                "row": "top"
+              },
+              {
+                "content": [
+                  {
+                    "applink": "",
+                    "subtitle": "Garansi Resmi SEIN 1 Tahun \nProsesor Octa-Core, 2.2GHz, 1.8GHz Layar 6.7\" Super AMOLED Plus \nKamera Belakang 64.0 MP + 12.0 MP + 5.0 MP + 5.0 MP \nKamera Depan 32.0 MP \nRAM 8GB / ROM 128GB \nMicroSD (Up to 512GB) \nDual Nano SIM \nBattery 4500mAh \nNFC : YES ",
+                    "title": "Deskripsi"
+                  }
+                ],
+                "row": "bottom"
+              }
+            ],
+            "name": "product_info",
+            "type": "product_info"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "pdp_1",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "shop_info",
+            "type": "shop_info"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "pdp_2",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "most_helpful_review",
+            "type": "most_helpful_review"
+          },
+          {
+            "data": [],
+            "name": "discussion",
+            "type": "discussion"
+          },
+          {
+            "data": [],
+            "name": "pdp_3",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "pdp_4",
+            "type": "product_list"
+          }
+        ],
+        "name": "Default Layout"
+      }
+    }
+  }
+]

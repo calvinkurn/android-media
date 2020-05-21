@@ -27,7 +27,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
-class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
+class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) : HomeVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
     private var homeData: HomeData? = null
@@ -116,7 +116,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         if (needToShowUserWallet) {
             val headerViewModel = HeaderDataModel()
             headerViewModel.isPendingTokocashChecked = false
-            headerViewModel.isUserLogin = userSessionInterface.isLoggedIn
+            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
 
             visitableList.add(headerViewModel)
         }
@@ -216,12 +216,11 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
                     createDynamicChannel(
                             channel = channel,
-                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface.userId ?: "")
+                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
-                        channel = channel,
-                        trackingData = HomePageTrackingV2.MixLeft.getMixLeftProductView(channel)
+                        channel = channel
                 )}
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createDynamicChannel(
@@ -232,9 +231,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
-                        channel,
-                        trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
-                        isCombined = false
+                        channel
                 ) }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
             }

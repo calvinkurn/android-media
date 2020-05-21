@@ -24,6 +24,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -32,6 +33,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class DiscoveryFragment : BaseDaggerFragment(), RecyclerView.OnChildAttachStateChangeListener {
@@ -43,6 +46,7 @@ class DiscoveryFragment : BaseDaggerFragment(), RecyclerView.OnChildAttachStateC
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private lateinit var globalError: GlobalError
     var pageEndPoint = ""
     var last = false
 
@@ -91,6 +95,7 @@ class DiscoveryFragment : BaseDaggerFragment(), RecyclerView.OnChildAttachStateC
             getDiscoveryAnalytics().trackBackClick()
             activity?.onBackPressed()
         }
+        globalError = view.findViewById(R.id.global_error)
         mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
         mPageComponentRecyclerView.layoutManager = LinearLayoutManager(activity)
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
@@ -155,6 +160,18 @@ class DiscoveryFragment : BaseDaggerFragment(), RecyclerView.OnChildAttachStateC
                     typographyHeader.text = getString(R.string.discovery)
                     ivSearch.hide()
                     ivShare.hide()
+
+                    if (it.throwable is UnknownHostException
+                            || it.throwable is SocketTimeoutException) {
+                        globalError.setType(GlobalError.NO_CONNECTION)
+                    } else {
+                        globalError.setType(GlobalError.SERVER_ERROR)
+                    }
+                    globalError.show()
+                    globalError.setOnClickListener {
+                        globalError.hide()
+                        mDiscoveryViewModel.getDiscoveryData()
+                    }
                 }
             }
         })
