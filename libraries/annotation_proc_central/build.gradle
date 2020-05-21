@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+    kapt rootProject.ext.tkpdInternalLibDependencies.analyticProcessor
+    compileOnly rootProject.ext.miscDependencies.kotlinPoet
+    compileOnly rootProject.ext.supportLibDependencies.kotlinReflection
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+}

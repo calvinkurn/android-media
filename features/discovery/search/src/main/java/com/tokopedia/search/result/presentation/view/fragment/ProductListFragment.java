@@ -66,6 +66,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
@@ -96,7 +97,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
@@ -109,7 +109,6 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
-import timber.log.Timber;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -558,7 +557,9 @@ public class ProductListFragment
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
-        sendProductImpressionTrackingEvent(list);
+        if (!presenter.isTrackingViewPortEnabled()) {
+            sendProductImpressionTrackingEvent(list);
+        }
 
         adapter.appendItems(list);
     }
@@ -607,6 +608,26 @@ public class ProductListFragment
                 }
             }
         }
+        if(irisSession != null){
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+                    irisSession.getSessionId());
+        }else {
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+        }
+    }
+
+    @Override
+    public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
+        String userId = getUserId();
+        String searchRef = getSearchRef();
+        List<Object> dataLayerList = new ArrayList<>();
+        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
+
+        String filterSortParams
+                = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
+        productItemViewModels.add(item);
+
         if(irisSession != null){
             SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
                     irisSession.getSessionId());
@@ -744,7 +765,7 @@ public class ProductListFragment
 
     @Override
     public void sendTopAdsTrackingUrl(String topAdsTrackingUrl) {
-        new ImpresionTask().execute(topAdsTrackingUrl);
+        new ImpresionTask(getActivity().getClass().getName()).execute(topAdsTrackingUrl);
     }
 
     @Override
@@ -927,9 +948,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void onTickerClicked(String queryParams) {
-        SearchTracking.trackEventClickSortPriceMinTicker(getQueryKey());
-        applyParamsFromTicker(UrlParamUtils.getParamMap(queryParams));
+    public void onTickerClicked(TickerViewModel tickerViewModel) {
+        SearchTracking.trackEventClickTicker(getQueryKey(), tickerViewModel.getTypeId());
+        applyParamsFromTicker(UrlParamUtils.getParamMap(tickerViewModel.getQuery()));
     }
 
     private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
@@ -1245,8 +1266,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackEventImpressionSortPriceMinTicker() {
-        SearchTracking.trackEventImpressionSortPriceMinTicker(getQueryKey());
+    public void trackEventImpressionTicker(int typeId) {
+        SearchTracking.trackEventImpressionTicker(getQueryKey(), typeId);
     }
 
     @Override

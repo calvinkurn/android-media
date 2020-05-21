@@ -107,7 +107,7 @@ public interface OrderListDetailContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream);
+        void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
 
         void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 

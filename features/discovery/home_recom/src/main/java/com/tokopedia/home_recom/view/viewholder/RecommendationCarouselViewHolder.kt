@@ -24,6 +24,11 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
+
+    companion object {
+        private const val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
+    }
+
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
         seeMore.visibility = if(element.appLinkSeeMore.isEmpty()) View.GONE else View.VISIBLE
@@ -45,7 +50,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                                 productRecommendation.parentPosition,
                                 carouselProductCardPosition)
                         if (productRecommendation.productItem.isTopAds) {
-                            ImpresionTask().execute(productRecommendation.productItem.clickUrl)
+                            ImpresionTask(className).execute(productRecommendation.productItem.clickUrl)
                         }
                     }
                 },
@@ -57,7 +62,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         if(productRecommendation.productItem.isTopAds){
-                            ImpresionTask().execute(productRecommendation.productItem.trackerImageUrl)
+                            ImpresionTask(className).execute(productRecommendation.productItem.trackerImageUrl)
                         }
                         productRecommendation.listener.onProductImpression(productRecommendation.productItem)
                     }

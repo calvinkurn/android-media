@@ -339,7 +339,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 }
             }
         }) {
-            _addToCartLiveData.value = it.asFail()
+            _addToCartLiveData.value = it.cause?.asFail() ?: it.asFail()
         }
     }
 
@@ -484,6 +484,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
                 it
             } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
+                it
+            } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it
             } else {
                 null

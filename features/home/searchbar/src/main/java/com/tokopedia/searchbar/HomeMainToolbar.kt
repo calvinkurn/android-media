@@ -177,6 +177,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             inboxCrossfader.reverseTransition(200)
 
             toolbarType = TOOLBAR_DARK_TYPE
+        } else if (!crossfaderIsInitialized()) {
+            initToolbarIcon()
         }
     }
 
@@ -213,6 +215,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             inboxCrossfader.reverseTransition(200)
 
             toolbarType = TOOLBAR_LIGHT_TYPE
+        } else if (!crossfaderIsInitialized()) {
+            initToolbarIcon()
         }
     }
 
