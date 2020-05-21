@@ -43,9 +43,7 @@ class CustomEditText : AppCompatEditText {
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (timer != null) {
-                    timer?.cancel()
-                }
+                timer?.cancel()
             }
 
             private fun runTimer(text: String) {
@@ -74,7 +72,7 @@ class CustomEditText : AppCompatEditText {
         fun onSearchSubmitted(text: String)
         fun onSearchTextChanged(text: String)
     }
-    
+
     companion object {
         private val DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.SECONDS.toMillis(1)
     }

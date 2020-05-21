@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.design.list.adapter.TouchImageAdapter
 import java.util.*
 
@@ -27,10 +26,8 @@ class ImageViewerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            scrollPos = arguments?.getInt(SCROLL_POSITION) ?: 0
-            imageLoc = arguments?.getStringArrayList(IMAGE_ARRAY)
-        }
+        scrollPos = arguments?.getInt(SCROLL_POSITION) ?: 0
+        imageLoc = arguments?.getStringArrayList(IMAGE_ARRAY)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -82,6 +79,7 @@ class ImageViewerFragment : Fragment() {
         private const val IMAGE_ARRAY = "image_array"
         private const val SCROLL_POSITION = "scroll_position"
         const val TAG = "ImageViewerFragment"
+
         @JvmStatic
         fun newInstance(postion: Int, image_loc: ArrayList<String>): ImageViewerFragment {
             val fragment = ImageViewerFragment()

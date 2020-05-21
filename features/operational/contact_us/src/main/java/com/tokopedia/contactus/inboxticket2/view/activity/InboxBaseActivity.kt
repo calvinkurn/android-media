@@ -107,7 +107,7 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
     }
 
     override fun hideBottomFragment() {
-        if (bottomFragment != null) bottomFragment?.dismiss()
+        bottomFragment?.dismiss()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

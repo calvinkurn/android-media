@@ -157,8 +157,7 @@ class InboxDetailAdapter(private val mContext: Context,
                 } else {
                     tvAttachmentHint?.hide()
                 }
-                if (commentList[position].attachment != null
-                        && commentList[position].attachment?.size ?: 0 > 0) {
+                if (commentList[position].attachment?.size ?: 0 > 0) {
                     rvAttachedImage?.show()
                 }
             } else {
