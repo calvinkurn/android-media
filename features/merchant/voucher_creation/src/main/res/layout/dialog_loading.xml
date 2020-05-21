@@ -14,9 +14,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:loader_type="circle"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        app:loader_type="circular_white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

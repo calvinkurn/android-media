@@ -178,9 +178,12 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
+        val dummyDate = "01 Jun 2020, 12:00 WIB - <br>30 Jun 2020, 12:00 WIB"
         voucherReviewUiModel.run {
             val reviewInfoList = mutableListOf(
-                    getVoucherPreviewSection(),
+                    with(voucherReviewUiModel) {
+                        getVoucherPreviewSection(voucherName, shopAvatarUrl, shopName, promoCode, dummyDate)
+                    },
                     getVoucherInfoSection(targetType, voucherName, promoCode),
                     DividerUiModel(DividerUiModel.THIN),
                     getVoucherBenefitSection(voucherType, minPurchase, voucherQuota),
@@ -205,14 +208,18 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         }
     }
 
-    private fun getVoucherPreviewSection() : PostVoucherUiModel {
+    private fun getVoucherPreviewSection(promoName: String,
+                                         shopAvatar: String,
+                                         shopName: String,
+                                         promoCode: String,
+                                         promoPeriod: String) : PostVoucherUiModel {
         return PostVoucherUiModel(
                 VoucherImageType.FreeDelivery(0),
-                "harusnyadaristep1",
-                "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2020/5/6/1479278/1479278_3bab5e93-003a-4819-a68a-421f69224a59.jpg",
-                "Ini Harusnya dari Backend",
-                "CODETEST",
-                "10 Mei 2020",
+                promoName,
+                shopAvatar,
+                shopName,
+                promoCode,
+                promoPeriod,
                 getIgPostVoucherUrl())
     }
 

@@ -14,10 +14,12 @@ class LoadingDialog(context: Context) : Dialog(context) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialog_loading)
 
-        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        window?.setDimAmount(0f)
-        window?.attributes?.width = LinearLayout.LayoutParams.MATCH_PARENT
-        window?.attributes?.height = LinearLayout.LayoutParams.MATCH_PARENT
+        window?.run {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setDimAmount(0f)
+            attributes?.width = LinearLayout.LayoutParams.MATCH_PARENT
+            attributes?.height = LinearLayout.LayoutParams.MATCH_PARENT
+        }
     }
 
 }
