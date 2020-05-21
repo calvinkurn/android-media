@@ -7,16 +7,16 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class YouTubeViewViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel() {
+class YouTubeViewViewModel(val application: Application, private val components: ComponentsItem, val position:Int) : DiscoveryBaseViewModel() {
     override fun initDaggerInject() {
 
     }
 
-    private val videoId = MutableLiveData<String>()
+    private val videoData = MutableLiveData<DataItem>()
 
 
-    fun getVideoId(): LiveData<String> {
-        videoId.value = components.data?.getOrElse(0) { DataItem() }?.videoId ?: ""
-        return videoId
+    fun getVideoId(): MutableLiveData<DataItem> {
+        videoData.value = components.data?.get(0)
+        return videoData
     }
 }

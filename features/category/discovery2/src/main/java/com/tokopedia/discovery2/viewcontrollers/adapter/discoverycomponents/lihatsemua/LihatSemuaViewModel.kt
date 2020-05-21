@@ -6,7 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class LihatSemuaViewModel(val application: Application, private val componentData: ComponentsItem) : DiscoveryBaseViewModel() {
+class LihatSemuaViewModel(val application: Application, private val componentData: ComponentsItem, val position:Int) : DiscoveryBaseViewModel() {
     private val itemData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     override fun initDaggerInject() {

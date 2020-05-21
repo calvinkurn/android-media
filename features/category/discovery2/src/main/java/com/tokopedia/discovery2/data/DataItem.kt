@@ -75,6 +75,15 @@ data class DataItem(
         @SerializedName("name", alternate = ["text"])
         var name: String? = "",
 
+        @SerializedName("persona")
+        var persona: String? = "",
+
+        @SerializedName("bu")
+        var attribution: String? = "",
+
+        @SerializedName("category")
+        var category: String? = "",
+
         @SerializedName("action")
         val action: String? = "",
 
@@ -190,7 +199,7 @@ data class DataItem(
         val disabledErrMsg: String? = "",
 
         @SerializedName("id")
-        val claimCouponid: String? = "",
+        val id: String? = "",
 
         @SerializedName("image_url")
         val imageUrl: String? = "",
@@ -298,6 +307,8 @@ data class DataItem(
         val freeOngkir: FreeOngkir? = null,
 
         var status: String? = null,
+
+        var parentComponentName: String? = "",
 
         var positionForParentItem:Int = 0
 

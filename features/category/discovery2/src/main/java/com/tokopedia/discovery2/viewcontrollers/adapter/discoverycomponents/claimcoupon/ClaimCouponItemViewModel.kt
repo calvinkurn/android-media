@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ClaimCouponConstant
 import com.tokopedia.discovery2.ClaimCouponConstant.Companion.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.GenerateUrl
@@ -22,7 +21,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ClaimCouponItemViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class ClaimCouponItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val couponCode = MutableLiveData<String>()
     private val componentData = MutableLiveData<DataItem>()
@@ -95,7 +94,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
 
     private fun getQueryMap(): Map<String, Any> {
         return mapOf("catalogId" to (try {
-            components.data?.get(0)?.claimCouponid?.toInt() ?: 0
+            components.data?.get(0)?.id?.toInt() ?: 0
         } catch (e: NumberFormatException) {
             0
         }),

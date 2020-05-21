@@ -35,6 +35,77 @@ class DiscoveryAnalytics(pageType: String = "",
                 KEY_EVENT_LABEL to eventLabel)
     }
 
+    private fun getTartingType(action: String): String {
+        when (action) {
+            ACTION_APPLINK -> return ACTION_APPLINK_VALUE
+            ACTION_CODE -> return ACTION_CODE_VALUE
+            ACTION_LOCAL_CALENDAR -> return ACTION_LOCAL_CALENDAR_VALUE
+            ACTION_NOTIFIER -> return ACTION_NOTIFIER_VALUE
+        }
+        return EMPTY_STRING
+    }
+
+    //6
+    fun trackBannerImpression(banners: List<DataItem>) {
+        if (banners.isNotEmpty()) {
+            val componentName = banners[0].parentComponentName ?: ""
+            val map = createGeneralImpressionEvent(eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = componentName)
+            val list = ArrayList<Map<String, Any>>()
+            var index = 0
+            for (banner in banners) {
+                val hashMap = HashMap<String, Any>()
+                banner.let {
+                    hashMap[KEY_ID] = it.id ?: 0
+                    hashMap[KEY_NAME] = "$eventDiscoveryCategory - ${banner.positionForParentItem + 1} - ${getTartingType(banner.action ?: "")} - $componentName"
+                    hashMap[KEY_CREATIVE] = it.persona ?: ""
+                    hashMap[KEY_POSITION] = ++index
+                }
+                list.add(hashMap)
+            }
+            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                    EVENT_PROMO_VIEW to mapOf(
+                            KEY_PROMOTIONS to list))
+            map[KEY_E_COMMERCE] = eCommerce
+            trackingQueue.putEETracking(map as HashMap<String, Any>)
+        }
+    }
+
+    //7
+    fun trackBannerClick(banner: DataItem, bannerPosition: Int) {
+        val componentName = banner.parentComponentName ?: ""
+        val map = createGeneralClickEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = componentName)
+        val list = ArrayList<Map<String, Any>>()
+        banner.let {
+            list.add(mapOf(
+                    KEY_ID to it.id.toString(),
+                    KEY_NAME to "$eventDiscoveryCategory - ${banner.positionForParentItem + 1} - ${getTartingType(banner.action ?: "")} - $componentName",
+                    KEY_CREATIVE to it.persona.toString(),
+                    KEY_POSITION to bannerPosition + 1
+            ))
+        }
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_ATTRIBUTION] = banner.attribution ?: EMPTY_STRING
+        map[KEY_AFFINITY_LABEL] = banner.persona ?: EMPTY_STRING
+        map[KEY_CATEGORY_ID] = banner.category ?: EMPTY_STRING
+        map[KEY_SHOP_ID] = banner.shopId ?: EMPTY_STRING
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    //18 yet improvements needed on youtube component so will call this function, once youtube component will be finalised
+    fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {
+        val map = createGeneralClickEvent(eventAction = "$CLICK_VIDEO - $videoUrl", eventLabel = "$videoName - $videoPlayedTime")
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    //19 done
+    fun trackTabsClick(tabName: String) {
+        val map = createGeneralClickEvent(eventAction = CLICK_TAB, eventLabel = tabName)
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     //20
     fun trackBackClick() {
         val map = createGeneralClickEvent(eventAction = CLICK_BACK_BUTTON_ACTION)
@@ -54,9 +125,9 @@ class DiscoveryAnalytics(pageType: String = "",
             val headerPosition = icons[0].positionForParentItem + 1
             val list = ArrayList<Map<String, Any>>()
             var index = 0
-            for (coupon in icons) {
+            for (icon in icons) {
                 val hashMap = HashMap<String, Any>()
-                coupon.let {
+                icon.let {
                     hashMap[KEY_ID] = it.dynamicComponentId.toString()
                     hashMap[KEY_NAME] = "$eventDiscoveryCategory - $VALUE_CATEGORY_ICON - $headerName - $headerPosition"
                     hashMap[KEY_CREATIVE] = it.name ?: ""
@@ -92,6 +163,12 @@ class DiscoveryAnalytics(pageType: String = "",
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    //43 done
+    fun trackClickSeeAllBanner() {
+        val map = createGeneralClickEvent(eventAction = BANNER_CAROUSEL_SEE_ALL_CLICK)
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
     //48 done
     fun trackClickCustomTopChat() {
         val map = createGeneralClickEvent(eventAction = CUSTOM_TOP_CHAT_CLICK)
@@ -117,7 +194,7 @@ class DiscoveryAnalytics(pageType: String = "",
                     }
                     val map = HashMap<String, Any>()
                     data[0].let {
-                        map[KEY_ID] = it.claimCouponid.toString()
+                        map[KEY_ID] = it.id.toString()
                         map[KEY_CREATIVE_URL] = if (coupon.properties?.columns?.equals(ClaimCouponConstant.DOUBLE_COLUMNS) == true)
                             it.smallImageUrlMobile
                                     ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER
@@ -149,7 +226,7 @@ class DiscoveryAnalytics(pageType: String = "",
         val list = ArrayList<Map<String, Any>>()
         coupon?.let {
             list.add(mapOf(
-                    KEY_ID to it.claimCouponid.toString(),
+                    KEY_ID to it.id.toString(),
                     KEY_CREATIVE_URL to if (isDouble) it.smallImageUrlMobile
                             ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
                     KEY_POSITION to position.toString(),

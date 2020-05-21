@@ -2,23 +2,22 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import android.content.Context
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel() {
+class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position:Int) : DiscoveryBaseViewModel() {
 
-    val dataItem: MutableLiveData<DataItem> = MutableLiveData()
+    private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val shopBadge: MutableLiveData<Int> = MutableLiveData()
     private val freeOngkirImage: MutableLiveData<String> = MutableLiveData()
     private lateinit var context :Context
 
 
     companion object {
-        const val OFFICAIL_STORE = 1
+        const val OFFICIAL_STORE = 1
         const val GOLD_MERCHANT = 2
         const val EMPTY = 0
     }
@@ -45,11 +44,11 @@ class ProductCardItemViewModel(val application: Application, private val compone
     private fun chooseShopBadge(): Int {
         val data = components.data?.get(0)
         return if (data?.goldMerchant == true && data.officialStore == true) {
-            OFFICAIL_STORE
+            OFFICIAL_STORE
         } else if (data?.goldMerchant == true) {
             GOLD_MERCHANT
         } else if (data?.officialStore == true) {
-            OFFICAIL_STORE
+            OFFICIAL_STORE
         } else {
             EMPTY
         }
@@ -64,7 +63,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
         return freeOngkirImage
     }
 
-    fun handleUIClick(view : View) {
+    fun handleUIClick() {
         navigate(context, dataItem.value?.applinks)
 
     }

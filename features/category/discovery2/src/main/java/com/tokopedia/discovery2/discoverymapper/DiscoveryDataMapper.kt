@@ -16,11 +16,13 @@ class DiscoveryDataMapper {
 
         val discoveryDataMapper: DiscoveryDataMapper by lazy { DiscoveryDataMapper() }
 
-        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEach {
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
+                it.parentComponentName = parentComponentName
+                it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem
@@ -29,8 +31,7 @@ class DiscoveryDataMapper {
             return list
         }
 
-        // temporary code
-        fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
             itemList.forEach {
@@ -39,6 +40,7 @@ class DiscoveryDataMapper {
                 }
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
+                it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem

@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class ProductCardSprintSaleCarouselViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class ProductCardSprintSaleCarouselViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()

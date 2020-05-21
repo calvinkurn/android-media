@@ -17,19 +17,18 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-
+private const val TIME_DISPLAY_FORMAT = "%1$02d"
 class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
 
     private lateinit var bannerTimerViewModel: BannerTimerViewModel
-    private var constraintLayout: ConstraintLayout
+    private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_timer_container_layout)
     private var context: Context
-    private var bannerImageView: ImageView
+    private var bannerImageView: ImageView = customItemView.findViewById(R.id.banner_image_view)
 
     private lateinit var daysTextView: TextView
     private lateinit var hoursTextView: TextView
     private lateinit var minutesTextView: TextView
     private lateinit var secondsTextView: TextView
-    private val TIME_DISPLAY_FORMAT = "%1$02d"
 
     companion object {
         const val DAYS = 0
@@ -39,8 +38,6 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     init {
-        constraintLayout = customItemView.findViewById(R.id.banner_timer_container_layout)
-        bannerImageView = customItemView.findViewById(R.id.banner_image_view)
         context = constraintLayout.context
     }
 

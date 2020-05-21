@@ -13,7 +13,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICAIL_STORE
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICIAL_STORE
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -79,7 +79,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
             populateData(it)
         })
         productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
-            if (it == OFFICAIL_STORE)
+            if (it == OFFICIAL_STORE)
                 shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
             else if (it == GOLD_MERCHANT)
                 shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
@@ -90,7 +90,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
             showFreeOngKir(it)
         })
         productCardView.setOnClickListener {
-            productCardItemViewModel.handleUIClick(it)
+            productCardItemViewModel.handleUIClick()
         }
     }
 

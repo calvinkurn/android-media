@@ -14,14 +14,13 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.BannerDotIndicator
 import com.tokopedia.discovery2.viewcontrollers.customview.BannerPagerSnapHelper
 import com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryBannerView
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_recycler_view.view.*
-import kotlin.properties.Delegates
-import kotlin.properties.Delegates.observable
-import kotlin.properties.Delegates.vetoable
 
-class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), DiscoveryBannerView.DiscoveryBannerViewInteraction {
+class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView),
+        DiscoveryBannerView.DiscoveryBannerViewInteraction, BannerDotIndicator.ClickSeeAllInterface {
 
     private val sliderBannerTitle: Typography = itemView.findViewById(R.id.title)
     private val sliderBannerView: DiscoveryBannerView = itemView.findViewById(R.id.slider_banner_view)
@@ -72,7 +71,7 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
             val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
             val activeColor = ContextCompat.getColor(context, R.color.activeBannerDot)
             val inActiveColor = ContextCompat.getColor(context, R.color.inActiveBannerDot)
-            return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.SLIDER_BANNER_INDICATOR)
+            return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.SLIDER_BANNER_INDICATOR, this@SliderBannerViewHolder)
         }
     }
 
@@ -96,4 +95,7 @@ class SliderBannerViewHolder(itemView: View, private val fragment: Fragment) : A
         }
     }
 
+    override fun onClickSeeAll() {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickSeeAllBanner()
+    }
 }

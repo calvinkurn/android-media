@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.brandrecommendations
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -11,10 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class BrandRecommendationViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class BrandRecommendationViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -23,9 +24,13 @@ class BrandRecommendationViewModel(val application: Application, components: Com
     init {
         componentData.value = components
         components.data?.let {
-            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BrandRecommendationItem.componentName)
+            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BrandRecommendationItem.componentName,
+                    components.name, position)
         }
     }
+
+    fun getComponentDataLiveData(): LiveData<ComponentsItem> = componentData
+    fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> = listData
 
     override fun initDaggerInject() {
     }

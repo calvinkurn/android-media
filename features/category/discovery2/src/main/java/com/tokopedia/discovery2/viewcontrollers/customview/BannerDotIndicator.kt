@@ -19,12 +19,13 @@ import com.tokopedia.unifyprinciples.Typography
 
 
 class BannerDotIndicator(private val radius: Int, private val indicatorItemPadding: Int, private val indicatorPadding: Int,
-                         @ColorInt colorActive: Int, @ColorInt colorInactive: Int, private val indicatorType: Int) : ItemDecoration() {
+                         @ColorInt colorActive: Int, @ColorInt colorInactive: Int, private val indicatorType: Int,
+                         private val clickSeeAllInterface: ClickSeeAllInterface) : ItemDecoration() {
     private val inactivePaint: Paint = Paint()
     private val activePaint: Paint = Paint()
     private var btnAppLink: String = ""
 
-    companion object{
+    companion object {
         const val SLIDER_BANNER_INDICATOR = 0
         const val CAROUSEL_BANNER_INDICATOR = 1
     }
@@ -102,7 +103,7 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
-        when(indicatorType){
+        when (indicatorType) {
 
             SLIDER_BANNER_INDICATOR -> {
 
@@ -137,7 +138,11 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
     }
 
     private fun handleAppLink(context: Context, btnAppLink: String) {
-        //add the gtm or deep link part here
+        clickSeeAllInterface.onClickSeeAll()
         RouteManager.route(context, btnAppLink)
+    }
+
+    interface ClickSeeAllInterface {
+        fun onClickSeeAll()
     }
 }
