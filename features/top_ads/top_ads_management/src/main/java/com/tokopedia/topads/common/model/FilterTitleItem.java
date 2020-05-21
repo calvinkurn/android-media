@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.model;
+package com.tokopedia.topads.common.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,6 @@ import android.os.Parcelable;
 /**
  * Created by Nathaniel on 1/31/2017.
  */
-@Deprecated
 public class FilterTitleItem implements Parcelable {
 
     private String title;
@@ -48,7 +47,7 @@ public class FilterTitleItem implements Parcelable {
         this.active = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<FilterTitleItem> CREATOR = new Parcelable.Creator<FilterTitleItem>() {
+    public static final Creator<FilterTitleItem> CREATOR = new Creator<FilterTitleItem>() {
         @Override
         public FilterTitleItem createFromParcel(Parcel source) {
             return new FilterTitleItem(source);

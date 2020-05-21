@@ -3,7 +3,11 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,18 +16,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
-import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
@@ -90,6 +93,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
                 onSuggestionBidClicked();
             }
         });
+
+        if (getContext() instanceof StepperListener) {
+            this.stepperListener = (StepperListener) getContext();
+        }
     }
 
     @Override
@@ -136,6 +143,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+
+        if (getContext() instanceof StepperListener) {
+            this.stepperListener = (StepperListener) getContext();
+        }
     }
 
     protected boolean isPriceError() {
@@ -274,13 +285,5 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected void setupArguments(Bundle arguments) {
         super.setupArguments(arguments);
         stepperModel = arguments.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
-    }
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if (context instanceof StepperListener) {
-            this.stepperListener = (StepperListener) context;
-        }
     }
 }

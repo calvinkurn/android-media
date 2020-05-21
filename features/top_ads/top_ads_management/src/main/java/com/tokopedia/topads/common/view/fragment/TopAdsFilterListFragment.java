@@ -1,22 +1,22 @@
-package com.tokopedia.seller.base.view.fragment;
+package com.tokopedia.topads.common.view.fragment;
 
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import android.view.View;
 
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.TopAdsFilterAdapter;
-import com.tokopedia.seller.base.view.model.FilterTitleItem;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.model.FilterTitleItem;
+import com.tokopedia.topads.common.view.adapter.TopAdsFilterAdapter;
 
 import java.util.ArrayList;
 
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-@Deprecated
 public class TopAdsFilterListFragment extends BasePresenterFragment implements TopAdsFilterAdapter.Callback {
 
     public static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";

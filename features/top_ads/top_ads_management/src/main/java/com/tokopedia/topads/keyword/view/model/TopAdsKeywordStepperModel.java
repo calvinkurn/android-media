@@ -3,7 +3,7 @@ package com.tokopedia.topads.keyword.view.model;
 import android.os.Parcel;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 
 import java.util.ArrayList;

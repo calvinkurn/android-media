@@ -1,25 +1,21 @@
-package com.tokopedia.seller.base.view.activity;
+package com.tokopedia.topads.common.view.activity;
 
 import android.os.Bundle;
-import androidx.annotation.CallSuper;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import android.view.MenuItem;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 
 import java.util.List;
 
-/**
- * Created by zulfikarrahman on 7/27/17.
- */
-@Deprecated
-public abstract class BaseStepperActivity<T extends StepperModel> extends BaseToolbarActivity implements StepperListener<T> {
+public abstract class BaseStepperActivity<T extends StepperModel> extends TopAdsBaseActivity implements StepperListener<T> {
     public static final String STEPPER_MODEL_EXTRA = "STEPPER_MODEL_EXTRA";
     public static final String SAVED_POSITION = "SVD_POS";
     private static final int START_PAGE_POSITION = 1;
@@ -138,11 +134,6 @@ public abstract class BaseStepperActivity<T extends StepperModel> extends BaseTo
     @Override
     public void finishPage() {
         finish();
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 
     @Override
