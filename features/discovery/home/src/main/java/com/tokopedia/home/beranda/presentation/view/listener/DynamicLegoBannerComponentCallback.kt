@@ -9,11 +9,10 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.TrackApp
 
-class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBannerListener {
+class DynamicLegoBannerComponentCallback(val context: Context?): DynamicLegoBannerListener {
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
         HomePageTracking.eventClickSeeAllLegoBannerChannel(
-                context,
-                channelModel.channelHeader.applink,
+                channelModel.channelHeader.name,
                 channelModel.id)
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
@@ -21,7 +20,7 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
     }
 
     override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channelModel.headerName, channelModel.id))
+        TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channelModel.channelHeader.name, channelModel.id))
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())
                     channelModel.channelHeader.applink else channelModel.channelHeader.url)
@@ -29,8 +28,7 @@ class DynamicLegoBannerComponentCallback(val context: Context): DynamicLegoBanne
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
         HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(
-                context,
-                channelModel.channelHeader.applink,
+                channelModel.channelHeader.name,
                 channelModel.id)
         RouteManager.route(context,
                 if (channelModel.channelHeader.applink.isNotEmpty())

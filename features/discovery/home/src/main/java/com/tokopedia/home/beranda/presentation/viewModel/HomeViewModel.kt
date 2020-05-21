@@ -35,6 +35,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -143,6 +144,9 @@ open class HomeViewModel @Inject constructor(
 
     val oneClickCheckout: LiveData<Event<Any>> get() = _oneClickCheckout
     private val _oneClickCheckout = MutableLiveData<Event<Any>>()
+
+    val oneClickCheckoutHomeComponent: LiveData<Event<Any>> get() = _oneClickCheckoutHomeComponent
+    private val _oneClickCheckoutHomeComponent = MutableLiveData<Event<Any>>()
 
     val sendLocationLiveData: LiveData<Event<Any>>
         get() = _sendLocationLiveData
@@ -442,11 +446,11 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onCloseBuyAgain(channel: DynamicHomeChannel.Channels, position: Int){
-        val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelDataModel && visitable.channel?.id == channel.id }
+    fun onCloseBuyAgain(channelId: String, position: Int){
+        val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelDataModel && visitable.channel?.id == channelId }
         if (dynamicChannelDataModel is DynamicChannelDataModel){
             launchCatchError(coroutineContext, block = {
-                closeChannelUseCase.setParams(channel.id)
+                closeChannelUseCase.setParams(channelId)
                 val closeChannel = closeChannelUseCase.executeOnBackground()
                 if(closeChannel.success){
                     updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
@@ -935,6 +939,44 @@ open class HomeViewModel @Inject constructor(
                         },
                         {
                             _oneClickCheckout.postValue(Event(it))
+                        }
+                )
+    }
+
+    fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
+        val requestParams = RequestParams()
+        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
+        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
+                productId = grid.id,
+                quantity = quantity,
+                shopId = grid.shopId,
+                warehouseId = grid.warehouseId,
+                productName = grid.name,
+                price = grid.price
+        ))
+        getAtcUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe (
+                        {
+                            if(it.status == STATUS_OK) {
+                                _oneClickCheckoutHomeComponent.postValue(Event(
+                                        mapOf(
+                                                ATC to it,
+                                                CHANNEL to channel,
+                                                GRID to grid,
+                                                QUANTITIY to quantity,
+                                                POSITION to position
+
+                                        )
+                                ))
+                            }
+                            else {
+                                _oneClickCheckoutHomeComponent.postValue(Event(Throwable()))
+                            }
+                        },
+                        {
+                            _oneClickCheckoutHomeComponent.postValue(Event(it))
                         }
                 )
     }

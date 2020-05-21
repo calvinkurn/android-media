@@ -69,6 +69,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopular
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
+import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
@@ -104,12 +105,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
+import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -704,6 +709,23 @@ open class HomeFragment : BaseDaggerFragment(),
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             }
         })
+
+        viewModel.oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
+            val data = event.peekContent()
+            if (data is Throwable) { // error
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+            } else {
+                val dataMap = data as Map<*, *>
+                sendEETracking(getAddToCartOnDynamicListCarouselHomeComponent(
+                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel)!!,
+                        (dataMap[HomeViewModel.GRID] as ChannelGrid)!!,
+                        dataMap[HomeViewModel.POSITION] as Int,
+                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        viewModel.getUserId()
+                ) as HashMap<String, Any>)
+                RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -874,7 +896,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                this
+                this,
+                HomeComponentCallback(viewModel),
+                DynamicLegoBannerComponentCallback(context)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1324,7 +1348,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
-        viewModel.onCloseBuyAgain(channel, position)
+        viewModel.onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, viewModel.getUserId()))
     }
 

@@ -18,7 +18,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
-import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 
@@ -28,18 +28,18 @@ import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener,
                                   val homeComponentListener: HomeComponentListener,
-                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<DynamicLegoBannerViewModel>(itemView) {
+                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
     }
 
-    override fun bind(element: DynamicLegoBannerViewModel) {
+    override fun bind(element: DynamicLegoBannerDataModel) {
         setHeaderComponent(element)
         setGrids(element)
     }
 
-    private fun setGrids(element: DynamicLegoBannerViewModel) {
+    private fun setGrids(element: DynamicLegoBannerDataModel) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
         val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
         setViewportImpression(element)
@@ -60,7 +60,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                 adapterPosition)
     }
 
-    private fun setViewportImpression(element: DynamicLegoBannerViewModel) {
+    private fun setViewportImpression(element: DynamicLegoBannerDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {
             when (element.channelModel.channelConfig.layout) {
                 DynamicChannelLayout.LAYOUT_6_IMAGE -> {
@@ -76,7 +76,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
     }
 
-    private fun getRecyclerViewDefaultSpanCount(element: DynamicLegoBannerViewModel): Int {
+    private fun getRecyclerViewDefaultSpanCount(element: DynamicLegoBannerDataModel): Int {
         return when (element.channelModel.channelConfig.layout) {
             DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> 2
             else -> 3
@@ -164,7 +164,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             get() = itemView.context
     }
 
-    private fun setHeaderComponent(element: DynamicLegoBannerViewModel) {
+    private fun setHeaderComponent(element: DynamicLegoBannerDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 when (element.channelModel.channelConfig.layout) {

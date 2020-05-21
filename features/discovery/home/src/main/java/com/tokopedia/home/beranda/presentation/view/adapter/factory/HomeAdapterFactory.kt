@@ -31,7 +31,7 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import java.util.*
 
 /**
@@ -229,7 +229,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         }
     }
 
-    override fun type(dynamicLegoBannerViewModel: DynamicLegoBannerViewModel): Int {
+    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
 
@@ -244,6 +244,9 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                             legoListener,
                             homeComponentListener,
                             parentRecycledViewPool)
+
+            //deprecated - exist for remote config
+            OldDynamicLegoBannerViewHolder.LAYOUT -> viewHolder = OldDynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)
 
             //deprecated - exist for remote config
             OldDynamicLegoBannerViewHolder.LAYOUT -> viewHolder = OldDynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)

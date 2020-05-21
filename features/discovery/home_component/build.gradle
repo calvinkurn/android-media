@@ -40,4 +40,5 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.features.productCard)
 }

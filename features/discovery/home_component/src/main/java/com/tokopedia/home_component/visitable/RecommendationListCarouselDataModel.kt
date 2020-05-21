@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
-data class DynamicLegoBannerViewModel(
+data class RecommendationListCarouselDataModel(
         val channelModel: ChannelModel
 ): HomeComponentVisitable {
     override fun visitableId(): String? {

@@ -9,7 +9,6 @@ object DynamicChannelComponentMapper {
         return ChannelModel(
                 id = channel.id,
                 groupId = channel.groupId,
-                headerName = channel.header.name,
                 type = channel.type,
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(

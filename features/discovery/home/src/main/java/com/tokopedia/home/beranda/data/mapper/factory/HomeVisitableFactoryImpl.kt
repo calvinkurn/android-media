@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
-import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -19,7 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
-import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -399,7 +398,7 @@ class HomeVisitableFactoryImpl(
     private fun mappingDynamicLegoBannerComponent(channel: DynamicHomeChannel.Channels,
                                                   isCache: Boolean,
                                                   verticalPosition: Int): Visitable<*> {
-        val viewModel = DynamicLegoBannerViewModel(
+        val viewModel = DynamicLegoBannerDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         )
         if (!isCache) {

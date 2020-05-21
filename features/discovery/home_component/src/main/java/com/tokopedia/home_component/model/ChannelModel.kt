@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class ChannelModel(
         val id: String,
         val groupId: String,
-        val headerName: String,
         val type: String = "",
         var verticalPosition: Int = 0,
         val channelHeader: ChannelHeader = ChannelHeader(),

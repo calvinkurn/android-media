@@ -608,7 +608,7 @@ class OfficialHomeFragment :
         gridData.let {
             tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
-                    channelModel.headerName ?: "",
+                    channelModel.channelHeader.name ?: "",
                     (position + 1).toString(10),
                     it,
                     channelModel

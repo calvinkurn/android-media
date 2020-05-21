@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
+package com.tokopedia.home_component.viewholders
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -10,24 +10,27 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTrackingV2
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
-import com.tokopedia.home.util.setGradientBackground
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_component.R
+import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
+import com.tokopedia.home_component.listener.RecommendationListCarouselListener
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class RecommendationListCarouselViewHolder(itemView: View,
-                                           private val listener: HomeCategoryListener,
-                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): DynamicChannelViewHolder(
-        itemView, listener) {
-    override fun setupContent(channel: DynamicHomeChannel.Channels) {
+                                           private val listCarouselListener: RecommendationListCarouselListener,
+                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView) {
+    override fun bind(element: RecommendationListCarouselDataModel) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
         val listCarouselView = itemView.findViewById<View>(R.id.list_carousel_view)
@@ -35,14 +38,19 @@ class RecommendationListCarouselViewHolder(itemView: View,
         val listCarouselBannerHeader = itemView.findViewById<View>(R.id.list_carousel_banner_header)
         val listCarouselCloseButton = itemView.findViewById<AppCompatImageView>(R.id.buy_again_close_image_view)
 
-        val banner = channel.banner
+        val channel = element.channelModel
+        val banner = channel.channelBanner
+        val channelConfig = channel.channelConfig
+
+        setViewportImpression(element)
+
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
                 ContextCompat.getColor(itemView.context, R.color.Neutral_N50) else Color.parseColor(banner.textColor)
-            if(channel.hasCloseButton){
+            if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
-                    listener.onBuyAgainCloseChannelClick(channel, adapterPosition)
+                    listCarouselListener.onBuyAgainCloseChannelClick(channel, adapterPosition)
                 }
             }else {
                 listCarouselCloseButton.hide()
@@ -81,12 +89,12 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
         channel.let { channel->
             listCarouselRecyclerView.apply {
-                layoutManager = if (channel.grids.size > 1) {
+                layoutManager = if (channel.channelGrids.size > 1) {
                     LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 } else {
                     GridLayoutManager(itemView.context, 1)
                 }
-                val newList : MutableList<HomeRecommendationListCarousel> = channel.grids.map {
+                val newList : MutableList<HomeRecommendationListCarousel> = channel.channelGrids.map {
                     HomeRecommendationListData(
                             it.imageUrl,
                             it.name,
@@ -94,30 +102,29 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             it.slashedPrice,
                             it.price,
                             it.applink,
-                            channel.grids.size > 1,
+                            channel.channelGrids.size > 1,
                             it.isTopads,
                             channel,
                             it,
-                            listener
+                            adapterPosition,
+                            listCarouselListener
                     )
                 }.toMutableList()
-                if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
-                adapter = RecommendationListAdapter(newList)
+                if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
+                adapter = RecommendationListAdapter(newList, listCarouselListener)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
-                if (channel.grids.size > 1) {
+                if (channel.channelGrids.size > 1) {
                     addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
                 }
             }
         }
     }
 
-    override fun getViewHolderClassName(): String {
-        return RecommendationListCarouselViewHolder::class.java.name
-    }
-
-    override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channel.header.name)
+    private fun setViewportImpression(element: RecommendationListCarouselDataModel) {
+        itemView.addOnImpressionListener(element.channelModel) {
+            listCarouselListener.onRecommendationCarouselChannelImpression(element.channelModel, adapterPosition)
+        }
     }
 
     private fun clearItemRecyclerViewDecoration(itemRecyclerView: RecyclerView) {
@@ -128,7 +135,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_dc_list_carousel
+        val LAYOUT = R.layout.home_component_recommendation_list_carousel
     }
 
     abstract class RecommendationListCarouselItem(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -136,12 +143,22 @@ class RecommendationListCarouselViewHolder(itemView: View,
     }
 
     class HomeRecommendationListViewHolder(
-            itemView: View
+            itemView: View,
+            val listCarouselListener: RecommendationListCarouselListener
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
             if(recommendation is HomeRecommendationListData) {
+                itemView.addOnImpressionListener(recommendation) {
+                    listCarouselListener.onRecommendationCarouselGridImpression(
+                            recommendation.channelModel,
+                            recommendation.grid,
+                            adapterPosition,
+                            recommendation.parentPosition,
+                            false
+                    )
+                }
                 recommendationCard.setProductModel(
                         ProductCardModel(
                                 productImageUrl = recommendation.recommendationImageUrl,
@@ -149,18 +166,32 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 discountPercentage = recommendation.recommendationDiscountLabel,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.channel.hasCloseButton,
+                                hasAddToCartButton = recommendation.channelModel.channelConfig.hasCloseButton,
                                 isTopAds = recommendation.isTopAds
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
-                addToCartButton.text = itemView.context.getString(R.string.home_buy_again)
+                addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)
                 recommendationCard.setAddToCartOnClickListener {
-                    recommendation.listener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channel, position)
+                    recommendation.listener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
                 }
                 itemView.setOnClickListener {
-                    HomePageTrackingV2.RecommendationList.sendRecommendationListClick(recommendation.channel, recommendation.grid, position, recommendation.listener.userId)
-                    recommendation.listener.onSectionItemClicked(recommendation.recommendationApplink)
+                    listCarouselListener.onRecommendationProductClick(
+                            recommendation.channelModel,
+                            recommendation.grid,
+                            adapterPosition,
+                            recommendation.recommendationApplink
+                    )
+                }
+            } else if(recommendation is HomeRecommendationListSeeMoreData) {
+                itemView.addOnImpressionListener(recommendation) {
+                    listCarouselListener.onRecommendationCarouselGridImpression(
+                            recommendation.channel,
+                            null,
+                            adapterPosition,
+                            recommendation.parentPosition,
+                            true
+                    )
                 }
             }
         }
@@ -169,20 +200,22 @@ class RecommendationListCarouselViewHolder(itemView: View,
     class HomeRecommendationSeeMoreViewHolder(
             itemView: View
     ): RecommendationListCarouselItem(itemView){
-
         private val container: View by lazy { itemView.findViewById<View>(R.id.container_banner_mix_more) }
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
                 container.setOnClickListener {
-                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllCardClick(homeRecommendationListData.channel)
-                    homeRecommendationListData.listener.onDynamicChannelClicked(applink = homeRecommendationListData.channel.header.applink)
+                    homeRecommendationListData.listener.onRecommendationSeeMoreClick(
+                            applink = homeRecommendationListData.channel.channelHeader.applink,
+                            channelModel = homeRecommendationListData.channel
+                    )
                 }
             }
         }
 
     }
 
-    interface HomeRecommendationListCarousel
+    open class HomeRecommendationListCarousel: ImpressHolder()
+
     data class HomeRecommendationListData(
             val recommendationImageUrl: String,
             val recommendationTitle: String,
@@ -192,17 +225,19 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val recommendationApplink: String,
             val isTopAds: Boolean,
             val isCarousel: Boolean,
-            val channel: DynamicHomeChannel.Channels,
-            val grid: DynamicHomeChannel.Grid,
-            val listener: HomeCategoryListener
-    ): HomeRecommendationListCarousel
+            val channelModel: ChannelModel,
+            val grid: ChannelGrid,
+            val parentPosition: Int,
+            val listener: RecommendationListCarouselListener
+    ): HomeRecommendationListCarousel()
 
     data class HomeRecommendationListSeeMoreData(
-            val channel: DynamicHomeChannel.Channels,
-            val listener: HomeCategoryListener
-    ): HomeRecommendationListCarousel
+            val channel: ChannelModel,
+            val listener: RecommendationListCarouselListener,
+            val parentPosition: Int
+    ): HomeRecommendationListCarousel()
 
-    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>): RecyclerView.Adapter<RecommendationListCarouselItem>() {
+    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>, private val listener: RecommendationListCarouselListener): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87
             private const val LAYOUT_TYPE_NON_CAROUSEL = 90
@@ -212,9 +247,9 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationListCarouselItem {
             val inflater = LayoutInflater.from(parent.context)
             return when (viewType) {
-                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.home_recommendation_list_card_carousel, parent, false))
-                LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.home_banner_item_carousel_see_more, parent, false))
-                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.home_recommendation_list_card, parent, false))
+                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card_carousel, parent, false), listener)
+                LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_see_more, parent, false))
+                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card, parent, false), listener)
             }
         }
 

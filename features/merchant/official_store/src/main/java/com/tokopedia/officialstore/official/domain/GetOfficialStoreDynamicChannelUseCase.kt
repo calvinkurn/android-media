@@ -2,8 +2,6 @@ package com.tokopedia.officialstore.official.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home_component.data.DynamicHomeChannelCommon
-import com.tokopedia.home_component.query.DynamicChannelQueryCommon
 import com.tokopedia.officialstore.GQLQueryConstant
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.usecase.coroutines.UseCase

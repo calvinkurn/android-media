@@ -9,7 +9,6 @@ object OfficialStoreDynamicChannelComponentMapper {
         return ChannelModel(
                 id = channel.id,
                 groupId = "",
-                headerName = channel.header?.name?:"",
                 type = "",
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(

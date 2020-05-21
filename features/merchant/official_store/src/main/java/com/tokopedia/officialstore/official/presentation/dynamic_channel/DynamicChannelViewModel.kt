@@ -1,11 +1,9 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home_component.data.DynamicHomeChannelCommon
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
-import java.lang.Exception
 
 class DynamicChannelViewModel(
         val dynamicChannelData: Channel

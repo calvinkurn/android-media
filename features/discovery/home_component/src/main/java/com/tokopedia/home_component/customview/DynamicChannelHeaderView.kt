@@ -57,7 +57,7 @@ class DynamicChannelHeaderView: FrameLayout {
         val stubSeeAllButtonUnify: View? = itemView?.findViewById(R.id.see_all_button_unify)
         val stubChannelSubtitle: View? = itemView?.findViewById(R.id.channel_subtitle)
         channelTitleContainer?.let {
-            handleTitle(channel.headerName, channelTitleContainer, stubChannelTitle, channel)
+            handleTitle(channel.channelHeader.name, channelTitleContainer, stubChannelTitle, channel)
             handleSubtitle(channel.channelHeader.subtitle, stubChannelSubtitle, channel)
             handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer)
             handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)

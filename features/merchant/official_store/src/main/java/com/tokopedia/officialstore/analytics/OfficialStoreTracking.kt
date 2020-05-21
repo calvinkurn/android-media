@@ -439,7 +439,7 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun dynamicChannelHomeComponentImpression(categoryName: String, channelModel: ChannelModel) {
-        val headerName = channelModel.headerName ?: ""
+        val headerName = channelModel.channelHeader.name ?: ""
         val promotionBody = getHomeComponentImpressionPromotion(categoryName, channelModel, "dynamic channel", headerName)
 
         trackingQueue.putEETracking(DataLayer.mapOf(

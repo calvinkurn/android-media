@@ -1,21 +1,15 @@
 package com.tokopedia.officialstore.official.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.data.DynamicHomeChannelCommon
-import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
-import com.tokopedia.home_component.visitable.DynamicLegoBannerViewModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -85,7 +79,7 @@ class OfficialHomeMapper {
                     if (availableScreens.contains(channel.layout)) {
                         views.add(DynamicChannelViewModel(channel))
                     } else if (availableLegoBannerScreens.contains(channel.layout)) {
-                        views.add(DynamicLegoBannerViewModel(
+                        views.add(DynamicLegoBannerDataModel(
                                 OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(channel, position)
                         ))
                     }
