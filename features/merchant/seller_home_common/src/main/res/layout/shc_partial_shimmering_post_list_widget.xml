@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sahPostListOnLoadingLayout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/sah_large_widget_height"
+    android:layout_height="@dimen/shc_large_widget_height"
     android:padding="@dimen/layout_lvl2">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView

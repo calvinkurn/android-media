@@ -30,7 +30,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/sahLineGraphShimmer2"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/sah_medium_widget_height"
+        android:layout_height="@dimen/shc_medium_widget_height"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
