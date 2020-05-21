@@ -43,14 +43,14 @@ class SellerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
                 !in 1L..sellerSaldoBalance -> {
-                    changeHintTextColor(R.color.hint_red, R.color.hint_red,
+                    changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
                             getString(R.string.saldo_exceeding_withdraw_balance))
                 }
 
                 in 1L until bankAccount.minAmount -> {
                     val minStr = CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(bankAccount.minAmount, false)
-                    changeHintTextColor(R.color.hint_red, R.color.hint_red,
+                    changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
                 in bankAccount.minAmount..bankAccount.maxAmount -> {
@@ -62,13 +62,13 @@ class SellerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
                 else -> {
                     val maxStr = CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(bankAccount.maxAmount, false)
-                    changeHintTextColor(R.color.hint_red, R.color.hint_red,
+                    changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
                             String.format(getString(R.string.swd_max_saldo_withdraw_hint), maxStr))
                 }
             }
         } ?: run {
             changeHintTextColor(R.color.grey_button_compat,
-                    R.color.hint_red, getString(R.string.swd_has_no_bank))
+                    R.color.swd_hint_red, getString(R.string.swd_has_no_bank))
         }
     }
 
