@@ -46,7 +46,8 @@ class OldDynamicLegoBannerViewHolder(legoBannerView: View,
             TYPE_SIX_GRID_LEGO -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
                     channel.header.name, channel.id)
             TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(channel.header.name, channel.id)
-            TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channel))
+            TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(
+                    channel.header.name, channel.id))
             else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(channel.header.name, channel.id)
         }
     }
