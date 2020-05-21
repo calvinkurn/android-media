@@ -1,6 +1,5 @@
 package com.tokopedia.core.util;
 
-import android.app.Activity;
 import android.view.View;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,12 +26,6 @@ public class RefreshHandler {
 		this.swipeToRefreshLayout = swipeToRefresh;
 		this.RefreshHandlerListener = onRefreshHandlerListener;
 		swipeToRefresh.setOnRefreshListener(onSwipeRefresh());
-	}
-
-	public RefreshHandler(Activity context, View view, OnRefreshHandlerListener RefreshListener) {
-		swipeToRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-		this.RefreshHandlerListener = RefreshListener;
-		swipeToRefreshLayout.setOnRefreshListener(onSwipeRefresh());
 	}
 
 	public void setView(View view) {

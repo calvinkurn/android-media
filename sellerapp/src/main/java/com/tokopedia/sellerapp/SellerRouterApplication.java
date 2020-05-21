@@ -34,7 +34,6 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
@@ -126,7 +125,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, TopAdsModuleRouter,
-        TkpdInboxRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter,
         ShopModuleRouter,
@@ -204,12 +202,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
-    }
-
-    @Override
-    public void goToCreateMerchantRedirect(Context context) {
-        //no route to merchant redirect on seller, go to default
-        goToDefaultRoute(context);
     }
 
     /**
@@ -296,36 +288,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
-                                    String customSubject, String customMessage, String source,
-                                    String avatar) {
-        return RouteManager.getIntent(context,
-                ApplinkConst.TOPCHAT_ASKBUYER,
-                toUserId,
-                customMessage,
-                source,
-                customerName,
-                avatar);
-    }
-
-
-    @NonNull
-    @Override
-    public Intent getAskSellerIntent(@NonNull Context context, @NonNull String toShopId,
-                                     @NonNull String shopName, @NonNull String customSubject,
-                                     @NonNull String customMessage, @NonNull String source,
-                                     @NonNull String avatar) {
-
-        return RouteManager.getIntent(context,
-                ApplinkConst.TOPCHAT_ASKSELLER,
-                toShopId,
-                customMessage,
-                source,
-                shopName,
-                avatar);
-    }
-
-    @Override
     public Observable<DataDeposit> getDataDeposit(String shopId) {
         GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
         return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
@@ -338,11 +300,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Class getSellingActivityClass() {
-        return TkpdSeller.getSellingActivityClass();
-    }
-
-    @Override
     public Intent getActivitySellingTransactionNewOrder(Context context) {
         return TkpdSeller.getActivitySellingTransactionNewOrder(context);
     }
@@ -350,16 +307,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getActivitySellingTransactionConfirmShipping(Context context) {
         return TkpdSeller.getActivitySellingTransactionConfirmShipping(context);
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatus(Context context) {
-        return TkpdSeller.getActivitySellingTransactionShippingStatus(context);
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionList(Context context) {
-        return TkpdSeller.getActivitySellingTransactionList(context);
     }
 
     @Override

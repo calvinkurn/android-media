@@ -10,7 +10,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -203,7 +203,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPeluangPage(List<String> linkSegment, Uri uriData) {
         String query = uriData.getQueryParameter("q");
-        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
+        Intent intent = RouterUtils.getRouterFromContext(context).getActivitySellingTransactionOpportunity(context, query);;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -1,18 +1,14 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
@@ -89,37 +85,6 @@ public class CommonUtils {
 
     public static void UniversalToast(Context context, String text) {
         Toast.makeText(context, MethodChecker.fromHtml(text), Toast.LENGTH_LONG).show();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-
-    public static void requestBarcodeScanner(Fragment fragment, Class customClass) {
-        IntentIntegrator.forFragment(fragment).setCaptureActivity(customClass).initiateScan();
-    }
-
-    public static void requestBarcodeScanner(androidx.fragment.app.Fragment fragment, Class customClass) {
-        IntentIntegrator.forSupportFragment(fragment).setCaptureActivity(customClass).initiateScan();
-    }
-
-    public static String getBarcode(int requestCode, int resultCode, Intent data) {
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (scanResult != null && scanResult.getContents() != null) {
-            return scanResult.getContents();
-        }
-        return "";
-    }
-
-    /**
-     * chek nullability at json parsing
-     *
-     * @param input "0" or null as null AND other as not null
-     * @return
-     */
-    public static boolean checkNullForZeroJson(String input) {
-        if (input == null || input.equals("0") || input.equals(""))
-            return false;
-
-        return true;
     }
 
     /**

@@ -20,47 +20,6 @@ import java.util.List;
 @Deprecated
 public class RequestPermissionUtil {
 
-    public static void onPermissionDenied(Context context, List<String> listPermission) {
-        String allPermission = "";
-        for (int i = 0; i < listPermission.size(); i++) {
-            String permission = getPermissionName(context, listPermission.get(i));
-            if (!TextUtils.isEmpty(permission)) {
-                if (i == listPermission.size() - 1)
-                    allPermission += permission;
-                else
-                    allPermission += String.format("%s, ", permission);
-            }
-        }
-        if (!allPermission.equals(""))
-            Toast.makeText(context, context.getString(R.string.permission_multi_denied) + " untuk " + allPermission, Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(context, context.getString(R.string.permission_multi_denied), Toast.LENGTH_LONG).show();
-
-    }
-
-    private static String getPermissionName(Context context, String permission) {
-        switch (permission) {
-            case Manifest.permission.CAMERA:
-                return context.getString(R.string.permission_camera);
-            case Manifest.permission.READ_EXTERNAL_STORAGE:
-                return context.getString(R.string.permission_read_storage);
-            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                return context.getString(R.string.permission_write_storage);
-            case Manifest.permission.READ_CONTACTS:
-                return context.getString(R.string.permission_contacts);
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                return context.getString(R.string.permission_location);
-            case Manifest.permission.ACCESS_COARSE_LOCATION:
-                return context.getString(R.string.permission_location);
-            case Manifest.permission.GET_ACCOUNTS:
-                return context.getString(R.string.permission_accounts);
-            case Manifest.permission.CALL_PHONE:
-                return context.getString(R.string.permission_phone);
-            default:
-                return "";
-        }
-    }
-
     public static void onPermissionDenied(Context context, String permission) {
         switch (permission) {
             case Manifest.permission.CAMERA:
@@ -133,10 +92,5 @@ public class RequestPermissionUtil {
                 break;
 
         }
-    }
-
-    public static void onNeverAskAgain(Context context, List<String> listPermission) {
-        Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
-
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.core.rxjava;
 
 import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class RxUtils {
@@ -11,13 +10,5 @@ public class RxUtils {
             Timber.d("unsubscribeIfNotNull");
             subscription.unsubscribe();
         }
-    }
-
-    public static CompositeSubscription getNewCompositeSubIfUnsubscribed(CompositeSubscription subscription) {
-        if (subscription == null || subscription.isUnsubscribed()) {
-            return new CompositeSubscription();
-        }
-
-        return subscription;
     }
 }

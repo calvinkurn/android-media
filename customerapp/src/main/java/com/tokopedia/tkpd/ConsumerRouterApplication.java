@@ -61,7 +61,6 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -189,7 +188,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter,
         SellerModuleRouter,
         ReactApplication,
-        TkpdInboxRouter,
         ReputationRouter,
         AbstractionRouter,
         LogisticRouter,
@@ -309,20 +307,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
-    }
-
-    @Override
-    public Class getSellingActivityClass() {
-        return TkpdSeller.getSellingActivityClass();
-    }
-
-
-    public Intent getActivitySellingTransactionShippingStatus(Context context) {
-        return TkpdSeller.getActivitySellingTransactionShippingStatus(context);
-    }
-
-    public Intent getActivitySellingTransactionList(Context context) {
-        return TkpdSeller.getActivitySellingTransactionList(context);
     }
 
     public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
@@ -498,32 +482,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public ReactNativeHost getReactNativeHost() {
         if (reactNativeHost == null) initDaggerInjector();
         return reactNativeHost;
-    }
-
-    @Override
-    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
-                                    String customSubject, String customMessage, String source,
-                                    String avatar) {
-        return RouteManager.getIntent(context
-                , ApplinkConst.TOPCHAT_ASKBUYER
-                , toUserId
-                , customMessage
-                , source
-                , customerName
-                , avatar);
-    }
-
-    @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                     String customSubject, String customMessage, String source, String avatar) {
-        return RouteManager.getIntent(context
-                , ApplinkConst.TOPCHAT_ASKSELLER
-                , toShopId
-                , customMessage
-                , source
-                , shopName
-                , avatar);
-
     }
 
     @Override
