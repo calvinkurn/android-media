@@ -38,6 +38,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
 }
 
 project.ext {
