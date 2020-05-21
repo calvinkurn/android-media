@@ -22,6 +22,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -29,6 +30,8 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener {
     private lateinit var mDiscoveryViewModel: DiscoveryViewModel
@@ -39,6 +42,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private lateinit var globalError: GlobalError
     var pageEndPoint = ""
     var last = false
 
@@ -70,6 +74,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
+        globalError = view.findViewById(R.id.global_error)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
         mPageComponentRecyclerView.layoutManager = LinearLayoutManager(activity)
@@ -135,6 +140,18 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                     typographyHeader.text = getString(R.string.discovery)
                     ivSearch.hide()
                     ivShare.hide()
+
+                    if (it.throwable is UnknownHostException
+                            || it.throwable is SocketTimeoutException) {
+                        globalError.setType(GlobalError.NO_CONNECTION)
+                    } else {
+                        globalError.setType(GlobalError.SERVER_ERROR)
+                    }
+                    globalError.show()
+                    globalError.setOnClickListener {
+                        globalError.hide()
+                        mDiscoveryViewModel.getDiscoveryData()
+                    }
                 }
             }
         })
