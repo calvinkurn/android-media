@@ -85,7 +85,6 @@ import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -151,7 +150,6 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.url.TokopediaUrl;
@@ -190,7 +188,6 @@ import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.C
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
         SellerModuleRouter,
-        TransactionRouter,
         ReactApplication,
         TkpdInboxRouter,
         ReputationRouter,
@@ -482,11 +479,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent goToOrderDetail(Context context, String orderId) {
-        return RouteManager.getIntent(context, ApplinkConst.SELLER_ORDER_DETAIL, orderId);
-    }
-
-    @Override
     public void sendLoginEmitter(String userId) {
         reactUtils.sendLoginEmitter(userId);
     }
@@ -532,11 +524,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 , shopName
                 , avatar);
 
-    }
-
-    @Override
-    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
-        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
 
     @Override
