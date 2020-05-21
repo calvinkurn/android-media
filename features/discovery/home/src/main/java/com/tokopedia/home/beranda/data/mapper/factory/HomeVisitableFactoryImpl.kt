@@ -29,6 +29,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChanne
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
+import kotlin.collections.HashMap
 
 class HomeVisitableFactoryImpl(
         val userSessionInterface: UserSessionInterface?,
@@ -431,7 +432,7 @@ class HomeVisitableFactoryImpl(
         )
         if (!isCache) {
             trackingQueue?.putEETracking(
-                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
+                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as java.util.HashMap<String, Any>
             )
         }
         return viewModel

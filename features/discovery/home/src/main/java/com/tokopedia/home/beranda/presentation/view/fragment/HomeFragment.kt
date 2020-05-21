@@ -887,7 +887,6 @@ open class HomeFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         val adapterFactory = HomeAdapterFactory(
-                childsFragmentManager,
                 this,
                 this,
                 this,

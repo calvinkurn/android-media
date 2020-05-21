@@ -41,7 +41,7 @@ import java.util.*
  * @author by errysuprayogi on 11/28/17.
  */
 
-class HomeAdapterFactory(private val fragmentManager: FragmentManager, private val listener: HomeCategoryListener,
+class HomeAdapterFactory(private val listener: HomeCategoryListener,
                          private val inspirationListener: HomeInspirationListener,
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
