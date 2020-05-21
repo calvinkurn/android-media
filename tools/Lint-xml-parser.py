@@ -1,5 +1,5 @@
 from unidiff.patch import PatchSet
-from io import StringIO
+from StringIO import StringIO
 import xml.etree.ElementTree as ET
 
 
