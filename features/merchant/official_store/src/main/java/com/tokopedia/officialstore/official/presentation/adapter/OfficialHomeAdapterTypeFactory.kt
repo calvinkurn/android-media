@@ -10,7 +10,9 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
@@ -63,6 +65,10 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
+        return RecommendationListCarouselViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
