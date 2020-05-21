@@ -1,13 +1,11 @@
 package com.tokopedia.vouchercreation.common.view.textfield.vouchertype
 
-import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
-import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -20,6 +18,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.mvc_textfield
+
     }
 
     private var minAlertErrorMessage: String = ""
@@ -50,6 +49,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                         selectAll()
                     }
                 }
+                filters = arrayOf(InputFilter.LengthFilter(element.type.maxLength))
             }
 
             when(element.type) {
@@ -63,22 +63,6 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, CurrencyFormatHelper.convertToRupiah(element.maxValue.toString())))
 
                     prependText(context.resources.getString(R.string.mvc_rp).toBlankOrString())
-                    textFieldInput.let { editText ->
-                        editText.addTextChangedListener(object : NumberTextWatcher(editText) {
-                            override fun onNumberChanged(number: Double) {
-                                super.onNumberChanged(number)
-                                this@run.validateValue(
-                                        textFieldType = VoucherTextFieldType.CURRENCY,
-                                        currentValue = number.toInt(),
-                                        minValue = element.minValue,
-                                        maxValue = element.maxValue,
-                                        promotionType = element.promotionType,
-                                        onValueChanged = element.onValueChanged,
-                                        onSetErrorMessage = element.onSetErrorMessage,
-                                        extraValidation = element.extraValidation)
-                            }
-                        })
-                    }
                 }
                 VoucherTextFieldType.QUANTITY -> {
                     element.currentValue?.let { value ->
@@ -89,24 +73,6 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     minAlertErrorMessage = String.format(context.resources.getString(element.minAlertRes, element.minValue.toString()))
                     maxAlertErrorMessage = String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))
 
-                    textFieldInput.addTextChangedListener(object : TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            val value = s.toString().toIntOrZero()
-                            this@run.validateValue(
-                                    textFieldType = VoucherTextFieldType.QUANTITY,
-                                    currentValue = value,
-                                    minValue = element.minValue,
-                                    maxValue = element.maxValue,
-                                    promotionType = element.promotionType,
-                                    onValueChanged = element.onValueChanged,
-                                    onSetErrorMessage = element.onSetErrorMessage,
-                                    extraValidation = element.extraValidation)
-                        }
-
-                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                    })
                 }
                 VoucherTextFieldType.PERCENTAGE -> {
                     element.currentValue?.let { value ->
@@ -118,25 +84,24 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     maxAlertErrorMessage = "${String.format(context.resources.getString(element.maxAlertRes, element.maxValue.toString()))}%"
 
                     appendText(context.resources.getString(R.string.mvc_percent).toBlankOrString())
-                    textFieldInput.addTextChangedListener(object : TextWatcher {
-                        override fun afterTextChanged(s: Editable?) {
-                            val value = s.toString().toIntOrZero()
-                            this@run.validateValue(
-                                    textFieldType = VoucherTextFieldType.PERCENTAGE,
-                                    currentValue = value,
-                                    minValue = element.minValue,
-                                    maxValue = element.maxValue,
-                                    promotionType = element.promotionType,
-                                    onValueChanged = element.onValueChanged,
-                                    onSetErrorMessage = element.onSetErrorMessage,
-                                    extraValidation = element.extraValidation)
-                        }
-
-                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                    })
                 }
+            }
+
+            textFieldInput.let { editText ->
+                editText.addTextChangedListener(object : NumberTextWatcher(editText) {
+                    override fun onNumberChanged(number: Double) {
+                        super.onNumberChanged(number)
+                        this@run.validateValue(
+                                textFieldType = element.type,
+                                currentValue = number.toInt(),
+                                minValue = element.minValue,
+                                maxValue = element.maxValue,
+                                promotionType = element.promotionType,
+                                onValueChanged = element.onValueChanged,
+                                onSetErrorMessage = element.onSetErrorMessage,
+                                extraValidation = element.extraValidation)
+                    }
+                })
             }
         }
     }
