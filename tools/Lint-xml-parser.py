@@ -1,4 +1,4 @@
-from unidiff import PatchSet
+from unidiff.patch import PatchSet
 from io import StringIO
 import xml.etree.ElementTree as ET
 
