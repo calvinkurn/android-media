@@ -9,14 +9,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -58,13 +56,9 @@ class DynamicCategoryViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun sendGtmEvent(categoryRowData: DataItem) {
-        fragment.activity?.let { it1 ->
-            TrackingQueue(it1)
-        }?.let { it2 ->
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackImpressionIconDynamicComponent(categoryRowData.title
-                    ?: "", adapterPosition,
-                    categoryRowData.categoryRows ?: ArrayList(), it2)
-        }
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackImpressionIconDynamicComponent(categoryRowData.title
+                ?: "",
+                categoryRowData.categoryRows ?: ArrayList())
     }
 
 }

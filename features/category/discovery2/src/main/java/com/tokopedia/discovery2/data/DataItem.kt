@@ -169,7 +169,7 @@ data class DataItem(
         val categoryLabel: String = "",
 
         @SerializedName("ID")
-        val id: String? = "",
+        val dynamicComponentId: String? = "",
 
         @SerializedName("shop_id")
         val shopId: String? = "",

@@ -48,17 +48,19 @@ class DiscoveryAnalytics(pageType: String = "",
     }
 
     //41 done
-    fun trackImpressionIconDynamicComponent(headerName: String, headerPosition: Int, icons: List<DataItem>, trackingQueue: TrackingQueue) {
+    fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {
         val map = createGeneralImpressionEvent(eventAction = "$IMPRESSION_ICON_DYNAMIC_COMPONENT - $headerName")
         if (icons.isNotEmpty()) {
+            val headerPosition = icons[0].positionForParentItem + 1
             val list = ArrayList<Map<String, Any>>()
+            var index = 0
             for (coupon in icons) {
                 val hashMap = HashMap<String, Any>()
                 coupon.let {
-                    hashMap[KEY_ID] = it.id.toString()
+                    hashMap[KEY_ID] = it.dynamicComponentId.toString()
                     hashMap[KEY_NAME] = "$eventDiscoveryCategory - $VALUE_CATEGORY_ICON - $headerName - $headerPosition"
-                    hashMap[KEY_CREATIVE] = it.categoryLabel
-                    hashMap[KEY_POSITION] = icons.indexOf(it) + 1
+                    hashMap[KEY_CREATIVE] = it.name ?: ""
+                    hashMap[KEY_POSITION] = ++index
                 }
                 list.add(hashMap)
             }
@@ -77,10 +79,9 @@ class DiscoveryAnalytics(pageType: String = "",
         val list = ArrayList<Map<String, Any>>()
         icon.let {
             list.add(mapOf(
-                    KEY_ID to it.id.toString(),
-                    KEY_NAME to "$eventDiscoveryCategory - $VALUE_CATEGORY_ICON - $headerName - ${icon.positionForParentItem}",
+                    KEY_ID to it.dynamicComponentId.toString(),
+                    KEY_NAME to "$eventDiscoveryCategory - $VALUE_CATEGORY_ICON - $headerName - ${icon.positionForParentItem + 1}",
                     KEY_CREATIVE to (it.name ?: EMPTY_STRING),
-                    KEY_CREATIVE_URL to (it.imageUrlMobile ?: NONE_OTHER),
                     KEY_POSITION to iconPosition + 1
             ))
         }
@@ -88,12 +89,6 @@ class DiscoveryAnalytics(pageType: String = "",
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         map[KEY_E_COMMERCE] = eCommerce
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
-    }
-
-    //43 wont do
-    fun trackClickSeeAllBannerCarousel() {
-        val map = createGeneralClickEvent(eventAction = BANNER_CAROUSEL_LIHAT_SEMUA_CLICK)
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
@@ -122,7 +117,7 @@ class DiscoveryAnalytics(pageType: String = "",
                     }
                     val map = HashMap<String, Any>()
                     data[0].let {
-                        map[KEY_ID] = it.id.toString()
+                        map[KEY_ID] = it.dynamicComponentId.toString()
                         map[KEY_CREATIVE_URL] = if (coupon.properties?.columns?.equals(ClaimCouponConstant.DOUBLE_COLUMNS) == true)
                             it.smallImageUrlMobile
                                     ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER
@@ -154,7 +149,7 @@ class DiscoveryAnalytics(pageType: String = "",
         val list = ArrayList<Map<String, Any>>()
         coupon?.let {
             list.add(mapOf(
-                    KEY_ID to it.id.toString(),
+                    KEY_ID to it.dynamicComponentId.toString(),
                     KEY_CREATIVE_URL to if (isDouble) it.smallImageUrlMobile
                             ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
                     KEY_POSITION to position.toString(),
