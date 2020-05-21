@@ -51,9 +51,10 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = new UserSession(getActivity()).getShopId();
-        userId = new UserSession(getActivity()).getUserId();
-        deviceId = new UserSession(getActivity()).getDeviceId();
+        UserSession userSession = new UserSession(getActivity());
+        shopId = userSession.getShopId();
+        userId = userSession.getUserId();
+        deviceId = userSession.getDeviceId();
         RetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
