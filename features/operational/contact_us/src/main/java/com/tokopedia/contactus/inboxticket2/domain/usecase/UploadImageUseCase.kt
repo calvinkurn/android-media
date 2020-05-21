@@ -10,7 +10,6 @@ import com.tokopedia.core.network.retrofit.utils.NetworkCalculator
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils
 import com.tokopedia.core.network.v4.NetworkConfig
 import com.tokopedia.core.util.ImageUploadHandler
-import com.tokopedia.core.util.SessionHandler
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -23,11 +22,12 @@ class UploadImageUseCase @Inject constructor(private val context: Context) {
 
     suspend fun uploadFile(imageUploads: List<ImageUpload>?,
                            networkCalculators: List<NetworkCalculator>,
-                           files: List<File>): List<ImageUpload> {
+                           files: List<File>,
+                           isLoggedIn: Boolean): List<ImageUpload> {
         val list = arrayListOf<ImageUpload>()
         imageUploads?.forEachIndexed { index, imageUpload ->
 
-            val upload: ImageUploadResult = getImageUploadresult(networkCalculators[index], files[index])
+            val upload: ImageUploadResult = getImageUploadresult(networkCalculators[index], files[index],isLoggedIn)
 
             if (upload.data != null) {
                 imageUpload.picSrc = upload.data.picSrc
@@ -54,7 +54,7 @@ class UploadImageUseCase @Inject constructor(private val context: Context) {
         return list
     }
 
-    suspend fun getImageUploadresult(networkCalculator: NetworkCalculator, file: File): ImageUploadResult {
+    suspend fun getImageUploadresult(networkCalculator: NetworkCalculator, file: File, isLoggedIn: Boolean): ImageUploadResult {
         val userId = RequestBody.create(MediaType.parse("text/plain"),
                 networkCalculator.content[NetworkCalculator.USER_ID] ?: "")
         val deviceId = RequestBody.create(MediaType.parse("text/plain"),
@@ -69,7 +69,7 @@ class UploadImageUseCase @Inject constructor(private val context: Context) {
                 networkCalculator.content[InboxDetailPresenterImpl.PARAM_IMAGE_ID] ?: "")
         val web_service = RequestBody.create(MediaType.parse("text/plain"),
                 networkCalculator.content[InboxDetailPresenterImpl.PARAM_WEB_SERVICE] ?: "")
-        return if (SessionHandler.isV4Login(context)) {
+        return if (isLoggedIn) {
             RetrofitUtils.createRetrofit(IMAGE_UPLOAD_URL)
                     .create(UploadImageContactUs::class.java)
                     .uploadImage(

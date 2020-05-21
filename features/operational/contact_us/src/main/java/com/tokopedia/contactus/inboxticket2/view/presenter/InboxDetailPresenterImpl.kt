@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.contactus.R
@@ -356,7 +355,8 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                     val list = uploadImageUseCase.uploadFile(
                             mView?.imageList,
                             networkCalculatorList,
-                            files)
+                            files,
+                    userSession.isLoggedIn)
                     val requestParam = postMessageUseCase.createRequestParams(
                             mTicketDetail?.id ?: "",
                             mView?.userMessage ?: "",

@@ -754,7 +754,7 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -783,7 +783,7 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -821,7 +821,7 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -867,7 +867,7 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -910,7 +910,7 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
@@ -962,7 +962,7 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 

@@ -45,7 +45,6 @@ import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter.OnSelectImageClick
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -53,8 +52,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.Toaster.showErrorWithAction
-import com.tokopedia.unifycomponents.Toaster.showNormalWithAction
+import com.tokopedia.unifycomponents.Toaster
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -352,7 +350,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     }
 
     override fun showErrorMessage(error: String?) {
-        ToasterError.make(getRootView(), error).show()
+        Toaster.make(getRootView(), error
+                ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", View.OnClickListener { })
     }
 
     private fun sendMessage() {
@@ -667,7 +666,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
 
     override fun showMessage(message: String) {
         super.showMessage(message)
-        showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, View.OnClickListener { v1: View? -> })
+        Toaster.make(rootView, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACKBAR_OK, View.OnClickListener {})
     }
 
     override fun onClickClose() {
@@ -678,7 +677,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         if (isSendButtonEnabled) {
             sendMessage()
         } else {
-            showErrorWithAction(getRootView(), this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK, View.OnClickListener { v1: View? -> })
+            Toaster.make(getRootView(), this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, SNACKBAR_OK, View.OnClickListener { })
         }
     }
 
