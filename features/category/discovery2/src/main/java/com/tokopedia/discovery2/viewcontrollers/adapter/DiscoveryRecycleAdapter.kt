@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -28,9 +29,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
+        Log.d("DiscoonBindViewHolder", position.toString())
         holder.bindView(viewHolderListModel.getViewHolderModel(
                 DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position))
-        holder.getInnerRecycleView()?.setRecycledViewPool(viewPool)
+//        holder.getInnerRecycleView()?.setRecycledViewPool(viewPool)
     }
 
     override fun getItemCount(): Int {
@@ -53,5 +55,15 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
         }
         // TODO : Remove notify for horizontal adapter
         notifyDataSetChanged()
+    }
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onViewAttachedToWindow()
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
+        holder.onViewDetachedToWindow()
+        super.onViewDetachedFromWindow(holder)
     }
 }

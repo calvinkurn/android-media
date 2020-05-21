@@ -164,12 +164,12 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         mPageComponentRecyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
 
-    override fun onChildViewDetachedFromWindow(view: View) {
-        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewDetachedToWindow()
+    override fun onChildViewAttachedToWindow(view: View) {
+//        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewAttachedToWindow()
     }
 
-    override fun onChildViewAttachedToWindow(view: View) {
-        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewAttachedToWindow()
+    override fun onChildViewDetachedFromWindow(view: View) {
+//        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewDetachedToWindow()
     }
 
     private fun setFloatingActionButton(data: DataItem) {

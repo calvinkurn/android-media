@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
 import android.graphics.Paint
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -64,20 +65,34 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
+        Log.d("ItembindView", this.toString() + discoveryBaseViewModel.toString())
         productCardItemViewModel = discoveryBaseViewModel as ProductCardItemViewModel
         init()
     }
 
     fun init() {
         productCardItemViewModel.setContext(productCardView.context)
+    }
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
         setUpObserver()
+    }
+
+    override fun onViewDetachedToWindow() {
+        val lifecycleOwner = fragment.viewLifecycleOwner
+        if (productCardItemViewModel.getDataItemValue().hasObservers()) {
+            productCardItemViewModel.getDataItemValue().removeObservers(lifecycleOwner)
+        }
     }
 
     private fun setUpObserver() {
         val lifecycleOwner = fragment.viewLifecycleOwner
+
         productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
             populateData(it)
         })
+
         productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
             if (it == OFFICAIL_STORE)
                 shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
@@ -94,6 +109,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
+
     private fun showFreeOngKir(freeOngkirActive: String) {
         if (freeOngkirActive.isNotEmpty()) {
             ImageHandler.LoadImage(imageFreeOngkirPromo, freeOngkirActive)
@@ -104,6 +120,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun populateData(dataItem: DataItem) {
+        Log.d("populateData", this.toString() + dataItem)
         productName.setTextAndCheckShow(dataItem.name)
         textViewShopName.setTextAndCheckShow(dataItem.shopName)
         textViewPrice.setTextAndCheckShow(dataItem.price)
@@ -130,11 +147,12 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun setProductImage(imageUrlMobile: String?) {
+        Log.d("setProductImage", this.toString() + imageUrlMobile)
         ImageHandler.LoadImage(productImage, imageUrlMobile)
     }
 
     private fun setStockProgress(stockPercent: String?) {
-        if (!stockPercent.isNullOrEmpty()){
+        if (!stockPercent.isNullOrEmpty()) {
             stockPercentageProgress.setValue(stockPercent.toIntOrZero())
             stockPercentageProgress.show()
         }
