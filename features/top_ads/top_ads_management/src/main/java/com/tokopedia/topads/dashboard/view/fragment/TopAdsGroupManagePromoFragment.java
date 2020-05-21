@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 2/27/17.
@@ -29,7 +29,7 @@ public class TopAdsGroupManagePromoFragment extends TopAdsBaseGroupEditPromoFrag
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
         UnifyTracking.eventTopAdsProductEditGrupManage(getActivity(), AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_NEW_GROUP);
-        presenter.moveToNewProductGroup(adId, groupName, SessionHandler.getShopID(getActivity()));
+        presenter.moveToNewProductGroup(adId, groupName, new UserSession(getActivity()).getShopId());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TopAdsGroupManagePromoFragment extends TopAdsBaseGroupEditPromoFrag
     @Override
     protected void onSubmitFormChooseGroup(String choosenId) {
         UnifyTracking.eventTopAdsProductEditGrupManage(getActivity(), AppEventTracking.EventLabel.GROUP_PRODUCT_OPTION_EXISTING_GROUP);
-        presenter.moveToExistProductGroup(adId, String.valueOf(choosenId), SessionHandler.getShopID(getActivity()));
+        presenter.moveToExistProductGroup(adId, String.valueOf(choosenId), new UserSession(getActivity()).getShopId());
     }
 
     @Override

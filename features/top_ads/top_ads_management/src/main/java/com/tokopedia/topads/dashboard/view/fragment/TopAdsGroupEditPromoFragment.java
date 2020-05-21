@@ -2,9 +2,9 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 2/27/17.
@@ -26,17 +26,17 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
 
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
-        presenter.moveToNewProductGroup(adId, groupName, SessionHandler.getShopID(getActivity()));
+        presenter.moveToNewProductGroup(adId, groupName, new UserSession(getActivity()).getShopId());
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
-        presenter.moveOutProductGroup(SessionHandler.getShopID(getActivity()),adId);
+        presenter.moveOutProductGroup(new UserSession(getActivity()).getShopId(),adId);
     }
 
     @Override
     protected void onSubmitFormChooseGroup(String choosenId) {
-        presenter.moveToExistProductGroup(adId, choosenId , SessionHandler.getShopID(getActivity()));
+        presenter.moveToExistProductGroup(adId, choosenId , new UserSession(getActivity()).getShopId());
     }
 
     @Override

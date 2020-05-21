@@ -1,30 +1,27 @@
-package com.tokopedia.seller.base.view.activity;
+package com.tokopedia.topads.common.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
-import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
-import com.tokopedia.seller.base.view.listener.BaseFilterContentViewListener;
-import com.tokopedia.seller.base.view.model.FilterTitleItem;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.model.FilterTitleItem;
+import com.tokopedia.topads.common.view.fragment.BaseFilterContentFragment;
+import com.tokopedia.topads.common.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.topads.common.view.listener.BaseFilterContentViewListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author normansyahputa on 5/26/17.
- *         just move to new architecture.
- */
-@Deprecated
-public abstract class BaseFilterActivity extends BaseToolbarActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
+
+public abstract class BaseFilterActivity extends TopAdsBaseActivity implements TopAdsFilterListFragment.Callback, BaseFilterContentFragment.Callback {
     protected TopAdsFilterListFragment topAdsFilterListFragment;
     protected List<Fragment> filterContentFragmentList;
     protected int selectedPosition = 0;
@@ -85,11 +82,6 @@ public abstract class BaseFilterActivity extends BaseToolbarActivity implements 
 
     @Override
     protected boolean isShowCloseButton() {
-        return true;
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
         return true;
     }
 

@@ -1,15 +1,15 @@
-package com.tokopedia.seller.base.view.listener;
+package com.tokopedia.topads.common.view.listener;
 
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
+import com.tokopedia.topads.common.view.fragment.BaseFilterContentFragment;
+
 
 /**
  * Created by normansyahputa on 5/29/17.
  */
 
-@Deprecated
 public interface BaseFilterContentViewListener {
     String getTitle(Context context);
 
