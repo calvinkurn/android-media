@@ -11,8 +11,7 @@ import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-class RecommendationListCarouselComponentCallback(val context: Context?,
-                                                  val homeViewModel: HomeViewModel,
+class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewModel,
                                                   val homeCategoryListener: HomeCategoryListener): RecommendationListCarouselListener {
     override fun onBuyAgainCloseChannelClick(channelModel: ChannelModel, position: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarouselHomeComponent(channelModel, homeViewModel.getUserId()))

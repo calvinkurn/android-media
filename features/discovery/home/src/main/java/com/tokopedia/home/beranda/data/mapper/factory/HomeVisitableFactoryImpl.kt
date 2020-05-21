@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -222,10 +223,14 @@ class HomeVisitableFactoryImpl(
                     if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
-                    )
+                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createRecommendationListCarouselComponent(channel, position, isCache)
+                    } else {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
+                        )
+                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
                         channel = channel
@@ -286,6 +291,15 @@ class HomeVisitableFactoryImpl(
                 visitableList.size, channel) }
     }
 
+    private fun createRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingRecommendationListCarouselComponent(
+                channel,
+                isCache,
+                verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
 
     private fun createBusinessUnitWidget(position: Int) {
         if (!isCache) {
@@ -405,6 +419,20 @@ class HomeVisitableFactoryImpl(
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
                     trackingQueue,
                     channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+        }
+        return viewModel
+    }
+
+    private fun mappingRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels,
+                                                  isCache: Boolean,
+                                                  verticalPosition: Int): Visitable<*> {
+        val viewModel = RecommendationListCarouselDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
+        if (!isCache) {
+            trackingQueue?.putEETracking(
+                    HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
+            )
         }
         return viewModel
     }

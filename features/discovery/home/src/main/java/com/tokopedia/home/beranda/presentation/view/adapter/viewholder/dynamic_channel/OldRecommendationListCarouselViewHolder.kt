@@ -23,9 +23,9 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class RecommendationListCarouselViewHolder(itemView: View,
-                                           private val listener: HomeCategoryListener,
-                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): DynamicChannelViewHolder(
+class OldRecommendationListCarouselViewHolder(itemView: View,
+                                              private val listener: HomeCategoryListener,
+                                              private val parentRecycledViewPool: RecyclerView.RecycledViewPool): DynamicChannelViewHolder(
         itemView, listener) {
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
@@ -113,7 +113,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
     }
 
     override fun getViewHolderClassName(): String {
-        return RecommendationListCarouselViewHolder::class.java.name
+        return OldRecommendationListCarouselViewHolder::class.java.name
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
