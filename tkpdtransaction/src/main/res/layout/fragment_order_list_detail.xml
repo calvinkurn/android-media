@@ -34,7 +34,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/status"
-                        android:textSize="@dimen/sp_11" />
+                        android:textSize="@dimen/sp_11"
+                        android:textColor="@color/font_black_secondary_54"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -96,7 +97,8 @@
                         android:id="@+id/invoice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:textColor="@color/font_black_secondary_54"/>
 
                     <TextView
                         android:id="@+id/lihat"

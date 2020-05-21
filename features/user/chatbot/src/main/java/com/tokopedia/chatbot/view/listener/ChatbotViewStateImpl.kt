@@ -225,7 +225,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(quickReplyList)
     }
 
-    override fun getInterlocutorName(headerName: CharSequence): CharSequence  = headerName
+    override fun getInterlocutorName(headerName: String): String  = headerName
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
         val title = notifier.findViewById<TextView>(R.id.title)
