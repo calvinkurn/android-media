@@ -10,7 +10,7 @@ def main():
     with open('customerapp/build/reports/gitDiff.txt', 'r') as file:
         data = file.read()
 
-    patch_set = PatchSet(StringIO(data))
+    patch_set = PatchSet(data))
     # ElementList = []
 
     # change_list = []  # list of changes
