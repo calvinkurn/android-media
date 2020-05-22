@@ -64,7 +64,7 @@
     <string name="mvc_create_private_voucher_display_socmed_post">Post di medsos tokomu</string>
     <string name="mvc_create_private_voucher_display_chat_share">Sebarkan melalui chat</string>
 
-    <!--Tips and trick-->
+    <!--Header tip-->
     <string name="mvc_create_tips_bottomsheet_title">Tips &amp; trik Voucher Toko</string>
     <string name="mvc_create_tips_title_voucher_name">NAMA VOUCHER</string>
     <string name="mvc_create_tips_title_voucher_type">JENIS VOUCHER</string>
@@ -116,12 +116,34 @@
     <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; Rp%s</string>
     <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga &lt;b>lebih besar dari Rp%s&lt;/b> untuk menarik lebih banyak calon pembeli.</string>
     <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
-    
+
+    <!-- Step 3 -->
+    <string name="mvc_start_date_title">Pilih Tanggal Mulai</string>
+    <string name="mvc_start_date_desc">Maks. &lt;b>1 bulan&lt;/b> dari tanggal hari ini (%s)</string>
+    <string name="mvc_end_date_title">Pilih Tanggal Berakhir</string>
+    <string name="mvc_end_date_desc">Maks. &lt;b>1 bulan&lt;/b> dari tanggal mulai (%s)</string>
+
     <!-- Step 4 -->
     <string name="mvc_terms_and_condition_desc">Syarat dan Ketentuan Voucher Toko merupakan bagian dari Syarat dan Ketentuan Situs/Aplikasi Tokopedia. Penggunaan Voucher Toko  tunduk pada Syarat dan Ketentuan Situs/Aplikasi, Kebijakan Privasi, dan Syarat dan Ketentuan yang tertulis dibawah ini. Pengguna disarankan membaca dengan seksama karena dapat berdampak kepada hak dan kewajiban pengguna secara hukum.\n\nDengan mendaftar dan/atau menggunakan situs www.tokopedia.com, maka Pengguna dianggap telah membaca, mengerti, memahami dan menyetujui semua isi dalam Syarat dan Ketentuan. Syarat dan Ketentuan ini merupakan bentuk kesepakatan yang dituangkan dalam sebuah perjanjian yang sah antara Pengguna dengan PT Tokopedia. Jika pengguna tidak menyetujui salah satu, sebagian, atau seluruh isi Syarat dan Ketentuan, maka pengguna tidak diperkenankan menggunakan layanan di www.tokopedia.com.</string>
     <string name="mvc_terms_and_condition_title">Syarat &amp; Ketentuan</string>
     <string name="mvc_create_fail_title">Yaah, gagal menambahkan Voucher Toko</string>
     <string name="mvc_create_fail_desc">Voucher kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
+
+    <!-- Tips and trick -->
+    <string name="mvc_tips_and_trick_private">Tips &amp; Trik Voucher Khusus</string>
+    <string name="mvc_tips_and_trick_public">Tips &amp; Trik Voucher Publik</string>
+    <string name="mvc_show_voucher_to_your_social_media_title">Sebarkan Voucher Toko di media sosialmu</string>
+    <string name="mvc_show_voucher_to_your_social_media_description">Kamu ingin membagikan Voucher Toko di Instagram Feed dan Instagram Story? Nah, download voucher biar kamu dapat segera bagikan dengan post di Instagram tokomu. Atur jadwal tampil supaya nggak spamming, ya.</string>
+    <string name="mvc_giveaway_for_followers_title">Beri giveaway untuk followers</string>
+    <string name="mvc_giveaway_for_followers_description">Ajak juga follower-mu untuk ikut menyebarkannya, bisa repost atau tag akun kamu di media sosial mereka. Berikan hadiah buat "pemenang"nya.</string>
+    <string name="mvc_post_voucher_on_shop_feed_title">Post Voucher Toko di feed toko</string>
+    <string name="mvc_post_voucher_on_shop_feed_description">Selain Instagram Feed, sekarang kamu juga bisa post Voucher Toko di feed Tokopedia supaya tokomu makin ramai pengunjung!</string>
+    <string name="mvc_set_as_shop_cover_title">Pasang sebagai Sampul Toko</string>
+    <string name="mvc_set_as_shop_cover_description">Manfaatkan juga sampul toko agar pengunjung toko tahu tentang promo Voucher Toko-mu.</string>
+    <string name="mvc_share_on_messenger_group_title">Sebarkan di grup chat messenger</string>
+    <string name="mvc_share_on_messenger_group_desription">Jangan lupa manfaatkan jaringan pribadimu! Walau terdengar konvensional, tapi cara ini ampuh juga loh! Ingat, pilih grup sesuai konteks jualanmu.</string>
+    <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
+    <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
 
     <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
@@ -187,20 +209,6 @@
     <string name="mvc_statistic_detail">Detail Statistik</string>
     <string name="mvc_voucher_view">Tampilan Voucher</string>
     <string name="mvc_share_voucher">Bagikan Voucher</string>
-    <string name="mvc_tips_and_trick_private">Tips &amp; Trik Voucher Khusus</string>
-    <string name="mvc_tips_and_trick_public">Tips &amp; Trik Voucher Publik</string>
-    <string name="mvc_show_voucher_to_your_social_media_title">Sebarkan Voucher Toko di media sosialmu</string>
-    <string name="mvc_show_voucher_to_your_social_media_description">Kamu ingin membagikan Voucher Toko di Instagram Feed dan Instagram Story? Nah, download voucher biar kamu dapat segera bagikan dengan post di Instagram tokomu. Atur jadwal tampil supaya nggak spamming, ya.</string>
-    <string name="mvc_giveaway_for_followers_title">Beri giveaway untuk followers</string>
-    <string name="mvc_giveaway_for_followers_description">Ajak juga follower-mu untuk ikut menyebarkannya, bisa repost atau tag akun kamu di media sosial mereka. Berikan hadiah buat "pemenang"nya.</string>
-    <string name="mvc_post_voucher_on_shop_feed_title">Post Voucher Toko di feed toko</string>
-    <string name="mvc_post_voucher_on_shop_feed_description">Selain Instagram Feed, sekarang kamu juga bisa post Voucher Toko di feed Tokopedia supaya tokomu makin ramai pengunjung!</string>
-    <string name="mvc_set_as_shop_cover_title">Pasang sebagai Sampul Toko</string>
-    <string name="mvc_set_as_shop_cover_description">Manfaatkan juga sampul toko agar pengunjung toko tahu tentang promo Voucher Toko-mu.</string>
-    <string name="mvc_share_on_messenger_group_title">Sebarkan di grup chat messenger</string>
-    <string name="mvc_share_on_messenger_group_desription">Jangan lupa manfaatkan jaringan pribadimu! Walau terdengar konvensional, tapi cara ini ampuh juga loh! Ingat, pilih grup sesuai konteks jualanmu.</string>
-    <string name="mvc_private_voucher_tips_trick_info"><![CDATA[Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.]]></string>
-    <string name="mvc_public_voucher_tips_trick_info"><![CDATA[Kode promo akan tampil ditokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.]]></string>
     <string name="mvc_voucher_code_copied">Kode voucher sudah disalin</string>
     <string name="mvc_voucher_review">Review voucher</string>
     <string name="mvc_add_voucher">Tambah Voucher</string>
@@ -224,6 +232,7 @@
     <string name="mvc_estimation_description">Dipotong dari transaksi selesai</string>
     <string name="mvc_try_again">Coba Lagi</string>
     <string name="mvc_help">Bantuan</string>
+    <string name="mvc_pick">Pilih</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_voucher_info">Info voucher</string>

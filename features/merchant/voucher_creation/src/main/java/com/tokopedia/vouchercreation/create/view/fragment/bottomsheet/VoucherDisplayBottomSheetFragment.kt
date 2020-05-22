@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
@@ -16,7 +15,7 @@ import com.tokopedia.vouchercreation.create.view.listener.VoucherDisplayScrollLi
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.*
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.view.*
 
-class VoucherDisplayBottomSheetFragment(private val bottomSheetContext: Context?,
+class VoucherDisplayBottomSheetFragment(bottomSheetContext: Context?,
                                         private val getVoucherType: () -> VoucherTargetCardType) : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
@@ -46,14 +45,6 @@ class VoucherDisplayBottomSheetFragment(private val bottomSheetContext: Context?
 
     private val linearLayoutManager by lazy {
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        bottomSheetViewTitle = when(getVoucherType()) {
-            VoucherTargetCardType.PUBLIC -> bottomSheetContext?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString()
-            VoucherTargetCardType.PRIVATE -> bottomSheetContext?.getString(R.string.mvc_create_private_voucher_display_title).toBlankOrString()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

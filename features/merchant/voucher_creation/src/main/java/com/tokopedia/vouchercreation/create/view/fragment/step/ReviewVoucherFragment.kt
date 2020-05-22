@@ -77,7 +77,9 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private val publicVoucherTipsAndTrickBottomSheet by lazy {
-        VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDiplay)
+        VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDisplay).apply {
+            setTitle(context?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
+        }
     }
 
     private val failedCreateVoucherDialog by lazy {
@@ -310,7 +312,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         )
     }
 
-    private fun getPublicVoucherDiplay() = VoucherTargetCardType.PUBLIC
+    private fun getPublicVoucherDisplay() = VoucherTargetCardType.PUBLIC
 
     private fun createVoucher() {
         isWaitingForResult = true

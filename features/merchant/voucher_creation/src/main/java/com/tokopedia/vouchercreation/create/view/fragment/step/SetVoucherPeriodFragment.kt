@@ -3,7 +3,6 @@ package com.tokopedia.vouchercreation.create.view.fragment.step
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,6 +48,17 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
                            getBannerBaseUiModel: () -> BannerBaseUiModel) = SetVoucherPeriodFragment(onNext, getVoucherBanner, getBannerBaseUiModel)
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
+
+        private const val START_DATE_TIME_PICKER_TAG = "startDateTimePicker"
+        private const val END_DATE_TIME_PICKER_TAG = "endDateTimePicker"
+
+        private const val EXTRA_HOUR = 3
+        private const val EXTRA_MINUTE = 30
+        private const val EXTRA_DAYS = 30
+        private const val MINUTE_INTERVAL = 30
+
+        private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
+        private const val DATE_OF_WEEK_FORMAT = "EEE, dd MMM yyyy"
     }
 
     @Inject
@@ -60,30 +72,8 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
         viewModelProvider.get(SetVoucherPeriodViewModel::class.java)
     }
 
-    var minDate = GregorianCalendar(2020, 1, 10).apply {
-        set(Calendar.HOUR, 3)
-        set(Calendar.MINUTE, 19)
-    }
-    var maxDate = GregorianCalendar(2025, 5, 5).apply {
-        set(Calendar.HOUR, 6)
-        set(Calendar.MINUTE, 20)
-    }
-
-    private val startDateTimePicker by lazy {
-        context?.run {
-            DateTimePickerUnify(
-                    this,
-                    minDate,
-                    GregorianCalendar(LocaleUtils.getCurrentLocale(this)),
-                    maxDate,
-                    null,
-                    DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
-                setTitle("Pilih Tanggal Mulai")
-                setInfo("Pilihan tolong ini test doang")
-                setInfoVisible(true)
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-            }
-        }
+    private val locale by lazy {
+        LocaleUtils.getIDLocale()
     }
 
     private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherBanner()
@@ -92,10 +82,15 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
     private var isWaitingForValidation = false
 
-    private var dummyStartDate = "2020-06-01"
-    private var dummyEndDate = "2020-06-30"
-    private var dummyStartHour = "12:00"
-    private var dummyEndHour = "12:00"
+    private var todayString = ""
+    private var pickedDateString = ""
+
+    private var startCalendar: GregorianCalendar? = context?.run { GregorianCalendar(LocaleUtils.getCurrentLocale(this)) }
+
+    private var startDate = ""
+    private var endDate = ""
+    private var startHour = ""
+    private var endHour = ""
 
     override fun onResume() {
         super.onResume()
@@ -125,8 +120,19 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
     }
 
     private fun setupView() {
-        startDateTextField?.setOnClickListener {
-            startDateTimePicker?.show(childFragmentManager, "startDateTimePicker")
+        startDateTextField?.textFieldInput?.run{
+            setOnClickListener {
+                getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
+            }
+            isFocusable = false
+            isClickable = true
+        }
+        endDateTextField?.textFieldInput?.run {
+            setOnClickListener {
+                getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
+            }
+            isFocusable = false
+            isClickable = true
         }
         observeLiveData()
         disableTextFieldEdit()
@@ -136,7 +142,7 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
                 onNextClicked()
             }
         }
-        setDummyDate()
+        setInitialDate()
     }
 
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
@@ -146,55 +152,83 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.periodValidationLiveData) { result ->
-            if (isWaitingForValidation) {
-                when(result) {
-                    is Success -> {
-                        val validation = result.data
-                        if (!validation.getIsHaveError()) {
-                            onNext(dummyStartDate, dummyStartHour, dummyEndDate, dummyEndHour)
-                        } else {
-                            if (validation.dateStartError.isNotBlank() && validation.hourStartError.isNotBlank()) {
-                                startDateTextField?.run {
-                                    setError(true)
-                                    setMessage(validation.dateStartError)
+        viewLifecycleOwner.run {
+            observe(viewModel.periodValidationLiveData) { result ->
+                if (isWaitingForValidation) {
+                    when(result) {
+                        is Success -> {
+                            val validation = result.data
+                            if (!validation.getIsHaveError()) {
+                                onNext(startDate, startHour, endDate, endHour)
+                            } else {
+                                if (validation.dateStartError.isNotBlank() || validation.hourStartError.isNotBlank()) {
+                                    startDateTextField?.run {
+                                        setError(true)
+                                        setMessage(validation.dateStartError)
+                                    }
                                 }
-                            }
-                            if (validation.dateEndError.isNotBlank() && validation.hourEndError.isNotBlank()) {
-                                endDateTextField?.run {
-                                    setError(true)
-                                    setMessage(validation.dateEndError)
+                                if (validation.dateEndError.isNotBlank() || validation.hourEndError.isNotBlank()) {
+                                    endDateTextField?.run {
+                                        setError(true)
+                                        setMessage(validation.dateEndError)
+                                    }
                                 }
                             }
                         }
+                        is Fail -> {
+                            val error = result.throwable.message.toBlankOrString()
+                            view?.showErrorToaster(error)
+                        }
                     }
-                    is Fail -> {
-                        val error = result.throwable.message.toBlankOrString()
-                        view?.showErrorToaster(error)
-                    }
+                    isWaitingForValidation = false
+                    setDateNextButton?.isLoading = false
                 }
-                isWaitingForValidation = false
-                setDateNextButton?.isLoading = false
+            }
+
+            observe(viewModel.startDateCalendarLiveData) { startDate ->
+                startCalendar = startDate as? GregorianCalendar
+                val formattedDate = startDate.time.toFormattedString(FULL_DAY_FORMAT, locale)
+                startDateTextField?.textFieldInput?.setText(formattedDate)
+                pickedDateString = startDate.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
+            }
+
+            observe(viewModel.endDateCalendarLiveData) { endDate ->
+                val formattedDate = endDate.time.toFormattedString(FULL_DAY_FORMAT, locale)
+                endDateTextField?.textFieldInput?.setText(formattedDate)
+            }
+
+            observe(viewModel.dateStartLiveData) { date ->
+                startDate = date
+            }
+            observe(viewModel.dateEndLiveData) { date ->
+                endDate = date
+            }
+            observe(viewModel.hourStartLiveData) { hour ->
+                startHour = hour
+            }
+            observe(viewModel.hourEndLiveData) { hour ->
+                endHour = hour
             }
         }
     }
 
     private fun disableTextFieldEdit() {
-        startDateTextField?.textFieldInput?.run {
-            isEnabled = false
-            inputType = InputType.TYPE_NULL
-        }
-        endDateTextField?.textFieldInput?.run {
-            isEnabled = false
-            inputType = InputType.TYPE_NULL
-        }
+        startDateTextField?.textFieldInput?.keyListener = null
+        endDateTextField?.textFieldInput?.keyListener = null
     }
 
-    private fun setDummyDate() {
-        viewModel.setStartPeriod(dummyStartDate, dummyStartHour)
-        viewModel.setEndPeriod(dummyEndDate, dummyEndHour)
-        startDateTextField?.textFieldInput?.setText("Kam, 01 Juni 2020, 12:00 WIB")
-        endDateTextField?.textFieldInput?.setText("Sel, 30 Juni 2020, 12:00 WIB")
+    private fun setInitialDate() {
+        context?.run {
+            GregorianCalendar(LocaleUtils.getCurrentLocale(this)).let { calendar ->
+                val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
+                todayString = initialTime
+                pickedDateString = initialTime
+                with(viewModel) {
+                    setStartDateCalendar(calendar)
+                    setEndDateCalendar(calendar)
+                }
+            }
+        }
     }
 
     private fun drawBanner() {
@@ -227,5 +261,94 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
         isWaitingForValidation = true
         viewModel.validateVoucherPeriod()
     }
+
+    private fun getToday() = context?.run { GregorianCalendar(LocaleUtils.getCurrentLocale(this)) }
+
+    private fun getCurrentStartDate() = startCalendar
+
+    private fun getCurrentEndDate() = startCalendar
+
+    private fun getMinStartDate() =
+            context?.run {
+                getToday()?.apply {
+                    add(Calendar.HOUR, EXTRA_HOUR)
+                }
+            }
+
+    private fun getMaxStartDate() =
+            context?.run {
+                getToday()?.apply {
+                    add(Calendar.DATE, EXTRA_DAYS)
+                }
+            }
+
+    private fun getMinEndDate() : GregorianCalendar? {
+        return GregorianCalendar().apply {
+            time = startCalendar?.time
+            add(Calendar.MINUTE, EXTRA_MINUTE)
+        }
+    }
+
+    private fun getMaxEndDate(): GregorianCalendar? {
+        return GregorianCalendar().apply {
+            time = startCalendar?.time
+            add(Calendar.DATE, EXTRA_DAYS)
+        }
+    }
+
+    private fun getStartDateTimePicker() =
+            context?.run {
+                getMinStartDate()?.let { minDate ->
+                    getCurrentStartDate()?.let { currentDate ->
+                        getMaxStartDate()?.let { maxDate ->
+                            val title = getString(R.string.mvc_start_date_title)
+                            val info = String.format(getString(R.string.mvc_start_date_desc).toBlankOrString(), todayString).parseAsHtml()
+                            val buttonText = getString(R.string.mvc_pick).toBlankOrString()
+                            DateTimePickerUnify(this, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
+                                setTitle(title)
+                                setInfo(info)
+                                setInfoVisible(true)
+                                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                                minuteInterval = MINUTE_INTERVAL
+                                datePickerButton.let { button ->
+                                    button.text = buttonText
+                                    button.setOnClickListener {
+                                        viewModel.setStartDateCalendar(getDate())
+                                        dismiss()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+    private fun getEndDateTimePicker() =
+            context?.run {
+                getMinEndDate()?.let { minDate ->
+                    getCurrentEndDate()?.let { currentDate ->
+                        getMaxEndDate()?.let { maxDate ->
+                            val title = getString(R.string.mvc_end_date_title)
+                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), pickedDateString).parseAsHtml()
+                            val buttonText = getString(R.string.mvc_pick).toBlankOrString()
+                            DateTimePickerUnify(this, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
+                                setTitle(title)
+                                setInfo(info)
+                                setInfoVisible(true)
+                                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                                minuteInterval = MINUTE_INTERVAL
+                                datePickerButton.let { button ->
+                                    button.text = buttonText
+                                    button.setOnClickListener {
+                                        viewModel.setEndDateCalendar(getDate())
+                                        dismiss()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
 
 }
