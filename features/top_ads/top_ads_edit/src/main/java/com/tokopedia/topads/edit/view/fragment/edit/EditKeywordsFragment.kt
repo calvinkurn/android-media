@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.topads.common.data.response.ResponseKeywordSuggestion
+import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.param.DataSuggestions
@@ -55,9 +55,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private var initialBudget: MutableList<Int> = mutableListOf()
     private var error: MutableList<Boolean> = mutableListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
-    private var restoreData: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
-    private var selectedData: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
-    private var manualData: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
+    private var restoreData: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
+    private var selectedData: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
+    private var manualData: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
 
 
     private var groupId = 0
@@ -304,7 +304,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun updateKeywords(selectedKeywords: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?) {
+    private fun updateKeywords(selectedKeywords: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>?) {
         if (adapter.items[0] is EditKeywordEmptyViewModel) {
             adapter.items.clear()
         }

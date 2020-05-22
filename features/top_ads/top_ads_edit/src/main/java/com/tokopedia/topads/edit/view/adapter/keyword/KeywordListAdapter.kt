@@ -3,7 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.response.ResponseKeywordSuggestion
+import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
 import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordViewHolder
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordViewModel
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordGroupViewModel
@@ -12,8 +12,8 @@ import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewM
 class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory, var items: MutableList<KeywordViewModel>) : RecyclerView.Adapter<KeywordViewHolder<KeywordViewModel>>() {
 
     private var remains: MutableList<KeywordViewModel> = mutableListOf()
-    var favoured: MutableList<KeywordItemViewModel> = mutableListOf()
-    var manualKeywords: MutableList<KeywordItemViewModel> = mutableListOf()
+    var favoured: MutableList<KeywordItemViewModel> = mutableListOf() /*chosen keywords */
+    var manualKeywords: MutableList<KeywordItemViewModel> = mutableListOf() /*manually added keywords*/
     private var SELECTED_KEYWORD = " Kata Kunci Pilihan"
     private var RECOMMENDED = "Rekomendasi"
 
@@ -56,10 +56,9 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
                 return true
             }
         }
-
         if (items.size == 0) {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
-        } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != SELECTED_KEYWORD) {
+        } else if (items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != SELECTED_KEYWORD) {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         }
 
@@ -87,7 +86,19 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
         favoured.clear()
         remains.clear()
         favoured.addAll(it)
-        items.removeAll(favoured)
+        val listSelected: MutableList<String> = mutableListOf()
+        getSelectedItems().forEach {
+            listSelected.add(it.data.keyword)
+        }
+        val iterator = items.iterator()
+        while (iterator.hasNext()) {
+            val temp = iterator.next()
+            if (temp is KeywordItemViewModel) {
+                if (favoured.find { fav -> fav.data.keyword == temp.data.keyword } != null) {
+                    iterator.remove()
+                }
+            }
+        }
         items.forEach { index ->
             if (index is KeywordItemViewModel)
                 remains.add(index)
@@ -99,7 +110,7 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
             items.add(KeywordGroupViewModel(RECOMMENDED))
             items.addAll(remains)
         }
-        notifyDataSetChanged()
+        setSelectedList(listSelected)
     }
 
 
@@ -108,15 +119,12 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
             if (key is KeywordItemViewModel) {
                 key.isChecked = false
                 selectedKeywords.forEach {
-                    if (key is KeywordItemViewModel) {
-                        if (key.data.keyword == it) {
-                            key.isChecked = true
-                        }
+                    if (key.data.keyword == it) {
+                        key.isChecked = true
                     }
                 }
             }
         }
-        notifyDataSetChanged()
     }
 
     fun setList(items: MutableList<KeywordViewModel>) {
@@ -125,22 +133,20 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
 
     }
 
-    fun addRestoredData(favoured: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?, selected: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?, manual: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?) {
+    fun addRestoredData(favoured: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>?, selected: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>?, manual: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>?) {
         val toBeAdded: MutableList<KeywordViewModel> = mutableListOf()
         toBeAdded.addAll(items)
         manual?.forEach {
             manualKeywords.add(KeywordItemViewModel(it))
         }
         toBeAdded.removeAt(0)
-        val index: MutableList<Int> = mutableListOf()
-        toBeAdded.forEachIndexed { indi, fav ->
-            if (favoured?.find { it -> it.keyword == (fav as KeywordItemViewModel).data.keyword } != null) {
-                index.add(indi)
-            }
-        }
 
-        index.forEach {
-            toBeAdded.removeAt(it)
+        val iterator = toBeAdded.iterator()
+        while (iterator.hasNext()) {
+            val temp = iterator.next()
+            if (favoured?.find { it -> it.keyword == (temp as KeywordItemViewModel).data.keyword } != null) {
+                iterator.remove()
+            }
         }
         items.clear()
         items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))

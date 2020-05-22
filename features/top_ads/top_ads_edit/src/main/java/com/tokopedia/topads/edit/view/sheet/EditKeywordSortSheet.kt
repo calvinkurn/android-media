@@ -14,7 +14,7 @@ class EditKeywordSortSheet {
     private var dialog: BottomSheetDialog? = null
     var onItemClick: ((sortId: String) -> Unit)? = null
 
-    private fun setupView(context: Context) {
+    private fun setupView() {
         dialog?.let {
             it.setOnShowListener { dialogInterface ->
                 val dialog = dialogInterface as BottomSheetDialog
@@ -28,7 +28,7 @@ class EditKeywordSortSheet {
                 dismissDialog()
             }
 
-            it.radio_group.setOnCheckedChangeListener { group, checkedId ->
+            it.radio_group.setOnCheckedChangeListener { _, checkedId ->
                 onItemClick?.invoke(checkedId.toString())
                 dismissDialog()
             }
@@ -60,7 +60,7 @@ class EditKeywordSortSheet {
             val fragment = EditKeywordSortSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog!!.setContentView(R.layout.topads_edit_keyword_edit_sort_sheet)
-            fragment.setupView(context)
+            fragment.setupView()
             return fragment
         }
     }

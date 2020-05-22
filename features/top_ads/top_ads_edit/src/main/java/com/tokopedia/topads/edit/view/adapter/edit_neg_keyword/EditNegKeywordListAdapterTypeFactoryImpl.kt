@@ -15,7 +15,7 @@ class EditNegKeywordListAdapterTypeFactoryImpl(var actionDelete: ((pos: Int) -> 
 
     override fun type(model: EditNegKeywordEmptyViewModel): Int = EditNegKeywordEmptyViewHolder.LAYOUT
 
-    override fun type(editKeywordItemViewHolder: EditNegKeywordItemViewModel): Int = EditNegKeywordItemViewHolder.LAYOUT
+    override fun type(model: EditNegKeywordItemViewModel): Int = EditNegKeywordItemViewHolder.LAYOUT
 
     override fun holder(type: Int, view: View): EditNegKeywordViewHolder<*> {
         return when (type) {

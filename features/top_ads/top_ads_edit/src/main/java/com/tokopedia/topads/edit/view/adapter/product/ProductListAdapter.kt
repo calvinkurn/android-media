@@ -54,7 +54,7 @@ class ProductListAdapter(private val typeFactory: ProductListAdapterTypeFactory)
 
 
     fun setSelectedList(selectedProductIds: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
-        items.forEachIndexed { index, productViewModel ->
+        items.forEachIndexed { _, productViewModel ->
             selectedProductIds.forEach {
                 if ((productViewModel as ProductItemViewModel).data.productID == it.productID) {
                     productViewModel.isChecked = true

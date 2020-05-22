@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
-import com.tokopedia.topads.common.data.response.ResponseKeywordSuggestion
+import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.Utils
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -37,9 +37,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     var productId = ""
     var minSuggestedBid = 0
     private var originalList: ArrayList<String> = arrayListOf()
-    private var selected: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
-    private var favoured: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
-    private var manual: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
+    private var selected: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
+    private var favoured: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
+    private var manual: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
 
 
     companion object {
@@ -74,12 +74,14 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val productIds = arguments?.getString(PRODUCT_ID)!!
-        productId = productIds.substring(1, productIds.length - 1)
+        val productIds = arguments?.getString(PRODUCT_ID) ?: ""
+        if (productIds.isNotEmpty()) {
+            productId = productIds.substring(1, productIds.length - 1)
+        }
         val groupId = arguments?.getInt(GROUP_ID)
         originalList = arguments?.getStringArrayList(ORIGINAL_LIST)!!
         minSuggestedBid = arguments?.getInt(MIN_SUGGESTION)!!
-        viewModel.getSugestionKeyword(productId, groupId, this::onSuccessSuggestion, this::onErrorSuggestion)
+        viewModel.getSuggestionKeyword(productId, groupId, this::onSuccessSuggestion, this::onErrorSuggestion)
     }
 
     private fun onKeywordSelected(pos: Int) {
@@ -103,19 +105,19 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
+    private fun onSuccessSuggestion(keywords: List<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem>) {
         keywordListAdapter.favoured.clear()
         keywordListAdapter.manualKeywords.clear()
-        var list: MutableList<KeywordViewModel> = mutableListOf()
+        val list: MutableList<KeywordViewModel> = mutableListOf()
         list.add(KeywordGroupViewModel("Rekomendasi"))
-        keywords.forEach { index ->
-            list.add(KeywordItemViewModel(index))
-            keywordList.add(KeywordItemViewModel(index).data.keyword)
+        keywords.forEach { key->
+            key.keywordData.forEach {
+                list.add(KeywordItemViewModel(it))
+                keywordList.add(KeywordItemViewModel(it).data.keyword)
+
+            }
         }
-
         keywordListAdapter.setList(list)
-        keywordListAdapter.notifyDataSetChanged()
-
         addManualKeywords()
         showSelectMessage()
     }
@@ -148,25 +150,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         return manual
     }
 
-    private fun getFavouredDataArray(): ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> {
-        var finalList: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> = arrayListOf()
-        getFavouredData().forEach {
-            finalList.add(it.data)
-        }
-        return finalList
-    }
-
-    private fun getSelectedKeywordArray(): ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> {
-        var finalList: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> = arrayListOf()
-        keywordListAdapter.getSelectedItems().forEach {
-            finalList.add(it.data)
-        }
-        return finalList
-    }
-
-    private fun getManualKeywordArray(): ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> {
-        var finalList: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> = arrayListOf()
-        keywordListAdapter.manualKeywords.forEach {
+    private fun getArrayList(list: List<KeywordItemViewModel>): ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem> {
+        val finalList: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem> = arrayListOf()
+        list.forEach {
             finalList.add(it.data)
         }
         return finalList
@@ -195,9 +181,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         }
         btn_next.setOnClickListener {
             val returnIntent = Intent()
-            returnIntent.putParcelableArrayListExtra(FAVOURED_DATA, getFavouredDataArray())
-            returnIntent.putParcelableArrayListExtra(SELECTED_DATA, getSelectedKeywordArray())
-            returnIntent.putParcelableArrayListExtra(MANUAL_DATA, getManualKeywordArray())
+            returnIntent.putParcelableArrayListExtra(FAVOURED_DATA, getArrayList(getFavouredData()))
+            returnIntent.putParcelableArrayListExtra(SELECTED_DATA, getArrayList(keywordListAdapter.getSelectedItems()))
+            returnIntent.putParcelableArrayListExtra(MANUAL_DATA, getArrayList(keywordListAdapter.manualKeywords))
             activity?.setResult(Activity.RESULT_OK, returnIntent)
             activity?.finish()
         }

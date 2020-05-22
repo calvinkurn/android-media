@@ -13,7 +13,7 @@ class ProductSortSheetList {
     private var dialog: BottomSheetDialog? = null
     var onItemClick: ((sortId: String) -> Unit)? = null
 
-    private fun setupView(context: Context) {
+    private fun setupView() {
         dialog?.let {
             it.setOnShowListener { dialogInterface ->
                 val dialog = dialogInterface as BottomSheetDialog
@@ -63,7 +63,7 @@ class ProductSortSheetList {
             val fragment = ProductSortSheetList()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog!!.setContentView(R.layout.topads_create_fragment_product_list_sheet_sort)
-            fragment.setupView(context)
+            fragment.setupView()
             return fragment
         }
     }
