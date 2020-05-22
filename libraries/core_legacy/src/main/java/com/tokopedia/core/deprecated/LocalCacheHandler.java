@@ -95,24 +95,6 @@ public class LocalCacheHandler {
         return sharedPrefs.getBoolean(key, defValue);
     }
 
-    public ArrayList<String> getArrayListString(String key) {
-        int total = sharedPrefs.getInt(key + "_total", 0);
-        ArrayList<String> value = new ArrayList<String>();
-        for (int i = 0; i < total; i++) {
-            value.add(getString(key + i));
-        }
-        return value;
-    }
-
-    public ArrayList<Integer> getArrayListInteger(String key) {
-        int total = sharedPrefs.getInt(key + "_total", 0);
-        ArrayList<Integer> value = new ArrayList<Integer>();
-        for (int i = 0; i < total; i++) {
-            value.add(getInt(key + i));
-        }
-        return value;
-    }
-
     public void setExpire(int time) {
         putInt("expired_time", time);
         Long curr_time = System.currentTimeMillis() / 1000;
@@ -125,13 +107,6 @@ public class LocalCacheHandler {
         Long time = getLong("timestamp");
         Long curr_time = System.currentTimeMillis() / 1000;
         return (curr_time - time) > interval;
-    }
-
-    public int getRemainingTime() {
-        int interval = getInt("expired_time");
-        Long time = getLong("timestamp");
-        Long curr_time = System.currentTimeMillis() / 1000;
-        return (int) (interval - (curr_time - time));
     }
 
     public void clearCache(String name) {
