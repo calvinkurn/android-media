@@ -1,15 +1,15 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
@@ -20,7 +20,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.MergeAdapters
-import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -42,7 +41,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     private lateinit var ivSearch: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     var pageEndPoint = ""
-    private lateinit var layoutManager: StaggeredGridLayoutManager
+    private lateinit var gridLayoutManager: GridLayoutManager
 
 
     companion object {
@@ -74,10 +73,22 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
         ivSearch = view.findViewById(R.id.iv_search)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
-        layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-        mPageComponentRecyclerView.layoutManager = layoutManager
+        gridLayoutManager = GridLayoutManager(activity, 2)
 
-        mergeAdapters = MergeAdapters()
+
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                Log.d("spanSizeLookup", position.toString())
+                return when (mergeAdapters.getViewName(position)) {
+                    "product_card_item" -> 1
+                    else -> 2
+
+                }
+            }
+        }
+
+        mPageComponentRecyclerView.layoutManager = gridLayoutManager
+        mergeAdapters = MergeAdapters(gridLayoutManager)
         mergeAdapters.addAdapter(DiscoveryRecycleAdapter(this))
         mPageComponentRecyclerView.adapter = mergeAdapters
     }
@@ -97,7 +108,6 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
         mDiscoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-//                    mDiscoveryRecycleAdapter.setDataList(it.data)
                     mergeAdapters.setDataList(it.data)
                     mergeAdapters.notifyDataSetChanged()
                 }

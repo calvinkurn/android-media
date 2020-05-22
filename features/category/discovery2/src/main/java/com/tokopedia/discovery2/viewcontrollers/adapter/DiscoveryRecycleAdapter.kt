@@ -21,7 +21,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     private var viewHolderListModel = ViewModelProviders.of(fragment).get((DiscoveryListViewModel::class.java.canonicalName
             ?: "") + noOfObject++, DiscoveryListViewModel::class.java)
 
-    private val componentList: ArrayList<ComponentsItem> = ArrayList()
+    val componentList: ArrayList<ComponentsItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
         return DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
@@ -45,6 +45,8 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: 0
     }
+
+
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         if (dataList != null) {

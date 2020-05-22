@@ -1,11 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
+import android.util.Log
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
+class MergeAdapters(var gridLayoutManager: GridLayoutManager) : RecyclerView.Adapter<AbstractViewHolder>() {
 
     private val adapterList: ArrayList<DiscoveryRecycleAdapter> = ArrayList()
     private var initialChildAdapter: DiscoveryRecycleAdapter? = null
@@ -26,17 +28,27 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         val adapterPositionPair = getActiveAdapter(position)
-        adapterPositionPair.first.onBindViewHolder(holder, position - adapterPositionPair.second)
+        initialChildAdapter?.onBindViewHolder(holder, position - adapterPositionPair.second)
     }
 
 
     override fun getItemViewType(position: Int): Int {
+        Log.d("getItemViewType", position.toString())
         val adapterPositionPair = getActiveAdapter(position)
 
-        return if (position >= adapterPositionPair.second) {
-            adapterPositionPair.first.getItemViewType(position - adapterPositionPair.second)
+        return (if (position >= adapterPositionPair.second) {
+            initialChildAdapter?.getItemViewType(position - adapterPositionPair.second)
         } else {
             0
+        })!!
+    }
+
+    fun getViewName(position: Int): String? {
+        val adapterPositionPair = getActiveAdapter(position)
+        return if (position < getItemCount()) {
+            return initialChildAdapter?.componentList!![position - adapterPositionPair.second].name!!
+        } else {
+            "Default"
         }
     }
 
@@ -48,9 +60,17 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
     private fun getActiveAdapter(position: Int): Pair<DiscoveryRecycleAdapter, Int> {
         var listDataCount = 0
         var currentChildAdapter = adapterList[0]
-        for (it in adapterList) {
+        for ((index, it) in adapterList.withIndex()) {
             if (listDataCount + it.itemCount > position) {
-                currentChildAdapter = it
+                initialChildAdapter = it
+//                gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+//                    override fun getSpanSize(position: Int): Int {
+//                        if (index >= 1) {
+//                            return 1
+//                        }
+//                        return 2
+//                    }
+//                }
                 break
             } else {
                 listDataCount += it.itemCount
