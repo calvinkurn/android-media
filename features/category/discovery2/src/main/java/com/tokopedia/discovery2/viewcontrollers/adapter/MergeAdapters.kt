@@ -11,11 +11,11 @@ class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>> : RecyclerView
     private val adapterList: ArrayList<T> = ArrayList()
     private var initialChildAdapter: T? = null
 
-    fun addAdapter(discoveryRecycleAdapter: T) {
+    fun addAdapter(childAdapter: T) {
         if (adapterList.isEmpty()) {
-            initialChildAdapter = discoveryRecycleAdapter
+            initialChildAdapter = childAdapter
         }
-        adapterList.add(discoveryRecycleAdapter)
+        adapterList.add(childAdapter)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
