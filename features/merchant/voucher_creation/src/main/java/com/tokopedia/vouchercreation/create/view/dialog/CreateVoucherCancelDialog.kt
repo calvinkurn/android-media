@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.create.view.dialog
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
 
 class CreateVoucherCancelDialog(context: Context,
@@ -20,6 +21,10 @@ class CreateVoucherCancelDialog(context: Context,
         setSecondaryCTAClickListener {
             onSecondaryClick()
             dismiss()
+        }
+        with(dialogSecondaryCTA) {
+            buttonVariant = UnifyButton.Variant.TEXT_ONLY
+            buttonType = UnifyButton.Type.ALTERNATE
         }
         show()
     }

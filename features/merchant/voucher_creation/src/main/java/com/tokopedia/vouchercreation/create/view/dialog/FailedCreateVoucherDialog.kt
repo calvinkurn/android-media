@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.create.view.dialog
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
 
 class FailedCreateVoucherDialog(context: Context,
@@ -23,6 +24,10 @@ class FailedCreateVoucherDialog(context: Context,
         setSecondaryCTAClickListener {
             onRequestHelp()
             dismiss()
+        }
+        with(dialogSecondaryLongCTA) {
+            buttonVariant = UnifyButton.Variant.TEXT_ONLY
+            buttonType = UnifyButton.Type.ALTERNATE
         }
         show()
     }
