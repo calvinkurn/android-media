@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
@@ -43,6 +44,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     private var stockPercentageProgress: ProgressBarUnify
     private var linearLayoutImageRating: LinearLayout
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
+    var lifecycleOwner: LifecycleOwner
 
 
     init {
@@ -62,6 +64,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         imageFreeOngkirPromo = itemView.findViewById(R.id.imageFreeOngkirPromo)
         stockPercentageProgress = itemView.findViewById(R.id.stockPercentageProgress)
         productCardView = itemView.findViewById(R.id.cardViewProductCard)
+        lifecycleOwner = fragment.viewLifecycleOwner
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -79,15 +82,12 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     override fun onViewDetachedToWindow() {
-        val lifecycleOwner = fragment.viewLifecycleOwner
         if (productCardItemViewModel.getDataItemValue().hasObservers()) {
             productCardItemViewModel.getDataItemValue().removeObservers(lifecycleOwner)
         }
     }
 
     private fun setUpObserver() {
-        val lifecycleOwner = fragment.viewLifecycleOwner
-
         productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
             populateData(it)
         })

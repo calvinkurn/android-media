@@ -12,16 +12,14 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 class DiscoveryRecycleAdapter(private val fragment: Fragment)
     : RecyclerView.Adapter<AbstractViewHolder>() {
 
-    private val viewPool = RecyclerView.RecycledViewPool()
-
     companion object {
         private var noOfObject = 0
     }
 
+    private val viewPool = RecyclerView.RecycledViewPool()
+    private val componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get((DiscoveryListViewModel::class.java.canonicalName
             ?: "") + noOfObject++, DiscoveryListViewModel::class.java)
-
-    val componentList: ArrayList<ComponentsItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
         return DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
@@ -45,7 +43,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: 0
     }
-
 
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
