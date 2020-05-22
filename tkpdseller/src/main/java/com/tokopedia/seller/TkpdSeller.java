@@ -16,8 +16,4 @@ public class TkpdSeller {
     public static Intent getActivitySellingTransactionConfirmShipping(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.SELLER_SHIPMENT);
     }
-
-    public static Intent getActivitySellingTransactionOpportunity(Context context, String query) {
-        return RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
-    }
 }

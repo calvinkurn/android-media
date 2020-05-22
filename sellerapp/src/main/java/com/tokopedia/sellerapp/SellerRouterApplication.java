@@ -300,21 +300,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getActivitySellingTransactionNewOrder(Context context) {
-        return TkpdSeller.getActivitySellingTransactionNewOrder(context);
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
-        return TkpdSeller.getActivitySellingTransactionConfirmShipping(context);
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
-        return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
-    }
-
-    @Override
     public void goToTopAdsDashboard(Activity activity) {
         Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
         activity.startActivity(intent);
@@ -323,11 +308,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return null;
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentSeller(Context context) {
-        return ResoInboxActivity.newSellerInstance(context);
     }
 
     @Override

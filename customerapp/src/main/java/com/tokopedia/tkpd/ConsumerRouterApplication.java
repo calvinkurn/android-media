@@ -309,10 +309,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NFCSubscriber.onNewIntent(context, intent);
     }
 
-    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
-        return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
-    }
-
     /**
      * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#isSupportApplink(String)}
      *
@@ -968,21 +964,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionNewOrder(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentSeller(Context context) {
         return null;
     }
 

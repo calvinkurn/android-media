@@ -24,26 +24,6 @@ public interface TkpdCoreRouter {
 
     Intent getSplashScreenIntent(Context context);
 
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getActivitySellingTransactionNewOrder(Context context);
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getActivitySellingTransactionConfirmShipping(Context context);
-
-    Intent getActivitySellingTransactionOpportunity(Context context, String query);
-
-    /**
-     * Only for sellerapp
-     */
-    @Deprecated
-    Intent getResolutionCenterIntentSeller(Context context);
-
     Intent getPhoneVerificationActivationIntent(Context context);
 
     /**

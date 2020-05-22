@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
-import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -59,11 +58,5 @@ public class NewOrderWidgetModule {
     @Provides
     NewOrderApi provideNewOrderApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(NewOrderApi.class);
-    }
-
-    @NewOrderWidgetScope
-    @Provides
-    TopChatNotificationMapper provideTopChatNotificationMapper() {
-        return new TopChatNotificationMapper();
     }
 }
