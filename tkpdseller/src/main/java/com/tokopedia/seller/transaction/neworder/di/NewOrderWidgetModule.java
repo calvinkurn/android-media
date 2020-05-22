@@ -8,7 +8,6 @@ import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.transaction.neworder.data.NewOrderApi;
@@ -60,12 +59,6 @@ public class NewOrderWidgetModule {
     @Provides
     NewOrderApi provideNewOrderApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(NewOrderApi.class);
-    }
-
-    @NewOrderWidgetScope
-    @Provides
-    ChatService provideChatService() {
-        return new ChatService();
     }
 
     @NewOrderWidgetScope

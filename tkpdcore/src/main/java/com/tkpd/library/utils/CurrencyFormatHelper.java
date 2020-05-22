@@ -12,7 +12,6 @@ import java.util.Locale;
  */
 @Deprecated
 public final class CurrencyFormatHelper {
-	private static final NumberFormat RupiahFormat = NumberFormat.getCurrencyInstance(Locale.US);
 	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
 	// this flag intend to block textwatcher to be called recursively
 	private static boolean LockTextWatcher = false;
