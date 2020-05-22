@@ -16,7 +16,6 @@ class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>>() : RecyclerVi
             initialChildAdapter = discoveryRecycleAdapter
         }
         adapterList.add(discoveryRecycleAdapter)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
