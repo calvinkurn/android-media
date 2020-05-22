@@ -128,6 +128,7 @@
     <string name="mvc_terms_and_condition_title">Syarat &amp; Ketentuan</string>
     <string name="mvc_create_fail_title">Yaah, gagal menambahkan Voucher Toko</string>
     <string name="mvc_create_fail_desc">Voucher kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
+    <string name="mvc_displayed_date_format">%s, %s WIB - &lt;br>%s, %s WIB</string>
 
     <!-- Tips and trick -->
     <string name="mvc_tips_and_trick_private">Tips &amp; Trik Voucher Khusus</string>

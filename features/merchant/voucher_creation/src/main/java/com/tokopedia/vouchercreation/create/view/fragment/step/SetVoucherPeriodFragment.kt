@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -85,7 +86,9 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
     private var todayString = ""
     private var pickedDateString = ""
 
-    private var startCalendar: GregorianCalendar? = context?.run { GregorianCalendar(LocaleUtils.getCurrentLocale(this)) }
+    private var startCalendar: GregorianCalendar? =
+            context?.run { getToday()?.apply {
+                    add(Calendar.HOUR, EXTRA_HOUR)}}
 
     private var startDate = ""
     private var endDate = ""
@@ -159,19 +162,25 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
                         is Success -> {
                             val validation = result.data
                             if (!validation.getIsHaveError()) {
-                                onNext(startDate, startHour, endDate, endHour)
+                                startDateTextField?.removeError()
+                                endDateTextField?.removeError()
+                                onNext(startDate, endDate, startHour, endHour)
                             } else {
                                 if (validation.dateStartError.isNotBlank() || validation.hourStartError.isNotBlank()) {
                                     startDateTextField?.run {
                                         setError(true)
                                         setMessage(validation.dateStartError)
                                     }
+                                } else {
+                                    startDateTextField?.removeError()
                                 }
                                 if (validation.dateEndError.isNotBlank() || validation.hourEndError.isNotBlank()) {
                                     endDateTextField?.run {
                                         setError(true)
                                         setMessage(validation.dateEndError)
                                     }
+                                } else {
+                                    endDateTextField?.removeError()
                                 }
                             }
                         }
@@ -349,6 +358,11 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
                     }
                 }
             }
+
+    private fun TextFieldUnify.removeError() {
+        setError(false)
+        setMessage("")
+    }
 
 
 }

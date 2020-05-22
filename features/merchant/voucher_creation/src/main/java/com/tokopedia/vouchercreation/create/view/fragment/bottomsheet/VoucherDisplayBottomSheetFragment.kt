@@ -15,13 +15,12 @@ import com.tokopedia.vouchercreation.create.view.listener.VoucherDisplayScrollLi
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.*
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.view.*
 
-class VoucherDisplayBottomSheetFragment(bottomSheetContext: Context?,
-                                        private val getVoucherType: () -> VoucherTargetCardType) : BottomSheetUnify(), VoucherBottomView {
+class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> VoucherTargetCardType) : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
         fun createInstance(context: Context?,
                         getVoucherType: () -> VoucherTargetCardType) : VoucherDisplayBottomSheetFragment {
-            return VoucherDisplayBottomSheetFragment(context, getVoucherType).apply {
+            return VoucherDisplayBottomSheetFragment(getVoucherType).apply {
                 context?.run {
                     val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
                     // Setup decoration at start of instantiating to avoid increase of padding per refresh layout

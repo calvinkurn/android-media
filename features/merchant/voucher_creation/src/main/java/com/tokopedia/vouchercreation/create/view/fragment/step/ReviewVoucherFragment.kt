@@ -7,12 +7,16 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
@@ -30,6 +34,7 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherRe
 import com.tokopedia.vouchercreation.create.view.viewmodel.ReviewVoucherViewModel
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherReviewUiModel,
@@ -49,6 +54,9 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         private const val PERIOD_DATA_KEY = "period"
 
         private const val VOUCHER_TIPS_INDEX = 1
+
+        private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
+        private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
     }
 
     @Inject
@@ -77,9 +85,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private val publicVoucherTipsAndTrickBottomSheet by lazy {
-        VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDisplay).apply {
-            setTitle(context?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
-        }
+        VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDisplay)
     }
 
     private val failedCreateVoucherDialog by lazy {
@@ -96,6 +102,13 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     private val buttonUiModel by lazy {
         FooterButtonUiModel(context?.getString(R.string.mvc_add_voucher).toBlankOrString(), "")
+    }
+
+    private val rawDateFormatter by lazy {
+        SimpleDateFormat(RAW_DATE_FORMAT, LocaleUtils.getIDLocale())
+    }
+    private val displayedDateFormatter by lazy {
+        SimpleDateFormat(DISPLAYED_DATE_FORMAT, LocaleUtils.getIDLocale())
     }
 
     private var isWaitingForResult = false
@@ -130,7 +143,10 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     override fun showDownloadBottomSheet() {}
 
     override fun showTipsAndTrickBottomSheet() {
-        publicVoucherTipsAndTrickBottomSheet.show(childFragmentManager, VoucherDisplayBottomSheetFragment.TAG)
+        publicVoucherTipsAndTrickBottomSheet.run {
+            setTitle(activity?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
+            show(this@ReviewVoucherFragment.childFragmentManager, VoucherDisplayBottomSheetFragment.TAG)
+        }
     }
 
     override fun onInfoContainerCtaClick(dataKey: String) {
@@ -180,18 +196,21 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
-        val dummyDate = "01 Jun 2020, 12:00 WIB - <br>30 Jun 2020, 12:00 WIB"
+        val displayedDate =
+                with(voucherReviewUiModel) {
+                    getDisplayedDateString(startDate, startHour, endDate, endHour)
+                }
         voucherReviewUiModel.run {
             val reviewInfoList = mutableListOf(
                     with(voucherReviewUiModel) {
-                        getVoucherPreviewSection(voucherName, shopAvatarUrl, shopName, promoCode, dummyDate)
+                        getVoucherPreviewSection(voucherName, shopAvatarUrl, shopName, promoCode, displayedDate)
                     },
                     getVoucherInfoSection(targetType, voucherName, promoCode),
                     DividerUiModel(DividerUiModel.THIN),
                     getVoucherBenefitSection(voucherType, minPurchase, voucherQuota),
                     getExpenseEstimationSection(voucherType.value, voucherQuota),
                     DividerUiModel(DividerUiModel.THIN),
-                    getPeriodSection(),
+                    getPeriodSection(displayedDate),
                     DividerUiModel(DividerUiModel.THICK),
                     buttonUiModel,
                     FooterUiModel(
@@ -208,6 +227,25 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
             adapter.data.clear()
             renderList(reviewInfoList)
         }
+    }
+
+    private fun getDisplayedDateString(startDate: String,
+                                       startHour: String,
+                                       endDate: String,
+                                       endHour: String): String {
+        val formattedStartDate = startDate.formatToDisplayedDate()
+        val formattedEndDate = endDate.formatToDisplayedDate()
+        return String.format(context?.getString(R.string.mvc_displayed_date_format).toBlankOrString(),
+                formattedStartDate, startHour, formattedEndDate, endHour)
+    }
+
+    private fun String.formatToDisplayedDate(): String {
+        try {
+            return displayedDateFormatter.format(rawDateFormatter.parse(this))
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+        return ""
     }
 
     private fun getVoucherPreviewSection(promoName: String,
@@ -297,11 +335,9 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         )
     }
 
-    private fun getPeriodSection() : InfoContainerUiModel {
-        val dummyDate = "01 Jun 2020, 12:00 WIB - <br>30 Jun 2020, 12:00 WIB"
-
+    private fun getPeriodSection(dateString: String) : InfoContainerUiModel {
         val subInfoList = listOf(
-                SubInfoItemUiModel(R.string.mvc_period, dummyDate)
+                SubInfoItemUiModel(R.string.mvc_period, dateString)
         )
 
         return InfoContainerUiModel(
@@ -335,6 +371,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     private fun onDialogRequestHelp() {
         failedCreateVoucherDialog?.dismiss()
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
     }
 
 }

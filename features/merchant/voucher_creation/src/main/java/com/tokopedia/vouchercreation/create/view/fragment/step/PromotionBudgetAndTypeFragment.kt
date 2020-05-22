@@ -88,6 +88,7 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, 
 
     override fun onResume() {
         bannerVoucherUiModel = getVoucherUiModel()
+        bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
         super.onResume()
     }
 
