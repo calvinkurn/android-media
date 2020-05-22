@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>>() : RecyclerView.Adapter<AbstractViewHolder>() {
+class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>> : RecyclerView.Adapter<AbstractViewHolder>() {
 
     private val adapterList: ArrayList<T> = ArrayList()
     private var initialChildAdapter: T? = null

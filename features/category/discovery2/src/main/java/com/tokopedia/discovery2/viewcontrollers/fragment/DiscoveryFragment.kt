@@ -1,14 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.applink.RouteManager
@@ -33,9 +31,9 @@ import com.tokopedia.usecase.coroutines.Success
 
 class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
 
-    private lateinit var mDiscoveryViewModel: DiscoveryViewModel
+    private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
-    private lateinit var mPageComponentRecyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
@@ -73,31 +71,31 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
-        mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
+        recyclerView = view.findViewById(R.id.discovery_recyclerView)
 
 
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mDiscoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
 
         discoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
-        mPageComponentRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         mergeAdapters = MergeAdapters()
         mergeAdapters.addAdapter(discoveryRecycleAdapter)
-        mPageComponentRecyclerView.adapter = mergeAdapters
+        recyclerView.adapter = mergeAdapters
 
-        mDiscoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
-        pageEndPoint = mDiscoveryViewModel.pageIdentifier
-        mDiscoveryViewModel.getDiscoveryData()
+        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        pageEndPoint = discoveryViewModel.pageIdentifier
+        discoveryViewModel.getDiscoveryData()
 
         setUpObserver()
     }
 
     private fun setUpObserver() {
-        mDiscoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     discoveryRecycleAdapter.setDataList(it.data)
@@ -106,7 +104,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
             }
         })
 
-        mDiscoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.data?.get(0)?.let { data ->
@@ -121,7 +119,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
             }
         })
 
-        mDiscoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     ivSearch.show()
@@ -143,7 +141,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
             ivShare.show()
             ivShare.setOnClickListener {
                 permissionHelper {
-                    Utils.shareData(activity, data.share.description, data.share.url, mDiscoveryViewModel.getBitmapFromURL(data.share.image))
+                    Utils.shareData(activity, data.share.description, data.share.url, discoveryViewModel.getBitmapFromURL(data.share.image))
                 }
             }
             ivSearch.setOnClickListener {
@@ -160,7 +158,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     }
 
     private fun setAnimationOnScroll() {
-        mPageComponentRecyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
+        recyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
 
     private fun setFloatingActionButton(data: DataItem) {
@@ -176,7 +174,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     private fun setClick(appLinks: String, shopId: Int) {
         mDiscoveryFab.getFabButton().setOnClickListener {
             if (appLinks.isNotEmpty() && shopId != 0) {
-                activity?.let { it1 -> mDiscoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
+                activity?.let { it1 -> discoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
         }
     }
@@ -217,7 +215,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     }
 
     override fun notifyMergeAdapter() {
-        if (!mPageComponentRecyclerView.isComputingLayout) {
+        if (!recyclerView.isComputingLayout) {
             mergeAdapters.notifyDataSetChanged()
         }
     }
