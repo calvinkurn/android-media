@@ -31,12 +31,18 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
-        init()
     }
 
-    private fun init() {
+    override fun onViewAttachedToWindow() {
         setUpDataObserver(fragment.viewLifecycleOwner)
         mProductCarouselComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
+    }
+
+    override fun onViewDetachedToWindow() {
+        val lifecycleOwner = fragment.viewLifecycleOwner
+        if (mProductCarouselComponentViewModel.getProductCarouselItemsListData().hasObservers()) {
+            mProductCarouselComponentViewModel.getProductCarouselItemsListData().removeObservers(lifecycleOwner)
+        }
     }
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
