@@ -9,5 +9,4 @@
         android:valueTo="0"
         android:valueType="floatType"
         />
-
 </set>

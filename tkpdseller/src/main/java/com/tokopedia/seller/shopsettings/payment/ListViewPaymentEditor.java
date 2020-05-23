@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core2.R;
+import com.tokopedia.seller.R;
 
 import java.util.ArrayList;
 

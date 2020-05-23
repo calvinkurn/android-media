@@ -57,41 +57,4 @@ public class LuckyShopImage {
                     });
         }
     }
-
-    public static void loadImage(Context context, String url, final LinearLayout container) {
-        if (url != null && !url.equals("")) {
-            final View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-            Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .dontAnimate()
-                    .error(R.drawable.error_drawable)
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            ImageView image = (ImageView) view.findViewById(R.id.badge);
-                            if (resource.getHeight() <= 1 && resource.getWidth() <= 1) {
-                                view.setVisibility(View.GONE);
-                            } else {
-                                image.setImageBitmap(resource);
-                                view.setVisibility(View.VISIBLE);
-                                container.addView(view);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            super.onLoadFailed(errorDrawable);
-                            view.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                        }
-                    });
-        }
-    }
 }
