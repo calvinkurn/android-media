@@ -2,9 +2,9 @@ package com.tokopedia.purchase_platform.features.checkout.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 

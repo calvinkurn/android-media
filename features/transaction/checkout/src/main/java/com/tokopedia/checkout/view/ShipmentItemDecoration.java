@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentNotifierViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.

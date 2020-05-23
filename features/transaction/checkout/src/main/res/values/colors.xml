@@ -16,4 +16,9 @@
     <color name="checkout_shadow_color_3">#15AAAAAA</color>
     <color name="checkout_shadow_color_4">#20AAAAAA</color>
     <color name="checkout_shadow_color_5">#25AAAAAA</color>
+
+    <color name="color_e5e7e9">#e5e7e9</color>
+    <color name="color_03AC0E">#03AC0E</color>
+    <color name="color_AD31353B">#AD31353B</color>
+    <color name="color_F531353B">#F531353B</color>
 </resources>
