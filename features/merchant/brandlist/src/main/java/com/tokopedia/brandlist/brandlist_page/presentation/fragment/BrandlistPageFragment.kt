@@ -38,6 +38,7 @@ import com.tokopedia.brandlist.common.Constant.DEFAULT_SELECTED_CHIPS
 import com.tokopedia.brandlist.common.LoadAllBrandState
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.brandlist.common.listener.RecyclerViewScrollListener
+import com.tokopedia.brandlist.common.widget.StickySingleHeaderView
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -49,7 +50,10 @@ import javax.inject.Inject
 
 class BrandlistPageFragment :
         BaseDaggerFragment(),
-        HasComponent<BrandlistPageComponent>, BrandlistPageTrackingListener, BrandlistHeaderBrandInterface, AllBrandNotFoundViewHolder.Listener {
+        HasComponent<BrandlistPageComponent>,
+        BrandlistPageTrackingListener,
+        BrandlistHeaderBrandInterface,
+        AllBrandNotFoundViewHolder.Listener {
 
     companion object {
         const val BRANDLIST_GRID_SPAN_COUNT = 3
@@ -84,6 +88,7 @@ class BrandlistPageFragment :
     private var selectedBrandLetter: String = "A"
     private var recyclerViewLastState: Parcelable? = null
     private var recyclerViewTopPadding = 0
+    private var isChipSelected: Boolean = false
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -206,6 +211,7 @@ class BrandlistPageFragment :
                         || it is AllBrandViewModel
             }
 
+            isChipSelected = false
             viewModel.resetAllBrandRequestParameter()
             adapter?.notifyDataSetChanged()
             adapter?.initAdapter(recyclerViewLastState)
@@ -294,16 +300,64 @@ class BrandlistPageFragment :
 
                     BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
 
+                    val _isStickyShowed = adapter?.getStickyChipsShowedStatus() ?: false
+//                    if (_isStickyShowed) {
+//                        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
+//                    }
+
                     // if (selectedBrandLetter == "C") {     // ==== Testing brands not found ==== //
+                    // ======= Kerja start  here ------ //
+                    // Todo:
+                    //  1. Fix code below - after loading model show
+                    //  2. HideLoadingBrandRecom in mapper
+                    //  3. Show brand recommendation
+//                    if (!_isStickyShowed) { // Testing only
+//                        if (totalBrandPerCharacter == 0) {
+//                            val emptyList = OfficialStoreAllBrands()
+//                            BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
+//                        } else {
+//                            BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+//                        }
+//                    }
+
+//                    if (selectedBrandLetter == "C") {     // ==== Testing brands not found ==== //
                     if (totalBrandPerCharacter == 0) {
                         val emptyList = OfficialStoreAllBrands()
                         BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
+
+                        recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+                        layoutManager?.scrollToPositionWithOffset(
+                                BrandlistPageMapper.ALL_BRAND_POSITION,
+                                stickySingleHeaderView.containerHeight
+                        )
+
                     } else {
                         BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+
+                        if (isChipSelected && !isLoadMore) {
+                            recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
+                            layoutManager?.scrollToPositionWithOffset(
+                                    BrandlistPageMapper.ALL_BRAND_POSITION,
+                                    stickySingleHeaderView.containerHeight
+                            )
+                        }
                     }
 
-                    // recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
-                    // layoutManager?.scrollToPosition(BrandlistPageMapper.ALL_BRAND_POSITION)
+//                    if (!isChipSelected) {
+//                        if (totalBrandPerCharacter == 0) {
+//                            val emptyList = OfficialStoreAllBrands()
+//                            BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
+//                        } else {
+//                            BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+//                        }
+//                    } else {
+//                        if (totalBrandPerCharacter == 0) {
+//                            val emptyList = OfficialStoreAllBrands()
+//                            BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
+//                        } else {
+//                            BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+//                        }
+//                    }
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
@@ -398,6 +452,12 @@ class BrandlistPageFragment :
     override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
         selectedChip = position
         recyclerViewLastState = recyclerViewState
+        isChipSelected = true
+
+        val _isStickyShowed = adapter?.getStickyChipsShowedStatus() ?: false
+        if (_isStickyShowed) {
+            showLoadingBrandRecom()
+        }
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false
@@ -435,4 +495,7 @@ class BrandlistPageFragment :
         }
     }
 
+    private fun showLoadingBrandRecom() {
+        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
+    }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.brandlist.brandlist_page.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
@@ -46,6 +47,10 @@ class BrandlistPageAdapterTypeFactory(
         return AllBrandNotFoundViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: LoadingModel): Int {
+        return AllBrandLoadingRecomViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(parent, trackingListener)
@@ -55,6 +60,7 @@ class BrandlistPageAdapterTypeFactory(
             AllBrandGroupHeaderViewHolder.LAYOUT -> AllBrandGroupHeaderViewHolder(parent)
             AllBrandViewHolder.LAYOUT -> AllBrandViewHolder(parent)
             AllBrandNotFoundViewHolder.LAYOUT -> AllBrandNotFoundViewHolder(parent, searchListener)
+            AllBrandLoadingRecomViewHolder.LAYOUT -> AllBrandLoadingRecomViewHolder(parent)
             HideViewHolder.LAYOUT -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
