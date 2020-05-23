@@ -266,10 +266,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     DeepLinkChecker.openPromoList(uriData.toString(), context, defaultBundle);
                     screenName = "";
                     break;
-                case DeepLinkChecker.SALE:
-                    openSale(linkSegment, defaultBundle);
-                    screenName = "";
-                    break;
                 case DeepLinkChecker.FLIGHT:
                     openFlight(uriData, defaultBundle);
                     screenName = "";
@@ -399,21 +395,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtra(ApplinkConstInternalTravel.EXTRA_DESTINATION_WEB_URL, uri.toString());
             context.startActivity(intent);
         }
-        context.finish();
-    }
-
-    private void openSale(List<String> linkSegment, Bundle bundle) {
-        Intent intent;
-        if (linkSegment.size() <= 1) {
-            intent = RouteManager.getIntent(context, ApplinkConst.PROMO_LIST);
-        } else {
-            String SLUG_PARAM = "{slug}";
-            String applink = ApplinkConst.PROMO_SALE_NO_SLASH.
-                    replace(SLUG_PARAM, linkSegment.get(1));
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(applink));
-        }
-        intent.putExtras(bundle);
-        context.startActivity(intent);
         context.finish();
     }
 

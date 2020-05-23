@@ -103,8 +103,6 @@ public interface ApplinkConst {
     String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
-    String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
-    String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
     String WALLET_HOME = "tokopedia://wallet";
     String WALLET_ACTIVATION = "tokopedia://wallet/activation";
     String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
