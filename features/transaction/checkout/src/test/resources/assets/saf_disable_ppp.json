@@ -522,7 +522,7 @@
   ],
   "addresses": {
     "active": "",
-    "data": {}
+    "data": []
   },
   "disabled_features_detail": {
     "disabled_multi_address_message": ""

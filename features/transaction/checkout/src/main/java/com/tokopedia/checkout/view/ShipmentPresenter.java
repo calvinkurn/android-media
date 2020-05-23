@@ -570,9 +570,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putAll(params);
         compositeSubscription.add(
                 getShipmentAddressFormGqlUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
                                 isReloadData, isReloadAfterPriceChangeHinger, true))
         );
@@ -655,9 +652,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         compositeSubscription.add(
                 getShipmentAddressFormGqlUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
                                 this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
                         )
@@ -729,9 +723,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
         compositeSubscription.add(
                 getShipmentAddressFormGqlUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
                         .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
                                 true, false, true))
 
@@ -862,7 +853,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                        @Override
                                        public void onError(Throwable e) {
-                                           e.printStackTrace();
+                                           Timber.d(e);
                                            if (getView() != null) {
                                                getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                                            }
@@ -954,7 +945,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                Timber.d(e);
                 String errorMessage = e.getMessage();
                 if (!(e instanceof CartResponseErrorException)) {
                     errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(getView().getActivityContext(), e);
@@ -1094,7 +1085,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
-                                e.printStackTrace();
+                                Timber.d(e);
                                 if (getView() != null) {
                                     mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
                                     getView().showToastError(e.getMessage());
@@ -1145,7 +1136,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
-                                e.printStackTrace();
+                                Timber.d(e);
                                 if (getView() != null) {
                                     if (e instanceof CheckPromoCodeException) {
                                         getView().showToastError(e.getMessage());
@@ -1488,7 +1479,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    e.printStackTrace();
+                                    Timber.d(e);
                                     if (getView() != null) {
                                         getView().hideLoading();
                                         getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
@@ -1511,7 +1502,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 messageError = response.getJSONArray("message_error").getString(0);
                                             }
                                         } catch (JSONException e) {
-                                            e.printStackTrace();
+                                            Timber.d(e);
                                             statusSuccess = false;
                                         }
 
@@ -1726,7 +1717,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 if (getView() != null) {
                                     getView().hideLoading();
-                                    e.printStackTrace();
+                                    Timber.d(e);
                                     getView().showToastError(
                                             ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
                                     );
@@ -2036,7 +2027,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Timber.d(e);
                         getView().hideLoading();
                         getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                     }

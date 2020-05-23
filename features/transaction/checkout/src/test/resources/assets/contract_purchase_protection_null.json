@@ -49,6 +49,11 @@
             "is_gold_badge": false,
             "is_official": 0,
             "is_free_returns": 0,
+            "gold_merchant": {
+              "is_gold": 1,
+              "is_gold_badge": true,
+              "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+            },
             "address_id": 2258,
             "postal_code": "11430",
             "latitude": "-6.1783437",
@@ -222,7 +227,30 @@
               "product_cat_id": 520,
               "product_catalog_id": 0
             }
-          ]
+          ],
+          "warehouse": {
+            "warehouse_id": 740525,
+            "partner_id": 0,
+            "shop_id": 1479278,
+            "warehouse_name": "Shop Location",
+            "district_id": 2267,
+            "district_name": "Pancoran",
+            "city_id": 175,
+            "city_name": "Jakarta Selatan",
+            "province_id": 13,
+            "province_name": "DKI Jakarta",
+            "status": 1,
+            "postal_code": "12750",
+            "is_default": 1,
+            "latlon": "-6.2565354,106.85040979999997",
+            "latitude": "-6.2565354",
+            "longitude": "106.85040979999997",
+            "email": "",
+            "address_detail": "Taman Pahlawan, Pancoran, 12750",
+            "country_name": "Indonesia",
+            "is_fulfillment": false,
+            "tkpd_preferred_logistic_spid": []
+          }
         }
       ]
     }
@@ -253,5 +281,9 @@
     "title_description": "",
     "message_success": "",
     "promo_id": 0
+  },
+  "addresses": {
+    "active": "",
+    "data": []
   }
 }

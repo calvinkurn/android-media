@@ -43,9 +43,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     val checkoutUseCase: CheckoutUseCase = mockk()
-    val checkoutRepository: ICheckoutRepository = mockk()
-    val getShipmentAddressFormUseCase = GetShipmentAddressFormUseCase(checkoutRepository, ShipmentMapper())
-    val getShipmentAddressFormOneClickShipementUseCase: GetShipmentAddressFormOneClickShipementUseCase = mockk()
+    val getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase = mockk()
     val editAddressUseCase: EditAddressUseCase = mockk()
     val changeShippingAddressUseCase: ChangeShippingAddressUseCase = mockk()
     val saveShipmentStateUseCase: SaveShipmentStateUseCase = mockk()
@@ -77,8 +75,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
 
         val presenter by memoized {
             ShipmentPresenter(compositeSubscription,
-                    checkoutUseCase, getShipmentAddressFormUseCase,
-                    getShipmentAddressFormOneClickShipementUseCase,
+                    checkoutUseCase, getShipmentAddressFormGqlUseCase,
                     editAddressUseCase, changeShippingAddressUseCase,
                     saveShipmentStateUseCase, getRatesUseCase, getRatesApiUseCase,
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
@@ -134,7 +131,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
                 } returns Observable.just(result)
             }
 
-            When("process checkout") {
+            When("process submit help ticket") {
                 presenter.processSubmitHelpTicket(CheckoutData().apply {
                     jsonResponse = ""
                     errorMessage = ""
@@ -162,7 +159,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
                 } returns Observable.just(SubmitTicketResult(status = false, message = responseErrorMessage))
             }
 
-            When("process checkout") {
+            When("process submit help ticket") {
                 presenter.processSubmitHelpTicket(CheckoutData().apply {
                     jsonResponse = ""
                     errorMessage = ""
@@ -188,7 +185,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
                 } returns Observable.error(Exception())
             }
 
-            When("process checkout") {
+            When("process submit help ticket") {
                 presenter.processSubmitHelpTicket(CheckoutData().apply {
                     jsonResponse = ""
                     errorMessage = ""
