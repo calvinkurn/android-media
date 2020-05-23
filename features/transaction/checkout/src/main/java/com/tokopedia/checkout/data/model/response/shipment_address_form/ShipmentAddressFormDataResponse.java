@@ -83,6 +83,12 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("promo")
     @Expose
     private PromoSAFResponse promoSAFResponse;
+    @SerializedName("open_prerequisite_site")
+    @Expose
+    private boolean openPrerequisiteSite;
+    @SerializedName("eligible_new_shipping_experience")
+    @Expose
+    private boolean eligibleNewShippingExperience;
 
     public List<String> getErrors() {
         return errors;
@@ -173,5 +179,13 @@ public class ShipmentAddressFormDataResponse {
     }
 
     public PromoSAFResponse getPromoSAFResponse() { return promoSAFResponse; }
+
+    public boolean isOpenPrerequisiteSite() {
+        return openPrerequisiteSite;
+    }
+
+    public boolean isEligibleNewShippingExperience() {
+        return eligibleNewShippingExperience;
+    }
 
 }

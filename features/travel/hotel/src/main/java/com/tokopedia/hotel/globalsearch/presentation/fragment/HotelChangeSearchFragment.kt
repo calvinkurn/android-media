@@ -156,10 +156,10 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                         onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                                 data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                     }
-                    data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) -> {
+                    data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID) -> {
                         onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                                searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "",
-                                searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "")
+                                destinationId = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0L),
+                                type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
                     }
                 }
             }
@@ -185,7 +185,8 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Long = 0, type: String  = "", searchId: String = "", searchType: String = "") {
+    private fun onDestinationChanged(name: String, destinationId: Long = 0, type: String  = "",
+                                     searchId: String = "", searchType: String = "") {
         globalSearchModel.destinationName = name
         globalSearchModel.destinationId = destinationId
         globalSearchModel.destinationType = type

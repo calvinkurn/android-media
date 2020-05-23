@@ -1009,8 +1009,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun processGetWishlistData() {
+        val variables = HashMap<String, Any>()
+
+        variables[GetWishlistUseCase.PAGE] = GetWishlistUseCase.DEFAULT_PAGE
+        variables[GetWishlistUseCase.COUNT] = GetWishlistUseCase.DEFAULT_COUNT
+        variables[GetWishlistUseCase.FILTER] = mapOf(GetWishlistUseCase.SOURCE to GetWishlistUseCase.SOURCE_CART)
+
+        val requestParams = RequestParams.create()
+        requestParams.putAll(variables)
+
         compositeSubscription.add(
-                getWishlistUseCase?.createObservable(RequestParams.EMPTY)
+                getWishlistUseCase?.createObservable(requestParams)
                         ?.subscribe(GetWishlistSubscriber(view, this))
         )
     }

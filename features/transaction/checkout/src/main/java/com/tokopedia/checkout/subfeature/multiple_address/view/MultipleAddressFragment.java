@@ -310,7 +310,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
             if (multipleAddressAdapter == null || multipleAddressAdapter.getItemCount() == 0) {
                 showErrorLayout(message);
             } else {
-                Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                Toaster.INSTANCE.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                         getString(R.string.label_action_snackbar_close), v->{});
             }
         }

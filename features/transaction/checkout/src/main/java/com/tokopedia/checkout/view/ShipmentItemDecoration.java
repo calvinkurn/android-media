@@ -43,9 +43,23 @@ public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
         } else if (viewHolder instanceof ShipmentButtonPaymentViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
-        } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
+        } else if (parent.getAdapter() != null && viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
+        } else if (viewHolder instanceof ShipmentCostViewHolder) {
+            if (parent.getAdapter() != null && viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 2) {
+                outRect.bottom = verticalSpaceHeight;
+            } else {
+                outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+            }
         } else if (viewHolder instanceof ShipmentInsuranceTncViewHolder) {
+            if (parent.getAdapter() != null && viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 2) {
+                outRect.top = verticalSpaceHeight;
+            } else {
+                outRect.top = (int) context.getResources().getDimension(R.dimen.dp_0);
+            }
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+        } else if (viewHolder instanceof ShippingCompletionTickerViewHolder) {
+            outRect.top = verticalSpaceHeight;
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else {
             outRect.bottom = verticalSpaceHeight;

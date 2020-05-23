@@ -43,6 +43,8 @@ public class CartShipmentAddressFormData implements Parcelable {
     private CampaignTimerUi campaignTimerUi;
     private LastApplyUiModel lastApplyData;
     private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
+    private boolean isOpenPrerequisiteSite;
+    private boolean isEligibleNewShippingExperience;
 
     public boolean isHasError() {
         return hasError;
@@ -248,6 +250,22 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.promoCheckoutErrorDefault = promoCheckoutErrorDefault;
     }
 
+    public boolean isOpenPrerequisiteSite() {
+        return isOpenPrerequisiteSite;
+    }
+
+    public void setOpenPrerequisiteSite(boolean openPrerequisiteSite) {
+        isOpenPrerequisiteSite = openPrerequisiteSite;
+    }
+
+    public boolean isEligibleNewShippingExperience() {
+        return isEligibleNewShippingExperience;
+    }
+
+    public void setEligibleNewShippingExperience(boolean eligibleNewShippingExperience) {
+        isEligibleNewShippingExperience = eligibleNewShippingExperience;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -276,6 +294,8 @@ public class CartShipmentAddressFormData implements Parcelable {
         campaignTimerUi = in.readParcelable(CampaignTimerUi.class.getClassLoader());
         lastApplyData = in.readParcelable(LastApplyUiModel.class.getClassLoader());
         promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
+        isOpenPrerequisiteSite = in.readByte() != 0;
+        isEligibleNewShippingExperience = in.readByte() != 0;
     }
 
     @Override
@@ -304,6 +324,8 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(campaignTimerUi, flags);
         dest.writeParcelable(lastApplyData, flags);
         dest.writeParcelable(promoCheckoutErrorDefault, flags);
+        dest.writeByte((byte) (isOpenPrerequisiteSite ? 1 : 0));
+        dest.writeByte((byte) (isEligibleNewShippingExperience ? 1 : 0));
     }
 
     @Override

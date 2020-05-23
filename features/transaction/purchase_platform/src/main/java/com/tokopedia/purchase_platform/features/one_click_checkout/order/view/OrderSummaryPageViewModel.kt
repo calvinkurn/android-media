@@ -95,7 +95,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var hasSentViewOspEe = false
 
-    fun getOccCart(isFullRefresh: Boolean = true) {
+    fun getOccCart(isFullRefresh: Boolean, source: String) {
         globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
@@ -103,9 +103,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             kero = orderData.cart.kero
             val preference = orderData.preference
             _orderPreference = if (isFullRefresh || _orderPreference == null) {
-                OrderPreference(orderData.profileIndex, preference)
+                OrderPreference(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             } else {
-                _orderPreference?.copy(profileIndex = orderData.profileIndex, preference = preference)
+                _orderPreference?.copy(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             }
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             validateUsePromoRevampUiModel = null
@@ -120,7 +120,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }, { throwable: Throwable ->
             _orderPreference = null
             orderPreference.value = OccState.Fail(false, throwable, "")
-        })
+        }, getOccCartUseCase.createRequestParams(source))
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
@@ -1479,6 +1479,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
         }
         return ""
+    }
+
+    fun consumeForceShowOnboarding() {
+        val onboarding = _orderPreference?.onboarding
+        if (onboarding?.isForceShowCoachMark == true) {
+            _orderPreference = _orderPreference?.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
+            orderPreference.value = OccState.Success(_orderPreference!!)
+        }
     }
 
     companion object {

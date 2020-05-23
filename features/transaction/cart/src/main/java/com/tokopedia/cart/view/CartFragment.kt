@@ -3,12 +3,15 @@ package com.tokopedia.cart.view
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -54,10 +58,7 @@ import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
@@ -191,6 +192,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private val ANIMATION_TYPE = "translationY"
     private val ANIMATION_DURATION_IN_MILIS = 1000L
     private val TRANSLATION_LENGTH = 1800f
+    private var isKeyboardOpened = false
 
     companion object {
 
@@ -310,6 +312,30 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         initRemoteConfig()
 
         dPresenter.attachView(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        view?.viewTreeObserver?.addOnGlobalLayoutListener {
+            val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
+            val displayMetrics = DisplayMetrics()
+            val windowManager = context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
+            if (heightDiffInDp > 100) {
+                if (!isKeyboardOpened) {
+                    bottomLayout.gone()
+                    llPromoCheckout.gone()
+                }
+                isKeyboardOpened = true
+            } else if (isKeyboardOpened) {
+                bottomLayout.show()
+                llPromoCheckout.show()
+                isKeyboardOpened = false
+            }
+        }
+
+        return view
     }
 
     private fun initRemoteConfig() {
@@ -485,7 +511,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                 llPromoCheckout.gone()
                                 setToolbarShadowVisibility(true)
                             }
-                        } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
+                        } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE && bottomLayout.visibility == View.VISIBLE) {
                             cardHeader.show()
                             llPromoCheckout.show()
                             setToolbarShadowVisibility(false)
@@ -496,6 +522,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (bottomLayout.visibility == View.GONE) {
+                        llPromoCheckout.gone()
+                        return
+                    }
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         _animator?.end()
                         ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
@@ -524,6 +554,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (bottomLayout.visibility == View.GONE) {
+                        llPromoCheckout.gone()
+                        return
+                    }
                     if (recyclerView.canScrollVertically(-1)) {
                         disableSwipeRefresh()
                     } else {
@@ -2019,8 +2053,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun showSnackbarRetry(message: String) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, message) { dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false) }
-                .showRetrySnackbar()
+        view?.let {
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    activity?.getString(R.string.label_action_snackbar_retry) ?: "", View.OnClickListener {
+                dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
+            })
+        }
     }
 
     override fun renderErrorInitialGetCartListData(throwable: Throwable) {
@@ -2137,7 +2175,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.removeCartSelectAll()
         } else {
             cardHeader.visibility = View.VISIBLE
-            llPromoCheckout.show()
+            if (bottomLayout.visibility == View.VISIBLE) {
+                llPromoCheckout.show()
+            }
             cartAdapter.addCartSelectAll()
         }
         tvTotalPrice.text = subtotalPrice
@@ -2154,10 +2194,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             tmpMessage = CART_ERROR_GLOBAL
         }
 
-        if (view != null) {
-            NetworkErrorHelper.showRedCloseSnackbar(view, tmpMessage)
-        } else if (activity != null) {
-            Toast.makeText(activity, tmpMessage, Toast.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, activity?.getString(R.string.label_action_snackbar_close)
+                    ?: "", View.OnClickListener { })
         }
     }
 
@@ -2171,10 +2210,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun showToastMessageGreen(message: String) {
-        if (view != null) {
-            NetworkErrorHelper.showGreenCloseSnackbar(view, message)
-        } else if (activity != null) {
-            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+        view?.let {
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, activity?.getString(R.string.label_action_snackbar_close)
+                    ?: "", View.OnClickListener { })
         }
     }
 
@@ -2272,6 +2310,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else if (resultCode == RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler?.isRefreshing = true
             dPresenter.processInitialGetCartData(getCartId(), false, false)
+        } else if (resultCode == CheckoutConstant.RESULT_CHECKOUT_CACHE_EXPIRED) {
+            val message = data?.getStringExtra(CheckoutConstant.EXTRA_CACHE_EXPIRED_ERROR_MESSAGE)
+            showToastMessageRed(message ?: "")
         }
     }
 
