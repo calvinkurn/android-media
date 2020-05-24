@@ -74,7 +74,6 @@ public class StickySingleHeaderView extends FrameLayout
         mRecyclerView = (RecyclerView) view;
         recyclerViewPaddingTop = mRecyclerView.getPaddingTop();
         mHeaderContainer = new FrameLayout(getContext());
-        mHeaderContainer.setBackgroundColor(Color.WHITE);
         mHeaderContainer.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.card_shadow_bottom));
         mHeaderContainer.setClipToPadding(false);
         mHeaderContainer.setClipChildren(false);

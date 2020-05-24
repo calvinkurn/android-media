@@ -750,7 +750,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //endregion
 
     private fun doLeaveRoom() {
-        PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.channelType)
         activity?.onBackPressed()
     }
 

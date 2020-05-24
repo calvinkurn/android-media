@@ -126,7 +126,7 @@
 /features/recharge/recharge_slice                       @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
-/features/payment/payment_setting/              		@tokopedia/minion-bob
+/features/payment/payment_setting/              		@tokopedia/minion-yoda
 /features/payment/pms/                          		@tokopedia/minion-bob
 /features/transaction/atc_common/               		@tokopedia/minion-bob
 /features/transaction/opportunity/               		@tokopedia/minion-bob
