@@ -15,7 +15,6 @@ public class TkpdBaseURL {
     public static String TOPADS_DOMAIN = TokopediaUrl.Companion.getInstance().getTA();
     public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
     public static String INBOX_DOMAIN = TokopediaUrl.Companion.getInstance().getINBOX();
-    public static String CHAT_DOMAIN = TokopediaUrl.Companion.getInstance().getCHAT();
     public static String JS_DOMAIN = TokopediaUrl.Companion.getInstance().getJS();
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
@@ -39,7 +38,6 @@ public class TkpdBaseURL {
         public static final String URL_NOTIFICATION = BASE_DOMAIN + PATH_NOTIFICATION;
         public static final String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
         public static final String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
-        public static final String URL_SESSION = BASE_DOMAIN + "v4/session/";
 
         public static final String PATH_GET_CREATE_RESOLUTION_FORM_NEW = "get_create_resolution_form_new.pl";
         public static final String PATH_GET_EDIT_RESOLUTION_FORM = "get_edit_resolution_form.pl";
@@ -53,11 +51,7 @@ public class TkpdBaseURL {
 
         public static final String PATH_EDIT_NOTIFICATION = "edit_notification.pl";
 
-        public static final String PATH_GET_ADDRESS = "get_address.pl";
         public static final String PATH_GET_PEOPLE_INFO = "get_people_info.pl";
-
-        public static final String PATH_LOGIN = "login.pl";
-        public static final String PATH_LOGOUT = "logout.pl";
     }
 
     public static class Shop {
@@ -146,11 +140,6 @@ public class TkpdBaseURL {
 
     }
 
-    public static class Mojito {
-        public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
-        public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
-    }
-
     public static class Accounts {
         public static final String PATH_GET_TOKEN = "token";
         public static final String PATH_DISCOVER_LOGIN = "api/discover";
@@ -219,22 +208,12 @@ public class TkpdBaseURL {
 
     }
 
-    public static class Replacement {
-        public static final String URL_REPLACEMENT = BASE_DOMAIN + "";
-
-        public static final String PATH_CANCEL_REPLACEMENT = "v4/replacement/cancel";
-    }
-
     public static class Payment {
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
     }
 
     public static class Chat {
-        public static final String GET_MESSAGE = "/tc/v1/list_message";
-        public static final String REPLY = "/tc/v1/reply";
         public static final String SEARCH = "/tc/v1/search";
         public static final String DELETE = "/tc/v1/delete";
-        public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
-        public static final String SET_TEMPLATE = "tc/v1/templates";
     }
 }
