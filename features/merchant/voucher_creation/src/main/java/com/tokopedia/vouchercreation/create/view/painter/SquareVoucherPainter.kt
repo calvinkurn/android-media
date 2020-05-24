@@ -13,7 +13,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
+import com.tokopedia.vouchercreation.create.view.enums.PostImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiModel
@@ -27,15 +27,15 @@ class SquareVoucherPainter(private val context: Context,
         private const val INITIAL_X = 0.15f
         private const val SHOP_NAME_Y = 0.25f
         private const val PROMO_NAME_Y = 0.425f
-        private const val SHOP_AVATAR_X = 0.67f
-        private const val SHOP_AVATAR_Y = 0.15f
+        private const val SHOP_AVATAR_X = 0.675f
+        private const val SHOP_AVATAR_Y = 0.155f
         private const val SHOP_AVATAR_SIZE = 0.18f
         private const val LABEL_Y = 0.5f
         private const val LABEL_HEIGHT = 0.06f
-        private const val VALUE_Y = 0.56f
-        private const val RIGHT_LABEL_VALUE_X = 0.65f
+        private const val VALUE_Y = 0.62f
+        private const val RIGHT_LABEL_VALUE_X = 0.55f
         private const val BOTTOM_INFO_X = 0.34f
-        private const val PROMO_CODE_Y = 0.86f
+        private const val PROMO_CODE_Y = 0.87f
         private const val PROMO_PERIOD_Y = 0.93f
 
 
@@ -135,7 +135,7 @@ class SquareVoucherPainter(private val context: Context,
     private val bottomInfoX = bitmapWidth * BOTTOM_INFO_X
     private val promoCodeY = bitmapHeight * PROMO_CODE_Y
     private val promoPeriodY = bitmapHeight * PROMO_PERIOD_Y
-    private val valueMarginTop = (bitmapHeight * 0.05).toInt()
+    private val valueMarginTop = (bitmapHeight * 0.035).toInt()
 
     fun drawInfo(postVoucherUiModel: PostVoucherUiModel) {
         postVoucherUiModel.run {
@@ -220,7 +220,7 @@ class SquareVoucherPainter(private val context: Context,
 
     private fun Canvas.drawPromotionLabel(resource: Bitmap, xPosition: Int, value: Int, @PostValuePosition postValuePosition: Int) {
         val bitmapRatio = resource.width / resource.height
-        val fittedLabelWidth = (bitmapRatio * promoLabelHeight).toInt()
+        val fittedLabelWidth = (bitmapRatio * promoLabelHeight)
         val bitmapRect = Rect().apply {
             set(xPosition, promoLabelY, xPosition + fittedLabelWidth, promoLabelY + promoLabelHeight)
         }
@@ -243,8 +243,8 @@ class SquareVoucherPainter(private val context: Context,
 
     private fun getValueLinearLayout(value: Int, isPercentage: Boolean): LinearLayout {
         return if(isPercentage) {
-            val valueTextView = getTextView(value.toString(), VoucherImageTextType.VALUE)
-            val percentageTextView = getTextView(PERCENT, VoucherImageTextType.SCALE)
+            val valueTextView = getTextView(value.toString(), PostImageTextType.VALUE)
+            val percentageTextView = getTextView(PERCENT, PostImageTextType.SCALE)
             LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 addView(valueTextView)
@@ -253,9 +253,9 @@ class SquareVoucherPainter(private val context: Context,
             }
         } else {
             val valuePair = getScaledValuePair(context, value)
-            val valueTextView = getTextView(valuePair.first, VoucherImageTextType.VALUE)
-            val scaleTextView = getTextView(valuePair.second, VoucherImageTextType.SCALE)
-            val asterixTextView = getTextView(ASTERISK, VoucherImageTextType.ASTERISK)
+            val valueTextView = getTextView(valuePair.first, PostImageTextType.VALUE)
+            val scaleTextView = getTextView(valuePair.second, PostImageTextType.SCALE)
+            val asterixTextView = getTextView(ASTERISK, PostImageTextType.ASTERISK)
             LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 addView(valueTextView)
@@ -266,14 +266,20 @@ class SquareVoucherPainter(private val context: Context,
         }
     }
 
-    private fun getTextView(value: String, type: VoucherImageTextType) =
+    private fun getTextView(value: String, type: PostImageTextType) =
             TextView(context).apply {
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
                 textSize = context.resources.getDimension(type.dimenRes)
-                setTextColor(Color.BLACK)
-                if (type != VoucherImageTextType.VALUE) {
+
+                var textColor = Color.BLACK
+                if (type == PostImageTextType.SCALE) {
+                    textColor = Color.GRAY
+                }
+                setTextColor(textColor)
+
+                if (type != PostImageTextType.VALUE) {
                     layoutParams = linearLayoutParams
                 }
             }

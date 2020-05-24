@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.create.view.dialog
 
 import android.content.Context
+import android.graphics.Color
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
@@ -13,6 +14,10 @@ class FailedCreateVoucherDialog(context: Context,
 
     fun show() = with(dialog) {
         setImageDrawable(R.drawable.ic_create_voucher_fail)
+        dialogImageContainer.run {
+            setCardBackgroundColor(Color.TRANSPARENT)
+            cardElevation = 0f
+        }
         setTitle(context.getString(R.string.mvc_create_fail_title))
         setDescription(context.getString(R.string.mvc_create_fail_desc))
         setPrimaryCTAText(context.getString(R.string.mvc_try_again))

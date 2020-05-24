@@ -19,6 +19,12 @@ enum class VoucherImageTextType(@DimenRes val dimenRes: Int) {
     ASTERISK(R.dimen.mvc_voucher_preview_asterix_text_size)
 }
 
+enum class PostImageTextType(@DimenRes val dimenRes: Int) {
+    VALUE(R.dimen.mvc_post_preview_value_text_size),
+    SCALE(R.dimen.mvc_post_preview_scale_text_size),
+    ASTERISK(R.dimen.mvc_post_preview_asterix_text_size)
+}
+
 enum class ValueScaleType(@StringRes val stringRes: Int) {
     THOUSAND(R.string.mvc_rb),
     MILLION(R.string.mvc_jt)

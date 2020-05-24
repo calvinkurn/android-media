@@ -75,7 +75,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onSetVoucherName, ::getPromoCodePrefix))
-            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel))
+            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel, ::onSetShopInfo))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, ::getBannerBaseUiModel))
             put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep))
         }
@@ -154,10 +154,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     "",
                     "")
 
-    private var voucherReviewUiModel = VoucherReviewUiModel(
-            shopName = "Tes shop name",
-            shopAvatarUrl = "https://seeklogo.com/images/T/tokopedia-logo-5340B636F6-seeklogo.com.png"
-    )
+    private var voucherReviewUiModel = VoucherReviewUiModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -337,6 +334,13 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             this.promoCode = promoCode
         }
         viewModel.setNextStep()
+    }
+
+    private fun onSetShopInfo(shopName: String, shopAvatarUrl: String) {
+        bannerVoucherUiModel.shopName = shopName
+        bannerVoucherUiModel.shopAvatar = shopAvatarUrl
+        voucherReviewUiModel.shopName = shopName
+        voucherReviewUiModel.shopAvatarUrl = shopAvatarUrl
     }
 
     private fun getBannerVoucherUiModel() = bannerVoucherUiModel

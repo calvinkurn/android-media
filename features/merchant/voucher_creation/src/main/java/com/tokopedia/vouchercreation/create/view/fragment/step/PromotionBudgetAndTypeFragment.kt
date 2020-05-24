@@ -38,7 +38,8 @@ import javax.inject.Inject
 class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ ->  },
                                      private val getVoucherUiModel: () -> BannerVoucherUiModel,
                                      private val setVoucherBitmap: (Bitmap) -> Unit,
-                                     private val getBannerBaseUiModel: () -> BannerBaseUiModel)
+                                     private val getBannerBaseUiModel: () -> BannerBaseUiModel,
+                                     private val onSetShopInfo: (String, String) -> Unit)
     : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
 
     companion object {
@@ -46,7 +47,8 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, 
         fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
                            getVoucherUiModel: () -> BannerVoucherUiModel,
                            setVoucherBitmap: (Bitmap) -> Unit,
-                           getBannerBaseUiModel: () -> BannerBaseUiModel) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap, getBannerBaseUiModel)
+                           getBannerBaseUiModel: () -> BannerBaseUiModel,
+                           onSetShopInfo: (String, String) -> Unit) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap, getBannerBaseUiModel, onSetShopInfo)
     }
 
     @Inject
@@ -133,8 +135,10 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, 
                 if (isWaitingForShopInfo) {
                     when(result) {
                         is Success -> {
-                            bannerVoucherUiModel.shopName = result.data.shopName
-                            bannerVoucherUiModel.shopAvatar = result.data.shopAvatar
+                            with(result.data) {
+                                onSetShopInfo(shopName, shopAvatar)
+                            }
+                            bannerVoucherUiModel = getVoucherUiModel()
                             drawInitialVoucherPreview()
                         }
                         is Fail -> {

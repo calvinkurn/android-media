@@ -59,6 +59,8 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
         private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
         private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
+
+        private const val NO_PROMO_CODE_DISPLAY = "-"
     }
 
     @Inject
@@ -150,7 +152,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     override fun showTipsAndTrickBottomSheet() {
         publicVoucherTipsAndTrickBottomSheet.run {
-            setTitle(activity?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
+            setTitle(this@ReviewVoucherFragment.resources.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
             show(this@ReviewVoucherFragment.childFragmentManager, VoucherDisplayBottomSheetFragment.TAG)
         }
     }
@@ -202,21 +204,25 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
-        val displayedDate =
+        val postDisplayedDate =
+                with(voucherReviewUiModel) {
+                    getDisplayedDateString(startDate, endDate)
+                }
+        val fullDisplayedDate =
                 with(voucherReviewUiModel) {
                     getDisplayedDateString(startDate, startHour, endDate, endHour)
                 }
         voucherReviewUiModel.run {
             val reviewInfoList = mutableListOf(
                     with(voucherReviewUiModel) {
-                        getVoucherPreviewSection(voucherName, shopAvatarUrl, shopName, promoCode, displayedDate)
+                        getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, promoCode, postDisplayedDate)
                     },
                     getVoucherInfoSection(targetType, voucherName, promoCode),
                     DividerUiModel(DividerUiModel.THIN),
                     getVoucherBenefitSection(voucherType, minPurchase, voucherQuota),
                     getExpenseEstimationSection(voucherType.value, voucherQuota),
                     DividerUiModel(DividerUiModel.THIN),
-                    getPeriodSection(displayedDate),
+                    getPeriodSection(fullDisplayedDate),
                     DividerUiModel(DividerUiModel.THICK),
                     buttonUiModel,
                     FooterUiModel(
@@ -242,6 +248,14 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
     }
 
     private fun getDisplayedDateString(startDate: String,
+                                       endDate: String): String {
+        val formattedStartDate = startDate.formatToDisplayedDate()
+        val formattedEndDate = endDate.formatToDisplayedDate()
+        return String.format(context?.getString(R.string.mvc_displayed_date_post_format).toBlankOrString(),
+                formattedStartDate, formattedEndDate)
+    }
+
+    private fun getDisplayedDateString(startDate: String,
                                        startHour: String,
                                        endDate: String,
                                        endHour: String): String {
@@ -260,17 +274,22 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
         return ""
     }
 
-    private fun getVoucherPreviewSection(promoName: String,
+    private fun getVoucherPreviewSection(voucherType: VoucherImageType,
+                                         promoName: String,
                                          shopAvatar: String,
                                          shopName: String,
                                          promoCode: String,
                                          promoPeriod: String) : PostVoucherUiModel {
+        var promoCodeString = promoCode
+        if (promoCode.isBlank()) {
+            promoCodeString = NO_PROMO_CODE_DISPLAY
+        }
         return PostVoucherUiModel(
-                VoucherImageType.FreeDelivery(0),
+                voucherType,
                 promoName,
                 shopAvatar,
                 shopName,
-                promoCode,
+                promoCodeString,
                 promoPeriod,
                 getPostBaseUiModel())
     }
