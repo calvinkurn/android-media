@@ -89,7 +89,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     override fun onResume() {
         super.onResume()
         createPromoCodeTextField?.textFieldInput?.run {
-            setText(getPromoCode())
+            setText(getPromoCode().replace(promoCodePrefix, ""))
             selectAll()
         }
     }
