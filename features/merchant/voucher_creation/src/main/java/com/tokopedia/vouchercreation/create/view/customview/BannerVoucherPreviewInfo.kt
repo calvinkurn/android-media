@@ -6,13 +6,11 @@ import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Key
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.view.VoucherCustomView
-import com.tokopedia.vouchercreation.create.view.enums.CurrencyScale
-import com.tokopedia.vouchercreation.create.view.enums.ValueScaleType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
 import kotlinx.android.synthetic.main.mvc_voucher_image_preview.view.*
 import java.security.MessageDigest
 
@@ -63,7 +61,7 @@ class BannerVoucherPreviewInfo @JvmOverloads constructor(
                 .load(labelUrl)
                 .signature(BannerVoucherKey())
                 .into(middleLabel)
-        getScaledValuePair(value).run {
+        getScaledValuePair(context, value).run {
             middleValueAmount?.text = first
             middleValueScale?.text = second
         }
@@ -74,37 +72,16 @@ class BannerVoucherPreviewInfo @JvmOverloads constructor(
                 .load(topLabelUrl)
                 .signature(BannerVoucherKey())
                 .into(topLabel)
-        getScaledValuePair(topValue).run {
+        getScaledValuePair(context, topValue).run {
             topValueAmount?.text = first
         }
         Glide.with(context)
                 .load(bottomLabelUrl)
                 .signature(BannerVoucherKey())
                 .into(bottomLabel)
-        getScaledValuePair(bottomValue).run {
+        getScaledValuePair(context, bottomValue).run {
             bottomValueAmount?.text = first
             bottomValueScale?.text = second
-        }
-    }
-
-    private fun getScaledValuePair(value: Int): Pair<String, String> {
-        if (value >= CurrencyScale.THOUSAND) {
-            return if (value >= CurrencyScale.MILLION) {
-                if (value >= CurrencyScale.BILLION) {
-                    Pair("", "")
-                } else {
-                    Pair((value/ CurrencyScale.MILLION).toString(), context.getString(ValueScaleType.MILLION.stringRes).toBlankOrString())
-                }
-            } else {
-                val scaleText = context.getString(ValueScaleType.THOUSAND.stringRes).toBlankOrString()
-                Pair((value/ CurrencyScale.THOUSAND).toString(), scaleText)
-            }
-        } else {
-            return if (value > 0) {
-                Pair(value.toString(), "")
-            } else {
-                Pair("", "")
-            }
         }
     }
 

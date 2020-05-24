@@ -29,25 +29,27 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TermsAndConditionBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDisplayBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.ReviewVoucherViewModel
 import com.tokopedia.vouchercreation.detail.model.*
+import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                             private val getToken: () -> String,
-                            private val getIgPostVoucherUrl: () -> String,
+                            private val getPostBaseUiModel: () -> PostBaseUiModel,
                             private val onReturnToStep: (Int) -> Unit) : BaseDetailFragment() {
 
     companion object {
         @JvmStatic
         fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                            getToken: () -> String,
-                           getIgPostVoucherUrl: () -> String,
-                           onReturnToStep: (Int) -> Unit): ReviewVoucherFragment = ReviewVoucherFragment(getVoucherReviewUiModel, getToken, getIgPostVoucherUrl, onReturnToStep)
+                           getPostBaseUiModel: () -> PostBaseUiModel,
+                           onReturnToStep: (Int) -> Unit): ReviewVoucherFragment = ReviewVoucherFragment(getVoucherReviewUiModel, getToken, getPostBaseUiModel, onReturnToStep)
 
         private const val VOUCHER_INFO_DATA_KEY = "voucher_info"
         private const val VOUCHER_BENEFIT_DATA_KEY = "voucher_benefit"
@@ -142,6 +144,10 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
 
     override fun showDownloadBottomSheet() {}
 
+    override fun getAdapterTypeFactory(): VoucherDetailAdapterFactoryImpl {
+        return VoucherDetailAdapterFactoryImpl(this, activity)
+    }
+
     override fun showTipsAndTrickBottomSheet() {
         publicVoucherTipsAndTrickBottomSheet.run {
             setTitle(activity?.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
@@ -221,7 +227,13 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
             if (targetType == VoucherTargetType.PUBLIC) {
                 context?.run {
                     val tipsUiModel = TipsUiModel(getString(R.string.mvc_detail_tips), getString(R.string.mvc_detail_tips_clickable))
-                    reviewInfoList.add(VOUCHER_TIPS_INDEX, tipsUiModel)
+                    val dividerUiModel = DividerUiModel(DividerUiModel.THIN)
+                    reviewInfoList.addAll(
+                            VOUCHER_TIPS_INDEX,
+                            listOf(
+                                    tipsUiModel,
+                                    dividerUiModel
+                            ))
                 }
             }
             adapter.data.clear()
@@ -260,7 +272,7 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
                 shopName,
                 promoCode,
                 promoPeriod,
-                getIgPostVoucherUrl())
+                getPostBaseUiModel())
     }
 
     private fun getVoucherInfoSection(@VoucherTargetType targetType: Int,

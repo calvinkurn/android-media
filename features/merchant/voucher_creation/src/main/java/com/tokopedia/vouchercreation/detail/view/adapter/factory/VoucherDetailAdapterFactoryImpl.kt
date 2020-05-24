@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.detail.view.adapter.factory
 
+import android.app.Activity
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -15,7 +16,8 @@ import com.tokopedia.vouchercreation.detail.view.viewholder.*
  */
 
 class VoucherDetailAdapterFactoryImpl(
-        private val voucherDetailListener: VoucherDetailListener
+        private val voucherDetailListener: VoucherDetailListener,
+        private val activity: Activity? = null
 ) : BaseAdapterTypeFactory(), VoucherDetailAdapterFactory {
 
     override fun type(model: VoucherHeaderUiModel): Int = HeaderViewHolder.RES_LAYOUT
@@ -73,7 +75,7 @@ class VoucherDetailAdapterFactoryImpl(
             WarningPeriodViewHolder.RES_LAYOUT -> WarningPeriodViewHolder(parent) {
                 voucherDetailListener.onInfoContainerCtaClick(it)
             }
-            PostVoucherViewHolder.RES_LAYOUT -> PostVoucherViewHolder(parent)
+            PostVoucherViewHolder.RES_LAYOUT -> PostVoucherViewHolder(parent, activity)
             else -> super.createViewHolder(parent, type)
         }
     }

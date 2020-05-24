@@ -24,13 +24,13 @@ import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetT
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
-import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTypeViewModel
 import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject

@@ -36,6 +36,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAn
 import com.tokopedia.vouchercreation.create.view.fragment.step.ReviewVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.SetVoucherPeriodFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
@@ -76,7 +77,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onSetVoucherName, ::getPromoCodePrefix))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, ::getBannerBaseUiModel))
-            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getIgPostVoucherUrl, ::onReturnToStep))
+            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep))
         }
     }
 
@@ -136,9 +137,15 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     CASHBACK_UNTIL_URL
             )
 
-    private var token = ""
+    private var postBaseUiModel =
+            PostBaseUiModel(
+                    POST_IMAGE_URL,
+                    FREE_DELIVERY_URL,
+                    CASHBACK_URL,
+                    CASHBACK_UNTIL_URL
+            )
 
-    private var igPostVoucherUrl = POST_IMAGE_URL
+    private var token = ""
 
     private var bannerVoucherUiModel =
             BannerVoucherUiModel(
@@ -147,7 +154,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     "",
                     "")
 
-    private var voucherReviewUiModel = VoucherReviewUiModel()
+    private var voucherReviewUiModel = VoucherReviewUiModel(
+            shopName = "Tes shop name",
+            shopAvatarUrl = "https://seeklogo.com/images/T/tokopedia-logo-5340B636F6-seeklogo.com.png"
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -252,13 +262,18 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                                             bannerCashbackUntilLabelUrl
                                     )
                         }
+                        if (bannerIgPostUrl.isNotBlank()) {
+                            postBaseUiModel =
+                                    PostBaseUiModel(
+                                            bannerIgPostUrl,
+                                            bannerFreeShippingLabelUrl,
+                                            bannerCashbackLabelUrl,
+                                            bannerCashbackUntilLabelUrl
+                                    )
+                        }
                         this@CreateMerchantVoucherStepsActivity.token = token
                         promoCodePrefix = voucherCodePrefix
-                        if (bannerIgPostUrl.isNotBlank()) {
-                            igPostVoucherUrl = bannerIgPostUrl
-                        }
                     }
-
                     setupViewPager()
                 }
                 is Fail -> {
@@ -334,7 +349,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun getToken() = token
 
-    private fun getIgPostVoucherUrl() = igPostVoucherUrl
+    private fun getPostBaseUiModel() = postBaseUiModel
 
     private fun onCancelVoucher() {
         cancelDialog.show()

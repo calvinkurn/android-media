@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.view.util
+package com.tokopedia.vouchercreation.create.view.painter
 
 import android.content.Context
 import android.graphics.*
@@ -13,11 +13,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.vouchercreation.create.view.enums.CurrencyScale
-import com.tokopedia.vouchercreation.create.view.enums.ValueScaleType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.enums.getScaledValuePair
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 
@@ -41,7 +39,7 @@ class VoucherPreviewPainter(private val context: Context,
         }
     }
 
-    val canvas = Canvas(bitmap)
+    private val canvas = Canvas(bitmap)
 
     private val wrapContentLayoutParams by lazy {
         LinearLayout.LayoutParams(
@@ -284,37 +282,16 @@ class VoucherPreviewPainter(private val context: Context,
                 layoutParams = wrapContentLayoutParams
             }
         } else {
-            val valuePair = getScaledValuePair(value)
+            val valuePair = getScaledValuePair(context, value)
             val valueTextView = getTextView(valuePair.first, VoucherImageTextType.VALUE)
             val scaleTextView = getTextView(valuePair.second, VoucherImageTextType.SCALE)
-            val asterixTextView = getTextView(ASTERISK, VoucherImageTextType.ASTERIX)
+            val asterixTextView = getTextView(ASTERISK, VoucherImageTextType.ASTERISK)
             LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 addView(valueTextView)
                 addView(scaleTextView)
                 addView(asterixTextView)
                 layoutParams = wrapContentLayoutParams
-            }
-        }
-    }
-
-    private fun getScaledValuePair(value: Int): Pair<String, String> {
-        if (value >= CurrencyScale.THOUSAND) {
-            return if (value >= CurrencyScale.MILLION) {
-                if (value >= CurrencyScale.BILLION) {
-                    Pair("", "")
-                } else {
-                    Pair((value/CurrencyScale.MILLION).toString(), context.getString(ValueScaleType.MILLION.stringRes).toBlankOrString())
-                }
-            } else {
-                val scaleText = context.getString(ValueScaleType.THOUSAND.stringRes).toBlankOrString()
-                Pair((value/CurrencyScale.THOUSAND).toString(), scaleText)
-            }
-        } else {
-            return if (value > 0) {
-                Pair(value.toString(), "")
-            } else {
-                Pair("", "")
             }
         }
     }

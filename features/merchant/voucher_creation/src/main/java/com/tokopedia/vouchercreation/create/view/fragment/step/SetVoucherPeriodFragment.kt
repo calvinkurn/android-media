@@ -30,9 +30,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
-import com.tokopedia.vouchercreation.create.view.util.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.viewmodel.SetVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import java.util.*
