@@ -71,6 +71,8 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
 
     private var isWaitingForValidation = false
 
+    private var promoCodePrefix = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -112,7 +114,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     val errorMessage = result.data.promoCodeError
                     errorMessage.run {
                         if (isBlank() && isWaitingForValidation) {
-                            onNextClick(getPromoCodePrefix() + createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
+                            onNextClick(promoCodePrefix + createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
                         } else {
                             createPromoCodeTextField?.setTextFieldError(this)
                         }
@@ -130,9 +132,12 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     private fun setupView() {
         createPromoCodeTextField?.run {
             getPromoCodePrefix().run {
-                if (isNotBlank()) {
-                    prependText(this)
+                promoCodePrefix = if (isNotBlank()) {
+                    this
+                } else {
+                    context?.getString(R.string.mvc_create_promo_code_prefix).toBlankOrString()
                 }
+                prependText(promoCodePrefix)
             }
             textFieldInput.run {
                 filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
@@ -180,7 +185,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     if (canValidateCode) {
                         isLoading = true
                         isWaitingForValidation = true
-                        viewModel.validatePromoCode(getPromoCodePrefix() + promoCode)
+                        viewModel.validatePromoCode(promoCodePrefix + promoCode)
                     }
                 }
             }
