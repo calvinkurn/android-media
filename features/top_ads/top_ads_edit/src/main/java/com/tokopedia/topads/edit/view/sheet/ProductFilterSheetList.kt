@@ -13,7 +13,7 @@ import com.tokopedia.topads.edit.view.adapter.etalase.EtalaseAdapterTypeFactoryI
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseViewModel
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_filter.*
+import kotlinx.android.synthetic.main.topads_edit_select_fragment_product_list_sheet_filter.*
 
 class ProductFilterSheetList {
 
@@ -49,11 +49,11 @@ class ProductFilterSheetList {
     }
 
     fun show() {
-        dialog!!.show()
+        dialog?.show()
     }
 
     fun dismissDialog() {
-        dialog!!.dismiss()
+        dialog?.dismiss()
     }
 
     fun updateData(data: MutableList<EtalaseViewModel>) {
@@ -80,7 +80,7 @@ class ProductFilterSheetList {
         fun newInstance(context: Context): ProductFilterSheetList {
             val fragment = ProductFilterSheetList()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog?.setContentView(R.layout.topads_create_fragment_product_list_sheet_filter)
+            fragment.dialog?.setContentView(R.layout.topads_edit_select_fragment_product_list_sheet_filter)
             fragment.setupView(context)
             return fragment
         }

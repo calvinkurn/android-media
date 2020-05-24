@@ -23,24 +23,27 @@
             style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
-            android:text="@string/kata_kunci" />
+            android:text="@string/topads_edit_kata_kunci" />
 
         <RadioButton
             android:id="@+id/neg_keyword"
             style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:text="@string/kata_kunci_neg" />
+            android:text="@string/topads_edit_kata_kunci_neg" />
 
     </RadioGroup>
 
     <com.tokopedia.topads.edit.view.CustomViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/dp_0"
         android:layout_weight="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

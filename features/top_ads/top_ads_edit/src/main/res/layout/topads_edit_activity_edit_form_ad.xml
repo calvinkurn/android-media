@@ -25,9 +25,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:text_field_input_type="text"
-        app:text_field_label="@string/nama_grup_iklan"
+        app:text_field_label="@string/topads_edit_nama_grup_iklan"
         app:text_field_label_static="true"
-        app:text_field_placeholder="@string/ketik_nama_group_iklan"
+        app:text_field_placeholder="@string/topads_edit_ketik_nama_group_iklan"
         tools:layout_height="40dp" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/atur_biaya"
+        android:text="@string/topads_edit_atur_biaya"
         app:layout_constraintBottom_toTopOf="@+id/card1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/group_name"
@@ -56,7 +56,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/atur_biaya"
         tools:layout_height="@dimen/dp_100">
-
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/budget"
@@ -112,7 +111,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginTop="@dimen/dp_13"
                     android:checked="true"
-                    android:text="@string/tidak_dibatasi"
+                    android:text="@string/topads_edit_tidak_dibatasi"
                     android:textColor="@color/grey_560"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/select_budget" />
@@ -123,11 +122,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_14"
-                    android:text="@string/dibatasi"
+                    android:text="@string/topads_edit_dibatasi"
                     android:textColor="@color/grey_560"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/radio_group" />
-
             </RadioGroup>
 
             <com.tokopedia.unifycomponents.TextFieldUnify

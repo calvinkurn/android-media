@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="center_vertical"
-        android:text="@string/urutkan"
+        android:text="@string/topads_edit_urutkan"
         app:typographyType="heading_3"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/btn_close"
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/topads_create_h_divider"
-        android:dividerPadding="16dip"
+        android:dividerPadding="@dimen/dp_16"
         android:inputType="text"
         android:orientation="vertical"
         android:showDividers="middle"
@@ -54,10 +54,10 @@
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dp_10"
             android:checked="true"
             android:layoutDirection="rtl"
-            android:text="@string/terlaris"
+            android:text="@string/topads_edit_terlaris"
             android:textAlignment="textStart"
             android:layout_gravity="start" />
 
@@ -66,9 +66,9 @@
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="@dimen/dp_1"
             android:layoutDirection="rtl"
-            android:text="@string/terbaru"
+            android:text="@string/topads_edit_terbaru"
             android:textAlignment="textStart"
             android:layout_gravity="start" />
 
@@ -77,9 +77,9 @@
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="@dimen/dp_1"
             android:layoutDirection="rtl"
-            android:text="@string/harga_tertinggi"
+            android:text="@string/topads_edit_harga_tertinggi"
             android:textAlignment="textStart"
             android:layout_gravity="start" />
 
@@ -88,9 +88,9 @@
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="@dimen/dp_1"
             android:layoutDirection="rtl"
-            android:text="@string/harga_terendah"
+            android:text="@string/topads_edit_harga_terendah"
             android:textAlignment="textStart"
             android:layout_gravity="start" />
 

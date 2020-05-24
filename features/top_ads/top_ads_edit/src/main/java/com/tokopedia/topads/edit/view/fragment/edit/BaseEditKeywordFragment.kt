@@ -13,7 +13,13 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.view.activity.EditFormAdActivityCallback
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
+import com.tokopedia.topads.edit.utils.Constants.POSITION0
+import com.tokopedia.topads.edit.utils.Constants.POSITION1
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.adapter.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
@@ -23,22 +29,13 @@ import javax.inject.Inject
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
     @Inject
-    lateinit var viewModel: EditFormDefaultViewModel
-
-    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var callback: EditFormAdActivityCallback? = null
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     private lateinit var sharedViewModel: SharedViewModel
+    lateinit var viewModel: EditFormDefaultViewModel
     private var btnState = true
 
     companion object {
-        private const val POSITIVE_CREATE = "createdPositiveKeyword"
-        private const val POSITIVE_DELETE = "deletedPositiveKeyword"
-        private const val POSITIVE_EDIT = "editedPositiveKeyword"
-        private const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
-        private const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
-
         fun newInstance(bundle: Bundle?): BaseEditKeywordFragment {
             val fragment = BaseEditKeywordFragment()
             fragment.arguments = bundle
@@ -48,7 +45,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
-
         sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_keyword_base_layout), container, false)
     }
@@ -59,12 +55,11 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         keyword.isChecked = true
         keyword_grp.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.keyword) {
-                view_pager.currentItem = 0
+                view_pager.currentItem = POSITION0
 
             } else {
-                view_pager.currentItem = 1
+                view_pager.currentItem = POSITION1
             }
-
         }
     }
 
@@ -87,9 +82,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     override fun onAttach(context: Context) {
-        if (context is EditFormAdActivityCallback) {
-            callback = context
-        }
         if (context is SaveButtonStateCallBack) {
             buttonStateCallback = context
         }
@@ -97,7 +89,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     override fun onDetach() {
-        callback = null
         buttonStateCallback = null
         super.onDetach()
     }

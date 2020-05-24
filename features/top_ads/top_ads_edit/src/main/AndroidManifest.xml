@@ -3,11 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.topads.edit">
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/ubah_group"
-        android:supportsRtl="true"
-        tools:replace="android:label">
+    <application>
         <activity
             android:name="com.tokopedia.topads.edit.view.activity.EditFormAdActivity"
             android:theme="@style/Theme.White"
@@ -20,27 +16,27 @@
 
                 <data
                     android:host="@string/host_topads"
-                    android:path="/edit-ads"
+                    android:path="@string/path_topads_edit_manual"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".view.activity.SelectKeywordActivity"
-            android:label="@string/add_keword"
+            android:label="@string/topads_edit_add_keword"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".view.activity.SelectNegKeywordActivity"
-            android:label="@string/add_negative_keyword"
+            android:label="@string/topads_edit_add_negative_keyword"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan">
 
         </activity>
         <activity
             android:name=".view.activity.SelectProductActivity"
-            android:label="@string/product_select_label"
+            android:label="@string/topads_edit_product_select_label"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
     </application>

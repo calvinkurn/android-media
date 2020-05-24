@@ -13,11 +13,7 @@ class EtalaseShimerViewHolder(view: View): EtalaseViewHolder<EtalaseShimerViewMo
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.topads_create_shimering_adapter_etalase_list_item
+        var LAYOUT = R.layout.topads_edit_select_shimering_adapter_etalase_list_item
     }
 
-
-    override fun bind(item: EtalaseShimerViewModel) {
-
-    }
 }

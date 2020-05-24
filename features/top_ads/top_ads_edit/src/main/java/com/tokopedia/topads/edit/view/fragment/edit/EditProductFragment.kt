@@ -15,7 +15,15 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.view.activity.EditFormAdActivityCallback
+import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
+import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
+import com.tokopedia.topads.edit.utils.Constants.EXISTING_IDS
+import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
+import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
+import com.tokopedia.topads.edit.utils.Constants.RESULT_IMAGE
+import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
+import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
+import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.activity.SelectProductActivity
 import com.tokopedia.topads.edit.view.adapter.edit_product.EditProductListAdapter
@@ -28,15 +36,10 @@ import javax.inject.Inject
 
 class EditProductFragment : BaseDaggerFragment() {
 
-    var callback: EditFormAdActivityCallback? = null
     private var buttonStateCallback: SaveButtonStateCallBack? = null
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
     lateinit var viewModel: EditFormDefaultViewModel
-
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var adapter: EditProductListAdapter
     private var originalIdList: MutableList<Int> = arrayListOf()
@@ -44,16 +47,8 @@ class EditProductFragment : BaseDaggerFragment() {
     private var addedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var btnState = true
 
-
     companion object {
 
-        private const val RESULT_PRICE = "resultPrice"
-        private const val RESULT_PROUCT = "resultProduct"
-        private const val RESULT_NAME = "resultName"
-        private const val RESULT_IMAGE = "resultImage"
-        private const val EXISTING_IDS = "ExistingIds"
-        private const val ADDED_PRODUCTS = "addedProducts"
-        private const val DELETED_PRODUCTS = "deletedProducts"
         fun newInstance(bundle: Bundle?): EditProductFragment {
             val fragment = EditProductFragment()
             fragment.arguments = bundle
@@ -63,43 +58,42 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String {
         return EditGroupAdFragment::class.java.name
-
     }
 
     override fun initInjector() {
         getComponent(TopAdsEditComponent::class.java).inject(this)
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_fragment_product_list_edit), container, false)
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
         adapter = EditProductListAdapter(EditProductListAdapterTypeFactoryImpl(this::onProductListDeleted))
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val groupId = arguments?.getString("groupId")
-        viewModel.getAds(groupId?.toInt(), this::onSuccessGetAds, this::onErrorGetAds, this::onEmptyAds)
+        val groupId = arguments?.getString(GROUP_ID)
+        viewModel.getAds(groupId?.toInt(), this::onSuccessGetAds)
     }
 
     private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>) {
-        data.forEach { result ->
-            adapter.items.add(EditProductItemViewModel(result))
-            originalIdList.add(result.itemID)
+        if (data.isEmpty()) {
+            onEmptyAds()
+        } else {
+            data.forEach { result ->
+                adapter.items.add(EditProductItemViewModel(result))
+                originalIdList.add(result.itemID)
+            }
+            adapter.notifyDataSetChanged()
+            setVisibilityOperation(View.VISIBLE)
+            updateItemCount()
+            sharedViewModel.setProductIds(getProductIds())
         }
-
-        adapter.notifyDataSetChanged()
-        setVisibilityOperation(true)
-        updateItemCount()
-        sharedViewModel.setProductIds(getProductIds())
 
     }
 
@@ -113,16 +107,11 @@ class EditProductFragment : BaseDaggerFragment() {
         return list
     }
 
-    private fun onErrorGetAds(e: Throwable) {
-
-    }
-
     private fun onEmptyAds() {
         adapter.items.add(EditProductEmptyViewModel())
-        setVisibilityOperation(false)
+        setVisibilityOperation(View.GONE)
         adapter.notifyDataSetChanged()
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -140,7 +129,7 @@ class EditProductFragment : BaseDaggerFragment() {
         adapter.items.removeAt(pos)
         adapter.notifyDataSetChanged()
         updateItemCount()
-        if (adapter.items.size == 0) {
+        if (adapter.items.isEmpty()) {
             adapter.items.add(EditProductEmptyViewModel())
             btnState = false
             buttonStateCallback?.setButtonState()
@@ -155,26 +144,17 @@ class EditProductFragment : BaseDaggerFragment() {
 
     }
 
-
-    private fun setVisibilityOperation(flag: Boolean) {
-        btnState = flag
+    private fun setVisibilityOperation(flag: Int) {
+        btnState = flag == View.VISIBLE
         buttonStateCallback?.setButtonState()
-        if (flag) {
-            product_count.visibility = View.VISIBLE
-            add_product.visibility = View.VISIBLE
-            add_image.visibility = View.VISIBLE
-        } else {
-            product_count.visibility = View.GONE
-            add_product.visibility = View.GONE
-            add_image.visibility = View.GONE
-
-        }
-
+            product_count.visibility = flag
+            add_product.visibility = flag
+            add_image.visibility = flag
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
+        if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
                 createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getIntegerArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
                 sharedViewModel.setProductIds(getProductIds())
@@ -184,13 +164,12 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun createProduct(price: ArrayList<String>?, product: ArrayList<Int>?, name: ArrayList<String>?, image: ArrayList<String>?) {
-        val size = product?.size
         if (adapter.items[0] is EditProductEmptyViewModel)
             adapter.items.clear()
-        for (ind in 0 until size!!) {
+        product?.forEachIndexed {ind,it ->
             val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)!!, image[ind], name?.get(ind)!!)
             adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", 0, 0, dataItem)))
-            if (!existsOriginal(product[ind])) {
+            if (!existsOriginal(it)) {
                 addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", 0, 0, dataItem))
             }
         }
@@ -202,7 +181,7 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun existsOriginal(id: Int): Boolean {
-        return originalIdList.find { it -> id == it } != null
+        return originalIdList.find { id == it } != null
 
     }
 
@@ -211,9 +190,6 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     override fun onAttach(context: Context) {
-        if (context is EditFormAdActivityCallback) {
-            callback = context
-        }
         if (context is SaveButtonStateCallBack) {
             buttonStateCallback = context
         }
@@ -230,7 +206,6 @@ class EditProductFragment : BaseDaggerFragment() {
         bundle.putParcelableArrayList(ADDED_PRODUCTS, added)
         bundle.putParcelableArrayList(DELETED_PRODUCTS, deleted)
         return bundle
-
     }
 
     private fun filterAddedProducts() {
@@ -271,7 +246,6 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     override fun onDetach() {
-        callback = null
         buttonStateCallback = null
         super.onDetach()
     }

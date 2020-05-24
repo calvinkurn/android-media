@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductItemViewModel
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.checkBox
 import kotlinx.android.synthetic.main.topads_edit_layout_product_list_item_product.view.*
 
 

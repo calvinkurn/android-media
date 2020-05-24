@@ -61,7 +61,5 @@ class ProductListAdapter(private val typeFactory: ProductListAdapterTypeFactory)
                 }
             }
         }
-        notifyDataSetChanged()
-
     }
 }

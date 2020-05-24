@@ -31,8 +31,8 @@
             android:id="@+id/product_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             app:layout_constraintWidth_percent=".66"
             android:textStyle="bold"
             android:textColor="@color/topads_heading_color"
@@ -46,8 +46,8 @@
             layout="@layout/topads_edit_layout_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toBottomOf="@+id/product_name" />
 
@@ -55,14 +55,13 @@
             android:id="@+id/product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:textColor="#FA591D"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:textColor="@color/topads_common_shimmer_color"
             app:typographyType="heading_6"
             app:layout_constraintStart_toEndOf="@+id/product_image"
             app:layout_constraintTop_toBottomOf="@+id/include"
             tools:text="Rp 100.000" />
-
 
         <CheckBox
             android:id="@+id/checkBox"

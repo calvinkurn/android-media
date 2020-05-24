@@ -19,30 +19,31 @@ import com.tokopedia.topads.edit.data.response.GroupInfoResponse
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
-import com.tokopedia.topads.edit.view.activity.EditFormAdActivityCallback
+import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
+import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET
+import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
+import com.tokopedia.topads.edit.utils.Constants.GROUPKEY
+import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
+import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
+import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
+import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
+import com.tokopedia.topads.edit.utils.Constants.PRICE_BID
+import com.tokopedia.topads.edit.utils.Constants.PRODUCT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
-import kotlinx.android.synthetic.main.activity_edit_form_ad.*
-import rx.Observable
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
+import kotlinx.android.synthetic.main.topads_edit_activity_edit_form_ad.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
-    private var callback: EditFormAdActivityCallback? = null
     private var buttonStateCallback: SaveButtonStateCallBack? = null
-
-    @Inject
     lateinit var viewModel: EditFormDefaultViewModel
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var minBid = 0
@@ -53,21 +54,12 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var validation3 = true
     private lateinit var sharedViewModel: SharedViewModel
     private var currentBudget = 0
-    private var queryListener: QueryListener? = null
-    private var compositeSubscription: CompositeSubscription? = null
     private var productId: MutableList<String> = mutableListOf()
     private var groupId: Int? = 0
     private var priceDaily = 0
 
-
     companion object {
-        private const val GROUP_NAME = "group_name"
-        private const val PRICE_BID = "price_bid"
-        private const val DAILY_BUDGET = "daily_budget"
-        private const val GROUP_ID = "group_id"
-        private const val NAME_EDIT = "isNameEdit"
-        private const val MULTIPLIER = 40
-        private const val GROUPKEY = "groupName"
+
         fun newInstance(bundle: Bundle?): EditGroupAdFragment {
             val fragment = EditGroupAdFragment()
             fragment.arguments = bundle
@@ -86,8 +78,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
         sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
-        return inflater.inflate(resources.getLayout(R.layout.activity_edit_form_ad), container, false)
-
+        return inflater.inflate(resources.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false)
     }
 
     private fun getLatestBid() {
@@ -96,16 +87,15 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dummyId.add(it.toInt())
         }
         val suggestionsDefault = ArrayList<DataSuggestions>()
-        suggestionsDefault.add(DataSuggestions("product", dummyId))
-        viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion, this::onBidErrorSuggestion)
+        suggestionsDefault.add(DataSuggestions(PRODUCT, dummyId))
+        viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
         viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo, this::onError)
-
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         group_name.textFieldInput.setText(arguments?.getString(GROUPKEY))
-        budget.textFieldInput.setText(data.priceBid!!.toString())
-        priceDaily = data.priceDaily!!
+        budget.textFieldInput.setText(data.priceBid.toString())
+        priceDaily = data.priceDaily
         if (priceDaily != 0) {
             daily_budget.textFieldInput.setText(data.priceDaily.toString())
             radio2.isChecked = true
@@ -128,47 +118,15 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     }
 
-    private fun getNewCompositeSubIfUnsubscribed(subscription: CompositeSubscription?): CompositeSubscription {
-        return if (subscription == null || subscription.isUnsubscribed) {
-            CompositeSubscription()
-        } else subscription
-
-    }
-
-    private fun initCompositeSubscriber() {
-        compositeSubscription = getNewCompositeSubIfUnsubscribed(compositeSubscription)
-        compositeSubscription?.add(Observable.unsafeCreate(Observable.OnSubscribe<String> { subscriber ->
-            queryListener = object : QueryListener {
-                override fun onQueryChanged(query: String) {
-                    subscriber.onNext(query)
-                }
-            }
-        })
-                .debounce(200, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<String>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        Timber.d("text $e.localizedMessage")
-                    }
-
-                    override fun onNext(s: String?) {
-                        if (s != null) {
-                            Timber.d("Sending the text $s")
-                            viewModel.validateGroup(s, this@EditGroupAdFragment::onSuccessGroupName, this@EditGroupAdFragment::onErrorGroupName)
-                        }
-                    }
-                }))
-    }
-
-    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName.Data) {
-        group_name.setError(false)
-        validation1 = true
-        actionEnable()
-        group_name.setMessage("")
+    fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
+        if (data.errors.isEmpty()) {
+            group_name.setError(false)
+            validation1 = true
+            actionEnable()
+            group_name.setMessage("")
+        } else {
+            onErrorGroupName(data.errors[0].detail)
+        }
     }
 
     private fun onErrorGroupName(error: String) {
@@ -177,28 +135,18 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             validation1 = false
             actionEnable()
             group_name.setMessage(error)
-            if (error == resources.getString(R.string.duplicate_group_name_error_wrong))
-                group_name.setMessage(resources.getString(R.string.duplicate_group_name_error))
+            if (error == resources.getString(R.string.topads_edit_duplicate_group_name_error_wrong))
+                group_name.setMessage(resources.getString(R.string.topads_edit_duplicate_group_name_error))
             else
                 group_name.setMessage(error)
         }
     }
 
-    private fun onBidErrorSuggestion(e: Throwable) {
-        e.printStackTrace()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initInjector()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initCompositeSubscriber()
-        groupId = arguments?.getString("groupId")!!.toInt()
+        groupId = arguments?.getString(GROUP_ID)!!.toInt()
         sharedViewModel.setGroupName(arguments?.getString(GROUPKEY)!!)
-        sharedViewModel.setGroupId(arguments?.getString("groupId")!!.toInt())
+        sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)!!.toInt())
         if (radio1.isChecked) {
             daily_budget.visibility = View.GONE
 
@@ -221,9 +169,13 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null) {
-                    if (queryListener != null) {
-                        queryListener?.onQueryChanged(s.toString())
+                val coroutineScope = CoroutineScope(Dispatchers.Main)
+                s?.let {
+                    coroutineScope.launch {
+                        delay(DEBOUNCE_CONST)
+                        val text = s.toString().trim()
+                        viewModel.validateGroup(text, this@EditGroupAdFragment::onSuccessGroupName)
+
                     }
                 }
             }
@@ -296,10 +248,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     override fun onAttach(context: Context) {
-        if (context is EditFormAdActivityCallback) {
-            callback = context
-
-        }
         if (context is SaveButtonStateCallBack) {
             buttonStateCallback = context
         }
@@ -310,7 +258,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         return btnState
     }
 
-
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
         try {
@@ -318,21 +265,15 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dataMap[PRICE_BID] = Integer.parseInt(budget.textFieldInput.text.toString().replace(",", ""))
             dataMap[DAILY_BUDGET] = Integer.parseInt(daily_budget.textFieldInput.text.toString().replace(",", ""))
             dataMap[GROUP_ID] = groupId
-            dataMap["isBudgetLimited"] = radio1.isChecked
+            dataMap[BUDGET_LIMITED] = radio1.isChecked
             dataMap[NAME_EDIT] = group_name.textFieldInput.text.toString() != arguments?.getString(GROUPKEY)
         } catch (e: NumberFormatException) {
         }
         return dataMap
     }
 
-
     override fun onDetach() {
-        callback = null
         buttonStateCallback = null
         super.onDetach()
-    }
-
-    private interface QueryListener {
-        fun onQueryChanged(query: String)
     }
 }

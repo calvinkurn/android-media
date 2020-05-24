@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/group_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textAllCaps="true"

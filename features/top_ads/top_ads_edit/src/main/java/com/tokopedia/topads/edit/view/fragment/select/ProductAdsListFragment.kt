@@ -17,6 +17,14 @@ import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants.ALL
+import com.tokopedia.topads.edit.utils.Constants.EXISTING_IDS
+import com.tokopedia.topads.edit.utils.Constants.RESULT_IMAGE
+import com.tokopedia.topads.edit.utils.Constants.RESULT_NAME
+import com.tokopedia.topads.edit.utils.Constants.RESULT_PRICE
+import com.tokopedia.topads.edit.utils.Constants.RESULT_PROUCT
+import com.tokopedia.topads.edit.utils.Constants.ROW
+import com.tokopedia.topads.edit.utils.Constants.START
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseViewModel
 import com.tokopedia.topads.edit.view.adapter.product.ProductListAdapter
@@ -43,14 +51,6 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private lateinit var viewModel: ProductAdsListViewModel
 
     companion object {
-        private const val RESULT_PRICE = "resultPrice"
-        private const val RESULT_PROUCT="resultProduct"
-        private const val RESULT_NAME = "resultName"
-        private const val RESULT_IMAGE = "resultImage"
-        private const val ALL = "all"
-        private const val ROW = 50
-        private const val START = 0
-        private const val EXISTING_IDS = "ExistingIds"
 
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = ProductAdsListFragment()
@@ -208,8 +208,8 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     private fun refreshProduct() {
         swipe_refresh_layout.isRefreshing = true
-        productListAdapter.items.clear()
-        productListAdapter.notifyDataSetChanged()
+        productListAdapter.initLoading()
+        clearRefreshLoading()
         viewModel.productList(getKeyword(),
                 getSelectedEtalaseId(),
                 getSelectedSortId(),
@@ -218,8 +218,13 @@ class ProductAdsListFragment : BaseDaggerFragment() {
                 START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
+    private fun clearList(){
+        productListAdapter.items.clear()
+        productListAdapter.notifyDataSetChanged()
+    }
+
     private fun fetchEtalase() {
-        viewModel.etalaseList(this::onSuccessGetEtalase, this::onError)
+        viewModel.etalaseList(this::onSuccessGetEtalase)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -255,7 +260,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyProduct() {
-        clearRefreshLoading()
+        clearList()
         btn_next.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
@@ -266,7 +271,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
-        clearRefreshLoading()
+        clearList()
         btn_next.isEnabled = false
         data.forEach { result ->
             if (promotedGroup.checkedRadioButtonId == R.id.promoted) {

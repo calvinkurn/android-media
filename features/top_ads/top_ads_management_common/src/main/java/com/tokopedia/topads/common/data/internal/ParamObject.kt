@@ -29,4 +29,6 @@ object ParamObject {
     const val PAGE = "page"
     const val PER_PAGE = "perPage"
     const val GROUPID = "groupID"
+    const val FILTER = "filter"
+    const val KEYWORD_SOURCE = "editkeyword"
  }

@@ -6,6 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
+import com.tokopedia.topads.edit.utils.Constants.EDIT_SOURCE
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_SOURCE
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_NEGATIVE_PHRASE
 import kotlinx.android.synthetic.main.topads_edit_add_keyword_negative_item_layout.view.*
 
 /**
@@ -20,7 +24,6 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
         fun viewHolder(itemView: View) {
             super.itemView
         }
-
         override fun onClick(view: View?) {
 
             view?.setOnClickListener {
@@ -61,9 +64,7 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
     }
 
     fun addKeyword(name: String) {
-        items.add(GetKeywordResponse.KeywordsItem(12,1, "0", 0, true, name))
-        notifyDataSetChanged()
+        items.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_NEGATIVE_PHRASE, KEYWORD_EXISTS, "0", 0, true, name , KEYWORD_SOURCE))
+        notifyItemInserted(items.size - 1)
     }
-
-
 }

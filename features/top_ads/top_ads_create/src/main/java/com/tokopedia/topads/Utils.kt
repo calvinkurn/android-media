@@ -41,7 +41,7 @@ object Utils {
 
     fun dismissKeyboard(context: Context?, view: View?) {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        if (inputMethodManager != null && inputMethodManager.isAcceptingText) {
+        if (inputMethodManager?.isAcceptingText!!) {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
         }
     }

@@ -83,7 +83,6 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         var s = list.toString()
         var productId = s.substring(1, s.length - 1)
         viewModel.getSugestionKeyword(productId, 0, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
-        keywordListAdapter.notifyDataSetChanged()
     }
 
     private fun onKeywordSelected(pos: Int) {

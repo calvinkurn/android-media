@@ -12,10 +12,6 @@ class EditProductShimmerViewHolder(val view: View) : EditProductViewHolder<EditP
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.topads_create_layout_product_list_item_shimmering
+        var LAYOUT = R.layout.topads_edit_select_layout_product_list_item_shimmering
     }
-
-    override fun bind(item: EditProductShimmerViewModel) {
-    }
-
 }

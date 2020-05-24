@@ -5,6 +5,7 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/topads_bg_top_round"
     android:padding="@dimen/dp_16">
 
 
@@ -30,7 +31,6 @@
         app:layout_constraintStart_toEndOf="@+id/btn_close"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3" />
-
 
     <ImageView
         android:id="@+id/imageView2"

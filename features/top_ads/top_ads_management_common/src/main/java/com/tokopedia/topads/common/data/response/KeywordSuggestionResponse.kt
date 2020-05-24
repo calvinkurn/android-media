@@ -30,6 +30,8 @@ data class KeywordSuggestionResponse(
 
                     @field:SerializedName("min_bid")
                     val minBid: Int = 0
+
+
             ) : Parcelable {
                 constructor(parcel: Parcel) : this(
                         parcel.readInt(),
@@ -38,7 +40,6 @@ data class KeywordSuggestionResponse(
                 }
 
                 data class KeywordDataItem(
-
                         @field:SerializedName("bid_suggest")
                         val bidSuggest: Int = 0,
 
@@ -46,10 +47,14 @@ data class KeywordSuggestionResponse(
                         val totalSearch: String = "",
 
                         @field:SerializedName("keyword")
-                        val keyword: String = ""
+                        val keyword: String = "",
+
+                        @field:SerializedName("source")
+                        val source: String = ""
                 ) : Parcelable {
                     constructor(parcel: Parcel) : this(
                             parcel.readInt(),
+                            parcel.readString(),
                             parcel.readString(),
                             parcel.readString()) {
                     }
@@ -58,6 +63,7 @@ data class KeywordSuggestionResponse(
                         parcel.writeInt(bidSuggest)
                         parcel.writeString(totalSearch)
                         parcel.writeString(keyword)
+                        parcel.writeString(source)
                     }
 
                     override fun describeContents(): Int {

@@ -12,10 +12,7 @@ class EditProductEmptyViewHolder(val view: View) : EditProductViewHolder<EditPro
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.topads_create_layout_product_list_item_no_product
-    }
-
-    override fun bind(item: EditProductEmptyViewModel) {
+        var LAYOUT = R.layout.topads_edit_select_layout_product_list_item_no_product
     }
 
 }

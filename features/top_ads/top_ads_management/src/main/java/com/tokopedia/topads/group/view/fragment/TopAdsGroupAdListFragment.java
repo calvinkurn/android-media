@@ -48,6 +48,10 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
 
     @Inject TopAdsGroupAdListPresenter presenter;
     private GroupAd ad ;
+    public static final String groupId = "groupId";
+    public static final String groupName = "groupName";
+    public static final String groupStatus = "status";
+
 
     @Override
     protected void initInjector() {
@@ -246,9 +250,10 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
 
     private void editGroup(List<String> ids) {
         Bundle bundle = new Bundle();
-        bundle.putString("groupId",ids.get(0));
-        bundle.putString("groupName",ad.getName());
-        bundle.putString("status",ad.getStatusDesc());
-        RouteManager.route(getContext(),bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+        if (!ids.isEmpty())
+            bundle.putString(groupId, ids.get(0));
+        bundle.putString(groupName, ad.getName());
+        bundle.putString(groupStatus, ad.getStatusDesc());
+        RouteManager.route(getContext(), bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
     }
 }

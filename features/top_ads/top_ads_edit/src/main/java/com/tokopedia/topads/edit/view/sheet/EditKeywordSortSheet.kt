@@ -19,7 +19,7 @@ class EditKeywordSortSheet {
             it.setOnShowListener { dialogInterface ->
                 val dialog = dialogInterface as BottomSheetDialog
                 val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-                if (frameLayout != null) {
+                frameLayout?.let {
                     val behavior = BottomSheetBehavior.from(frameLayout)
                     behavior.isHideable = false
                 }
@@ -44,11 +44,11 @@ class EditKeywordSortSheet {
     }
 
     fun show() {
-        dialog!!.show()
+        dialog?.show()
     }
 
     fun dismissDialog() {
-        dialog!!.dismiss()
+        dialog?.dismiss()
     }
 
     companion object {
@@ -59,7 +59,7 @@ class EditKeywordSortSheet {
         fun newInstance(context: Context): EditKeywordSortSheet {
             val fragment = EditKeywordSortSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog!!.setContentView(R.layout.topads_edit_keyword_edit_sort_sheet)
+            fragment.dialog?.setContentView(R.layout.topads_edit_keyword_edit_sort_sheet)
             fragment.setupView()
             return fragment
         }

@@ -7,6 +7,7 @@ query topAdsGetKeywordSuggestionV3($product_ids: String!, $group_id: Int, $shop_
         keyword
         bid_suggest
         total_search
+        source
       }
     }
     errors {

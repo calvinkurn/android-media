@@ -31,27 +31,18 @@ import javax.inject.Named
 @EditAdScope
  class TopAdEditModule {
 
-
-   @EditAdScope
     @Provides
     fun provideContext(@ApplicationContext context: Context): Context = context
 
-
-    @EditAdScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
-
-    @EditAdScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
-    @EditAdScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
-    @EditAdScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 

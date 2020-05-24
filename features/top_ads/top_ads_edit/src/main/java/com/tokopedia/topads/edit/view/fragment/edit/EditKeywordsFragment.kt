@@ -20,6 +20,22 @@ import com.tokopedia.topads.edit.data.param.DataSuggestions
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants.FAVOURED_DATA
+import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_EXISTS
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_EXACT
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
+import com.tokopedia.topads.edit.utils.Constants.MANUAL_DATA
+import com.tokopedia.topads.edit.utils.Constants.MAX
+import com.tokopedia.topads.edit.utils.Constants.MIN
+import com.tokopedia.topads.edit.utils.Constants.MIN_SUGGESTION
+import com.tokopedia.topads.edit.utils.Constants.ORIGINAL_LIST
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_CREATE
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
+import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
+import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
+import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
+import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
 import com.tokopedia.topads.edit.view.activity.SelectKeywordActivity
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.EditKeywordListAdapter
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.EditKeywordListAdapterTypeFactoryImpl
@@ -27,7 +43,6 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_keword_layout.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -36,8 +51,6 @@ import javax.inject.Inject
 class EditKeywordsFragment : BaseDaggerFragment() {
 
     private lateinit var sharedViewModel: SharedViewModel
-
-    @Inject
     lateinit var viewmodel: EditFormDefaultViewModel
 
     @Inject
@@ -47,8 +60,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var callBack: ButtonAction
     private var minSuggestKeyword = 0
     private var maxSuggestKeyword = 0
-    private val MAX_BID = "max"
-    private val MIN_BID = "min"
     private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var editedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
@@ -62,22 +73,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private var groupId = 0
     private var productIds = ""
-
-    companion object {
-        private const val ORIGINAL_LIST = "originalList"
-        private const val FAVOURED_DATA = "favouredData"
-        private const val SELECTED_DATA = "selectedData"
-        private const val PRODUCT_ID = "product"
-        private const val GROUP_ID = "groupId"
-        private const val MIN_SUGGESTION = "minSuggestedBid"
-        private const val POSITIVE_CREATE = "createdPositiveKeyword"
-        private const val POSITIVE_DELETE = "deletedPositiveKeyword"
-        private const val POSITIVE_EDIT = "editedPositiveKeyword"
-        private const val MANUAL_DATA = "manualData"
-        private const val POSITIVE_PHRASE = 11
-        private const val POSITIVE_SPECIFIC = 21
-
-    }
 
     override fun getScreenName(): String {
         return EditKeywordsFragment::class.java.name
@@ -103,28 +98,21 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val suggestions = java.util.ArrayList<DataSuggestions>()
         val dummyId: MutableList<Int> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
-        viewmodel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onErrorSuggestion)
-
+        viewmodel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }
 
     private fun getMinMax(): MutableMap<String, Int> {
-        bidMap[MIN_BID] = minSuggestKeyword
-        bidMap[MAX_BID] = maxSuggestKeyword
+        bidMap[MIN] = minSuggestKeyword
+        bidMap[MAX] = maxSuggestKeyword
         return bidMap
     }
 
     private fun actionEnable() {
         val enable = !adapter.isError()
         callBack.buttonDisable(enable)
-
-    }
-
-    private fun onErrorSuggestion(e: Throwable) {
-        Timber.d(e)
     }
 
     private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
-
         minSuggestKeyword = data[0].minBid
         maxSuggestKeyword = data[0].maxBid
     }
@@ -150,7 +138,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         adapter.items.forEach {
             if (it is EditKeywordItemViewModel) {
                 list.add(it.data.tag)
-
             }
         }
         return list
@@ -158,10 +145,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun showConfirmationDialog(position: Int) {
         val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(R.string.delete_keyword_conf_dialog_title))
-        dialog.setDescription(getString(R.string.delete_keyword_conf_dialog_desc))
-        dialog.setPrimaryCTAText(getString(R.string.batal))
-        dialog.setSecondaryCTAText(getString(R.string.ya))
+        dialog.setTitle(getString(R.string.topads_edit_delete_keyword_conf_dialog_title))
+        dialog.setDescription(getString(R.string.topads_edit_delete_keyword_conf_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
+        dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
         }
@@ -174,13 +161,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun deleteKeyword(position: Int) {
         var pos = 0
-        if (selectedData!!.isNotEmpty()) {
+        if (selectedData?.isNotEmpty()!!) {
             selectedData?.forEachIndexed { index, select ->
                 if (select.keyword == (adapter.items[position] as EditKeywordItemViewModel).data.tag) {
                     pos = index
                 }
             }
-
             selectedData?.removeAt(pos)
         }
         if (adapter.items[position] is EditKeywordItemViewModel) {
@@ -201,27 +187,24 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         adapter.items.removeAt(position)
         initialBudget.removeAt(position)
         error.removeAt(position)
-        if (adapter.items.size == 0) {
-            setEmptyView(true)
+        if (adapter.items.isEmpty()) {
+            setEmptyView()
         }
         adapter.notifyDataSetChanged()
         updateItemCount()
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
-        return (originalKeyList.find { it -> (adapter.items[position] as EditKeywordItemViewModel).data.tag == it } != null)
-
+        return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.tag == it } != null)
     }
 
     private fun isExistsOriginal(name: String): Boolean {
-        return (originalKeyList.find { it -> name == it } != null)
-
+        return (originalKeyList.find { name == it } != null)
     }
 
     private fun updateItemCount() {
         keyword_count.text = String.format(getString(R.string.keyword_count), adapter.items.size)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -230,7 +213,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         })
         sharedViewModel.groupId.observe(viewLifecycleOwner, Observer {
             groupId = it
-            viewmodel.getAdKeyword(groupId, this::onSuccessKeyword, this::onErrorKeyword, this::onEmptyKeyword)
+            viewmodel.getAdKeyword(groupId, this::onSuccessKeyword)
         })
 
         add_keyword.setOnClickListener {
@@ -241,59 +224,48 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>) {
-        val negKeyword: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
-        data.forEach { result ->
-            if ((result.type == POSITIVE_SPECIFIC || result.type == POSITIVE_PHRASE) && result.status != -1) {
-                adapter.items.add(EditKeywordItemViewModel(result))
-                initialBudget.add(result.priceBid)
-                error.add(false)
-                originalKeyList.add(result.tag)
-            } else if (result.status != -1) {
-                negKeyword.add(result)
-            }
-        }
-        sharedViewModel.setNegKeywords(negKeyword)
-        if (adapter.items.size == 0) {
-            setEmptyView(true)
+        if (data.isEmpty()) {
+            setEmptyView()
         } else {
-            setVisibilityOperation(true)
-            adapter.notifyDataSetChanged()
+            val negKeyword: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
+            data.forEach { result ->
+                if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
+                    adapter.items.add(EditKeywordItemViewModel(result))
+                    initialBudget.add(result.priceBid)
+                    error.add(false)
+                    originalKeyList.add(result.tag)
+                } else if (result.status != -1) {
+                    negKeyword.add(result)
+                }
+            }
+            sharedViewModel.setNegKeywords(negKeyword)
+            if (adapter.items.isEmpty()) {
+                setEmptyView()
+            } else {
+                setVisibilityOperation(View.VISIBLE)
+                adapter.notifyDataSetChanged()
+            }
+            updateItemCount()
+            adapter.getBidData(initialBudget, error)
         }
-        updateItemCount()
-        adapter.getBidData(initialBudget, error)
     }
 
-    private fun setEmptyView(value: Boolean) {
+    private fun setEmptyView() {
         adapter.items.clear()
         adapter.items.add(EditKeywordEmptyViewModel())
-        setVisibilityOperation(false)
+        setVisibilityOperation(View.GONE)
         adapter.notifyDataSetChanged()
     }
 
-    private fun onErrorKeyword(error: String) {}
-
-    private fun onEmptyKeyword() {
-        setEmptyView(true)
-
-    }
-
-    private fun setVisibilityOperation(flag: Boolean) {
-        if (flag) {
-            keyword_count.visibility = View.VISIBLE
-            add_keyword.visibility = View.VISIBLE
-            add_image.visibility = View.VISIBLE
-        } else {
-            keyword_count.visibility = View.GONE
-            add_keyword.visibility = View.GONE
-            add_image.visibility = View.GONE
-
-        }
-
+    private fun setVisibilityOperation(flag: Int) {
+        keyword_count.visibility = flag
+        add_keyword.visibility = flag
+        add_image.visibility = flag
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1) {
+        if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
                 restoreData = data?.getParcelableArrayListExtra(FAVOURED_DATA)
                 selectedData = data?.getParcelableArrayListExtra(SELECTED_DATA)
@@ -310,16 +282,16 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.tag } == null) {
-                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(POSITIVE_PHRASE, 1, "0", it.bidSuggest, false, it.keyword)))
+                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS, "0", it.bidSuggest, false, it.keyword, it.source)))
                 initialBudget.add(it.bidSuggest)
                 error.add(false)
                 if (!isExistsOriginal(it.keyword)) {
-                    addedKeywords?.add(GetKeywordResponse.KeywordsItem(POSITIVE_PHRASE, 1, "0", it.bidSuggest, false, it.keyword))
+                    addedKeywords?.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_PHRASE, KEYWORD_EXISTS, "0", it.bidSuggest, false, it.keyword, it.source))
                 }
             }
         }
         adapter.getBidData(initialBudget, error)
-        setVisibilityOperation(true)
+        setVisibilityOperation(View.VISIBLE)
         updateItemCount()
     }
 

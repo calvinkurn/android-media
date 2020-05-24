@@ -64,13 +64,16 @@ data class GetKeywordResponse(
             var isChecked: Boolean = false,
 
             @field:SerializedName("tag")
-            val tag: String = "") : Parcelable {
+            val tag: String = "",
+            @field:SerializedName("source")
+            val source: String = "") : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),
                 parcel.readInt(),
                 parcel.readString(),
                 parcel.readInt(),
                 parcel.readByte() != 0.toByte(),
+                parcel.readString(),
                 parcel.readString()) {
         }
 
@@ -81,6 +84,7 @@ data class GetKeywordResponse(
             parcel.writeInt(priceBid)
             parcel.writeByte(if (isChecked) 1 else 0)
             parcel.writeString(tag)
+            parcel.writeString(source)
         }
 
         override fun describeContents(): Int {

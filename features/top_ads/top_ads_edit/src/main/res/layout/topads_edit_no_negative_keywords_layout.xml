@@ -9,7 +9,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_neg_keyword_title"
+        android:text="@string/topads_edit_no_neg_keyword_title"
         app:layout_constraintBottom_toTopOf="@+id/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,12 +17,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/description"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_18"
         android:layout_marginRight="@dimen/dp_18"
         android:gravity="center_horizontal"
-        android:text="@string/no_neg_keyword_desc"
+        android:text="@string/topads_edit_no_neg_keyword_desc"
         android:textSize="@dimen/dp_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_negative_keyword"
+        android:text="@string/topads_edit_add_negative_keyword"
         android:textColor="@color/medium_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

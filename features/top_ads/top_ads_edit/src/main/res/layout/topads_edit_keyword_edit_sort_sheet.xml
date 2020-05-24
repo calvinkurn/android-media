@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/btn_close"
-        android:layout_width="25dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_30"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:padding="@dimen/dp_2"
@@ -22,12 +22,12 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sheet_title"
         style="@style/TextView.TitleBig.Bold"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center_vertical"
-        android:text="@string/info_sheet_title"
+        android:text="@string/topads_edit_info_sheet_title"
         app:layout_constraintBottom_toTopOf="@+id/radio_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
@@ -41,17 +41,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sheet_title">
 
-
         <RadioButton
             android:id="@+id/title_1"
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dp_10"
             android:checked="true"
             android:gravity="start"
             android:layoutDirection="rtl"
-            android:text="@string/keyword_edit_info_sheet_title_1"
+            android:text="@string/topads_edit_keyword_edit_info_sheet_title_1"
             android:textAlignment="textStart" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -60,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:text="@string/keyword_edit_info_sheet_desc_1"
+            android:text="@string/topads_edit_keyword_edit_info_sheet_desc_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_1"
             app:typographyType="body_3"
@@ -76,7 +75,7 @@
             android:layout_marginTop="1dp"
             android:gravity="start"
             android:layoutDirection="rtl"
-            android:text="@string/keyword_edit_info_sheet_title_2"
+            android:text="@string/topads_edit_keyword_edit_info_sheet_title_2"
             android:textAlignment="textStart" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -86,7 +85,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/keyword_edit_info_sheet_desc_2"
+            android:text="@string/topads_edit_keyword_edit_info_sheet_desc_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_2"
             app:typographyType="body_3"

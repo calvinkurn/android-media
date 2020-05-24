@@ -11,7 +11,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
  * Created by Pika on 9/4/20.
  */
 
-class EditKeywordListAdapterTypeFactoryImpl(var actionDelete: ((pos: Int) -> Unit)?, var actionAdd: (() -> Unit)?, var actionClick: () -> MutableMap<String, Int>, var actionEnable: (() -> Unit)?) : EditKeywordListAdapterTypeFactory {
+class EditKeywordListAdapterTypeFactoryImpl(var actionDelete: ((pos: Int) -> Unit)?, var actionAdd: (() -> Unit)?, var actionClick: () -> MutableMap<String, Int>, var actionEnable: (() -> Unit)) : EditKeywordListAdapterTypeFactory {
 
     override fun type(model: EditKeywordEmptyViewModel): Int = EditKeywordEmptyViewHolder.LAYOUT
 

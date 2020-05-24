@@ -3,6 +3,9 @@ package com.tokopedia.topads.edit.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
+import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
+import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
 
 class TopAdsEditPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
 
@@ -13,7 +16,7 @@ class TopAdsEditPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentState
     var list: ArrayList<Fragment> = arrayListOf()
 
     var titles = arrayOf(
-            "Produk", "Kata Kunci", "Atur"
+            PRODUK_NAME, KATA_KUNCI, ATUR_NAME
     )
 
     override fun getItem(position: Int): Fragment {

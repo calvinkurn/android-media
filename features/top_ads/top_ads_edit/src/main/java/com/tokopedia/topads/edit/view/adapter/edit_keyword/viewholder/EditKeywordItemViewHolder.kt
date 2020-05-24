@@ -4,6 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_EXACT
+import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
+import com.tokopedia.topads.edit.utils.Constants.MAX
+import com.tokopedia.topads.edit.utils.Constants.MIN
+import com.tokopedia.topads.edit.utils.Constants.TITLE_1
+import com.tokopedia.topads.edit.utils.Constants.TITLE_2
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.sheet.EditKeywordSortSheet
 import kotlinx.android.synthetic.main.topads_edit_keyword_edit_item_layout.view.*
@@ -12,15 +18,11 @@ import kotlinx.android.synthetic.main.topads_edit_keyword_edit_item_layout.view.
  * Created by Pika on 9/4/20.
  */
 
-class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>)?, var actionEnable: (() -> Unit)?) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
+class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>), var actionEnable: (() -> Unit)) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_edit_keyword_edit_item_layout
-        val TITLE_1 = "Pencarian luas"
-        val TITLE_2 = "Pencarian Spesifik"
-        val BROAD = 11
-        val SPECIFIC = 21
         private var bidMap = mutableMapOf<String, Int>()
 
     }
@@ -31,34 +33,34 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
 
         item.data.let {
             view.keyword_name.text = it.tag
-            if (item.data.type == BROAD)
+            if (item.data.type == KEYWORD_TYPE_PHRASE)
                 view.sort.text = TITLE_1
             else
                 view.sort.text = TITLE_2
             if (adapterPosition < data.size)
                 view.budget.textFieldInput.setText(data[adapterPosition].toString())
-            bidMap = actionClick!!.invoke()
-            if (data[adapterPosition] < bidMap["min"]!! && bidMap["min"] != 0) {
-                setError(true, view.resources.getString(R.string.min_bid_error), bidMap["min"]!!)
+            bidMap = actionClick.invoke()
+            if (data[adapterPosition] < bidMap[MIN]!! && bidMap[MIN] != 0) {
+                setError(true, view.resources.getString(R.string.min_bid_error), bidMap[MIN]!!)
                 error[adapterPosition] = true
 
-            } else if (data[adapterPosition] > bidMap["max"]!! && bidMap["max"] != 0) {
+            } else if (data[adapterPosition] > bidMap[MAX]!! && bidMap[MAX] != 0) {
                 error[adapterPosition] = true
-                setError(true, view.resources.getString(R.string.max_bid_error), bidMap["max"]!!)
+                setError(true, view.resources.getString(R.string.max_bid_error), bidMap[MAX]!!)
             }
             view.delete.setOnClickListener {
                 actionDelete?.invoke(adapterPosition)
             }
-            actionEnable!!.invoke()
+            actionEnable.invoke()
             view.sort.setOnClickListener {
                 sortKeywordList = EditKeywordSortSheet.newInstance(view.context)
                 sortKeywordList.show()
                 sortKeywordList.onItemClick = {
                     view.sort.text = sortKeywordList.getSelectedSortId()
                     if (sortKeywordList.getSelectedSortId() == TITLE_1) {
-                        item.data.type = BROAD
+                        item.data.type = KEYWORD_TYPE_PHRASE
                     } else {
-                        item.data.type = SPECIFIC
+                        item.data.type = KEYWORD_TYPE_EXACT
                     }
                 }
 
@@ -67,17 +69,17 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     val result = number.toInt()
-                    if (bidMap["min"] == 0)
+                    if (bidMap[MIN] == 0)
                         bidMap = actionClick.invoke()
 
                     if (adapterPosition < data.size)
                         data[adapterPosition] = result
                     when {
-                        result < bidMap["min"]!! -> {
+                        result < bidMap[MIN]!! -> {
                             error[adapterPosition] = true
-                            setError(true, view.resources.getString(R.string.min_bid_error), bidMap["min"]!!)
+                            setError(true, view.resources.getString(R.string.min_bid_error), bidMap[MIN]!!)
                         }
-                        result > bidMap["max"]!! -> {
+                        result > bidMap[MAX]!! -> {
                             error[adapterPosition] = true
                             setError(true, view.resources.getString(R.string.max_bid_error), bidMap["max"]!!)
                         }
@@ -87,13 +89,11 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
                             view.budget.setMessage("")
                         }
                     }
-                    actionEnable!!.invoke()
+                    actionEnable.invoke()
 
                 }
             })
-
         }
-
     }
 
     fun setError(isError: Boolean, error: String, bid: Int) {

@@ -5,7 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,8 +19,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.Utils
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.COUNT
+import com.tokopedia.topads.edit.utils.Constants.FAVOURED_DATA
+import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
+import com.tokopedia.topads.edit.utils.Constants.MANUAL_DATA
+import com.tokopedia.topads.edit.utils.Constants.MIN_SUGGESTION
+import com.tokopedia.topads.edit.utils.Constants.NOT_KNOWN
+import com.tokopedia.topads.edit.utils.Constants.ORIGINAL_LIST
+import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
+import com.tokopedia.topads.edit.utils.Constants.REGEX
+import com.tokopedia.topads.edit.utils.Constants.SELECTED_DATA
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.edit.view.adapter.keyword.KeywordListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordGroupViewModel
@@ -43,16 +56,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
 
     companion object {
-        private const val FAVOURED_DATA = "favouredData"
-        private const val SELECTED_DATA = "selectedData"
-        private const val MANUAL_DATA = "manualData"
-        private const val ORIGINAL_LIST = "originalList"
-        private const val NOT_KNOWN = "Tidak diketahui"
-        private const val PRODUCT_ID = "product"
-        private const val MIN_SUGGESTION = "minSuggestedBid"
-        private const val GROUP_ID = "groupId"
-
-
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = KeywordAdsListFragment()
             fragment.arguments = extras
@@ -69,7 +72,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
         keywordListAdapter = KeywordListAdapter.createInstance(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -81,7 +83,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         val groupId = arguments?.getInt(GROUP_ID)
         originalList = arguments?.getStringArrayList(ORIGINAL_LIST)!!
         minSuggestedBid = arguments?.getInt(MIN_SUGGESTION)!!
-        viewModel.getSuggestionKeyword(productId, groupId, this::onSuccessSuggestion, this::onErrorSuggestion)
+        viewModel.getSuggestionKeyword(productId, groupId, this::onSuccessSuggestion)
     }
 
     private fun onKeywordSelected(pos: Int) {
@@ -93,16 +95,16 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun showSelectMessage() {
+        onCheckedItem()
+        val count = keywordListAdapter.getSelectedItems().size
+        btn_next.isEnabled = count <= COUNT
+        error_text.text = if (count > COUNT) getString(R.string.error_max_selected_keyword) else ""
+        error_text.visibility = if (count > COUNT) View.INVISIBLE else View.VISIBLE
+    }
+
+    private fun onCheckedItem() {
         val count = keywordListAdapter.getSelectedItems().size
         selected_info.text = String.format(getString(R.string.format_selected_keyword), count)
-        if (count >= 50) {
-            btn_next.isEnabled = false
-            error_text.visibility = View.VISIBLE
-            error_text.text = getString(R.string.error_max_selected_keyword)
-        } else {
-            btn_next.isEnabled = true
-            error_text.visibility = View.INVISIBLE
-        }
     }
 
     private fun onSuccessSuggestion(keywords: List<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem>) {
@@ -126,13 +128,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
         if (!favoured.isNullOrEmpty())
             keywordListAdapter.addRestoredData(favoured, selected, manual)
-    }
-
-    private fun onErrorSuggestion(throwable: Throwable) {
-        keywordListAdapter.favoured.clear()
-        keywordListAdapter.manualKeywords.clear()
-        keywordListAdapter.items.clear()
-        addManualKeywords()
     }
 
     private fun getFavouredData(): List<KeywordItemViewModel> {
@@ -212,14 +207,12 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         editText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 keywordValidation(editText.text.toString().trim())
-                Utils.dismissKeyboard(context, v)
+                Constants.dismissKeyboard(context, v)
 
             }
             true
         }
     }
-
-
     private fun keywordValidation(key: String) {
         if (key.isNotEmpty()) {
             val alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(key, minSuggestedBid), originalList)
@@ -252,9 +245,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun validateKeyword(text: CharSequence?): CharSequence? {
         return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
             getString(R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9 ]*$".toRegex())) {
+        } else if (!text.isNullOrBlank() && !text.matches(REGEX.toRegex())) {
             getString(R.string.error_keyword)
-        } else if (text!!.length > 50) {
+        } else if (text!!.length > COUNT) {
             getString(R.string.error_max_length)
         } else {
             null

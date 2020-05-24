@@ -14,9 +14,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.Utils
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.CURRENTLIST
+import com.tokopedia.topads.edit.utils.Constants.RESTORED_DATA
+import com.tokopedia.topads.edit.utils.Constants.SELECTED_KEYWORD
 import com.tokopedia.topads.edit.view.adapter.neg_keyword.NegKeywordListAdapter
 import kotlinx.android.synthetic.main.topads_edit_select_negative_keyword_list_layout.*
 
@@ -30,9 +33,6 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     private var currentList: ArrayList<String> = arrayListOf()
 
     companion object {
-        private const val SELECTED_KEYWORD = "selectKeywords"
-        private const val RESTORED_DATA = "restoreData"
-        private const val CURRENTLIST = "currentKeywords"
 
         fun createInstance(extras: Bundle?): NegKeywordAdsListFragment {
             val fragment = NegKeywordAdsListFragment()
@@ -103,7 +103,6 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                //  add_btn.isEnabled = !s.isNullOrBlank()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -115,7 +114,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
                     adapter.addKeyword(editText.text.toString().trim())
                     onCheckedItem()
                 }
-                Utils.dismissKeyboard(context, v)
+                Constants.dismissKeyboard(context, v)
 
             }
             true
@@ -138,16 +137,9 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun setValues(flag: Boolean) {
-        if (flag) {
-            add_btn.isEnabled = true
-            editText.imeOptions = EditorInfo.IME_ACTION_NEXT
-            error_text.visibility = View.INVISIBLE
-
-        } else {
-            add_btn.isEnabled = false
-            editText.imeOptions = EditorInfo.IME_ACTION_NONE
-            error_text.visibility = View.VISIBLE
-        }
+        add_btn.isEnabled = flag
+        editText.imeOptions = if (flag) EditorInfo.IME_ACTION_NEXT else EditorInfo.IME_ACTION_NONE
+        error_text.visibility = if (flag) View.INVISIBLE else View.VISIBLE
     }
 
     private fun makeToast(s: String) {

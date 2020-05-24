@@ -40,6 +40,9 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     private OnTopAdsDetailGroupListener listener;
     private boolean isEnoughDeposit;
     private boolean isDismissToTopUp = false;
+    public static final String groupId ="groupId";
+    public static final String groupName ="groupName";
+    public static final String groupStatus ="status";
 
     public static Fragment createInstance(GroupAd groupAd, String adId, boolean forceRefresh, boolean isEnoughDeposit) {
         Fragment fragment = new TopAdsDetailGroupFragment();
@@ -111,12 +114,12 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void editAd() {
 
-        //start the flow of top ads edit
+        /*To start the flow of top ads edit*/
         Bundle bundle = new Bundle();
-        bundle.putString("groupId",ad.getId());
-        bundle.putString("groupName",ad.getName());
-        bundle.putString("status",ad.getStatusDesc());
-        RouteManager.route(getContext(),bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+        bundle.putString(groupId, ad.getId());
+        bundle.putString(groupName, ad.getName());
+        bundle.putString(groupStatus, ad.getStatusDesc());
+        RouteManager.route(getContext(), bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
     }
 
     @Override

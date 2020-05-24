@@ -31,4 +31,5 @@
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
     <string name="max_bid_error">Biaya maximum %d rupiah</string>
 
+
 </resources>

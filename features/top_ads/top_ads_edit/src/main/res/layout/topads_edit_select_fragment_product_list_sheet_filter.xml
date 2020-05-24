@@ -23,7 +23,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography29"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:text="@string/filter"
@@ -37,10 +37,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,6 +48,6 @@
         app:layout_constraintTop_toBottomOf="@+id/typography29"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/topads_create_layout_product_filter_list_item" />
+        tools:listitem="@layout/topads_edit_select_layout_product_filter_list_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

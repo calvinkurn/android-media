@@ -18,16 +18,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/keyword_name"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:textColor="@color/topads_heading_color"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/product_image"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent=".66"
             app:typographyType="heading_5"
@@ -37,8 +34,8 @@
             android:id="@+id/sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/select_sort"
             android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/topads_edit_select_sort"
             android:textColor="@color/tkpd_green_header"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/keyword_name"
@@ -68,7 +65,7 @@
             android:id="@+id/budget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintStart_toStartOf="@id/sort"
             app:layout_constraintTop_toBottomOf="@id/sort"
             app:text_field_input_type="number"
