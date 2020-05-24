@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.utils;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.inbox.R;
 
 /**

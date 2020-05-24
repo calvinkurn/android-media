@@ -35,10 +35,6 @@ public class LocalCacheHandler {
         editor.putInt(key, value);
     }
 
-    public void putFloat(String key, float value) {
-        editor.putFloat(key, value);
-    }
-
     public void putBoolean(String key, Boolean value) {
         editor.putBoolean(key, value);
     }
@@ -77,14 +73,6 @@ public class LocalCacheHandler {
 
     public Integer getInt(String key, int defVal) {
         return sharedPrefs.getInt(key, defVal);
-    }
-
-    public float getFloat(String key) {
-        return sharedPrefs.getFloat(key, 0f);
-    }
-
-    public float getFloat(String key, float defVal) {
-        return sharedPrefs.getFloat(key, defVal);
     }
 
     public Boolean getBoolean(String key) {

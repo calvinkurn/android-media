@@ -39,12 +39,8 @@ import io.fabric.sdk.android.Fabric;
 public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
-    private static final String TAG = "MainApplication";
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Boolean isResetNotification = false;
-    private static Boolean isResetCart = false;
-    private static Boolean isResetTickerState = true;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -73,11 +69,6 @@ public abstract class MainApplication extends MainRouterApplication{
         MultiDex.install(MainApplication.this);
     }
 
-    public static Boolean resetCartStatus(Boolean status) {
-        isResetCart = status;
-        return isResetCart;
-    }
-
     public static int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
         try {
@@ -100,7 +91,6 @@ public abstract class MainApplication extends MainRouterApplication{
         userSession = new UserSession(this);
         initCrashlytics();
         PACKAGE_NAME = getPackageName();
-        isResetTickerState = true;
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));

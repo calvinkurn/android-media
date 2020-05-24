@@ -1,8 +1,8 @@
 package com.tokopedia.session.forgotpassword.presenter;
 
 import android.util.Log;
+import android.util.Patterns;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -163,7 +163,7 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
             viewListener.setEmailError(viewListener.getString(R.string.error_field_required));
             isValid = false;
 
-        } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(viewListener.getEmail().getText().toString()).matches()) {
             viewListener.setEmailError(viewListener.getString(R.string.error_invalid_email));
             isValid = false;
         }

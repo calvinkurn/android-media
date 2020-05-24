@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.others.creditcardauthentication;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created on 5/31/16.

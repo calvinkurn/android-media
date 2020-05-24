@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.http.SslError;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -29,6 +33,8 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import timber.log.Timber;
 
 @Deprecated
 /**
@@ -138,7 +144,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, KEY_AFFILIATE);
         logoutInstagram(context);
         try {
-            MethodChecker.removeAllCookies(context);
+            removeAllCookies(context);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,6 +157,24 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.REFERRAL);
         deleteCacheTokoPoint();
         deleteCacheExploreData();
+    }
+
+    private static void removeAllCookies(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
+                @Override
+                public void onReceiveValue(Boolean value) {
+                    Timber.d("Success Clear Cookie");
+                }
+            });
+        } else {
+            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
+            cookieSyncMngr.startSync();
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncMngr.stopSync();
+        }
     }
 
     private static void deleteCacheTokoPoint() {
