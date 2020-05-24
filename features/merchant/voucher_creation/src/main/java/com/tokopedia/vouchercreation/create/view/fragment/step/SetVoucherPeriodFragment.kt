@@ -55,6 +55,7 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
         private const val EXTRA_HOUR = 3
         private const val EXTRA_MINUTE = 30
+        private const val EXTRA_WEEK = 7
         private const val EXTRA_DAYS = 30
         private const val MINUTE_INTERVAL = 30
 
@@ -83,12 +84,11 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
     private var isWaitingForValidation = false
 
-    private var todayString = ""
-    private var pickedDateString = ""
+    private var startDateString = ""
+    private var endDateString = ""
 
-    private var startCalendar: GregorianCalendar? =
-            context?.run { getToday()?.apply {
-                    add(Calendar.HOUR, EXTRA_HOUR)}}
+    private var startCalendar: GregorianCalendar? = null
+    private var endCalendar: GregorianCalendar? = null
 
     private var startDate = ""
     private var endDate = ""
@@ -198,10 +198,10 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
                 startCalendar = startDate as? GregorianCalendar
                 val formattedDate = startDate.time.toFormattedString(FULL_DAY_FORMAT, locale)
                 startDateTextField?.textFieldInput?.setText(formattedDate)
-                pickedDateString = startDate.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
             }
 
             observe(viewModel.endDateCalendarLiveData) { endDate ->
+                endCalendar = endDate as? GregorianCalendar
                 val formattedDate = endDate.time.toFormattedString(FULL_DAY_FORMAT, locale)
                 endDateTextField?.textFieldInput?.setText(formattedDate)
             }
@@ -228,14 +228,18 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
     private fun setInitialDate() {
         context?.run {
-            GregorianCalendar(LocaleUtils.getCurrentLocale(this)).let { calendar ->
+            endCalendar = context?.run { getToday()?.apply {
+                add(Calendar.DATE, EXTRA_WEEK)}}
+
+            getMinStartDate()?.let { calendar ->
                 val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
-                todayString = initialTime
-                pickedDateString = initialTime
-                with(viewModel) {
-                    setStartDateCalendar(calendar)
-                    setEndDateCalendar(calendar)
-                }
+                startDateString = initialTime
+                viewModel.setStartDateCalendar(calendar)
+            }
+            endCalendar?.let { calendar ->
+                val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
+                endDateString = initialTime
+                viewModel.setEndDateCalendar(calendar)
             }
         }
     }
@@ -273,10 +277,6 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
     private fun getToday() = context?.run { GregorianCalendar(LocaleUtils.getCurrentLocale(this)) }
 
-    private fun getCurrentStartDate() = startCalendar
-
-    private fun getCurrentEndDate() = startCalendar
-
     private fun getMinStartDate() =
             context?.run {
                 getToday()?.apply {
@@ -308,10 +308,10 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
     private fun getStartDateTimePicker() =
             context?.run {
                 getMinStartDate()?.let { minDate ->
-                    getCurrentStartDate()?.let { currentDate ->
+                    startCalendar?.let { currentDate ->
                         getMaxStartDate()?.let { maxDate ->
                             val title = getString(R.string.mvc_start_date_title)
-                            val info = String.format(getString(R.string.mvc_start_date_desc).toBlankOrString(), todayString).parseAsHtml()
+                            val info = String.format(getString(R.string.mvc_start_date_desc).toBlankOrString(), startDateString).parseAsHtml()
                             val buttonText = getString(R.string.mvc_pick).toBlankOrString()
                             DateTimePickerUnify(this, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                                 setTitle(title)
@@ -335,10 +335,10 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
     private fun getEndDateTimePicker() =
             context?.run {
                 getMinEndDate()?.let { minDate ->
-                    getCurrentEndDate()?.let { currentDate ->
+                    endCalendar?.let { currentDate ->
                         getMaxEndDate()?.let { maxDate ->
                             val title = getString(R.string.mvc_end_date_title)
-                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), pickedDateString).parseAsHtml()
+                            val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), startDateString).parseAsHtml()
                             val buttonText = getString(R.string.mvc_pick).toBlankOrString()
                             DateTimePickerUnify(this, minDate, currentDate, maxDate, null, DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                                 setTitle(title)
