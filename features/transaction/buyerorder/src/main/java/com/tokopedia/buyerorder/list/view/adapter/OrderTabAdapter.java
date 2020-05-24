@@ -6,10 +6,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
-import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
+import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
+import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.list.data.OrderLabelList;
+import com.tokopedia.buyerorder.list.view.fragment.OrderListFragment;
 
 import java.util.List;
 

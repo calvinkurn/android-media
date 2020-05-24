@@ -5,8 +5,11 @@ package com.tokopedia.buyerorder.detail.di;
  */
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.transaction.orders.orderdetails.view.activity.SeeInvoiceActivity;
-import com.tokopedia.transaction.orders.orderlist.di.OrderListModuleScope;
+import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
+import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
+import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment;
+import com.tokopedia.buyerorder.detail.view.fragment.OrderListDetailFragment;
+import com.tokopedia.buyerorder.list.di.OrderListModuleScope;
 
 import dagger.Component;
 

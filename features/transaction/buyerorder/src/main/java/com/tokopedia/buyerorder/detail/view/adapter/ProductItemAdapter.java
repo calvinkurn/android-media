@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.view.adapter;
+package com.tokopedia.buyerorder.detail.view.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -18,13 +18,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
-import com.tokopedia.transaction.orders.orderdetails.data.Items;
-import com.tokopedia.transaction.orders.orderdetails.data.Status;
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
-import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
-import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
+import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.detail.data.ActionButton;
+import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
+import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
+import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 
 import java.util.ArrayList;
 import java.util.List;

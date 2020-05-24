@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.orders.orderdetails.data;
+package com.tokopedia.buyerorder.detail.data;
 
 
 import com.google.gson.annotations.Expose;

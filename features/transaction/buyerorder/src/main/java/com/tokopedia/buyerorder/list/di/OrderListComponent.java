@@ -1,8 +1,8 @@
 package com.tokopedia.buyerorder.list.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-import com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment;
+import com.tokopedia.buyerorder.list.view.activity.OrderListActivity;
+import com.tokopedia.buyerorder.list.view.fragment.OrderListFragment;
 
 import dagger.Component;
 

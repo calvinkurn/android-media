@@ -38,8 +38,6 @@
     <string name="label_order_detail_shipping_courier">Kurir Pengiriman : </string>
     <string name="label_title_error_default_initial_cart_data">Terjadi Kesalahan</string>
     <string name="label_title_error_timeout_initial_cart_data">Koneksi Timeout</string>
-    <string name="label_title_error_no_connection_initial_cart_data">Terjadi kesalahan koneksi</string>
-    <string name="label_title_button_retry">COBA LAGI</string>
     <string name="label_title_button_no">Tidak</string>
     <string name="label_title_button_yes">Ya</string>
     <string name="label_sub_title_empty_cart">Yuk belanja di situs resmi jual beli online, aman dan nyaman.</string>
@@ -69,7 +67,6 @@
     <string name="label_history_transaction_actor_system_tracker">System-Tracker</string>
     <string name="label_history_transaction_actor_buyer">Buyer</string>
     <string name="label_history_transaction_actor_seller">Seller</string>
-    <string name="label_transaction_error_message_try_again">Silahkan coba lagi</string>
     <string name="label_error_upload_image">Gagal Mengupload gambar, silahkan coba lagi</string>
     <string name="label_error_message_1_count_notif">Anda memiliki XX_XX pesanan yang tidak dapat diproses</string>
     <string name="label_error_message_2_count_notif">Harap hapus produk dari keranjang belanja Anda</string>
@@ -142,7 +139,6 @@
     <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 
-    <string name="title_invoice">Invoice</string>
     <string name="button_order_detail_download_invoice">Unduh</string>
     <string name="button_order_detail_accept_order">Terima Pesanan</string>
     <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
@@ -259,7 +255,6 @@
     <string name="search_sort_label">Urutkan</string>
     <string name="search_filter_label">Filter</string>
     <string name="title_order_detail">Detail Pesanan</string>
-    <string name="additional_text">Masa Perlindungan JKK JKM</string>
     <string name="oops_message">Ooops</string>
     <string name="empty_message_marketplace">Belum Ada Daftar Transaksi</string>
     <string name="empty_list_message">Transaksi Anda masih kosong</string>
@@ -268,26 +263,18 @@ Anda di sini.</string>
     <string name="info_label">Informasi Pembayaran</string>
     <string name="detail_label_digital">Detail Pembelian</string>
     <string name="lihat_detail">Lihat Detail</string>
-    <string name="detail_label">Detail E-voucher Deals</string>
 
     <!-- OMS Insurance-->
 
     <string name="insurance_ticker">Polis asuransi akan dikirimkan lewat email.</string>
     <string name="insurance_policy">Polis Asuransi</string>
-    <string name="insurance_detail_label">Daftar Produk</string>
     <string name="protection_details">Detail Proteksi</string>
     <string name="insurance_claim">Lihat Cara Klaim</string>
     <string name="insurance_claim_content">Info lengkap benefit asuransi dan cara pengajuan klaim asuransi</string>
     <string name="insurance_policy_content">Bukti perjanjian tertulis tertanggung dan pihak asuransi</string>
-    <string name="insurance_type">Jenis Asuransi</string>
-    <string name="product_category">Kategori Produk</string>
-    <string name="insurance_length">Masa Perlindungan</string>
-    <string name="insurance_quantity">Jumlah Proteksi</string>
-    <string name="insurance_price">Harga Proteksi</string>
 
     <!-- OMS Insurance-->
 
-    <string name="detail_label_events">Detail E-Tiket</string>
     <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>
     <string name="status">Status</string>
@@ -295,12 +282,6 @@ Anda di sini.</string>
     <string name="bottom_btn_text">Beli Lagi</string>
     <string name="date">date</string>
     <string name="label_oder_detail_btn_unggah_awb">Unggah</string>
-    <string name="text_redeem_voucher">Redeem Voucher</string>
-    <string name="text_valid_till">Berlaku hingga </string>
-    <string name="thank_you">Thank You</string>
-    <string name="help_text">disini</string>
-    <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
-    <string name="contact_us_applink">https://www.tokopedia.com/help</string>
     <string name="type_of_ticket_events">Nama Event</string>
     <string name="address">Alamat</string>
     <string name="category_ticket">Kategori Tiket</string>
@@ -322,27 +303,15 @@ Anda di sini.</string>
     <string name="button_order_detail_buy_again">Beli Lagi</string>
     <string name="filter">Filter</string>
     <string name="try_again">Belanja Sekarang</string>
-    <string name="detail_product">Detail Pengiriman</string>
-    <string name="awb_number_copied">Nomor Resi berhasil disalin</string>
-    <string name="item_count">(+ %1$d Produk Lainnya)</string>
     <string name="call_driver">Hubungi</string>
     <string name="dropshipper">Dropshipper</string>
     <string name="hint_search_text">Cari produk, toko, atau invoice</string>
     <string name="start_date">Tanggal Awal</string>
     <string name="end_date">Tanggal Akhir</string>
     <string name="save_date">Terapkan</string>
-    <string name="quantity">%1$d Barang (%2$s)</string>
-    <string name="search_hint_text">Cari produk, toko, atau invoice</string>
     <string name="selsesai_dialog_text_1">Pastikan Anda sudah menerima produk</string>
     <string name="selesai_dialog_text_2">Pastikan produk yang Anda terima sesuai pesanan</string>
     <string name="title_activity_people_reason">Ajukan Pembatalan</string>
-    <string name="very_bad_rating">Tidak Mengerti</string>
-    <string name="bad_rating">Kurang Mengerti</string>
-    <string name="average_rating">Cukup</string>
-    <string name="good_rating">Mengerti</string>
-    <string name="very_good_rating">Sangat Mengerti</string>
-    <string name="survey_submit">Terimakasih atas pendapat anda</string>
-    <string name="survey_bottomsheet_title">Beri Tanggapan Anda</string>
     <string name="bom_survey_description">Seberapa mengerti Anda terhadap tampilan baru laman Daftar Transaksi ini?</string>
     <string name="survey_suggestion_text">Apa yang bisa ditingkatkan pada laman ini?</string>
     <string name="survey_suggestion_hint">Saran anda (opsional)</string>
@@ -352,37 +321,12 @@ Anda di sini.</string>
 
     <string name="transaction_title_activity_order_history">Detail Status</string>
     <string name="tiket_kategori">Kategori Tiket: </string>
-    <string name="tanggal_events">Tanggal Events </string>
     <string name="location_events">Lokasi </string>
     <string name="user_label">Data Pemegang E-tiket</string>
     <string name="booking_code_title">Kode Booking:</string>
     <string name="btn_redeem_ticket">Tutup</string>
-    <string name="voucher_code_title">Kode Booking :</string>
-    <string name="voucher_code_title_deals">Voucher Deals</string>
     <string name="redeem_deals_btn">Redeem</string>
-    <string name="event_ticket_voucher_multiple">x E-Tiket</string>
-    <string name="event_ticket_booking_multiple">x Kode Booking</string>
-    <string name="event_ticket_qrcode_multiple">x QR Code</string>
-    <string name="event_ticket_voucher_count">E-Tiket</string>
-    <string name="event_ticket_booking_count">Kode Booking</string>
-    <string name="event_ticket_qrcode_count">QR Code</string>
-    <string name="event_ticket_voucher_number">E-Voucher</string>
-    <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
-    <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
-    <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
-    <string name="purchase_detail">Detail Pembelian</string>
     <string name="tkpdtransaction_cancellation_with_time">Pembatalan tidak bisa dilakukan saat ini. Kamu bisa batalkan pesanan pada %s</string>
-    <string name="order_list_title_recommendation">Rekomendasi untuk Anda</string>
-    <string name="bom_check_cart">Lihat</string>
-    <string name="tkpdtransaction_lets_hunt_fav_stuff">Cari barang impianmu dulu, yuk!</string>
-    <string name="tkpdtransaction_buy_dream_items">Setelah belanja, kamu bisa pantau transaksimu di sini.</string>
-    <string name="tkpdtransaction_widget_title">Top-up &amp; Tagihanmu</string>
-    <string name="tkpdtransaction_bebas_ongkir">Bebas Ongkir</string>
-    <string name="tkpdtransaction_oms_retry_failed_deals">E-voucher belum terbit. Tunggu 30 detik untuk cek ulang, ya.</string>
-    <string name="tkpdtransaction_oms_retry_failed_event">E-tiket belum terbit. Tunggu 30 detik untuk cek ulang, ya.</string>
-    <string name="tkpdtransaction_oms_retry_success">Hore! E-voucher kamu sudah terbit.</string>
-    <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
-    <string name="title_voucher_code_copied">Kode Voucher berhasil tersalin</string>
 
     <string name="redeem_dialog_powered_by">Powered by  </string>
     <string name="redeem_dialog_voucher_code">Kode Voucher</string>
@@ -395,7 +339,6 @@ Anda di sini.</string>
     <string name="tkpdtransaction_filter_custom_date">"Pilih Tanggal Sendiri"</string>
     <string name="tkpdtransaction_filter_90_days">90 Hari Terakhir</string>
     <string name="tkpdtransaction_90_days_found_nothing">Tidak ada transaksi dalam 90 hari terakhir</string>
-    <string name="tkpdtransaction_web_title">Info Pembeli</string>
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
     <string name="month_3">Mar</string>
@@ -408,10 +351,5 @@ Anda di sini.</string>
     <string name="month_10">Okt</string>
     <string name="month_11">Nov</string>
     <string name="month_12">Des</string>
-    <string name="tokopedia_care">Tokopedia Care</string>
-    <string name="lihat_order_detail">Lihat Order Detail</string>
-    <string name="label_shop_title">Toko: </string>
-    <string name="invoice_label">invoice</string>
-    <string name="invoice_copied">Kode invoice telah tersalin</string>
 
 </resources>

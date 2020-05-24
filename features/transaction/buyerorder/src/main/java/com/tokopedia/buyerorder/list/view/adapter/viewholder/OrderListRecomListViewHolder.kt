@@ -5,13 +5,13 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
+import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener
+import com.tokopedia.buyerorder.list.view.adapter.viewModel.OrderListRecomViewModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.transaction.R
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
-import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseListener
-import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel
 
 class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomViewModel>(itemView), RecommendationCardView.TrackingListener, WishListResponseListener {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.view.adapter
+package com.tokopedia.buyerorder.detail.view.adapter
 
 import android.graphics.drawable.Drawable
 import android.util.SparseBooleanArray
@@ -12,11 +12,11 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationsItem
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.transaction.R
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationMPPojo.RecommendationsItem
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 
 class RecommendationMPAdapter(private val recommendationItems: List<RecommendationsItem>) : RecyclerView.Adapter<RecommendationMPAdapter.RecommendationViewHolder>() {
 

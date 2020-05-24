@@ -1,12 +1,13 @@
-package com.tokopedia.buyerorder.list.adapter.factory
+package com.tokopedia.buyerorder.list.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
-import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.*
-import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.*
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
+import com.tokopedia.buyerorder.list.view.adapter.viewModel.OrderListRecomViewModel
+import com.tokopedia.buyerorder.list.view.adapter.viewholder.*
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.*
 
 class OrderListAdapterFactory(var orderListAnalytics: OrderListAnalytics, var listener: OrderListViewHolder.OnMenuItemListener?,
                               var cartListener: OrderListRecomListViewHolder.ActionListener,

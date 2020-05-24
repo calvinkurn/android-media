@@ -8,19 +8,18 @@ import android.os.Bundle;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
+import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
-import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
-import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
 
 import java.util.Map;
 
-import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.ACTION_BUTTON_URL;
-import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST;
-import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.REJECT_BUYER_REQUEST;
+import static com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment.ACTION_BUTTON_URL;
+import static com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST;
+import static com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment.REJECT_BUYER_REQUEST;
 
 public class RequestCancelActivity extends BaseSimpleActivity implements HasComponent<OrderDetailsComponent>, RejectOrderBuyerRequest.RejectOrderBuyerRequestListener, CancelSearchFragment.CancelSearchReplacementListener {
 

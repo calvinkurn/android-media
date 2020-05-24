@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.orders.orderdetails.view.activity;
+package com.tokopedia.buyerorder.detail.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
+import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
+import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment;
+import com.tokopedia.buyerorder.detail.view.fragment.OrderListDetailFragment;
+import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.user.session.UserSession;
 

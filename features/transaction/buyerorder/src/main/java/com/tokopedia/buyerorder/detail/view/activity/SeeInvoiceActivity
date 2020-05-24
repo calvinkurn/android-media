@@ -12,12 +12,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.transaction.R
-import com.tokopedia.transaction.orders.orderdetails.data.Invoice
-import com.tokopedia.transaction.orders.orderdetails.data.Status
-import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
-import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment
+import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.detail.data.Invoice
+import com.tokopedia.buyerorder.detail.data.Status
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL

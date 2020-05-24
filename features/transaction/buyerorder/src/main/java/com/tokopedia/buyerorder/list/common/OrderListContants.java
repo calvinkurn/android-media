@@ -1,7 +1,7 @@
-package com.tokopedia.buyeroder.list.common;
+package com.tokopedia.buyerorder.list.common;
 
 public interface OrderListContants {
-    String  = "filter_id";
+    String ORDER_FILTER_ID = "filter_id";
     String BELANJA = "belanja";
     String MARKETPLACE = "marketplace";
     String REASON = "reason";

@@ -1,11 +1,13 @@
-package com.tokopedia.transaction.orders.orderdetails.data;
+package com.tokopedia.buyerorder.detail.data;
 
 import android.net.Uri;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
-import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.buyerorder.list.data.ConditionalInfo;
+import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.transaction.orders.orderdetails.data.Flags;
+import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 
 import java.util.List;
 

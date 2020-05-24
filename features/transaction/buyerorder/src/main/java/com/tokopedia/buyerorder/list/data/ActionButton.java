@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.list.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.buyerorder.detail.data.Color;
 
 public class ActionButton {
     @SerializedName("label")

@@ -2,6 +2,9 @@ package com.tokopedia.buyerorder.list.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.buyerorder.list.data.OrderLabelList;
+import com.tokopedia.buyerorder.list.data.ticker.TickerResponse;
+
 import java.util.List;
 
 public class OrderListInitContract {

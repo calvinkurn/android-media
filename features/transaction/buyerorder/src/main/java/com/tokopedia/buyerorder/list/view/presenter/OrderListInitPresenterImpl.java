@@ -2,6 +2,10 @@ package com.tokopedia.buyerorder.list.view.presenter;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.list.data.TabData;
+import com.tokopedia.buyerorder.list.data.ticker.Input;
+import com.tokopedia.buyerorder.list.data.ticker.TickerResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;

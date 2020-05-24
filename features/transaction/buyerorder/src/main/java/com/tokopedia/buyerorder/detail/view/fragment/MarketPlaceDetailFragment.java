@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.detail.presentation.fragment
+package com.tokopedia.buyerorder.detail.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
@@ -50,6 +50,36 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
+import com.tokopedia.buyerorder.common.view.DoubleTextView;
+import com.tokopedia.buyerorder.detail.data.ActionButton;
+import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
+import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
+import com.tokopedia.buyerorder.detail.data.ContactUs;
+import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.DriverDetails;
+import com.tokopedia.buyerorder.detail.data.DropShipper;
+import com.tokopedia.buyerorder.detail.data.Invoice;
+import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.OrderToken;
+import com.tokopedia.buyerorder.detail.data.PayMethod;
+import com.tokopedia.buyerorder.detail.data.Pricing;
+import com.tokopedia.buyerorder.detail.data.ShopInfo;
+import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.data.Title;
+import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
+import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
+import com.tokopedia.buyerorder.detail.view.activity.RequestCancelActivity;
+import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
+import com.tokopedia.buyerorder.detail.view.adapter.RecommendationMPAdapter;
+import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
+import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
+import com.tokopedia.buyerorder.list.common.OrderListContants;
+import com.tokopedia.buyerorder.list.data.ConditionalInfo;
+import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.buyerorder.detail.view.adapter.ProductItemAdapter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.unifycomponents.Toaster;
@@ -246,7 +276,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 public void onClick(View view) {
                     orderListAnalytics.sendLihatStatusClick(status.status());
                     // TODO: cek apakah masih butuh UnifiedOrderListRouter
-                    startActivity((getActivity().getApplication()).getOrderHistoryIntent(
+                    startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
                             getActivity(), getArguments().getString(KEY_ORDER_ID)
                     ));
                 }

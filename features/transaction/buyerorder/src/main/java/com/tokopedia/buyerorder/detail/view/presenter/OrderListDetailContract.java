@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.view.presenter;
+package com.tokopedia.buyerorder.detail.view.presenter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,23 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.buyerorder.detail.data.ActionButton;
+import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
+import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
+import com.tokopedia.buyerorder.detail.data.ContactUs;
+import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.DriverDetails;
+import com.tokopedia.buyerorder.detail.data.DropShipper;
+import com.tokopedia.buyerorder.detail.data.Invoice;
+import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.OrderToken;
+import com.tokopedia.buyerorder.detail.data.PayMethod;
+import com.tokopedia.buyerorder.detail.data.Pricing;
+import com.tokopedia.buyerorder.detail.data.ShopInfo;
+import com.tokopedia.buyerorder.detail.data.Status;
+import com.tokopedia.buyerorder.detail.data.Title;
+import com.tokopedia.buyerorder.list.data.ConditionalInfo;
+import com.tokopedia.buyerorder.list.data.PaymentData;
 
 import java.util.List;
 

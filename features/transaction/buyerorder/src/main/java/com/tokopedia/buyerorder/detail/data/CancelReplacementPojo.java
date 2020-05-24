@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.opportunity.data.pojo;
+package com.tokopedia.buyerorder.detail.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

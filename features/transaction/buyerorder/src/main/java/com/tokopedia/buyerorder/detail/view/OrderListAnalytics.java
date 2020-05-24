@@ -1,22 +1,22 @@
-package com.tokopedia.transaction.orders.orderdetails.view;
+package com.tokopedia.buyerorder.detail.view;
 
 import javax.inject.Inject;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.buyerorder.detail.data.Items;
+import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
+import com.tokopedia.buyerorder.detail.data.ShopInfo;
+import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationsItem;
+import com.tokopedia.buyerorder.detail.data.recommendationPojo.WidgetGridItem;
+import com.tokopedia.buyerorder.list.data.Order;
+import com.tokopedia.buyerorder.list.view.adapter.viewModel.OrderListRecomViewModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
-import com.tokopedia.transaction.orders.orderdetails.data.Items;
-import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
-import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationMPPojo.RecommendationsItem;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
-import com.tokopedia.transaction.orders.orderlist.data.Order;
-import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
