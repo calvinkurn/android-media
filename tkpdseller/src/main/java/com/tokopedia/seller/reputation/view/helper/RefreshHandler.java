@@ -1,4 +1,4 @@
-package com.tokopedia.core.util;
+package com.tokopedia.seller.reputation.view.helper;
 
 import android.view.View;
 

@@ -28,8 +28,6 @@ public class InboxRouter {
     public static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     public static final String EXTRA_STATE_FLAG_RECEIVED = "EXTRA_STATE_FLAG_RECEIVED";
 
-    private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
-
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
     public static final String PARAM_URL = "PARAM_URL";

@@ -34,7 +34,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.seller.reputation.view.helper.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.R;

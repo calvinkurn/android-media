@@ -1,4 +1,4 @@
-package com.tokopedia.core.people.model;
+package com.tokopedia.transaction.others.creditcardauthentication;
 
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.util.MethodChecker;

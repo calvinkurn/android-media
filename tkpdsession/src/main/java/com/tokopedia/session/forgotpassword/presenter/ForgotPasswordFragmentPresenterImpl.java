@@ -7,7 +7,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractor;
@@ -26,6 +25,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 /**
  * Created by Alifa on 10/17/2016.
@@ -56,7 +56,10 @@ public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragme
 
     @Override
     public void onDestroyView() {
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+        if (compositeSubscription != null) {
+            Timber.d("unsubscribeIfNotNull");
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @Override

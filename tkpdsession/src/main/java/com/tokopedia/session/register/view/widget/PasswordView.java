@@ -1,4 +1,4 @@
-package com.tokopedia.core.customView;
+package com.tokopedia.session.register.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

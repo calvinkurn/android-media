@@ -1,4 +1,4 @@
-package com.tokopedia.core.fragment;
+package com.tokopedia.session.register.view.fragment;
 
 import android.graphics.Bitmap;
 import android.net.http.SslError;
@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.core2.R;
+import com.tokopedia.session.R;
 
 import timber.log.Timber;
 

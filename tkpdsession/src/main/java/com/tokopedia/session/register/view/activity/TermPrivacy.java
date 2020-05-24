@@ -1,4 +1,4 @@
-package com.tokopedia.core;
+package com.tokopedia.session.register.view.activity;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.fragment.FragmentTermPrivacy;
+import com.tokopedia.session.register.view.fragment.FragmentTermPrivacy;
 import com.tokopedia.core2.R;
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.core.util;
+package com.tokopedia.product.manage.item.utils;
 
 /**
  * This is just for this class

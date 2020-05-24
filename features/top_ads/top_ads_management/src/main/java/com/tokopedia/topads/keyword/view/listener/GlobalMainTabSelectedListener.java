@@ -1,4 +1,4 @@
-package com.tokopedia.core.listener;
+package com.tokopedia.topads.keyword.view.listener;
 
 import android.app.Activity;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.tkpd.library.ui.utilities;
+package com.tokopedia.session.register.view.util;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
