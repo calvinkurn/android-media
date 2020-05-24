@@ -112,7 +112,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     val errorMessage = result.data.promoCodeError
                     errorMessage.run {
                         if (isBlank() && isWaitingForValidation) {
-                            onNextClick(createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
+                            onNextClick(getPromoCodePrefix() + createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
                         } else {
                             createPromoCodeTextField?.setTextFieldError(this)
                         }
@@ -180,7 +180,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     if (canValidateCode) {
                         isLoading = true
                         isWaitingForValidation = true
-                        viewModel.validatePromoCode(promoCode)
+                        viewModel.validatePromoCode(getPromoCodePrefix() + promoCode)
                     }
                 }
             }
@@ -206,7 +206,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
-    fun Context.hideKeyboard() {
+    private fun Context.hideKeyboard() {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
