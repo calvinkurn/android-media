@@ -219,7 +219,11 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         }
     }
 
-    fun refreshImageType() {
+    fun refreshValue() {
+        mCashbackTypeLiveData.value?.let { type ->
+            refreshTextFieldValue(type)
+        }
+
         mIsFirstTimeDrawLiveData.value?.let { isFirstTimeDraw ->
             if (!isFirstTimeDraw) {
                 mCashbackTypeLiveData.value?.let { type ->
@@ -271,34 +275,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
 
     fun changeCashbackType(cashbackType: CashbackType) {
         mCashbackTypeLiveData.value = cashbackType
-        when(cashbackType) {
-            CashbackType.Rupiah -> {
-                mRupiahValueList.value = arrayOf(
-                        mRupiahMaximumDiscountLiveData.value.toZeroIfNull(),
-                        mRupiahMinimumPurchaseLiveData.value.toZeroIfNull(),
-                        mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
-                )
-                mRupiahErrorPairList.value = arrayOf(
-                        mRupiahMaximumDiscountErrorPairLiveData.value,
-                        mRupiahMinimumPurchaseErrorPairLiveData.value,
-                        mRupiahVoucherQuotaErrorPairLiveData.value
-                )
-            }
-            CashbackType.Percentage -> {
-                mPercentageValueList.value = arrayOf(
-                        mPercentageDiscountAmountLiveData.value.toZeroIfNull(),
-                        mPercentageMaximumDiscountLiveData.value.toZeroIfNull(),
-                        mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
-                        mPercentageVoucherQuotaLiveData.value.toZeroIfNull()
-                )
-                mPercentageErrorPairList.value = arrayOf(
-                        mPercentageDiscountAmountErrorPairLiveData.value,
-                        mPercentageMaximumDiscountErrorPairLiveData.value,
-                        mPercentageMinimumPurchaseErrorPairLiveData.value,
-                        mPercentageVoucherQuotaErrorPairLiveData.value
-                )
-            }
-        }
+        refreshTextFieldValue(cashbackType)
     }
 
     fun checkRupiahMinimumPurchase(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {
@@ -354,6 +331,37 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun refreshTextFieldValue(cashbackType: CashbackType) {
+        when(cashbackType) {
+            CashbackType.Rupiah -> {
+                mRupiahValueList.value = arrayOf(
+                        mRupiahMaximumDiscountLiveData.value.toZeroIfNull(),
+                        mRupiahMinimumPurchaseLiveData.value.toZeroIfNull(),
+                        mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
+                )
+                mRupiahErrorPairList.value = arrayOf(
+                        mRupiahMaximumDiscountErrorPairLiveData.value,
+                        mRupiahMinimumPurchaseErrorPairLiveData.value,
+                        mRupiahVoucherQuotaErrorPairLiveData.value
+                )
+            }
+            CashbackType.Percentage -> {
+                mPercentageValueList.value = arrayOf(
+                        mPercentageDiscountAmountLiveData.value.toZeroIfNull(),
+                        mPercentageMaximumDiscountLiveData.value.toZeroIfNull(),
+                        mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
+                        mPercentageVoucherQuotaLiveData.value.toZeroIfNull()
+                )
+                mPercentageErrorPairList.value = arrayOf(
+                        mPercentageDiscountAmountErrorPairLiveData.value,
+                        mPercentageMaximumDiscountErrorPairLiveData.value,
+                        mPercentageMinimumPurchaseErrorPairLiveData.value,
+                        mPercentageVoucherQuotaErrorPairLiveData.value
+                )
             }
         }
     }

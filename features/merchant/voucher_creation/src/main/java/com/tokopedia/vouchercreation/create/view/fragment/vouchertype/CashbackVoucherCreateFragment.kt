@@ -192,7 +192,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
 
     override fun onResume() {
         super.onResume()
-        viewModel.refreshImageType()
+        viewModel.refreshValue()
         // We actually don't need to notify adapter data as the data has not been changed
         // But, as we used view pager and each fragment has different height (which will cut some layout when page changes according to previous page),
         // we will notify the adapter to mimic layout refresh
@@ -202,6 +202,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        observeLiveData()
         return inflater.inflate(R.layout.fragment_voucher_promotion_type, container, false)
     }
 
@@ -213,7 +214,6 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
     private fun setupView() {
         rupiahMinimumPurchaseTextFieldModel.extraValidation = viewModel::checkRupiahMinimumPurchase
         percentageMaximumDiscountTextFieldModel.extraValidation = viewModel::checkPercentageMaximumDiscount
-        observeLiveData()
         renderList(getCashbackTypeUiList())
     }
 
@@ -257,6 +257,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
             }
             observe(viewModel.rupiahValidationLiveData) { result ->
                 if (isRupiahWaitingForValidation) {
+                    viewModel.refreshValue()
                     when(result) {
                         is Success -> {
                             val validation = result.data
@@ -292,39 +293,42 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
                 }
             }
             observe(viewModel.percentageValidationLiveData) { result ->
-                when(result) {
-                    is Success -> {
-                        val validation = result.data
-                        if (!validation.getIsHaveError()) {
-                            onNextStep(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
-                        } else {
-                            validation.run {
-                                benefitPercentError.setPercentageTextFieldError(discountAmountTextFieldModel)
-                                benefitMaxError.setPercentageTextFieldError(percentageMaximumDiscountTextFieldModel)
-                                minPurchaseError.setPercentageTextFieldError(percentageMinimumPurchaseTextFieldModel)
-                                quotaError.setPercentageTextFieldError(percentageVoucherQuotaTextFieldModel)
-                                benefitTypeError.let { error ->
-                                    if (error.isNotBlank()) {
-                                        view?.showErrorToaster(error)
-                                        return@observe
+                if (isPercentageWaitingForValidation) {
+                    viewModel.refreshValue()
+                    when(result) {
+                        is Success -> {
+                            val validation = result.data
+                            if (!validation.getIsHaveError()) {
+                                onNextStep(voucherImageType, getPercentageValue(percentageMinimumPurchaseTextFieldModel), getPercentageValue(percentageVoucherQuotaTextFieldModel))
+                            } else {
+                                validation.run {
+                                    benefitPercentError.setPercentageTextFieldError(discountAmountTextFieldModel)
+                                    benefitMaxError.setPercentageTextFieldError(percentageMaximumDiscountTextFieldModel)
+                                    minPurchaseError.setPercentageTextFieldError(percentageMinimumPurchaseTextFieldModel)
+                                    quotaError.setPercentageTextFieldError(percentageVoucherQuotaTextFieldModel)
+                                    benefitTypeError.let { error ->
+                                        if (error.isNotBlank()) {
+                                            view?.showErrorToaster(error)
+                                            return@observe
+                                        }
                                     }
-                                }
-                                couponTypeError.let { error ->
-                                    if (error.isNotBlank()) {
-                                        view?.showErrorToaster(error)
-                                        return@observe
+                                    couponTypeError.let { error ->
+                                        if (error.isNotBlank()) {
+                                            view?.showErrorToaster(error)
+                                            return@observe
+                                        }
                                     }
                                 }
                             }
                         }
+                        is Fail -> {
+                            val error = result.throwable.message.toBlankOrString()
+                            view?.showErrorToaster(error)
+                        }
                     }
-                    is Fail -> {
-                        val error = result.throwable.message.toBlankOrString()
-                        view?.showErrorToaster(error)
-                    }
+                    adapter.notifyDataSetChanged()
+                    isPercentageWaitingForValidation = false
                 }
-                adapter.notifyDataSetChanged()
-                isPercentageWaitingForValidation = false
             }
         }
     }
