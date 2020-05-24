@@ -80,5 +80,5 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class YouTubeAnalyticsRequired(val analyticsBlock: (YouTubePlayer) -> Unit) : ScreenStateEvent()
 
     object OnNoMoreAction : ScreenStateEvent()
-    object ShowOneTapOnboarding : ScreenStateEvent()
+    data class ShowOneTapOnboarding(val stateHelper: StateHelperUiModel) : ScreenStateEvent()
 }

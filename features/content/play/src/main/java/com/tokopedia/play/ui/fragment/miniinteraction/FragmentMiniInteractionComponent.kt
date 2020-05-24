@@ -39,15 +39,11 @@ class FragmentMiniInteractionComponent(
                             }
                             is ScreenStateEvent.OrientationChanged ->
                                 if (it.orientation.isLandscape) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.SetVideo -> if (it.videoPlayer.isYouTube) {
-                                uiView.release()
-                            } else {
-                                uiView.init()
-                            }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isBanned || it.event.isFreeze) {
-                                uiView.release()
-                                uiView.hide()
-                            }
+                            is ScreenStateEvent.VideoStreamChanged ->
+                                if (!it.videoStream.orientation.isHorizontal) {
+                                    uiView.release()
+                                    uiView.hide()
+                                }
                         }
                     }
         }
