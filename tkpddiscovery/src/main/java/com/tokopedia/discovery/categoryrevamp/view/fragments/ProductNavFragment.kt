@@ -725,7 +725,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     override fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
+        // NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
     }
 
     override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
@@ -736,7 +736,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     override fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
+        // NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
     }
 
     private fun enableWishlistButton(productId: String) {
