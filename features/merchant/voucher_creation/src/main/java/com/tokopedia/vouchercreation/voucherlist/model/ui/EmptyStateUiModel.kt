@@ -7,7 +7,8 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherLis
  */
 
 data class EmptyStateUiModel(
-        val isActiveVoucher: Boolean
+        val isActiveVoucher: Boolean,
+        val onSeeHistoryClicked: () -> Unit = {}
 ) : BaseVoucherListUiModel {
 
     override fun type(typeFactory: VoucherListAdapterFactory): Int {

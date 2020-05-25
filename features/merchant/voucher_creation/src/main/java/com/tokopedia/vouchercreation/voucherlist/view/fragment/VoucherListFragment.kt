@@ -96,6 +96,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
 
+    private var emptyStateUiModel = EmptyStateUiModel(isActiveVoucher, ::onSeeHistoryClicked)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
     }
@@ -387,7 +389,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun setOnSuccessGetVoucherList(vouchers: List<VoucherUiModel>) {
         clearAllData()
         if (vouchers.isEmpty()) {
-            renderList(listOf(EmptyStateUiModel(isActiveVoucher)))
+            renderList(listOf(emptyStateUiModel))
         } else {
             view?.run {
                 searchBarMvc.isVisible = !isActiveVoucher
@@ -410,6 +412,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
             }
         }
+    }
+
+    private fun onSeeHistoryClicked() {
+        fragmentListener?.switchFragment(false)
     }
 
     fun setFragmentListener(listener: Listener) {
