@@ -15,11 +15,6 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 public class DeepLinkAnalyticsImpl implements DeepLinkAnalyticsPresenter {
 
     @Override
-    public void processAFlistener() {
-
-    }
-
-    @Override
     public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(Uri.parse(campaignUri));
         campaign.setScreenName(screenName);

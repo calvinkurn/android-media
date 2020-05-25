@@ -68,6 +68,7 @@ public class OrderListAnalytics {
     private static final String KEY_CATEGORY = "category";
     private static final String KEY_CATEGORY_ID = "category_id";
     private static final String KEY_SHOP_ID = "shop_id";
+    private static final String KEY_CART_ID = "cart_id";
     private static final String KEY_SHOP_TYPE= "shop_type";
     private static final String KEY_SHOP_NAME= "shop_name";
     private static final String KEY_DIMENSION_45 = "dimension45";
@@ -121,6 +122,8 @@ public class OrderListAnalytics {
     private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
     private static final String TICKER_EVENT_ACTION = "view ticker";
     private static final String TICKER_EVENT_NAME = "viewPurchaseList";
+
+    private static final String ORDER_LIST = "/order list";
 
     @Inject
     public OrderListAnalytics() {
@@ -284,11 +287,12 @@ public class OrderListAnalytics {
     }
 
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel, String statusCode) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
         Gson gson = new Gson();
+        String eventLabel = isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE;
 
         for (Items item : items) {
             MetaDataInfo metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
@@ -311,8 +315,9 @@ public class OrderListAnalytics {
                     cartId = String.valueOf(datum.getCartId());
                     break;
                 }
+            product.put(KEY_CART_ID, cartId);
             product.put(KEY_DIMENSION_45, cartId);
-            product.put(KEY_DIMENSION_40, NONE);
+            product.put(KEY_DIMENSION_40, ORDER_LIST + " - " + statusCode);
             product.put(KEY_DIMENSION_38, NONE);
             products.add(product);
         }
@@ -330,7 +335,7 @@ public class OrderListAnalytics {
         else
             map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
         map.put("eventAction", EVENT_ACTION_BUY_AGAIN + eventActionLabel);
-        map.put("eventLabel", isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE);
+        map.put("eventLabel", eventLabel + " - " + statusCode);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
 
@@ -541,10 +546,9 @@ public class OrderListAnalytics {
 
     public void sendPageClickEvent(String page) {
         Map<String, Object> map = new HashMap<>();
-        map.put("event", "OpenScreen");
-        map.put("EventName", "OpenScreen");
-        map.put("Screen Name", page);
-        map.put("is Login", "YES");
+        map.put("event", "openScreen");
+        map.put("screenName", page);
+        map.put("isLoggedInStatus", "true");
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
 
     }

@@ -5,5 +5,4 @@
     android:id="@+id/product_card"
     android:layout_width="match_parent"
     android:layout_marginTop="@dimen/dp_minus2"
-    android:layout_height="wrap_content"
-    android:background="@color/white" />
+    android:layout_height="wrap_content"/>

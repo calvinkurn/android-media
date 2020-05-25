@@ -5,28 +5,13 @@ import android.content.Intent;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
-import com.tokopedia.seller.shopsettings.FragmentSettingShop;
-import com.tokopedia.seller.shopsettings.ManageShopActivity;
+import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity;
 
 
 public class TkpdSeller {
 
-    public static Intent getIntentManageShop(Context context) {
-        return new Intent(context, ManageShopActivity.class);
-    }
-
-    public static android.app.Fragment getFragmentShopSettings() {
-        return FragmentSettingShop.newInstance();
-    }
-
-    public static android.app.Fragment getFragmentSellingNewOrder() {
-        return new FragmentSellingNewOrder();
-    }
-
     public static Class getSellingActivityClass() {
-        return ActivitySellingTransaction.class;
+        return SomListActivity.class;
     }
 
     public static Intent getActivitySellingTransactionNewOrder(Context context) {

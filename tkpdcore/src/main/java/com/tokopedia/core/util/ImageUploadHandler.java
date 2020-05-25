@@ -1,14 +1,8 @@
 package com.tokopedia.core.util;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -18,21 +12,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * Created by Tkpd_Eka on 6/30/2015.
  */
 public class ImageUploadHandler {
 
-    public static final int CODE_UPLOAD_IMAGE = 789;
-    public static final String FILELOC = "fileloc";
     private static final String TAG = ImageUploadHandler.class.getSimpleName();
-
-    public static ImageUploadHandler createInstance(Activity activity) {
-        ImageUploadHandler uploadimage = new ImageUploadHandler();
-        return uploadimage;
-    }
 
     public static ImageUploadHandler createInstance(Fragment fragment) {
         ImageUploadHandler uploadimage = new ImageUploadHandler();
@@ -41,21 +27,6 @@ public class ImageUploadHandler {
     public static ImageUploadHandler createInstance(androidx.fragment.app.Fragment fragment) {
         ImageUploadHandler uploadimage = new ImageUploadHandler();
         return uploadimage;
-    }
-
-
-
-
-    public class Model {
-        public String cameraFileLoc;
-    }
-
-    public static final int REQUEST_CODE = 111;
-
-    private Model model = new Model();
-
-    public void setImageBitmap(String fileloc) {
-        this.model.cameraFileLoc = fileloc;
     }
 
     public static File writeImageToTkpdPath(byte[] buffer) throws IOException {
@@ -95,9 +66,6 @@ public class ImageUploadHandler {
         if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
             tempPicToUpload = ImageHandler.ResizeBitmap(tempPic, 2048);
         }
-// else if(tempPic.getWidth() < 300 || tempPic.getHeight() < 100){
-//            tempPicToUpload = ih.ResizeBitmap(tempPic, 300);
-//        }
         else {
             tempPicToUpload = tempPic;
         }

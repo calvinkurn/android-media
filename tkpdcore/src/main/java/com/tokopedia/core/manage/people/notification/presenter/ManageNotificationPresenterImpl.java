@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.core.manage.ManageConstant;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationCacheInteractor;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationCacheInteractorImpl;
 import com.tokopedia.core.manage.people.notification.interactor.ManageNotificationRetrofitInteractor;
@@ -20,7 +19,9 @@ import java.util.Map;
 /**
  * Created by Nisie on 6/22/16.
  */
-public class ManageNotificationPresenterImpl implements ManageNotificationPresenter, ManageConstant{
+public class ManageNotificationPresenterImpl implements ManageNotificationPresenter {
+
+    String STATUS_MESSAGE = "status_message";
 
     ManageNotificationFragmentView viewListener;
     ManageNotificationCacheInteractor cacheInteractor;
@@ -124,8 +125,7 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
                     @Override
                     public void onTimeout() {
                         viewListener.finishLoading();
-                        // Will disable the snackbar error as infra team not ready
-//                        viewListener.showSnackbar();
+                        viewListener.showSnackbar();
                     }
 
                     @Override

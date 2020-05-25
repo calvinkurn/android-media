@@ -1,12 +1,11 @@
 package com.tokopedia.product.manage.oldlist.view.presenter;
 
+import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase;
 import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase;
 import com.tokopedia.usecase.RequestParams;
-
 import javax.inject.Inject;
-
 import rx.Subscriber;
 
 /**
@@ -15,22 +14,24 @@ import rx.Subscriber;
 
 public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPresenter {
     private FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase;
+    private GetAllProductsCountDraftUseCase getAllProductsCountDraftUseCase;
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
 
     @Inject
     public ProductDraftListCountPresenterImpl(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
+                                              GetAllProductsCountDraftUseCase getAllProductsCountDraftUseCase,
                                               ClearAllDraftProductUseCase clearAllDraftProductUseCase,
                                               UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
         this.fetchAllDraftProductCountUseCase = fetchAllDraftProductCountUseCase;
+        this.getAllProductsCountDraftUseCase = getAllProductsCountDraftUseCase;
         this.clearAllDraftProductUseCase = clearAllDraftProductUseCase;
         this.updateUploadingDraftProductUseCase = updateUploadingDraftProductUseCase;
     }
 
     @Override
-    public void fetchAllDraftCount() {
-        fetchAllDraftProductCountUseCase.execute(FetchAllDraftProductCountUseCase.createRequestParams(),
-                getSubscriber());
+    public void getAllDraftCount() {
+        getAllProductsCountDraftUseCase.execute(getSubscriber());
     }
 
     @Override
@@ -97,12 +98,12 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
 
             @Override
             public void onError(Throwable e) {
-                fetchAllDraftCount();
+                getAllDraftCount();
             }
 
             @Override
             public void onNext(Boolean aBoolean) {
-                fetchAllDraftCount();
+                getAllDraftCount();
             }
         };
     }

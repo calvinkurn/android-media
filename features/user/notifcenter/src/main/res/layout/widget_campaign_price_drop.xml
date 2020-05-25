@@ -26,6 +26,6 @@
         android:textSize="@dimen/sp_12"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
-        tools:text="Rp 160.180" />
+        tools:text="Rp 20.160.180" />
 
 </LinearLayout>

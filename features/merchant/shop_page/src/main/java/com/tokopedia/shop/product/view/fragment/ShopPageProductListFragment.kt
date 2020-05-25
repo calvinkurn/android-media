@@ -13,7 +13,9 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -24,8 +26,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -40,7 +42,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
-import com.tokopedia.shop.analytic.model.*
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
@@ -50,8 +55,14 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
+import com.tokopedia.shop.product.di.module.ShopProductModule
+import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
@@ -60,12 +71,6 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
-import com.tokopedia.shop.product.di.module.ShopProductModule
-import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -96,6 +101,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_MERCHANT_VOUCHER = 207
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
+        private const val REQUEST_CODE_ADD_ETALASE = 288
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
@@ -104,9 +110,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SAVED_SHOP_REF = "saved_shop_ref"
         const val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
+        const val SAVED_NEED_TO_RELOAD = "saved_need_to_reload"
         const val ALL_ETALASE_ID = "etalase"
         const val SOLD_ETALASE_ID = "sold"
         const val SHOP_INFO_CACHE_MANAGER_ID = "SHOP_INFO_CACHE_MANAGER_ID"
+
+        const val BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE = "isNeedToGoToAddShowcase"
+        const val BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE_VALUE = true
+        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
+        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
+        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
+        const val BUNDLE_SHOP_ID = "shopId"
+        const val BUNDLE = "bundle"
 
         @JvmStatic
         fun createInstance(shopAttribution: String?, shopRef: String): ShopPageProductListFragment {
@@ -157,7 +172,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun chooseProductClicked() {
         context?.let {
-            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
+            RouteManager.route(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
         }
     }
 
@@ -256,7 +271,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun redirectToAddEtalasePage() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD)
+            val bundle = Bundle()
+            bundle.putBoolean(BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE, BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE_VALUE)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra("bundle", bundle)
+            startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE)
         }
     }
 
@@ -497,6 +516,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             REQUEST_CODE_MEMBERSHIP_STAMP -> {
                 loadMembership()
             }
+            REQUEST_CODE_ADD_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    loadNewProductData()
+                }
+            }
             REQUEST_CODE_USER_LOGIN -> {
                 (parentFragment as? ShopPageFragment)?.refreshData()
             }
@@ -681,6 +705,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 .inject(this)
     }
 
+    override fun onGetListErrorWithExistingData(throwable: Throwable?) {
+        clearCache()
+        super.onGetListErrorWithExistingData(throwable)
+    }
+
+    override fun onRetryClicked() {
+        clearCache()
+        super.onRetryClicked()
+    }
+
     override fun loadInitialData() {
         shopId?.let {
             isLoadingNewProductData = true
@@ -707,11 +741,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun redirectToEtalasePicker() {
-        activity?.let {
-            val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo?.shopCore?.shopID
-                    ?: "",
-                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = isOwner)
-            startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+        context?.let {
+            val bundle = Bundle()
+            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
+            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
+            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
+            bundle.putString(BUNDLE_SHOP_ID, shopInfo!!.shopCore.shopID)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra(BUNDLE, bundle)
+            startActivity(intent)
         }
     }
 
@@ -761,7 +799,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onAddProductClicked() {
         context?.let {
             shopPageTracking?.clickAddProduct(customDimensionShopPage)
-            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
+            RouteManager.route(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
         }
     }
 
@@ -1120,14 +1158,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun showToasterError(message: String) {
         activity?.let {
-            ToasterError.showClose(it, message)
+            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     private fun onErrorGetMembershipInfo(t: Throwable) {
         shopProductAdapter.clearMembershipData()
         activity?.let {
-            ToasterError.showClose(it, ErrorHandler.getErrorMessage(context, t))
+            Toaster.make(view!!, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

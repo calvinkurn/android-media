@@ -175,4 +175,14 @@ object DynamicProductDetailMapper {
             }
         }
     }
+
+    fun generateProductReportFallback(productUrl: String): String {
+        var fallbackUrl = productUrl
+        if (!fallbackUrl.endsWith("/")) {
+            fallbackUrl += "/"
+        }
+        fallbackUrl = fallbackUrl.replace("www.", "m.")
+        fallbackUrl += "report/"
+        return fallbackUrl
+    }
 }
