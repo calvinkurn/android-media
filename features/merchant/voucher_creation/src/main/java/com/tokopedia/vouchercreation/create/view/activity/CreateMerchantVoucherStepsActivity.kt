@@ -41,6 +41,7 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVouc
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class CreateMerchantVoucherStepsActivity : FragmentActivity() {
@@ -195,7 +196,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             try {
                 setStatusBarColor(ContextCompat.getColor(this, R.color.transparent))
             } catch (ex: Resources.NotFoundException) {
-                ex.printStackTrace()
+                Timber.e(ex)
             }
         }
     }

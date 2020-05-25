@@ -1,10 +1,11 @@
 package com.tokopedia.vouchercreation.voucherlist.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
 import com.tokopedia.vouchercreation.voucherlist.model.remote.GetMerchantVoucherListResponse
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
@@ -17,21 +18,6 @@ class GetVoucherListUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val mapper: VoucherMapper
 ) : BaseGqlUseCase<List<VoucherUiModel>>() {
-
-    override suspend fun executeOnBackground(): List<VoucherUiModel> {
-        val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
-
-        val errors = gqlResponse.getError(GetMerchantVoucherListResponse::class.java)
-        if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetMerchantVoucherListResponse>()
-            return mapper.mapRemoteModelToUiModel(data.result.data.vouchers)
-        } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
-        }
-//        val gqlResponse = Gson().fromJson(DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
-//        return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
-    }
 
     companion object {
         private const val QUERY = "query getAllMerchantPromotion {\n" +
@@ -81,7 +67,34 @@ class GetVoucherListUseCase @Inject constructor(
                 "              }\n" +
                 "            }"
 
-        private const val DUMMY_ACTIVE_VOUCHER = """
+        private const val FILTER_KEY = "filter"
+
+        @JvmStatic
+        fun createRequestParam(voucherListParam: VoucherListParam) : RequestParams {
+            return RequestParams.create().apply {
+                putObject(FILTER_KEY, voucherListParam)
+            }
+        }
+
+    }
+
+    override suspend fun executeOnBackground(): List<VoucherUiModel> {
+//        val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
+//        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+//
+//        val errors = gqlResponse.getError(GetMerchantVoucherListResponse::class.java)
+//        if (errors.isNullOrEmpty()) {
+//            val data = gqlResponse.getData<GetMerchantVoucherListResponse>()
+//            return mapper.mapRemoteModelToUiModel(data.result.data.vouchers)
+//        } else {
+//            throw MessageErrorException(errors.joinToString(", ") { it.message })
+//        }
+        val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
+        return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+    }
+
+    object DummyVoucherList {
+        internal const val DUMMY_ACTIVE_VOUCHER = """
             {
                 "MerchantPromotionGetMVList": {
                   "data": {
@@ -197,4 +210,6 @@ class GetVoucherListUseCase @Inject constructor(
             }
         """
     }
+
+
 }

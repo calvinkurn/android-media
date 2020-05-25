@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/voucherDisplayRecyclerView"
@@ -11,7 +12,9 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:orientation="horizontal"
         android:clipToPadding="false"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="1"
+        tools:listitem="@layout/mvc_voucher_display_view"/>
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/voucherDisplayPageControl"

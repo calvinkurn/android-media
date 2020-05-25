@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cashbackTypeTitle"
@@ -24,6 +25,10 @@
         android:layout_marginLeft="@dimen/mvc_create_voucher_type_chips_margin_left"
         android:layout_marginStart="@dimen/mvc_create_voucher_type_chips_margin_left"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cashbackTypeTitle"/>
+        app:layout_constraintTop_toBottomOf="@id/cashbackTypeTitle"
+        tools:orientation="horizontal"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_mvc_header_chip"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.common.utils
 
+import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,7 +32,7 @@ object DateTimeUtils {
             try {
                 return newFormatter.format(secondFormatter.parse(dateTime))
             } catch (ex: ParseException) {
-
+                Timber.e(ex)
             }
         }
         return dateTime

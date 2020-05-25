@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <FrameLayout
@@ -28,6 +29,8 @@
         android:layout_height="wrap_content"
         android:paddingBottom="?android:attr/actionBarSize"
         android:layout_below="@id/bannerFrame"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        tools:itemCount="1"
+        tools:listitem="@layout/mvc_type_budget_promotion_widget"/>
 
 </RelativeLayout>
