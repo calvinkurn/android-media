@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.data
+package com.tokopedia.play.broadcaster.data.socket
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.user.session.UserSessionInterface

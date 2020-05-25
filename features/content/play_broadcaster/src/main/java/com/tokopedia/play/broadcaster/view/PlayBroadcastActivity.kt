@@ -1,64 +1,98 @@
 package com.tokopedia.play.broadcaster.view
 
-import android.Manifest
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
+import android.view.WindowManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import org.jetbrains.annotations.TestOnly
+import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastSetupCoordinator
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity: BaseActivity() {
+class PlayBroadcastActivity: BaseActivity(), PlayBroadcastSetupCoordinator {
 
-    companion object {
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
-        const val PLAY_KEY_CHANNEL_ID = "channelId"
+    private lateinit var viewModel: PlayBroadcastViewModel
 
-        @TestOnly
-        fun newIntent(context: Context, channelId: String): Intent {
-            return Intent(context, PlayBroadcastActivity::class.java)
-                    .apply {
-                        // TODO("ask @Rafiando for applink url")
-                        data = Uri.parse("tokopedia://play-broadcaster/$channelId")
-                    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        initViewModel()
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_play_broadcast)
+        setupContent()
+        setupPage()
+    }
+
+    override fun openBroadcastSetupPage() {
+        val setupFragment = supportFragmentManager.findFragmentByTag(SETUP_FRAGMENT_TAG)
+        if (setupFragment == null) {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.fl_setup, getPrepareFragment(), SETUP_FRAGMENT_TAG)
+                    .commit()
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_play_broadcaster)
-
-        dummyCheckPermission() // TODO("testing only")
-
-        val channelId = intent?.data?.lastPathSegment
-        setupView(channelId)
+    private fun inject() {
+        DaggerPlayBroadcasterComponent.create()
+                .inject(this)
     }
 
-    private fun setupView(channelId: String?) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragment, getFragment(channelId))
-                .commit()
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
-    private fun getFragment(channelId: String?): Fragment {
-        return PlayBroadcastFragment.newInstance(channelId)
+    private fun setupContent() {
+        val prepareFragment = supportFragmentManager.findFragmentByTag(PARENT_FRAGMENT_TAG)
+        if (prepareFragment == null) {
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.fl_prepare, getParentFragment(), PARENT_FRAGMENT_TAG)
+                    .commit()
+        }
     }
 
-    // TODO("testing only")
-    private fun dummyCheckPermission() {
-        ActivityCompat.requestPermissions(this,
-                arrayOf(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.RECORD_AUDIO),
-                2334)
+    private fun setupPage() {
+        viewModel.getConfiguration()
+
+        observeConfiguration()
+    }
+
+    private fun getPrepareFragment() = PlayPrepareBroadcastFragment.newInstance()
+
+    private fun getParentFragment() = PlayBroadcastFragment.newInstance()
+
+    override fun onResume() {
+        super.onResume()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun observeConfiguration() {
+        viewModel.observablePage.observe(this, Observer {
+            if (it) {
+                openBroadcastSetupPage()
+            }
+        })
+    }
+
+    companion object {
+        private const val PARENT_FRAGMENT_TAG = "parent_fragment"
+        private const val PREPARE_FRAGMENT_TAG = "prepare_fragment"
+        private const val SETUP_FRAGMENT_TAG = "setup_fragment"
     }
 }
