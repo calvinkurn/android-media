@@ -148,7 +148,7 @@ class GetVoucherListUseCase @Inject constructor(
                         {
                             "voucher_id": 123,
                             "shop_id": 123,
-                            "voucher_name": "SAMPLVOUCHERE",
+                            "voucher_name": "Ini yang Sentence Case",
                             "voucher_type": 3,
                             "Voucher_type_formatted" : "Discount",
                             "voucher_image": "sampleimage.jpg",
@@ -167,7 +167,7 @@ class GetVoucherListUseCase @Inject constructor(
                             "booked_global_quota" : 5,
                             "voucher_start_time": "2020-11-10T23:00:00Z",
                             "voucher_finish_time": "2020-12-10T23:00:00Z",
-                            "voucher_code": "CODESAMPEL",
+                            "voucher_code": "TOKOLEZADAH",
                             "galadriel_voucher_id": 123,
                             "galadriel_catalog_id": 123,
                             "create_time": "2020-11-10T23:00:00Z",
@@ -231,7 +231,7 @@ class GetVoucherListUseCase @Inject constructor(
                         {
                             "voucher_id": 123,
                             "shop_id": 123,
-                            "voucher_name": "SAMPLVOUCHERE",
+                            "voucher_name": "Voucher Deleted UInya gimana",
                             "voucher_type": 1,
                             "Voucher_type_formatted" : "Gratis Ongkir",
                             "voucher_image": "sampleimage.jpg",
@@ -250,7 +250,7 @@ class GetVoucherListUseCase @Inject constructor(
                             "booked_global_quota" : 5,
                             "voucher_start_time": "2020-11-10T23:00:00Z",
                             "voucher_finish_time": "2020-12-10T23:00:00Z",
-                            "voucher_code": "CODESAMPEL",
+                            "voucher_code": "UINYAGIMANA",
                             "galadriel_voucher_id": 123,
                             "galadriel_catalog_id": 123,
                             "create_time": "2009-11-10T23:00:00Z",
@@ -264,7 +264,7 @@ class GetVoucherListUseCase @Inject constructor(
                         {
                             "voucher_id": 123,
                             "shop_id": 123,
-                            "voucher_name": "SAMPLVOUCHERE",
+                            "voucher_name": "Voucher ini Ended",
                             "voucher_type": 3,
                             "Voucher_type_formatted" : "Discount",
                             "voucher_image": "sampleimage.jpg",
@@ -297,7 +297,7 @@ class GetVoucherListUseCase @Inject constructor(
                         {
                             "voucher_id": 123,
                             "shop_id": 123,
-                            "voucher_name": "SAMPLVOUCHERE",
+                            "voucher_name": "VOUCHER yang Stopped",
                             "voucher_type": 2,
                             "Voucher_type_formatted" : "Cashback",
                             "voucher_image": "sampleimage.jpg",

@@ -212,6 +212,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
+    override fun onDuplicateClickListener(voucher: VoucherUiModel) {
+        duplicateVoucher(voucher)
+    }
+
     private fun duplicateVoucher(voucher: VoucherUiModel) {
         activity?.let {
             startActivity(VoucherDetailActivity.createDuplicateIntent(it, VoucherDetailActivity.DUPLICATE_PAGE))

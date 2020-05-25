@@ -12,6 +12,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
 import timber.log.Timber
+import kotlin.reflect.KFunction1
 
 /**
  * Created By @ilhamsuaib on 17/04/20
@@ -39,7 +40,7 @@ class VoucherViewHolder(
 
             setImageVoucher(element.isPublic, element.type)
             setVoucherStatus(element)
-            showPromoCode(element.status, element.isPublic, element.code)
+            showPromoCode(element.isPublic, element.code)
             setupVoucherCtaButton(element)
             setVoucherDate(element)
 
@@ -74,36 +75,37 @@ class VoucherViewHolder(
 
     private fun setupVoucherCtaButton(element: VoucherUiModel) {
         with(itemView) {
-            var buttonType: Int = UnifyButton.Type.ALTERNATE
-            var buttonVariant: Int = UnifyButton.Variant.GHOST
-            var stringRes: Int = R.string.mvc_edit_quota
+            val buttonType: Int
+            val buttonVariant: Int
+            val stringRes: Int
+            val clickAction: KFunction1<VoucherUiModel, Unit>
 
             when (element.status) {
                 VoucherStatusConst.ONGOING -> {
                     buttonType = UnifyButton.Type.MAIN
                     buttonVariant = UnifyButton.Variant.FILLED
                     stringRes = R.string.mvc_share
+                    clickAction = listener::onShareClickListener
                 }
                 VoucherStatusConst.NOT_STARTED -> {
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_edit_quota
+                    clickAction = listener::onEditQuotaClickListener
                 }
-                VoucherStatusConst.ENDED -> {
+                else -> {
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
-                    stringRes = R.string.mvc_ended
+                    stringRes = R.string.mvc_duplicate
+                    clickAction = listener::onDuplicateClickListener
                 }
             }
-            btnMvcVoucherCta.buttonType = buttonType
-            btnMvcVoucherCta.buttonVariant = buttonVariant
-            btnMvcVoucherCta.text = context.getString(stringRes)
-            btnMvcVoucherCta.setOnClickListener {
-                val isOnGoingPromo = element.status == VoucherStatusConst.ONGOING
-                if (isOnGoingPromo) {
-                    listener.onShareClickListener(element)
-                } else {
-                    listener.onEditQuotaClickListener(element)
+            btnMvcVoucherCta?.run {
+                this.buttonType = buttonType
+                this.buttonVariant = buttonVariant
+                text = context.getString(stringRes)
+                setOnClickListener {
+                    clickAction(element)
                 }
             }
         }
@@ -117,8 +119,8 @@ class VoucherViewHolder(
                  * Coz voucher have 3 types but only two examples provided on Figma
                  * */
                 val drawableRes = when {
-                    isPublic && (voucherType == VoucherTypeConst.CASHBACK) -> R.drawable.ic_mvc_cashback_publik
-                    !isPublic && (voucherType == VoucherTypeConst.CASHBACK) -> R.drawable.ic_mvc_cashback_khusus
+                    isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
+                    !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
                     isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_publik
                     !isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_khusus
                     else -> R.drawable.ic_mvc_cashback_publik
@@ -130,9 +132,9 @@ class VoucherViewHolder(
         }
     }
 
-    private fun showPromoCode(@VoucherStatusConst voucherStatus: Int, isPublicVoucher: Boolean, voucherCode: String) {
+    private fun showPromoCode(isPublicVoucher: Boolean, voucherCode: String) {
         with(itemView) {
-            val isVisible = voucherStatus == VoucherStatusConst.ONGOING && !isPublicVoucher
+            val isVisible = !isPublicVoucher
             viewMvcVoucherCodeBg.isVisible = isVisible
             tvLblCode.isVisible = isVisible
             tvVoucherCode.isVisible = isVisible
@@ -142,21 +144,21 @@ class VoucherViewHolder(
 
     private fun setVoucherStatus(element: VoucherUiModel) {
         with(itemView) {
-            var statusStr = context.getString(R.string.mvc_not_started_yet)
-            var colorRes = R.color.Neutral_N700_68
-            var statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
+            val statusStr: String
+            val colorRes: Int
+            val statusIndicatorBg: Int
             when (element.status) {
                 VoucherStatusConst.ONGOING -> {
                     statusStr = context.getString(R.string.mvc_is_ongoing)
                     colorRes = R.color.Green_G500
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_green
                 }
-                VoucherStatusConst.NOT_STARTED -> {
-                    statusStr = context.getString(R.string.mvc_not_started_yet)
-                    colorRes = R.color.Neutral_N700_68
-                    statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
+                VoucherStatusConst.STOPPED -> {
+                    statusStr = context.getString(R.string.mvc_stopped)
+                    colorRes = R.color.Red_R500
+                    statusIndicatorBg = R.drawable.mvc_view_voucher_status_red
                 }
-                VoucherStatusConst.ENDED -> {
+                else -> {
                     statusStr = context.getString(R.string.mvc_ended)
                     colorRes = R.color.Neutral_N700_68
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
@@ -178,5 +180,7 @@ class VoucherViewHolder(
         fun onShareClickListener(voucher: VoucherUiModel)
 
         fun onEditQuotaClickListener(voucher: VoucherUiModel)
+
+        fun onDuplicateClickListener(voucher: VoucherUiModel)
     }
 }
