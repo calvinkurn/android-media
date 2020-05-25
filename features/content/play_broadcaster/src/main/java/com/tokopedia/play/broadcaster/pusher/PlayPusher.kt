@@ -1,8 +1,10 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import android.content.Context
+import android.os.Build
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.annotation.RequiresApi
 import com.alivc.live.pusher.*
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
@@ -13,7 +15,35 @@ import com.tokopedia.config.GlobalConfig
  */
 class PlayPusher(private val builder: Builder) {
 
+    // TODO("handle reconnect async")
+
+
+    var playPusherCountDownTimer: PlayPusherCountDownTimer? = null
+//    var surfaceView: SurfaceView? = null
+//        set(value) {
+//            value?.holder?.addCallback(object : SurfaceHolder.Callback {
+//                override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
+//                    mSurfaceStatus = SurfaceStatus.CHANGED
+//                }
+//
+//                override fun surfaceDestroyed(surfaceHolder: SurfaceHolder?) {
+//                    mSurfaceStatus = SurfaceStatus.DESTROYED
+//                }
+//
+//                override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
+//                    if (mSurfaceStatus == SurfaceStatus.UNINITED) {
+//                        mSurfaceStatus = SurfaceStatus.CREATED
+//                    } else if (mSurfaceStatus == SurfaceStatus.DESTROYED) {
+//                        mSurfaceStatus = SurfaceStatus.RECREATED
+//                    }
+//                }
+//            })
+//            field = value
+//        }
+
     private var ingestUrl: String = ""
+
+//    private var mSurfaceStatus = SurfaceStatus.UNINITED
 
     private var mAliVcLivePusher: AlivcLivePusher? = null
     private var mAliVcLivePushConfig: AlivcLivePushConfig? = null
@@ -35,10 +65,10 @@ class PlayPusher(private val builder: Builder) {
         mAliVcLivePushConfig?.audioBitRate = builder.audioBitrate
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun create() {
-        mAliVcLivePusher = AlivcLivePusher()
-        mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
         try {
+            mAliVcLivePusher = AlivcLivePusher()
             mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
@@ -48,23 +78,17 @@ class PlayPusher(private val builder: Builder) {
     }
 
     fun startPreview(surfaceView: SurfaceView) {
-        surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) { }
-
-            override fun surfaceDestroyed(surfaceHolder: SurfaceHolder?) { }
-
-            override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
-                if (mAliVcLivePusher != null) {
-                    try {
-                        mAliVcLivePusher?.startPreviewAysnc(surfaceView)
-                    } catch (e: IllegalArgumentException) {
-                        e.printStackTrace()
-                    } catch (e: IllegalStateException) {
-                        e.printStackTrace()
-                    }
-                }
+//        if (mSurfaceStatus != SurfaceStatus.UNINITED &&
+//                mSurfaceStatus != SurfaceStatus.DESTROYED &&
+        if (mAliVcLivePusher != null) {
+            try {
+                mAliVcLivePusher?.startPreviewAysnc(surfaceView)
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
             }
-        })
+        }
     }
 
     fun stopPreview() {
@@ -89,6 +113,7 @@ class PlayPusher(private val builder: Builder) {
         }
         try {
             mAliVcLivePusher?.startPushAysnc(this.ingestUrl)
+            playPusherCountDownTimer?.start()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -99,6 +124,7 @@ class PlayPusher(private val builder: Builder) {
     fun stopPush() {
         try {
             mAliVcLivePusher?.stopPush()
+            playPusherCountDownTimer?.stop()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -118,7 +144,10 @@ class PlayPusher(private val builder: Builder) {
 
     fun resume() {
         try {
-            mAliVcLivePusher?.resumeAsync()
+            if (mAliVcLivePusher?.isPushing == true) {
+                mAliVcLivePusher?.resumeAsync()
+                playPusherCountDownTimer?.start()
+            }
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -132,7 +161,10 @@ class PlayPusher(private val builder: Builder) {
 
     fun pause() {
         try {
-            mAliVcLivePusher?.pause()
+            if (mAliVcLivePusher?.isPushing == true) {
+                playPusherCountDownTimer?.stop()
+                mAliVcLivePusher?.pause()
+            }
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -142,6 +174,9 @@ class PlayPusher(private val builder: Builder) {
 
     fun destroy() {
         try {
+            if (mAliVcLivePusher?.isPushing == true) {
+                playPusherCountDownTimer?.stop()
+            }
             mAliVcLivePusher?.destroy()
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
@@ -252,10 +287,12 @@ class PlayPusher(private val builder: Builder) {
             this.audioBitrate = bitrate
         }
 
+        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
         fun build() = PlayPusher(this)
     }
 
     companion object {
+
         const val AUDIO_BITRATE_128Kbps = 128000
     }
 }
