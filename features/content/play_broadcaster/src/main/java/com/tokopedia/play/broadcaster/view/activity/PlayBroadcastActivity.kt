@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view
+package com.tokopedia.play.broadcaster.view.activity
 
 import android.os.Bundle
 import android.view.WindowManager
