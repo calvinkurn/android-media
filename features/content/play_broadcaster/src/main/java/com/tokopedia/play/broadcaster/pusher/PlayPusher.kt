@@ -71,9 +71,13 @@ class PlayPusher(private val builder: Builder) {
             mAliVcLivePusher = AlivcLivePusher()
             mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
         } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+            }
         } catch (e: IllegalStateException) {
-            e.printStackTrace()
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -84,9 +88,13 @@ class PlayPusher(private val builder: Builder) {
             try {
                 mAliVcLivePusher?.startPreviewAysnc(surfaceView)
             } catch (e: IllegalArgumentException) {
-                e.printStackTrace()
+                if (GlobalConfig.DEBUG) {
+                    e.printStackTrace()
+                }
             } catch (e: IllegalStateException) {
-                e.printStackTrace()
+                if (GlobalConfig.DEBUG) {
+                    e.printStackTrace()
+                }
             }
         }
     }
