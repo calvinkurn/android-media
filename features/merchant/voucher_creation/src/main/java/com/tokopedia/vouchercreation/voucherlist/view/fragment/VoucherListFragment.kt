@@ -152,7 +152,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             headerChipMvc.isVisible = false
         }
         renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
-        mViewModel.getVoucherList()
+        if (isActiveVoucher) {
+            mViewModel.getActiveVoucherList()
+        } else {
+            mViewModel.getVoucherListHistory()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

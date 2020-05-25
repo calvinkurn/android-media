@@ -29,9 +29,22 @@ class VoucherListViewModel @Inject constructor(
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
         get() = _voucherList
 
-    fun getVoucherList() {
+    fun getActiveVoucherList() {
         launchCatchError(block = {
             delay(1000)
+            getVoucherListUseCase.isActive = true
+            _voucherList.value = Success(withContext(Dispatchers.IO) {
+                getVoucherListUseCase.executeOnBackground()
+            })
+        }, onError = {
+            _voucherList.value = Fail(it)
+        })
+    }
+
+    fun getVoucherListHistory() {
+        launchCatchError(block = {
+            delay(1000)
+            getVoucherListUseCase.isActive = false
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
             })

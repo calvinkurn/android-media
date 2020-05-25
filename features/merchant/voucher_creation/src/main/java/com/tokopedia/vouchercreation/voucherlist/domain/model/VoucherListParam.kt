@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.domain.model
 
-import androidx.annotation.IntDef
 import androidx.annotation.StringDef
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 
 data class VoucherListParam (
         val voucher_type: Int? = null,
@@ -33,17 +33,6 @@ data class VoucherListParam (
 
     @MustBeDocumented
     @Retention(AnnotationRetention.SOURCE)
-    @IntDef(VoucherType.FREE_SHIPPING, VoucherType.DISCOUNT, VoucherType.CASHBACK)
-    annotation class VoucherType {
-        companion object {
-            const val FREE_SHIPPING = 1
-            const val DISCOUNT = 2
-            const val CASHBACK = 3
-        }
-    }
-
-    @MustBeDocumented
-    @Retention(AnnotationRetention.SOURCE)
     @StringDef(VoucherSort.CREATE_TIME, VoucherSort.START_TIME, VoucherSort.FINISH_TIME)
     annotation class VoucherSort {
         companion object {
@@ -55,7 +44,7 @@ data class VoucherListParam (
 
     companion object {
         @JvmStatic
-        fun createParam(@VoucherType type: Int?,
+        fun createParam(@VoucherTypeConst type: Int?,
                         @VoucherStatus status: String,
                         @VoucherTarget target: String,
                         @VoucherSort sort: String?,

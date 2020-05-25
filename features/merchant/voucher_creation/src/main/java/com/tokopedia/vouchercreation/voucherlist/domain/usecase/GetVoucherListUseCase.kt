@@ -78,6 +78,8 @@ class GetVoucherListUseCase @Inject constructor(
 
     }
 
+    var isActive = false
+
     override suspend fun executeOnBackground(): List<VoucherUiModel> {
 //        val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
 //        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
@@ -89,8 +91,13 @@ class GetVoucherListUseCase @Inject constructor(
 //        } else {
 //            throw MessageErrorException(errors.joinToString(", ") { it.message })
 //        }
-        val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
-        return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+        if (isActive) {
+            val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
+            return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+        } else {
+            val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_VOUCHER_HISTORY, GetMerchantVoucherListResponse::class.java)
+            return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+        }
     }
 
     object DummyVoucherList {
@@ -181,6 +188,122 @@ class GetVoucherListUseCase @Inject constructor(
                             "voucher_image_square": "sampleimage_square",
                             "voucher_status": 1,
                             "voucher_status_formatted" : "ONGOING",
+                            "voucher_discount_type": 1,
+                            "voucher_discount_type_formatted" : "idr",
+                            "voucher_discount_amt": 20,
+                            "voucher_discount_amt_formatted" : "20%",
+                            "voucher_discount_amt_max": 20000,
+                            "voucher_discount_amt_max_formatted": "20rb",
+                            "voucher_minimum_amt": 100000,
+                            "voucher_quota": 10,
+                            "remaining_quota" : 10,
+                            "booked_global_quota" : 5,
+                            "voucher_start_time": "2020-11-10T23:00:00Z",
+                            "voucher_finish_time": "2020-12-10T23:00:00Z",
+                            "voucher_code": "CODESAMPEL",
+                            "galadriel_voucher_id": 123,
+                            "galadriel_catalog_id": 123,
+                            "create_time": "2020-11-10T23:00:00Z",
+                            "create_by": 123,
+                            "update_time": "2020-11-10T23:00:00Z",
+                            "update_by": 123,
+                            "is_public": 0,
+                            "is_quota_avaiable": 1,
+                            "tnc": "<ol><li>tnc</li></ol>"
+                        }
+                    ]
+                  }
+                }
+            }
+        """
+
+        internal const val DUMMY_VOUCHER_HISTORY = """
+            {
+                "MerchantPromotionGetMVList": {
+                  "data": {
+                    "paging": {
+                      "per_page": 20,
+                      "page": 1,
+                      "has_prev": false,
+                      "has_next": false
+                    },
+                    "vouchers": [
+                        {
+                            "voucher_id": 123,
+                            "shop_id": 123,
+                            "voucher_name": "SAMPLVOUCHERE",
+                            "voucher_type": 1,
+                            "Voucher_type_formatted" : "Gratis Ongkir",
+                            "voucher_image": "sampleimage.jpg",
+                            "voucher_image_square": "sampleimage_square",
+                            "voucher_status": -1,
+                            "voucher_status_formatted" : "DELETED",
+                            "voucher_discount_type": 1,
+                            "voucher_discount_type_formatted" : "idr",
+                            "voucher_discount_amt": 20000,
+                            "voucher_discount_amt_formatted" : "20rb",
+                            "voucher_discount_amt_max": 20000,
+                            "voucher_discount_amt_max_formatted": "20rb",
+                            "voucher_minimum_amt": 100000,
+                            "voucher_quota": 10,
+                            "remaining_quota" : 10,
+                            "booked_global_quota" : 5,
+                            "voucher_start_time": "2020-11-10T23:00:00Z",
+                            "voucher_finish_time": "2020-12-10T23:00:00Z",
+                            "voucher_code": "CODESAMPEL",
+                            "galadriel_voucher_id": 123,
+                            "galadriel_catalog_id": 123,
+                            "create_time": "2009-11-10T23:00:00Z",
+                            "create_by": 123,
+                            "update_time": "2009-11-10T23:00:00Z",
+                            "update_by": 123,
+                            "is_public": 1,
+                            "is_quota_avaiable": 1,
+                            "tnc": "<ol><li>tnc</li></ol>"
+                        },
+                        {
+                            "voucher_id": 123,
+                            "shop_id": 123,
+                            "voucher_name": "SAMPLVOUCHERE",
+                            "voucher_type": 3,
+                            "Voucher_type_formatted" : "Discount",
+                            "voucher_image": "sampleimage.jpg",
+                            "voucher_image_square": "sampleimage_square",
+                            "voucher_status": 3,
+                            "voucher_status_formatted" : "ENDED",
+                            "voucher_discount_type": 1,
+                            "voucher_discount_type_formatted" : "idr",
+                            "voucher_discount_amt": 20000,
+                            "voucher_discount_amt_formatted" : "20rb",
+                            "voucher_discount_amt_max": 20000,
+                            "voucher_discount_amt_max_formatted": "20rb",
+                            "voucher_minimum_amt": 100000,
+                            "voucher_quota": 10,
+                            "remaining_quota" : 10,
+                            "booked_global_quota" : 5,
+                            "voucher_start_time": "2020-11-10T23:00:00Z",
+                            "voucher_finish_time": "2020-12-10T23:00:00Z",
+                            "voucher_code": "CODESAMPEL",
+                            "galadriel_voucher_id": 123,
+                            "galadriel_catalog_id": 123,
+                            "create_time": "2020-11-10T23:00:00Z",
+                            "create_by": 123,
+                            "update_time": "2020-11-10T23:00:00Z",
+                            "update_by": 123,
+                            "is_public": 0,
+                            "is_quota_avaiable": 1,
+                            "tnc": "<ol><li>tnc</li></ol>"
+                        },
+                        {
+                            "voucher_id": 123,
+                            "shop_id": 123,
+                            "voucher_name": "SAMPLVOUCHERE",
+                            "voucher_type": 2,
+                            "Voucher_type_formatted" : "Cashback",
+                            "voucher_image": "sampleimage.jpg",
+                            "voucher_image_square": "sampleimage_square",
+                            "voucher_status": 4,
+                            "voucher_status_formatted" : "STOPPED",
                             "voucher_discount_type": 1,
                             "voucher_discount_type_formatted" : "idr",
                             "voucher_discount_amt": 20,
