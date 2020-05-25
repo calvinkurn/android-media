@@ -18,7 +18,8 @@ public class ReputationTrackingConstant {
     public static final String REVIEW_PAGE = "ulasan page";
     public static final String SELLER_FEEDBACK_PAGE = "seller feedback page";
     public static final String FILTER_INVOICE_PAGE = "filter invoice review";
-    public static final String PRODUCT_REVIEW_DETAIL_PAGE = "product review detail page";
+    public static final String WAITING_REVIEWED = "menunggu diulas";
+    public static final String INVOICE = "invoice";
 
     //Action
     public static final String TOP_CONTENT_CLICK = " - top content - click";
