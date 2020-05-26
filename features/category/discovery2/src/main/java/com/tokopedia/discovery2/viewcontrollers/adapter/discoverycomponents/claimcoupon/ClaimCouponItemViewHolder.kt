@@ -5,13 +5,13 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.ClaimCouponConstant
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -30,13 +30,13 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             claimCouponImageDouble.show()
             claimCouponImage.hide()
             claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
-                ImageHandler.LoadImage(claimCouponImageDouble, it.smallImageUrlMobile)
+                claimCouponImageDouble.loadImage(it.smallImageUrlMobile ?: "")
             })
         } else {
             claimCouponImageDouble.hide()
             claimCouponImage.show()
             claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
-                ImageHandler.LoadImage(claimCouponImage, it.imageUrlMobile)
+                claimCouponImage.loadImage(it.imageUrlMobile ?: "")
             })
         }
 

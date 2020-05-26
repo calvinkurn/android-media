@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -26,7 +27,7 @@ class CategoryNavigationItemViewHolder(itemView: View, private val fragment: Fra
 
             val data = item.data?.getOrElse(0) { DataItem() }
 
-            ImageHandler.LoadImage(imageView, data?.imageUrlMobile)
+            imageView.loadImage(data?.imageUrlMobile ?: "")
             setClick(data?.applinks)
 
             title.text = data?.name

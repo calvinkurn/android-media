@@ -49,6 +49,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         if (dataList != null) {
             componentList.clear()
+            viewHolderListModel.clearList()
             componentList.addAll(dataList)
         }
         // TODO : Remove notify for horizontal adapter

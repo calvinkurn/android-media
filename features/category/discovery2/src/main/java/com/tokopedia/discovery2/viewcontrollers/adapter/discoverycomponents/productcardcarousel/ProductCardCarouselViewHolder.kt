@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -34,6 +35,7 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
     }
 
     override fun onViewAttachedToWindow() {
+        addShimmer()
         setUpDataObserver(fragment.viewLifecycleOwner)
         mProductCarouselComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
     }
@@ -43,6 +45,13 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
         if (mProductCarouselComponentViewModel.getProductCarouselItemsListData().hasObservers()) {
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().removeObservers(lifecycleOwner)
         }
+    }
+
+    private fun addShimmer() {
+        val list : ArrayList<ComponentsItem> = ArrayList()
+        list.add(ComponentsItem(name = "shimmer_product_card"))
+        list.add(ComponentsItem(name = "shimmer_product_card"))
+        mDiscoveryRecycleAdapter.setDataList(list)
     }
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {

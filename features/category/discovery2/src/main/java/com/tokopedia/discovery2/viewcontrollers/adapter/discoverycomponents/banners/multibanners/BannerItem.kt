@@ -1,7 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners
 
 import android.content.Context
-import android.widget.ImageView
+import com.tokopedia.unifycomponents.ImageUnify
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -12,7 +12,7 @@ class BannerItem(val bannerItemData: DataItem, val constraintLayout: ConstraintL
                  val constraintSet: ConstraintSet, val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH, val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, val index: Int,
                  val previousBannerItem: BannerItem?, val context: Context, val islastItem: Boolean) {
 
-    val bannerImageView = ImageView(context)
+    val bannerImageView = ImageUnify(context)
     private val VIEW_ID_CONSTANT = 100
 
     init {
@@ -44,7 +44,7 @@ class BannerItem(val bannerItemData: DataItem, val constraintLayout: ConstraintL
                     bannerItemData.rightMargin)
         }
         constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        ImageHandler.LoadImage(bannerImageView, bannerItemData.imageUrlDynamicMobile)
+        bannerImageView.setImageUrl(bannerItemData.imageUrlDynamicMobile ?: "")
         constraintSet.applyTo(constraintLayout)
     }
 }
