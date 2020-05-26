@@ -29,6 +29,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxEndDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinEndDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
@@ -53,10 +58,7 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
         private const val START_DATE_TIME_PICKER_TAG = "startDateTimePicker"
         private const val END_DATE_TIME_PICKER_TAG = "endDateTimePicker"
 
-        private const val EXTRA_HOUR = 3
-        private const val EXTRA_MINUTE = 30
         private const val EXTRA_WEEK = 7
-        private const val EXTRA_DAYS = 30
         private const val MINUTE_INTERVAL = 30
 
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
@@ -228,10 +230,10 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
     private fun setInitialDate() {
         context?.run {
-            endCalendar = context?.run { getToday()?.apply {
+            endCalendar = context?.run { getToday().apply {
                 add(Calendar.DATE, EXTRA_WEEK)}}
 
-            getMinStartDate()?.let { calendar ->
+            getMinStartDate().let { calendar ->
                 val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 startDateString = initialTime
                 viewModel.setStartDateCalendar(calendar)
@@ -275,41 +277,11 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
         viewModel.validateVoucherPeriod()
     }
 
-    private fun getToday() = context?.run { GregorianCalendar(LocaleUtils.getCurrentLocale(this)) }
-
-    private fun getMinStartDate() =
-            context?.run {
-                getToday()?.apply {
-                    add(Calendar.HOUR, EXTRA_HOUR)
-                }
-            }
-
-    private fun getMaxStartDate() =
-            context?.run {
-                getToday()?.apply {
-                    add(Calendar.DATE, EXTRA_DAYS)
-                }
-            }
-
-    private fun getMinEndDate() : GregorianCalendar? {
-        return GregorianCalendar().apply {
-            time = startCalendar?.time
-            add(Calendar.MINUTE, EXTRA_MINUTE)
-        }
-    }
-
-    private fun getMaxEndDate(): GregorianCalendar? {
-        return GregorianCalendar().apply {
-            time = startCalendar?.time
-            add(Calendar.DATE, EXTRA_DAYS)
-        }
-    }
-
     private fun getStartDateTimePicker() =
             context?.run {
-                getMinStartDate()?.let { minDate ->
+                getMinStartDate().let { minDate ->
                     startCalendar?.let { currentDate ->
-                        getMaxStartDate()?.let { maxDate ->
+                        getMaxStartDate().let { maxDate ->
                             val title = getString(R.string.mvc_start_date_title)
                             val info = String.format(getString(R.string.mvc_start_date_desc).toBlankOrString(), startDateString).parseAsHtml()
                             val buttonText = getString(R.string.mvc_pick).toBlankOrString()
@@ -334,9 +306,9 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
 
     private fun getEndDateTimePicker() =
             context?.run {
-                getMinEndDate()?.let { minDate ->
+                getMinEndDate(startCalendar)?.let { minDate ->
                     endCalendar?.let { currentDate ->
-                        getMaxEndDate()?.let { maxDate ->
+                        getMaxEndDate(startCalendar)?.let { maxDate ->
                             val title = getString(R.string.mvc_end_date_title)
                             val info = String.format(getString(R.string.mvc_end_date_desc).toBlankOrString(), startDateString).parseAsHtml()
                             val buttonText = getString(R.string.mvc_pick).toBlankOrString()

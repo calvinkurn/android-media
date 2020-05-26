@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.common.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
@@ -33,4 +34,5 @@ interface VoucherCreationComponent {
     fun inject(createPromoCodeBottomSheetFragment: CreatePromoCodeBottomSheetFragment)
     fun inject(setVoucherPeriodFragment: SetVoucherPeriodFragment)
     fun inject(reviewVoucherFragment: ReviewVoucherFragment)
+    fun inject(voucherPeriodBottomSheet: VoucherPeriodBottomSheet)
 }

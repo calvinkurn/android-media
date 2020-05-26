@@ -10,7 +10,7 @@ sealed class VoucherImageType(val value: Int,
                               @CouponType val couponType: String) {
     class FreeDelivery(value: Int) : VoucherImageType(value, BenefitType.IDR, CouponType.SHIPPING)
     class Rupiah(value: Int) : VoucherImageType(value, BenefitType.IDR, CouponType.CASHBACK)
-    class Percentage(value: Int, val percentage: Int) : VoucherImageType(value, BenefitType.PERCENT, CouponType.CASHBACK)
+    class Percentage(value: Int, val percentage: Int) : VoucherImageType(value, BenefitType.PERCENT, CouponType.DISCOUNT)
 }
 
 enum class VoucherImageTextType(@DimenRes val dimenRes: Int) {
@@ -40,10 +40,11 @@ annotation class BenefitType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(CouponType.SHIPPING, CouponType.CASHBACK)
+@StringDef(CouponType.SHIPPING, CouponType.CASHBACK, CouponType.DISCOUNT)
 annotation class CouponType {
     companion object {
         const val SHIPPING = "shipping"
+        const val DISCOUNT = "discount"
         const val CASHBACK = "cashback"
     }
 }

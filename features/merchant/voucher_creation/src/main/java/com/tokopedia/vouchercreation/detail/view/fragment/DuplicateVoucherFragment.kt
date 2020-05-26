@@ -99,7 +99,7 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
     private fun setVoucherPeriod() {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        VoucherPeriodBottomSheet(parent, dummyVoucher)
+        VoucherPeriodBottomSheet.createInstance(parent, dummyVoucher, ::onSuccessUpdateVoucherPeriod)
                 .setOnSaveClickListener {
 
                 }
@@ -131,5 +131,9 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
                 FooterUiModel("Dengan klik Tambah Voucher, saya menyetujui <br>syarat dan ketentuan yang berlaku.", "syarat dan ketentuan")
         )
         renderList(dummy)
+    }
+
+    private fun onSuccessUpdateVoucherPeriod() {
+
     }
 }

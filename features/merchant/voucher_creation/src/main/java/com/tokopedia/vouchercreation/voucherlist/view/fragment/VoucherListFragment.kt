@@ -7,17 +7,16 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.getBooleanArgs
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -231,7 +230,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        VoucherPeriodBottomSheet(parent, voucher)
+        VoucherPeriodBottomSheet.createInstance(parent, voucher, ::onSuccessUpdateVoucherPeriod)
                 .setOnSaveClickListener {
 
                 }
@@ -409,6 +408,16 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         throwable.printStackTrace()
         clearAllData()
         renderList(listOf(ErrorStateUiModel))
+    }
+
+    private fun onSuccessUpdateVoucherPeriod() {
+        view?.run {
+            Toaster.make(this,
+                    context?.getString(R.string.mvc_success_update_period).toBlankOrString(),
+                    Snackbar.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    context?.getString(R.string.mvc_oke).toBlankOrString())
+        }
     }
 
     private fun observeVoucherList() {

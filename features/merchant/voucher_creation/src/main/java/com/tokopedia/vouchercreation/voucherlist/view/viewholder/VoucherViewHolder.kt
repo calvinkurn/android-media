@@ -153,6 +153,11 @@ class VoucherViewHolder(
                     colorRes = R.color.Green_G500
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_green
                 }
+                VoucherStatusConst.NOT_STARTED -> {
+                    statusStr = context.getString(R.string.mvc_not_started_yet)
+                    colorRes = R.color.Neutral_N700_68
+                    statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
+                }
                 VoucherStatusConst.STOPPED -> {
                     statusStr = context.getString(R.string.mvc_stopped)
                     colorRes = R.color.Red_R500

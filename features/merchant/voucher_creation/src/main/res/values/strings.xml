@@ -232,6 +232,7 @@
     <string name="mvc_try_again">Coba Lagi</string>
     <string name="mvc_help">Bantuan</string>
     <string name="mvc_pick">Pilih</string>
+    <string name="mvc_oke">Oke</string>
 
     <!-- voucher list -->
     <string name="mvc_is_ongoing">Sedang Berlangsung</string>
@@ -239,6 +240,7 @@
     <string name="mvc_ended">Sudah Berakhir</string>
     <string name="mvc_stopped">Dibatalkan</string>
     <string name="mvc_find_shop_voucher">Cari voucher toko</string>
+    <string name="mvc_success_update_period">Periode tampil berhasil diubah.</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_voucher_info">Info voucher</string>
