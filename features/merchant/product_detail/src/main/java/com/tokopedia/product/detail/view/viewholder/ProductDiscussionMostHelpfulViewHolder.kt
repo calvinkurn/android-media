@@ -19,7 +19,10 @@ import kotlinx.android.synthetic.main.partial_dynamic_discussion_local_load.view
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_empty_state.view.*
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_single_question.view.*
 
-class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicProductDetailListener, val userId: String) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
+class ProductDiscussionMostHelpfulViewHolder(view: View,
+                                             private val listener: DynamicProductDetailListener,
+                                             private val userId: String,
+                                             private val sharedPrefs: SharedPreferences?) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
         const val SINGLE_QUESTION_TRACKING = "1"
@@ -128,10 +131,9 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
     private fun showTitle(totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
         itemView.apply {
             productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
-            val sharedPreferences = itemView.context.getSharedPreferences("${this.javaClass.simpleName}.pref", Context.MODE_PRIVATE)
-            if(isFirstTimeSeeDiscussion(sharedPreferences)) {
+            if(isFirstTimeSeeDiscussion()) {
                 productDetailDiscussionNewLabel.show()
-                setFirstTimeSeeDiscussion(sharedPreferences)
+                setFirstTimeSeeDiscussion()
             }
             productDiscussionMostHelpfulTitle.show()
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
@@ -277,12 +279,14 @@ class ProductDiscussionMostHelpfulViewHolder(view: View, val listener: DynamicPr
         itemView.productDiscussionLocalLoadLayout.hide()
     }
 
-    private fun isFirstTimeSeeDiscussion(sharedPrefs: SharedPreferences): Boolean {
-        return sharedPrefs.getBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), true)
+    private fun isFirstTimeSeeDiscussion(): Boolean {
+        return sharedPrefs?.getBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), true) ?: false
     }
 
-    private fun setFirstTimeSeeDiscussion(sharedPrefs: SharedPreferences) {
-        sharedPrefs.edit().putBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), false).apply()
+    private fun setFirstTimeSeeDiscussion() {
+        sharedPrefs?.let {
+            it.edit().putBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), false).apply()
+        }
     }
 
 }

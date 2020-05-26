@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter.factory
 
+import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -12,7 +13,8 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 
 class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
                                              private val variantListener: ProductVariantListener,
-                                             private val userId: String)
+                                             private val userId: String,
+                                             private val sharedPrefs: SharedPreferences?)
     : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductLastSeenDataModel): Int {
         return ProductLastSeenViewHolder.LAYOUT
@@ -93,7 +95,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
-            ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener, userId)
+            ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener, userId, sharedPrefs)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
