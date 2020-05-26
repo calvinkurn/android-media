@@ -7,6 +7,7 @@ import com.tokopedia.talk.feature.reply.domain.usecase.*
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
@@ -30,6 +31,9 @@ abstract class TalkReplyViewModelTestFixture {
     @RelaxedMockK
     lateinit var talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -43,6 +47,7 @@ abstract class TalkReplyViewModelTestFixture {
                 talkDeleteTalkUseCase,
                 talkDeleteCommentUseCase,
                 talkCreateNewCommentUseCase,
+                userSession,
                 TestCoroutineDispatchers)
     }
 

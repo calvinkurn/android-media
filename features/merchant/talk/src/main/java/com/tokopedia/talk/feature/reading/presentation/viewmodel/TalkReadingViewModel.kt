@@ -24,7 +24,7 @@ import javax.inject.Inject
 class TalkReadingViewModel @Inject constructor(
         private val getDiscussionAggregateUseCase: GetDiscussionAggregateUseCase,
         private val getDiscussionDataUseCase: GetDiscussionDataUseCase,
-        private val userSession: UserSessionInterface,
+        userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 

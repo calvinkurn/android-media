@@ -8,6 +8,7 @@ import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCas
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
@@ -22,6 +23,9 @@ abstract class TalkReadingViewModelTestFixture {
     @RelaxedMockK
     lateinit var getDiscussionDataUseCase: GetDiscussionDataUseCase
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -30,7 +34,7 @@ abstract class TalkReadingViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkReadingViewModel(getDiscussionAggregateUseCase, getDiscussionDataUseCase, TestCoroutineDispatchers)
+        viewModel = TalkReadingViewModel(getDiscussionAggregateUseCase, getDiscussionDataUseCase, userSession, TestCoroutineDispatchers)
     }
 
     protected fun LiveData<*>.verifyValueEquals(expected: Any) {

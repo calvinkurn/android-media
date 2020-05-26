@@ -54,7 +54,9 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
+import kotlinx.android.synthetic.main.widget_talk_reply_textbox.*
 import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.*
+import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.replyEditText
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
@@ -200,12 +202,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onSendButtonClicked(text: String) {
-        if(text.length > MINIMUM_TEXT_LENGTH) {
+        if(text.length > MINIMUM_TEXT_LENGTH && replyEditText.hasFocus()) {
             TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId)
             sendComment(text)
         } else {
-            adjustToasterHeight()
-            view?.let { Toaster.make(it, getString(R.string.reply_toaster_length_too_short_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+            showErrorToaster(getString(R.string.reply_toaster_length_too_short_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         }
     }
 
@@ -317,7 +318,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         val reportBottomSheet = context?.let { context ->
             TalkReplyReportBottomSheet.createInstance(context, commentId, this, allowReport, allowDelete)
         }
-        this.childFragmentManager.let { reportBottomSheet?.show(it,"BottomSheetTag") }
+        this.childFragmentManager.let { reportBottomSheet?.show(it,"") }
     }
 
     private fun showAttachedProduct() {
@@ -359,11 +360,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onFailFollowThread() {
-        showErrorToaster(getString(R.string.toaster_follow_fail))
+        showErrorToaster(getString(R.string.toaster_follow_fail), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun onFailUnfollowThread() {
-        showErrorToaster(getString(R.string.toaster_unfollow_fail))
+        showErrorToaster(getString(R.string.toaster_unfollow_fail), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun onSuccessDeleteComment() {
@@ -373,7 +374,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onFailDeleteComment() {
-        showErrorToaster(getString(R.string.delete_toaster_network_error))
+        showErrorToaster(getString(R.string.delete_toaster_network_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun onSuccessDeleteQuestion() {
@@ -388,8 +389,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onAnswerTooLong() {
-        adjustToasterHeight()
-        view?.let { Toaster.make(it, getString(R.string.reply_toaster_message_too_long), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR) }
+        if(viewModel.attachedProducts.value?.isNotEmpty() == true) {
+            Toaster.toasterCustomBottomHeight = 205.toPx()
+        } else {
+            Toaster.toasterCustomBottomHeight = 105.toPx()
+        }
+        view?.let { Toaster.build(it, getString(R.string.reply_toaster_message_too_long), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show() }
     }
 
     private fun onSuccessCreateComment() {
@@ -645,7 +650,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showEmpty(userId: Int) {
         adapter?.showEmpty(TalkReplyEmptyModel(viewModel.userId == userId.toString()))
-        replyTextBox.replyEditText.apply {
+        replyEditText.apply {
             setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     activity.let {

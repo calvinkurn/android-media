@@ -84,7 +84,9 @@ class DiscussionDataByQuestionIDUseCase @Inject constructor(graphqlRepository: G
     fun setParams(questionId: String, shopId: String) {
         setRequestParams(RequestParams.create().apply {
             putString(PARAM_QUESTION_ID, questionId)
-            putString(PARAM_SHOP_ID, shopId)
+            if(shopId.isNotEmpty()) {
+                putString(PARAM_SHOP_ID, shopId)
+            }
         }.parameters)
     }
 }

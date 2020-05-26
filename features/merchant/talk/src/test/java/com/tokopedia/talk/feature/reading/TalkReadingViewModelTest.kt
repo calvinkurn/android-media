@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException
 import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
+import com.tokopedia.talk.feature.reading.data.model.TalkGoToWrite
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -176,6 +177,18 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
     @Test
     fun `when data is null resetSortOptions should do nothing`() {
         viewModel.resetSortOptions()
+    }
+
+    @Test
+    fun `when updateLastAction should set to expected value`() {
+        val lastAction = TalkGoToWrite
+        viewModel.updateLastAction(lastAction)
+        assertEquals(lastAction, viewModel.talkLastAction)
+    }
+
+    @Test
+    fun `when setSuccess should set to expected value`() {
+
     }
 
 
