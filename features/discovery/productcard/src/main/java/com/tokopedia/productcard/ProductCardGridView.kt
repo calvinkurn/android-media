@@ -88,10 +88,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
         if (productCardModel.isOutOfStock) {
-            labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
             textViewStockLabel?.hide()
             progressBarStock?.hide()
             outOfStockOverlay?.visible()
+        } else {
+            outOfStockOverlay?.gone()
         }
     }
 }
