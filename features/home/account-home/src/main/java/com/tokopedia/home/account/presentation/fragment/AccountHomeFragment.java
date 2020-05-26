@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
+import com.tokopedia.additional_check.view.BottomSheetCheck;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
@@ -60,6 +61,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private ImageButton menuNotification;
     private ImageButton menuInbox;
 
+    private BottomSheetCheck checker;
+
     private int counterNumber = 0;
 
     private AccountAnalytics accountAnalytics;
@@ -74,6 +77,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initInjector();
+        checker = BottomSheetCheck.Companion.createInstance(getActivity());
     }
 
     @Nullable
@@ -101,6 +105,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     public void onResume() {
         super.onResume();
         presenter.sendUserAttributeTracker();
+        checker.checkStatus();
     }
 
     @Override

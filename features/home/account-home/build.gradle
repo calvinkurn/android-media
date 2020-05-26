@@ -126,11 +126,11 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    androidTestImplementation(project(rootProject.ext.libraries.instrumentation_test)) {
-        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
-        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
-    }
+//    androidTestImplementation(project(rootProject.ext.libraries.instrumentation_test)) {
+//        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+//        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+//        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+//    }
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     testImplementation rootProject.ext.testDependencies.mockk
