@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.Invoice
 import com.tokopedia.buyerorder.detail.data.Status
+import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_TITLE

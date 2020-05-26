@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.graphql.data.GraphqlClient;

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment;

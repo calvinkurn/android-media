@@ -24,6 +24,7 @@ import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.OrderLabelList;
 import com.tokopedia.buyerorder.list.data.ticker.TickerResponse;
 import com.tokopedia.buyerorder.list.data.ticker.TickersItem;
+import com.tokopedia.buyerorder.list.di.DaggerOrderListComponent;
 import com.tokopedia.buyerorder.list.di.OrderListComponent;
 import com.tokopedia.buyerorder.list.view.adapter.OrderTabAdapter;
 import com.tokopedia.buyerorder.list.view.listener.GlobalMainTabSelectedListener;
