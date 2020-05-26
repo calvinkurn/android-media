@@ -122,10 +122,6 @@ public class InboxReputationDetailItemViewHolder extends
         sellerAddReplyEditText = (EditText) itemView.findViewById(R.id.seller_reply_edit_text);
         sendReplyButton = (ImageView) itemView.findViewById(R.id.send_button);
 
-        if(GlobalConfig.isSellerApp()) {
-            sellerReplyLayout.setVisibility(View.GONE);
-        }
-
         sellerAddReplyEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -293,7 +289,9 @@ public class InboxReputationDetailItemViewHolder extends
             }
         });
 
-
+        if(GlobalConfig.isSellerApp()) {
+            sellerReplyLayout.setVisibility(View.GONE);
+        }
     }
 
     private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
