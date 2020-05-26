@@ -41,7 +41,9 @@ class PowerMerchantNotificationBottomSheet: BottomSheetUnify() {
     }
 
     private var primaryBtnText: String? = null
+    private var secondaryBtnText: String? = null
     private var primaryBtnClickListener: (() -> Unit)? = null
+    private var secondaryBtnClickListener: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +89,9 @@ class PowerMerchantNotificationBottomSheet: BottomSheetUnify() {
 
         btnPrimaryCTA.text = primaryBtnText
         btnPrimaryCTA.setOnClickListener { primaryBtnClickListener?.invoke() }
+
+        btnSecondaryCTA.text = secondaryBtnText
+        btnSecondaryCTA.setOnClickListener { secondaryBtnClickListener?.invoke() }
     }
 
     private fun showImage(imageId: Int) {
@@ -97,8 +102,16 @@ class PowerMerchantNotificationBottomSheet: BottomSheetUnify() {
         primaryBtnClickListener = listener
     }
 
+    fun setSecondaryButtonClickListener(listener: () -> Unit) {
+        secondaryBtnClickListener = listener
+    }
+
     fun setPrimaryButtonText(text: String) {
         primaryBtnText = text
+    }
+
+    fun setSecondaryButtonText(text: String) {
+        secondaryBtnText = text
     }
 
     fun show(fm: FragmentManager?) {
