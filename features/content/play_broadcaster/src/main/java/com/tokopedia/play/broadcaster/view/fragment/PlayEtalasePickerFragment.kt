@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayEtalaseItemDecoration
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -79,9 +80,8 @@ class PlayEtalasePickerFragment : PlayBaseSetupFragment() {
             enterSearchMode()
         }
 
-        rvEtalase.apply {
-            adapter = etalaseAdapter
-        }
+        rvEtalase.adapter = etalaseAdapter
+        rvEtalase.addItemDecoration(PlayEtalaseItemDecoration(requireContext()))
     }
 
     private fun enterSearchMode() {

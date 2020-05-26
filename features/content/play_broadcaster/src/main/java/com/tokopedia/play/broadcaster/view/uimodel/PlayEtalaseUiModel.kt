@@ -6,5 +6,6 @@ package com.tokopedia.play.broadcaster.view.uimodel
 data class PlayEtalaseUiModel(
         val id: Long,
         val name: String,
-        val productPreviewList: List<ProductUiModel>
+        val productPreviewList: List<ProductUiModel>,
+        val totalProduct: Int
 )

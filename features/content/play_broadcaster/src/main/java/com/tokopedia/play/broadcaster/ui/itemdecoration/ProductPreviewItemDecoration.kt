@@ -15,14 +15,25 @@ class ProductPreviewItemDecoration : RecyclerView.ItemDecoration() {
         val position = parent.getChildAdapterPosition(view)
         val viewHolder = parent.findViewHolderForAdapterPosition(position)
         val gridLayoutManager = parent.layoutManager as GridLayoutManager
+        val spanSizeLookup = gridLayoutManager.spanSizeLookup
+        val spanCount = gridLayoutManager.spanCount
 
-        if (isSameSpanCountWithPrevious(position, gridLayoutManager)
-                && isSameSpanGroupIndexWithPrevious(position, gridLayoutManager)) {
-            if (viewHolder is ProductPreviewViewHolder) outRect.top = viewHolder.spacing
+        val isSameSpanGroupIndexWithPrev = isSameSpanGroupIndexWithPrevious(position, gridLayoutManager)
+
+        if (!isSameSpanGroupIndexWithPrev && spanSizeLookup.getSpanSize(position) != spanCount) {
+            if (viewHolder is ProductPreviewViewHolder) outRect.bottom = viewHolder.spacing / 2
         }
 
-        if (!isFirstSpanGroupIndex(position, gridLayoutManager) && !isSameSpanGroupIndexWithPrevious(position, gridLayoutManager)) {
-            if (viewHolder is ProductPreviewViewHolder) outRect.left = viewHolder.spacing
+        if (isSameSpanCountWithPrevious(position, gridLayoutManager) && isSameSpanGroupIndexWithPrev) {
+            if (viewHolder is ProductPreviewViewHolder) outRect.top = viewHolder.spacing / 2
+        }
+
+        if (!isFirstSpanGroupIndex(position, gridLayoutManager)) {
+            if (viewHolder is ProductPreviewViewHolder) outRect.left = viewHolder.spacing / 2
+        }
+
+        if (!isLastSpanGroupIndex(position, gridLayoutManager)) {
+            if (viewHolder is ProductPreviewViewHolder) outRect.right = viewHolder.spacing / 2
         }
     }
 
@@ -45,5 +56,11 @@ class ProductPreviewItemDecoration : RecyclerView.ItemDecoration() {
         val spanSizeLookup = gridLayoutManager.spanSizeLookup
         val spanCount = gridLayoutManager.spanCount
         return spanSizeLookup.getSpanGroupIndex(position, spanCount) == 0
+    }
+
+    private fun isLastSpanGroupIndex(position: Int, gridLayoutManager: GridLayoutManager): Boolean {
+        val spanSizeLookup = gridLayoutManager.spanSizeLookup
+        val spanCount = gridLayoutManager.spanCount
+        return spanSizeLookup.getSpanGroupIndex(position, spanCount) == spanSizeLookup.getSpanGroupIndex(gridLayoutManager.itemCount - 1, spanCount)
     }
 }

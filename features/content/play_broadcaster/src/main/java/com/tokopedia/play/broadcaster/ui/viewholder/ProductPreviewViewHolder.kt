@@ -52,7 +52,6 @@ class ProductPreviewViewHolder(itemView: View, gridLayoutManager: GridLayoutMana
         }
 
         ivImage.loadImage(item.imageUrl)
-//        ivImage.setBackgroundColor(MethodChecker.getColor(ivImage.context, if (adapterPosition % 2 == 0) R.color.black else R.color.Blue_B200))
     }
 
     companion object {

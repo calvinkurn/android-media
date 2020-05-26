@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -76,12 +77,13 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
         }
 
         rvFollowers.adapter = followersAdapter
-        rvFollowers.viewTreeObserver.addOnPreDrawListener {
-            if (rvFollowers.itemDecorationCount == 0)
-                rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
-
-            true
-        }
+        rvFollowers.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                if (rvFollowers.itemDecorationCount == 0) rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
+                rvFollowers.viewTreeObserver.removeOnPreDrawListener(this)
+                return true
+            }
+        })
     }
 
     //region observe

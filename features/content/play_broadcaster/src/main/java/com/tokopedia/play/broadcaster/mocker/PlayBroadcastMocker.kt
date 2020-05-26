@@ -25,11 +25,12 @@ object PlayBroadcastMocker {
     /**
      * Etalase
      */
-    fun getMockEtalaseList() = List(4) {
+    fun getMockEtalaseList() = List(6) {
         PlayEtalaseUiModel(
                 id = 987L + it,
                 name = "Etalase ${it + 1}",
-                productPreviewList = getMockProductList(it + 1)
+                productPreviewList = getMockProductList((it % 4) + 1),
+                totalProduct = (it + 1) * 100
         )
     }
 

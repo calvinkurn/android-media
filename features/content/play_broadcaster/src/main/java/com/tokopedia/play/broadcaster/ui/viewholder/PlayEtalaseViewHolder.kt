@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
+import android.content.Context
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -14,9 +17,13 @@ import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
  */
 class PlayEtalaseViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
+    private val tvEtalaseTitle: TextView = itemView.findViewById(R.id.tv_etalase_title)
+    private val tvEtalaseAmount: TextView = itemView.findViewById(R.id.tv_etalase_amount)
     private val rvProductPreview: RecyclerView = itemView.findViewById(R.id.rv_product_preview)
 
     private val productPreviewAdapter = PlayProductPreviewAdapter()
+
+    private val context: Context = itemView.context
 
     init {
         rvProductPreview.layoutManager = GridLayoutManager(rvProductPreview.context, 2, RecyclerView.HORIZONTAL, false).apply {
@@ -31,16 +38,19 @@ class PlayEtalaseViewHolder(itemView: View) : BaseViewHolder(itemView) {
                 }
             }
         }
-//        rvProductPreview.layoutManager = GridLayoutManager(rvProductPreview.context, 2)
         rvProductPreview.adapter = productPreviewAdapter
-        rvProductPreview.viewTreeObserver.addOnPreDrawListener {
-            if (rvProductPreview.itemDecorationCount == 0)
-                rvProductPreview.addItemDecoration(ProductPreviewItemDecoration(rvProductPreview.context))
-            true
-        }
+        rvProductPreview.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                if (rvProductPreview.itemDecorationCount == 0) rvProductPreview.addItemDecoration(ProductPreviewItemDecoration())
+                rvProductPreview.viewTreeObserver.removeOnPreDrawListener(this)
+                return true
+            }
+        })
     }
 
     fun bind(item: PlayEtalaseUiModel) {
+        tvEtalaseTitle.text = item.name
+        tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
         productPreviewAdapter.setItemsAndAnimateChanges(item.productPreviewList)
     }
 
