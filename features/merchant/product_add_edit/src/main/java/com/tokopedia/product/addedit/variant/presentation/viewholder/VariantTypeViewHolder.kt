@@ -6,11 +6,13 @@ import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_variant_type.view.*
 
-class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeClickListener)
+class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeViewHolderClickListener)
     : RecyclerView.ViewHolder(itemView) {
 
-    interface OnVariantTypeClickListener {
-        fun onVariantTypeClicked(position: Int)
+    interface OnVariantTypeViewHolderClickListener {
+        fun onVariantTypeClicked(position: Int, state: ViewHolderState) {
+
+        }
     }
 
     enum class ViewHolderState {
@@ -25,17 +27,18 @@ class VariantTypeViewHolder(itemView: View, clickListener: OnVariantTypeClickLis
         itemView.chipsVariantTypeName.setOnClickListener {
             when(viewHolderState) {
                 ViewHolderState.SELECTED -> {
-                    itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_SELECTED
+                    itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_NORMAL
                     viewHolderState = ViewHolderState.NORMAL
+                    clickListener.onVariantTypeClicked(adapterPosition, viewHolderState)
                 }
                 ViewHolderState.NORMAL -> {
-                    itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_NORMAL
+                    itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_SELECTED
                     viewHolderState = ViewHolderState.SELECTED
+                    clickListener.onVariantTypeClicked(adapterPosition, viewHolderState)
                 }
                 ViewHolderState.DISABLED ->
                     itemView.chipsVariantTypeName.chipType = ChipsUnify.TYPE_DISABLE
             }
-            clickListener.onVariantTypeClicked(adapterPosition)
         }
     }
 

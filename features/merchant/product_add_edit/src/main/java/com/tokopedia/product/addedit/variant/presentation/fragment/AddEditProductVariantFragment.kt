@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,12 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAdapter
-import com.tokopedia.product.addedit.variant.presentation.viewholder.VariantTypeViewHolder
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,7 +35,7 @@ import kotlinx.android.synthetic.main.add_edit_product_variant_value_level1_layo
 import kotlinx.android.synthetic.main.add_edit_product_variant_value_level2_layout.*
 import javax.inject.Inject
 
-class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolder.OnVariantTypeClickListener {
+class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.OnVariantTypeClickListener {
 
     companion object {
         fun createInstance(cacheManagerId: String?): Fragment {
@@ -95,8 +97,11 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolde
         }, 1000)
     }
 
-    override fun onVariantTypeClicked(position: Int) {
-
+    override fun onVariantTypeClicked(selectedVariantDetails: List<VariantDetail>) {
+        // TODO implement selectedVariantDetails to variant values sections
+        selectedVariantDetails.forEach {
+            Log.e("--", it.name)
+        }
     }
 
     private fun observeProductData() {
@@ -106,7 +111,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolde
                     val variantDetails =
                             result.data.getCategoryVariantCombination.data.variantDetails
                     variantTypeAdapter?.setData(variantDetails)
-                    variantTypeAdapter?.setMaxSelectedItems(2)
+                    variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
                 }
                 is Fail -> {
                     context?.let {
