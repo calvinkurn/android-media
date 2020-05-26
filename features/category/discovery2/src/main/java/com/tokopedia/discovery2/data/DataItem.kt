@@ -199,7 +199,7 @@ data class DataItem(
         val disabledErrMsg: String? = "",
 
         @SerializedName("id")
-        val id: String? = "",
+        var id: String? = "",
 
         @SerializedName("image_url")
         val imageUrl: String? = "",

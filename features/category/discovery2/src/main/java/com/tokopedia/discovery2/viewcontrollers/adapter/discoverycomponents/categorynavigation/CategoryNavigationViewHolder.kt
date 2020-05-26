@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.unifyprinciples.Typography
 import android.widget.ImageView
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.usecase.coroutines.Success
 
@@ -53,6 +54,7 @@ class CategoryNavigationViewHolder(itemView: View, private val fragment: Fragmen
         categoryNavigationViewModel.getListData().observe(fragment.viewLifecycleOwner, Observer {item->
             when (item) {
                 is Success -> {
+                    (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationImpression(item.data)
                     discoveryRecycleAdapter.setDataList(item.data)
                 }
             }

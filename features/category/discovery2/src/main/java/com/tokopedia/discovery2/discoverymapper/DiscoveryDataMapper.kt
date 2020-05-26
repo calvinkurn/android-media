@@ -138,6 +138,7 @@ class DiscoveryDataMapper {
             val dataItem = DataItem()
             dataItem.imageUrlMobile = it?.thumbnailImage
             dataItem.name = it?.name
+            dataItem.id = it?.id
             dataItem.applinks = it?.applinks
             dataItemlist.add(dataItem)
             componentsItem.data = dataItemlist
