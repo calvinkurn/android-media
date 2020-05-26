@@ -78,12 +78,12 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
             }
         })
 
-        textSwitchCamera = view.findViewById(R.id.tv_switch)
+        textSwitchCamera = view.findViewById(R.id.iv_switch)
         textSwitchCamera.setOnClickListener {
             playPusher?.switchCamera()
         }
 
-        textClose = view.findViewById(R.id.tv_close)
+        textClose = view.findViewById(R.id.iv_close)
         textClose.setOnClickListener {
             // TODO("action close page")
         }

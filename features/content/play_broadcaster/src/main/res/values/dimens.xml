@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="play_dp_18">18dp</dimen>
+
+    <dimen name="play_space_icon_camera">9dp</dimen>
+    <dimen name="play_space_icon_audio">7dp</dimen>
+    <dimen name="play_space_icon_close">14dp</dimen>
+    <dimen name="play_width_icon">20dp</dimen>
 </resources>
