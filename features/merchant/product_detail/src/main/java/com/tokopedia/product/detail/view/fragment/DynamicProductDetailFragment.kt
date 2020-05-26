@@ -1042,6 +1042,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
+        if (pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
+            shouldFireVariantTracker = false
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
+                    viewModel.getDynamicProductInfoP1,
+                    pdpHashMapUtil?.productNewVariantDataModel,
+                    viewModel.variantData,
+                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
+        }
+
         renderFullfillment()
         dynamicAdapter.notifyGeneralInfo(pdpHashMapUtil?.productFullfilmentMap)
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
@@ -1564,15 +1573,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
-
-        if (!isPartialySelected && shouldFireVariantTracker) {
-            shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
-                    viewModel.getDynamicProductInfoP1,
-                    pdpHashMapUtil?.productNewVariantDataModel,
-                    viewModel.variantData,
-                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
-        }
 
         viewModel.onVariantClicked(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
                 variantOptions.imageOriginal)

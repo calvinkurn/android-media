@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.topads.keyword.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
