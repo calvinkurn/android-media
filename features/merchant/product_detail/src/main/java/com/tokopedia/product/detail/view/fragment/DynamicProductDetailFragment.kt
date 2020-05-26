@@ -950,15 +950,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDiscussionSendQuestionClicked(componentTrackDataModel: ComponentTrackDataModel) {
-        if(viewModel.userSessionInterface.isLoggedIn) {
+        doActionOrLogin({
             viewModel.getDynamicProductInfoP1?.let {
                 DynamicProductDetailTracking.Click.eventEmptyDiscussionSendQuestion(it, componentTrackDataModel, viewModel.userId)
             }
             goToWriteActivity()
-            return
-        }
+        })
         viewModel.updateLastAction(DynamicProductDetailGoToWriteDiscussion)
-        goToLogin()
     }
 
     override fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String) {
@@ -969,15 +967,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String) {
-        if(viewModel.userSessionInterface.isLoggedIn) {
+        doActionOrLogin({
             viewModel.getDynamicProductInfoP1?.let {
                 DynamicProductDetailTracking.Click.eventDiscussionDetails(it, componentTrackDataModel, viewModel.userId, questionId, numberOfThreadsShown)
             }
             goToReplyActivity(questionId)
-            return
-        }
+        })
         viewModel.updateLastAction(DynamicProductDetailGoToReplyDiscussion(questionId))
-        goToLogin()
     }
 
     override fun onUserDetailsClicked(userId: String) {
