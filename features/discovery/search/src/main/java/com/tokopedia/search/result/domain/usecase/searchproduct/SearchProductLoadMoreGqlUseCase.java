@@ -57,7 +57,7 @@ class SearchProductLoadMoreGqlUseCase extends UseCase<SearchProductModel> {
             "    $params: String\n" +
             ") {\n" +
             "    searchProduct(params: $params) {\n" +
-            "        query\n" +
+            "        quer\n" +
             "        source\n" +
             "        shareUrl\n" +
             "        isFilter\n" +
