@@ -1,14 +1,18 @@
 package com.tokopedia.product.detail.view.util
 
+import android.content.Context
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
@@ -25,6 +29,30 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
+}
+
+fun String.boldTextWithGiven(context: Context, textToBold: String): SpannableStringBuilder {
+    val builder = SpannableStringBuilder()
+
+    if (this.isNotEmpty() || this.isNotBlank()) {
+        val rawText = this.toLowerCase(Locale.getDefault())
+        val rawTextToBold = textToBold.toLowerCase(Locale.getDefault())
+        val startIndex = rawText.indexOf(rawTextToBold)
+        val endIndex = startIndex + rawTextToBold.length
+        val typographyBoldTypeFace = getTypeface(context, "RobotoBold.ttf")
+
+        if (startIndex < 0 || endIndex < 0) {
+            return builder.append(this)
+        } else {
+            builder.append(this)
+            builder.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            builder.setSpan(CustomTypeSpan(typographyBoldTypeFace), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    } else {
+        builder.append(this)
+    }
+
+    return builder
 }
 
 infix fun String?.toDate(format: String): String {
@@ -46,7 +74,8 @@ infix fun String?.toDate(format: String): String {
     return ""
 }
 
-fun ArrayList<String>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString() ?: "")
+fun ArrayList<String>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString()
+        ?: "")
 
 fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fail: Throwable) -> Unit) {
     when (this) {

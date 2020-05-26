@@ -137,8 +137,8 @@ object ProductDetailConstant {
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
-    const val BASIC_CONTENT = "basic_content"
-    const val MEDIA = "media"
+    const val BASIC_CONTENT = "product_content"
+    const val MEDIA = "product_media"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

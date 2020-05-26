@@ -43,12 +43,18 @@ data class CampaignModular(
         val isUsingOvo: Boolean = false
 ) {
 
-    fun timeIsUnder1Day(): Boolean {
+    private fun timeIsUnder1Day(): Boolean {
         return try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val endDate = dateFormat.parse(endDate)
             val now = System.currentTimeMillis()
-            TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
+            val diff = (endDate.time - now).toFloat()
+            if (diff < 0) {
+                //End date is out dated
+                false
+            } else {
+                TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
+            }
         } catch (e: Throwable) {
             false
         }

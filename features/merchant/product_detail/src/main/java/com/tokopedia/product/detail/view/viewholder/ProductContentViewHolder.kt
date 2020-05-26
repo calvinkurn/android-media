@@ -7,7 +7,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 
@@ -21,10 +21,10 @@ class ProductContentViewHolder(private val view: View,
         val LAYOUT = R.layout.item_dynamic_product_content
     }
 
-    private var header: PartialSnapshotView? = null
+    private var header: PartialContentView? = null
 
     init {
-        header = PartialSnapshotView(view, listener)
+        header = PartialContentView(view, listener)
     }
 
     override fun bind(element: ProductContentDataModel) {
@@ -35,7 +35,6 @@ class ProductContentViewHolder(private val view: View,
                 listener.onImpressComponent(getComponentTrackData(element))
             }
             header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording ?: "")
-            header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
         }
 
         header?.updateWishlist(element.isWishlisted)
