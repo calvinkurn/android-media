@@ -1049,7 +1049,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 pdpHashMapUtil?.updateDiscussionData(it.data.discussionMostHelpful)
                 dynamicAdapter.notifyDiscussion(pdpHashMapUtil?.productDiscussionMostHelpfulMap)
             }, {
-                // Ask about error handling
+                // No Op
             })
         }
     }

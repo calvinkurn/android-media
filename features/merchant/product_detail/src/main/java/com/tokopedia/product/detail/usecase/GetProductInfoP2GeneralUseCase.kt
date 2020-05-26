@@ -170,10 +170,10 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantCommonResponse>(ProductDetailVariantCommonResponse::class.java).data
             }
 
-//            if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {
-//                productInfoP2.shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
-//                        .result.firstOrNull()
-//            }
+            if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {
+                productInfoP2.shopBadge = gqlResponse.getData<ShopBadge.Response>(ShopBadge.Response::class.java)
+                        .result.firstOrNull()
+            }
 
             if (gqlResponse.getError(Rating.Response::class.java)?.isNotEmpty() != true)
                 productInfoP2.rating = gqlResponse.getData<Rating.Response>(Rating.Response::class.java).data

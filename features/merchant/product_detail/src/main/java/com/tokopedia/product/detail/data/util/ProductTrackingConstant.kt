@@ -24,7 +24,7 @@ object ProductTrackingConstant {
         const val KEY_ECOMMERCE = "ecommerce"
         const val KEY_PRODUCT_PROMO = "promoClick"
         const val KEY_PROMOTIONS = "promotions"
-        const val KEY_USER_ID = "userId"
+        const val KEY_USER_ID = "user_id"
         const val KEY_DETAIl = "detail"
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
@@ -68,6 +68,7 @@ object ProductTrackingConstant {
         const val KEY_ADD = "add"
         const val BUSINESS_UNIT = "physical goods"
         const val CURRENT_SITE = "tokopediamarketplace"
+        const val KEY_DISCUSSION_USER_ID = "userId"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
