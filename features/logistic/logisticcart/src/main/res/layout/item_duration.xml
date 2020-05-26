@@ -85,10 +85,20 @@
             tools:text="Tersedia layanan Order Prioritas" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_error"
+            android:id="@+id/tv_shipping_information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_order_prioritas"
+            android:layout_marginTop="4dp"
+            android:text="@string/label_shipping_information"
+            app:typographyType="small"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_shipping_information"
             android:layout_marginTop="4dp"
             android:textColor="@color/text_courier_error_red"
             app:typographyType="body_3"
