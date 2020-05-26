@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
@@ -187,7 +186,7 @@ public class TopAdsCreatePromoModule {
     @TopAdsManagementScope
     @Provides
     TopAdsManagementService provideTopAdsManagementService(@ApplicationContext Context context) {
-        return new TopAdsManagementService(new SessionHandler(context));
+        return new TopAdsManagementService(new UserSession(context));
     }
 
     @TopAdsManagementScope

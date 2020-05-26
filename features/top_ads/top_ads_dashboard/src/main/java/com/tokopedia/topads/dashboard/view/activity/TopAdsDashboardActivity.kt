@@ -59,6 +59,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                 transaction.commit()
 
             } else {
+
                 val fragment = TopAdsDashboardFragment.createInstance()
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.parent_view, fragment, TopAdsDashboardFragment::class.java.name)

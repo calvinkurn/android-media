@@ -1,9 +1,9 @@
 package com.tokopedia.topads.keyword.di.module;
 
 
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.topads.dashboard.data.repository.ShopInfoRepository;
 import com.tokopedia.topads.keyword.data.repository.TopAdsOldKeywordRepositoryImpl;
+import com.tokopedia.topads.keyword.di.TopAdsQualifier;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsOldKeywordListPresenterImpl;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;

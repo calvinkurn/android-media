@@ -1,16 +1,17 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.topads.common.view.adapter;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.model.FilterTitleItem;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.model.FilterTitleItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.List;
 /**
  * Created by Nathaniel on 12/2/2016.
  */
-@Deprecated
 public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
 
     public interface Callback {

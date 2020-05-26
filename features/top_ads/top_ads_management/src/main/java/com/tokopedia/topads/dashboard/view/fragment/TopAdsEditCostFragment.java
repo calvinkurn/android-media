@@ -9,9 +9,9 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.Ad;
