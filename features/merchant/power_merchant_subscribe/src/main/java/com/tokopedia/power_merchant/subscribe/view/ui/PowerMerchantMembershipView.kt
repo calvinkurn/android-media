@@ -37,7 +37,7 @@ class PowerMerchantMembershipView: ConstraintLayout {
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
         showTextWarning(shopStatus)
-        showShopStatus(shopStatus)
+        showShopStatus(shopScore)
         showShopScore(shopScore)
         showShopScoreDescription(shopScore)
         showPerformanceTipsBtn(shopScore)
@@ -47,7 +47,7 @@ class PowerMerchantMembershipView: ConstraintLayout {
     }
 
     private fun showTextWarning(shopStatus: ShopStatusModel) {
-        if(shopStatus.isTransitionPeriod()) {
+        if(shopStatus.isPowerMerchantIdle()) {
             containerWarning.show()
 
             val cancellationDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
@@ -67,15 +67,15 @@ class PowerMerchantMembershipView: ConstraintLayout {
         }
     }
 
-    private fun showShopStatus(shopStatus: ShopStatusModel) {
-        if(shopStatus.isPowerMerchantActive()) {
-            val textColor = ContextCompat.getColor(context, R.color.light_N700)
-            textStatus.setTextColor(textColor)
-            textStatus.text = context.getString(R.string.power_merchant_active)
-        } else {
+    private fun showShopStatus(shopScore: Int) {
+        if(shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
             val textColor = ContextCompat.getColor(context, R.color.light_R500)
             textStatus.setTextColor(textColor)
             textStatus.text = context.getString(R.string.power_merchant_inactive)
+        } else {
+            val textColor = ContextCompat.getColor(context, R.color.light_N700)
+            textStatus.setTextColor(textColor)
+            textStatus.text = context.getString(R.string.power_merchant_active)
         }
     }
 
