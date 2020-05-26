@@ -50,6 +50,13 @@ class ReviewReplyModule {
 
     @ReviewReplyScope
     @Provides
+    @Named(GQL_INSERT_TEMPLATE_REVIEW)
+    fun insertTemplateReview(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_insert_template_review)
+    }
+
+    @ReviewReplyScope
+    @Provides
     fun provideProductReviewTracking(): SellerReviewReplyTracking {
         return SellerReviewReplyTracking()
     }

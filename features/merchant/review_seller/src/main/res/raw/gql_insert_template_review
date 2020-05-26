@@ -1,0 +1,14 @@
+mutation insert_template_review($shopID: Int!, $title: String!, $message: String!) {
+      insertResponseTemplate(shopID: $shopID, title: $title, message: $message) {
+            success
+            data {
+               templateId
+               title
+               message
+               status
+             }
+             defaultTemplateID
+             error
+          }
+      }
+}
