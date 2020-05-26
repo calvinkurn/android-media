@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,8 @@ class DownloadVoucherBottomSheet(
         setupView(child)
         setTitle(parent.context.getString(R.string.mvc_select_voucher_size))
         setChild(child)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+
     }
 
     private fun setupView(child: View) = with(child) view@{

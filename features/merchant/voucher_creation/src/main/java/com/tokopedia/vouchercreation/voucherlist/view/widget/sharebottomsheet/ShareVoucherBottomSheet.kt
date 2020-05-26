@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -35,6 +36,7 @@ class ShareVoucherBottomSheet(
         setupView(child)
         setTitle(parent.context.getString(R.string.mvc_share))
         setChild(child)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     private fun setupView(view: View) = with(view) {

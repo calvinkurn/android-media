@@ -4,12 +4,12 @@ import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -46,6 +46,7 @@ class MoreMenuBottomSheet(
         childView.rvMvcBottomSheetMenu.addItemDecoration(getItemDecoration())
 
         setChild(childView)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     fun show(isActiveVoucher: Boolean, fm: FragmentManager) {

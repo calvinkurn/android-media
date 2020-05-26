@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.widget
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 
@@ -32,6 +33,10 @@ class CancelVoucherDialog(context: Context) {
         setSecondaryCTAText(context.getString(R.string.mvc_back))
         setSecondaryCTAClickListener {
             dismiss()
+        }
+        with(dialogSecondaryLongCTA) {
+            buttonVariant = UnifyButton.Variant.TEXT_ONLY
+            buttonType = UnifyButton.Type.ALTERNATE
         }
         show()
     }
