@@ -240,6 +240,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
         toggleNotifyMeUseCase.cancelJobs()
+        discussionMostHelpfulUseCase.cancelJobs()
     }
 
     fun sendTopAds(url: String) {
