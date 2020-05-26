@@ -7,14 +7,20 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.common.utils.DateTimeUtil
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.domain.usecase.*
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
+import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhomecommon.domain.usecase.*
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -167,6 +173,7 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             _carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+                delay(20000L)
                 return@withContext getCarouselDataUseCase.executeOnBackground()
             })
         }, onError = {

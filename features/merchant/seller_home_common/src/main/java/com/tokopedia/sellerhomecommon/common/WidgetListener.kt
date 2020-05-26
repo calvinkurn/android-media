@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhomecommon.base
+package com.tokopedia.sellerhomecommon.common
 
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
 

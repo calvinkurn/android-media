@@ -20,12 +20,10 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmering_banner"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/shc_dimen_210dp"
+        android:layout_height="@dimen/shc_dimen_180dp"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl1"
         app:corners="10"
         app:height_weight="0.5"
-        app:layout_constraintBottom_toTopOf="@+id/shimmering_dots"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_title"
@@ -35,18 +33,22 @@
         android:id="@+id/shimmering_load_more"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:textSize="@dimen/fontSize_lvl3"
         app:corners="10"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_banner" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_dots"
         android:layout_width="@dimen/layout_lvl7"
         android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
         android:textSize="@dimen/fontSize_lvl3"
         app:corners="10"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmering_banner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

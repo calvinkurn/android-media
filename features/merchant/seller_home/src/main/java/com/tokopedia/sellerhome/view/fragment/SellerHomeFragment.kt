@@ -30,20 +30,21 @@ import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.S
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.common.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.common.ShopStatus
-import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
-import com.tokopedia.sellerhome.common.utils.Utils
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
-import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
-import com.tokopedia.sellerhome.view.model.*
-import com.tokopedia.sellerhome.view.viewholder.*
+import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.WidgetListener
+import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
+import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -60,9 +61,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdapterTypeFactory>(),
-        CardViewHolder.Listener, LineGraphViewHolder.Listener, ProgressViewHolder.Listener,
-        SectionViewHolder.Listener, PostListViewHolder.Listener, CarouselViewHolder.Listener {
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
         @JvmStatic
@@ -220,8 +219,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.getTicker()
     }
 
-    override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
-        return SellerHomeAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl {
+        return WidgetAdapterFactoryImpl(this)
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
@@ -536,7 +535,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun stopSellerHomeFragmentWidgetPerformanceMonitoring(type: String) {
-        when(type){
+        when (type) {
             WidgetType.CARD -> performanceMonitoringSellerHomeCard?.stopTrace()
             WidgetType.LINE_GRAPH -> performanceMonitoringSellerHomeLineGraph?.stopTrace()
             WidgetType.PROGRESS -> performanceMonitoringSellerHomeProgress?.stopTrace()
