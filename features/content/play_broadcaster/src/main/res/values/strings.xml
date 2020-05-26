@@ -3,4 +3,7 @@
     <string name="play_auto_share_title">Otomatis dibagikan ke:</string>
     <string name="play_begin_setup">Mulai Persiapannya</string>
     <string name="play_your_followers">Followers \nAnda</string>
+
+    <string name="play_summary_title">Laporan Live Streaming</string>
+    <string name="play_summary_button_finish">Selesai</string>
 </resources>
