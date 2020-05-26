@@ -56,6 +56,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
@@ -90,6 +92,7 @@ import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -123,6 +126,7 @@ import java.util.Map;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
@@ -146,7 +150,8 @@ public abstract class SellerRouterApplication extends MainApplication
         FlashSaleRouter,
         LinkerRouter,
         ResolutionRouter,
-        SellerHomeRouter {
+        SellerHomeRouter,
+        LoginRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerGMComponent.Builder daggerGMBuilder;
@@ -450,6 +455,15 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
+        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
+                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
+                ";response=" + response + ";request=" + request);
+    }
+
+    @Override
     public void showServerError(Response response) {
         ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
     }
@@ -691,13 +705,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendAnalyticsAnomalyResponse(String title,
-                                             String accessToken, String refreshToken,
-                                             String response, String request) {
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return new AppNotificationReceiver();
     }
 
     @Override
-    public IAppNotificationReceiver getAppNotificationReceiver() {
-        return new AppNotificationReceiver();
+    public void setOnboardingStatus(boolean status) {
+        OnboardingPreference preference = new OnboardingPreference(this);
+        preference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 }

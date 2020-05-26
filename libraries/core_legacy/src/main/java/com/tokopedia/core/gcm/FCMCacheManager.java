@@ -13,6 +13,7 @@ import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -22,15 +23,18 @@ import java.util.UUID;
 
 import timber.log.Timber;
 
+import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_STORAGE;
+
 /**
  * @author by Herdi_WORK on 13.12.16.
  */
 
 public class FCMCacheManager {
-    public static final String GCM_ID = "gcm_id";
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
+    private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
     private Context context;
@@ -43,14 +47,6 @@ public class FCMCacheManager {
     private FCMCacheManager(Context ctx, String cacheCode) {
         cache = new LocalCacheHandler(ctx, cacheCode);
         context = ctx;
-    }
-
-    public void setCache(Context ctx) {
-        if (cache == null)
-            cache = new LocalCacheHandler(ctx, TkpdCache.G_CODE);
-
-        cache.setExpire(1);
-        cache.applyEditor();
     }
 
     public void setCache() {
@@ -167,13 +163,7 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
-    }
-
-    public String getRegistrationId() {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
+        return new UserSession(context).getDeviceId();
     }
 
     public static String getRegistrationIdWithTemp(Context context) {
@@ -185,6 +175,10 @@ public class FCMCacheManager {
             return tempID;
         }
         return cache.getString("gcm_id", "");
+    }
+
+    public String getRegistrationId() {
+        return getRegistrationId(context);
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {

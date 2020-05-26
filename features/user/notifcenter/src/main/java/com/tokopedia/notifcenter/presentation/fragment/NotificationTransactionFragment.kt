@@ -22,7 +22,6 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
-import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.EmptySource
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -35,7 +34,6 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.No
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.viewModelProvider
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
@@ -264,6 +262,11 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         return NotificationTransactionAdapter(
                 adapterTypeFactory as NotificationTransactionFactoryImpl
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.cleared()
     }
 
     companion object {

@@ -79,14 +79,19 @@ object DFDownloader {
         } else {
             getDefaultDelayFromConfigInMillis(context)
         }
-        jobScheduler.schedule(
-            JobInfo.Builder(JOB_ID,
-                ComponentName(context, DFDownloadJobService::class.java))
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setMinimumLatency(delay / 4)
-                .setOverrideDeadline(delay)
-                .setExtras(bundle)
-                .build())
+        // blind fix for com.android.server.job.controllers.JobStatus.getUid()' on a null object reference
+        try {
+            jobScheduler.schedule(
+                JobInfo.Builder(JOB_ID,
+                    ComponentName(context, DFDownloadJobService::class.java))
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setMinimumLatency(delay / 4)
+                    .setOverrideDeadline(delay)
+                    .setExtras(bundle)
+                    .build())
+        } catch (e:Exception) {
+            // noop
+        }
     }
 
     private fun setServiceFlagFalse() {

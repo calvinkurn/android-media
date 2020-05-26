@@ -4,21 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.etalase.data.model.EtalaseViewModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class EtalasePickerViewModel @Inject constructor(
     private val getEtalaseUseCase: GetShopEtalaseByShopUseCase,
-    mainDispatcher: CoroutineDispatcher
-): BaseViewModel(mainDispatcher) {
+    private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     companion object {
         // Currently update data on server is not realtime.
@@ -35,7 +34,7 @@ class EtalasePickerViewModel @Inject constructor(
 
     fun getEtalaseList(shopId: String, withDelay: Boolean = false) {
         launchCatchError(block = {
-            val etalaseList = withContext(Dispatchers.IO) {
+            val etalaseList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
                 val requestParams = GetShopEtalaseByShopUseCase.createRequestParams(
                     shopId = shopId,
