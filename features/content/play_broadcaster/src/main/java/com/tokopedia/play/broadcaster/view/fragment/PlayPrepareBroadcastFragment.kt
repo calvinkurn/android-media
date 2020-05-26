@@ -13,7 +13,9 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
+import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastSetupCoordinator
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 /**
@@ -25,9 +27,13 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var parentViewModel: PlayPrepareBroadcastViewModel
 
+    private lateinit var btnSetup: UnifyButton
     private lateinit var rvFollowers: RecyclerView
 
     private val followersAdapter = PlayFollowersAdapter()
+
+    private val broadcastSetupCoordinator: PlayBroadcastSetupCoordinator
+        get() = requireActivity() as PlayBroadcastSetupCoordinator
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -59,11 +65,16 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
 
     private fun initView(view: View) {
         with (view) {
+            btnSetup = findViewById(R.id.btn_setup)
             rvFollowers = findViewById(R.id.rv_followers)
         }
     }
 
     private fun setupView(view: View) {
+        btnSetup.setOnClickListener {
+            broadcastSetupCoordinator.openBroadcastSetupPage()
+        }
+
         rvFollowers.adapter = followersAdapter
         rvFollowers.viewTreeObserver.addOnPreDrawListener {
             if (rvFollowers.itemDecorationCount == 0)

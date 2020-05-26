@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.play.broadcaster.view.PlayPrepareBroadcastActivity
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import dagger.Component
 
@@ -15,6 +14,4 @@ interface PlayBroadcasterComponent {
     fun inject(prepareBroadcastActivity: PlayPrepareBroadcastActivity)
 
     fun inject(prepareBroadcastFragment: PlayPrepareBroadcastFragment)
-
-    fun inject(broadcastSetupFragment: PlayBroadcastSetupFragment)
 }
