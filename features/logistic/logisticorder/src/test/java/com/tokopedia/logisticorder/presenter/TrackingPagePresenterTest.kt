@@ -13,6 +13,7 @@ import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
@@ -27,6 +28,7 @@ class TrackingPagePresenterTest {
     private val retryPickUpUseCase : RetryPickup = mockk(relaxed = true)
     private val userSession: UserSession = mockk(relaxed = true)
     private val view: ITrackingPageFragment = mockk(relaxed = true)
+    private val deadlineTime = 0L
 
     private val trackingPagePresenter by lazy {
         TrackingPagePresenter(
@@ -57,14 +59,14 @@ class TrackingPagePresenterTest {
 
         trackingPagePresenter.onGetRetryAvailability("")
 
-        verify { view.setRetryButton(true,  0L) }
+        verify { view.setRetryButton(true,  deadlineTime) }
     }
 
     @Test
     fun  `get retry availability | on success | availabilityRetry false`() {
         val retryAvailability = RetryAvailability()
         retryAvailability.availabilityRetry = false
-        retryAvailability.deadlineRetryUnixtime = "100"
+        retryAvailability.deadlineRetryUnixtime = "0"
 
         val retryAvailabilityResponse = RetryAvailabilityResponse(retryAvailability)
 
@@ -75,7 +77,7 @@ class TrackingPagePresenterTest {
 
         trackingPagePresenter.onGetRetryAvailability("")
 
-        verify { view.setRetryButton(false, 100L) }
+        verify { view.setRetryButton(false, deadlineTime) }
     }
 
     @Test
@@ -93,7 +95,7 @@ class TrackingPagePresenterTest {
 
         trackingPagePresenter.onGetRetryAvailability("")
 
-        verify { view.setRetryButton(false, 0L) }
+        verify { view.setRetryButton(false, deadlineTime) }
     }
 
     @Test
@@ -147,15 +149,12 @@ class TrackingPagePresenterTest {
         val trackingUiModel = TrackingUiModel()
         every { useCase.execute(any(), any())
         } answers {
-            secondArg<Subscriber<TrackingUiModel>>().onStart()
-            secondArg<Subscriber<TrackingUiModel>>().onCompleted()
             secondArg<Subscriber<TrackingUiModel>>().onNext(trackingUiModel)
-
         }
 
         trackingPagePresenter.onGetTrackingData("")
 
-        verify {
+        verifyOrder {
             view.hideLoading()
             view.populateView(trackingUiModel)}
     }
@@ -164,15 +163,12 @@ class TrackingPagePresenterTest {
     fun `get tracking data | on fail`() {
         every { useCase.execute(any(), any())
         } answers {
-            secondArg<Subscriber<TrackingUiModel>>().onStart()
-            secondArg<Subscriber<TrackingUiModel>>().onCompleted()
             secondArg<Subscriber<TrackingUiModel>>().onError(Throwable())
-
         }
 
         trackingPagePresenter.onGetTrackingData("")
 
-        verify {
+        verifyOrder {
             view.hideLoading()
             view.showError(any())}
     }
