@@ -481,7 +481,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         return ProductManageAdapterFactoryImpl(this)
     }
 
-    override fun getScreenName(): String = "ProductListActivity"
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(ProductManageListComponent::class.java).inject(this)
@@ -1210,16 +1210,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
             it.registerReceiver(addProductReceiver, intentFilter)
-        }
-        if (userVisibleHint) {
-            ProductManageTracking.sendScreen(screenName)
-        }
-    }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            ProductManageTracking.sendScreen(screenName)
         }
     }
 
