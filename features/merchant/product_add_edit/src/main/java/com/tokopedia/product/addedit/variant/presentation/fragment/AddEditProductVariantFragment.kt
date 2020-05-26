@@ -2,7 +2,6 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +47,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolde
 
     @Inject
     lateinit var viewModel: AddEditProductVariantViewModel
+    private var variantTypeAdapter: VariantTypeAdapter? = null
 
     override fun getScreenName(): String {
         return ""
@@ -73,7 +73,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolde
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val variantTypeAdapter = VariantTypeAdapter(this)
+        variantTypeAdapter = VariantTypeAdapter(this)
         val variantValueAdapter = VariantValueAdapter()
         val variantPhotoAdapterAdapter = VariantPhotoAdapter()
         recyclerViewVariantType.adapter = variantTypeAdapter
@@ -86,13 +86,12 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolde
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
 
         observeProductData()
+        viewModel.getCategoryVariantCombination("916")
 
         Handler().postDelayed({
             val variants: List<String> = listOf("ukuran yang menentukan semua yang terukur", "warna", "rasya", "dsdsdsf", "asdasdas dasd", "sadsdsdsdasda")
-            variantTypeAdapter.setData(variants)
             variantValueAdapter.setData(variants)
             variantPhotoAdapterAdapter.setData(variants)
-            viewModel.getCategoryVariantCombination("69")
         }, 1000)
     }
 
@@ -104,11 +103,14 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolde
         viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
             when (result) {
                 is Success -> {
-                    Log.e("---", result.data.getCategoryVariantCombination.data.variantDetails[0].name)
+                    val variantDetails =
+                            result.data.getCategoryVariantCombination.data.variantDetails
+                    variantTypeAdapter?.setData(variantDetails)
+                    variantTypeAdapter?.setMaxSelectedItems(2)
                 }
                 is Fail -> {
                     context?.let {
-                        showgetCategoryVariantCombinationErrorToast(
+                        showGetCategoryVariantCombinationErrorToast(
                                 ErrorHandler.getErrorMessage(it, result.throwable))
                     }
                 }
@@ -116,14 +118,14 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeViewHolde
         })
     }
 
-    private fun showgetCategoryVariantCombinationErrorToast(errorMessage: String) {
+    private fun showGetCategoryVariantCombinationErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
-                        viewModel.getCategoryVariantCombination("69")
+                        viewModel.getCategoryVariantCombination("916")
                     })
         }
     }
