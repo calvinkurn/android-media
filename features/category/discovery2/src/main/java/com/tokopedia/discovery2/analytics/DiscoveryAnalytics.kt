@@ -146,25 +146,32 @@ class DiscoveryAnalytics(val pageType: String = "",
     //18 yet improvements needed on youtube component so will call this function, once youtube component will be finalised
     fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {
         val map = createGeneralClickEvent(eventAction = "$CLICK_VIDEO - $videoUrl", eventLabel = "$videoName - $videoPlayedTime")
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
     }
 
     //19 done
     fun trackTabsClick(tabName: String) {
         val map = createGeneralClickEvent(eventAction = CLICK_TAB, eventLabel = tabName)
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
     }
 
     //20
     fun trackBackClick() {
         val map = createGeneralClickEvent(eventAction = CLICK_BACK_BUTTON_ACTION)
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
     }
 
     //21
     fun trackShareClick() {
         val map = createGeneralClickEvent(eventAction = CLICK_SOCIAL_SHARE_ACTION)
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //22
+    fun trackLihatSemuaClick(headerName: String?) {
+        val map = createGeneralClickEvent(eventAction = CLICK_VIEW_ALL, eventLabel = headerName
+                ?: EMPTY_STRING)
+        getTracker().sendGeneralEvent(map)
     }
 
     //41 done
@@ -215,21 +222,27 @@ class DiscoveryAnalytics(val pageType: String = "",
     //43 done
     fun trackClickSeeAllBanner() {
         val map = createGeneralClickEvent(eventAction = BANNER_CAROUSEL_SEE_ALL_CLICK)
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
     }
 
     //48 done
     fun trackClickCustomTopChat() {
         val map = createGeneralClickEvent(eventAction = CUSTOM_TOP_CHAT_CLICK)
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
     }
 
     //49 done
     fun trackClickChipsFilter(filterName: String) {
         val map = createGeneralClickEvent(eventAction = CHIPS_FILTER_CLICK, eventLabel = filterName)
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
     }
 
+
+    //49 done confirmation required on when to send this gtm, on click or on timer start
+    fun trackTimerSprintSale() {
+        val map = createGeneralClickEvent(eventAction = TIMER_SPRINT_SALE_CLICK)
+        getTracker().sendGeneralEvent(map)
+    }
 
     //55
     fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
@@ -253,11 +266,11 @@ class DiscoveryAnalytics(val pageType: String = "",
                 list.add(map)
             }
 
-            val ecommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                     EVENT_PROMO_VIEW to mapOf(
                             KEY_PROMOTIONS to list))
             val map = createGeneralImpressionEvent(eventAction = CLAIM_COUPON_IMPRESSION)
-            map[KEY_E_COMMERCE] = ecommerce
+            map[KEY_E_COMMERCE] = eCommerce
             trackingQueue.putEETracking(map as HashMap<String, Any>)
         }
     }
@@ -265,7 +278,7 @@ class DiscoveryAnalytics(val pageType: String = "",
     //56
     fun trackClickClaimCoupon(couponName: String?, promoCode: String?) {
         val map = createGeneralClickEvent(eventAction = CLICK_BUTTON_CLAIM_COUPON_ACTION, eventLabel = "$couponName - $promoCode")
-        getTracker().sendEnhanceEcommerceEvent(map)
+        getTracker().sendGeneralEvent(map)
     }
 
     //57

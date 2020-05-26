@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.trackingoptimizer.sendTrack
 import com.tokopedia.unifyprinciples.Typography
 
 class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
@@ -38,6 +40,7 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
         timerSprintSaleItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
             if (!componentItem.data.isNullOrEmpty()) {
                 timerSprintSaleItemViewModel.startTimer()
+                sendSprintSaleTimerTrack()
             }
         })
 
@@ -46,6 +49,10 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
             tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
             tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, it.seconds)
         })
+    }
+
+    private fun sendSprintSaleTimerTrack() {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTimerSprintSale()
     }
 
     override fun onViewDetachedToWindow() {
