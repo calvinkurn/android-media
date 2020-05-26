@@ -34,10 +34,10 @@ class PowerMerchantRegistrationView : ConstraintLayout {
     }
 
     fun show(powerMerchantStatus: PowerMerchantStatus, tracker: PowerMerchantTracking) {
-        val shopStatus = powerMerchantStatus.kycUserProjectInfoPojo.kycProjectInfo.status
+        val shopStatus = powerMerchantStatus.kycUserProjectInfoPojo.kycProjectInfo
         val shopScore = powerMerchantStatus.shopScore.data.value
 
-        val kycVerified = shopStatus == KYCConstant.STATUS_VERIFIED
+        val kycVerified = shopStatus.isKycVerified
         val shopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_REGULAR
 
         setTracker(tracker)
