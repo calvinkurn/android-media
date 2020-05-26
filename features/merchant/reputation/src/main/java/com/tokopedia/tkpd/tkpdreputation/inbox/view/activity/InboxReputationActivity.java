@@ -48,12 +48,10 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
-    private Fragment sellerReputationFragment;
     private Fragment reviewSellerFragment;
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
-
 
     private ViewPager viewPager;
     private TabLayout indicator;
@@ -95,7 +93,6 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
-            sellerReputationFragment = applicationContext.getReputationHistoryFragment();
         }
         viewPager.setOffscreenPageLimit(getPageLimit());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
@@ -126,9 +123,6 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
         }
 
         if (GlobalConfig.isSellerApp()) {
-            if (sellerReputationFragment != null) {
-                indicator.addTab(indicator.newTab().setText(R.string.title_reputation_history));
-            }
             if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
@@ -192,7 +186,6 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(reviewSellerFragment);
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
-            fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
