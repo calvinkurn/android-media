@@ -358,6 +358,7 @@
     <string name="label_pilih">Pilih</string>
     <string name="label_kurir">Kurir</string>
     <string name="label_choose_other_preference">Ganti Pilihan Lain</string>
+    <string name="label_create_other_preference">Buat Pilihan Lain</string>
     <string name="label_choose_this_preference">Gunakan Pilihan Ini</string>
     <string name="label_used">Digunakan</string>
 
