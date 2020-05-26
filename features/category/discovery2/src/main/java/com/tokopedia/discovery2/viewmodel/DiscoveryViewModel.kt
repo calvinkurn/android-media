@@ -43,14 +43,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryData() {
         launchCatchError(
                 block = {
-                    val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
-                        data.let {
-                            withContext(Dispatchers.Default) {
-                                checkLoginAndUpdateList(it.components)
-                                findCustomTopChatComponentsIfAny(it.components)
-                            }
-                            setPageInfo(it.pageInfo)
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
+                    data.let {
+                        withContext(Dispatchers.Default) {
+                            checkLoginAndUpdateList(it.components)
+                            findCustomTopChatComponentsIfAny(it.components)
                         }
+                        setPageInfo(it.pageInfo)
+                    }
                 },
                 onError = {
                     discoveryPageInfo.value = Fail(it)
@@ -60,7 +60,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
-        if(pageInfo!=null)
+        if (pageInfo != null)
             discoveryPageInfo.value = Success(pageInfo)
     }
 
@@ -91,13 +91,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         getBitmap(src).await()
     }
 
-    fun getBitmap(src:String?) = async (Dispatchers.IO){
-            val url = URL(src)
-            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
-            val input: InputStream = connection.inputStream
-            BitmapFactory.decodeStream(input)
+    fun getBitmap(src: String?) = async(Dispatchers.IO) {
+        val url = URL(src)
+        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+        val input: InputStream = connection.inputStream
+        BitmapFactory.decodeStream(input)
     }
 
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
@@ -105,7 +105,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
-        val queryMap:MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
+        val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
         launchCatchError(
                 block = {
                     val customTopChatResponse = customTopChatUseCase.getCustomTopChatMessageId(queryMap)
