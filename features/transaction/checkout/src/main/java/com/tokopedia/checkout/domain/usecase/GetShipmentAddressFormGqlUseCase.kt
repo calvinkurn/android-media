@@ -22,11 +22,12 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
     companion object {
         const val SHIPMENT_ADDRESS_FORM_QUERY = "SHIPMENT_ADDRESS_FORM_QUERY"
 
+        const val PARAM_KEY_LANG = "lang"
+        const val PARAM_KEY_IS_ONE_CLICK_SHIPMENT = "is_ocs"
+        const val PARAM_KEY_CORNER_ID = "corner_id"
         const val PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE = "skip_onboarding"
         const val PARAM_KEY_IS_TRADEIN = "is_trade_in"
         const val PARAM_KEY_DEVICE_ID = "dev_id"
-        const val PARAM_KEY_LANG = "lang"
-        const val PARAM_KEY_CORNER_ID = "corner_id"
         const val PARAM_KEY_VEHICLE_LEASING_ID = "vehicle_leasing_id"
     }
 

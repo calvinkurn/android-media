@@ -542,25 +542,29 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showInitialLoading();
         }
 
-        Map<String, Object> params = generateParamShipmentAddressForm(isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId);
+        Map<String, Object> params = generateParamShipmentAddressForm(
+                isOneClickShipment, isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId
+        );
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(params);
         compositeSubscription.add(
                 getShipmentAddressFormGqlUseCase.createObservable(requestParams)
                         .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                isReloadData, isReloadAfterPriceChangeHinger, true))
+                                isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment))
         );
     }
 
     @NotNull
-    private Map<String, Object> generateParamShipmentAddressForm(boolean isTradeIn,
+    private Map<String, Object> generateParamShipmentAddressForm(boolean isOneClickShipment,
+                                                                 boolean isTradeIn,
                                                                  boolean isSkipUpdateOnboardingState,
                                                                  @Nullable String cornerId,
                                                                  @Nullable String deviceId,
                                                                  @Nullable String leasingId) {
         Map<String, Object> params = new HashMap<>();
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
+        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE, isSkipUpdateOnboardingState ? 1 : 0);
         if (cornerId != null) {
             try {
@@ -580,7 +584,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         if (isTradeIn) {
             params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, true);
-            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId != null ? deviceId : 0);
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId != null ? deviceId : "");
         }
         return params;
     }

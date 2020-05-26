@@ -28,8 +28,8 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
         this.shipmentPresenter = shipmentPresenter;
         this.view = view;
         this.isReloadData = isReloadData;
-        this.isOneClickShipment = isOneClickShipment;
         this.isReloadAfterPriceChangeHinger = isReloadAfterPriceChangeHinger;
+        this.isOneClickShipment = isOneClickShipment;
     }
 
     @Override

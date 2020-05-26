@@ -696,9 +696,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isFromPdp) {
+    public void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment) {
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-        if (recipientAddressModel != null && isFromPdp) {
+        if (recipientAddressModel != null && isOneClickShipment) {
             recipientAddressModel.setDisableMultipleAddress(true);
         }
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding());

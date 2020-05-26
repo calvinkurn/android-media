@@ -64,7 +64,7 @@ public interface ShipmentContract {
 
         void onCacheExpired(String message);
 
-        void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isFromPdp);
+        void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isOneClickShipment);
 
         void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
 
