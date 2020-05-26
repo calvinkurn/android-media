@@ -13,14 +13,14 @@ class PlayPusherCountDownTimer(val context: Context,
 
     private var countDownTimer: CountDownTimer? = null
     private var lastMillis: Long = maxLiveStreamDuration
-    private var callback: Callback? = null
+    private var callback: PlayPusherCountDownTimerCallback? = null
     private var localCacheHandler: LocalCacheHandler? = null
 
     init {
         localCacheHandler = LocalCacheHandler(context, PLAY_TIMER_PREFERENCES)
     }
 
-    fun addCallback(callback: Callback) {
+    fun addCallback(callback: PlayPusherCountDownTimerCallback) {
         this.callback = callback
     }
 
@@ -59,11 +59,6 @@ class PlayPusherCountDownTimer(val context: Context,
                 callback?.onCountDownActive(millisUntilFinished)
             }
         }
-    }
-
-    interface Callback {
-        fun onCountDownActive(millisUntilFinished: Long)
-        fun onCountDownFinish()
     }
 
     companion object {
