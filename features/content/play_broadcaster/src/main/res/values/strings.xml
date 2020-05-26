@@ -3,4 +3,11 @@
     <string name="play_auto_share_title">Otomatis dibagikan ke:</string>
     <string name="play_begin_setup">Mulai Persiapannya</string>
     <string name="play_your_followers">Followers \nAnda</string>
+    
+    <string name="play_default_title">Buat Live Streaming</string>
+    <string name="play_allow_title">Aktifkan kamera &amp; mikrofon</string>
+    <string name="play_allow_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
+    <string name="play_allow_camera">Aktifkan Akses Kamera</string>
+    <string name="play_allow_mic">Aktifkan Akses Mikrofon</string>
+
 </resources>
