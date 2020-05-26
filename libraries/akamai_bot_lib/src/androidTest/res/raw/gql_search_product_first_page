@@ -5,6 +5,7 @@ query SearchProduct(
 ) {
     searchProduct(params: $params) {
         quer
+        query_id
         source
         isFilter
         response_code
