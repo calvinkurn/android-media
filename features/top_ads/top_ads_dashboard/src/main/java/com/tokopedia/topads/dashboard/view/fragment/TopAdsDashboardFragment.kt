@@ -31,7 +31,9 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationPromoBottomSheet
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.auto.view.activity.EmptyProductActivity
@@ -190,11 +192,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     activity?.finish()
 
                 } else {
-                    if (isShowAutoAddPromo) {
-                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, TopAdsDashboardConstant.URL_ONECLICKPROMO);
-                    } else {
-                        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-                    }
+                   openDashboard()
                 }
             }
         }
@@ -232,17 +230,20 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     private fun initSellerMigrationTicker() {
-        topAdsSellerMigrationTicker.apply {
-            tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_title)
-            setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_description))
-            setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    showSellerMigrationBottomSheet()
-                }
-                override fun onDismiss() {
-                    // No op
-                }
-            })
+        if(isSellerMigrationEnabled(context)) {
+            topAdsSellerMigrationTicker.apply {
+                tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_title)
+                setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_description))
+                setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        showSellerMigrationBottomSheet()
+                    }
+                    override fun onDismiss() {
+                        // No op
+                    }
+                })
+                show()
+            }
         }
     }
 
