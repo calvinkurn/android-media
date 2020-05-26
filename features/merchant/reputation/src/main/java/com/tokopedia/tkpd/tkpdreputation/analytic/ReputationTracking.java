@@ -542,8 +542,6 @@ public class ReputationTracking {
         ));
     }
 
-
-
     private String getEditMarker(boolean isEditReview) {
         return isEditReview ? " - edit" : "";
     }
