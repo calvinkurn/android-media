@@ -311,20 +311,14 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
                     var _brandlistSearchMapperResult: List<BrandlistSearchResultViewModel> = listOf()
                     if (totalBrandPerCharacter == 0) {
-//                    if (selectedBrandLetter == "C") {
                         adapterBrandSearch?.mappingBrandSearchNotFound(
                                 _brandlistSearchMapperResult,
                                 isLoadMore)
-//                        _brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
-//                                response.brands, "", this)
                     } else {
                         _brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
                                 response.brands, "", this)
                         adapterBrandSearch?.updateBrands(_brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
                     }
-//                    val brandlistSearchMapperResult = BrandlistSearchMapper.mapSearchResultResponseToVisitable(
-//                            response.brands, "", this)
-//                    adapterBrandSearch?.updateBrands(brandlistSearchMapperResult, stateLoadBrands, isLoadMore)
 
                     viewModel.updateTotalBrandSizeForChipHeader(response.totalBrands)
                     viewModel.updateTotalBrandSize(response.totalBrands)

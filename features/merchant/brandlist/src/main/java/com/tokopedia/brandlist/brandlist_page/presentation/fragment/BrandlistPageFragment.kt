@@ -300,27 +300,6 @@ class BrandlistPageFragment :
 
                     BrandlistPageMapper.mappingAllBrandGroupHeader(adapter, this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
 
-                    val _isStickyShowed = adapter?.getStickyChipsShowedStatus() ?: false
-//                    if (_isStickyShowed) {
-//                        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
-//                    }
-
-                    // if (selectedBrandLetter == "C") {     // ==== Testing brands not found ==== //
-                    // ======= Kerja start  here ------ //
-                    // Todo:
-                    //  1. Fix code below - after loading model show
-                    //  2. HideLoadingBrandRecom in mapper
-                    //  3. Show brand recommendation
-//                    if (!_isStickyShowed) { // Testing only
-//                        if (totalBrandPerCharacter == 0) {
-//                            val emptyList = OfficialStoreAllBrands()
-//                            BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
-//                        } else {
-//                            BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
-//                        }
-//                    }
-
-//                    if (selectedBrandLetter == "C") {     // ==== Testing brands not found ==== //
                     if (totalBrandPerCharacter == 0) {
                         val emptyList = OfficialStoreAllBrands()
                         BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
@@ -342,22 +321,6 @@ class BrandlistPageFragment :
                             )
                         }
                     }
-
-//                    if (!isChipSelected) {
-//                        if (totalBrandPerCharacter == 0) {
-//                            val emptyList = OfficialStoreAllBrands()
-//                            BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
-//                        } else {
-//                            BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
-//                        }
-//                    } else {
-//                        if (totalBrandPerCharacter == 0) {
-//                            val emptyList = OfficialStoreAllBrands()
-//                            BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
-//                        } else {
-//                            BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
-//                        }
-//                    }
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
@@ -472,18 +435,6 @@ class BrandlistPageFragment :
             viewModel.resetAllBrandRequestParameter()
             viewModel.loadBrandsPerAlphabet(category, chipName)
         }
-
-//        if (recyclerView?.hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH) != true) {
-//            recyclerView?.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH);
-//        }
-
-        // multiply with 2 to make first dy value on onScroll function greater than rv top padding
-//        recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
-//        adapter?.refreshSticky()
-//        layoutManager?.scrollToPositionWithOffset(
-//                BrandlistPageMapper.ALL_BRAND_GROUP_HEADER_POSITION,
-//                stickySingleHeaderView.containerHeight
-//        )
     }
 
     override fun onClickSearchButton() {

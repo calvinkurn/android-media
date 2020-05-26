@@ -55,15 +55,13 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
         element.recyclerViewLastState?.let {
             recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
         }
-//        element.recyclerViewState?.let {
-//            recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
-//        }
 
         adapter = BrandlistAlphabetHeaderAdapter(element.listener)
-//        adapter?.updateDataHeaderList(headerList)
-        adapter?.headerList = headerList
-        adapter?.selectedPosition = element.selectedChip
-        adapter?.notifyDataSetChanged()
+        adapter?.let {
+            it.headerList = headerList
+            it.selectedPosition = element.selectedChip
+            it.notifyDataSetChanged()
+        }
         recyclerViewBrandHeader.adapter = adapter
     }
 

@@ -59,15 +59,24 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         val view = getChildAt(0) as? RecyclerView
                 ?: throw RuntimeException("RecyclerView should be the first child view.")
         mRecyclerView = view
-        recyclerViewPaddingTop = mRecyclerView!!.paddingTop
+
+        if (mRecyclerView == null) {
+            return
+        }
+
+        recyclerViewPaddingTop = mRecyclerView?.paddingTop ?: 0
         mHeaderContainer = FrameLayout(context)
         mHeaderContainer!!.setBackgroundColor(Color.WHITE)
         // mHeaderContainer!!.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
         mHeaderContainer!!.clipToPadding = false
         mHeaderContainer!!.clipChildren = false
         mHeaderContainer!!.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//        mHeaderContainer!!.setPadding(mRecyclerView!!.paddingLeft, 0, mRecyclerView!!.paddingRight, 0)
-        mHeaderContainer!!.setPadding(convertPixelsToDp(16, context), 0, mRecyclerView!!.paddingRight, 0)
+        // mHeaderContainer!!.setPadding(mRecyclerView!!.paddingLeft, 0, mRecyclerView!!.paddingRight, 0)
+        mHeaderContainer!!.setPadding(
+                convertPixelsToDp(16, context),
+                0,
+                mRecyclerView?.paddingRight ?: 0,
+                0)
         mHeaderContainer!!.visibility = View.GONE
         addView(mHeaderContainer)
         val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
@@ -75,12 +84,12 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) {
                     mHeaderHeight = mHeaderContainer!!.height
-                    val adapter = mRecyclerView!!.adapter
+                    val adapter = mRecyclerView?.adapter
                     if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
                     this@StickySingleHeaderView.adapter = adapter
                     this@StickySingleHeaderView.adapter!!.setListener(this@StickySingleHeaderView)
                     stickyPosition = this@StickySingleHeaderView.adapter!!.stickyHeaderPosition
-                    gridLayoutManager = mRecyclerView!!.layoutManager as GridLayoutManager?
+                    gridLayoutManager = mRecyclerView?.layoutManager as GridLayoutManager?
                 }
             }
 
@@ -90,7 +99,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                 this@StickySingleHeaderView.onScrolled(recyclerView, dx, dy)
             }
         }
-        mRecyclerView!!.addOnScrollListener(onScrollListener)
+        mRecyclerView?.addOnScrollListener(onScrollListener)
     }
 
     private fun convertPixelsToDp(px: Int, context: Context) : Int {
@@ -103,11 +112,8 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         val firstCompletelyVisiblePosition = gridLayoutManager!!.findFirstCompletelyVisibleItemPosition() //findFirstCompletelyVisibleItemPositions (null)[0]
         val firstVisiblePosition = gridLayoutManager!!.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
         if (firstCompletelyVisiblePosition > -1) {
-//            if (firstCompletelyVisiblePosition >= stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
             val _stickyPosition = 4
-//            stickyChipsListener?.updateStatusSticky(isStickyShowed)
             adapter?.updateStickyStatus(isStickyShowed)
-            // isStickyChipsShowed = isStickyShowed
             if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
                 if (!isStickyShowed || refreshSticky) {
                     showSticky()

@@ -71,7 +71,6 @@ class BrandlistPageMapper {
                 isLoadMore: Boolean,
                 adapter: BrandlistPageAdapter?
         ) {
-//            mappingRemoveLoadingBrandRecomm(adapter)
             val totalBrands: Int = allBrand.brands.size
 
             if (!isLoadMore && totalBrands == 0) {
@@ -82,12 +81,6 @@ class BrandlistPageMapper {
                     val totalData: Int = it.getVisitables().size ?: 0
                     val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size
                             ?: 0
-//                    val _firstPositionLoadingViewModel: Int = it.getVisitables().indexOfFirst {
-//                        it.equals(LoadingModel())
-//                    }
-//                    val _lastPositionLoadingViewModel: Int = it.getVisitables().indexOfLast {
-//                        it.equals(LoadingModel())
-//                    }
 
                     if (_totalLoadingViewModel > 0) {
                         val _totalUpdated = totalData - (ALL_BRAND_POSITION + 1)
@@ -95,12 +88,6 @@ class BrandlistPageMapper {
                         it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalUpdated)
                     }
                 }
-
-
-//                adapter?.getVisitables()?.subList(ALL_BRAND_POSITION, totalData)?.clear()
-//                adapter?.getVisitables()?.add(ALL_BRAND_POSITION, AllbrandNotFoundViewModel())
-//                adapter?.notifyItemRangeRemoved(ALL_BRAND_POSITION, totalData)
-//                adapter?.notifyItemChanged(ALL_BRAND_POSITION)
             }
         }
 
@@ -111,19 +98,6 @@ class BrandlistPageMapper {
                 stateLoadBrands: String,
                 isLoadMore: Boolean
         ) {
-//            mappingRemoveLoadingBrandRecomm(adapter)
-//            val totalData: Int = adapter?.getVisitables()?.size ?: 0
-
-//            val _isContainsNotFoundViewModel = adapter?.getVisitables()?.contains(AllbrandNotFoundViewModel())
-//                    ?: false
-//            if (_isContainsNotFoundViewModel) {
-//                adapter?.getVisitables()?.let {
-//                    val _itemPosition = it.indexOf(AllbrandNotFoundViewModel())
-//                    it.remove(AllbrandNotFoundViewModel())
-//                    adapter.notifyItemRemoved(_itemPosition)
-//                }
-//            }
-
             if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) {
                 if (!isLoadMore) {
                     adapter?.let {
@@ -165,23 +139,6 @@ class BrandlistPageMapper {
             } else if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
                 getLoadMoreData(allBrand, listener, adapter)
             }
-
-
-            val _isContainsNotFoundViewModel = adapter?.getVisitables()?.contains(AllbrandNotFoundViewModel()) ?: false
-            if (_isContainsNotFoundViewModel) {
-//                adapter?.getVisitables()?.let {
-//                    val _itemPosition = it.indexOf(AllbrandNotFoundViewModel())
-//                    it.remove(AllbrandNotFoundViewModel())
-//                    adapter.notifyItemRemoved(_itemPosition)
-//                }
-            }
-
-            val _totalLoadingViewModel: Int = adapter?.getVisitables()?.filterIsInstance<LoadingModel>()?.size ?: 0
-//            if (_totalLoadingViewModel > 0) {
-//                val _totalUpdated = totalData - (ALL_BRAND_POSITION + 1)
-//                it.getVisitables().subList(ALL_BRAND_POSITION + 1, totalData).clear()
-//                it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalUpdated)
-//            }
         }
 
         private fun getLoadMoreData(allBrand: OfficialStoreAllBrands,
