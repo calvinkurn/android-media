@@ -130,22 +130,26 @@ class VoucherPeriodBottomSheet(
             startCalendar?.run {
                 setDateText(this)
             }
-            isFocusable = false
-            isClickable = true
-            textFieldInput.keyListener = null
-            setOnClickListener {
-                getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
+            textFieldInput.run {
+                setOnClickListener {
+                    getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
+                }
+                isFocusable = false
+                isClickable = true
+                keyListener = null
             }
         }
         edtMvcEndDate?.run {
             endCalendar?.run {
                 setDateText(this)
             }
-            isFocusable = false
-            isClickable = true
-            textFieldInput.keyListener = null
-            setOnClickListener {
-                getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
+            textFieldInput.run {
+                setOnClickListener {
+                    getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
+                }
+                isFocusable = false
+                isClickable = true
+                keyListener = null
             }
         }
         context?.getMinStartDate()?.let { calendar ->
