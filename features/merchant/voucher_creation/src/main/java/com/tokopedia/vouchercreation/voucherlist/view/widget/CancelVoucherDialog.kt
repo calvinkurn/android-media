@@ -34,7 +34,7 @@ class CancelVoucherDialog(context: Context) {
         setSecondaryCTAClickListener {
             dismiss()
         }
-        with(dialogSecondaryLongCTA) {
+        with(dialogSecondaryCTA) {
             buttonVariant = UnifyButton.Variant.TEXT_ONLY
             buttonType = UnifyButton.Type.ALTERNATE
         }

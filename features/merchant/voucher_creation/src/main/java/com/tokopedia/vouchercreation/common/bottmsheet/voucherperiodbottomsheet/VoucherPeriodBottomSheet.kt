@@ -132,6 +132,7 @@ class VoucherPeriodBottomSheet(
             }
             isFocusable = false
             isClickable = true
+            textFieldInput.keyListener = null
             setOnClickListener {
                 getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
             }
@@ -142,6 +143,7 @@ class VoucherPeriodBottomSheet(
             }
             isFocusable = false
             isClickable = true
+            textFieldInput.keyListener = null
             setOnClickListener {
                 getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
             }
@@ -160,8 +162,8 @@ class VoucherPeriodBottomSheet(
         btnMvcSavePeriod?.run {
             setOnClickListener {
                 isLoading = true
-                onSaveListener()
-                dismiss()
+                val dummyToken = ""
+                viewModel.validateVoucherPeriod(voucher, dummyToken)
             }
         }
     }

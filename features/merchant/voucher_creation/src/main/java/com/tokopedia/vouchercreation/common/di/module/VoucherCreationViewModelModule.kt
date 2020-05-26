@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.create.view.viewmodel.*
+import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import dagger.Binds
 import dagger.Module
@@ -63,4 +64,9 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(ReviewVoucherViewModel::class)
     abstract fun provideReviewVoucherViewModel(reviewVoucherViewModel: ReviewVoucherViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChangeVoucherPeriodViewModel::class)
+    abstract fun provideChangeVoucherPeriodViewModel(changeVoucherPeriodViewModel: ChangeVoucherPeriodViewModel): ViewModel
 }
