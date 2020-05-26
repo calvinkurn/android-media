@@ -2,58 +2,44 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
-import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.showLoading
-import com.tokopedia.power_merchant.subscribe.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
+import com.tokopedia.power_merchant.subscribe.ACTION_KYC
+import com.tokopedia.power_merchant.subscribe.ACTION_SHOP_SCORE
+import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
-import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
-import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
-import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
-import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
-import kotlinx.android.synthetic.main.dialog_kyc_verification.*
-import kotlinx.android.synthetic.main.dialog_score_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
@@ -64,18 +50,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var userSessionInterface: UserSessionInterface
     @Inject
     lateinit var powerMerchantTracking:PowerMerchantTracking
-    lateinit var partialMemberPmViewHolder: PartialMemberPmViewHolder
-    lateinit var partialBenefitPmViewHolder: PartialBenefitPmViewHolder
-    lateinit var partialTncViewHolder: PartialTncViewHolder
-    lateinit var shopStatusModel: ShopStatusModel
-    lateinit var getApprovalStatusPojo: KycUserProjectInfoPojo
-    lateinit var bottomSheetCommon: MerchantCommonBottomSheet
-    lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
-    private var shopScore: Int = 0
-    private var minScore: Int = 0
-    private var isSuccessActivatedPm: Boolean = false
-    private var isSuccessCancellationPm: Boolean = false
+    private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -112,35 +88,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        root_view_pm.showLoading()
-        hideButtonActivatedPm()
-        renderInitialLayout()
-        button_activate_root.setOnClickListener {
-            powerMerchantTracking.eventUpgradeShopPm()
-            if (getApprovalStatusPojo.kycProjectInfo.status == STATUS_VERIFIED) {
-                if (shopStatusModel.isPowerMerchantInactive()) {
-                    context?.let {
-                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
-                        } else {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE)
-                        }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    }
-                } else {
-                    context?.let {
-                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
-                        } else {
-                            PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND)
-                        }
-                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-                    }
-                }
-            } else {
-                setupDialogKyc()?.show()
-            }
-        }
 
         if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
             presenter.getPmStatusInfo(userSessionInterface.shopId)
@@ -156,28 +103,68 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    private fun renderInitialLayout() {
-        ImageHandler.LoadImage(img_top_1, IMG_URL_PM_INTRO)
-        initializePartialPart(view)
-        partialBenefitPmViewHolder.renderPartialBenefit()
-        partialTncViewHolder.renderPartialTnc()
+    override fun cancelMembership() {
+        redirectToPMCancellationQuestionnairePage()
     }
 
-    private val onViewClickListener = View.OnClickListener {
-        when (it.id) {
-            R.id.member_cancellation_button -> {
-                powerMerchantTracking.eventCancelMembershipPm()
-                showBottomSheetCancel()
-            }
-            else -> {
+    override fun onSuccessCancelMembership() {
+        showToasterCancellationSuccess()
+        refreshData()
+    }
 
-            }
+    override fun refreshData() {
+        presenter.getPmStatusInfo(userSessionInterface.shopId)
+    }
+
+    override fun onErrorCancelMembership(throwable: Throwable) {
+        showToasterError(throwable)
+    }
+
+    override fun showLoading() {
+        mainContainer.hide()
+        btnCallToAction.hide()
+        progressBar.show()
+    }
+
+    override fun hideLoading() {
+        mainContainer.show()
+        progressBar.hide()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
+            showBottomSheetSuccess()
+            refreshData()
+        } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
+            showBottomSheetSuccess()
+            refreshData()
+        } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
+            refreshData()
         }
     }
 
-    override fun cancelMembership() {
-        bottomSheetCancel.dismiss()
-        redirectToPMCancellationQuestionnairePage()
+    override fun showEmptyState(throwable: Throwable) {
+        NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
+            refreshData()
+        }
+    }
+
+    private fun setupCancelBottomSheet(shopStatusModel: ShopStatusModel) {
+        bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(
+            shopStatusModel.isAutoExtend(),
+            shopStatusModel.powerMerchant.expiredTime
+        )
+        bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
+            override fun onClickCancelButton() {
+                cancelMembership()
+            }
+        })
     }
 
     private fun redirectToPMCancellationQuestionnairePage() {
@@ -187,252 +174,157 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    override fun onSuccessCancelMembership() {
-        isSuccessCancellationPm = true
-        refreshData()
-    }
-
-    override fun refreshData() {
-        root_view_pm.showLoading()
-        hideButtonActivatedPm()
-        presenter.getPmStatusInfo(userSessionInterface.shopId)
-    }
-
-    override fun onErrorCancelMembership(throwable: Throwable) {
-        hideLoading()
-        showToasterError(throwable)
-    }
-
     private fun showToasterError(throwable: Throwable) {
-        activity?.run {
-            ToasterError.make(findViewById(android.R.id.content),
-                    ErrorHandler.getErrorMessage(this, throwable),
-                    ToasterError.LENGTH_LONG).setAction(R.string.error_cancellation_tryagain) {
-                cancelMembership()
-            }
-                    .show()
+        view?.let {
+            val message = ErrorHandler.getErrorMessage(activity, throwable)
+            val actionLabel = getString(R.string.error_cancellation_tryagain)
+            val onClickActionLabel = View.OnClickListener { cancelMembership() }
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
         }
     }
 
     private fun showToasterCancellationSuccess() {
-        isSuccessCancellationPm = false
-        activity?.let {
-            ToasterNormal.showClose(it,
-                    getString(R.string.pm_cancellation_success))
+        view?.let {
+            val message = getString(R.string.pm_cancellation_success)
+            val actionLabel = getString(R.string.power_merchant_ok_label)
+            Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionLabel)
         }
     }
 
-    private fun setupDialogKyc(): Dialog? {
+    private fun showDialogKyc() {
         context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_kyc_verification)
-            dialog.btn_submit_kyc.setOnClickListener {
-                openTermsAndConditionKYC()
-                dialog.hide()
-            }
-            dialog.btn_close_kyc.setOnClickListener {
-                dialog.hide()
-            }
-
-            return dialog
-        }
-        return null
-    }
-
-    private fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
-        val imgUrl = IMG_URL_BS_SUCCESS
-        isSuccessActivatedPm = false
-        val bottomSheetModel: MerchantCommonBottomSheet.BottomSheetModel =
-                if (shopStatusModel.isTransitionPeriod()) {
-                    val headerString = getString(R.string.pm_label_bs_success_header_transition)
-                    val descString = getString(R.string.pm_label_bs_success_desc_transition)
-                    val btnString = getString(R.string.pm_label_bs_success_button_transition)
-                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, "")
-                } else {
-                    val headerString = getString(R.string.pm_label_bs_success_header)
-                    val descString = getString(R.string.pm_label_bs_success_desc)
-                    val btnString = getString(R.string.pm_label_bs_success_button)
-                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.pm_label_kyc_verification_header))
+                setDescription(it.getString(R.string.pm_label_kyc_verification_desc_1))
+                setPrimaryCTAText(it.getString(R.string.power_merchant_kyc_verification))
+                setSecondaryCTAText(it.getString(R.string.pm_label_button_close))
+                setPrimaryCTAClickListener {
+                    openTermsAndConditionKYC()
+                    dismiss()
                 }
-
-        bottomSheetCommon = MerchantCommonBottomSheet.newInstance(bottomSheetModel)
-        bottomSheetCommon.setListener(object : MerchantCommonBottomSheet.BottomSheetListener {
-            override fun onBottomSheetButtonClicked() {
-                bottomSheetCommon.dismiss()
-                refreshData()
-            }
-        })
-        bottomSheetCommon.show(childFragmentManager, "power_merchant_success")
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+            }.show()
+        }
     }
 
-    fun showBottomSheetCancel() {
-        bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(shopStatusModel.isAutoExtend(), shopStatusModel.powerMerchant.expiredTime)
-        bottomSheetCancel.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
-            override fun onclickButton() {
-                cancelMembership()
-            }
-        })
-        bottomSheetCancel.show(childFragmentManager, "power_merchant_cancel")
+    private fun showBottomSheetSuccess() {
+        val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
+            getString(R.string.power_merchant_success_title),
+            getString(R.string.power_merchant_success_description),
+            R.drawable.ic_pm_registration_success,
+            CTAMode.SINGLE
+        )
+        bottomSheet.setPrimaryButtonText(getString(R.string.pm_label_bs_success_button))
+        bottomSheet.setPrimaryButtonClickListener { bottomSheet.dismiss() }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showBottomSheetCancel() {
+        bottomSheetCancel?.show(childFragmentManager)
     }
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
-        shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
-        getApprovalStatusPojo = powerMerchantStatus.kycUserProjectInfoPojo
-        shopScore = powerMerchantStatus.shopScore.data.value
-        minScore = powerMerchantStatus.shopScore.badgeScore
-        var isTransitionPeriod = shopStatusModel.isTransitionPeriod()
-        if (isTransitionPeriod) {
-            renderViewTransitionPeriod()
+        val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
+        val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
+
+        setupCancelBottomSheet(shopStatusModel)
+
+        if(shopStatus.isPowerMerchantInactive()) {
+            showRegistrationView(powerMerchantStatus)
         } else {
-            renderViewNonTransitionPeriod()
-        }
-        partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
-
-        if (isSuccessActivatedPm) {
-            showBottomSheetSuccess(shopStatusModel)
+            showMembershipView(powerMerchantStatus)
         }
 
-        if (isSuccessCancellationPm) {
-            showToasterCancellationSuccess()
-        }
-
-        hideLoading()
-
+        showCTAButton(powerMerchantStatus)
     }
 
-    override fun hideLoading() {
-        root_view_pm.hideLoading()
+    private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
+        membershipLayout.show(powerMerchantStatus) {
+            onClickRegister(powerMerchantStatus)
+        }
+        featureLayout.show(powerMerchantStatus)
+        registrationLayout.hide()
+        benefitLayout.hide()
     }
 
-    private fun renderViewNonTransitionPeriod() {
-        var isPowerMerchant = shopStatusModel.isPowerMerchantIdle() or shopStatusModel.isPowerMerchantActive()
-        ticker_blue_container.visibility = View.GONE
-        if (isPowerMerchant) {
-            if (isAutoExtend()) {
-                ticker_yellow_container.visibility = View.GONE
-                hideButtonActivatedPm()
-                ticker_yellow_container.gone()
-            } else {
-                showButtonActivatePm()
-                showExpiredDateTickerYellow()
-            }
+    private fun showRegistrationView(powerMerchantStatus: PowerMerchantStatus) {
+        registrationLayout.show(powerMerchantStatus, powerMerchantTracking)
+        featureLayout.show(powerMerchantStatus)
+        benefitLayout.show(powerMerchantTracking)
+        membershipLayout.hide()
+    }
+
+    private fun showCTAButton(powerMerchantStatus: PowerMerchantStatus) {
+        val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
+
+        when {
+            shopStatus.isPowerMerchantInactive() -> showRegisterBtn(powerMerchantStatus)
+            shopStatus.isPowerMerchantActive() -> showCancelMembershipBtn()
+            else -> btnCallToAction.hide()
+        }
+    }
+
+    private fun showRegisterBtn(powerMerchantStatus: PowerMerchantStatus) {
+        btnRegister.text = getString(R.string.power_merchant_register_now)
+
+        btnCallToAction.setOnClickListener {
+            onClickRegister(powerMerchantStatus)
+        }
+
+        btnRegister.show()
+        btnCallToAction.show()
+        textCancelMembership.hide()
+    }
+
+    private fun showCancelMembershipBtn() {
+        val cancelMembershipTxt = getString(R.string.power_merchant_cancel_membership)
+        textCancelMembership.text = MethodChecker.fromHtml(cancelMembershipTxt)
+
+        btnCallToAction.setOnClickListener {
+            powerMerchantTracking.eventCancelMembershipPm()
+            showBottomSheetCancel()
+        }
+
+        btnRegister.hide()
+        btnCallToAction.show()
+        textCancelMembership.show()
+    }
+
+    private fun onClickRegister(powerMerchantStatus: PowerMerchantStatus) {
+        val kycUserProject = powerMerchantStatus.kycUserProjectInfoPojo
+        val kycVerified = kycUserProject.kycProjectInfo.isKycVerified
+
+        if (kycVerified) {
+            goToTermsAndConditionPage(powerMerchantStatus)
         } else {
-            showButtonActivatePm()
-            ticker_yellow_container.gone()
+            showDialogKyc()
         }
+
+        powerMerchantTracking.eventUpgradeShopPm()
     }
 
-    private fun renderViewTransitionPeriod() {
-        var isPowerMerchant = shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()
-        var isPending = shopStatusModel.isPowerMerchantPending()
-        if (isPowerMerchant) {
-            var isNotKyc = getApprovalStatusPojo.kycProjectInfo.status != KYCConstant.STATUS_VERIFIED
-            if (isNotKyc) {
-                if (isAutoExtend()) {
-                    showTickerYellowTransitionPeriod()
-                } else {
-                    showButtonActivatePm()
-                    ticker_yellow_container.visibility = View.GONE
-                }
-                button_activate_root.text = getString(R.string.pm_label_button_kyc_upload)
+    private fun goToTermsAndConditionPage(powerMerchantStatus: PowerMerchantStatus) {
+        context?.let {
+            val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
+            val shopScore = powerMerchantStatus.shopScore.data.value
+
+            val action = if (shopScore < shopStatus.getMinimumShopScore()) {
+                ACTION_SHOP_SCORE
             } else {
-                if (isAutoExtend()) {
-                    showTickerYellowTransitionPeriod()
-                    hideButtonActivatedPm()
-                } else {
-                    ticker_yellow_container.visibility = View.GONE
-                    showButtonActivatePm()
-                }
-            }
-            ticker_blue_container.visibility = View.VISIBLE
-        } else if (isPending) { // Regular Merchant but Activated Pm on Transition Period
-            if (isAutoExtend()) {
-                hideButtonActivatedPm()
-                showTickerYellowTransitionPeriod()
-            } else {
-                ticker_yellow_container.visibility = View.GONE
-                showButtonActivatePm()
+                ACTION_ACTIVATE
             }
 
-            ticker_blue_container.visibility = View.GONE
-        } else { //Regular Merchant
-            showButtonActivatePm()
-            ticker_yellow_container.visibility = View.GONE
-            ticker_blue_container.visibility = View.GONE
-        }
-    }
-
-    private fun showTickerYellowTransitionPeriod() {
-        ticker_yellow_container.visibility = View.VISIBLE
-        txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_cancellation_duration))
-    }
-
-    private fun hideButtonActivatedPm() {
-        ll_footer_submit.visibility = View.GONE
-    }
-
-    private fun showButtonActivatePm() {
-        button_activate_root.text = getString(R.string.pm_upgrade_shop)
-        ll_footer_submit.visibility = View.VISIBLE
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
-    }
-
-    private fun isAutoExtend(): Boolean {
-        return shopStatusModel.isAutoExtend()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            isSuccessActivatedPm = true
-            refreshData()
-        } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            isSuccessActivatedPm = true
-            refreshData()
-        } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
-            refreshData()
+            val intent = PowerMerchantTermsActivity.createIntent(it, action)
+            startActivityForResult(intent, ACTIVATE_INTENT_CODE)
         }
     }
 
     private fun openTermsAndConditionKYC() {
-        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_KYC) }
-        startActivity(intent)
-    }
-
-    override fun showEmptyState(throwable: Throwable) {
-        NetworkErrorHelper.showEmptyState(root_view_pm.context, root_view_pm, ErrorHandler.getErrorMessage(context, throwable)) {
-            refreshData()
-        }
-        hideLoading()
-    }
-
-    private fun showExpiredDateTickerYellow() {
-        ticker_yellow_container.visibility = View.VISIBLE
-        val shopCloseUntilString = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
-                DateFormatUtils.FORMAT_D_MMMM_YYYY,
-                shopStatusModel.powerMerchant.expiredTime)
-        val spanText = SpannableString(getString(R.string.expired_label, shopCloseUntilString))
-        spanText.setSpan(StyleSpan(Typeface.BOLD),
-                86, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        txt_ticker_yellow.text = spanText
-    }
-
-    private fun initializePartialPart(view: View?) {
-        if (!::partialMemberPmViewHolder.isInitialized) {
-            partialMemberPmViewHolder = PartialMemberPmViewHolder.build(base_partial_member, onViewClickListener)
-        }
-        if (!::partialTncViewHolder.isInitialized) {
-            partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)
-        }
-        if (!::partialBenefitPmViewHolder.isInitialized) {
-            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity,powerMerchantTracking)
+        context?.let {
+            val intent = PowerMerchantTermsActivity.createIntent(it, ACTION_KYC)
+            startActivity(intent)
         }
     }
 }
