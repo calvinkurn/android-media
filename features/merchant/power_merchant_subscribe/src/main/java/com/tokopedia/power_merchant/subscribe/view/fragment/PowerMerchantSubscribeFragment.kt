@@ -39,6 +39,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
@@ -281,7 +282,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun goToTermsAndConditionPage(powerMerchantStatus: PowerMerchantStatus) {
         context?.let {
             val kycUserProject = powerMerchantStatus.kycUserProjectInfoPojo
-            val kycNotVerified = !kycUserProject.kycProjectInfo.isKycVerified
+            val kycNotVerified = kycUserProject.kycProjectInfo.status != STATUS_VERIFIED
             val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
             val shopScore = powerMerchantStatus.shopScore.data.value
             val shopScoreNotEligible = shopScore < shopStatus.getMinimumShopScore()
