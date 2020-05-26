@@ -10,7 +10,7 @@ import androidx.annotation.RequiresApi
  */
 interface PlayPusher {
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     fun create()
 
     fun addCountDownTimer(countDownTimer: PlayPusherCountDownTimer)
