@@ -146,7 +146,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
                     globalError.show()
                     globalError.setOnClickListener {
                         globalError.hide()
-                        mDiscoveryViewModel.getDiscoveryData()
+                        discoveryViewModel.getDiscoveryData()
                     }
                 }
             }
@@ -237,5 +237,6 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
             mergeAdapters.notifyDataSetChanged()
         }
     }
+
     fun getDiscoveryRecyclerViewAdapter() = discoveryRecycleAdapter
 }
