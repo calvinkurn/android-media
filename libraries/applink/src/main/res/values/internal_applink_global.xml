@@ -61,6 +61,8 @@
     <string name="path_chat">/topchat</string>
     <string name="path_chat_room" translatable="false">/topchat/.*\</string>
 
+
+    <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
     <string name="path_manage_general">/manage-general</string>
     <string name="path_manage_notification">/manage-notification</string>
 

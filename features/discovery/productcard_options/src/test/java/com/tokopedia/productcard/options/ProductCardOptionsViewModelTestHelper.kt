@@ -3,6 +3,7 @@ package com.tokopedia.productcard.options
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.productcard.options.testutils.TestDispatcherProvider
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -20,23 +21,21 @@ internal fun FeatureBody.createTestInstance() {
         mockk<RemoveWishListUseCase>(relaxed = true)
     }
 
+    val topAdsWishlistUseCase by memoized {
+        mockk<UseCase<Boolean>>(relaxed = true)
+    }
+
     val userSession by memoized {
         mockk<UserSessionInterface>(relaxed = true)
     }
 }
 
 internal fun TestBody.createProductCardOptionsViewModel(
-        productCardOptionsModel: ProductCardOptionsModel? = ProductCardOptionsModel(
-                hasWishlist = true,
-                isWishlisted = true,
-                hasSimilarSearch = true,
-                keyword = "samsung",
-                productId = "433759643",
-                isTopAds = true
-        )
+        productCardOptionsModel: ProductCardOptionsModel?
 ): ProductCardOptionsViewModel {
     val addWishListUseCase by memoized<AddWishListUseCase>()
     val removeWishListUseCase by memoized<RemoveWishListUseCase>()
+    val topAdsWishlistUseCase by memoized<UseCase<Boolean>>()
     val userSession by memoized<UserSessionInterface>()
 
     return ProductCardOptionsViewModel(
@@ -44,6 +43,7 @@ internal fun TestBody.createProductCardOptionsViewModel(
             productCardOptionsModel,
             addWishListUseCase,
             removeWishListUseCase,
+            topAdsWishlistUseCase,
             userSession
     )
 }

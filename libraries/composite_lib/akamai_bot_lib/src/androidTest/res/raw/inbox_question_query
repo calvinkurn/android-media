@@ -1,0 +1,52 @@
+query chipGetInboxDetailQuery($caseID: String!) {
+chipGetInboxDetail(caseID: $caseID) {
+     data {
+          isSuccess
+          tickets {
+            id
+            showRating
+          	badCsatReasonList{
+              id
+              message
+              messageEn
+            }
+            comments{
+              id
+              create_time
+              message
+              message_plaintext
+              created_by{
+                name
+                picture
+                role
+              }
+              attachment{
+                url
+                thumbnail
+              }
+              note
+              rating
+            }
+            number
+            subject
+            invoice
+            status
+            readStatus
+            message
+            createdBy{
+              name
+              picture
+              role
+            }
+            createTime
+            needAttachment
+            attachment{
+              url
+              thumbnail
+            }
+            allowClose
+          }
+        }
+        messageError
+  }
+  }

@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.travelhomepage.R
+import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.DestinationImageViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_travel_homepage_destination.view.*
 import kotlinx.android.synthetic.main.widget_image_view_pager.view.*
 

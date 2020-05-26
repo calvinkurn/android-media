@@ -11,12 +11,16 @@ import timber.log.Timber
 
 class OnboardingAnalytics {
 
-    fun trackScreen(position: Int, variant: String) {
-        val screenName = String.format(SCREEN_ONBOARDING, position.toString(), variant)
+    fun trackScreen(position: Int) {
+        val screenName = String.format(SCREEN_ONBOARDING, position.toString())
         Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT
                 + " | " + Build.MANUFACTURER + " | " + Build.BRAND + " | " + Build.DEVICE
                 + " | " + Build.PRODUCT + " | " + Build.MODEL + " | " + Build.TAGS)
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    fun trackDynamicOnboardingPage(isEnable: Boolean, time: Long, message: String) {
+        Timber.w("P2#DYNAMIC_OBOARDING_PAGE#isEnable=$isEnable;loadTime=$time;message=$message")
     }
 
     fun trackMoengage() {
@@ -56,7 +60,7 @@ class OnboardingAnalytics {
     }
 
     companion object {
-        const val SCREEN_ONBOARDING = "Screen OnBoarding - %s%s"
+        const val SCREEN_ONBOARDING = "Screen OnBoarding - %s"
 
         private const val EVENT_CLICK_ONBOARDING = "clickOnboarding"
         private const val EVENT_ONBOARDING = "onBoardingEvent"

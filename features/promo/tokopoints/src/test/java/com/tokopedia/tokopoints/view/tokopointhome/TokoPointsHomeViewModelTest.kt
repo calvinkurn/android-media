@@ -3,13 +3,10 @@ package com.tokopedia.tokopoints.view.tokopointhome
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
-import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
-import com.tokopedia.tokopoints.view.subscriber.Tokopoint2020Subscriber
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +17,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import org.junit.Assert.*
 import org.junit.Rule
 import kotlin.reflect.KClass
 

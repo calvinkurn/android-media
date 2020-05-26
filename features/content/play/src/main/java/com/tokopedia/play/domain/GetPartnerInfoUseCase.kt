@@ -1,6 +1,6 @@
 package com.tokopedia.play.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -16,18 +16,15 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-10.
  */
 
-class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopInfo>() {
+class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository): UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ShopInfo {
         val gqlRequest = GraphqlRequest(query, ShopInfo.Response::class.java, params.parameters)
-        gqlUseCase.clearRequest()
-        gqlUseCase.addRequest(gqlRequest)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
+        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
-        val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopInfo.Response::class.java)
         if (error == null || error.isEmpty()) {
             return (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result.data[0]
@@ -39,17 +36,22 @@ class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiReq
     companion object {
         private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_FIELDS = "fields"
+        private const val PARAM_SOURCE = "source"
+        private const val SOURCE_VALUE = "gql-play"
 
         private val query = getQuery()
 
         private fun getQuery(): String {
             val shopId = "\$shopIds"
             val fields = "\$fields"
+            val source = "\$source"
 
-            return """query getShopInfo($shopId: [Int!]!, $fields: [String!]!){
+
+            return """query getShopInfo($shopId: [Int!]!, $fields: [String!]!, $source: String){
                  shopInfoByID(input: {
                      shopIDs: $shopId,
-                     fields: $fields}){
+                     fields: $fields,
+                     source: $source}){
                      result {
                          shopCore {
                             name,
@@ -76,6 +78,7 @@ class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiReq
                 RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, partnerId)
             putObject(PARAM_SHOP_FIELDS, fields)
+            putString(PARAM_SOURCE, SOURCE_VALUE)
         }
     }
 }

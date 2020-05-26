@@ -7,22 +7,26 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.listener.*
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.listener.HomeFeedsListener
+import com.tokopedia.home.beranda.listener.HomeInspirationListener
+import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessUnitViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import java.util.*
 
 /**
@@ -35,7 +39,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
-                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
+                         private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -50,62 +55,62 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                     DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)
     )
 
-    override fun type(inspirationHeaderViewModel: InspirationHeaderViewModel): Int {
+    override fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int {
         return InspirationHeaderViewHolder.LAYOUT
     }
 
-    override fun type(bannerViewModel: BannerViewModel): Int {
+    override fun type(homepageBannerDataModel: HomepageBannerDataModel): Int {
         return BannerViewHolder.LAYOUT
     }
 
-    override fun type(tickerViewModel: TickerViewModel): Int {
+    override fun type(tickerDataModel: TickerDataModel): Int {
         return TickerViewHolder.LAYOUT
     }
 
-    override fun type(businessUnitViewModel: BusinessUnitViewModel): Int {
-        return BusinessUnitViewHolder.LAYOUT
+    override fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int {
+        return NewBusinessViewHolder.LAYOUT
     }
 
-    override fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int {
+    override fun type(useCaseIconSectionDataModel: UseCaseIconSectionDataModel): Int {
         return UseCaseIconSectionViewHolder.LAYOUT
     }
 
-    override fun type(dynamicIconSectionViewModel: DynamicIconSectionViewModel): Int {
-        return if(dynamicIconSectionViewModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
+    override fun type(dynamicIconSectionDataModel: DynamicIconSectionDataModel): Int {
+        return if(dynamicIconSectionDataModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
     }
 
     override fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int {
         return TopAdsDynamicChannelViewHolder.LAYOUT
     }
 
-    override fun type(sellViewModel: SellViewModel): Int {
+    override fun type(sellDataModel: SellDataModel): Int {
         return SellViewHolder.LAYOUT
     }
 
-    override fun type(headerViewModel: HeaderViewModel): Int {
-        return if (headerViewModel.isUserLogin)
+    override fun type(headerDataModel: HeaderDataModel): Int {
+        return if (headerDataModel.isUserLogin)
             OvoViewHolder.LAYOUT
         else OvoViewHolder.NON_LOGIN_LAYOUT
     }
 
-    override fun type(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel): Int {
+    override fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int {
         return HomeRecommendationFeedViewHolder.LAYOUT
     }
 
-    override fun type(topAdsViewModel: TopAdsViewModel): Int {
+    override fun type(topAdsDataModel: TopAdsDataModel): Int {
         return TopAdsViewHolder.LAYOUT
     }
 
-    override fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int {
+    override fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int {
         return GeolocationPromptViewHolder.LAYOUT
     }
 
-    override fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int {
-        val layout = dynamicChannelViewModel.channel?.layout?:""
+    override fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int {
+        val layout = dynamicChannelDataModel.channel?.layout?:""
         return getDynamicChannelLayoutFromType(layout)
     }
 
-    override fun type(spotlightViewModel: SpotlightViewModel): Int {
+    override fun type(spotlightDataModel: SpotlightDataModel): Int {
         return SpotlightViewHolder.LAYOUT
     }
 
@@ -113,12 +118,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
-    override fun type(reviewViewModel: ReviewViewModel): Int {
+    override fun type(reviewDataModel: ReviewDataModel): Int {
         return ReviewViewHolder.LAYOUT
     }
 
 
-    override fun type(playCard: PlayCardViewModel): Int {
+    override fun type(playCard: PlayCardDataModel): Int {
         return PlayCardViewHolder.LAYOUT
     }
 
@@ -130,8 +135,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
-    override fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int {
+    override fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int {
         return PopularKeywordViewHolder.LAYOUT
+    }
+
+    override fun type(rechargeRecommendationViewModel: RechargeRecommendationViewModel): Int {
+        return RechargeRecommendationViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -166,6 +175,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**
+             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
+             * used by deals widget to show 1 product item
+             */
+            DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> ProductHighlightViewHolder.LAYOUT
+
+            /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
              * no further development for this viewholder
              * backend possibly return this layout for android version  >= 2.19
@@ -183,6 +198,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> PopularKeywordViewHolder.LAYOUT
 
             /**
+             * refer to mix left carousel com.tokopedia.home.R.layout#home_dc_mix_left
+             */
+            DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> MixLeftViewHolder.LAYOUT
+
+            /**
              * refer to gif banner layout com.tokopedia.home.R.layout#home_dc_default_error_prompt
              */
             DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> ErrorPromptViewHolder.LAYOUT
@@ -191,6 +211,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
              * refer to recommendation list carousel com.tokopedia.home.R.layout#home_dc_list_carousel
              */
             DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> RecommendationListCarouselViewHolder.LAYOUT
+            /**
+             * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
+             */
+            DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> MixTopBannerViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -198,12 +222,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
-            DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener, parentRecycledViewPool)
-            ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, countDownListener, parentRecycledViewPool)
-            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, parentRecycledViewPool)
+            ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, parentRecycledViewPool)
+            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(listener, view)
+            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
@@ -218,14 +242,18 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
-            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, countDownListener, parentRecycledViewPool)
-            BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener, countDownListener)
+            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, parentRecycledViewPool)
+            BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
-            ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
+            ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
-            RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, parentRecycledViewPool)
+            RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, parentRecycledViewPool)
+            MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
+            ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
+            RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

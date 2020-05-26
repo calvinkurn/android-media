@@ -15,11 +15,11 @@
         android:layout_marginLeft="@dimen/dp_16"
         app:srcCompat="@drawable/ic_close_default"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/iv"
         android:layout_width="@dimen/dp_180"
         android:layout_height="@dimen/dp_180"
-        app:srcCompat="@drawable/phone_verification"
+        app:remoteFileName="phone_verification.png"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cancel_verifikasi" />
@@ -61,6 +61,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/tp_btn_verifikasi"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"

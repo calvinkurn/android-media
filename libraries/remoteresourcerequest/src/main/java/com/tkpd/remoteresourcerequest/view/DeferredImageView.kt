@@ -60,11 +60,8 @@ class DeferredImageView : AppCompatImageView {
 
     private fun downloadAndSetResource() {
         task?.let { it.deferredImageView?.clear() }
-        if (TextUtils.isEmpty(mRemoteFileName))
-            throw IllegalArgumentException("Please use valid url in remoteFileName field " +
-                    "if used in xml. Or use DeferredImageView(context, remoteFileName) " +
-                    "constructor to initialize the correct object!!")
-        task = ResourceDownloadManager.getManager().startDownload(mRemoteFileName, this, null)
+        if (!TextUtils.isEmpty(mRemoteFileName))
+            task = ResourceDownloadManager.getManager().startDownload(mRemoteFileName, this, null)
     }
 
     override fun onDetachedFromWindow() {

@@ -176,7 +176,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     view.getString(com.tokopedia.flight.R.string.flight_luggage_prefix),
                     view.getString(com.tokopedia.flight.R.string.flight_meal_prefix),
                     view.getString(com.tokopedia.flight.R.string.flight_birthdate_prefix),
-                    view.getString(com.tokopedia.flight.R.string.flight_passenger_passport_number_hint)
+                    view.getString(com.tokopedia.flight.R.string.flight_passenger_passport_number_hint),
+                    view.getCurrentBookingParamViewModel().searchParam.searchRequestId
             ))
         }
     }
@@ -416,7 +417,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.getReturnTripId(),
                 view.getIdEmpotencyKey("${view.getDepartureTripId()}_${view.getReturnTripId()}"),
                 price,
-                view.getPriceViewModel().comboKey
+                view.getPriceViewModel().comboKey,
+                view.getCurrentBookingParamViewModel().searchParam.searchRequestId
         )
     } else {
         flightAddToCartUseCase.createRequestParam(
@@ -426,7 +428,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.getCurrentBookingParamViewModel().searchParam.flightClass.id,
                 view.getDepartureTripId(),
                 view.getIdEmpotencyKey(view.getDepartureTripId()),
-                price
+                price,
+                view.getCurrentBookingParamViewModel().searchParam.searchRequestId
         )
     }
 

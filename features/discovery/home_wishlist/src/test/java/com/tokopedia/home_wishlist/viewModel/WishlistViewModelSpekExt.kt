@@ -5,12 +5,12 @@ import com.tokopedia.home_wishlist.TestDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
+import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,6 +31,7 @@ fun TestBody.createWishlistViewModel(): WishlistViewModel {
     val addToCartUseCase by memoized<AddToCartUseCase>()
     val bulkRemoveWishlistUseCase by memoized<BulkRemoveWishlistUseCase>()
     val addWishListUseCase by memoized<AddWishListUseCase>()
+    val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
 
     return WishlistViewModel(
             userSessionInterface = userSessionInterface,
@@ -41,7 +42,8 @@ fun TestBody.createWishlistViewModel(): WishlistViewModel {
             removeWishListUseCase = removeWishlistUseCase,
             addToCartUseCase = addToCartUseCase,
             bulkRemoveWishlistUseCase = bulkRemoveWishlistUseCase,
-            addWishListUseCase = addWishListUseCase
+            addWishListUseCase = addWishListUseCase,
+            sendTopAdsUseCase = sendTopAdsUseCase
     )
 }
 
@@ -82,6 +84,10 @@ fun FeatureBody.createWishlistTestInstance() {
     val getRecommendationUseCase by memoized {
         mockk<GetRecommendationUseCase>(relaxed = true)
     }
+
+    val sendTopAdsUseCase by memoized {
+        mockk<SendTopAdsUseCase>(relaxed = true)
+    }
 }
 
 
@@ -111,7 +117,7 @@ fun GetWishlistDataUseCase.givenGetWishlistDataReturnsThis(wishlistItems: List<W
     if (useDefaultWishlistItem) {
         val wishlistDefaultData = mutableListOf<WishlistItem>()
         var position = 1
-        var id = ((page-1) * defaultMaxPage) + 1
+        val id = ((page-1) * defaultMaxPage) + 1
         while (position <= defaultMaxPage) {
             wishlistDefaultData.add(WishlistItem(id=id.toString()))
             position++

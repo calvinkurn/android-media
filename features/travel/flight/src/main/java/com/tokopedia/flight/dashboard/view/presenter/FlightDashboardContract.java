@@ -107,6 +107,8 @@ public interface FlightDashboardContract {
 
         void initialize();
 
+        void initializeOnResume();
+
         void onReverseAirportButtonClicked();
 
         void onDepartureDateButtonClicked();

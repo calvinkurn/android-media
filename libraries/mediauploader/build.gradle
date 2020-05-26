@@ -60,11 +60,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.testDependencies.androidAnnotation
-    implementation(rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.debugToolsDependencies.chuck
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api
@@ -77,7 +73,7 @@ dependencies {
 project.ext {
     artifactId = 'media-uploader'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "mediauploader-release"
 }
 

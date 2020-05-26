@@ -491,7 +491,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
-            ImpresionTask().execute(item.productClickTrackingUrl)
+            hotlistnavViewModel.sendTopAds(item.productClickTrackingUrl)
         }
     }
 
@@ -663,7 +663,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     // CPM click listner
 
-    override fun onCpmClicked(trackerUrl: String, item: CpmItem) {
+    override fun onCpmClicked(applink: String, clickTrackerUrl: String, item: CpmItem) {
         if (item.is_product) {
             hotlistNavAnalytics.eventCpmTopAdsProductClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
@@ -671,12 +671,13 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             hotlistNavAnalytics.eventCpmTopAdsShopClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
         }
-        RouteManager.route(activity, trackerUrl)
+        hotlistnavViewModel.sendTopAds(clickTrackerUrl)
+        RouteManager.route(activity, applink)
     }
 
-    override fun onCpmImpression(item: CpmItem) {
+    override fun onCpmImpression(impressionTrackUrl: String) {
+        hotlistnavViewModel.sendTopAds(impressionTrackUrl)
     }
-
 
     // share button clicked
 
@@ -701,10 +702,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
-<<<<<<< HEAD
-        ImpresionTask().execute(url)
-=======
->>>>>>> a239c611e0e204800b1ff0f0d179bfc4e0066c56
+        hotlistnavViewModel.sendTopAds(url)
     }
 
     override fun onDestroyView() {

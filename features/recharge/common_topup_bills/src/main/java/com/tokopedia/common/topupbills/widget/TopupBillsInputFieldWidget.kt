@@ -2,7 +2,6 @@ package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
 import android.graphics.Rect
-import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -19,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.view_topup_bills_input_field.view.*
+import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
-import java.util.*
 
 /**
  * Created by resakemal on 20/08/19.
@@ -43,6 +42,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
         if (value != null) input_info.show() else input_info.hide()
     }
 
+    private var finishInputJob: Job? = null
     private var delayTextChanged: Long = DEFAULT_DELAY_TEXT_CHANGED_MILLIS
 
     init {
@@ -144,10 +144,12 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
 
     protected fun getTextWatcher(): TextWatcher? {
         return object : TextWatcher {
-            var timer: Timer? = Timer()
-
             override fun afterTextChanged(s: Editable?) {
-                runTimer(s.toString())
+                finishInputJob?.cancel()
+                finishInputJob = CoroutineScope(Dispatchers.Main).launch {
+                    delay(delayTextChanged)
+                    actionListener?.onFinishInput(s.toString())
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -155,9 +157,6 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Reset timer if it is still ongoing
-                timer?.cancel()
-
                 if (s.isNullOrEmpty() || isCustomInput) {
                     btn_clear_input.visibility = View.GONE
                 } else {
@@ -168,25 +167,6 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                     btn_clear_input.visibility = View.VISIBLE
                 }
             }
-
-            private fun runTimer(input: String) {
-                // Setup timer
-                timer = Timer()
-                timer?.schedule(object: TimerTask() {
-                    override fun run() {
-                        triggerListener(input)
-                    }
-                }, DEFAULT_DELAY_TEXT_CHANGED_MILLIS)
-            }
-
-            private fun triggerListener(input: String) {
-                actionListener?.run {
-                    val mainHandler = Handler(ac_input.context.mainLooper)
-                    val myRunnable = Runnable { onFinishInput(input) }
-                    mainHandler.post(myRunnable)
-                }
-            }
-
         }
     }
 
@@ -207,6 +187,11 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
         isCustomInput = false
         ac_input.setText("")
         hideErrorMessage()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        finishInputJob?.cancel()
     }
 
     interface ActionListener {

@@ -1,13 +1,14 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration;
 
 import android.graphics.Rect;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import android.view.View;
 
-import com.tokopedia.productcard.v2.ProductCardView;
+import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.search.R;
 
 import java.util.Arrays;
@@ -83,24 +84,24 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getHorizontalCardViewOffset(View view) {
-        if(view instanceof ProductCardView) {
-            ProductCardView cardView = (ProductCardView)view;
+        if (view instanceof IProductCardView) {
+            IProductCardView cardView = (IProductCardView) view;
 
-            float maxElevation = cardView.getCardViewMaxElevation();
-            float radius = cardView.getCardViewRadius();
+            float maxElevation = cardView.getCardMaxElevation();
+            float radius = cardView.getCardRadius();
 
-            return Math.round((float)(maxElevation + (1 - Math.cos(45)) * radius)) / 2;
+            return Math.round((float) (maxElevation + (1 - Math.cos(45)) * radius)) / 2;
         }
 
         return 0;
     }
 
     private int getVerticalCardViewOffset(View view) {
-        if(view instanceof ProductCardView) {
-            ProductCardView cardView = (ProductCardView)view;
+        if (view instanceof IProductCardView) {
+            IProductCardView cardView = (IProductCardView)view;
 
-            float maxElevation = cardView.getCardViewMaxElevation();
-            float radius = cardView.getCardViewRadius();
+            float maxElevation = cardView.getCardMaxElevation();
+            float radius = cardView.getCardRadius();
 
             return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
         }

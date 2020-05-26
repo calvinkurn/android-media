@@ -55,4 +55,5 @@ object TrackingConstant {
 
     //other value
     const val SELLER_WIDGET = "/seller widget"
+    const val SCREEN_NAME_SELLER_HOME = "Seller Home"
 }

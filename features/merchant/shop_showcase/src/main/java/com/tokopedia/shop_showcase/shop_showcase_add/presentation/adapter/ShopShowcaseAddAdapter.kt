@@ -32,7 +32,7 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         selectedProductList.clear()
         newSelectedProductList?.let {
             it.map { showcaseProduct ->
-                if(isActionEdit) showcaseProduct.isCloseable = true
+                showcaseProduct.isCloseable = true
                 showcaseProduct.ishighlighted = false
                 if(!selectedProductList.contains(showcaseProduct))
                     selectedProductList.add(showcaseProduct)

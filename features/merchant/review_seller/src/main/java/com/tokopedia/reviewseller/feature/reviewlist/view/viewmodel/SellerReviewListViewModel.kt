@@ -25,20 +25,12 @@ class SellerReviewListViewModel @Inject constructor(
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     private val _reviewProductList = MutableLiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>>()
-    val reviewProductList: LiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>> = _reviewProductList
+    val reviewProductList: LiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>>
+        get() = _reviewProductList
 
     private val _productRatingOverall = MutableLiveData<Result<ProductRatingOverallUiModel>>()
-    val productRatingOverall: LiveData<Result<ProductRatingOverallUiModel>> = _productRatingOverall
-
-    var sortBy: String? = ""
-    var filterBy: String? = ""
-
-    var filterAllText: String? = ""
-
-    var positionFilter = 0
-    var positionSort = 0
-
-    var isCompletedCoachMark = false
+    val productRatingOverall: LiveData<Result<ProductRatingOverallUiModel>>
+        get() = _productRatingOverall
 
     fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
@@ -47,7 +39,7 @@ class SellerReviewListViewModel @Inject constructor(
                     block = {
                         getProductRatingOverall(filterBy)
                     }, onError = {
-                        _productRatingOverall.postValue(Fail(it))
+                        _productRatingOverall.value = Fail(it)
                         null }
             )
 
@@ -57,14 +49,14 @@ class SellerReviewListViewModel @Inject constructor(
                                 sortBy = sortBy,
                                 filterBy = filterBy)
                     }, onError = {
-                        _reviewProductList.postValue(Fail(it))
+                        _reviewProductList.value = Fail(it)
                         null
                     })
 
             productRatingOverall.await()?.let {
                 reviewProductList.await()?.also { reviewProductData ->
-                    _productRatingOverall.postValue(Success(it))
-                    _reviewProductList.postValue(Success(reviewProductData))
+                    _productRatingOverall.value = Success(it)
+                    _reviewProductList.value = Success(reviewProductData)
                 }
             }
         }) {
@@ -76,9 +68,9 @@ class SellerReviewListViewModel @Inject constructor(
             val productReviewList = withContext(dispatcherProvider.io()) {
                 getProductReviewList(sortBy, filterBy, page)
             }
-            _reviewProductList.postValue(Success(productReviewList))
+            _reviewProductList.value = Success(productReviewList)
         }, onError = {
-            _reviewProductList.postValue(Fail(it))
+            _reviewProductList.value = Fail(it)
         })
     }
 

@@ -29,22 +29,27 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
-        hideCloseButton(viewHolder)
+        hideCloseButton(recyclerView)
         reduceViewHoldersTransparency(viewHolder)
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
-        showCloseButton(viewHolder)
+        showCloseButton(recyclerView)
         restoreTransparency(viewHolder)
         recyclerView.post {
             recyclerView.adapter?.notifyDataSetChanged()
         }
     }
 
-    private fun hideCloseButton(viewHolder: RecyclerView.ViewHolder?) {
-        val closeButton = viewHolder?.itemView?.findViewById<AppCompatImageView>(R.id.iv_delete_button)
-        closeButton?.visibility = View.GONE
+    private fun hideCloseButton(recyclerView: RecyclerView) {
+        recyclerView.adapter?.let {
+            for (i in 0 until it.itemCount) {
+                val childView = recyclerView.getChildAt(i)
+                val closeButton = childView.findViewById<AppCompatImageView>(R.id.iv_delete_button)
+                closeButton?.visibility = View.GONE
+            }
+        }
     }
 
     private fun reduceViewHoldersTransparency(viewHolder: RecyclerView.ViewHolder?) {
@@ -59,9 +64,14 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
         }
     }
 
-    private fun showCloseButton(viewHolder: RecyclerView.ViewHolder?) {
-        val closeButton = viewHolder?.itemView?.findViewById<AppCompatImageView>(R.id.iv_delete_button)
-        closeButton?.visibility = View.VISIBLE
+    private fun showCloseButton(recyclerView: RecyclerView) {
+        recyclerView.adapter?.let {
+            for (i in 0 until it.itemCount) {
+                val childView = recyclerView.getChildAt(i)
+                val closeButton = childView.findViewById<AppCompatImageView>(R.id.iv_delete_button)
+                closeButton?.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun restoreTransparency(viewHolder: RecyclerView.ViewHolder?) {

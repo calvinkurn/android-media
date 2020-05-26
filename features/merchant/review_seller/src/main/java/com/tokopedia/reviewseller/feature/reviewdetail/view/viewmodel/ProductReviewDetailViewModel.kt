@@ -30,24 +30,23 @@ class ProductReviewDetailViewModel @Inject constructor(
         private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
-    var positionFilterPeriod = 1
     var filterPeriod: String = ""
     var sortBy: String = ""
 
     private var chipsFilterText = "30 Hari Terakhir"
     private var productId = 0
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
-    private var filterRatingData: List<RatingBarUiModel> = listOf()
+    var filterRatingData: List<RatingBarUiModel> = listOf()
     var filterTopicData: List<SortFilterItemWrapper> = listOf()
 
     var sortTopicData: List<SortItemUiModel> = listOf()
 
     var sortAndFilter: Pair<List<SortFilterItemWrapper>, String>? = null
 
-    private val _ratingFilterData = MutableLiveData<List<RatingBarUiModel>>()
-    private val _topicFilterData = MutableLiveData<List<SortFilterItemWrapper>>()
+    val ratingFilterData = MutableLiveData<List<RatingBarUiModel>>()
+    val topicFilterData = MutableLiveData<List<SortFilterItemWrapper>>()
 
-    private val _topicAndSortFilterData = MutableLiveData<Pair<List<SortFilterItemWrapper>, String>>()
+    val topicAndSortFilterData = MutableLiveData<Pair<List<SortFilterItemWrapper>, String>>()
 
     private val _reviewInitialData = MediatorLiveData<Result<Triple<List<BaseSellerReviewDetail>, String, Boolean>>>()
     val reviewInitialData: LiveData<Result<Triple<List<BaseSellerReviewDetail>, String, Boolean>>>
@@ -73,7 +72,7 @@ class ProductReviewDetailViewModel @Inject constructor(
     }
 
     private fun setupFeedBackDetail() {
-        _productFeedbackDetail.addSource(_topicFilterData) { data ->
+        _productFeedbackDetail.addSource(topicFilterData) { data ->
             val topicFilterText = data.filter { it.isSelected }
             val topicFilterTextGenerated = if (topicFilterText.isEmpty()) "" else topicFilterText.joinToString(prefix = "topic=", separator = ",") {
                 it.titleUnformated
@@ -86,7 +85,7 @@ class ProductReviewDetailViewModel @Inject constructor(
             getFeedbackDetailListNext(productId, sortBy, 1)
         }
 
-        _productFeedbackDetail.addSource(_ratingFilterData) { data ->
+        _productFeedbackDetail.addSource(ratingFilterData) { data ->
             val ratingFilterText = data?.filter { it.ratingIsChecked }.orEmpty()
             val ratingFilterGenerated = if (ratingFilterText.isEmpty()) "" else ratingFilterText.joinToString(prefix = "rating=", separator = ",") {
                 it.ratingLabel.toString()
@@ -101,7 +100,7 @@ class ProductReviewDetailViewModel @Inject constructor(
             getFeedbackDetailListNext(productId, sortBy, 1)
         }
 
-        _productFeedbackDetail.addSource(_topicAndSortFilterData) { data ->
+        _productFeedbackDetail.addSource(topicAndSortFilterData) { data ->
             val topicFilterText = data.first.filter { it.isSelected }
             val topicFilterTextGenerated = if (topicFilterText.isEmpty()) "" else topicFilterText.joinToString(prefix = "topic=", separator = ",") {
                 it.titleUnformated
@@ -134,7 +133,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         filterTopicData = data
     }
 
-    fun updateSortAndFilterTopicData(data: Pair<List<SortFilterItemWrapper>, String>) {
+    private fun updateSortAndFilterTopicData(data: Pair<List<SortFilterItemWrapper>, String>) {
         this.sortAndFilter = data
     }
 
@@ -147,12 +146,12 @@ class ProductReviewDetailViewModel @Inject constructor(
 
     fun setSortAndFilterTopicData(data: Pair<List<SortFilterItemWrapper>, String>) {
         val updatedData = data.first.map {
-            if(it.count == 0) {
+            if (it.count == 0) {
                 it.isSelected = false
             }
             it
         }
-        _topicAndSortFilterData.value = updatedData to data.second
+        topicAndSortFilterData.value = updatedData to data.second
     }
 
     fun setFilterTopicDataText(data: List<SortFilterItemWrapper>?) {
@@ -162,7 +161,7 @@ class ProductReviewDetailViewModel @Inject constructor(
             }
             it
         }
-        _topicFilterData.value = updatedData
+        topicFilterData.value = updatedData
     }
 
     fun setFilterRatingDataText(data: List<RatingBarUiModel>) {
@@ -172,43 +171,44 @@ class ProductReviewDetailViewModel @Inject constructor(
             }
             it
         }
-        _ratingFilterData.value = updatedData
+        ratingFilterData.value = updatedData
     }
 
     fun getProductRatingDetail(productID: Int, sortBy: String) {
         launchCatchError(block = {
             productId = productID
             getProductReviewInitialUseCase.requestParams = GetProductReviewInitialUseCase.createParams(productID, getGeneratedFilterByText(), sortBy, 1, getGeneratedTimeFilterByText())
-            val data = getProductReviewInitialUseCase.executeOnBackground()
+            val productRatingDetailData = getProductReviewInitialUseCase.executeOnBackground()
 
-            val productName = data.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct?.productName
+            val productName = productRatingDetailData.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct?.productName
                     ?: ""
-            val hasNext = data.productFeedBackResponse?.productrevFeedbackDataPerProduct?.hasNext
+            val hasNext = productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct?.hasNext
                     ?: false
-            val productFilterData = data.productReviewFilterResponse?.productrevFeedbackDataPerProduct
+            val productFilterData = productRatingDetailData.productReviewFilterResponse?.productrevFeedbackDataPerProduct
                     ?: ProductFeedbackFilterData()
             val uiData: MutableList<BaseSellerReviewDetail> = mutableListOf()
 
-            uiData.add(SellerReviewProductDetailMapper.mapToRatingDetailOverallUiModel(data.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct
+            uiData.add(SellerReviewProductDetailMapper.mapToRatingDetailOverallUiModel(productRatingDetailData.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct
                     ?: ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct(), chipsFilterText))
             uiData.add(SellerReviewProductDetailMapper.mapToRatingBarUiModel(productFilterData, filterRatingData))
-            uiData.add(SellerReviewProductDetailMapper.mapToTopicUiModel(productFilterData,filterTopicData))
+            uiData.add(SellerReviewProductDetailMapper.mapToTopicUiModel(productFilterData, filterTopicData))
 
-            if (data.productFeedBackResponse == null) {
+            if (productRatingDetailData.productFeedBackResponse == null) {
                 _reviewInitialData.postValue(Fail(Throwable()))
             } else {
-                if (data.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list?.isEmpty() == true || data.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list == null) {
+                if (productRatingDetailData.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list?.isEmpty() == true || productRatingDetailData?.productFeedBackResponse?.productrevFeedbackDataPerProduct?.list == null) {
                     uiData.add(ProductFeedbackErrorUiModel(false))
                 } else {
-                    uiData.addAll(SellerReviewProductDetailMapper.mapToFeedbackUiModel(data.productFeedBackResponse!!.productrevFeedbackDataPerProduct, userSession))
+                    uiData.addAll(SellerReviewProductDetailMapper.mapToFeedbackUiModel(productRatingDetailData.productFeedBackResponse!!.productrevFeedbackDataPerProduct, userSession))
                 }
                 _reviewInitialData.postValue(Success(Triple(uiData, productName, hasNext)))
             }
-
-        }) {
+        })
+        {
             _reviewInitialData.postValue(Fail(it))
         }
     }
+
 
     private fun getGeneratedFilterByText(): String {
         return if (filterByList.size == 1) {
