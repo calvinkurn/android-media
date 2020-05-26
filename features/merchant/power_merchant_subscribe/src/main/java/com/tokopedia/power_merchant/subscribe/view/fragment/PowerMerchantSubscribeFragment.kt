@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
@@ -191,24 +190,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    private fun showDialogKyc() {
-        context?.let {
-            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(it.getString(R.string.pm_label_kyc_verification_header))
-                setDescription(it.getString(R.string.pm_label_kyc_verification_desc_1))
-                setPrimaryCTAText(it.getString(R.string.power_merchant_kyc_verification))
-                setSecondaryCTAText(it.getString(R.string.pm_label_button_close))
-                setPrimaryCTAClickListener {
-                    openTermsAndConditionKYC()
-                    dismiss()
-                }
-                setSecondaryCTAClickListener {
-                    dismiss()
-                }
-            }.show()
-        }
-    }
-
     private fun showBottomSheetSuccess() {
         val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
             getString(R.string.power_merchant_success_title),
@@ -293,38 +274,26 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun onClickRegister(powerMerchantStatus: PowerMerchantStatus) {
-        val kycUserProject = powerMerchantStatus.kycUserProjectInfoPojo
-        val kycVerified = kycUserProject.kycProjectInfo.isKycVerified
-
-        if (kycVerified) {
-            goToTermsAndConditionPage(powerMerchantStatus)
-        } else {
-            showDialogKyc()
-        }
-
         powerMerchantTracking.eventUpgradeShopPm()
+        goToTermsAndConditionPage(powerMerchantStatus)
     }
 
     private fun goToTermsAndConditionPage(powerMerchantStatus: PowerMerchantStatus) {
         context?.let {
+            val kycUserProject = powerMerchantStatus.kycUserProjectInfoPojo
+            val kycNotVerified = !kycUserProject.kycProjectInfo.isKycVerified
             val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
             val shopScore = powerMerchantStatus.shopScore.data.value
+            val shopScoreNotEligible = shopScore < shopStatus.getMinimumShopScore()
 
-            val action = if (shopScore < shopStatus.getMinimumShopScore()) {
-                ACTION_SHOP_SCORE
-            } else {
-                ACTION_ACTIVATE
+            val action = when {
+                kycNotVerified -> ACTION_KYC
+                shopScoreNotEligible ->  ACTION_SHOP_SCORE
+                else -> ACTION_ACTIVATE
             }
 
             val intent = PowerMerchantTermsActivity.createIntent(it, action)
             startActivityForResult(intent, ACTIVATE_INTENT_CODE)
-        }
-    }
-
-    private fun openTermsAndConditionKYC() {
-        context?.let {
-            val intent = PowerMerchantTermsActivity.createIntent(it, ACTION_KYC)
-            startActivity(intent)
         }
     }
 }

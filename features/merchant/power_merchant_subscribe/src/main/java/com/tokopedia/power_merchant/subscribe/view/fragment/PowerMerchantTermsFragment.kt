@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -146,7 +147,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
             ACTION_ACTIVATE,
             ACTION_AUTO_EXTEND -> presenter.activatePowerMerchant()
             ACTION_SHOP_SCORE -> showShopScoreBottomSheet()
-            ACTION_KYC -> openKycPage()
+            ACTION_KYC -> showDialogKyc()
         }
     }
 
@@ -191,5 +192,24 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showDialogKyc() {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.pm_label_kyc_verification_header))
+                setDescription(it.getString(R.string.pm_label_kyc_verification_desc_1))
+                setPrimaryCTAText(it.getString(R.string.power_merchant_kyc_verification))
+                setSecondaryCTAText(it.getString(R.string.pm_label_button_close))
+                setPrimaryCTAClickListener {
+                    openKycPage()
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    activity?.finish()
+                    dismiss()
+                }
+            }.show()
+        }
     }
 }
