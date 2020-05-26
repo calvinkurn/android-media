@@ -8,7 +8,7 @@ import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhome.common.utils.DateTimeUtil
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

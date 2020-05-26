@@ -2,7 +2,7 @@ package com.tokopedia.centralizedpromo.domain.mapper
 
 import com.tokopedia.centralizedpromo.view.model.PostListUiModel
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
-import com.tokopedia.sellerhome.domain.model.PostDataModel
+import com.tokopedia.centralizedpromo.domain.model.PostDataModel
 import javax.inject.Inject
 
 class PostMapper @Inject constructor() {
