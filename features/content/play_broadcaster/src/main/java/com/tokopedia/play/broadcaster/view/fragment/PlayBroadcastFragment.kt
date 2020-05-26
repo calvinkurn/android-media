@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -13,7 +14,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.pusher.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
+import com.tokopedia.play.broadcaster.pusher.PlayPusherImpl
+import com.tokopedia.play.broadcaster.pusher.PlayPusherImplNoop
 
 
 /**
@@ -127,12 +131,19 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
     }
 
     private fun setupPusher() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            playPusher = PlayPusher.Builder(requireContext()).build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            playPusher = getPlayPusher()
             playPusher?.create()
         } else {
-            // TODO ("handle user with android version < 21")
+            // TODO ("handle user with android version < 18")
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private fun getPlayPusher(): PlayPusher = if (DeviceInfoUtil.isSupportedAbi()) {
+        PlayPusherImpl.Builder(requireContext()).build()
+    } else {
+        PlayPusherImplNoop()
     }
 
     override fun onResume() {
