@@ -19,6 +19,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter.MergeAdapters
+import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -39,7 +40,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     private lateinit var ivSearch: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     var pageEndPoint = ""
-    private lateinit var mergeAdapters: MergeAdapters<DiscoveryRecycleAdapter>
+    private lateinit var mergeAdapters: MergeAdapters<RecyclerView.Adapter<AbstractViewHolder>>
     private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
 
 
