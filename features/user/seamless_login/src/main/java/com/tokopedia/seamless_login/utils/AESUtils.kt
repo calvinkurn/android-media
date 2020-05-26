@@ -24,7 +24,7 @@ class AESUtils {
         const val DEFAULT_ENCRYPTION_MODE = "AES"
         const val DEFAULT_ENCRYPTION_ALGORITHM = "AES/GCM/NoPadding"
 
-        const val SEAMLESS_KEY = "c4b5d4e9bd474f95a7dfd8e2ae9c7ae0"
+        const val SEAMLESS_KEY = "abcdefghijklmnopqrstuvwxyz202020"
         private val iv = ByteArray(12)
         private val cipher = Cipher.getInstance(DEFAULT_ENCRYPTION_ALGORITHM)
 
