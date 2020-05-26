@@ -5,6 +5,7 @@ import android.text.TextUtils
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shoplocation.gql.UpdateShopLocationMutation
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLSuccessMapper
@@ -26,8 +27,10 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
 
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<UpdateShopLocationMutation>(context, UpdateShopLocationMutation::class.java) {
-            override val graphQLRawResId: Int
-                get() = R.raw.gql_mutation_update_shop_location
+
+            override fun getRawString(): String {
+                return GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_update_shop_location)
+            }
 
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
                 val variables = HashMap<String, Any>()

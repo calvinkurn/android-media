@@ -4,8 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
+import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevIncentiveOvo
+import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductReputationForm
-import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewSubmitUseCase
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase
@@ -39,7 +40,7 @@ import java.util.concurrent.TimeUnit
  */
 
 @ExperimentalCoroutinesApi
-class CreateReviewViewModelTest {
+class  CreateReviewViewModelTest {
 
     @RelaxedMockK
     lateinit var sendReviewValidateUseCase: SendReviewValidateUseCase
@@ -52,6 +53,9 @@ class CreateReviewViewModelTest {
 
     @RelaxedMockK
     lateinit var sendReviewSubmitUseCase: SendReviewSubmitUseCase
+
+    @RelaxedMockK
+    lateinit var getProductIncentiveOvo: GetProductIncentiveOvo
 
     @RelaxedMockK
     lateinit var getProductReputationForm: GetProductReputationForm
@@ -68,7 +72,7 @@ class CreateReviewViewModelTest {
     }
 
     private val mViewModel by lazy {
-        CreateReviewViewModel(Dispatchers.Unconfined, getProductReputationForm, sendReviewWithoutImageUseCase, sendReviewWithImageUseCase)
+        CreateReviewViewModel(Dispatchers.Unconfined, getProductReputationForm, getProductIncentiveOvo, sendReviewWithoutImageUseCase, sendReviewWithImageUseCase)
     }
 
     @Rule
@@ -183,6 +187,36 @@ class CreateReviewViewModelTest {
         }
 
         assertTrue(mViewModel.getReputationDataForm.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun `should success when get product incentive ovo`() {
+        coEvery {
+            getProductIncentiveOvo.getIncentiveOvo()
+        } returns ProductRevIncentiveOvo()
+
+        mViewModel.getProductIncentiveOvo()
+
+        coVerify {
+            getProductIncentiveOvo.getIncentiveOvo()
+        }
+
+        assertTrue(mViewModel.incentiveOvo.observeAwaitValue() is Success)
+    }
+
+    @Test
+    fun `should fail when get product incentive ovo`() {
+        coEvery {
+            getProductIncentiveOvo.getIncentiveOvo()
+        } throws Throwable()
+
+        mViewModel.getProductIncentiveOvo()
+
+        coVerify {
+            getProductIncentiveOvo.getIncentiveOvo()
+        }
+
+        assertTrue(mViewModel.incentiveOvo.observeAwaitValue() is Fail)
     }
 
     private fun <T> LiveData<T>.observeAwaitValue(): T? {
