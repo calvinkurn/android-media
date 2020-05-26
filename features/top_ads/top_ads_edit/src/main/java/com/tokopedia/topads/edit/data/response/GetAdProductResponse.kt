@@ -12,29 +12,9 @@ data class GetAdProductResponse(
     data class TopadsGetListProductsOfGroup(
 
             @field:SerializedName("data")
-            val data: List<DataItem> = listOf(),
+            val data: List<DataItem> = listOf()
 
-            @field:SerializedName("page")
-            val page: Page = Page()
     ) {
-        data class Page(
-
-                @field:SerializedName("current")
-                val current: Int = 0,
-
-                @field:SerializedName("total")
-                val total: Int = 0,
-
-                @field:SerializedName("perPage")
-                val perPage: Int = 0,
-
-                @field:SerializedName("min")
-                val min: Int = 0,
-
-                @field:SerializedName("max")
-                val max: Int = 0
-        )
-
         data class DataItem(
 
                 @field:SerializedName("itemID")

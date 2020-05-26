@@ -262,10 +262,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
     }
 
-    private fun setVisibilityOperation(flag: Int) {
-        keyword_count.visibility = flag
-        add_keyword.visibility = flag
-        add_image.visibility = flag
+    private fun setVisibilityOperation(visibilty: Int) {
+        keyword_count.visibility = visibilty
+        add_keyword.visibility = visibilty
+        add_image.visibility = visibilty
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

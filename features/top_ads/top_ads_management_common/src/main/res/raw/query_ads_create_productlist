@@ -4,30 +4,15 @@ query topadsGetListProduct($shopID: Int!, $keyword: String, $etalase: String, $s
       productID
       productName
       productPrice
-      productPriceNum
       productImage
-      productIsPromoted
-      productURI
       adID
-      adStatus
-      groupName
-      groupID
-      departmentID
-      departmentName
       priceBid
       suggestedBid
-      productRating
-      productReviewCount
     }
-    eof
     errors {
       code
       detail
       title
-      object {
-        type
-        text
-      }
     }
   }
 }

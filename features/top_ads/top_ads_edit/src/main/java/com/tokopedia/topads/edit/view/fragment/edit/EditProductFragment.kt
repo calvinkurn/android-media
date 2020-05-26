@@ -149,12 +149,12 @@ class EditProductFragment : BaseDaggerFragment() {
 
     }
 
-    private fun setVisibilityOperation(flag: Int) {
-        btnState = flag == View.VISIBLE
+    private fun setVisibilityOperation(visiblity: Int) {
+        btnState = visiblity == View.VISIBLE
         buttonStateCallback?.setButtonState()
-            product_count.visibility = flag
-            add_product.visibility = flag
-            add_image.visibility = flag
+            product_count.visibility = visiblity
+            add_product.visibility = visiblity
+            add_image.visibility = visiblity
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

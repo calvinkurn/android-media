@@ -163,10 +163,10 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         getComponent(TopAdsEditComponent::class.java).inject(this)
     }
 
-    private fun setVisibilityOperation(flag: Int) {
-        keyword_count.visibility = flag
-        add_keyword.visibility = flag
-        add_image.visibility = flag
+    private fun setVisibilityOperation(visibility: Int) {
+        keyword_count.visibility = visibility
+        add_keyword.visibility = visibility
+        add_image.visibility = visibility
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
