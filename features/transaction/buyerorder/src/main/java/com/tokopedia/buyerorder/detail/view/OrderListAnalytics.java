@@ -11,7 +11,7 @@ import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationsItem;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.buyerorder.list.data.Order;
-import com.tokopedia.buyerorder.list.view.adapter.viewModel.OrderListRecomViewModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
