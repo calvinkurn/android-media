@@ -23,6 +23,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
@@ -46,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
+import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -121,6 +124,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                         renderList(it.data.bills)
                         smartBillsAnalytics.impressionAllProducts(it.data.bills)
 
+                        // Show coach mark
+                        showOnboarding()
+
                         // Save maximum price
                         maximumPrice = 0
                         for (bill in it.data.bills) {
@@ -190,19 +196,18 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             smartBillsAnalytics.userId = userSession.userId
 
             context?.let { context ->
-                if (::sharedPrefs.isInitialized) {
-                    // Navigate to onboarding if it's the first time
-                    val visitedOnboarding = sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)
-                    if (!visitedOnboarding) {
-                        //TODO: Put onboarding tracking here
-                        sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING, true).apply()
-
-                        startActivityForResult(Intent(context,
-                                SmartBillsOnboardingActivity::class.java),
-                                REQUEST_CODE_SMART_BILLS_ONBOARDING
-                        )
-                    }
-                }
+//                if (::sharedPrefs.isInitialized) {
+//                    // Navigate to onboarding if it's the first time
+//                    if (!sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)) {
+//                        //TODO: Put onboarding tracking here
+//                        sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING, true).apply()
+//
+//                        startActivityForResult(Intent(context,
+//                                SmartBillsOnboardingActivity::class.java),
+//                                REQUEST_CODE_SMART_BILLS_ONBOARDING
+//                        )
+//                    }
+//                }
 
                 // Setup ticker
                 ticker_smart_bills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
@@ -336,6 +341,39 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         setTotalPrice()
     }
 
+    private fun showOnboarding() {
+        // Render onboarding coach mark if there are bills & if it's the first visit
+//        if (adapter.dataSize > 0 && !sharedPrefs.getBoolean(SMART_BILLS_VIEWED_ONBOARDING, false)) {
+        sharedPrefs.edit().putBoolean(SMART_BILLS_VIEWED_ONBOARDING, true).apply()
+
+        // Get first viewholder item for coach marks
+        rv_smart_bills_items.post {
+            val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
+            val coachMarks = ArrayList<CoachMarkItem>()
+            coachMarks.add(
+                    CoachMarkItem(
+                            view_smart_bills_select_all_checkbox_container,
+                            getString(R.string.smart_bills_onboarding_title_1),
+                            getString(R.string.smart_bills_onboarding_description_1)
+                    )
+            )
+            billItemView?.run {
+                coachMarks.add(
+                        CoachMarkItem(
+                                this,
+                                getString(R.string.smart_bills_onboarding_title_2),
+                                getString(R.string.smart_bills_onboarding_description_2)
+                        )
+                )
+            }
+
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.enableSkip = true
+            coachMark.show(activity, "SmartBillsOnboardingCoachMark", coachMarks)
+        }
+//        }
+    }
+
     override fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet) {
         smartBillsAnalytics.clickBillDetail(bill)
 
@@ -380,6 +418,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
         const val SMART_BILLS_PREF = "SMART_BILLS"
         const val SMART_BILLS_VISITED_ONBOARDING = "SMART_BILLS_VISITED_ONBOARDING"
+        const val SMART_BILLS_VIEWED_ONBOARDING = "SMART_BILLS_VIEWED_ONBOARDING"
 
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
